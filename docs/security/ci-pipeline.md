@@ -23,7 +23,7 @@
 | 프론트엔드 점검 | npm audit signatures | 서명·출처가 검증되지 않은 패키지 | — (공급망 보안) | `frontend/package-lock.json`이 있을 때 |
 | | npm audit | 운영 의존성의 높음 이상 취약점 | 취약한 API 사용 | 〃 |
 | | lint / test / build | 코드 품질, 타입 오류 | — | 〃 |
-| 새 의존성 검토 | dependency-review | PR에서 새로 들어오는 취약 패키지 (중간 이상) | 취약한 API 사용 | PR일 때 |
+| 새 의존성 검토 | dependency-review | PR에서 새로 들어오는 취약 패키지 (중간 이상) | 취약한 API 사용 | PR이고 의존성 파일이 있을 때 (Dependency graph 필요) |
 | CodeQL | CodeQL `security-extended` | 데이터 흐름 기반 XSS·SSRF·경로 조작·SQL 삽입 등 | 입력데이터 검증 및 표현 전반 | 항상 (언어 자동 감지) |
 
 `backend/`, `frontend/`가 아직 없어서 지금은 해당 점검이 **Skipped**로 표시됩니다. 폴더가 생기면 별도 수정 없이 자동으로 켜집니다.
@@ -50,6 +50,7 @@
    - Require status checks to pass → **`CI 통과`** 하나만 지정
    - Do not allow bypassing the above settings
 2. **Settings → Code security** (공개 레포는 무료)
+   - **Dependency graph** — 꺼져 있으면 `새 의존성 검토`가 "Dependency review is not supported" 오류로 실패
    - Secret scanning + **Push protection** — 비밀값이 든 push 자체를 GitHub가 거부
    - Dependabot alerts
    - Code scanning → Rulesets에서 CodeQL 결과 기준 병합 차단 (선택)

@@ -111,7 +111,8 @@ jobs:
         run: zizmor --min-severity low .
 
   python:
-    name: Python 점검 (${{ matrix.project }})
+    # 매트릭스 값은 이름 뒤에 자동으로 붙는다 (예: "Python 점검 (backend)")
+    name: Python 점검
     needs: detect
     if: needs.detect.outputs.python_projects != '[]'
     runs-on: ubuntu-24.04
@@ -184,7 +185,11 @@ jobs:
 
   dependency-review:
     name: 새 의존성 검토
-    if: github.event_name == 'pull_request'
+    needs: detect
+    # 의존성 파일이 생긴 뒤에만 실행한다. 저장소 설정의 Dependency graph가 켜져 있어야 한다.
+    if: >-
+      github.event_name == 'pull_request' &&
+      (needs.detect.outputs.python_projects != '[]' || needs.detect.outputs.frontend == 'true')
     runs-on: ubuntu-24.04
     timeout-minutes: 10
     permissions:
