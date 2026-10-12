@@ -1,0 +1,37 @@
+# Windows에서 복사할 때 생기는 메타파일
+*:Zone.Identifier
+*Zone.Identifier
+
+# Obsidian 개인 상태 (창 배치·최근 파일 등은 사람마다 다름)
+**/.obsidian/workspace.json
+**/.obsidian/workspace-mobile.json
+**/.obsidian/cache
+.trash/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+build/
+
+# 비밀값 — 절대 커밋하지 않음 (.env.example만 공유)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
