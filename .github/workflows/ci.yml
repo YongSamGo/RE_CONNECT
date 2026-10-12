@@ -1,0 +1,215 @@
+# 다시잇다 CI — 모든 PR과 main push에 보안 점검을 자동으로 건다.
+#
+# 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
+# (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
+#
+# 워크플로 자체 보안 원칙
+# - 외부 액션은 태그가 아니라 커밋 SHA로 고정 (태그 변조·공급망 공격 방지)
+# - 토큰 권한은 기본 없음, 잡마다 필요한 최소 권한만 부여
+# - checkout 후 토큰을 git 설정에 남기지 않음 (persist-credentials: false)
+# - `${{ }}` 값을 run 스크립트에 직접 넣지 않고 env로 전달 (스크립트 삽입 방지)
+# - pull_request_target 미사용, 의존성 캐시 미사용 (캐시 오염 방지)
+
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사
+    - cron: "0 0 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  NODE_VERSION: "24"
+  BANDIT_VERSION: "1.9.4"
+  PIP_AUDIT_VERSION: "2.10.1"
+  ZIZMOR_VERSION: "1.30.1"
+  GITLEAKS_VERSION: "8.30.1"
+  GITLEAKS_SHA256: "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb"
+
+jobs:
+  detect:
+    name: 점검 대상 확인
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      python_projects: ${{ steps.scan.outputs.python_projects }}
+      frontend: ${{ steps.scan.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: scan
+        name: 존재하는 프로젝트 찾기
+        run: |
+          projects=""
+          for dir in backend worker; do
+            if [ -f "$dir/requirements.txt" ]; then
+              projects="${projects:+$projects,}\"$dir\""
+            fi
+          done
+          echo "python_projects=[$projects]" >> "$GITHUB_OUTPUT"
+
+          if [ -f frontend/package-lock.json ]; then
+            echo "frontend=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "frontend=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  secrets:
+    name: 비밀값 유출 점검 (gitleaks)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # 지워진 커밋 속 비밀값까지 찾도록 이력 전체를 받는다
+          persist-credentials: false
+      - name: gitleaks 설치 (SHA-256 체크섬 검증)
+        run: |
+          url="https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz"
+          curl -sSfL -o "$RUNNER_TEMP/gitleaks.tar.gz" "$url"
+          echo "${GITLEAKS_SHA256}  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+      - name: 커밋 이력 전체 검사
+        # --redact: 공개 레포라 로그에 비밀값 원문이 찍히지 않게 가린다
+        run: |
+          "$RUNNER_TEMP/gitleaks" git --redact --verbose --no-banner --exit-code 1 .
+
+  workflow-audit:
+    name: 워크플로 보안 점검 (zizmor)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: zizmor 설치
+        run: python -m pip install "zizmor==${ZIZMOR_VERSION}"
+      - name: 워크플로·dependabot 설정 검사
+        # 권한 과다, 스크립트 삽입, 고정되지 않은 액션, 위장 커밋(impostor commit) 등을 찾는다
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: zizmor --min-severity low .
+
+  python:
+    name: Python 점검 (${{ matrix.project }})
+    needs: detect
+    if: needs.detect.outputs.python_projects != '[]'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        project: ${{ fromJSON(needs.detect.outputs.python_projects) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.project }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: 의존성·점검 도구 설치
+        run: |
+          python -m pip install -r requirements.txt -r requirements-dev.txt
+          python -m pip install "bandit==${BANDIT_VERSION}" "pip-audit==${PIP_AUDIT_VERSION}"
+      - name: 테스트 (pytest — 정상 입력 + 공격 시나리오)
+        run: python -m pytest
+      - name: 코드 보안약점 점검 (bandit)
+        # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
+        # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.
+        run: |
+          bandit -r . \
+            --exclude ./tests,./.venv \
+            --severity-level low \
+            --confidence-level medium
+      - name: 의존성 취약점 점검 (pip-audit)
+        run: pip-audit -r requirements.txt --strict --progress-spinner off
+
+  frontend:
+    name: 프론트엔드 점검
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - name: 의존성 설치 (설치 스크립트 실행 차단)
+        # 악성 패키지의 postinstall 스크립트가 CI에서 실행되는 것을 막는다
+        run: npm ci --ignore-scripts
+      - name: 패키지 서명·출처 검증
+        run: npm audit signatures
+      - name: 의존성 취약점 점검 (운영 의존성, 높음 이상)
+        run: npm audit --omit=dev --audit-level=high
+      - name: 린트
+        run: npm run lint
+      - name: 테스트
+        run: npm test --if-present
+      - name: 빌드 (타입 검사 포함)
+        run: npm run build
+
+  dependency-review:
+    name: 새 의존성 검토
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/dependency-review-action@a1d282b36b6f3519aa1f3fc636f609c47dddb294 # v5.0.0
+        with:
+          # PR에서 새로 추가·변경되는 패키지에 중간(moderate) 이상 취약점이 있으면 실패
+          fail-on-severity: moderate
+          comment-summary-in-pr: never
+
+  ci-ok:
+    name: CI 통과
+    if: always()
+    needs: [detect, secrets, workflow-audit, python, frontend, dependency-review]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: 결과 판정
+        env:
+          NEEDS: ${{ toJSON(needs) }}
+        run: |
+          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
+          if echo "$NEEDS" | jq -e 'to_entries | any(.value.result == "failure" or .value.result == "cancelled")' > /dev/null; then
+            echo "::error::실패하거나 취소된 점검이 있습니다. 위 결과에서 failure/cancelled 항목을 확인하세요."
+            exit 1
+          fi

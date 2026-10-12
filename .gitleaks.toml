@@ -1,0 +1,15 @@
+# gitleaks 설정 — 기본 규칙을 그대로 쓰고, 예외는 아래 한 곳만 둔다.
+
+[extend]
+useDefault = true
+
+# KISA 가이드 원문 Markdown과 KISA 점검 키트의 참조 문서에는 "하드코드된 중요정보" 같은
+# 약점을 설명하려고 passwd='1234' 같은 취약 코드 예시가 의도적으로 들어 있다.
+# 이 두 곳의 문서 폴더만 예외로 두고, 팀이 작성하는 다른 노트·코드·스크립트는 모두 검사한다.
+# 예외를 추가하려면 반드시 PR에서 사유를 적고 리뷰를 받는다.
+[[allowlists]]
+description = "KISA 가이드 원문·점검 키트 참조 문서의 취약 코드 예시"
+paths = [
+  '''^team-vault/SW개발보안_obsidian/Security/(Python-2023|SW-Diagnosis-2021)/''',
+  '''^\.claude/skills/kisa-secure-coding-python/references/[^/]+\.md$''',
+]

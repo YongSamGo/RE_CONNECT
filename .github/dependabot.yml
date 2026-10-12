@@ -1,0 +1,42 @@
+# Dependabot — 의존성 업데이트 PR을 자동으로 만든다.
+# 새로 나온 버전은 7일 기다린 뒤 올린다 (배포 직후 악성 버전이 섞이는 공급망 공격 대비).
+
+version: 2
+updates:
+  # CI 액션 (커밋 SHA 고정값과 버전 주석을 함께 갱신)
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "sec"
+
+  # backend/, frontend/ 폴더가 생긴 뒤에 주석을 해제한다
+  # - package-ecosystem: pip
+  #   directory: /backend
+  #   schedule:
+  #     interval: weekly
+  #     day: monday
+  #     timezone: Asia/Seoul
+  #   cooldown:
+  #     default-days: 7
+  #   commit-message:
+  #     prefix: "sec"
+  #
+  # - package-ecosystem: npm
+  #   directory: /frontend
+  #   schedule:
+  #     interval: weekly
+  #     day: monday
+  #     timezone: Asia/Seoul
+  #   cooldown:
+  #     default-days: 7
+  #   commit-message:
+  #     prefix: "sec"
