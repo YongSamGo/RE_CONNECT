@@ -1,0 +1,75 @@
+# CodeQL 정적 분석 — 데이터 흐름을 따라가며 SQL 삽입, XSS, SSRF, 경로 조작 같은 보안약점을 찾는다.
+# 결과는 저장소 Security 탭 → Code scanning에 쌓이고, PR에는 새로 생긴 경고가 표시된다.
+#
+# 분석 언어는 저장소에 있는 코드로 자동 결정한다.
+# - actions: 항상 (워크플로 파일 자체의 보안약점)
+# - python: .py 파일이 생기면
+# - javascript-typescript: .js/.ts 파일이 생기면
+
+name: CodeQL
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  schedule:
+    # 새 분석 규칙이 추가되므로 코드 변경이 없어도 매주 월요일 09:30 KST 재분석
+    - cron: "30 0 * * 1"
+  workflow_dispatch:
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  detect:
+    name: 분석 언어 확인
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      languages: ${{ steps.scan.outputs.languages }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - id: scan
+        name: 저장소의 코드 언어 찾기
+        run: |
+          languages='"actions"'
+          if git ls-files -- '*.py' | grep -q .; then
+            languages="$languages,\"python\""
+          fi
+          if git ls-files -- '*.js' '*.jsx' '*.mjs' '*.cjs' '*.ts' '*.tsx' | grep -q .; then
+            languages="$languages,\"javascript-typescript\""
+          fi
+          echo "languages=[$languages]" >> "$GITHUB_OUTPUT"
+
+  analyze:
+    name: CodeQL 분석 (${{ matrix.language }})
+    needs: detect
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+      security-events: write # 분석 결과를 Security 탭에 올리기 위해 필요
+    strategy:
+      fail-fast: false
+      matrix:
+        language: ${{ fromJSON(needs.detect.outputs.languages) }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: github/codeql-action/init@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: none
+          # 기본 규칙보다 보안 규칙을 더 넓게 적용
+          queries: security-extended
+      - uses: github/codeql-action/analyze@24c54180a607b1449ed407dd24f251e4e9147c8d # v4.38.3
+        with:
+          category: /language:${{ matrix.language }}

@@ -35,3 +35,13 @@ build/
 Thumbs.db
 .idea/
 .vscode/
+
+# 보안 점검 보고서·도구 출력 — 미조치 취약점 정보가 담기므로 공개 저장소에 커밋하지 않음
+# (조치가 끝난 뒤 요약만 docs/security/ 에 기록)
+security-reports/
+/security-review-report.md
+/bandit.json
+/semgrep.json
+/pip-audit.json
+/sbom*.json
+/*.cdx.json
