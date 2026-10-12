@@ -48,12 +48,13 @@
 RE_CONNECT/
 ├── README.md
 ├── 다시잇다_개발기획서_수정.pdf        # 제출용 개발기획서
-├── team-vault/                          # Obsidian 보안 지식 베이스 (아래 4장)
-│   └── SW개발보안_obsidian/Security/
-│       ├── INDEX.md                     # 통합 인덱스 — 여기서 시작
-│       ├── Python-2023/                 # Python 시큐어코딩 가이드 (2023) 원문
-│       ├── SW-Diagnosis-2021/           # SW 보안약점 진단가이드 (2021) 원문
-│       └── assets/                      # 원문 페이지 이미지
+├── team-vault/
+│   └── SW개발보안_obsidian/             # Obsidian 볼트 루트 (아래 4장)
+│       └── Security/
+│           ├── INDEX.md                 # 통합 인덱스 — 여기서 시작
+│           ├── Python-2023/             # Python 시큐어코딩 가이드 (2023) 원문
+│           ├── SW-Diagnosis-2021/       # SW 보안약점 진단가이드 (2021) 원문
+│           └── assets/                  # 원문 페이지 이미지
 ├── backend/                             # (예정) FastAPI 서버
 ├── frontend/                            # (예정) React 클라이언트
 ├── worker/                              # (예정) 공고 수집 배치 워커
@@ -72,7 +73,7 @@ KISA 공식 가이드 두 권을 장·절·보안약점 단위 Markdown으로 �
 ### 여는 법
 
 1. [Obsidian](https://obsidian.md) 설치
-2. `Open folder as vault` → 이 저장소의 `team-vault/` 폴더 선택
+2. `Open folder as vault` → 이 저장소의 `team-vault/SW개발보안_obsidian/` 폴더 선택 (상위 `team-vault/`가 아님)
 3. [`Security/INDEX.md`](team-vault/SW개발보안_obsidian/Security/INDEX.md)에서 시작
 
 Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 있습니다.
