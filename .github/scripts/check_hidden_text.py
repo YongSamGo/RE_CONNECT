@@ -48,8 +48,8 @@ EXTRA_INVISIBLE = [
     (0xE0100, 0xE01EF),  # VARIATION SELECTOR-17~256 (데이터 숨기기에 쓰임)
 ]
 ALLOWED_CONTROLS = {"\t", "\n", "\r"}
-ZWJ = "‍"
-BOM = "﻿"
+ZWJ = "\u200d"
+BOM = "\ufeff"
 
 
 def _build_pattern() -> re.Pattern[str]:
@@ -96,11 +96,11 @@ def _allowed(text: str, i: int) -> bool:
     ch = text[i]
     if ch == BOM:
         return i == 0
-    if ch in ("︎", "️"):
+    if ch in ("\ufe0e", "\ufe0f"):
         # 이모지·기호 뒤 1개는 표시 방식 선택이다. 연속되면 데이터를 숨긴 것으로 본다.
         return i > 0 and not HIDDEN.match(text[i - 1])
     if ch == ZWJ:
-        # 👩‍💻 같은 이모지 결합만 허용
+        # 이모지 결합(예: 여성 + ZWJ + 컴퓨터 = 개발자 이모지)만 허용
         j = i - 1
         while j >= 0 and _is_variation_selector(text[j]):
             j -= 1
