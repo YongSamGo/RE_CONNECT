@@ -1,4 +1,4 @@
-# 다시잇다 CI — 모든 PR과 main push에 보안 점검을 자동으로 건다.
+# 다시잇다 CI — 모든 PR과 main·develop push에 보안 점검을 자동으로 건다.
 #
 # 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
 # (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
@@ -15,9 +15,10 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
   schedule:
-    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사
+    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사.
+    # schedule은 기본 브랜치(develop)에서만 돌기 때문에, 아래 weekly-main 잡이 main에도 CI·CodeQL을 실행시킨다.
     - cron: "0 0 * * 1"
   workflow_dispatch:
 
@@ -200,6 +201,23 @@ jobs:
           # PR에서 새로 추가·변경되는 패키지에 중간(moderate) 이상 취약점이 있으면 실패
           fail-on-severity: moderate
           comment-summary-in-pr: never
+
+  weekly-main:
+    name: main 주간 재검사 요청
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write # main 브랜치에서 워크플로를 실행(workflow_dispatch)하기 위해 필요
+    steps:
+      - name: main에서 CI·CodeQL 실행
+        # 제출·시연용 main도 새 CVE로 재검사한다. main의 워크플로 파일 기준으로 돈다.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run ci.yml --ref main
+          gh workflow run codeql.yml --ref main
 
   ci-ok:
     name: CI 통과

@@ -1,6 +1,6 @@
 # CI 보안 파이프라인
 
-모든 PR과 `main` push에 보안 점검을 자동으로 겁니다. README 5.2절 흐름의 **⑤ 자동 점검**을 맡는 부분입니다.
+모든 PR과 `main`·`develop` push에 보안 점검을 자동으로 겁니다. README 5.2절 흐름의 **⑤ 자동 점검**을 맡는 부분입니다.
 
 ## 구성 파일
 
@@ -39,16 +39,18 @@
 - **캐시 미사용** — 의존성 캐시 오염 공격을 피하려고 캐시를 쓰지 않습니다. 대신 실행이 조금 느립니다.
 - **로그 비밀값 가림** — 공개 레포라 gitleaks는 `--redact`로 발견한 값을 로그에 찍지 않습니다.
 - **새 버전 7일 대기** — Dependabot `cooldown`으로 배포 직후 악성 버전이 섞이는 공급망 공격에 대비합니다.
-- **정기 재검사** — 코드가 그대로여도 새 CVE가 공개되므로 매주 월요일 오전에 다시 돕니다.
+- **정기 재검사** — 코드가 그대로여도 새 CVE가 공개되므로 매주 월요일 오전에 다시 돕니다. GitHub의 정기 실행(schedule)은 기본 브랜치인 `develop`에서만 돌기 때문에, `weekly-main` 잡이 제출·시연용 `main`에도 CI와 CodeQL을 실행시킵니다.
 
 ## 저장소 소유자 설정 (admin 권한 필요)
 
 이 PR이 병합되고 CI가 **한 번 실행된 뒤** 소유자가 설정합니다. 체크 이름은 한 번 실행돼야 목록에 나타납니다.
 
-1. **Settings → Branches → `main` 보호 규칙**
+1. **Settings → Branches → `main`·`develop` 보호 규칙** (두 브랜치에 같은 규칙)
    - Require a pull request before merging (승인 1명 이상)
    - Require status checks to pass → **`CI 통과`** 하나만 지정
-   - Do not allow bypassing the above settings
+   - Require conversation resolution before merging
+   - **Do not allow bypassing the above settings** — 팀원 전원이 조직 관리자라, 이 옵션이 꺼져 있으면 보호 규칙이 아무에게도 적용되지 않습니다
+   - Settings → General → Pull Requests: **Allow merge commits**와 **Allow squash merging**을 모두 켭니다 (작업 → `develop`은 squash, `develop` → `main`은 merge commit, README 7장)
 2. **Settings → Code security** (공개 레포는 무료)
    - **Dependency graph** — 꺼져 있으면 `새 의존성 검토`가 "Dependency review is not supported" 오류로 실패
    - Secret scanning + **Push protection** — 비밀값이 든 push 자체를 GitHub가 거부
