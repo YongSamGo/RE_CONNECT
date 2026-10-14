@@ -11,7 +11,7 @@ name: CodeQL
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
   schedule:
     # 새 분석 규칙이 추가되므로 코드 변경이 없어도 매주 월요일 09:30 KST 재분석
     - cron: "30 0 * * 1"

@@ -1,4 +1,4 @@
-# 다시잇다 CI — 모든 PR과 main push에 보안 점검을 자동으로 건다.
+# 다시잇다 CI — 모든 PR과 main·develop push에 보안 점검을 자동으로 건다.
 #
 # 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
 # (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
@@ -15,7 +15,7 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
   schedule:
     # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사
     - cron: "0 0 * * 1"
