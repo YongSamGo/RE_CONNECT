@@ -45,3 +45,6 @@ security-reports/
 /pip-audit.json
 /sbom*.json
 /*.cdx.json
+
+# 공고 출처 원본 샘플 — 담당자 연락처 등 개인정보가 섞일 수 있어 커밋하지 않음
+worker/samples/
