@@ -122,6 +122,8 @@ jobs:
         with:
           fetch-depth: 2 # PR 병합 커밋의 첫 부모(base)와 비교해 새로 추가된 줄을 찾는다
           persist-credentials: false
+      - name: 검사 스크립트 회귀 시험
+        run: python3 -I .github/scripts/test_check_hidden_text.py
       - name: 숨은 문자(실패)·에이전트 지시 파일 의심 문구(경고) 검사
         # AI 개발 도구가 읽는 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자 등)를 막는다.
         # 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md AGT-01·AGT-03

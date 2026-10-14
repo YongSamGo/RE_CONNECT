@@ -440,7 +440,7 @@ rg -n --type py -e 'num_predict|max_tokens|max_output_tokens|num_ctx' -e 'timeou
 # AGT-01·03 숨은 문자(실패)·지시 파일 의심 문구(경고, base 대비 추가된 줄)
 python3 -I .github/scripts/check_hidden_text.py [--diff-base origin/develop]
 # AGT-02·04 에이전트 지시 파일·도구 설정 목록
-rg --files --hidden -g '.claude/**' -g 'CLAUDE.md' -g 'AGENTS.md' -g 'GEMINI.md' -g '.mcp.json' -g '.cursor/**' -g '.codex/**' -g '.github/copilot-instructions.md' -g '.github/CODEOWNERS'
+rg --files --hidden -g '!.git' -g '**/.claude/**' -g '**/.codex/**' -g '**/.cursor/**' -g '**/.gemini/**' -g 'CLAUDE.md' -g 'CLAUDE.local.md' -g 'AGENTS.md' -g 'GEMINI.md' -g '.mcp.json' -g '**/.vscode/mcp.json' -g '.cursorrules' -g '.windsurfrules' -g '.github/copilot-instructions.md' -g '.github/CODEOWNERS'
 ```
 
 

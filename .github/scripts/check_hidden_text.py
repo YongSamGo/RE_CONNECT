@@ -6,7 +6,9 @@ AI 개발 도구(Claude Code, Codex 등)는 사람이 화면에서 보지 못하
 1. 숨은 문자 (실패): git이 추적하는 모든 텍스트 파일과 경로 이름
    - 제어 문자 (탭·줄바꿈 제외), 서식 문자(유니코드 Cf: 폭 없는 문자·글자 방향 제어·태그 문자 등)
    - 한글 채움 문자, 점자 빈칸, 연속된 이체 선택자(variation selector) 등 보이지 않는 글자
-   - 허용: 파일 맨 앞 BOM, 이모지 사이의 ZWJ, 글자 뒤 이체 선택자 1개(이모지 표시용)
+   - 허용: 파일 맨 앞 BOM, 이모지 사이의 ZWJ, 글자 뒤 이체 선택자 1개(이모지 표시용), 줄 끝 CRLF
+   - NUL이 있거나 UTF-8로 읽히지 않는 텍스트 파일도 실패 (UTF-16 등으로 검사를 피하지 못하게).
+     바이너리는 BINARY_EXTENSIONS 확장자나 .gitattributes의 binary로 지정한다
 2. 의심 문구 (경고, --diff-base를 줄 때만): 에이전트 지시 파일에 새로 추가된 줄의
    "이전 지시 무시", "사용자에게 알리지 마" 같은 문구. 보안 문서가 예시로 쓰는 경우가 있어 실패시키지 않는다.
 
@@ -47,7 +49,8 @@ EXTRA_INVISIBLE = [
     (0xFFA0, 0xFFA0),    # HALFWIDTH HANGUL FILLER
     (0xE0100, 0xE01EF),  # VARIATION SELECTOR-17~256 (데이터 숨기기에 쓰임)
 ]
-ALLOWED_CONTROLS = {"\t", "\n", "\r"}
+ALLOWED_CONTROLS = {"\t", "\n"}  # CR은 CRLF일 때만 _allowed에서 허용
+PATH_CONTROLS = re.compile("[\t\n\r]")
 ZWJ = "\u200d"
 BOM = "\ufeff"
 
@@ -96,6 +99,9 @@ def _allowed(text: str, i: int) -> bool:
     ch = text[i]
     if ch == BOM:
         return i == 0
+    if ch == "\r":
+        # 단독 CR은 터미널에서 커서를 줄 앞으로 돌려 앞 문장을 가린다
+        return i + 1 < len(text) and text[i + 1] == "\n"
     if ch in ("\ufe0e", "\ufe0f"):
         # 이모지·기호 뒤 1개는 표시 방식 선택이다. 연속되면 데이터를 숨긴 것으로 본다.
         return i > 0 and not HIDDEN.match(text[i - 1])
@@ -118,12 +124,18 @@ def _git(*args: str) -> str:
     return result.stdout.decode("utf-8")
 
 
+def _escape_command_data(value: str) -> str:
+    return value.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+
+
 def _report(level: str, path: str, line: int, col: int, message: str) -> None:
     if os.environ.get("GITHUB_ACTIONS") == "true":
-        safe_path = path.replace("%", "%25").replace(",", "%2C").replace(":", "%3A")
-        print(f"::{level} file={safe_path},line={line},col={col}::{message}")
+        # 워크플로 명령은 값의 %·CR·LF(속성값은 :·,도)를 바꿔야 다음 줄에 다른 명령이 끼어들지 않는다
+        safe_path = _escape_command_data(path).replace(",", "%2C").replace(":", "%3A")
+        print(f"::{level} file={safe_path},line={line},col={col}::{_escape_command_data(message)}")
     else:
-        print(f"{path}:{line}:{col}: {level}: {message}")
+        shown = repr(path) if PATH_CONTROLS.search(path) else path
+        print(f"{shown}:{line}:{col}: {level}: {message}")
 
 
 def find_hidden(text: str) -> list[tuple[int, int, str]]:
@@ -151,10 +163,22 @@ def find_hidden(text: str) -> list[tuple[int, int, str]]:
     ]
 
 
+def _marked_binary(path: str) -> bool:
+    """.gitattributes에서 binary로 지정한 파일인가 (저장소 밖 경로면 False)."""
+    try:
+        out = _git("check-attr", "binary", "--", path)
+    except (subprocess.CalledProcessError, OSError):
+        return False
+    return out.rstrip().endswith(": set")
+
+
 def check_files(paths: list[str]) -> tuple[int, Counter[str]]:
     errors, kinds = 0, Counter()
     for path in paths:
-        for _, _, desc in find_hidden(path):
+        path_issues = [desc for _, _, desc in find_hidden(path)]
+        if PATH_CONTROLS.search(path):
+            path_issues.append("탭·줄바꿈·CR")
+        for desc in path_issues:
             _report("error", path, 1, 1, f"파일 경로에 숨은 문자 {desc}")
             errors += 1
             kinds[desc.split(" 외 ")[0]] += 1
@@ -162,12 +186,22 @@ def check_files(paths: list[str]) -> tuple[int, Counter[str]]:
             continue
         with open(path, "rb") as f:
             data = f.read()
-        if b"\0" in data[:8192]:
-            continue  # 바이너리
-        try:
-            text = data.decode("utf-8")
-        except UnicodeDecodeError as exc:
-            _report("warning", path, 1, 1, f"UTF-8로 읽을 수 없어 검사하지 못함 ({exc.reason}, {exc.start}바이트)")
+        # 텍스트 파일은 UTF-8만 허용한다. UTF-16·잘못된 바이트로 검사를 피하지 못하게 실패로 본다.
+        # 진짜 바이너리는 BINARY_EXTENSIONS나 .gitattributes의 binary로 지정한다.
+        problem = None
+        if b"\0" in data:
+            problem = "NUL 바이트 (UTF-16 등 UTF-8이 아닌 인코딩)"
+        else:
+            try:
+                text = data.decode("utf-8")
+            except UnicodeDecodeError as exc:
+                problem = f"UTF-8로 읽을 수 없음 ({exc.reason}, {exc.start}바이트)"
+        if problem:
+            if _marked_binary(path):
+                continue
+            _report("error", path, 1, 1, f"{problem}. UTF-8로 저장하거나, 바이너리면 .gitattributes에 binary로 지정하세요")
+            errors += 1
+            kinds["UTF-8이 아닌 텍스트 파일"] += 1
             continue
         for line, col, desc in find_hidden(text):
             _report("error", path, line, col, f"숨은 문자 {desc}")
@@ -178,11 +212,12 @@ def check_files(paths: list[str]) -> tuple[int, Counter[str]]:
 
 # ── 에이전트 지시 파일의 의심 문구 (경고) ──
 
+# 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰이므로 어느 깊이든 본다. .github/CODEOWNERS와 같은 범위.
 AGENT_PATHSPECS = [
-    ":(glob).claude/**", ":(glob).codex/**", ":(glob).cursor/**",
-    ":(glob).github/copilot-instructions.md", ":(glob).github/instructions/**", ":(glob).github/prompts/**",
+    ":(glob)**/.claude/**", ":(glob)**/.codex/**", ":(glob)**/.cursor/**", ":(glob)**/.gemini/**",
     ":(glob)**/CLAUDE.md", ":(glob)**/CLAUDE.local.md", ":(glob)**/AGENTS.md", ":(glob)**/GEMINI.md",
-    ":(glob).cursorrules", ":(glob).windsurfrules", ":(glob).mcp.json",
+    ":(glob)**/.mcp.json", ":(glob)**/.vscode/mcp.json", ":(glob)**/.cursorrules", ":(glob)**/.windsurfrules",
+    ":(glob).github/copilot-instructions.md", ":(glob).github/instructions/**", ":(glob).github/prompts/**",
 ]
 
 SUSPICIOUS = [
@@ -212,28 +247,34 @@ SUSPICIOUS = [
 HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 
 
-def check_agent_diff(base: str) -> int:
-    diff = _git("-c", "core.quotepath=false", "diff", "--unified=0", "--no-color", "--no-ext-diff", "--diff-filter=AMR",
-                base, "HEAD", "--", *AGENT_PATHSPECS)
-    warnings, path, line_no = 0, None, 0
+def _added_lines(base: str, path: str):
+    """base 대비 path에 추가된 (줄 번호, 내용). diff 헤더는 첫 hunk 앞에만 있으므로 그 뒤의 '+' 줄은 모두 내용이다."""
+    diff = _git("diff", "--unified=0", "--no-color", "--no-ext-diff", base, "HEAD", "--", f":(literal){path}")
+    in_hunk, line_no = False, 0
     for raw in diff.splitlines():
-        if raw.startswith("+++ "):
-            path = raw[6:] if raw.startswith("+++ b/") else None
-            continue
         hunk = HUNK.match(raw)
         if hunk:
-            line_no = int(hunk.group(1))
+            in_hunk, line_no = True, int(hunk.group(1))
             continue
-        if path is None or not raw.startswith("+"):
-            continue
-        added = raw[1:]
-        for label, pattern in SUSPICIOUS:
-            if pattern.search(added):
-                _report("warning", path, line_no, 1,
-                        f"에이전트 지시 파일에 '{label}'류 문구가 추가됨. 의도한 내용인지 리뷰에서 확인하세요 (AGT-03)")
-                warnings += 1
-                break
-        line_no += 1
+        if in_hunk and raw.startswith("+"):
+            yield line_no, raw[1:]
+            line_no += 1
+
+
+def check_agent_diff(base: str) -> int:
+    # 두 점 diff는 base가 앞서 나간 만큼(base에서 지운 줄)도 추가로 보이므로 갈라진 지점과 비교한다
+    merge_base = _git("merge-base", base, "HEAD").strip()
+    # 파일 목록을 -z로 받아 따옴표로 감싼 경로(", \, 제어 문자)도 빠뜨리지 않는다
+    files = _git("diff", "--name-only", "-z", "--diff-filter=AMR", merge_base, "HEAD", "--", *AGENT_PATHSPECS)
+    warnings = 0
+    for path in (p for p in files.split("\0") if p):
+        for line_no, added in _added_lines(merge_base, path):
+            for label, pattern in SUSPICIOUS:
+                if pattern.search(added):
+                    _report("warning", path, line_no, 1,
+                            f"에이전트 지시 파일에 '{label}'류 문구가 추가됨. 의도한 내용인지 리뷰에서 확인하세요 (AGT-03)")
+                    warnings += 1
+                    break
     return warnings
 
 
@@ -255,7 +296,7 @@ def main() -> int:
     for desc, count in kinds.most_common():
         print(f"  {count:>5}  {desc}")
     if errors:
-        print("숨은 문자를 지우세요. 대응 방법: docs/security/ci-pipeline.md '실패했을 때'")
+        print("숨은 문자를 지우거나 UTF-8로 저장하세요. 대응 방법: docs/security/ci-pipeline.md '실패했을 때'")
         return 1
     return 0
 

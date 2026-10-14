@@ -249,14 +249,15 @@ rg -n --type py -e 'RateLimit|rate_limit|limiter|INCR|incr\(|expire\(' -e 'Semap
 
 ## 저장소 → AI 개발 도구 (AGT)
 
-AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시 파일·PR 본문을 읽고 그대로 따를 수 있다. 사람 리뷰를 통과한 텍스트가 도구를 조종하는 경로를 점검한다. 지시 파일: `.claude/`, `CLAUDE.md`, `AGENTS.md`, `GEMINI.md`, `.github/copilot-instructions.md`, `.cursor/`, `.mcp.json` 등 (`.github/scripts/check_hidden_text.py`의 `AGENT_PATHSPECS`).
+AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시 파일·PR 본문을 읽고 그대로 따를 수 있다. 사람 리뷰를 통과한 텍스트가 도구를 조종하는 경로를 점검한다. 지시 파일: 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules`, 그리고 `.github/copilot-instructions.md` 등. 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰이므로 최상위만 보지 않는다 (`.github/scripts/check_hidden_text.py`의 `AGENT_PATHSPECS`, `.github/CODEOWNERS`와 같은 범위).
 
 ### AGT-01. 저장소의 숨은 문자 — 심각도 높음
 
 - 위험: 폭 없는 문자, 글자 방향 제어(Trojan Source, CVE-2021-42574), 유니코드 태그 문자, 연속된 이체 선택자는 화면에 보이지 않지만 도구는 읽는다. 리뷰어가 보지 못한 지시문을 숨길 수 있다.
-- 자동 점검: CI `숨은 문자·지시문 점검` 잡이 git이 추적하는 텍스트 파일 전체와 경로 이름을 검사하고, 발견하면 **실패**한다. 허용은 파일 맨 앞 BOM, 이모지 사이 ZWJ, 글자 뒤 이체 선택자 1개뿐이다.
+- 자동 점검: CI `숨은 문자·지시문 점검` 잡이 git이 추적하는 텍스트 파일 전체와 경로 이름을 검사하고, 발견하면 **실패**한다. 허용은 파일 맨 앞 BOM, 이모지 사이 ZWJ, 글자 뒤 이체 선택자 1개, 줄 끝 CRLF뿐이다. 단독 CR(터미널에서 앞 문장을 덮어씀)도 실패다.
+- 인코딩 우회: UTF-16으로 저장하거나 잘못된 바이트를 하나 넣으면 UTF-8 검사를 피할 수 있다. 그래서 NUL이 있거나 UTF-8로 읽히지 않는 텍스트 파일도 실패로 본다. 진짜 바이너리는 스크립트의 `BINARY_EXTENSIONS`나 `.gitattributes`의 `binary`로 지정한다.
 - 수동 점검: `python -I .github/scripts/check_hidden_text.py` (저장소 최상위). PR 본문·이슈·댓글은 CI가 검사하지 않으므로, AI 도구에 PR·이슈를 읽힐 때는 도구가 이를 데이터로 다루는지 확인한다.
-- 판정: CI 잡이 `ci-ok`의 `needs`에 있고 브랜치 보호의 필수 체크가 `CI 통과`이면 `양호`. 잡이 없거나 실패를 무시하면 `취약`.
+- 판정: CI 잡이 `ci-ok`의 `needs`에 있고 브랜치 보호의 필수 체크가 `CI 통과`이면 `양호`. 잡이 없거나 실패를 무시하면 `취약`. 설정만 보고 `양호`로 두지 말고, 검사를 건너뛰는 경로(바이너리로 보는 확장자·`.gitattributes`의 `binary` 지정, 경고로만 끝나는 경우)가 PR에서 늘었는지도 확인한다. 회귀 시험은 `.github/scripts/test_check_hidden_text.py`이고 CI가 검사 전에 돌린다.
 
 ### AGT-02. 에이전트 지시 파일 변경 통제 — 심각도 중간
 
@@ -275,12 +276,12 @@ AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시
 
 ### AGT-04. AI 개발 도구 권한 설정 — 심각도 중간
 
-- 위험: 저장소에 커밋된 도구 설정이 모든 셸 명령 자동 허용, 권한 확인 생략, 외부 MCP 서버 연결을 켜 두면 저장소를 연 팀원의 PC에서 확인 없이 명령이 실행될 수 있다.
+- 위험: 저장소에 커밋된 도구 설정(`.claude/settings.json`, `.mcp.json`, `.vscode/mcp.json`, `.gemini/settings.json` 등)이 모든 셸 명령 자동 허용, 권한 확인 생략, 외부 MCP 서버 연결을 켜 두면 저장소를 연 팀원의 PC에서 확인 없이 명령이 실행될 수 있다.
 - 점검
 
 ```bash
-rg --files --hidden -g '.claude/settings*.json' -g '.mcp.json' -g '.cursor/**' -g '.codex/**' -g '.vscode/settings.json'
-rg -n --hidden -e '"Bash\(\*\)"|"Bash"\s*[,\]]' -e 'bypassPermissions|dangerously' -e '"hooks"' -e '"command"\s*:' -g '.claude/**' -g '.mcp.json'
+rg --files --hidden -g '!.git' -g '**/.claude/settings*.json' -g '.mcp.json' -g '**/.vscode/mcp.json' -g '**/.cursor/**' -g '**/.codex/**' -g '**/.gemini/**' -g '**/.vscode/settings.json'
+rg -n --hidden -e '"Bash\(\*\)"|"Bash"\s*[,\]]' -e 'bypassPermissions|dangerously' -e '"hooks"' -e '"command"\s*:' -g '**/.claude/**' -g '.mcp.json' -g '**/.vscode/mcp.json' -g '**/.gemini/**'
 ```
 
 - 판정: 모든 명령 허용·권한 생략이 커밋돼 있으면 `취약`. hooks·MCP 서버는 실행 명령과 출처(버전 고정 여부)를 확인해 `확인 필요`로 두고 SCP-14·SCP-20과 함께 본다. 설정 파일이 없으면 `해당없음`.
