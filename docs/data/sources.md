@@ -28,7 +28,7 @@
 **확인된 데이터 문제**
 - `emplymShpNm`에 이름 대신 코드(`CM0105`)가 들어온다. 코드표를 따로 두어야 하고 화면에 코드를 그대로 쓰지 않는다.
 - 전국 공고가 섞여 있다. MVP(수도권)는 `workPlcNm`의 시·도(`서울`/`경기`/`인천`)로 거르고, 지역코드 매핑은 #46에서 확정한다. `전남광주`처럼 예상과 다른 시·도 표기가 있어 미확인 표기는 자동 확정하지 않는다.
-- 샘플 공고 대부분의 원 시스템이 `워크넷`(고용24)이다. 공식 접수 경로는 고용24 상세 페이지가 유력하지만 **URL 형식은 아직 확인하지 못했다**(curl로는 JS 렌더링 페이지라 내용 확인 불가, 브라우저 확인 필요).
+- 샘플 공고 대부분의 원 시스템이 `워크넷`(고용24)이다. 공식 상세 경로는 `https://www.work24.go.kr/wk/a/b/1500/empDetailAuthView.do?wantedAuthNo=<wantedAuthNo>&infoTypeCd=VALIDATION&infoTypeGroup=tb_workinfoworknet` (2026-10-14 브라우저로 확인). `empDetail.do`는 오류 페이지가 뜬다. 워크넷 외 원 시스템(`stmNm`)의 공고 링크 형식은 따로 확인해야 한다.
 - 목록 검색 조건(제목·지역)이 명세 표에 없어, 수집은 전체 페이지를 돌고 우리 쪽에서 거르는 방식을 기본으로 둔다. 일 한도 10,000건 안에서 마감일 기준 증분 수집 전략이 필요하다(#48, #49).
 
 ## 3. 1365 봉사참여정보 (`apis.data.go.kr/1741000/volunteerPartcptnService`)
@@ -48,9 +48,10 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 **상세 필드:** 위 항목 + `noticeBgnde`/`noticeEndde`(모집기간), `actBeginTm`/`actEndTm`, `actWkdy`(활동요일), `actPlace`, `rcritNmpr`(모집인원), `appTotal`(신청인원), `srvcClCode`(봉사분야), `adultPosblAt`/`yngbgsPosblAt`/`grpPosblAt`/`familyPosblAt`/`pbsvntPosblAt`(대상 가능 여부), `progrmCn`(본문), `areaAddress1~3`/`areaLalo1~3`(주소·좌표), `mnnstNm`, `nanmmbyNmAdmn`, 담당자 연락처
 
 **확인된 데이터 문제**
-- `progrmSttusSe` 코드의 의미(모집중/마감 등)가 응답에 없다. 공식 코드표를 확인하기 전에는 모집 중 판정에 `noticeEndde`(모집 종료일)를 함께 쓴다.
+- `progrmSttusSe`: **`2` = 모집중, `3` = 마감** (2026-10-14 1365 상세 페이지와 대조해 확인). 다른 값은 미확인이므로 "확인 필요"로 둔다.
+- 상태 코드와 날짜가 서로 맞지 않을 수 있다. 모집기간이 남아도 기관이 먼저 마감하면 `3`이 되고(`3519585`: 모집 ~10/17인데 `3`), `2`여도 모집 종료일 당일 사이트에서 "모집기간이 아닙니다"가 뜬 사례가 있다(`3487369`). 그래서 **추천 대상 = `progrmSttusSe == 2` 이면서 오늘이 `noticeBgnde`~`noticeEndde` 안**으로 하고, 종료일 당일 공고는 "마감 임박·확인 필요"로 표시한다.
 - 시니어 대상 판정은 `adultPosblAt`만 있고 연령 조건 필드는 없다. 본문(`progrmCn`)의 연령 표현은 F07 원칙대로 **추정하지 않고 "확인 필요"**로 둔다.
-- 공식 신청 경로는 `https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=<번호>` 형식이 HTTP 200을 반환하지만 공고 내용 표시 여부는 **브라우저 확인 필요**.
+- 공식 신청 경로: `https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=<번호>` (브라우저로 확인). 모집기간이 아닌 공고는 안내 후 목록 페이지로 이동한다.
 
 ## 4. 개인정보 취급
 
@@ -59,7 +60,7 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 ## 5. 남은 확인 사항
 
 - [ ] 서울50플러스 인증키 승인 → 교육·가치동행 일자리 샘플 (미승인 시 CSV 경로)
-- [ ] 고용24·1365 공식 상세 URL을 브라우저로 확인
-- [ ] `progrmSttusSe`, `emplymShp`, `acptMthdCd`, `srvcClCode` 코드표 확보
+- [x] 고용24·1365 공식 상세 URL을 브라우저로 확인
+- [ ] `emplymShp`, `acptMthdCd`, `srvcClCode` 코드표 확보 (`progrmSttusSe`는 2·3만 확인)
 - [ ] `getVltrPeriodList` 요청 변수 확인
 - [ ] 노인 구인정보 목록의 검색 조건 지원 여부
