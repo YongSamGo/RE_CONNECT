@@ -1,6 +1,6 @@
 ---
 description: KISA 2021 개발보안·진단가이드 + Python 시큐어코딩 가이드(2023) + SW 공급망 보안 가이드라인 기준 정적 보안 점검 (대상 경로 지정 가능)
-argument-hint: [점검 대상 경로 또는 PR, 생략 시 저장소 전체] [--supply-chain | --code-only | --roadmap]
+argument-hint: [점검 대상 경로 또는 PR, 생략 시 저장소 전체] [--supply-chain | --code-only | --roadmap] [--comment (PR 대상일 때만)]
 ---
 
 # 정적 보안 점검 지시서 (KISA 2021 + Python 2023 + SW 공급망)
@@ -18,6 +18,7 @@ argument-hint: [점검 대상 경로 또는 PR, 생략 시 저장소 전체] [--
 - 코드는 수정하지 않는다(사용자가 요청한 경우만 수정).
 - 도구(bandit, semgrep, pip-audit 등)가 없으면 설치하지 않고 수동 점검한다. 도구 결과가 필요한 항목은 `확인 필요(도구)`로 남긴다.
 - 보고서와 도구 출력은 `security-reports/`(`.gitignore` 처리됨)에만 저장한다. 공개 저장소이므로 미조치 취약점 정보를 커밋하지 않는다.
+- 예외는 `--comment` 하나다. PR이 추가·변경한 코드의 발견만, 사용자 승인을 받은 뒤 PR 리뷰 댓글로 올린다(4절). 그 밖의 발견은 어떤 경우에도 GitHub(댓글·이슈·커밋)에 올리지 않는다.
 
 ## 0-1. 다시잇다(RE_CONNECT) 프로젝트 맥락
 
@@ -31,6 +32,7 @@ argument-hint: [점검 대상 경로 또는 PR, 생략 시 저장소 전체] [--
 - **CI와의 관계**: `.github/workflows/ci.yml`(gitleaks·zizmor·pytest·bandit·pip-audit·npm audit·dependency-review), `codeql.yml`, `.github/dependabot.yml`이 있다. SCP-06·10·11·17 판정 시 이 파일들을 근거로 쓰고, 설정만 보고 "통과"로 판정하지 말고 실제로 무엇을 막는지 확인한다. 도구 출력이 `security-reports/`에 있으면 보조 자료로 쓴다.
 
 ## 1. 절차
+0. **PR 대상일 때** (`PR 111`, `#111`처럼 PR 번호를 준 경우): `gh pr view <번호> --json number,title,headRefOid,baseRefName,files`와 `gh pr diff <번호>`로 변경 파일과 **추가된 줄(`+`)**을 파악한다. 파일 내용은 작업 트리가 아니라 PR head 기준으로 읽는다(`git fetch origin pull/<번호>/head` 후 `git show FETCH_HEAD:<경로>`). 점검 범위는 변경 파일이지만, 데이터 흐름 추적에 필요하면 변경되지 않은 파일도 읽는다. 각 발견에 **PR 범위**(흐름에 PR이 추가한 줄이 포함됨) / **범위 밖**(PR이 건드리지 않은 기존 코드만으로 성립)을 표시한다.
 1. **범위 파악**: 언어·프레임워크(Flask/Django/FastAPI 등)·DB 접근 방식(DB-API/SQLAlchemy/Django ORM 등)·템플릿 엔진·인증 방식·설정파일(`settings.py`, `config.py`, `.env.example`, Dockerfile, CI 워크플로)·의존성 파일(`requirements*.txt`, `pyproject.toml`, 잠금 파일)을 식별한다. 해당 없는 항목(예: 네이티브 코드가 없을 때 INP-16·COD-03)은 "해당없음"으로 분류한다. Python 외 코드(JS 프런트엔드, Java, C 확장, SQL Mapper)가 있으면 해당 부분은 진단가이드 참조 파일의 언어별 패턴으로 점검한다.
 2. **Source 목록화**: HTTP 파라미터·헤더·쿠키·바디·업로드 파일(`request.args/form/json/files`, `request.GET/POST/FILES`, FastAPI 경로·쿼리·바디 파라미터), 파일/환경변수/설정값, 소켓, DB 조회 결과, 외부 API 응답 등 외부입력 진입점을 찾는다. 라우트 목록부터 뽑는다(`SKILL.md`의 라우트 rg 명령).
 3. **항목별 점검**: 아래 인덱스의 "빠른 신호"와 `SKILL.md`의 `빠른 탐지 패턴`으로 후보를 grep → 참조 파일의 Sink 목록·판정 기준을 읽고 → 데이터 흐름을 추적해 정탐/오탐을 판정한다. 점검 순서: 제1절(INP) → 제2절(SEC) → 제4절(ERR) → 제5절(COD) → 제6절(ENC) → 제3절(TIM) → 제7절(API).
@@ -155,3 +157,66 @@ SCP-01~20, SC-01~30, RM-01~12의 목록과 근거는 `SKILL.md`의 "공급망 �
 ```
 
 판정 값: `취약`(정탐 확정) / `확인 필요`(외부입력 여부·전역 필터·도구 결과 등 추가 확인 필요) / `양호`(전역 처리로 해결됨 — 근거 위치만 기록) / `해당없음`. 로드맵 항목만 `준비됨/일부 준비/미준비`를 쓴다.
+
+PR 대상이면 요약 표에 `PR 범위` 열(`범위`/`범위 밖`)을 추가하고, `--comment`로 올린 항목은 판정 옆에 `(댓글 게시)`를 적는다.
+
+## 4. PR 댓글 (`--comment`)
+
+`--comment`는 PR 대상일 때만 동작한다. 경로나 저장소 전체를 대상으로 받으면 댓글을 올리지 않고, 보고서만 만든 뒤 그 사실을 알린다.
+
+### 올리는 것과 올리지 않는 것
+| 발견 | 처리 |
+|---|---|
+| PR 범위 (흐름에 PR이 추가한 줄이 있음) | 인라인 댓글. 위치는 흐름 중 **PR이 추가한 줄**(보통 Source 진입점이나 위험한 호출을 새로 만든 줄) |
+| 범위 밖 (기존 코드만으로 성립) | 올리지 않는다. 요약 본문에 건수만 적는다 |
+| 공급망 (SCP·SC) | PR이 의존성 파일·CI 워크플로·Dockerfile을 바꿨고 그 변경 줄에서 생긴 발견만 인라인 댓글. 나머지는 올리지 않는다 |
+| KISA 밖 위험 | PR 범위면 같은 기준으로 인라인 댓글 |
+| `양호`·`해당없음`, 로드맵(RM) | 올리지 않는다 |
+
+인라인 댓글은 diff의 추가된 줄(`side: "RIGHT"`)에만 단다. 위치를 PR의 추가된 줄로 잡을 수 없는 발견은 범위 밖으로 본다.
+
+### 심각도 (전역 지침의 P1~P4)
+| 등급 | 배지 색 | 기준 |
+|---|---|---|
+| P1 | red | `취약` + 위험도 높음 |
+| P2 | orange | `취약` + 위험도 중간 |
+| P3 | yellow | `취약` + 위험도 낮음, 또는 `확인 필요` |
+| P4 | lightgrey | 정리·방어 코드·테스트 보강 수준 (예: ENC-03·04, COD-02) |
+
+### 형식
+사용자 계정(`gh`)으로 올라가므로 Claude가 진행했다고 본문에 밝힌다.
+
+- **인라인 댓글 본문**
+  ```markdown
+  <sub><sub>![P2 Badge](https://img.shields.io/badge/P2-orange?style=flat)</sub></sub> <sub>Claude 리뷰</sub>
+
+  **INP-12 (KISA21-IMPL-1.12) 서버사이드 요청 위조**
+
+  - 데이터 흐름: 공고 원문의 `apply_url` → `httpx.get(apply_url)` (이 줄)
+  - 근거: 진단가이드 판정 기준 요약
+  - 조치: 허용 도메인 목록 검사 후 요청 … (수정 코드 예시)
+  ```
+- **리뷰 요약 본문**
+  ```markdown
+  > 🤖 이 리뷰는 Claude가 진행했습니다.
+
+  ## KISA 개발보안 점검 (PR 변경분)
+  기준: KISA 개발보안 가이드·진단가이드(2021), Python 시큐어코딩 가이드(2023), SW 공급망 보안 가이드라인 1.0
+
+  | 등급 | 기준 | 건수 |
+  |---|---|---|
+  | P1 | 취약 · 위험도 높음 | N |
+  | P2 | 취약 · 위험도 중간 | N |
+  | P3 | 취약 · 위험도 낮음 / 확인 필요 | N |
+  | P4 | 정리·보강 | N |
+
+  PR 범위 밖 발견 N건은 공개하지 않고 비공개 보고서로 공유합니다.
+  ```
+  범위 밖 발견은 건수만 적고 항목 ID·파일·위치는 적지 않는다. 0건이면 그 줄을 뺀다.
+
+### 절차
+1. 보고서를 `security-reports/`에 먼저 저장한다.
+2. 올릴 리뷰를 `security-reports/kisa-review-pr-<번호>-comments.json`으로 만든다. GitHub 리뷰 API 형식: `{"commit_id": "<headRefOid>", "event": "COMMENT", "body": "<요약 본문>", "comments": [{"path": "...", "line": N, "side": "RIGHT", "body": "..."}]}`. `event`는 항상 `COMMENT`로 한다(승인·변경 요청은 사람이 한다).
+3. **올리기 전에** 요약 본문과 댓글 목록(등급·ID·파일:줄·한 줄 요약)을 대화에 보여 주고 사용자 승인을 기다린다. 승인 없이 올리지 않는다. 사용자가 빼라고 한 댓글은 빼고 다시 보여 준다.
+4. 승인되면 `gh api repos/{owner}/{repo}/pulls/<번호>/reviews -X POST --input security-reports/kisa-review-pr-<번호>-comments.json`으로 올리고, 응답의 리뷰 URL을 알린다. 줄 위치 오류(422)가 나면 해당 댓글의 위치를 diff 기준으로 다시 확인해 고치고, 고칠 수 없으면 그 댓글을 빼고 사용자에게 알린다.
+5. PR 범위 발견이 0건이면 댓글 없이 요약 본문만 올릴지 사용자에게 묻는다.

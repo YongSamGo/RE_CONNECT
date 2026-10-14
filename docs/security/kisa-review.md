@@ -23,7 +23,12 @@ Claude Code에서:
 /kisa-review --code-only          # 코드(구현 49개)만
 /kisa-review --supply-chain       # 의존성·CI·Dockerfile·SBOM만
 /kisa-review --roadmap            # 로드맵(2026) 대비 현황까지 포함
+/kisa-review PR 111               # PR 변경분만 점검 (결과는 보고서로만)
+/kisa-review PR 111 --comment     # PR 변경분 점검 + 승인 후 PR 리뷰 댓글
 ```
+
+- `--comment`는 PR 대상일 때만 동작합니다. **PR이 추가·변경한 코드에서 생긴 발견만** 인라인 댓글로 올리고, PR이 건드리지 않은 기존 코드의 발견은 요약에 건수만 적습니다. 댓글은 올리기 전에 대화창에서 확인을 받습니다.
+- 댓글에는 P1~P4 배지와 Claude 리뷰 표시가 붙고, 리뷰 상태는 항상 `Comment`입니다(승인·변경 요청은 사람이 합니다). 등급 기준은 [명령 파일](../../.claude/commands/kisa-review.md) 4절에 있습니다.
 
 - 명령 이름이 `/security-review`가 아닌 이유: Claude Code에 같은 이름의 기본 명령(현재 브랜치 변경분 보안 리뷰)이 있어서 겹치지 않게 바꿨습니다.
 - 명령 없이 "KISA 기준으로 보안 점검해줘"라고 해도 스킬이 사용됩니다.
@@ -34,9 +39,13 @@ Claude Code에서:
 | --- | --- | --- |
 | `security-reports/kisa-review-YYYY-MM-DD.md` | 점검 보고서 원본 | ❌ `.gitignore` 처리 |
 | `security-reports/*.json` | bandit·pip-audit·SBOM 등 도구 출력 | ❌ `.gitignore` 처리 |
+| `security-reports/kisa-review-pr-<번호>-comments.json` | `--comment`로 올린 PR 리뷰 원본 | ❌ `.gitignore` 처리 |
+| PR 리뷰 댓글 | `--comment`일 때, PR이 추가·변경한 코드의 발견만 | 공개 (GitHub PR) |
 | `docs/security/` | 조치가 끝난 항목의 요약 진단 기록 | ✅ |
 
 공개 저장소라 미조치 취약점의 위치·재현 방법이 담긴 보고서 원본은 커밋하지 않습니다. 발견 사항은 **비공개로 공유**하고(팀 채널 등), 조치 후 "무엇을 · 어떤 테스트로 막았는지"만 `docs/security/`에 남깁니다.
+
+예외는 PR 변경분의 발견입니다. 그 코드는 이미 PR에 공개되어 있고 아직 머지 전이라, 머지 전에 PR 댓글로 지적하는 것은 일반 코드 리뷰와 같습니다. 이미 머지된 기존 코드의 발견은 PR 댓글에도 위치·항목을 적지 않습니다.
 
 ## 다시잇다에 맞춘 부분
 
@@ -91,3 +100,4 @@ Claude Code로 점검할 때는 따로 설치할 것이 없습니다. `SKILL.md`
 | SKILL.md ENC-01 CWE `488` → `488, 543` | 명령·진단 레퍼런스와 불일치 |
 | `rg`·Windows 실행 안내 추가 | `rg`가 없는 환경에서 패턴 실행 실패 |
 | 명령에 `0-1. 다시잇다 프로젝트 맥락`, 보고서에 `KISA 밖 위험` 섹션 추가 | 프로젝트 스택·README 보안 원칙 반영 |
+| 명령에 PR 대상 점검과 `--comment`(4절) 추가 | PR 변경분 발견을 머지 전에 리뷰 댓글로 전달. 기존 코드 발견은 비공개 유지 |
