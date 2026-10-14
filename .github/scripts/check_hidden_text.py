@@ -9,7 +9,9 @@ AI 개발 도구(Claude Code, Codex 등)는 사람이 화면에서 보지 못하
    - 허용: 파일 맨 앞 BOM, 이모지 사이의 ZWJ, 글자 뒤 이체 선택자 1개(이모지 표시용), 줄 끝 CRLF
    - NUL이 있거나 UTF-8로 읽히지 않는 텍스트 파일도 실패 (UTF-16 등으로 검사를 피하지 못하게).
      바이너리는 BINARY_EXTENSIONS 확장자나 .gitattributes의 binary로 지정한다
-2. 의심 문구 (경고, --diff-base를 줄 때만): 에이전트 지시 파일에 새로 추가된 줄의
+2. 에이전트 지시 파일 설정 (실패, 파일을 지정하지 않고 저장소 전체를 볼 때): 지시 파일이 심볼릭 링크이거나
+   .gitattributes의 -diff·binary·linguist-generated로 PR 화면과 의심 문구 검사에서 내용이 숨겨지는 경우
+3. 의심 문구 (경고, --diff-base를 줄 때만): 에이전트 지시 파일에 새로 추가된 줄의
    "이전 지시 무시", "사용자에게 알리지 마" 같은 문구. 보안 문서가 예시로 쓰는 경우가 있어 실패시키지 않는다.
 
 표준 라이브러리만 쓴다. 점검 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md (AGT-01~03)
@@ -119,9 +121,10 @@ def _describe(ch: str) -> str:
     return f"U+{ord(ch):04X} {unicodedata.name(ch, fallback)}"
 
 
-def _git(*args: str) -> str:
-    result = subprocess.run(["git", *args], capture_output=True, check=True)
-    return result.stdout.decode("utf-8")
+def _git(*args: str, stdin: str | None = None) -> str:
+    result = subprocess.run(["git", *args], capture_output=True, check=True,
+                            input=stdin.encode("utf-8") if stdin is not None else None)
+    return result.stdout.decode("utf-8", "replace")
 
 
 def _escape_command_data(value: str) -> str:
@@ -249,7 +252,9 @@ HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 
 def _added_lines(base: str, path: str):
     """base 대비 path에 추가된 (줄 번호, 내용). diff 헤더는 첫 hunk 앞에만 있으므로 그 뒤의 '+' 줄은 모두 내용이다."""
-    diff = _git("diff", "--unified=0", "--no-color", "--no-ext-diff", base, "HEAD", "--", f":(literal){path}")
+    # --text: .gitattributes의 -diff·binary가 걸려 있어도 "Binary files differ"로 넘기지 않고 내용을 본다
+    diff = _git("diff", "--text", "--unified=0", "--no-color", "--no-ext-diff", base, "HEAD",
+                "--", f":(literal){path}")
     in_hunk, line_no = False, 0
     for raw in diff.splitlines():
         hunk = HUNK.match(raw)
@@ -261,11 +266,45 @@ def _added_lines(base: str, path: str):
             line_no += 1
 
 
+def _hides_content(attr: str, value: str) -> bool:
+    if attr == "diff":
+        return value not in ("unspecified", "set")  # -diff, 사용자 지정 diff 드라이버
+    if attr == "binary":
+        return value == "set"
+    return value not in ("unspecified", "unset", "false")  # linguist-generated: PR 화면에서 diff를 접는다
+
+
+def check_agent_files() -> int:
+    """지시 파일이 심볼릭 링크이거나 .gitattributes로 내용이 숨겨지면 실패로 보고한다 (AGT-02·03)."""
+    errors, paths = 0, []
+    for entry in _git("ls-files", "-s", "-z", "--", *AGENT_PATHSPECS).split("\0"):
+        if not entry:
+            continue
+        meta, path = entry.split("\t", 1)
+        paths.append(path)
+        if meta.startswith("120000"):
+            _report("error", path, 1, 1,
+                    "에이전트 지시 파일이 심볼릭 링크임. 링크 대상은 의심 문구 검사·CODEOWNERS 밖이므로 실제 파일로 두세요 (AGT-02)")
+            errors += 1
+    if not paths:
+        return errors
+    out = _git("check-attr", "--stdin", "-z", "diff", "binary", "linguist-generated", stdin="\0".join(paths) + "\0")
+    fields = out.split("\0")
+    for path, attr, value in zip(fields[0::3], fields[1::3], fields[2::3]):
+        if _hides_content(attr, value):
+            _report("error", path, 1, 1,
+                    f".gitattributes의 {attr}={value} 지정으로 PR 화면과 의심 문구 검사에서 지시 파일 내용이 숨겨짐. "
+                    "지시 파일에는 이 속성을 쓰지 마세요 (AGT-02·03)")
+            errors += 1
+    return errors
+
+
 def check_agent_diff(base: str) -> int:
     # 두 점 diff는 base가 앞서 나간 만큼(base에서 지운 줄)도 추가로 보이므로 갈라진 지점과 비교한다
     merge_base = _git("merge-base", base, "HEAD").strip()
     # 파일 목록을 -z로 받아 따옴표로 감싼 경로(", \, 제어 문자)도 빠뜨리지 않는다
-    files = _git("diff", "--name-only", "-z", "--diff-filter=AMR", merge_base, "HEAD", "--", *AGENT_PATHSPECS)
+    # T: 기존 지시 파일을 심볼릭 링크로 바꾸는 타입 변경도 포함한다
+    files = _git("diff", "--name-only", "-z", "--diff-filter=AMRT", merge_base, "HEAD", "--", *AGENT_PATHSPECS)
     warnings = 0
     for path in (p for p in files.split("\0") if p):
         for line_no, added in _added_lines(merge_base, path):
@@ -289,14 +328,19 @@ def main() -> int:
 
     paths = args.paths or [p for p in _git("ls-files", "-z").split("\0") if p]
     errors, kinds = check_files(paths)
+    if not args.paths:
+        agent_errors = check_agent_files()
+        if agent_errors:
+            errors += agent_errors
+            kinds["에이전트 지시 파일 숨김 설정"] += agent_errors
 
     warnings = check_agent_diff(args.diff_base) if args.diff_base else 0
 
-    print(f"\n검사한 파일 {len(paths)}개: 숨은 문자 {errors}건, 의심 문구 경고 {warnings}건")
+    print(f"\n검사한 파일 {len(paths)}개: 실패 {errors}건, 의심 문구 경고 {warnings}건")
     for desc, count in kinds.most_common():
         print(f"  {count:>5}  {desc}")
     if errors:
-        print("숨은 문자를 지우거나 UTF-8로 저장하세요. 대응 방법: docs/security/ci-pipeline.md '실패했을 때'")
+        print("숨은 문자를 지우거나 UTF-8로 저장하고, 지시 파일의 숨김 설정을 없애세요. 대응 방법: docs/security/ci-pipeline.md '실패했을 때'")
         return 1
     return 0
 

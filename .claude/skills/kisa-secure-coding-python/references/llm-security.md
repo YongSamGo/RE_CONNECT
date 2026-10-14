@@ -262,7 +262,11 @@ AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시
 ### AGT-02. 에이전트 지시 파일 변경 통제 — 심각도 중간
 
 - 위험: `.claude/commands/`·스킬·`CLAUDE.md`를 바꾸면 이후 팀원이 실행하는 AI 도구의 동작이 바뀐다. CI 워크플로·`.gitleaks.toml`을 바꾸면 점검 자체를 끌 수 있다.
-- 점검: `.github/CODEOWNERS`가 지시 파일·`.github/`·`.gitleaks.toml`을 덮는가, 지정 리뷰어가 **두 명 이상**인가(작성자 본인 승인은 인정되지 않음), 브랜치 보호에서 "Require review from Code Owners"가 켜져 있는가(`gh api repos/{owner}/{repo}/branches/develop/protection`의 `require_code_owner_reviews`), PR 템플릿에 변경 사유 항목이 있는가.
+- 점검: `.github/CODEOWNERS`가 지시 파일·`.github/`·`.gitleaks.toml`·`.gitattributes`를 덮는가, 지정 리뷰어가 **두 명 이상**인가(작성자 본인 승인은 인정되지 않음), 브랜치 보호에서 "Require review from Code Owners"가 켜져 있는가(`gh api repos/{owner}/{repo}/branches/develop/protection`의 `require_code_owner_reviews`), PR 템플릿에 변경 사유 항목이 있는가.
+- 지정 리뷰를 피하는 경로
+  - **심볼릭 링크**: 지시 파일을 링크로 만들면 diff에는 대상 경로 한 줄만 보이고, 대상 파일(예: `docs/guide.md`)은 CODEOWNERS·의심 문구 검사 밖이다. CI는 지시 경로의 심볼릭 링크를 실패로 처리한다.
+  - **`.gitattributes` 숨김**: `-diff`·`binary`·`linguist-generated`가 걸린 지시 파일은 PR 화면에서 내용이 접히거나 "Binary file not shown"으로 숨는다. CI는 이것도 실패로 처리한다.
+  - **다른 파일 끌어오기**: Claude Code의 `@경로` import처럼 지시 파일이 다른 파일을 읽어 들이면, 끌려온 파일은 CODEOWNERS 밖일 수 있다. CI가 잡지 못하므로 지시 파일에 `@경로`가 추가되면 대상 파일도 지시 파일로 보고 리뷰한다.
 - 판정: 셋 다 있으면 `양호`, CODEOWNERS만 있고 보호 설정이 꺼져 있으면 `확인 필요`(리뷰 요청만 붙고 강제되지 않음).
 
 ### AGT-03. 저장소 데이터 속 지시문 — 심각도 중간
