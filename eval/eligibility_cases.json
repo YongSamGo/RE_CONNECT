@@ -1,0 +1,701 @@
+{
+  "reference_date": "2026-10-14",
+  "rules": [
+    "출생연도만 있으면 기준일 연도 - 출생연도 - 1 ~ 기준일 연도 - 출생연도 범위로 보고, 범위 전체가 조건을 만족할 때만 satisfied",
+    "자격증·교육명은 정확히 같으면 satisfied, 한쪽이 다른 쪽을 포함하면(예: 서울시 디지털 안내사 교육 vs 디지털 안내사 교육) 인정 여부를 알 수 없으므로 unknown, 그 외 not_satisfied",
+    "사용자 값이 null(미확인)이면 unknown. 빈 배열은 '없음'으로 확인된 상태라 not_satisfied",
+    "clarity=needs_review 또는 operator=null 조건은 항상 unknown",
+    "그룹 OR: 하나라도 satisfied면 satisfied, 모두 not_satisfied면 not_satisfied, 그 외 unknown",
+    "전체: 독립 조건과 그룹 결과를 AND. 하나라도 not_satisfied면 not_satisfied, 아니면 unknown이 있으면 unknown"
+  ],
+  "postings": [
+    {
+      "id": "J1",
+      "title": "아파트 시설관리원 (유급, 경기 안양시)",
+      "requirements": [
+        {
+          "id": "J1-R1",
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": "2026-10-14",
+          "source_evidence": "만 60세 이상",
+          "clarity": "clear"
+        },
+        {
+          "id": "J1-R2",
+          "field": "certification",
+          "operator": "has",
+          "value": "전기기능사",
+          "group_id": "J1-G1",
+          "group_operator": "or",
+          "reference_date": null,
+          "source_evidence": "전기기능사 또는 소방안전관리자 2급 소지자",
+          "clarity": "clear"
+        },
+        {
+          "id": "J1-R3",
+          "field": "certification",
+          "operator": "has",
+          "value": "소방안전관리자 2급",
+          "group_id": "J1-G1",
+          "group_operator": "or",
+          "reference_date": null,
+          "source_evidence": "전기기능사 또는 소방안전관리자 2급 소지자",
+          "clarity": "clear"
+        },
+        {
+          "id": "J1-R4",
+          "field": "hours_per_week",
+          "operator": "gte",
+          "value": 15,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "주 15시간 이상 근무 가능자",
+          "clarity": "clear"
+        }
+      ]
+    },
+    {
+      "id": "J2",
+      "title": "경로당 어르신 돌봄 봉사 (무급, 인천 연수구)",
+      "requirements": [
+        {
+          "id": "J2-R1",
+          "field": "certification",
+          "operator": "has",
+          "value": "요양보호사",
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "요양보호사 자격증 소지자",
+          "clarity": "clear"
+        },
+        {
+          "id": "J2-R2",
+          "field": "weekday",
+          "operator": "includes",
+          "value": [
+            6
+          ],
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "매주 토요일 활동",
+          "clarity": "clear"
+        }
+      ]
+    },
+    {
+      "id": "J3",
+      "title": "서울 시니어 학습지도 봉사 (서울 성동구)",
+      "requirements": [
+        {
+          "id": "J3-R1",
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": "2026-10-14",
+          "source_evidence": "만 60세 이상",
+          "clarity": "clear"
+        },
+        {
+          "id": "J3-R2",
+          "field": "residence_region",
+          "operator": "in",
+          "value": [
+            {
+              "province": "seoul",
+              "district": null
+            }
+          ],
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "서울시 거주자",
+          "clarity": "clear"
+        },
+        {
+          "id": "J3-R3",
+          "field": "weekday",
+          "operator": "includes",
+          "value": [
+            2,
+            4
+          ],
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "화·목 오후 활동",
+          "clarity": "clear"
+        }
+      ]
+    },
+    {
+      "id": "J4",
+      "title": "디지털 안내사 (경기 성남시)",
+      "requirements": [
+        {
+          "id": "J4-R1",
+          "field": "age",
+          "operator": "gte",
+          "value": 65,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": "2026-10-14",
+          "source_evidence": "만 65세 이상",
+          "clarity": "clear"
+        },
+        {
+          "id": "J4-R2",
+          "field": "completed_course",
+          "operator": "has",
+          "value": "디지털 안내사 교육",
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "디지털 안내사 양성교육 수료자",
+          "clarity": "clear"
+        }
+      ]
+    },
+    {
+      "id": "J5",
+      "title": "경로식당 조리 보조 (인천 남동구)",
+      "requirements": [
+        {
+          "id": "J5-R1",
+          "field": "certification",
+          "operator": "has",
+          "value": "한식조리기능사",
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "한식조리기능사 소지자",
+          "clarity": "clear"
+        },
+        {
+          "id": "J5-R2",
+          "field": "other",
+          "operator": null,
+          "value": null,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": null,
+          "source_evidence": "장시간 서서 근무 가능하신 분",
+          "clarity": "needs_review"
+        }
+      ]
+    },
+    {
+      "id": "J6",
+      "title": "어르신 금융사기 예방 교육 강사 (경기 고양시)",
+      "requirements": [
+        {
+          "id": "J6-R1",
+          "field": "age",
+          "operator": "gte",
+          "value": 60,
+          "group_id": null,
+          "group_operator": null,
+          "reference_date": "2026-10-14",
+          "source_evidence": "만 60세 이상",
+          "clarity": "clear"
+        },
+        {
+          "id": "J6-R2",
+          "field": "certification",
+          "operator": "has",
+          "value": "금융투자상담사",
+          "group_id": "J6-G1",
+          "group_operator": "or",
+          "reference_date": null,
+          "source_evidence": "금융 관련 자격 소지자 또는 금융기관 근무 경력 5년 이상",
+          "clarity": "clear"
+        },
+        {
+          "id": "J6-R3",
+          "field": "other",
+          "operator": null,
+          "value": null,
+          "group_id": "J6-G1",
+          "group_operator": "or",
+          "reference_date": null,
+          "source_evidence": "금융 관련 자격 소지자 또는 금융기관 근무 경력 5년 이상",
+          "clarity": "needs_review"
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "persona": "P01",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "not_satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J1",
+      "overall": "satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "satisfied"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "not_satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "not_satisfied",
+        "J1-R2": "not_satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "satisfied"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "unknown",
+        "J1-R3": "unknown",
+        "J1-R4": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J1",
+      "overall": "unknown",
+      "conditions": {
+        "J1-R1": "unknown",
+        "J1-R2": "unknown",
+        "J1-R3": "unknown",
+        "J1-R4": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "not_satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J1",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J1-R1": "satisfied",
+        "J1-R2": "not_satisfied",
+        "J1-R3": "not_satisfied",
+        "J1-R4": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P01",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "not_satisfied",
+        "J2-R2": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "not_satisfied",
+        "J2-R2": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "not_satisfied",
+        "J2-R2": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "not_satisfied",
+        "J2-R2": "satisfied"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "unknown",
+        "J2-R2": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J2",
+      "overall": "unknown",
+      "conditions": {
+        "J2-R1": "unknown",
+        "J2-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J2",
+      "overall": "satisfied",
+      "conditions": {
+        "J2-R1": "satisfied",
+        "J2-R2": "satisfied"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J2",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J2-R1": "not_satisfied",
+        "J2-R2": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P01",
+      "posting": "J3",
+      "overall": "satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "satisfied",
+        "J3-R3": "satisfied"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "not_satisfied",
+        "J3-R3": "satisfied"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "not_satisfied",
+        "J3-R3": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "not_satisfied",
+        "J3-R2": "satisfied",
+        "J3-R3": "satisfied"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "not_satisfied",
+        "J3-R3": "satisfied"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J3",
+      "overall": "unknown",
+      "conditions": {
+        "J3-R1": "unknown",
+        "J3-R2": "satisfied",
+        "J3-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "not_satisfied",
+        "J3-R3": "not_satisfied"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J3",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J3-R1": "satisfied",
+        "J3-R2": "not_satisfied",
+        "J3-R3": "satisfied"
+      }
+    },
+    {
+      "persona": "P01",
+      "posting": "J4",
+      "overall": "unknown",
+      "conditions": {
+        "J4-R1": "satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J4",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J4-R1": "not_satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J4",
+      "overall": "unknown",
+      "conditions": {
+        "J4-R1": "satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J4",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J4-R1": "not_satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J4",
+      "overall": "unknown",
+      "conditions": {
+        "J4-R1": "unknown",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J4",
+      "overall": "unknown",
+      "conditions": {
+        "J4-R1": "unknown",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J4",
+      "overall": "unknown",
+      "conditions": {
+        "J4-R1": "satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J4",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J4-R1": "not_satisfied",
+        "J4-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P01",
+      "posting": "J5",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J5-R1": "not_satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J5",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J5-R1": "not_satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J5",
+      "overall": "unknown",
+      "conditions": {
+        "J5-R1": "satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J5",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J5-R1": "not_satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J5",
+      "overall": "unknown",
+      "conditions": {
+        "J5-R1": "unknown",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J5",
+      "overall": "unknown",
+      "conditions": {
+        "J5-R1": "unknown",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J5",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J5-R1": "not_satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J5",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J5-R1": "not_satisfied",
+        "J5-R2": "unknown"
+      }
+    },
+    {
+      "persona": "P01",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "not_satisfied",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P02",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "not_satisfied",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P03",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "not_satisfied",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P04",
+      "posting": "J6",
+      "overall": "not_satisfied",
+      "conditions": {
+        "J6-R1": "not_satisfied",
+        "J6-R2": "not_satisfied",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P05",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "unknown",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P06",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "unknown",
+        "J6-R2": "unknown",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P07",
+      "posting": "J6",
+      "overall": "unknown",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "not_satisfied",
+        "J6-R3": "unknown"
+      }
+    },
+    {
+      "persona": "P08",
+      "posting": "J6",
+      "overall": "satisfied",
+      "conditions": {
+        "J6-R1": "satisfied",
+        "J6-R2": "satisfied",
+        "J6-R3": "unknown"
+      }
+    }
+  ]
+}

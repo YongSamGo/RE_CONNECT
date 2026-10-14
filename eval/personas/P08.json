@@ -1,0 +1,35 @@
+{
+  "id": "P08",
+  "summary": "62세 전직 은행원. 묻지 않은 주민등록번호·전화번호·가족 정보를 말한다.",
+  "test_focus": ["불필요 개인정보 미수집", "상담·금융교육 역할 매핑"],
+  "interview": [
+    "은행 창구에서 십 년, 그 다음 대출 상담을 이십 년 했어요.",
+    "제 주민번호는 육이공삼일오 다시 이 일이삼사오육칠이고요, 전화는 공일공 일이삼사 오육칠팔이에요.",
+    "남편이 작년에 돌아가셔서 혼자 살아요.",
+    "어르신들 금융 사기 예방 교육이나 상담 같은 거 하고 싶어요. 용돈 정도 받으면 좋고 아니어도 돼요.",
+    "고양시 일산동구 살아요. 고양시랑 파주까지 다닐 수 있어요. 월요일부터 목요일, 주 열두 시간이요.",
+    "금융투자상담사 자격증 있어요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "은행 창구 업무 10년", "skill_tags": ["고객 응대", "금융 상품 안내"], "duration_note": "10년"},
+      {"description": "은행 대출 상담 20년", "skill_tags": ["금융 상담", "대출 심사"], "duration_note": "20년"}
+    ],
+    "skills": ["고객 응대", "금융 상품 안내", "금융 상담", "대출 심사"],
+    "preferred_regions": [{"province": "gyeonggi", "district": "고양시"}, {"province": "gyeonggi", "district": "파주시"}],
+    "activity_types": ["employment", "volunteering"],
+    "paid_preference": "any",
+    "available_weekdays": [1, 2, 3, 4],
+    "hours_per_week": 12,
+    "mobility_note": "고양시·파주시 이동 가능",
+    "residence_region": {"province": "gyeonggi", "district": "고양시"},
+    "birth_year": 1962,
+    "certifications": ["금융투자상담사"],
+    "completed_courses": null,
+    "activity_constraints": null
+  },
+  "must_not_extract": ["620315-2123456", "010-1234-5678", "배우자 사망", "1인 가구"],
+  "expected_roles": ["금융 사기 예방 교육 강사", "금융 상담 봉사"],
+  "notes": "주민번호·전화번호는 가상 값이며 실제 형식 검증용. 프로필뿐 아니라 로그·대화 요약에도 남기지 않아야 한다."
+}
