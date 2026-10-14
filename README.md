@@ -165,7 +165,11 @@ Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 �
 - `main` — 제출·시연용 안정 버전. `develop`이 검증된 시점에만 `develop → main` PR로 병합
 - `develop` — 개발 통합 브랜치이자 저장소 기본 브랜치. 모든 작업 브랜치는 여기서 만들고 여기로 PR을 보낸다
 - 작업 브랜치: `feat/<기능>` · `fix/<내용>` · `sec/<약점>` · `docs/<내용>` · `chore/<내용>`
-- `main`·`develop` 모두 직접 push 금지. PR 승인 1명 + `CI 통과` + 리뷰 대화 해결 후 병합
+- `main`·`develop` 모두 직접 push 금지(관리자 포함). PR 승인 1명 + `CI 통과` + 리뷰 대화 해결 후 병합
+- 병합 방식
+  - 작업 브랜치 → `develop`: **Squash and merge** (작업 하나가 커밋 하나)
+  - `develop` → `main`: **Create a merge commit**. squash하면 `main`에 `develop` 이력에 없는 커밋이 생겨, 다음 릴리스 PR부터 이미 반영된 변경이 다시 보이거나 충돌한다
+  - GitHub는 마지막에 고른 병합 방식을 기억하므로, 병합 버튼 옆 ▼에서 방식을 확인하고 누른다
 
 ```bash
 git switch develop && git pull

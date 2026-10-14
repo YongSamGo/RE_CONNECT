@@ -13,7 +13,8 @@ on:
   push:
     branches: [main, develop]
   schedule:
-    # 새 분석 규칙이 추가되므로 코드 변경이 없어도 매주 월요일 09:30 KST 재분석
+    # 새 분석 규칙이 추가되므로 코드 변경이 없어도 매주 월요일 09:30 KST 재분석.
+    # schedule은 기본 브랜치(develop)에서만 돈다. main은 ci.yml의 weekly-main 잡이 09:00에 실행시킨다.
     - cron: "30 0 * * 1"
   workflow_dispatch:
 
