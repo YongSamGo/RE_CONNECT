@@ -9,6 +9,7 @@ import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { parseSession } from '../account/session'
 import { invalid, isOpportunityId, record, text } from '../public-opportunities/catalog'
 import { OpportunityReview } from './OpportunityReview'
+import { AuditPanel } from './AuditPanel'
 
 type Me = components['schemas']['Me']
 type Row = { id: string; version: number; title: string; status: string; note: string | null }
@@ -30,6 +31,7 @@ function parseRows(data: unknown, kind: 'opportunities' | 'reports'): View {
 const statuses: Record<string, string> = { pending: '검수 대기', approved: '공개 승인', rejected: '반려', hidden: '비공개', received: '신고 접수', in_progress: '처리 중', resolved: '해결', dismissed: '종결' }
 
 function AdminWorkspace() {
+  const [auditOpen, setAuditOpen] = useState(false)
   const request = useRequest<View>()
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Row | null>(null)
@@ -51,7 +53,9 @@ function AdminWorkspace() {
       return '서버가 처리를 완료했습니다. 목록을 다시 조회해 최신 버전을 확인해 주세요.'
     })
   }
+  if (auditOpen) return <AuditPanel onBack={() => setAuditOpen(false)} />
   return <>
+    <div className="actions"><Button variant="secondary" disabled={pending} onClick={() => { request.clear(); mutation.clear(); setSelected(null); setNote(''); setQuery(''); setAuditOpen(true) }}>감사 기록 조회</Button></div>
     <section className="panel"><h2>운영 자료 조회</h2><form onSubmit={(event) => { event.preventDefault(); load('opportunities') }}><label htmlFor="admin-query">공고 제목 검색</label><input id="admin-query" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} /><div className="actions"><Button type="submit" disabled={pending}>공고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => load('reports')}>신고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => { setSelected(null); mutation.clear(); void request.run(async (api, signal) => {
       const item = record(required((await api.GET('/admin/operations', { signal })).data))
       const models = record(item.models)
@@ -71,7 +75,7 @@ function AdminWorkspace() {
     </section>}
     {mutation.state.status === 'error' && <RequestError error={mutation.state.error} />}
     <p role="status">{mutation.state.status === 'success' ? mutation.state.data : ''}</p>
-    <StatusNotice title="전체 운영 기능은 서버 검증 대기 중이에요">등록·수정·반려·종료와 감사 기록은 운영 계약과 실제 서버를 대조한 뒤 연결합니다. 공고 승인·비공개·신고 처리는 서버 권한·MFA·버전 검증을 통과해야 합니다.</StatusNotice>
+    <StatusNotice title="실제 운영 서버 검증이 남아 있어요">등록·수정 화면은 후속 구현 대상입니다. 공고 검수·종료·신고 처리·감사 조회는 서버 권한·MFA·버전 검증을 통과해야 하며 현재 실제 서버 연결은 검증 전입니다.</StatusNotice>
   </>
 }
 

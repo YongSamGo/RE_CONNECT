@@ -1,0 +1,6 @@
+.audit-scroll { overflow-x: auto; max-width: 100%; }
+.audit-table { width: 100%; border-collapse: collapse; font-size: 18px; }
+.audit-table caption { text-align: left; font-weight: 600; padding: 12px 0; }
+.audit-table th, .audit-table td { border-bottom: 1px solid var(--line); text-align: left; padding: 12px; vertical-align: top; min-width: 100px; }
+.audit-table th { background: var(--surface); }
+.audit-table td:last-child { overflow-wrap: anywhere; }
