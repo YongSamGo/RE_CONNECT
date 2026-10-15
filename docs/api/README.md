@@ -4,12 +4,12 @@
 
 [`openapi.yaml`](openapi.yaml)이 프론트엔드·백엔드·모델 연동이 함께 쓰는 API 계약의 원본이다. 화면은 이 파일에 있는 경로만 호출한다.
 
-| 단계 | 범위 | 상태 |
-|---|---|---|
-| 1차 | 공통 규칙(오류·헤더·CSRF·멱등 키), [계획 §5](../../Plan/Implementation_Plan.md#5-개발-전에-보완할-계약) 보완 계약, 그 계약이 걸린 경로 | 이 문서 |
-| 2차 | [03 §3](../../Plan/03_Architecture_and_Dependencies.md#3-api-계약)의 나머지 경로 입출력과 정상·누락·409·429 예제 | 진행 예정 |
+| 단계 | 범위 |
+|---|---|
+| 1차 (#116) | 공통 규칙(오류·헤더·CSRF·멱등 키), [계획 §5](../../Plan/Implementation_Plan.md#5-개발-전에-보완할-계약) 보완 계약, 그 계약이 걸린 경로 |
+| 2차 | [03 §3](../../Plan/03_Architecture_and_Dependencies.md#3-api-계약)의 나머지 경로 입출력과 정상·누락·409·429 예제, 지역 목록·운영자 공고 상세 |
 
-1차에 없는 경로도 03 §3 표의 입력·결과를 따른다. 2차에서 여기 적은 공통 규칙에 맞춰 스키마를 채운다.
+03 §3의 경로 46개가 모두 들어 있다. 여기에 지역 목록(`GET /regions`), 운영자 공고 상세(`GET /admin/opportunities/{id}`), 내부 health 2개가 더 있다.
 
 로컬 검사:
 
@@ -17,7 +17,10 @@
 npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 ```
 
-검사 규칙은 Redocly `recommended`이고, 예제가 스키마와 맞는지도 확인한다. 의도한 예외 4건(성공 응답이 302뿐인 카카오 경로, 4xx가 없는 내부 health 경로)은 [`.redocly.lint-ignore.yaml`](.redocly.lint-ignore.yaml)에 위치별로 적었다.
+검사 규칙은 Redocly `recommended`이고, 예제가 스키마와 맞는지도 확인한다. 의도한 예외는 [`.redocly.lint-ignore.yaml`](.redocly.lint-ignore.yaml)에 위치별로 적었다.
+
+- 성공 응답이 302뿐인 카카오 시작·콜백, 4xx가 없는 내부 health 경로(4건)
+- "(오류 예제)"라고 표시한 요청 예제(9건). 일부러 스키마를 어기는 입력이다. 목록에 없는 예제가 스키마를 어기면 경고가 나므로, 나머지 예제는 모두 스키마와 맞는다는 확인이 된다.
 
 ## 1. 결정 기록 (2026-10-15)
 
@@ -37,6 +40,20 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | D12 | 역할이 여러 개인 공고는 제외한 역할이 **하나라도** 있으면 추천에서 뺀다. 모든 공고 변경은 새 `pending` 버전이 되고, 중요 변경일 때만 이전 공개본의 추천·지원서 생성을 보류한다 | 원하지 않는 역할 노출을 막고, 검수 전 내용이 공개되지 않게 한다 |
 | D13 | `/health/live`·`/health/ready`는 컨테이너 내부 전용이다. Nginx로 공개하지 않는다 | Nginx는 `/api/*`만 넘기고, 상태 상세는 운영자 API에서 본다 |
 | D14 | 비회원 세션도 `GET /me`가 200을 돌려준다(`authenticated=false`). 화면은 시작할 때 `GET /me`를 불러 CSRF 쿠키와 동의 상태를 받는다 | 비회원 여정에도 CSRF·동의 확인이 필요하다 |
+| D15 | `GET /regions`를 더한다. 프로필 지역 입력과 공고 검색이 같은 목록을 쓴다 | 시·군·구 식별값을 서버가 검증하므로 화면도 같은 목록이 있어야 한다(W02-04) |
+| D16 | `GET /admin/opportunities/{id}`를 더한다. 최신 버전과 공개본 내용, 바뀐 필드, 중요 변경 여부를 함께 준다 | 검수 화면에서 원문·정규화·공개본을 비교해야 한다(W07-02) |
+| D17 | 프로필 초안·지원서 초안 수정은 본문 전체 교체다. 운영자 공고 수정만 바꿀 필드를 보낸다 | 사용자 편집 화면은 전체를 들고 있고, 부분 병합 규칙을 따로 만들 필요가 없다 |
+| D18 | 지원서 자기소개·지원동기는 각각 최대 2,000자다 | 대화 입력·읽어주기 한 조각과 같은 한도로 맞춘다 |
+| D19 | 추천은 최대 20건을 순서대로 주고 내부 점수는 내보내지 않는다. 역할 제외는 `kind=journey`일 때만 적용한다 | 점수가 신청 성공 확률처럼 보이지 않게 하고, 역할 제외는 체험 단위 필터다 |
+| D20 | 자격 대조는 `opportunity_version`을 받아 화면의 공고가 최신 공개본이 아니면 409로 거절한다 | 오래된 조건으로 판정한 결과를 보여 주지 않는다 |
+| D21 | 탈퇴 재인증은 `GET /auth/kakao/start?purpose=reauth`로 하고, 5분 안에 `DELETE /me`를 해야 한다 | 카카오 로그인만 있어 비밀번호 재확인을 쓸 수 없다 |
+| D22 | 저장 프로필이 없으면 `GET /profiles/me`는 `saved=null`로 200이다. 체험·저장 프로필 삭제는 없어도 204(멱등), 저장 지원서 삭제는 없으면 404다 | 저장본 없음은 정상 상태이고, 문서 ID는 사적 자원 참조라 404 규칙을 따른다 |
+| D23 | OTP 불일치는 403 `MFA_INVALID`, 시도 초과는 429다 | MFA 미완료(`MFA_REQUIRED`)와 화면 안내가 다르다 |
+| D24 | 신고는 비회원도 하고 유형 6종으로 받는다. 운영자 처리는 신고 `version`으로 충돌을 막는다 | 개인정보 대신 공고 오류 유형 중심으로 받는다(F10) |
+| D25 | 회원이 저장 프로필로 체험을 시작하면 그 내용이 체험의 확정본 1번이 된다 | 이미 확정·저장한 사실이라 다시 확정할 필요가 없다 |
+| D26 | 공개 공고 목록은 모집 중·확인 필요 공고만, 마감이 가까운 순으로 보여 준다 | 추천 정렬 기준(F06)과 같게 하고 종료 공고를 섞지 않는다 |
+| D27 | 로그아웃하면 그 세션의 진행 중 체험도 지운다 | 세션이 바뀌면 체험에 다시 접근할 수 없으므로 남겨 둘 이유가 없다 |
+| D28 | 수동 등록 공고가 기존 공고와 겹쳐 보여도 거절하지 않고 검수 화면에 중복 후보로 보여 준다 | 출처 간 유사 공고는 자동 병합하지 않는다(02 §6) |
 
 ## 2. 공통 규칙
 
@@ -90,8 +107,9 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | 403 | `FORBIDDEN` | 역할 권한 없음 |
 | 403 | `CSRF_FAILED` | CSRF 토큰·Origin 검사 실패 |
 | 403 | `MFA_REQUIRED` | 운영자 MFA 미완료·만료 |
+| 403 | `MFA_INVALID` | OTP 불일치 |
 | 403 | `CONSENT_REQUIRED` | AI 처리 또는 저장 동의가 없거나 폐기된 버전 |
-| 403 | `REAUTH_REQUIRED` | 탈퇴 등 재인증이 필요한 요청 |
+| 403 | `REAUTH_REQUIRED` | 탈퇴 전 5분 안에 재인증하지 않음 |
 | 404 | `NOT_FOUND` | 없는 자원 또는 접근할 수 없는 사적 자원(구분하지 않음). 만료된 체험도 여기에 해당 |
 | 404 | `SAVE_INTENT_NOT_FOUND` | 저장 대기가 만료됐거나 이미 처리됨 |
 | 409 | `VERSION_CONFLICT` | `base_revision`·`base_version`이 최신이 아님 |
@@ -178,4 +196,4 @@ sequenceDiagram
 ## 3. 명세 반영
 
 - [02 Data Design](../../Plan/02_Data_Design.md) v1.2: 공고 `description_text`·`description_truncated`·`change_pending`, Requirement 연산 허용표, 중요 변경 필드
-- [03 Architecture](../../Plan/03_Architecture_and_Dependencies.md) v1.2: 추가 경로, 카카오 시작 입력, 읽어주기 입력, 헤더·CSRF·오류 코드
+- [03 Architecture](../../Plan/03_Architecture_and_Dependencies.md) v1.2: 추가 경로(저장 대기·반려·지역 목록·운영자 공고 상세), 카카오 시작 목적(`login`·`save`·`reauth`), 읽어주기·자격 대조 입력, 헤더·CSRF·오류 코드
