@@ -1,6 +1,8 @@
 # 다시잇다 — 03. Architecture & Dependencies
 
-기준일: 2026-10-13 · 버전: v1.1 · 상태: 사용자 승인 설계 명세(EC2 로컬 추론 반영)
+기준일: 2026-10-15 · 버전: v1.2 · 상태: 사용자 승인 설계 명세(EC2 로컬 추론 반영)
+
+> **v1.2 변경 (2026-10-15, W01-02):** API 계약 확정에 따라 저장 대기 발급·공고 반려 경로를 더하고, 카카오 시작·읽어주기·회원 저장 입력과 공통 헤더·CSRF·오류 코드를 정했다. 세부 형식과 결정 이유는 [API 계약](../docs/api/README.md)을 따른다.
 
 관련 문서: [UX Flow](01_UX_Flow.md) · [Data Design](02_Data_Design.md) · [Functional Specification](04_Functional_Specification.md) · [Engineering Constraints](05_Engineering_Constraints.md)
 
@@ -58,7 +60,7 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 ### 1.1 Nginx·네트워크·RDS 경계
 
 - `/`와 화면·정적 파일 경로는 Nginx가 React 빌드 산출물을 제공한다. 운영에서는 별도 Vite 개발 서버를 공개하지 않는다.
-- `/api/*`는 FastAPI로 전달한다. FastAPI의 `/api/v1` 계약이 유지되도록 `/api` 접두사를 제거하지 않는다.
+- `/api/*`는 FastAPI로 전달한다. FastAPI의 `/api/v1` 계약이 유지되도록 `/api` 접두사를 제거하지 않는다. `/health/live`·`/health/ready`는 Compose 내부 전용이며 Nginx로 공개하지 않는다.
 - Ollama와 음성 서비스는 Compose 내부에서 FastAPI가 호출한다. 호스트 공개 포트·Nginx 프록시·공개 모델 관리 API를 만들지 않는다. Redis도 내부 연결만 허용한다.
 - RDS는 운영 Compose의 PostgreSQL 컨테이너가 아니다. 동일 VPC의 비공개 접근을 기본으로 하고 인터넷 공개 접근을 비활성화한다. DB 보안 그룹은 필요한 EC2 연결만 허용한다.
 - RDS 연결은 CA와 호스트명을 검증하는 TLS(`sslmode=verify-full` 또는 드라이버의 동등 설정)를 사용한다. 암호문 저장·사용자 소유권 검사는 RDS를 사용해도 응용 서버에서 수행한다.
@@ -118,34 +120,35 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 |---|---|---|
 | `POST /journeys` | AI 동의 버전, 선택적 자기 저장 프로필 참조 | 체험 ID·만료·초기 상태 |
 | `DELETE /journeys/{id}` | 없음 | 임시 데이터·처리 결과 폐기 |
-| `POST /journeys/{id}/transcriptions` | 제한된 음성 파일·요청 ID | 전사 텍스트·전사 ID |
-| `POST /journeys/{id}/messages` | 확인한 텍스트·요청 ID·기준 리비전 | 다음 질문·프로필 초안·주의사항 |
+| `POST /journeys/{id}/transcriptions` | 제한된 음성 파일·멱등 키 | 전사 텍스트·전사 ID |
+| `POST /journeys/{id}/messages` | 확인한 텍스트·멱등 키·기준 리비전 | 다음 질문·프로필 초안·주의사항 |
 | `GET /journeys/{id}/profile` | 없음 | 현재 초안·확정 상태 |
 | `PATCH /journeys/{id}/profile` | 수정 항목·기준 리비전 | 수정한 초안 |
 | `POST /journeys/{id}/profile/confirm` | 기준 리비전 | 확정 프로필 참조 |
 | `GET /journeys/{id}/roles` | 확정 프로필 버전 쿼리. 생략 시 현재 확정본 | 역할 후보·경험 근거 |
-| `PUT /journeys/{id}/role-exclusions` | 제외 역할 ID 목록 | 현재 추천 필터 |
+| `PUT /journeys/{id}/role-exclusions` | 제외 역할 ID 목록·기준 리비전 | 현재 추천 필터 |
 | `POST /recommendations` | 소유한 확정 프로필 참조·필터 | Recommendation[] |
 | `GET /opportunities` | 검색·지역·유형·페이지 | 공개 공고 목록 |
 | `GET /opportunities/{id}` | 없음 | 최신 공개 공고 |
 | `POST /opportunities/{id}/eligibility` | 확정 프로필 참조 | EligibilityResult |
 | `GET /opportunities/{id}/preparation` | 없음 | 공식 서류·절차·접수 안내 |
-| `POST /journeys/{id}/drafts` | 확정 프로필·공고 버전 참조·요청 ID·작성 방식 | 임시 지원서 초안 |
+| `POST /journeys/{id}/drafts` | 확정 프로필·공고 버전 참조·멱등 키·작성 방식 | 임시 지원서 초안 |
 | `PATCH /journeys/{id}/drafts/{draft_id}` | 수정 본문·기준 리비전 | 수정한 임시 초안 |
 | `POST /journeys/{id}/drafts/{draft_id}/approve` | 기준 리비전 | 사용자 승인 상태 |
-| `POST /speech` | 서버가 발급한 읽기 대상 참조 | 음성 응답 |
-| `GET /auth/kakao/start` | 허용된 로그인 목적·선택적 저장 대기 참조 | 인증 시작 |
+| `POST /speech` | 읽기 대상 참조(대상 종류·자원 ID·버전·필드)·조각 번호·멱등 키 | 음성 응답 |
+| `POST /auth/save-intents` | 비회원 체험의 확정 프로필·승인 지원서 참조·멱등 키 | 저장 대기 참조·10분 만료 |
+| `GET /auth/kakao/start` | 로그인 목적(`login`, `save`). 저장 대기는 세션에 결합해 URL에 넣지 않음 | 인증 시작 |
 | `GET /auth/kakao/callback` | 인가 코드·state | 내부 세션 |
 | `POST /auth/logout` | 없음 | 세션 폐기 |
-| `GET /me` | 없음 | 계정·권한·동의 상태 |
+| `GET /me` | 없음. 비회원도 200 | 계정·권한·동의·저장 대기 상태 |
 | `POST /consents` | 목적·안내문 버전 | 동의 기록 |
 | `POST /consents/withdraw` | 목적 | 철회·관련 삭제 상태 |
 | `GET /profiles/me` | 없음 | 현재 저장 확정본 |
-| `POST /profiles/me/versions` | 승인 자료 참조·기준 저장 버전 | 새 저장 버전 |
+| `POST /profiles/me/versions` | 승인 자료 참조(체험 또는 저장 대기)·기준 저장 버전·멱등 키 | 새 저장 버전 |
 | `DELETE /profiles/me` | 없음 | 전 버전·파생 지원서 삭제 |
 | `GET /drafts` | 페이지 | 자기 저장 지원서 목록 |
 | `GET /drafts/{id}` | 없음 | 자기 지원서·재검토 상태 |
-| `POST /drafts` | 승인한 임시 지원서 참조·선택적 기존 문서 ID/기준 버전 | 암호화 저장·문서 버전 |
+| `POST /drafts` | 승인한 임시 지원서 참조(체험 또는 저장 대기)·선택적 기존 문서 ID/기준 버전·멱등 키 | 암호화 저장·문서 버전 |
 | `DELETE /drafts/{id}` | 없음 | 자기 지원서 삭제 |
 | `DELETE /me` | 재인증 확인 | 탈퇴·삭제 상태 |
 | `POST /reports` | 공고 ID·오류 유형 | 신고 접수 |
@@ -153,6 +156,7 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 | `GET/POST /admin/opportunities` | 목록 조건 / 공고 초안 | 운영자 공고 |
 | `PATCH /admin/opportunities/{id}` | 변경 항목·기준 버전 | 검수 대기 변경본 |
 | `POST /admin/opportunities/{id}/approve` | 검수 사유·기준 버전 | 승인·공개 |
+| `POST /admin/opportunities/{id}/reject` | 기준 버전·사유 코드·선택 메모 | 반려 |
 | `POST /admin/opportunities/{id}/hide` | 사유 | 비공개 |
 | `POST /admin/opportunities/{id}/close` | 근거·사유 | 모집 종료 |
 | `GET /admin/operations` | 없음 | 수집·장애·제한 상태 |
@@ -173,9 +177,9 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 
 비회원 재진입 복원과 저장을 위한 인증 왕복은 구분한다.
 
-1. 저장 버튼을 누르면 서버가 해당 세션 소유의 승인 자료만 저장 대기 참조로 만든다. 대화 원문·음성·미승인 초안은 전달하지 않는다.
-2. 저장 대기 자료는 Redis에 최대 10분 유지하고 OAuth state 및 시작 세션에 연결한다. 자료 본문·세션 자격증명을 URL에 넣지 않는다.
-3. 카카오 인증을 검증하고 세션을 교체한 뒤 저장 대상과 동의를 다시 확인한다. 인증 성공만으로 자료를 영구 저장하지 않는다.
+1. 저장 버튼을 누르면 `POST /auth/save-intents`로 해당 세션 소유의 승인 자료만 저장 대기로 만든다. 서버가 승인본을 복사하며 대화 원문·음성·미승인 초안은 전달하지 않는다. 비회원의 지원서는 근거 프로필과 함께 담는다.
+2. 저장 대기 자료는 Redis에 최대 10분 유지하고 OAuth state 및 시작 세션에 연결한다. 저장 대기 참조·자료 본문·세션 자격증명을 URL에 넣지 않는다.
+3. 카카오 인증을 검증하고 세션을 교체한 뒤 저장 대기만 새 세션으로 옮긴다(진행 중이던 체험은 옮기지 않음). 화면은 `GET /me`의 `pending_save_intent`로 대상을 보여 주고, 저장 동의를 확인한 뒤 `POST /profiles/me/versions`·`POST /drafts`에 `save_intent_id`를 넘긴다. 인증 성공만으로 자료를 영구 저장하지 않는다.
 4. 저장 완료·취소·만료 후 대기 참조를 폐기한다. 저장 요청은 멱등하게 처리해 네트워크 재전송이 새 버전을 반복 생성하지 않게 한다.
 
 운영자 MFA 등록·복구·최초 권한 부여는 제한된 관리 절차로 구성하고 공개 가입에서 권한을 선택할 수 없게 한다.
@@ -185,8 +189,10 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 - 체험·프로필·지원서 참조는 서버에서 소유권을 검사한다.
 - 클라이언트가 보낸 `owner_id`, 역할, 검수 상태를 신뢰하지 않는다.
 - 변경에는 기준 버전·리비전을 사용한다. 오래된 변경 요청은 409로 거절한다.
+- `GET`이 아닌 요청은 CSRF 쿠키 값을 `X-CSRF-Token` 헤더로 보내고, 서버는 세션 결합 서명과 `Origin`을 함께 확인한다. 예외는 OAuth state로 보호하는 카카오 콜백뿐이다.
+- 정의하지 않은 입력 필드는 422로 거절한다.
 - AI 호출은 제한시간 내 요청·응답 방식이다. Ollama·음성 서비스와의 통신은 비동기 I/O로 처리하고 모델의 무거운 연산을 FastAPI 이벤트 루프에서 직접 수행하지 않는다.
-- 동일 요청 ID의 재전송은 새 추론을 만들지 않는다. 키는 소유 주체·체험·API별로 구분하며 같은 키에 다른 입력은 409로 거절한다.
+- 클라이언트 멱등 키는 `Idempotency-Key` 헤더로 받는다. 같은 키의 재전송은 새 추론을 만들지 않는다. 키는 소유 주체·체험·API별로 구분하며 같은 키에 다른 입력은 409로 거절한다. 서버 추적 ID(`request_id`, `X-Request-ID`)와 구분한다.
 - 삭제·만료 후 도착한 응답은 저장하지 않는다.
 - TTS는 서버의 접근 가능한 표시 내용을 참조한다. 임의 텍스트를 받아주는 공개 음성 변환 프록시로 만들지 않는다.
 
@@ -194,7 +200,7 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 
 ```json
 {
-  "code": "PROFILE_VERSION_CONFLICT",
+  "code": "VERSION_CONFLICT",
   "message": "정보가 변경되었습니다. 최신 내용을 확인해 주세요.",
   "request_id": "서버가 부여한 추적 ID"
 }
@@ -211,7 +217,7 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 | 429 | 호출·동시성 제한 |
 | 503 | 외부·내부 서비스 일시 장애 |
 
-원본 입력·SQL·토큰·파일 경로·예외 추적을 사용자 오류 응답에 넣지 않는다. 한도와 시간 제한은 [05 §3](05_Engineering_Constraints.md#3-운영-기본값)를 단일 기준으로 사용한다.
+오류 코드 목록과 422의 `fields` 형식은 [API 계약 §2.5](../docs/api/README.md#25-오류-코드)를 따른다. 429는 분당·일일·추론 슬롯을 다른 코드로 구분하고, 429·503에는 `Retry-After`를 붙인다. 원본 입력·SQL·토큰·파일 경로·예외 추적을 사용자 오류 응답에 넣지 않는다. 한도와 시간 제한은 [05 §3](05_Engineering_Constraints.md#3-운영-기본값)를 단일 기준으로 사용한다.
 
 ## 5. 개발·배포·소유권
 
