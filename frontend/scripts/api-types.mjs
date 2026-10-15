@@ -7,6 +7,9 @@ const root = new URL('../', import.meta.url)
 const pin = JSON.parse(await readFile(new URL('api-contract.json', root), 'utf8'))
 const canonical = new URL('../docs/api/openapi.yaml', root)
 const output = new URL('src/api/schema.d.ts', root)
+// Deliberately constant: local configuration must not put file data into any
+// part of an outbound URL, even for an otherwise trusted download host.
+const draftUrl = 'https://raw.githubusercontent.com/YongSamGo/RE_CONNECT/bc8cb82e74ad9ba361776f9c8cfe6927ae09a9ee/docs/api/openapi.yaml'
 let source
 try {
   source = await readFile(canonical, 'utf8')
@@ -15,9 +18,9 @@ try {
   if (error.code !== 'ENOENT') throw error
   // Temporary until #117 lands. Never follow a moving branch or silently use a
   // stale generated file when the canonical contract changes.
-  if (!/^[a-f0-9]{40}$/.test(pin.commit)) throw new Error('Contract commit must be immutable')
-  const url = `https://raw.githubusercontent.com/${pin.repository}/${pin.commit}/${pin.path}`
-  const response = await fetch(url, { redirect: 'error', signal: AbortSignal.timeout(15000) })
+  if (pin.repository !== 'YongSamGo/RE_CONNECT' || pin.commit !== 'bc8cb82e74ad9ba361776f9c8cfe6927ae09a9ee'
+    || pin.path !== 'docs/api/openapi.yaml') throw new Error('Draft contract source does not match the fixed download target')
+  const response = await fetch(draftUrl, { redirect: 'error', signal: AbortSignal.timeout(15000) })
   if (!response.ok) throw new Error('Pinned draft contract could not be loaded')
   source = await response.text()
   const digest = createHash('sha256').update(source).digest('hex')
