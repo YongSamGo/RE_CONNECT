@@ -26,10 +26,10 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | D1 | 계약을 `docs/api/openapi.yaml`(OpenAPI 3.1)에 직접 작성한다. FastAPI가 생기면 생성된 스펙과 이 파일의 차이를 CI에서 검사한다(W02-08) | 백엔드 코드가 아직 없고, 화면 개발이 계약을 먼저 써야 한다 |
 | D2 | 02·03 명세를 v1.2로 올려 바뀐 경로·필드를 반영하고, 세부 형식은 이 파일에 둔다 | 승인 명세와 실제 계약이 따로 놀지 않게 한다 |
 | D3 | 정상·오류 예제는 `openapi.yaml`의 `examples` 안에 둔다 | 원본을 하나로 두고, 모의 응답 도구가 그대로 읽게 한다 |
-| D4 | 오류 본문은 `code`·`message`·`request_id`로 통일하고, 422에만 `fields`를 붙인다. 입력값은 오류에 되돌려 주지 않는다. 정의하지 않은 필드가 오면 422로 거절한다 | 화면이 코드로 분기하고, 오류 응답으로 입력이 새지 않게 한다 |
+| D4 | 오류 본문은 `code`·`message`·`request_id`로 통일하고, 422에만 `fields`를 붙인다. 입력값은 오류에 되돌려 주지 않는다. 정의하지 않은 필드가 오면 422로 거절한다. 요청 본문의 선택 항목도 키를 보내고 값을 `null`로 둔다(§2.1) | 화면이 코드로 분기하고, 오류 응답으로 입력이 새지 않게 한다 |
 | D5 | 429는 `RATE_LIMITED`(분당)·`DAILY_QUOTA_EXCEEDED`(일일)·`INFERENCE_BUSY`(추론 슬롯) 세 코드로 나누고 `Retry-After`를 붙인다 | 기다리면 되는지, 내일 다시 와야 하는지 안내가 다르다 |
 | D6 | 클라이언트 멱등 키는 `Idempotency-Key` 헤더로 받는다. 오류 본문의 `request_id`와 `X-Request-ID` 헤더는 서버가 붙이는 추적 ID다 | 03 명세에서 두 값이 모두 "요청 ID"로 불려 섞일 수 있었다 |
-| D7 | CSRF는 세션에 결합한 서명 토큰을 쿠키로 내려주고 `X-CSRF-Token` 헤더로 돌려받는 방식(double-submit)과 `Origin` 검사를 함께 쓴다 | 서버 상태를 늘리지 않고, 화면 구현이 단순하다 |
+| D7 | CSRF는 세션에 결합한 서명 토큰을 쿠키로 내려주고 `X-CSRF-Token` 헤더로 돌려받는 방식(double-submit)과 `Origin` 검사를 함께 쓴다. 카카오 시작·콜백은 세션에 저장한 1회용 state로 보호한다(§2.3) | 서버 상태를 늘리지 않고, 화면 구현이 단순하다. 로그인 CSRF로 다른 계정에 자료가 저장되는 것을 막는다 |
 | D8 | 저장 대기는 승인본을 서버에 복사해 두고, 로그인 왕복 동안 세션에 결합한다. URL에는 아무 참조도 넣지 않는다. 로그인 후에는 기존 `POST /profiles/me/versions`·`POST /drafts`에 `save_intent_id`를 넘겨 소비한다. 대기 상태는 `GET /me`의 `pending_save_intent`로 확인한다 | 로그인 왕복에서 화면이 새로 열려도 자료를 잃지 않고, 저장 경로가 하나로 유지된다 |
 | D9 | 반려는 사유 코드 + 선택 메모(최대 500자)다. `rejected`는 그 버전에서 끝나는 상태이고, 다시 고치려면 PATCH로 새 `pending` 버전을 만든다 | 상태 전이를 단순하게 두고 감사 기록에 사유를 남긴다 |
 | D10 | `description_text`는 공개 상세에도 보여 주고 검수 대상에 넣는다. 정규화 후 5,000자를 넘으면 앞부분만 저장하고 `description_truncated=true`로 표시한다 | 추천 근거로 쓴 키워드를 사용자가 확인할 수 있어야 하고, 원문에 섞인 담당자 연락처를 운영자가 지울 기회가 필요하다 |
@@ -44,7 +44,8 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 
 - 기본 경로 `/api/v1`. 본문은 JSON(UTF-8), 전사만 `multipart/form-data`, 읽어주기 결과만 `audio/wav`이다.
 - 시각은 시간대가 있는 UTC(`2026-10-15T03:00:00Z`), 날짜는 `YYYY-MM-DD`(한국 날짜)이다.
-- 선택 항목을 생략하면 `null`로 정규화한다. `null`은 미확인, 빈 배열은 "없다고 확인함"이다.
+- 요청 본문은 스키마의 `required`를 따른다. 선택 항목도 키를 보내고 값을 `null`로 둔다. 키를 빠뜨리면 422 `required`다. 응답도 항상 모든 키를 담는다.
+- `null`은 미확인, 빈 배열은 "없다고 확인함"이다.
 - 목록은 `page`(1부터)·`page_size`(기본 20, 최대 20)를 받고 `items`·`page`·`page_size`·`total`을 돌려준다.
 - 개인 자료 응답에는 `Cache-Control: no-store`를 붙인다.
 
@@ -59,10 +60,12 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 
 ### 2.3 CSRF
 
-1. 서버는 CSRF 쿠키가 없거나 세션과 맞지 않는 요청의 응답에 새 쿠키를 내려준다. 운영 이름은 `__Host-rc_csrf`, 로컬 HTTP 개발은 `rc_csrf`이다. `HttpOnly`가 아니라서 화면이 읽을 수 있다.
+1. 서버는 CSRF 쿠키가 없거나 세션과 맞지 않는 요청의 응답에 새 쿠키를 내려준다. 운영 이름은 `__Host-rc_csrf`(속성 `Path=/; Secure; SameSite=Strict`), 로컬 HTTP 개발은 `rc_csrf`(`Secure` 없음)이다. `HttpOnly`가 아니라서 화면이 읽을 수 있다. 세션 쿠키 `__Host-rc_session`은 `HttpOnly; Secure; SameSite=Lax; Path=/`이다(카카오에서 돌아오는 최상위 GET에도 실려야 해서 Lax).
 2. 화면은 `GET`이 아닌 요청마다 쿠키 값을 `X-CSRF-Token`에 넣는다. 로그인으로 세션이 바뀌면 쿠키도 바뀌므로 매 요청마다 다시 읽는다.
 3. 서버는 헤더와 쿠키가 같은지, 토큰 서명이 현재 세션에 결합돼 있는지, `Origin`이 서비스 도메인인지 확인한다. 하나라도 틀리면 403 `CSRF_FAILED`이다.
-4. 예외는 `GET /auth/kakao/callback` 하나다. 이 경로는 OAuth `state`로 보호한다.
+4. GET 경로는 상태를 바꾸지 않는다. 예외는 카카오 로그인 두 경로이고, CSRF 헤더 대신 세션 결합 state로 보호한다.
+   - `GET /auth/kakao/start`: 새 state를 만들어 현재 세션에 저장한다. 1회용, 10분 만료, 세션당 최대 3개이며 기존 state를 덮어쓰지 않는다. 다른 사이트가 이 경로로 보내도 진행 중인 흐름은 끊기지 않는다.
+   - `GET /auth/kakao/callback`: 쿼리 state가 요청 세션에 저장된 state와 같을 때만 처리하고 바로 지운다. 세션이 없거나 다른 세션이 발급한 state, 만료·재사용 state는 토큰 교환 없이 `status=failed`로 보낸다(로그인 CSRF 방지).
 
 ### 2.4 멱등 키
 
@@ -96,7 +99,7 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | 404 | `SAVE_INTENT_NOT_FOUND` | 저장 대기가 만료됐거나 이미 처리됨 |
 | 409 | `VERSION_CONFLICT` | `base_revision`·`base_version`이 최신이 아님 |
 | 409 | `IDEMPOTENCY_KEY_REUSED` | 같은 멱등 키에 다른 입력 |
-| 409 | `REQUEST_IN_PROGRESS` | 같은 멱등 키의 요청이 아직 처리 중 |
+| 409 | `REQUEST_IN_PROGRESS` | 같은 멱등 키의 요청이 아직 처리 중(`Retry-After` 포함) |
 | 409 | `REQUEST_ALREADY_COMPLETED` | 다시 돌려줄 수 없는 완료 요청(읽어주기)의 키 재사용 |
 | 409 | `PROFILE_NOT_CONFIRMED` | 확정 프로필이 필요한데 확정본이 없음 |
 | 409 | `PROFILE_NOT_SAVED` | 지원서의 근거 프로필이 저장돼 있지 않음 |
@@ -126,9 +129,10 @@ sequenceDiagram
     FE->>API: POST /auth/save-intents (승인 프로필·지원서 참조)
     API-->>FE: 201 save_intent_id, expires_at (10분)
     FE->>API: GET /auth/kakao/start?purpose=save
-    API-->>FE: 302 카카오 (state에 저장 대기 결합)
+    API-->>FE: 302 카카오 (state를 현재 세션에 저장)
     FE->>K: 로그인
     K-->>API: GET /auth/kakao/callback?code&state
+    Note over API: state를 요청 세션의 state와 대조, 1회 사용
     API-->>FE: 302 /auth/result?purpose=save&status=success (세션 교체, 저장 대기 이전)
     FE->>API: GET /me → pending_save_intent
     FE->>API: POST /consents (storage) — 동의가 없을 때
@@ -137,6 +141,7 @@ sequenceDiagram
 ```
 
 - 저장 대기는 비회원 세션에서만 발급한다. 회원은 체험 참조로 바로 저장한다.
+- 저장 대기는 state가 아니라 시작 세션에 결합한다. 콜백이 성공하면 시작 세션의 저장 대기를 새 세션으로 옮긴다.
 - 서버는 발급 시점의 승인본을 Redis에 복사한다. 대화 원문·음성·미승인 초안은 넣지 않는다.
 - 비회원의 지원서는 근거 프로필이 저장돼 있지 않으므로 프로필과 함께 담아야 한다. 화면은 "프로필과 지원서를 함께 저장한다"고 보여 주고 동의를 받는다.
 - 로그인 후 진행 중이던 체험은 새 세션으로 옮기지 않는다(재진입 규칙과 같음). 저장 대기만 옮긴다.
