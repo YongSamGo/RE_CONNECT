@@ -2,3 +2,5 @@
 fastapi
 uvicorn
 pydantic-settings
+# 내부 Ollama 호출 (app/adapters/ollama.py)
+httpx

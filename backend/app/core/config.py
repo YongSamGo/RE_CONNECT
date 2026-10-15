@@ -7,7 +7,9 @@
 from functools import lru_cache
 from pathlib import Path
 from typing import Literal
+from urllib.parse import urlsplit
 
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -37,6 +39,28 @@ class Settings(BaseSettings):
 
     # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
     health_check_timeout_seconds: float = 2.0
+
+    # 내부 Ollama (W04-02). 주소는 Compose 내부 서비스로 고정하고 사용자 요청으로 바꾸지 않는다 (Plan/05 §2).
+    ollama_base_url: str = "http://ollama:11434"
+    ollama_model: str = "qwen3:4b"
+    # 요청 하나의 전체 시간(초). AI 처리 제한(60초, Plan/05 §3)을 넘지 않는다.
+    ollama_timeout_seconds: float = Field(default=60.0, gt=0, le=60)
+    # 출력 토큰 상한. 넘으면 응답이 잘리고(`done_reason=length`) 형식 오류로 처리한다.
+    ollama_num_predict: int = Field(default=2048, gt=0, le=8192)
+    # 구조화 추출은 추론 과정을 쓰지 않는다 (Plan/03 §3). 모델이 think를 지원하지 않으면 None으로 두어 보내지 않는다.
+    ollama_think: bool | None = False
+    ollama_max_response_bytes: int = Field(default=1_048_576, gt=0)
+
+    @field_validator("ollama_base_url")
+    @classmethod
+    def _internal_origin_only(cls, value: str) -> str:
+        """경로·쿼리·계정 정보가 없는 http(s) 출처만 받는다. 끝의 `/`는 뗀다."""
+        url = urlsplit(value)
+        if url.scheme not in ("http", "https") or not url.hostname:
+            raise ValueError("ollama_base_url은 http(s) 주소여야 합니다")
+        if url.username or url.password or url.query or url.fragment or url.path not in ("", "/"):
+            raise ValueError("ollama_base_url에는 출처(scheme://host:port)만 적습니다")
+        return value.rstrip("/")
 
     @property
     def docs_enabled(self) -> bool:
