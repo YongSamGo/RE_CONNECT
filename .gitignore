@@ -59,6 +59,13 @@ worker/samples/
 *.pt
 *.pth
 *.ckpt
+# faster-whisper(CTranslate2) model.bin·Hugging Face pytorch_model.bin
+/speech/**/*.bin
+# Hugging Face 캐시 폴더 (models--<조직>--<모델>/)
+models--*/
+# Ollama 모델 저장소 (blobs/sha256-…, manifests/)
+**/ollama/blobs/
+**/ollama/manifests/
 
 # 프론트엔드 테스트·도구 출력
 coverage/

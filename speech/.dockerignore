@@ -1,15 +1,16 @@
-# 이미지에 비밀값·로컬 환경·캐시가 들어가지 않게 한다
-.env
-.env.*
-*.pem
-*.key
-.venv/
-venv/
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-.coverage
-htmlcov/
+# 이미지에 비밀값·로컬 환경·캐시가 들어가지 않게 한다.
+# .dockerignore는 컨텍스트 최상위 기준이라 어느 깊이든 막으려면 **/ 를 붙인다.
+**/.env
+**/.env.*
+**/*.pem
+**/*.key
+**/.venv/
+**/venv/
+**/__pycache__/
+**/*.py[cod]
+**/.pytest_cache/
+**/.mypy_cache/
+**/.coverage
+**/htmlcov/
 tests/
 .git/

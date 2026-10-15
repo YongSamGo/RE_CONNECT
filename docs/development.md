@@ -42,18 +42,18 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 ## 4. 개발 명령
 
-모든 명령은 저장소 루트 기준이다. "준비 중"인 명령은 해당 이슈가 끝나면 쓸 수 있다.
+`cd`가 없는 명령은 저장소 루트에서, `cd backend 후`처럼 적힌 명령은 그 폴더에서 실행한다. "준비 중"인 명령은 해당 이슈가 끝나면 쓸 수 있다.
 
 | 작업 | 명령 | 준비 |
 | --- | --- | --- |
 | 개발 DB·Redis 시작 | `docker compose --env-file .env -f infra/compose.dev.yaml up -d` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | 개발 DB·Redis 종료 | `docker compose --env-file .env -f infra/compose.dev.yaml down` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | 백엔드 가상환경 | `cd backend` 후 `python -m venv .venv` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
-| 백엔드 의존성 설치 | `pip install -r requirements.txt -r requirements-dev.txt` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
+| 백엔드 의존성 설치 | `cd backend` 후 `pip install -r requirements.txt -r requirements-dev.txt` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
 | 백엔드 테스트 | `cd backend` 후 `python -m pytest` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
 | 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
-| 프론트엔드 검사·빌드 | `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
+| 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 공고 샘플 수집 | `python worker/tools/fetch_source_samples.py <source> --operation <op>` | 사용 가능 |
 
 가상환경 활성화는 macOS·Linux에서 `source .venv/bin/activate`, PowerShell에서 `.venv\Scripts\Activate.ps1`이다.
@@ -64,7 +64,7 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 | 대상 | 방식 |
 | --- | --- |
-| Python 패키지 | `requirements.in` → pip-tools로 해시 포함 `requirements.txt` 생성 ([backend](../backend/README.md#의존성-고정)) |
+| Python 패키지 | `requirements.in` → pip-tools로 해시 포함 `requirements.txt` 생성. 컴파일 이미지는 digest, pip-tools는 해시 잠금 파일로 고정 ([backend](../backend/README.md#의존성-고정)) |
 | npm 패키지 | `package-lock.json` 커밋, `npm ci --ignore-scripts`로 설치 |
 | CI 액션 | 커밋 SHA로 고정 ([CI 문서](security/ci-pipeline.md)) |
 | 컨테이너 이미지 | digest 고정 ([infra](../infra/README.md)) |

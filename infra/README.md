@@ -18,6 +18,8 @@ Compose 파일은 이 폴더에 두고 `.env`는 루트에 하나만 둔다. `-f
 docker compose --env-file .env -f infra/compose.dev.yaml up -d
 ```
 
+`--env-file`은 Compose 파일 안의 `${VAR}` 치환에만 쓰이고 컨테이너 환경변수로는 들어가지 않는다. 컨테이너가 값을 받아야 하면 서비스마다 `env_file:`(또는 `environment:`)을 적는다. 경로는 Compose 파일 기준이라 `env_file: ../.env`다. 서비스에 필요한 변수만 넘기려면 `environment:`에 이름을 골라 적는다.
+
 ## 규칙
 
 - 인터넷에는 Nginx의 HTTPS만 공개한다. Redis·Ollama·음성 서비스는 내부 네트워크에만 둔다.

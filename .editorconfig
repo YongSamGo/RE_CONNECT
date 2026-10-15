@@ -18,3 +18,7 @@ trim_trailing_whitespace = false
 
 [Makefile]
 indent_style = tab
+
+# .gitattributes와 맞춰 Windows 스크립트는 CRLF
+[*.{bat,cmd,ps1}]
+end_of_line = crlf
