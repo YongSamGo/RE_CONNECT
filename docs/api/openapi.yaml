@@ -1,0 +1,1672 @@
+openapi: 3.1.0
+info:
+  title: 다시잇다 API
+  version: 1.2.0-draft.1
+  summary: 프론트엔드·백엔드·모델 연동이 함께 쓰는 API 계약 (W01-02)
+  description: |
+    결정 기록과 공통 규칙은 docs/api/README.md를 본다.
+
+    - 1차(이 파일): 공통 규칙, 계획 §5 보완 계약, 그 계약이 걸린 경로
+    - 2차: Plan/03 §3의 나머지 경로 입출력과 예제
+
+    1차에 없는 경로도 Plan/03 §3 표의 입력·결과를 따른다.
+  license:
+    name: Proprietary
+    identifier: LicenseRef-Proprietary
+servers:
+  - url: /api/v1
+    description: Nginx를 거친 공개 API
+tags:
+  - name: 인증·동의
+    description: 세션 상태, 카카오 로그인, 로그인 저장 대기
+  - name: 회원 저장
+    description: 승인한 프로필·지원서의 암호화 저장
+  - name: 체험
+    description: 비회원·회원의 임시 체험(Redis)
+  - name: 공고
+    description: 공개 공고 조회
+  - name: 읽어주기
+    description: 화면에 보이는 자료의 한국어 음성
+  - name: 운영자
+    description: 운영자 역할과 MFA가 필요한 관리 기능
+  - name: 내부 상태
+    description: Compose 내부에서만 부르는 상태 확인
+
+paths:
+  /me:
+    get:
+      tags: [인증·동의]
+      operationId: getMe
+      summary: 현재 세션의 계정·권한·동의·저장 대기 상태
+      description: |
+        비회원 세션도 200을 돌려준다(`authenticated=false`). 화면은 시작할 때 이 경로를 불러
+        CSRF 쿠키와 동의 상태를 받는다. 세션이 없으면 익명 세션 쿠키를, CSRF 쿠키가 없거나 세션과 맞지 않으면 새 CSRF 쿠키를 내려준다.
+      security:
+        - sessionCookie: []
+        - {}
+      responses:
+        '200':
+          description: 현재 상태
+          headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Me' }
+              examples:
+                anonymous:
+                  summary: 비회원, AI 처리 동의함
+                  value:
+                    authenticated: false
+                    user: null
+                    consents:
+                      - purpose: ai_processing
+                        notice_version: ai-2026-10-15
+                        granted_at: '2026-10-15T03:00:00Z'
+                    pending_save_intent: null
+                memberWithPendingSave:
+                  summary: 로그인 직후, 저장 대기가 남아 있음
+                  value:
+                    authenticated: true
+                    user:
+                      id: 7d3c1d9e-3a52-4c55-9a43-2f1f6d1b8a10
+                      roles: [user]
+                      mfa_verified: false
+                    consents:
+                      - purpose: ai_processing
+                        notice_version: ai-2026-10-15
+                        granted_at: '2026-10-15T03:00:00Z'
+                    pending_save_intent:
+                      save_intent_id: 0b9f4c4e-2a1f-4d8e-9b7a-6c5d4e3f2a1b
+                      expires_at: '2026-10-15T03:20:00Z'
+                      targets:
+                        profile: true
+                        draft: true
+                      existing_saved_profile_version: null
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /auth/save-intents:
+    post:
+      tags: [인증·동의]
+      operationId: createSaveIntent
+      summary: 로그인 저장 대기 발급 (계획 §5 보완 계약)
+      description: |
+        비회원 세션이 소유한 체험의 확정 프로필·승인 지원서만 받는다. 서버가 그 승인본을 조회해
+        Redis에 복사하고 10분 동안 이 세션에 결합한다. 같은 세션의 이전 저장 대기는 폐기한다.
+
+        - 지원서를 담으려면 프로필도 함께 담아야 한다(비회원은 근거 프로필이 저장돼 있지 않다).
+        - 이후 `GET /auth/kakao/start?purpose=save`로 로그인을 시작한다. URL에는 아무 참조도 넣지 않는다.
+        - 회원 세션에서 부르면 409 `ALREADY_SIGNED_IN`이다. 회원은 체험 참조로 바로 저장한다.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SaveIntentCreate' }
+            examples:
+              profileAndDraft:
+                summary: 프로필과 지원서를 함께 저장
+                value:
+                  journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                  profile:
+                    version: 2
+                  draft:
+                    draft_id: 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+                    revision: 5
+              profileOnly:
+                summary: 프로필만 저장
+                value:
+                  journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                  profile:
+                    version: 2
+                  draft: null
+              missingProfile:
+                summary: (오류 예제) 지원서만 담음 → 422
+                value:
+                  journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                  profile: null
+                  draft:
+                    draft_id: 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+                    revision: 5
+      responses:
+        '201':
+          description: 저장 대기 발급
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/SaveIntent' }
+              examples:
+                created:
+                  value:
+                    save_intent_id: 0b9f4c4e-2a1f-4d8e-9b7a-6c5d4e3f2a1b
+                    expires_at: '2026-10-15T03:20:00Z'
+                    targets:
+                      profile: true
+                      draft: true
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: 버전 충돌·미확정·미승인·회원 세션·멱등 키 충돌
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                versionConflict: { $ref: '#/components/examples/VersionConflict' }
+                draftNotApproved:
+                  value:
+                    code: DRAFT_NOT_APPROVED
+                    message: 승인한 지원서만 저장할 수 있습니다. 지원서를 확인하고 승인해 주세요.
+                    request_id: req_01JABCDXYZ
+                alreadySignedIn:
+                  value:
+                    code: ALREADY_SIGNED_IN
+                    message: 이미 로그인되어 있습니다. 바로 저장할 수 있습니다.
+                    request_id: req_01JABCDXYZ
+                idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422':
+          description: 형식 오류
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                nothingToSave:
+                  summary: profile·draft가 모두 null
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 저장할 프로필이나 지원서를 선택해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: profile
+                        reason: required
+                profileRequiredWithDraft:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: profile
+                        reason: required_with
+                missingJourney:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: journey_id
+                        reason: required
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /auth/kakao/start:
+    get:
+      tags: [인증·동의]
+      operationId: startKakaoLogin
+      summary: 카카오 로그인 시작
+      description: |
+        브라우저 이동으로 부른다. GET이지만 OAuth state를 발급하므로 아래 규칙으로 보호한다.
+
+        - 새 state(가능하면 PKCE `code_verifier` 포함)를 만들어 **현재 세션에 저장**한다. 1회용, 10분 만료.
+          세션당 최대 3개를 두고 기존 state를 덮어쓰지 않는다(넘치면 가장 오래된 것부터 버린다).
+          그래서 다른 사이트가 이 경로로 보내도 진행 중인 로그인·저장 흐름은 끊기지 않는다.
+        - state에는 목적(`purpose`)만 기록한다. 저장 대기는 state가 아니라 세션에 결합돼 있다.
+        - `purpose=save`인데 세션에 저장 대기가 없거나 만료됐으면 카카오로 가지 않고 `/auth/result?purpose=save&status=expired`로 보낸다.
+        - 세션이 없으면 익명 세션을 만든다.
+      security:
+        - sessionCookie: []
+        - {}
+      parameters:
+        - name: purpose
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [login, save]
+      responses:
+        '302':
+          description: 카카오 인가 페이지 또는 화면 결과 경로로 이동
+          headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
+            Location:
+              description: 카카오 인가 URL 또는 `/auth/result?purpose=save&status=expired`
+              schema: { type: string }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /auth/kakao/callback:
+    get:
+      tags: [인증·동의]
+      operationId: kakaoCallback
+      summary: 카카오 인가 결과 처리
+      description: |
+        카카오가 보내는 GET이라 CSRF 헤더 대신 세션 결합 state로 보호한다(로그인 CSRF 방지).
+
+        - 쿼리 `state`가 **요청 세션에 저장된 state**와 같을 때만 처리하고, 쓴 state는 바로 지운다.
+          세션이 없거나, 다른 세션이 발급한 state이거나, 만료·재사용이면 카카오 토큰 교환을 하지 않고 `status=failed`로 보낸다.
+        - 성공하면 세션을 교체(새 세션·새 CSRF 쿠키)하고, 시작 세션의 저장 대기를 새 세션으로 옮긴다. 진행 중이던 체험은 옮기지 않는다.
+        - 인증 성공만으로 자료를 저장하지 않는다.
+        - 결과는 항상 화면의 `/auth/result`로 보내며 code·state·오류 설명을 Location에 남기지 않는다.
+      security:
+        - sessionCookie: []
+      parameters:
+        - { name: code, in: query, required: false, schema: { type: string, maxLength: 512 } }
+        - { name: state, in: query, required: false, schema: { type: string, maxLength: 256 } }
+        - { name: error, in: query, required: false, schema: { type: string, maxLength: 64 } }
+        - { name: error_description, in: query, required: false, schema: { type: string, maxLength: 512 } }
+      responses:
+        '302':
+          description: 화면 결과 경로로 이동
+          headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
+            Location:
+              description: |
+                `/auth/result?purpose={login|save}&status={success|cancelled|failed|expired}`
+              schema: { type: string }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+
+  /profiles/me/versions:
+    post:
+      tags: [회원 저장]
+      operationId: saveProfileVersion
+      summary: 확정 프로필을 새 저장 버전으로 저장
+      description: |
+        회원은 체험 참조(`source.type=journey`)로, 로그인 왕복 직후에는 저장 대기(`source.type=save_intent`)로 저장한다.
+
+        - 저장 동의가 없으면 403 `CONSENT_REQUIRED`.
+        - 기존 저장본이 있으면 `base_saved_version`에 그 버전을 넣어 교체를 확인한다. 저장본이 없으면 `null`.
+        - 현재 저장본과 내용이 같으면 새 버전을 만들지 않고 200으로 그 버전을 돌려준다.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProfileSaveRequest' }
+            examples:
+              fromSaveIntent:
+                summary: 로그인 왕복 직후
+                value:
+                  source:
+                    type: save_intent
+                    save_intent_id: 0b9f4c4e-2a1f-4d8e-9b7a-6c5d4e3f2a1b
+                  base_saved_version: null
+              fromJourney:
+                summary: 회원이 기존 저장본을 교체
+                value:
+                  source:
+                    type: journey
+                    journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                    version: 3
+                  base_saved_version: 1
+      responses:
+        '200':
+          description: 같은 내용의 저장본이 있어 그 버전을 연결
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProfileSaveResult' }
+              examples:
+                reused:
+                  value:
+                    version: 1
+                    saved_at: '2026-10-14T09:00:00Z'
+                    created: false
+                    replaced_version: null
+        '201':
+          description: 새 저장 버전
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ProfileSaveResult' }
+              examples:
+                created:
+                  value:
+                    version: 2
+                    saved_at: '2026-10-15T03:12:00Z'
+                    created: true
+                    replaced_version: 1
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /drafts:
+    post:
+      tags: [회원 저장]
+      operationId: saveDraft
+      summary: 승인한 지원서를 암호화 저장
+      description: |
+        `source.type=journey`는 회원이 체험의 승인 지원서를, `source.type=save_intent`는 로그인 왕복 직후 저장 대기의 지원서를 저장한다.
+
+        - 근거 프로필이 회원 저장본과 연결되지 않으면 409 `PROFILE_NOT_SAVED`. 화면은 프로필도 함께 저장하겠다는 동의를 받고 `POST /profiles/me/versions`를 먼저 부른다.
+        - 기존 문서를 갱신하려면 `document_id`와 `base_document_version`을 함께 넣는다.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DraftSaveRequest' }
+            examples:
+              fromSaveIntent:
+                value:
+                  source:
+                    type: save_intent
+                    save_intent_id: 0b9f4c4e-2a1f-4d8e-9b7a-6c5d4e3f2a1b
+                  document_id: null
+                  base_document_version: null
+              updateExisting:
+                summary: 회원이 저장 문서를 고쳐 다시 승인한 뒤 갱신
+                value:
+                  source:
+                    type: journey
+                    journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                    draft_id: 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+                    revision: 7
+                  document_id: 5c4b3a29-1807-4f6e-8d5c-4b3a29180716
+                  base_document_version: 2
+      responses:
+        '201':
+          description: 저장 완료
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DraftSaveResult' }
+              examples:
+                created:
+                  value:
+                    document_id: 5c4b3a29-1807-4f6e-8d5c-4b3a29180716
+                    version: 1
+                    saved_at: '2026-10-15T03:13:00Z'
+                    profile_version: 1
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: 버전 충돌·근거 프로필 미저장·미승인·멱등 키 충돌
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                profileNotSaved:
+                  value:
+                    code: PROFILE_NOT_SAVED
+                    message: 지원서의 근거가 되는 프로필을 먼저 저장해야 합니다.
+                    request_id: req_01JABCDXYZ
+                versionConflict: { $ref: '#/components/examples/VersionConflict' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422': { $ref: '#/components/responses/ValidationFailed' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /journeys/{journey_id}/role-exclusions:
+    put:
+      tags: [체험]
+      operationId: putRoleExclusions
+      summary: 현재 체험의 추천에서 제외할 역할 지정
+      description: |
+        제외 목록 전체를 바꾼다. 빈 배열이면 모두 복원한다. 프로필 사실은 바뀌지 않고 저장되지도 않는다.
+        공고 `role_tags`에 제외한 역할이 하나라도 있으면 맞춤 추천에서 뺀다. 공개 공고 검색에는 적용하지 않는다.
+        확정 프로필이 없으면 409 `PROFILE_NOT_CONFIRMED`.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/JourneyId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RoleExclusionUpdate' }
+            examples:
+              exclude:
+                value:
+                  role_ids: [care_assistant]
+                  base_revision: 12
+              restoreAll:
+                value:
+                  role_ids: []
+                  base_revision: 13
+      responses:
+        '200':
+          description: 반영한 제외 목록
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/RoleExclusions' }
+              examples:
+                updated:
+                  value:
+                    role_ids: [care_assistant]
+                    revision: 13
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422':
+          description: 형식 오류·없는 역할 ID
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                unknownRole:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: role_ids[0]
+                        reason: invalid_value
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /opportunities/{opportunity_id}:
+    get:
+      tags: [공고]
+      operationId: getOpportunity
+      summary: 공개 공고 상세
+      description: |
+        승인된 최신 공개본을 돌려준다(모집 중·종료·확인 필요 포함). 숨김·반려·검수 대기만 있는 공고는 404.
+        중요 변경이 검수 대기 중이면 `change_pending=true`이고 추천·지원서 생성은 보류된다.
+      security:
+        - sessionCookie: []
+        - {}
+      parameters:
+        - $ref: '#/components/parameters/OpportunityId'
+      responses:
+        '200':
+          description: 공개 공고
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Opportunity' }
+              examples:
+                volunteering: { $ref: '#/components/examples/OpportunityVolunteering' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /speech:
+    post:
+      tags: [읽어주기]
+      operationId: createSpeech
+      summary: 화면에 보이는 자료 읽어주기 (계획 §5 TTS 읽기 참조)
+      description: |
+        임의 텍스트는 받지 않는다. 서버가 참조를 해석해 접근 권한·버전·필드를 확인한 뒤 그 텍스트만 읽는다.
+
+        - 공개 공고도 AI 처리 동의가 있어야 한다(403 `CONSENT_REQUIRED`).
+        - 참조한 버전이 최신이 아니면 409 `VERSION_CONFLICT`. 화면은 새로 불러온 뒤 다시 요청한다.
+        - 한 조각은 최대 2,000자. 더 긴 필드는 `segment`로 이어서 요청한다.
+        - 음성을 보관하지 않으므로 완료된 멱등 키를 다시 쓰면 409 `REQUEST_ALREADY_COMPLETED`.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SpeechRequest' }
+            examples:
+              question:
+                summary: 현재 질문 읽기
+                value:
+                  target:
+                    kind: journey_message
+                    journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                    message_id: 1e2d3c4b-5a69-4788-9a0b-c1d2e3f4a5b6
+                  segment: 0
+              opportunityDescription:
+                summary: 공고 설명 두 번째 조각
+                value:
+                  target:
+                    kind: opportunity
+                    opportunity_id: 6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d
+                    version: 4
+                    field: description_text
+                  segment: 1
+              draftMotivation:
+                summary: 임시 지원서의 지원동기
+                value:
+                  target:
+                    kind: journey_draft
+                    journey_id: 3f6e2b1a-8c4d-4e5f-9a0b-1c2d3e4f5a6b
+                    draft_id: 9a8b7c6d-5e4f-4a3b-8c2d-1e0f9a8b7c6d
+                    revision: 5
+                    field: motivation
+                  segment: 0
+      responses:
+        '200':
+          description: 한국어 음성
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+            X-Speech-Segment-Count:
+              description: 이 필드의 전체 조각 수
+              schema: { type: integer, minimum: 1 }
+          content:
+            audio/wav:
+              schema:
+                type: string
+                contentMediaType: audio/wav
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: 버전 충돌·멱등 키 충돌
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                versionConflict: { $ref: '#/components/examples/VersionConflict' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
+                requestAlreadyCompleted:
+                  summary: 음성은 보관하지 않으므로 완료된 키는 다시 쓸 수 없다
+                  value:
+                    code: REQUEST_ALREADY_COMPLETED
+                    message: 이미 처리한 요청입니다. 다시 들으려면 읽어주기 버튼을 다시 눌러 주세요.
+                    request_id: req_01JABCDXYZ
+                idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422':
+          description: 형식 오류·허용하지 않는 필드·범위 밖 조각
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                fieldNotAllowed:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: target.field
+                        reason: invalid_value
+                segmentOutOfRange:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: segment
+                        reason: out_of_range
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /admin/opportunities/{opportunity_id}/reject:
+    post:
+      tags: [운영자]
+      operationId: rejectOpportunity
+      summary: 검수 대기 공고 반려 (계획 §5 보완 계약)
+      description: |
+        `pending` → `rejected`만 허용한다. 운영자 역할과 MFA가 필요하고 감사 기록을 남긴다.
+        `rejected`는 그 버전에서 끝나는 상태다. 다시 고치려면 PATCH로 새 `pending` 버전을 만든다.
+        `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다.
+      security:
+        - sessionCookie: []
+          csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/OpportunityId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/OpportunityRejectRequest' }
+            examples:
+              unverifiable:
+                value:
+                  base_version: 5
+                  reason_code: source_unverifiable
+                  note: 공식 원문 페이지가 열리지 않음
+              otherWithoutNote:
+                summary: (오류 예제) other인데 메모 없음 → 422
+                value:
+                  base_version: 5
+                  reason_code: other
+                  note: null
+      responses:
+        '200':
+          description: 반려 완료
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/OpportunityReviewResult' }
+              examples:
+                rejected:
+                  value:
+                    id: 6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d
+                    version: 5
+                    review_status: rejected
+                    reviewed_at: '2026-10-15T04:00:00Z'
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403':
+          description: 권한·CSRF·MFA 실패
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                mfaRequired:
+                  value:
+                    code: MFA_REQUIRED
+                    message: 추가 인증이 필요합니다.
+                    request_id: req_01JABCDXYZ
+                forbidden:
+                  value:
+                    code: FORBIDDEN
+                    message: 이 작업을 할 권한이 없습니다.
+                    request_id: req_01JABCDXYZ
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: 기준 버전 충돌·pending이 아님
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                versionConflict: { $ref: '#/components/examples/VersionConflict' }
+                notPending:
+                  value:
+                    code: INVALID_STATE_TRANSITION
+                    message: 검수 대기 상태의 공고만 반려할 수 있습니다.
+                    request_id: req_01JABCDXYZ
+        '413': { $ref: '#/components/responses/PayloadTooLarge' }
+        '422':
+          description: 형식 오류
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                noteRequired:
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 입력 내용을 확인해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: note
+                        reason: required_with
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
+  /health/live:
+    servers:
+      - url: http://backend:8000
+        description: Compose 내부 전용. Nginx로 공개하지 않는다
+    get:
+      tags: [내부 상태]
+      operationId: healthLive
+      summary: 프로세스 생존 확인 (내부 전용)
+      security: []
+      responses:
+        '200':
+          description: 살아 있음
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: false
+                required: [status]
+                properties:
+                  status: { type: string, const: ok }
+              examples:
+                ok:
+                  value: { status: ok }
+
+  /health/ready:
+    servers:
+      - url: http://backend:8000
+        description: Compose 내부 전용. Nginx로 공개하지 않는다
+    get:
+      tags: [내부 상태]
+      operationId: healthReady
+      summary: 요청 처리 준비 확인 (내부 전용)
+      description: |
+        DB·Redis가 정상이면 200, 아니면 503. 모델·음성 서비스 장애는 `degraded`로 200을 유지해
+        공개 공고 조회를 계속한다. 버전·주소·오류 메시지는 넣지 않는다.
+      security: []
+      responses:
+        '200':
+          description: 준비됨 또는 AI 기능만 저하
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+              examples:
+                ready:
+                  value:
+                    status: ready
+                    checks: { db: ok, redis: ok, llm: ok, speech: ok }
+                degraded:
+                  value:
+                    status: degraded
+                    checks: { db: ok, redis: ok, llm: fail, speech: ok }
+        '503':
+          description: DB 또는 Redis 장애
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Readiness' }
+              examples:
+                unavailable:
+                  value:
+                    status: unavailable
+                    checks: { db: ok, redis: fail, llm: ok, speech: ok }
+
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: __Host-rc_session
+      description: |
+        HttpOnly·Secure·SameSite=Lax 세션 쿠키. 비회원도 익명 세션을 가진다. 로컬 HTTP 개발에서는 `rc_session`.
+    csrfToken:
+      type: apiKey
+      in: header
+      name: X-CSRF-Token
+      description: |
+        CSRF 쿠키(`__Host-rc_csrf`, 로컬 `rc_csrf`) 값을 그대로 넣는다. GET이 아닌 모든 요청에 필수.
+        서버는 헤더·쿠키 일치, 세션 결합 서명, Origin을 함께 확인한다.
+        CSRF 쿠키 속성: `Path=/; Secure; SameSite=Strict`, HttpOnly 아님(화면이 읽는다), 세션 쿠키와 같은 수명.
+        로컬 HTTP 개발에서만 `Secure`를 뺀다.
+
+  parameters:
+    IdempotencyKey:
+      name: Idempotency-Key
+      in: header
+      required: true
+      description: |
+        클라이언트가 만든 UUID. 같은 키·같은 입력은 첫 결과를 다시 돌려주고 새로 실행하지 않는다.
+        같은 키·다른 입력은 409 `IDEMPOTENCY_KEY_REUSED`, 처리 중이면 409 `REQUEST_IN_PROGRESS`.
+      schema: { type: string, format: uuid }
+    JourneyId:
+      name: journey_id
+      in: path
+      required: true
+      description: 사적 자원 참조. 인증 수단이 아니며 서버가 세션 소유권을 함께 확인한다
+      schema: { type: string, format: uuid }
+    OpportunityId:
+      name: opportunity_id
+      in: path
+      required: true
+      schema: { type: string, format: uuid }
+
+  headers:
+    XRequestId:
+      description: 서버가 붙인 추적 ID. 오류 본문의 `request_id`와 같다
+      schema: { type: string, pattern: '^req_[0-9A-Za-z]{10,32}$' }
+    SetSessionCookies:
+      description: |
+        세션 쿠키(`__Host-rc_session`: HttpOnly; Secure; SameSite=Lax; Path=/)와
+        CSRF 쿠키(`__Host-rc_csrf`: Secure; SameSite=Strict; Path=/)를 새로 만들거나 바꿀 때만 붙는다.
+        로그인·로그아웃·탈퇴에서는 두 쿠키를 모두 교체한다.
+      schema: { type: string }
+    NoStore:
+      description: 개인 자료·음성 응답은 저장하지 않는다
+      schema: { type: string, const: no-store }
+    RetryAfter:
+      description: 다시 시도할 수 있을 때까지의 초
+      schema: { type: integer, minimum: 1 }
+
+  responses:
+    Unauthorized:
+      description: 미인증·세션 만료
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            unauthenticated:
+              value:
+                code: UNAUTHENTICATED
+                message: 로그인이 필요합니다.
+                request_id: req_01JABCDXYZ
+            sessionExpired:
+              value:
+                code: SESSION_EXPIRED
+                message: 접속 시간이 지나 다시 로그인해야 합니다.
+                request_id: req_01JABCDXYZ
+    Forbidden:
+      description: 권한·CSRF·MFA·동의 실패
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            csrfFailed:
+              value:
+                code: CSRF_FAILED
+                message: 요청을 확인할 수 없습니다. 화면을 새로 고친 뒤 다시 시도해 주세요.
+                request_id: req_01JABCDXYZ
+            consentRequired:
+              value:
+                code: CONSENT_REQUIRED
+                message: 이 기능을 쓰려면 먼저 안내를 확인하고 동의해 주세요.
+                request_id: req_01JABCDXYZ
+    NotFound:
+      description: 없는 자원 또는 접근할 수 없는 사적 자원(둘을 구분하지 않음)
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            notFound:
+              value:
+                code: NOT_FOUND
+                message: 찾을 수 없거나 이용 시간이 지났습니다.
+                request_id: req_01JABCDXYZ
+            saveIntentNotFound:
+              value:
+                code: SAVE_INTENT_NOT_FOUND
+                message: 저장 대기 시간이 지났거나 이미 처리되었습니다. 다시 저장해 주세요.
+                request_id: req_01JABCDXYZ
+    Conflict:
+      description: 버전·상태 충돌, 멱등 키 충돌
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            versionConflict: { $ref: '#/components/examples/VersionConflict' }
+            idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
+            requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
+            profileNotConfirmed:
+              value:
+                code: PROFILE_NOT_CONFIRMED
+                message: 프로필을 먼저 확정해 주세요.
+                request_id: req_01JABCDXYZ
+    PayloadTooLarge:
+      description: 요청 크기 초과 (JSON 64KiB, 녹음 6MiB)
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            tooLarge:
+              value:
+                code: PAYLOAD_TOO_LARGE
+                message: 보낸 내용이 너무 큽니다.
+                request_id: req_01JABCDXYZ
+    ValidationFailed:
+      description: 입력 형식·범위 오류
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            missingField:
+              value:
+                code: VALIDATION_FAILED
+                message: 입력 내용을 확인해 주세요.
+                request_id: req_01JABCDXYZ
+                fields:
+                  - path: source
+                    reason: required
+            unknownField:
+              value:
+                code: VALIDATION_FAILED
+                message: 입력 내용을 확인해 주세요.
+                request_id: req_01JABCDXYZ
+                fields:
+                  - path: owner_id
+                    reason: unknown_field
+    TooManyRequests:
+      description: 호출·동시성 제한
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            rateLimited:
+              value:
+                code: RATE_LIMITED
+                message: 요청이 많습니다. 잠시 후 다시 시도해 주세요.
+                request_id: req_01JABCDXYZ
+            dailyQuotaExceeded:
+              value:
+                code: DAILY_QUOTA_EXCEEDED
+                message: 오늘 이용 한도를 모두 사용했습니다. 직접 입력이나 공고 탐색은 계속할 수 있습니다.
+                request_id: req_01JABCDXYZ
+            inferenceBusy:
+              value:
+                code: INFERENCE_BUSY
+                message: 지금 처리 중인 요청이 많습니다. 잠시 후 다시 시도해 주세요.
+                request_id: req_01JABCDXYZ
+    ServiceUnavailable:
+      description: 모델·내부 서비스 일시 장애
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+        Retry-After: { $ref: '#/components/headers/RetryAfter' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            modelUnavailable:
+              value:
+                code: MODEL_UNAVAILABLE
+                message: AI 기능을 잠시 쓸 수 없습니다. 직접 입력이나 공고 탐색은 계속할 수 있습니다.
+                request_id: req_01JABCDXYZ
+            aiTimeout:
+              value:
+                code: AI_TIMEOUT
+                message: 처리 시간이 길어져 중단했습니다. 다시 시도하거나 직접 입력해 주세요.
+                request_id: req_01JABCDXYZ
+            serviceUnavailable:
+              value:
+                code: SERVICE_UNAVAILABLE
+                message: 서비스를 잠시 쓸 수 없습니다. 잠시 후 다시 시도해 주세요.
+                request_id: req_01JABCDXYZ
+
+  examples:
+    VersionConflict:
+      value:
+        code: VERSION_CONFLICT
+        message: 정보가 변경되었습니다. 최신 내용을 확인해 주세요.
+        request_id: req_01JABCDXYZ
+    IdempotencyKeyReused:
+      value:
+        code: IDEMPOTENCY_KEY_REUSED
+        message: 같은 요청 번호로 다른 내용을 보냈습니다. 화면을 새로 고친 뒤 다시 시도해 주세요.
+        request_id: req_01JABCDXYZ
+    RequestInProgress:
+      value:
+        code: REQUEST_IN_PROGRESS
+        message: 앞선 요청을 처리하고 있습니다. 잠시 기다려 주세요.
+        request_id: req_01JABCDXYZ
+    OpportunityVolunteering:
+      value:
+        id: 6a5b4c3d-2e1f-4a0b-9c8d-7e6f5a4b3c2d
+        version: 4
+        title: 도서관 어르신 책 읽어주기 봉사
+        organization_name: 용산구립도서관
+        activity_type: volunteering
+        is_public_job: null
+        role_tags: [reading_companion]
+        skill_tags: [낭독, 대화]
+        activity_region: { province: seoul, district: yongsan }
+        location_text: 용산구립도서관 2층 어린이실
+        remote_allowed: false
+        schedule_text: 매주 수요일 14:00~16:00
+        hours_per_week: 2
+        paid: false
+        compensation_text: null
+        description_text: 도서관을 찾는 아이들에게 그림책을 읽어 주는 활동입니다.
+        description_truncated: false
+        requirements:
+          - id: 2b3c4d5e-6f70-4812-9a3b-4c5d6e7f8091
+            field: weekday
+            operator: includes_all
+            value: [3]
+            group_id: null
+            group_operator: null
+            reference_date: null
+            source_evidence: 매주 수요일 활동 가능하신 분
+            clarity: clear
+        required_documents: null
+        application_method: online
+        application_instructions: 1365 자원봉사포털에서 신청합니다.
+        source_url: https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=1234567
+        application_url: https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=1234567
+        deadline_date: '2026-10-31'
+        deadline_at: null
+        recruitment_status: open
+        source_checked_at: '2026-10-15T00:00:00Z'
+        reviewed_at: '2026-10-15T01:00:00Z'
+        change_pending: false
+
+  schemas:
+    ErrorCode:
+      type: string
+      description: 상태 코드별 의미는 docs/api/README.md §2.5
+      enum:
+        - UNAUTHENTICATED
+        - SESSION_EXPIRED
+        - FORBIDDEN
+        - CSRF_FAILED
+        - MFA_REQUIRED
+        - CONSENT_REQUIRED
+        - REAUTH_REQUIRED
+        - NOT_FOUND
+        - SAVE_INTENT_NOT_FOUND
+        - VERSION_CONFLICT
+        - IDEMPOTENCY_KEY_REUSED
+        - REQUEST_IN_PROGRESS
+        - REQUEST_ALREADY_COMPLETED
+        - PROFILE_NOT_CONFIRMED
+        - PROFILE_NOT_SAVED
+        - DRAFT_NOT_APPROVED
+        - OPPORTUNITY_NOT_AVAILABLE
+        - INVALID_STATE_TRANSITION
+        - ALREADY_SIGNED_IN
+        - PAYLOAD_TOO_LARGE
+        - VALIDATION_FAILED
+        - RATE_LIMITED
+        - DAILY_QUOTA_EXCEEDED
+        - INFERENCE_BUSY
+        - INTERNAL_ERROR
+        - MODEL_UNAVAILABLE
+        - AI_TIMEOUT
+        - SERVICE_UNAVAILABLE
+
+    Error:
+      type: object
+      description: 모든 오류의 공통 본문. 원본 입력·SQL·토큰·파일 경로·예외 추적을 넣지 않는다
+      additionalProperties: false
+      required: [code, message, request_id]
+      properties:
+        code: { $ref: '#/components/schemas/ErrorCode' }
+        message:
+          type: string
+          maxLength: 200
+          description: 사용자에게 보여 줄 한국어 문장
+        request_id:
+          type: string
+          pattern: '^req_[0-9A-Za-z]{10,32}$'
+          description: 서버가 붙인 추적 ID. 클라이언트 멱등 키와 다르다
+        fields:
+          type: array
+          description: 422에만 붙는다
+          maxItems: 50
+          items: { $ref: '#/components/schemas/FieldError' }
+
+    FieldError:
+      type: object
+      additionalProperties: false
+      required: [path, reason]
+      properties:
+        path:
+          type: string
+          maxLength: 200
+          description: 점 경로. 예 `profile.preferred_regions[0].district`
+        reason:
+          type: string
+          enum: [required, invalid_type, invalid_value, too_long, too_short, out_of_range, unknown_field, required_with]
+
+    ConsentPurpose:
+      type: string
+      enum: [ai_processing, storage]
+      description: ai_processing = EC2 자체 AI 처리(대화·음성·읽어주기), storage = 회원 영구 저장
+
+    ConsentState:
+      type: object
+      additionalProperties: false
+      required: [purpose, notice_version, granted_at]
+      properties:
+        purpose: { $ref: '#/components/schemas/ConsentPurpose' }
+        notice_version:
+          type: string
+          pattern: '^[a-z0-9._-]{1,32}$'
+        granted_at: { type: string, format: date-time }
+
+    Me:
+      type: object
+      additionalProperties: false
+      required: [authenticated, user, consents, pending_save_intent]
+      properties:
+        authenticated: { type: boolean }
+        user:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [id, roles, mfa_verified]
+              properties:
+                id: { type: string, format: uuid }
+                roles:
+                  type: array
+                  items: { type: string, enum: [user, operator] }
+                mfa_verified:
+                  type: boolean
+                  description: 운영자 MFA를 이 세션에서 완료했는지. 일반 사용자는 항상 false
+        consents:
+          type: array
+          description: 현재 유효한 동의만. 철회·폐기 버전은 빠진다
+          items: { $ref: '#/components/schemas/ConsentState' }
+        pending_save_intent:
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/PendingSaveIntent'
+
+    SaveIntentCreate:
+      type: object
+      additionalProperties: false
+      required: [journey_id, profile, draft]
+      description: |
+        profile·draft 중 하나 이상. draft가 있으면 profile도 필수.
+        둘 다 null이면 422 `fields: [{path: profile, reason: required}]`, draft만 있으면 422 `fields: [{path: profile, reason: required_with}]`.
+      not:
+        description: profile·draft가 모두 null이면 거절
+        properties:
+          profile: { type: 'null' }
+          draft: { type: 'null' }
+      properties:
+        journey_id: { type: string, format: uuid }
+        profile:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [version]
+              properties:
+                version:
+                  type: integer
+                  minimum: 1
+                  description: 이 체험의 확정 프로필 버전
+        draft:
+          oneOf:
+            - type: 'null'
+            - type: object
+              additionalProperties: false
+              required: [draft_id, revision]
+              properties:
+                draft_id: { type: string, format: uuid }
+                revision:
+                  type: integer
+                  minimum: 1
+                  description: 승인한 임시 지원서의 리비전
+
+    SaveIntentTargets:
+      type: object
+      additionalProperties: false
+      required: [profile, draft]
+      properties:
+        profile: { type: boolean }
+        draft: { type: boolean }
+
+    SaveIntent:
+      type: object
+      additionalProperties: false
+      required: [save_intent_id, expires_at, targets]
+      properties:
+        save_intent_id:
+          type: string
+          format: uuid
+          description: opaque 참조. URL에 넣지 않는다
+        expires_at:
+          type: string
+          format: date-time
+          description: 발급 후 10분
+        targets: { $ref: '#/components/schemas/SaveIntentTargets' }
+
+    PendingSaveIntent:
+      type: object
+      additionalProperties: false
+      required: [save_intent_id, expires_at, targets, existing_saved_profile_version]
+      properties:
+        save_intent_id: { type: string, format: uuid }
+        expires_at: { type: string, format: date-time }
+        targets: { $ref: '#/components/schemas/SaveIntentTargets' }
+        existing_saved_profile_version:
+          type: [integer, 'null']
+          minimum: 1
+          description: 로그인한 회원의 현재 저장 프로필 버전. 있으면 화면이 교체 여부를 묻고 base_saved_version으로 보낸다
+
+    SaveIntentSource:
+      type: object
+      additionalProperties: false
+      required: [type, save_intent_id]
+      properties:
+        type: { type: string, const: save_intent }
+        save_intent_id: { type: string, format: uuid }
+
+    JourneyProfileSource:
+      type: object
+      additionalProperties: false
+      required: [type, journey_id, version]
+      properties:
+        type: { type: string, const: journey }
+        journey_id: { type: string, format: uuid }
+        version:
+          type: integer
+          minimum: 1
+          description: 체험의 확정 프로필 버전
+
+    JourneyDraftSource:
+      type: object
+      additionalProperties: false
+      required: [type, journey_id, draft_id, revision]
+      properties:
+        type: { type: string, const: journey }
+        journey_id: { type: string, format: uuid }
+        draft_id: { type: string, format: uuid }
+        revision:
+          type: integer
+          minimum: 1
+          description: 승인한 임시 지원서의 리비전
+
+    ProfileSaveRequest:
+      type: object
+      additionalProperties: false
+      required: [source, base_saved_version]
+      properties:
+        source:
+          oneOf:
+            - $ref: '#/components/schemas/SaveIntentSource'
+            - $ref: '#/components/schemas/JourneyProfileSource'
+          discriminator:
+            propertyName: type
+            mapping:
+              save_intent: '#/components/schemas/SaveIntentSource'
+              journey: '#/components/schemas/JourneyProfileSource'
+        base_saved_version:
+          type: [integer, 'null']
+          minimum: 1
+          description: 교체할 현재 저장본 버전. 저장본이 없으면 null. 최신이 아니면 409
+
+    ProfileSaveResult:
+      type: object
+      additionalProperties: false
+      required: [version, saved_at, created, replaced_version]
+      properties:
+        version: { type: integer, minimum: 1 }
+        saved_at: { type: string, format: date-time }
+        created:
+          type: boolean
+          description: false면 같은 내용의 기존 저장본을 연결했다
+        replaced_version: { type: [integer, 'null'], minimum: 1 }
+
+    DraftSaveRequest:
+      type: object
+      additionalProperties: false
+      required: [source, document_id, base_document_version]
+      properties:
+        source:
+          oneOf:
+            - $ref: '#/components/schemas/SaveIntentSource'
+            - $ref: '#/components/schemas/JourneyDraftSource'
+          discriminator:
+            propertyName: type
+            mapping:
+              save_intent: '#/components/schemas/SaveIntentSource'
+              journey: '#/components/schemas/JourneyDraftSource'
+        document_id:
+          type: [string, 'null']
+          format: uuid
+          description: 기존 저장 문서를 갱신할 때만. base_document_version과 함께 보낸다
+        base_document_version:
+          type: [integer, 'null']
+          minimum: 1
+
+    DraftSaveResult:
+      type: object
+      additionalProperties: false
+      required: [document_id, version, saved_at, profile_version]
+      properties:
+        document_id: { type: string, format: uuid }
+        version: { type: integer, minimum: 1 }
+        saved_at: { type: string, format: date-time }
+        profile_version:
+          type: integer
+          minimum: 1
+          description: 연결한 회원 저장 프로필 버전
+
+    RoleId:
+      type: string
+      pattern: '^[a-z][a-z0-9_]{1,63}$'
+      description: 역할 사전(RoleDefinition)의 키. 공고 role_tags도 같은 키를 쓴다
+
+    RoleExclusionUpdate:
+      type: object
+      additionalProperties: false
+      required: [role_ids, base_revision]
+      properties:
+        role_ids:
+          type: array
+          maxItems: 50
+          uniqueItems: true
+          items: { $ref: '#/components/schemas/RoleId' }
+        base_revision: { type: integer, minimum: 1 }
+
+    RoleExclusions:
+      type: object
+      additionalProperties: false
+      required: [role_ids, revision]
+      properties:
+        role_ids:
+          type: array
+          items: { $ref: '#/components/schemas/RoleId' }
+        revision: { type: integer, minimum: 1 }
+
+    SpeechRequest:
+      type: object
+      additionalProperties: false
+      required: [target, segment]
+      properties:
+        target: { $ref: '#/components/schemas/SpeechTarget' }
+        segment:
+          type: integer
+          minimum: 0
+          maximum: 9
+          description: 2,000자 단위 조각 번호(0부터). 응답 헤더 X-Speech-Segment-Count를 넘으면 422
+
+    SpeechTarget:
+      description: 화면에 보이는 자료의 참조. 대상마다 읽을 수 있는 필드가 정해져 있다
+      oneOf:
+        - $ref: '#/components/schemas/SpeechTargetJourneyMessage'
+        - $ref: '#/components/schemas/SpeechTargetJourneyDraft'
+        - $ref: '#/components/schemas/SpeechTargetSavedDraft'
+        - $ref: '#/components/schemas/SpeechTargetOpportunity'
+      discriminator:
+        propertyName: kind
+        mapping:
+          journey_message: '#/components/schemas/SpeechTargetJourneyMessage'
+          journey_draft: '#/components/schemas/SpeechTargetJourneyDraft'
+          saved_draft: '#/components/schemas/SpeechTargetSavedDraft'
+          opportunity: '#/components/schemas/SpeechTargetOpportunity'
+
+    SpeechTargetJourneyMessage:
+      type: object
+      additionalProperties: false
+      required: [kind, journey_id, message_id]
+      properties:
+        kind: { type: string, const: journey_message }
+        journey_id: { type: string, format: uuid }
+        message_id:
+          type: string
+          format: uuid
+          description: 체험의 AI 질문 메시지
+
+    SpeechTargetJourneyDraft:
+      type: object
+      additionalProperties: false
+      required: [kind, journey_id, draft_id, revision, field]
+      properties:
+        kind: { type: string, const: journey_draft }
+        journey_id: { type: string, format: uuid }
+        draft_id: { type: string, format: uuid }
+        revision: { type: integer, minimum: 1 }
+        field: { type: string, enum: [self_introduction, motivation] }
+
+    SpeechTargetSavedDraft:
+      type: object
+      additionalProperties: false
+      required: [kind, document_id, version, field]
+      properties:
+        kind: { type: string, const: saved_draft }
+        document_id: { type: string, format: uuid }
+        version: { type: integer, minimum: 1 }
+        field: { type: string, enum: [self_introduction, motivation] }
+
+    SpeechTargetOpportunity:
+      type: object
+      additionalProperties: false
+      required: [kind, opportunity_id, version, field]
+      properties:
+        kind: { type: string, const: opportunity }
+        opportunity_id: { type: string, format: uuid }
+        version: { type: integer, minimum: 1 }
+        field:
+          type: string
+          enum: [title, description_text, schedule_text, location_text, compensation_text, application_instructions]
+
+    OpportunityRejectRequest:
+      type: object
+      additionalProperties: false
+      required: [base_version, reason_code, note]
+      properties:
+        base_version:
+          type: integer
+          minimum: 1
+          description: 검수 중인 pending 버전
+        reason_code:
+          type: string
+          enum:
+            - source_unverifiable
+            - out_of_scope
+            - recruitment_closed
+            - duplicate
+            - insufficient_information
+            - inappropriate_content
+            - other
+          description: |
+            source_unverifiable 공식 원문·접수 경로 확인 불가, out_of_scope 지역·유형 범위 밖,
+            recruitment_closed 이미 모집 종료, duplicate 같은 공고가 이미 있음,
+            insufficient_information 필수 정보 부족, inappropriate_content 부적절한 내용, other 기타(메모 필수)
+        note:
+          type: [string, 'null']
+          maxLength: 500
+          description: 개인정보를 적지 않는다
+
+    OpportunityReviewResult:
+      type: object
+      additionalProperties: false
+      required: [id, version, review_status, reviewed_at]
+      properties:
+        id: { type: string, format: uuid }
+        version: { type: integer, minimum: 1 }
+        review_status: { type: string, enum: [pending, approved, rejected, hidden] }
+        reviewed_at: { type: string, format: date-time }
+
+    Province:
+      type: string
+      enum: [seoul, gyeonggi, incheon]
+
+    Region:
+      type: object
+      additionalProperties: false
+      required: [province, district]
+      properties:
+        province: { $ref: '#/components/schemas/Province' }
+        district:
+          type: [string, 'null']
+          pattern: '^[a-z0-9_]{2,40}$'
+          description: 서버 지역 목록의 시·군·구 식별값. null이면 시·도 전체
+
+    Requirement:
+      type: object
+      additionalProperties: false
+      required: [id, field, operator, value, group_id, group_operator, reference_date, source_evidence, clarity]
+      description: |
+        필드별 허용 연산과 값 (Plan/02 §4 표와 같다):
+
+        | field | operator | value |
+        |---|---|---|
+        | age | gte, lte | integer (만 나이) |
+        | age | between | [min, max] integer 2개 |
+        | residence_region | in | Region[] |
+        | certification, completed_course | has_all, has_any | string[] |
+        | weekday | includes_all, includes_any | integer[] (1=월 ~ 7=일) |
+        | hours_per_week | gte, lte | number |
+        | other | null | null (clarity=needs_review) |
+
+        표에 없는 조합은 422. 해석하지 못한 조건은 field=other, clarity=needs_review와 원문 근거로 보존한다.
+      properties:
+        id: { type: string, format: uuid }
+        field:
+          type: string
+          enum: [age, residence_region, certification, completed_course, weekday, hours_per_week, other]
+        operator:
+          type: [string, 'null']
+          enum: [gte, lte, between, in, has_all, has_any, includes_all, includes_any, null]
+        value:
+          oneOf:
+            - type: 'null'
+            - type: number
+            - type: array
+              items: { type: number }
+              minItems: 1
+              maxItems: 7
+            - type: array
+              items: { type: string, maxLength: 100 }
+              minItems: 1
+              maxItems: 20
+            - type: array
+              items: { $ref: '#/components/schemas/Region' }
+              minItems: 1
+              maxItems: 30
+        group_id: { type: [string, 'null'], format: uuid }
+        group_operator:
+          type: [string, 'null']
+          enum: [and, or, null]
+        reference_date:
+          type: [string, 'null']
+          format: date
+          description: 연령 등 판정 기준일
+        source_evidence:
+          type: string
+          maxLength: 1000
+          description: 원문 조건 문장
+        clarity: { type: string, enum: [clear, needs_review] }
+
+    Opportunity:
+      type: object
+      description: 공개 공고 상세. 내부 필드(source_id, external_id, content_hash, review_status)는 내보내지 않는다
+      additionalProperties: false
+      required:
+        - id
+        - version
+        - title
+        - organization_name
+        - activity_type
+        - is_public_job
+        - role_tags
+        - skill_tags
+        - activity_region
+        - location_text
+        - remote_allowed
+        - schedule_text
+        - hours_per_week
+        - paid
+        - compensation_text
+        - description_text
+        - description_truncated
+        - requirements
+        - required_documents
+        - application_method
+        - application_instructions
+        - source_url
+        - application_url
+        - deadline_date
+        - deadline_at
+        - recruitment_status
+        - source_checked_at
+        - reviewed_at
+        - change_pending
+      properties:
+        id: { type: string, format: uuid }
+        version: { type: integer, minimum: 1 }
+        title: { type: string, maxLength: 200 }
+        organization_name: { type: string, maxLength: 200 }
+        activity_type: { type: string, enum: [employment, volunteering] }
+        is_public_job: { type: [boolean, 'null'] }
+        role_tags:
+          type: array
+          items: { $ref: '#/components/schemas/RoleId' }
+        skill_tags:
+          type: array
+          items: { type: string, maxLength: 50 }
+        activity_region:
+          description: 원격이 아닌 공고의 활동 지역. 모르면 null(지역 기준 추천에서 제외)
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/Region'
+        location_text: { type: [string, 'null'], maxLength: 500 }
+        remote_allowed: { type: [boolean, 'null'] }
+        schedule_text: { type: [string, 'null'], maxLength: 500 }
+        hours_per_week: { type: [number, 'null'], minimum: 0, maximum: 168 }
+        paid: { type: [boolean, 'null'] }
+        compensation_text: { type: [string, 'null'], maxLength: 500 }
+        description_text:
+          type: [string, 'null']
+          maxLength: 5000
+          description: |
+            공식 원문 설명(일반 텍스트). 검색 계산과 상세 표시에 쓰고 검수 대상이다.
+            값이 없으면 null이며 설명을 만들어 채우지 않는다
+        description_truncated:
+          type: boolean
+          description: 원문이 5,000자를 넘어 앞부분만 저장했으면 true
+        requirements:
+          type: array
+          description: 빈 배열은 "명시된 필수조건 없음"으로 검수한 상태
+          items: { $ref: '#/components/schemas/Requirement' }
+        required_documents:
+          type: [array, 'null']
+          items: { type: string, maxLength: 200 }
+        application_method: { type: string, enum: [online, phone, visit, email, mixed] }
+        application_instructions: { type: string, maxLength: 2000 }
+        source_url: { type: string, format: uri, pattern: '^https://' }
+        application_url: { type: string, format: uri, pattern: '^https://' }
+        deadline_date:
+          type: [string, 'null']
+          format: date
+          description: 날짜만 제공된 마감. 시각을 만들어 붙이지 않는다
+        deadline_at:
+          type: [string, 'null']
+          format: date-time
+          description: 공식 시각이 제공된 경우에만
+        recruitment_status: { type: string, enum: [open, closed, unknown] }
+        source_checked_at: { type: string, format: date-time }
+        reviewed_at: { type: string, format: date-time }
+        change_pending:
+          type: boolean
+          description: 중요 변경이 검수 대기 중. true면 화면에 "변경 확인 중"을 표시하고 추천·지원서 생성을 보류한다
+
+    Readiness:
+      type: object
+      additionalProperties: false
+      required: [status, checks]
+      properties:
+        status: { type: string, enum: [ready, degraded, unavailable] }
+        checks:
+          type: object
+          additionalProperties: false
+          required: [db, redis, llm, speech]
+          properties:
+            db: { type: string, enum: [ok, fail] }
+            redis: { type: string, enum: [ok, fail] }
+            llm: { type: string, enum: [ok, fail] }
+            speech: { type: string, enum: [ok, fail] }
