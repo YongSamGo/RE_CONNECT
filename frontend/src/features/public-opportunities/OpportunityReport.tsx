@@ -19,6 +19,7 @@ export function OpportunityReport({ id, version }: { id: string; version: number
   const pending = request.state.status === 'pending'
   async function submit() {
     if (pending) return
+    if (note.length > 500) { setError('오류 설명은 500자 이내로 적어 주세요.'); return }
     if (type === 'other' && !note.trim()) { setError('그 밖의 오류를 선택했다면 설명을 적어 주세요.'); return }
     setError('')
     const body: components['schemas']['ReportCreate'] = { opportunity: { id, version }, type, note: note.trim() || null }
@@ -37,7 +38,7 @@ export function OpportunityReport({ id, version }: { id: string; version: number
   return <details className="panel"><summary>공고 정보 오류 알리기</summary><p>로그인 없이 공고 오류를 알릴 수 있어요. 오류 유형과 설명만 전송하며, 개인정보는 적지 마세요.</p>
     <form onSubmit={(event) => { event.preventDefault(); void submit() }}>
       <label htmlFor="report-type">어떤 정보가 다른가요?</label><select id="report-type" value={type} disabled={pending} onChange={(event) => { setType(event.target.value as ReportType); setError(''); request.clear() }}>{(Object.keys(types) as ReportType[]).map((value) => <option key={value} value={value}>{types[value]}</option>)}</select>
-      <TextAreaField label="오류 설명" value={note} maxLength={1000} disabled={pending} onChange={(event) => { setNote(event.target.value); setError(''); request.clear() }} error={error} hint="그 밖의 오류는 설명이 필요해요. 이름·연락처·주민등록번호·상세 병력은 적지 마세요." />
+      <TextAreaField label="오류 설명" value={note} maxLength={500} disabled={pending} onChange={(event) => { setNote(event.target.value); setError(''); request.clear() }} error={error} hint="그 밖의 오류는 설명이 필요해요. 이름·연락처·주민등록번호·상세 병력은 적지 마세요." />
       <Button type="submit" pending={pending} disabled={request.state.status === 'success'}>공고 오류 신고 보내기</Button>
     </form>
     {request.state.status === 'error' && <RequestError error={request.state.error} />}<p role="status">{request.state.status === 'success' ? request.state.data : ''}</p>
