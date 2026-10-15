@@ -5,7 +5,7 @@ export type Opportunity = components['schemas']['OpportunitySummary']
 export type OpportunityList = components['schemas']['OpportunityList']
 export type Province = components['schemas']['Province']
 export const provinces = { seoul: '서울', gyeonggi: '경기', incheon: '인천' } satisfies Record<Province, string>
-export type Search = { q: string; province: Province | ''; activity_type: Opportunity['activity_type'] | '' }
+export type Search = { q: string; province: Province | ''; district: string; districtName: string; regionVersion: string | null; activity_type: Opportunity['activity_type'] | '' }
 
 export const invalid = (): never => { throw new ApiError('INVALID_RESPONSE') }
 export function record(value: unknown): Record<string, unknown> {
@@ -89,5 +89,5 @@ export function deadlineLabel(item: Pick<Opportunity, 'deadline_at' | 'deadline_
 }
 
 export function searchDescription(search: Search): string {
-  return [search.q ? `검색어: ${search.q}` : '검색어 전체', search.province ? provinces[search.province] : '지역 전체', search.activity_type === 'employment' ? '취업·공공일자리' : search.activity_type === 'volunteering' ? '봉사' : '활동 유형 전체'].join(' · ')
+  return [search.q ? `검색어: ${search.q}` : '검색어 전체', search.province ? `${provinces[search.province]}${search.district ? ` / ${search.districtName || search.district}` : ' 전체'}` : '지역 전체', search.activity_type === 'employment' ? '취업·공공일자리' : search.activity_type === 'volunteering' ? '봉사' : '활동 유형 전체'].join(' · ')
 }
