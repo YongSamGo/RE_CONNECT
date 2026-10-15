@@ -2,7 +2,7 @@
 
 기준일: 2026-10-15 · 버전: v1.2 · 상태: 사용자 승인 설계 명세(EC2 로컬 추론 반영)
 
-> **v1.2 변경 (2026-10-15, W01-02):** API 계약 확정에 따라 저장 대기 발급·공고 반려 경로를 더하고, 카카오 시작·읽어주기·회원 저장 입력과 공통 헤더·CSRF·오류 코드를 정했다. 세부 형식과 결정 이유는 [API 계약](../docs/api/README.md)을 따른다.
+> **v1.2 변경 (2026-10-15, W01-02):** API 계약 확정에 따라 저장 대기 발급·공고 반려·지역 목록·운영자 공고 상세 경로를 더하고, 카카오 시작·읽어주기·회원 저장 입력과 공통 헤더·CSRF·오류 코드를 정했다. 세부 형식과 결정 이유는 [API 계약](../docs/api/README.md)을 따른다.
 
 관련 문서: [UX Flow](01_UX_Flow.md) · [Data Design](02_Data_Design.md) · [Functional Specification](04_Functional_Specification.md) · [Engineering Constraints](05_Engineering_Constraints.md)
 
@@ -128,16 +128,17 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 | `GET /journeys/{id}/roles` | 확정 프로필 버전 쿼리. 생략 시 현재 확정본 | 역할 후보·경험 근거 |
 | `PUT /journeys/{id}/role-exclusions` | 제외 역할 ID 목록·기준 리비전 | 현재 추천 필터 |
 | `POST /recommendations` | 소유한 확정 프로필 참조·필터 | Recommendation[] |
+| `GET /regions` | 없음 | 지원 시·도와 시·군·구 목록 |
 | `GET /opportunities` | 검색·지역·유형·페이지 | 공개 공고 목록 |
 | `GET /opportunities/{id}` | 없음 | 최신 공개 공고 |
-| `POST /opportunities/{id}/eligibility` | 확정 프로필 참조 | EligibilityResult |
+| `POST /opportunities/{id}/eligibility` | 확정 프로필 참조·화면의 공고 버전 | EligibilityResult |
 | `GET /opportunities/{id}/preparation` | 없음 | 공식 서류·절차·접수 안내 |
 | `POST /journeys/{id}/drafts` | 확정 프로필·공고 버전 참조·멱등 키·작성 방식 | 임시 지원서 초안 |
 | `PATCH /journeys/{id}/drafts/{draft_id}` | 수정 본문·기준 리비전 | 수정한 임시 초안 |
 | `POST /journeys/{id}/drafts/{draft_id}/approve` | 기준 리비전 | 사용자 승인 상태 |
 | `POST /speech` | 읽기 대상 참조(대상 종류·자원 ID·버전·필드)·조각 번호·멱등 키 | 음성 응답 |
 | `POST /auth/save-intents` | 비회원 체험의 확정 프로필·승인 지원서 참조·멱등 키 | 저장 대기 참조·10분 만료 |
-| `GET /auth/kakao/start` | 로그인 목적(`login`, `save`). 저장 대기는 세션에 결합해 URL에 넣지 않음 | 인증 시작 |
+| `GET /auth/kakao/start` | 로그인 목적(`login`, `save`, `reauth`). 저장 대기는 세션에 결합해 URL에 넣지 않음 | 인증 시작 |
 | `GET /auth/kakao/callback` | 인가 코드·state | 내부 세션 |
 | `POST /auth/logout` | 없음 | 세션 폐기 |
 | `GET /me` | 없음. 비회원도 200 | 계정·권한·동의·저장 대기 상태 |
@@ -150,10 +151,11 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 | `GET /drafts/{id}` | 없음 | 자기 지원서·재검토 상태 |
 | `POST /drafts` | 승인한 임시 지원서 참조(체험 또는 저장 대기)·선택적 기존 문서 ID/기준 버전·멱등 키 | 암호화 저장·문서 버전 |
 | `DELETE /drafts/{id}` | 없음 | 자기 지원서 삭제 |
-| `DELETE /me` | 재인증 확인 | 탈퇴·삭제 상태 |
+| `DELETE /me` | 5분 안의 재인증(`purpose=reauth`) | 탈퇴·삭제 상태 |
 | `POST /reports` | 공고 ID·오류 유형 | 신고 접수 |
 | `POST /admin/mfa/verify` | OTP | MFA 확인 상태 |
 | `GET/POST /admin/opportunities` | 목록 조건 / 공고 초안 | 운영자 공고 |
+| `GET /admin/opportunities/{id}` | 없음 | 최신·공개본 비교용 상세 |
 | `PATCH /admin/opportunities/{id}` | 변경 항목·기준 버전 | 검수 대기 변경본 |
 | `POST /admin/opportunities/{id}/approve` | 검수 사유·기준 버전 | 승인·공개 |
 | `POST /admin/opportunities/{id}/reject` | 기준 버전·사유 코드·선택 메모 | 반려 |
@@ -179,7 +181,7 @@ Redis에는 개인정보 임시 데이터의 RDB·AOF 영속화를 적용하지 
 
 1. 저장 버튼을 누르면 `POST /auth/save-intents`로 해당 세션 소유의 승인 자료만 저장 대기로 만든다. 서버가 승인본을 복사하며 대화 원문·음성·미승인 초안은 전달하지 않는다. 비회원의 지원서는 근거 프로필과 함께 담는다.
 2. 저장 대기 자료는 Redis에 최대 10분 유지하고 시작 세션에 연결한다. OAuth state는 시작 세션에 저장하는 1회용 값이며 콜백은 요청 세션의 state와 대조한다. 저장 대기 참조·자료 본문·세션 자격증명을 URL에 넣지 않는다.
-3. 카카오 인증을 검증하고 세션을 교체한 뒤 저장 대기만 새 세션으로 옮긴다(진행 중이던 체험은 옮기지 않음). 화면은 `GET /me`의 `pending_save_intent`로 대상을 보여 주고, 저장 동의를 확인한 뒤 `POST /profiles/me/versions`·`POST /drafts`에 `save_intent_id`를 넘긴다. 인증 성공만으로 자료를 영구 저장하지 않는다.
+3. 카카오 인증을 검증하고 세션을 교체한 뒤 저장 대기만 새 세션으로 옮기고, 이전 세션의 진행 중 체험은 지운다. 화면은 `GET /me`의 `pending_save_intent`로 대상을 보여 주고, 저장 동의를 확인한 뒤 `POST /profiles/me/versions`·`POST /drafts`에 `save_intent_id`를 넘긴다. 인증 성공만으로 자료를 영구 저장하지 않는다.
 4. 저장 완료·취소·만료 후 대기 참조를 폐기한다. 저장 요청은 멱등하게 처리해 네트워크 재전송이 새 버전을 반복 생성하지 않게 한다.
 
 운영자 MFA 등록·복구·최초 권한 부여는 제한된 관리 절차로 구성하고 공개 가입에서 권한을 선택할 수 없게 한다.
