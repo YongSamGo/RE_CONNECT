@@ -4,3 +4,5 @@
 .audit-table th, .audit-table td { border-bottom: 1px solid var(--line); text-align: left; padding: 12px; vertical-align: top; min-width: 100px; }
 .audit-table th { background: var(--surface); }
 .audit-table td:last-child { overflow-wrap: anywhere; }
+.opportunity-editor input:not([type='checkbox']), .opportunity-editor select { width: 100%; margin-bottom: 16px; }
+.opportunity-editor .form-field { margin-bottom: 24px; }

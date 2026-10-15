@@ -10,6 +10,7 @@ import { parseSession } from '../account/session'
 import { invalid, isOpportunityId, record, text } from '../public-opportunities/catalog'
 import { OpportunityReview } from './OpportunityReview'
 import { AuditPanel } from './AuditPanel'
+import { OpportunityEditor } from './OpportunityEditor'
 
 type Me = components['schemas']['Me']
 type Row = { id: string; version: number; title: string; status: string; note: string | null }
@@ -32,6 +33,7 @@ const statuses: Record<string, string> = { pending: '검수 대기', approved: '
 
 function AdminWorkspace() {
   const [auditOpen, setAuditOpen] = useState(false)
+  const [editor, setEditor] = useState<{ target?: { id: string; version: number } } | null>(null)
   const request = useRequest<View>()
   const [query, setQuery] = useState('')
   const [selected, setSelected] = useState<Row | null>(null)
@@ -54,8 +56,9 @@ function AdminWorkspace() {
     })
   }
   if (auditOpen) return <AuditPanel onBack={() => setAuditOpen(false)} />
+  if (editor) return <OpportunityEditor key={editor.target ? `${editor.target.id}:${editor.target.version}` : 'create'} target={editor.target} onBack={() => setEditor(null)} />
   return <>
-    <div className="actions"><Button variant="secondary" disabled={pending} onClick={() => { request.clear(); mutation.clear(); setSelected(null); setNote(''); setQuery(''); setAuditOpen(true) }}>감사 기록 조회</Button></div>
+    <div className="actions"><Button variant="secondary" disabled={pending} onClick={() => { request.clear(); mutation.clear(); setSelected(null); setNote(''); setEditor({}) }}>새 공고 등록</Button><Button variant="secondary" disabled={pending} onClick={() => { request.clear(); mutation.clear(); setSelected(null); setNote(''); setQuery(''); setAuditOpen(true) }}>감사 기록 조회</Button></div>
     <section className="panel"><h2>운영 자료 조회</h2><form onSubmit={(event) => { event.preventDefault(); load('opportunities') }}><label htmlFor="admin-query">공고 제목 검색</label><input id="admin-query" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} /><div className="actions"><Button type="submit" disabled={pending}>공고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => load('reports')}>신고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => { setSelected(null); mutation.clear(); void request.run(async (api, signal) => {
       const item = record(required((await api.GET('/admin/operations', { signal })).data))
       const models = record(item.models)
@@ -68,14 +71,14 @@ function AdminWorkspace() {
       {state.data.rows.length ? <ul>{state.data.rows.map((row) => <li key={row.id}><p>{row.title} · {statuses[row.status]} · 버전 {row.version}</p><Button variant="secondary" disabled={pending} onClick={() => { setSelected(row); setNote(''); mutation.clear() }}>검토 선택 · {row.title}</Button></li>)}</ul> : <p>조회 결과가 없습니다.</p>}
       <div className="actions"><Button variant="secondary" disabled={pending || state.data.page <= 1} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page - 1) }}>이전 페이지</Button><p>{state.data.page}페이지 · 전체 {state.data.total}건</p><Button variant="secondary" disabled={pending || state.data.page * 10 >= state.data.total} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page + 1) }}>다음 페이지</Button></div>
     </section>)}
-    {selected && state.status === 'success' && state.data.kind === 'opportunities' && <OpportunityReview key={`${selected.id}:${selected.version}`} id={selected.id} version={selected.version} />}
+    {selected && state.status === 'success' && state.data.kind === 'opportunities' && <><Button variant="secondary" onClick={() => { const target = { id: selected.id, version: selected.version }; request.clear(); mutation.clear(); setSelected(null); setEditor({ target }) }}>선택한 공고 수정</Button><OpportunityReview key={`${selected.id}:${selected.version}`} id={selected.id} version={selected.version} /></>}
     {selected && state.status === 'success' && state.data.kind === 'reports' && <section className="panel"><h2>{selected.title} 검토</h2><p>선택한 버전은 {selected.version}입니다. 충돌이 발생하면 목록을 새로 조회한 뒤 다시 검토해 주세요.</p><h3>신고 설명</h3><p className="user-text">{selected.note ?? '추가 설명 없음'}</p>
       <TextAreaField label="검토 근거와 처리 메모" value={note} onChange={(event) => { setNote(event.target.value); mutation.clear() }} maxLength={1000} hint="공식 원문과 변경 내용을 확인하고 기록하세요. 개인정보·OTP·비밀값은 적지 마세요." />
       <div className="actions"><Button disabled={pending || !note.trim() || !['received', 'in_progress'].includes(selected.status) || mutation.state.status === 'success'} onClick={review}>{selected.status === 'received' ? '처리 시작' : '해결로 처리'}</Button></div>
     </section>}
     {mutation.state.status === 'error' && <RequestError error={mutation.state.error} />}
     <p role="status">{mutation.state.status === 'success' ? mutation.state.data : ''}</p>
-    <StatusNotice title="실제 운영 서버 검증이 남아 있어요">등록·수정 화면은 후속 구현 대상입니다. 공고 검수·종료·신고 처리·감사 조회는 서버 권한·MFA·버전 검증을 통과해야 하며 현재 실제 서버 연결은 검증 전입니다.</StatusNotice>
+    <StatusNotice title="실제 운영 서버 검증이 남아 있어요">공고 등록·수정·검수·종료·신고 처리·감사 조회는 서버 권한·MFA·버전 검증을 통과해야 하며 현재 실제 서버 연결은 검증 전입니다.</StatusNotice>
   </>
 }
 
