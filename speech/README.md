@@ -11,7 +11,7 @@ faster-whisper(STT)와 Qwen3-TTS를 실행하는 별도 컨테이너다. FastAPI
 - 저장소 안에 받을 때는 `speech/models/`에만 둔다 (`.gitignore` 처리됨). 다른 위치를 쓰려면 `.gitignore`를 같은 PR에서 고친다. Ollama 모델은 Compose 이름 있는 볼륨에 두고 저장소 폴더에 바인드하지 않는다.
 - 임의 모델·원격 코드 실행(`trust_remote_code` 등)을 쓰지 않는다.
 
-모델·라이선스·revision과 런타임·CUDA·컨테이너 조합은 [#28 W04-01](https://github.com/YongSamGo/RE_CONNECT/issues/28)에서 정하고, 구현은 [#31](https://github.com/YongSamGo/RE_CONNECT/issues/31)·[#32](https://github.com/YongSamGo/RE_CONNECT/issues/32)·[#33](https://github.com/YongSamGo/RE_CONNECT/issues/33)에서 한다.
+모델·라이선스·revision과 런타임·CUDA·컨테이너 조합은 [#28 W04-01](https://github.com/YongSamGo/RE_CONNECT/issues/28)에서 정하고([모델 후보·고정값](../docs/ai/models.md)), 구현은 [#31](https://github.com/YongSamGo/RE_CONNECT/issues/31)·[#32](https://github.com/YongSamGo/RE_CONNECT/issues/32)·[#33](https://github.com/YongSamGo/RE_CONNECT/issues/33)에서 한다.
 
 ## 의존성
 
