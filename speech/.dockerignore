@@ -1,0 +1,15 @@
+# 이미지에 비밀값·로컬 환경·캐시가 들어가지 않게 한다
+.env
+.env.*
+*.pem
+*.key
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+tests/
+.git/

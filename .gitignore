@@ -48,3 +48,18 @@ security-reports/
 
 # 공고 출처 원본 샘플 — 담당자 연락처 등 개인정보가 섞일 수 있어 커밋하지 않음
 worker/samples/
+
+# 모델 가중치 — 공식 배포원에서 revision·digest를 고정해 받는다. 저장소에 넣지 않음 (speech/README.md)
+# (backend의 DB 모델 폴더 app/models/와 겹치지 않게 경로를 한정한다)
+/models/
+/speech/models/
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+
+# 프론트엔드 테스트·도구 출력
+coverage/
+*.tsbuildinfo

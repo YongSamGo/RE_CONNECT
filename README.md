@@ -71,11 +71,19 @@ RE_CONNECT/
 │           ├── Python-2023/             # Python 시큐어코딩 가이드 (2023) 원문
 │           ├── SW-Diagnosis-2021/       # SW 보안약점 진단가이드 (2021) 원문
 │           └── assets/                  # 원문 페이지 이미지
-├── backend/                             # (예정) FastAPI 서버
-├── frontend/                            # (예정) React 클라이언트
-├── worker/                              # (예정) 공고 수집 배치 워커
-└── docs/security/                       # CI 파이프라인·KISA 리뷰 안내
+├── backend/                             # FastAPI 서버 (공고 수집기 모듈 포함)
+├── frontend/                            # React·TypeScript·Vite 클라이언트
+├── speech/                              # 로컬 STT·TTS 음성 서비스 컨테이너
+├── infra/                               # Compose·Nginx·배포 설정
+├── tests/                               # 서비스를 넘나드는 E2E·계약·보안 시나리오 시험
+├── worker/                              # 공고 출처 조사 도구 (W01-05)
+└── docs/
+    ├── development.md                   # 개발 환경·실행 안내
+    ├── data/                            # 공고 출처 조사
+    └── security/                        # CI 파이프라인·KISA 리뷰 안내
 ```
+
+각 폴더의 역할과 규칙은 폴더 안의 README에 있습니다. 필요한 도구·버전, `.env` 준비, 개발 명령은 [개발 환경 안내](docs/development.md)를 보세요.
 
 ## 4. 보안 지식 베이스 (Obsidian)
 
