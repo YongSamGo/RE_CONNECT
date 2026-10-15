@@ -25,10 +25,10 @@
     "mobility_note": "성동구와 인접한 광진구까지 이동 가능",
     "residence_region": {"province": "seoul", "district": "성동구"},
     "birth_year": 1958,
-    "certifications": ["초등학교 정교사 자격"],
+    "certifications": ["교원 자격증"],
     "completed_courses": null,
     "activity_constraints": null
   },
-  "must_not_extract": [],
+  "must_not_extract": {"exact": [], "semantic": []},
   "expected_roles": ["학습 지도 봉사", "독서 지도 봉사", "아동 멘토링"]
 }

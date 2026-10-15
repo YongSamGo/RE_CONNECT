@@ -14,7 +14,7 @@
     "experiences": [
       {"description": "소프트웨어 개발자 30년, 마지막 팀장", "skill_tags": ["소프트웨어 개발", "팀 관리"], "duration_note": "30년"}
     ],
-    "skills": ["소프트웨어 개발", "팀 관리", "디지털 기기 교육"],
+    "skills": ["소프트웨어 개발", "팀 관리"],
     "preferred_regions": [{"province": "gyeonggi", "district": "성남시"}],
     "activity_types": ["volunteering"],
     "paid_preference": "unpaid",
@@ -27,7 +27,7 @@
     "completed_courses": ["서울시 디지털 안내사 교육"],
     "activity_constraints": null
   },
-  "must_not_extract": [],
+  "must_not_extract": {"exact": [], "semantic": []},
   "expected_roles": ["디지털 기기 사용 교육 봉사", "키오스크 안내 봉사"],
-  "notes": "'평일 오전'은 요일만 확정하고 시간대는 현재 계약에 필드가 없으므로 버리지 않고 사용자 확인 대상으로 남긴다."
+  "notes": "'평일 오전'은 요일만 확정하고 시간대는 현재 계약에 필드가 없으므로 버리지 않고 사용자 확인 대상으로 남긴다. '가르쳐 드리고 싶다'는 희망이지 경험이 아니므로 '디지털 기기 교육'은 역량이 아니라 expected_roles에서만 다룬다."
 }
