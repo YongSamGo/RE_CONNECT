@@ -25,7 +25,7 @@ describe('화면 골격과 입력 경계', () => {
     const fetch = vi.fn()
     vi.stubGlobal('fetch', fetch)
     mount('/opportunities')
-    expect(screen.getByText('아직 연결된 공고가 없어요')).toBeVisible()
+    expect(screen.getByText('검색 조건을 고르고 공고를 불러오세요')).toBeVisible()
     expect(fetch).not.toHaveBeenCalled()
   })
   it('키보드로 안내 확인 후 입력하며 화면 이동 시 본문에 포커스한다', async () => {

@@ -5,6 +5,7 @@ import { Button } from './ui/Button'
 import { CheckboxField, TextAreaField } from './ui/Fields'
 import { StatusNotice } from './ui/StatusNotice'
 import { useMemoryScope } from './state/useMemoryScope'
+import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
 import './App.css'
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
@@ -61,7 +62,7 @@ function Consent({ onStart }: { onStart: () => void }) {
   return <div className="reading-width"><Heading step="시작하기 전에" title="내 정보가 어떻게 쓰이나요?">내용을 읽고, 편한 방법을 선택해 주세요.</Heading>
     <section className="panel"><h2>AI는 경험 정리를 도와요</h2><p>운영 서비스에서는 AWS EC2 안의 자체 AI 모델이 대화·음성 인식·읽어주기를 처리할 예정입니다. 사용자 기기 안에서만 처리되는 방식은 아닙니다.</p>
       <h2>확정과 저장은 따로예요</h2><p>AI가 만든 초안은 직접 고치고 확정합니다. 회원 저장은 별도의 로그인과 저장 동의 후에만 진행합니다.</p>
-      <h2>지금은 화면 미리보기예요</h2><p>AI·서버·회원 저장은 연결되지 않았습니다. 아래에서 입력한 내용은 이 화면의 메모리에서만 사용하며 새로고침하거나 종료하면 사라집니다. 실제 개인정보는 입력하지 마세요.</p>
+      <h2>지금은 화면 미리보기예요</h2><p>개인 체험의 AI 처리·서버 보관·회원 저장은 연결되지 않았습니다. 아래에서 입력한 내용은 이 화면의 메모리에서만 사용하며 새로고침하거나 종료하면 사라집니다. 실제 개인정보는 입력하지 마세요.</p>
       <p className="policy-draft">안내문 초안 · 운영 주체, 문의처, AWS 리전과 실제 보관·삭제 안내는 확인 후 확정해야 합니다. 이 선택은 운영 서비스의 처리 동의로 기록되지 않습니다.</p>
       <form onSubmit={(event) => { event.preventDefault(); if (checked) onStart() }}>
         <CheckboxField label="안내를 확인했고, 가상의 경험으로 화면을 살펴볼게요." checked={checked} onChange={(event) => setChecked(event.target.checked)} />
@@ -83,15 +84,9 @@ function Profile({ experience }: { experience: string }) {
     <Pending title="프로필 확정은 연결 준비 중이에요">경험·희망 활동 지역·활동 유형을 확인하고 서버에서 확정한 뒤 역할과 추천을 제공할 예정입니다. 현재 화면은 정보를 확정하거나 저장하지 않습니다.</Pending><Link className="text-link" to="/opportunities">공개 공고 화면 살펴보기 →</Link></div>
 }
 
-function Opportunities() {
-  return <div className="reading-width"><Heading step="기회 살펴보기" title="나의 다음 기회를 찾아봐요">취업·공공일자리와 봉사 기회를 살펴보는 공간입니다.</Heading>
-    <Pending title="아직 연결된 공고가 없어요">현재는 공개 공고 API와 검수 자료가 연결되지 않았습니다. 실제 공고가 연결되면 출처·모집 상태·공식 신청 안내를 함께 표시합니다.</Pending>
-    <section className="panel"><h2>맞춤 추천은 프로필 확인 후에</h2><p>나의 경험과 희망 활동 지역, 활동 유형을 직접 확정하면 조건에 맞는 공고와 확인할 사항을 안내합니다.</p><Link className="button secondary" to="/consent">경험 이야기부터 시작하기</Link></section></div>
-}
-
 const pendingScreens = {
   voice: { step: '음성 입력', title: '말로 경험을 이야기하기', heading: '음성 입력은 연결 준비 중이에요', body: '녹음·전사 확인은 음성 서비스 연결 후 제공됩니다. 현재는 마이크에 접근하지 않습니다.', link: '/conversation', action: '글로 작성하기' },
-  detail: { step: '공고 상세', title: '공고의 조건을 함께 확인해요', heading: '아직 조회할 공고가 없어요', body: '공식 원문·자격 조건·접수 방법·오류 신고는 검수한 공고 연결 후 제공됩니다.', link: '/opportunities', action: '공고 화면으로' },
+  detail: { step: '공고 상세', title: '공고의 조건을 함께 확인해요', heading: '공고 상세는 연결 준비 중이에요', body: '공식 원문·자격 조건·접수 방법·오류 신고는 상세 기능 연결 후 제공됩니다.', link: '/opportunities', action: '공고 화면으로' },
   preparation: { step: '03 · 신청 준비', title: '신청 전, 차근차근 준비해요', heading: '신청 준비는 연결 준비 중이에요', body: '검수한 공고의 서류 안내와 확정 프로필을 연결한 뒤 지원서 작성·수정·승인·복사를 제공합니다. 공식 신청처 이동은 신청 완료를 의미하지 않습니다.', link: '/opportunities', action: '공고 화면으로' },
   me: { step: '내 정보', title: '저장한 자료를 관리해요', heading: '로그인과 저장은 연결 준비 중이에요', body: '카카오 인증과 별도 저장 동의 연결 후 내 저장 자료를 조회·삭제할 수 있습니다. 미리보기의 입력은 회원 자료로 저장되지 않습니다.', link: '/', action: '시작 화면으로' },
   admin: { step: '운영자', title: '운영자 인증이 필요해요', heading: '운영자 화면은 연결 준비 중이에요', body: '서버의 운영자 권한과 MFA 확인 후 공고 검수·신고·운영 상태를 제공합니다. 현재 화면은 관리 데이터 조회나 변경을 수행하지 않습니다.', link: '/', action: '시작 화면으로' },
@@ -128,7 +123,7 @@ export default function App() {
   const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={notice ? '/' : '/consent'} replace />
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
-    <div className="preview-banner">개발 중인 화면 미리보기 <span>· AI·공고·로그인 미연결 · 가상 정보로 살펴보세요</span></div>
+    <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험은 가상 정보로 살펴보세요 · AI·로그인 미연결</span></div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
     {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
     <div className="status-line" role="status">{notice}</div>
@@ -138,7 +133,7 @@ export default function App() {
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value }))} />)} />
       <Route path="/transcription" element={requirePreview(<Placeholder kind="voice" />)} />
       <Route path="/profile" element={requirePreview(<Profile experience={preview.experience} />)} />
-      <Route path="/opportunities" element={<Opportunities />} />
+      <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<Placeholder kind="detail" />} />
       <Route path="/preparation" element={requirePreview(<Placeholder kind="preparation" />)} />
       <Route path="/me" element={<Placeholder kind="me" />} />
