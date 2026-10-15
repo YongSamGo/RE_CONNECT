@@ -1,0 +1,17 @@
+:root { --ink: #263b2d; --muted: #586253; --paper: #fcfbf6; --green: #285c3d; --green-dark: #1d462d; --line: #d7ddd1; --surface: #f0f3e8; }
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; color: var(--ink); background: var(--paper); font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; font-size: 18px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+button, input, textarea { font: inherit; }
+button, a, input, textarea, summary { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+a { color: var(--green); text-underline-offset: 5px; }
+button:disabled { cursor: not-allowed; background: #e0e2dc; color: #50564f; border-color: #b5bcb2; }
+:focus-visible { outline: 3px solid #96531e; outline-offset: 5px; }
+main:focus { outline: none; }
+input[type='checkbox'] { width: 24px; height: 24px; flex-shrink: 0; accent-color: var(--green); }
+textarea { width: 100%; resize: vertical; min-height: 160px; border: 1px solid #7f8b7d; border-radius: 12px; padding: 16px; color: var(--ink); background: #fff; }
+textarea::placeholder { color: #626b60; }
+h1, h2, h3, p { margin-top: 0; }
+h1, h2, h3 { line-height: 1.4; }
+label { display: block; font-weight: 600; margin-bottom: 12px; }
+@media (prefers-reduced-motion: no-preference) { a, button { transition: background-color .15s ease, color .15s ease; } }
