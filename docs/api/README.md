@@ -66,7 +66,7 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 - 기본 경로 `/api/v1`. 본문은 JSON(UTF-8), 전사만 `multipart/form-data`, 읽어주기 결과만 `audio/wav`이다.
 - 시각은 시간대가 있는 UTC(`2026-10-15T03:00:00Z`), 날짜는 `YYYY-MM-DD`(한국 날짜)이다.
 - 요청 본문은 스키마의 `required`를 따른다. 선택 항목도 키를 보내고 값을 `null`로 둔다. 키를 빠뜨리면 422 `required`다. 예외는 추천 `filters`와 운영자 공고 수정 `changes`로, 여기서는 생략한 항목이 "조건 없음"·"변경 없음"을 뜻한다. 응답은 항상 모든 키를 담는다.
-- `null`은 미확인, 빈 배열은 "없다고 확인함"이다.
+- `null`은 미확인, 빈 배열은 "없다고 확인함"이다. 예외로 추천에 필요한 프로필 항목 `experiences`·`preferred_regions`·`activity_types`는 `null`을 허용하지 않으므로, 빈 배열이 "아직 입력하지 않음"이고 `missing_for_recommendation`으로 다시 묻는다.
 - 목록은 `page`(1부터)·`page_size`(기본 20, 최대 20)를 받고 `items`·`page`·`page_size`·`total`을 돌려준다.
 - 개인 자료 응답에는 `Cache-Control: no-store`를 붙인다.
 
