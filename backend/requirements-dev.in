@@ -2,3 +2,5 @@
 # 테스트 (TestClient가 httpx를 쓴다)
 pytest
 httpx
+# pytest의 Windows 전용 의존성. Linux에서 컴파일하면 빠지므로 직접 적는다 (README.md "의존성 고정")
+colorama

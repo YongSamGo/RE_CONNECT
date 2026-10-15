@@ -10,8 +10,18 @@ from typing import Literal
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-# backend/app/core/config.py → 저장소 루트의 .env. 컨테이너처럼 파일이 없으면 환경변수만 쓴다.
-_ROOT_ENV_FILE = Path(__file__).resolve().parents[3] / ".env"
+
+def default_env_file(config_path: Path) -> Path | None:
+    """backend/app/core/config.py 기준 저장소 루트의 .env.
+
+    컨테이너처럼 패키지가 얕은 경로에 놓이면 루트를 계산할 수 없으므로 None을 돌려주고 환경변수만 쓴다.
+    파일이 없어도 pydantic-settings는 환경변수만 읽는다.
+    """
+    parents = config_path.resolve().parents
+    return parents[3] / ".env" if len(parents) > 3 else None
+
+
+_ROOT_ENV_FILE = default_env_file(Path(__file__))
 
 
 class Settings(BaseSettings):

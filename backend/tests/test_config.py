@@ -1,7 +1,9 @@
+from pathlib import Path
+
 import pytest
 from fastapi.testclient import TestClient
 
-from app.core.config import Settings
+from app.core.config import Settings, default_env_file
 from app.main import create_app
 from tests.conftest import ready_probes
 
@@ -34,3 +36,14 @@ def test_api_docs_open_in_development() -> None:
 
     assert client.get("/docs").status_code == 200
     assert client.get("/openapi.json").status_code == 200
+
+
+def test_env_file_is_repository_root() -> None:
+    config_path = Path("/repo/backend/app/core/config.py")
+
+    assert default_env_file(config_path) == config_path.resolve().parents[3] / ".env"
+
+
+def test_shallow_install_does_not_crash() -> None:
+    # 예: 컨테이너에서 COPY app /app 으로 패키지를 루트 바로 아래에 둔 경우
+    assert default_env_file(Path("/app/core/config.py")) is None

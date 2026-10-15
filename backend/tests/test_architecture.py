@@ -4,25 +4,41 @@
 """
 
 import ast
+import importlib.util
 from pathlib import Path
+
+import pytest
 
 APP_DIR = Path(__file__).resolve().parents[1] / "app"
 
 
-def imported_modules(path: Path) -> set[str]:
+def module_name(path: Path) -> str:
+    return ".".join(path.relative_to(APP_DIR.parent).with_suffix("").parts)
+
+
+def package_name(path: Path) -> str:
+    name = module_name(path)
+    return name if path.name == "__init__.py" else name.rpartition(".")[0]
+
+
+def imported_modules(path: Path, package: str | None = None) -> set[str]:
+    """파일이 import하는 모듈 이름. 상대 import는 파일 위치 기준의 절대 이름으로 푼다."""
+    package = package if package is not None else package_name(path)
     tree = ast.parse(path.read_text(encoding="utf-8"), filename=str(path))
     names: set[str] = set()
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             names.update(alias.name for alias in node.names)
-        elif isinstance(node, ast.ImportFrom) and node.module:
-            names.add(node.module)
-            names.update(f"{node.module}.{alias.name}" for alias in node.names)
+        elif isinstance(node, ast.ImportFrom):
+            if node.level:
+                base = importlib.util.resolve_name("." * node.level + (node.module or ""), package)
+            elif node.module:
+                base = node.module
+            else:
+                continue
+            names.add(base)
+            names.update(f"{base}.{alias.name}" for alias in node.names)
     return names
-
-
-def module_name(path: Path) -> str:
-    return ".".join(path.relative_to(APP_DIR.parent).with_suffix("").parts)
 
 
 def python_files(directory: Path) -> list[Path]:
@@ -68,3 +84,21 @@ def test_only_main_assembles_the_app() -> None:
         if path.name == "main.py" and path.parent == APP_DIR:
             continue
         assert "app.main" not in imported_modules(path), module_name(path)
+
+
+@pytest.mark.parametrize(
+    "source",
+    [
+        "from .repository import JourneyRepository",
+        "from . import repository",
+        "from ...adapters.llm import LLMAdapter",
+        "from ... import adapters",
+    ],
+)
+def test_relative_imports_are_resolved_and_caught(tmp_path: Path, source: str) -> None:
+    router = tmp_path / "router.py"
+    router.write_text(source, encoding="utf-8")
+
+    names = imported_modules(router, package="app.modules.journey")
+
+    assert any(name.startswith("app.adapters") or ".repository" in name for name in names), names

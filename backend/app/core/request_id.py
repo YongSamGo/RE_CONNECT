@@ -39,8 +39,7 @@ def get_request_id(request: Request) -> str:
 class RequestIdMiddleware:
     """요청마다 추적 ID를 만들고 응답 헤더에 붙인다.
 
-    scope["state"]를 그대로 고쳐 두므로, 이 미들웨어 바깥에서 처리되는 500 응답도
-    같은 ID를 읽을 수 있다 (errors.py).
+    scope["state"]를 그대로 고쳐 두므로, 안쪽의 오류 처리(errors.py)도 같은 ID를 읽는다.
     """
 
     def __init__(self, app: ASGIApp) -> None:

@@ -30,7 +30,8 @@ backend/
 ### 공통 동작
 
 - 모든 응답에 서버가 만든 `X-Request-ID`(`req_` + 32자 hex)를 붙인다. 클라이언트가 보낸 값은 쓰지 않는다.
-- 오류는 `{code, message, request_id}`로 돌려준다(422만 `fields` 추가). 입력값·예외 메시지·추적 정보는 넣지 않는다. 405는 계약에 코드가 없어 404 `NOT_FOUND`로 답한다.
+- 오류는 `{code, message, request_id}`로 돌려준다(422만 `fields` 추가). 입력값·식별자 형식이 아닌 필드 이름·예외 메시지·추적 정보는 넣지 않는다. 405는 계약에 코드가 없어 404 `NOT_FOUND`로, 계약 코드가 없는 400·415 등은 422 `VALIDATION_FAILED`로 답한다.
+- 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. 서버 로그에는 예외 종류와 `request_id`만 남는다.
 - `/health/live`·`/health/ready`는 `/api/v1` 밖의 내부 전용 경로다. DB·Redis 실패는 503 `unavailable`, LLM·음성만 실패하면 200 `degraded`다. 연결 구현이 없는 구성 요소는 `fail`로 답한다.
 - `APP_ENV`가 `development`일 때만 `/docs`·`/openapi.json`을 연다. 값이 없으면 `production`으로 본다.
 
@@ -40,6 +41,7 @@ backend/
 
 - `requirements-dev.in` 첫 줄에 `-c requirements.txt`를 적어 운영 의존성과 버전이 어긋나지 않게 한다.
 - CI·운영과 같은 Linux·Python 3.12에서 컴파일한다. Windows에서 컴파일하면 플랫폼 전용 패키지가 섞일 수 있으니 아래 Docker 명령이나 WSL을 쓴다.
+- Linux에서 컴파일하면 Windows에서만 필요한 의존성(예: pytest·click의 `colorama`)이 빠진다. 해시 모드에서는 빠진 패키지 하나로 설치 전체가 실패하므로, 이런 패키지는 해당 `.in`에 직접 적는다.
 - 배포된 지 7일이 지나지 않은 버전이 잡히면 그 패키지를 직전 버전으로 제한해 한 번 컴파일한 뒤, 제한 없이 다시 컴파일한다. pip-compile은 기존 `requirements.txt`의 고정값을 유지하므로 `.in`에 버전을 적지 않아도 된다.
 - 컴파일 결과의 해시를 CI·운영 설치가 그대로 믿으므로, 컴파일 도구도 고정한다. 이미지는 digest로, pip-tools는 해시 잠금 파일 [requirements-pip-tools.txt](requirements-pip-tools.txt)로 설치한다.
 

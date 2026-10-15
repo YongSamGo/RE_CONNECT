@@ -9,7 +9,7 @@ from collections.abc import Mapping
 from fastapi import FastAPI
 
 from app.core.config import Settings, get_settings
-from app.core.errors import register_error_handlers
+from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
 from app.core.request_id import RequestIdMiddleware
 from app.modules.operations import router as operations
 from app.modules.operations.readiness import (
@@ -45,6 +45,8 @@ def create_app(
     app.state.readiness_service = ReadinessService(probes, settings.health_check_timeout_seconds)
 
     register_error_handlers(app)
+    # 나중에 더한 미들웨어가 바깥에 선다. 처리하지 못한 예외의 500 응답에도 X-Request-ID가 붙는다.
+    app.add_middleware(UnhandledErrorMiddleware)
     app.add_middleware(RequestIdMiddleware)
 
     app.include_router(operations.router)
