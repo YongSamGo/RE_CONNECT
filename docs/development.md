@@ -48,9 +48,10 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 | --- | --- | --- |
 | 개발 DB·Redis 시작 | `docker compose --env-file .env -f infra/compose.dev.yaml up -d` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | 개발 DB·Redis 종료 | `docker compose --env-file .env -f infra/compose.dev.yaml down` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
-| 백엔드 가상환경 | `cd backend` 후 `python -m venv .venv` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
-| 백엔드 의존성 설치 | `cd backend` 후 `pip install -r requirements.txt -r requirements-dev.txt` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
-| 백엔드 테스트 | `cd backend` 후 `python -m pytest` | 준비 중 [#14](https://github.com/YongSamGo/RE_CONNECT/issues/14) |
+| 백엔드 가상환경 | `cd backend` 후 `python -m venv .venv` | 사용 가능 |
+| 백엔드 의존성 설치 | `cd backend` 후 `pip install -r requirements.txt -r requirements-dev.txt` | 사용 가능 |
+| 백엔드 테스트 | `cd backend` 후 `python -m pytest` | 사용 가능 |
+| 백엔드 개발 서버 | `cd backend` 후 `uvicorn app.main:app --reload` (API 문서 화면은 `.env`의 `APP_ENV=development`일 때만 `/docs`에 열림) | 사용 가능. DB·Redis 연결은 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |

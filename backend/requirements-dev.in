@@ -1,0 +1,4 @@
+-c requirements.txt
+# 테스트 (TestClient가 httpx를 쓴다)
+pytest
+httpx
