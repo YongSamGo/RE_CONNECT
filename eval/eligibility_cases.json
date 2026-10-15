@@ -12,9 +12,16 @@
     {
       "id": "J1",
       "title": "아파트 시설관리원 (유급, 경기 안양시)",
+      "labels": {
+        "J1-R1": "98fb4cb1-d720-526b-8e93-260580dadd60",
+        "J1-R2": "4e713284-41c7-5e76-bae1-73e321876368",
+        "J1-G1": "e82fa72e-c55b-50fb-bf18-d02cb1b3e99e",
+        "J1-R3": "50316a27-915e-5d6c-9aa5-142033383a9a",
+        "J1-R4": "836b2dc5-0f09-5eeb-9d54-dce86ca4ea7b"
+      },
       "requirements": [
         {
-          "id": "J1-R1",
+          "id": "98fb4cb1-d720-526b-8e93-260580dadd60",
           "field": "age",
           "operator": "gte",
           "value": 60,
@@ -25,29 +32,33 @@
           "clarity": "clear"
         },
         {
-          "id": "J1-R2",
+          "id": "4e713284-41c7-5e76-bae1-73e321876368",
           "field": "certification",
-          "operator": "has",
-          "value": "전기기능사",
-          "group_id": "J1-G1",
+          "operator": "has_all",
+          "value": [
+            "전기기능사"
+          ],
+          "group_id": "e82fa72e-c55b-50fb-bf18-d02cb1b3e99e",
           "group_operator": "or",
           "reference_date": null,
           "source_evidence": "전기기능사 또는 소방안전관리자 2급 소지자",
           "clarity": "clear"
         },
         {
-          "id": "J1-R3",
+          "id": "50316a27-915e-5d6c-9aa5-142033383a9a",
           "field": "certification",
-          "operator": "has",
-          "value": "소방안전관리자 2급",
-          "group_id": "J1-G1",
+          "operator": "has_all",
+          "value": [
+            "소방안전관리자 2급"
+          ],
+          "group_id": "e82fa72e-c55b-50fb-bf18-d02cb1b3e99e",
           "group_operator": "or",
           "reference_date": null,
           "source_evidence": "전기기능사 또는 소방안전관리자 2급 소지자",
           "clarity": "clear"
         },
         {
-          "id": "J1-R4",
+          "id": "836b2dc5-0f09-5eeb-9d54-dce86ca4ea7b",
           "field": "hours_per_week",
           "operator": "gte",
           "value": 15,
@@ -62,12 +73,18 @@
     {
       "id": "J2",
       "title": "경로당 어르신 돌봄 봉사 (무급, 인천 연수구)",
+      "labels": {
+        "J2-R1": "72f446b1-1ee8-52f4-9643-f37f0990d791",
+        "J2-R2": "8e2833b8-7325-5104-ab18-568cda71baad"
+      },
       "requirements": [
         {
-          "id": "J2-R1",
+          "id": "72f446b1-1ee8-52f4-9643-f37f0990d791",
           "field": "certification",
-          "operator": "has",
-          "value": "요양보호사",
+          "operator": "has_all",
+          "value": [
+            "요양보호사"
+          ],
           "group_id": null,
           "group_operator": null,
           "reference_date": null,
@@ -75,9 +92,9 @@
           "clarity": "clear"
         },
         {
-          "id": "J2-R2",
+          "id": "8e2833b8-7325-5104-ab18-568cda71baad",
           "field": "weekday",
-          "operator": "includes",
+          "operator": "includes_all",
           "value": [
             6
           ],
@@ -92,9 +109,14 @@
     {
       "id": "J3",
       "title": "서울 시니어 학습지도 봉사 (서울 성동구)",
+      "labels": {
+        "J3-R1": "76dd0c53-31b4-568b-bd86-9525949729f6",
+        "J3-R2": "3019b5ee-a15d-5601-8bc6-5c010377020c",
+        "J3-R3": "de8e8da7-f626-5e62-912c-d386a223af69"
+      },
       "requirements": [
         {
-          "id": "J3-R1",
+          "id": "76dd0c53-31b4-568b-bd86-9525949729f6",
           "field": "age",
           "operator": "gte",
           "value": 60,
@@ -105,7 +127,7 @@
           "clarity": "clear"
         },
         {
-          "id": "J3-R2",
+          "id": "3019b5ee-a15d-5601-8bc6-5c010377020c",
           "field": "residence_region",
           "operator": "in",
           "value": [
@@ -121,9 +143,9 @@
           "clarity": "clear"
         },
         {
-          "id": "J3-R3",
+          "id": "de8e8da7-f626-5e62-912c-d386a223af69",
           "field": "weekday",
-          "operator": "includes",
+          "operator": "includes_all",
           "value": [
             2,
             4
@@ -139,9 +161,13 @@
     {
       "id": "J4",
       "title": "디지털 안내사 (경기 성남시)",
+      "labels": {
+        "J4-R1": "64a6f304-8037-590d-a182-f377cfb7a3af",
+        "J4-R2": "a5812cdc-1031-58e8-a3ff-c43d1bac31b7"
+      },
       "requirements": [
         {
-          "id": "J4-R1",
+          "id": "64a6f304-8037-590d-a182-f377cfb7a3af",
           "field": "age",
           "operator": "gte",
           "value": 65,
@@ -152,10 +178,12 @@
           "clarity": "clear"
         },
         {
-          "id": "J4-R2",
+          "id": "a5812cdc-1031-58e8-a3ff-c43d1bac31b7",
           "field": "completed_course",
-          "operator": "has",
-          "value": "디지털 안내사 교육",
+          "operator": "has_all",
+          "value": [
+            "디지털 안내사 교육"
+          ],
           "group_id": null,
           "group_operator": null,
           "reference_date": null,
@@ -167,12 +195,18 @@
     {
       "id": "J5",
       "title": "경로식당 조리 보조 (인천 남동구)",
+      "labels": {
+        "J5-R1": "5a8ba7a8-da69-57c0-ac31-b6c6c1284de3",
+        "J5-R2": "ec8b64bc-90a3-5c8e-8754-ee8f540aec43"
+      },
       "requirements": [
         {
-          "id": "J5-R1",
+          "id": "5a8ba7a8-da69-57c0-ac31-b6c6c1284de3",
           "field": "certification",
-          "operator": "has",
-          "value": "한식조리기능사",
+          "operator": "has_all",
+          "value": [
+            "한식조리기능사"
+          ],
           "group_id": null,
           "group_operator": null,
           "reference_date": null,
@@ -180,7 +214,7 @@
           "clarity": "clear"
         },
         {
-          "id": "J5-R2",
+          "id": "ec8b64bc-90a3-5c8e-8754-ee8f540aec43",
           "field": "other",
           "operator": null,
           "value": null,
@@ -195,9 +229,15 @@
     {
       "id": "J6",
       "title": "어르신 금융사기 예방 교육 강사 (경기 고양시)",
+      "labels": {
+        "J6-R1": "cb307d18-52f8-5f65-b0aa-8a604b50b715",
+        "J6-R2": "edf8bc6f-dc8c-5d4f-a797-10a57f9764a9",
+        "J6-G1": "e33f95e1-33c2-5530-82e0-62f3fa3c27e1",
+        "J6-R3": "79e71fc4-106b-57ca-bd9e-844ad4a9715a"
+      },
       "requirements": [
         {
-          "id": "J6-R1",
+          "id": "cb307d18-52f8-5f65-b0aa-8a604b50b715",
           "field": "age",
           "operator": "gte",
           "value": 60,
@@ -208,22 +248,24 @@
           "clarity": "clear"
         },
         {
-          "id": "J6-R2",
+          "id": "edf8bc6f-dc8c-5d4f-a797-10a57f9764a9",
           "field": "certification",
-          "operator": "has",
-          "value": "금융투자상담사",
-          "group_id": "J6-G1",
+          "operator": "has_all",
+          "value": [
+            "금융투자상담사"
+          ],
+          "group_id": "e33f95e1-33c2-5530-82e0-62f3fa3c27e1",
           "group_operator": "or",
           "reference_date": null,
           "source_evidence": "금융 관련 자격 소지자 또는 금융기관 근무 경력 5년 이상",
           "clarity": "clear"
         },
         {
-          "id": "J6-R3",
+          "id": "79e71fc4-106b-57ca-bd9e-844ad4a9715a",
           "field": "other",
           "operator": null,
           "value": null,
-          "group_id": "J6-G1",
+          "group_id": "e33f95e1-33c2-5530-82e0-62f3fa3c27e1",
           "group_operator": "or",
           "reference_date": null,
           "source_evidence": "금융 관련 자격 소지자 또는 금융기관 근무 경력 5년 이상",

@@ -11,6 +11,8 @@
 | `personas/P01~P08.json` | 가상 시니어 8명: 대화 문장(`interview`), 기대 프로필(`expected_profile`), 추출하면 안 되는 값(`must_not_extract`), 기대 역할(`expected_roles`) |
 | `eligibility_cases.json` | 가상 공고 6건(J1~J6)의 조건(`Requirement` 계약 형식)과 8명 × 6건 = 48건의 조건별·전체 기대 판정 |
 
+`requirements`의 각 조건은 [API 계약](../docs/api/openapi.yaml)의 `Requirement`를 그대로 따르므로 `id`·`group_id`가 UUID다. 사람이 읽는 라벨(`J1-R1`, 그룹은 `J1-G1`)은 공고별 `labels`에 라벨 → UUID로 적었고, `cases[].conditions`도 이 라벨을 키로 쓴다. UUID는 라벨에서 uuid5로 만든 고정값이라 다시 만들어도 같다.
+
 `expected_profile`은 [02 데이터 설계 §2 프로필 계약](../Plan/02_Data_Design.md#2-프로필-계약)을 따르며, 서버가 부여하는 `id`·`version`·`confirmed_at`은 뺐다. 시·군·구는 W02-04(#15) 지역 목록이 정해지기 전이라 한글 이름으로 적었다.
 
 ## 페르소나별 시험 목적
