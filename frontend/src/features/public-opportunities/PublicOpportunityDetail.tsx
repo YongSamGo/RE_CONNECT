@@ -8,6 +8,8 @@ import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { deadlineLabel, isOpportunityId, provinces } from './catalog'
 import { checkedTime, officialLink, parseDetail } from './detail'
 import type { PublicDetail } from './detail'
+import { OpportunityReport } from './OpportunityReport'
+import { ReadAloud } from '../voice/ReadAloud'
 import './catalog.css'
 
 type State = { status: 'idle' | 'loading' } | { status: 'loaded'; item: PublicDetail } | { status: 'error'; error: ApiError }
@@ -25,6 +27,7 @@ function DetailContent({ item }: { item: PublicDetail }) {
     <article className="panel opportunity-detail">
       <p className="eyebrow">{item.activity_type === 'employment' ? '취업·공공일자리' : '봉사'} · 공고 버전 {item.version}</p>
       <h2>{item.title}</h2><p>{item.organization_name}</p>
+      <ReadAloud key={`${item.id}:${item.version}`} target={{ kind: 'opportunity', opportunity_id: item.id, version: item.version, field: 'title' }} label="공고 제목 읽어주기" />
       <p className="badge">{item.recruitment_status === 'closed' ? '모집 마감' : item.recruitment_status === 'open' ? '모집 중' : '모집 여부 확인 필요'}</p>
       {item.change_pending && <StatusNotice label="검수 상태" title="변경 확인 중">중요 변경을 검수하고 있습니다. 확인이 끝나기 전에는 이 공고로 추천·지원서를 만들 수 없습니다.</StatusNotice>}
       {item.recruitment_status === 'closed' && <p>마감된 공고입니다. 내용을 참고할 수 있지만 신청 안내 링크는 제공하지 않습니다.</p>}
@@ -49,7 +52,8 @@ function DetailContent({ item }: { item: PublicDetail }) {
       {item.recruitment_status === 'unknown' && <p>모집 상태를 확인하기 전에는 신청 안내 링크를 제공하지 않습니다.</p>}
       <p className="catalog-note">원문 확인: {checkedTime(item.source_checked_at)} · 검수: {checkedTime(item.reviewed_at)} (한국시간). 현재 상태와 다를 수 있으므로 공식 원문도 확인해 주세요.</p>
     </article>
-    <StatusNotice title="개인 자격 대조·신고·신청 준비는 연결 준비 중이에요">현재는 공개 정보만 조회합니다. 프로필 확인·맞춤 추천·신고 접수·지원서 생성은 실행하지 않습니다.</StatusNotice>
+    <OpportunityReport key={`${item.id}:${item.version}`} id={item.id} version={item.version} />
+    <StatusNotice title="개인 자격 대조·신청 준비는 연결 준비 중이에요">프로필 확인·맞춤 추천·공고에 연결된 지원서 생성은 서버 연동 후 제공합니다. 오류 신고는 실제 서버의 접수 응답을 받은 뒤에만 접수 완료로 표시합니다.</StatusNotice>
   </>
 }
 
