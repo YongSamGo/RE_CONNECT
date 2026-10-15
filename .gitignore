@@ -70,3 +70,8 @@ models--*/
 # 프론트엔드 테스트·도구 출력
 coverage/
 *.tsbuildinfo
+
+# AI 개발 도구 개인 파일 — 팀 공용 지침은 AGENTS.md·CLAUDE.md (개인 규칙은 각자 전역 설정에)
+CLAUDE.local.md
+**/.claude/settings.local.json
+.claude/worktrees/

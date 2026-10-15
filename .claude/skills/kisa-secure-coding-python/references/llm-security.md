@@ -249,7 +249,7 @@ rg -n --type py -e 'RateLimit|rate_limit|limiter|INCR|incr\(|expire\(' -e 'Semap
 
 ## 저장소 → AI 개발 도구 (AGT)
 
-AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시 파일·PR 본문을 읽고 그대로 따를 수 있다. 사람 리뷰를 통과한 텍스트가 도구를 조종하는 경로를 점검한다. 지시 파일: 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules`, 그리고 `.github/copilot-instructions.md` 등. 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰이므로 최상위만 보지 않는다 (`.github/scripts/check_hidden_text.py`의 `AGENT_PATHSPECS`, `.github/CODEOWNERS`와 같은 범위).
+AI 개발 도구(Claude Code, Codex, Copilot 등)는 저장소의 문서·지시 파일·PR 본문을 읽고 그대로 따를 수 있다. 사람 리뷰를 통과한 텍스트가 도구를 조종하는 경로를 점검한다. 지시 파일: 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `AGENTS.override.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules`, 그리고 `.github/copilot-instructions.md` 등. 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰이므로 최상위만 보지 않는다 (`.github/scripts/check_hidden_text.py`의 `AGENT_PATHSPECS`, `.github/CODEOWNERS`와 같은 범위).
 
 ### AGT-01. 저장소의 숨은 문자 — 심각도 높음
 
