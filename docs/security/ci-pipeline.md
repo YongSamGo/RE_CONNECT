@@ -70,7 +70,7 @@
 
 | 대상 | 이유 |
 | --- | --- |
-| 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules` | AI 개발 도구의 동작을 바꾸는 에이전트 지시·설정 파일 ([AGT-02](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)). 하위 폴더에서 도구를 열면 그 폴더의 파일도 쓰입니다 |
+| 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `AGENTS.override.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules` | AI 개발 도구의 동작을 바꾸는 에이전트 지시·설정 파일 ([AGT-02](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)). 하위 폴더에서 도구를 열면 그 폴더의 파일도 쓰입니다 |
 | `.github/` | CI 점검·PR 템플릿·이 규칙 자체 |
 | `.gitleaks.toml` | 비밀값 탐지 예외 |
 | `.gitattributes` (어느 폴더든) | `binary` 지정 파일은 숨은 문자 검사를 건너뜀 |

@@ -219,8 +219,8 @@ def check_files(paths: list[str]) -> tuple[int, Counter[str]]:
 # 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰이므로 어느 깊이든 본다. .github/CODEOWNERS와 같은 범위.
 AGENT_PATHSPECS = [
     ":(glob)**/.claude/**", ":(glob)**/.codex/**", ":(glob)**/.cursor/**", ":(glob)**/.gemini/**",
-    ":(glob)**/CLAUDE.md", ":(glob)**/CLAUDE.local.md", ":(glob)**/AGENTS.md", ":(glob)**/GEMINI.md",
-    ":(glob)**/.mcp.json", ":(glob)**/.vscode/mcp.json", ":(glob)**/.cursorrules", ":(glob)**/.windsurfrules",
+    ":(glob)**/CLAUDE.md", ":(glob)**/CLAUDE.local.md", ":(glob)**/AGENTS.md", ":(glob)**/AGENTS.override.md",
+    ":(glob)**/GEMINI.md", ":(glob)**/.mcp.json", ":(glob)**/.vscode/mcp.json", ":(glob)**/.cursorrules", ":(glob)**/.windsurfrules",
     ":(glob).github/copilot-instructions.md", ":(glob).github/instructions/**", ":(glob).github/prompts/**",
 ]
 

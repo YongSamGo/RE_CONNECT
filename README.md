@@ -60,6 +60,8 @@
 ```
 RE_CONNECT/
 ├── README.md
+├── AGENTS.md                           # AI 개발 도구(Codex·Claude Code) 공용 지침
+├── CLAUDE.md                           # Claude Code 전용 지침 (AGENTS.md를 불러옴)
 ├── 다시잇다_개발기획서_수정.pdf        # 제출용 개발기획서
 ├── Plan/                               # UX·데이터·아키텍처·기능·구현 계획
 ├── .github/                            # CI·CodeQL·PR 템플릿·의존성 업데이트 설정
@@ -171,6 +173,8 @@ LLM 관련 위험은 [LLM·AI 도구 점검 기준](.claude/skills/kisa-secure-c
 | 4. 사용자 검증 | 사용성 검증과 개선, 협력 가능 시 시니어 대상 과업 관찰 | 최종 보안약점 진단 보고서 정리 | 대화 완료율, 추천 이해도, 공식 신청처 도달률, 도움 요청 횟수 측정. 관찰이 어려우면 페르소나 과업 시나리오로 대체 |
 
 ## 7. 협업 규칙
+
+AI 개발 도구(Codex·Claude Code 등)는 [`AGENTS.md`](AGENTS.md)의 팀 공용 지침으로 아래 규칙을 따릅니다. Claude Code는 [`CLAUDE.md`](CLAUDE.md)가 이 파일을 불러옵니다. 규칙을 바꾸면 이 장과 `AGENTS.md`를 같은 PR에서 고치고, 개인 취향 규칙은 각자 전역 설정(`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`)에 둡니다.
 
 ### 브랜치
 
