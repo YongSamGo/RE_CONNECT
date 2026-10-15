@@ -1,0 +1,33 @@
+{
+  "id": "P05",
+  "summary": "출생연도만 아는 65세 경계 사례. 전직 IT 개발자로 디지털 교육 봉사를 원한다.",
+  "test_focus": ["출생연도만으로 65세 이상 판정 불가 → unknown", "디지털 역량 매핑"],
+  "interview": [
+    "소프트웨어 회사에서 개발자로 삼십 년 일했어요. 마지막엔 팀장이었고요.",
+    "요즘 동네 어르신들이 키오스크나 스마트폰을 어려워하셔서 그런 거 가르쳐 드리고 싶어요.",
+    "봉사로 하고 싶어요. 분당 살고 성남시 안이면 어디든 괜찮아요.",
+    "평일 오전이면 되고, 주 네 시간 정도요. 61년생입니다.",
+    "작년에 서울시 디지털 안내사 교육을 받았어요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "소프트웨어 개발자 30년, 마지막 팀장", "skill_tags": ["소프트웨어 개발", "팀 관리"], "duration_note": "30년"}
+    ],
+    "skills": ["소프트웨어 개발", "팀 관리"],
+    "preferred_regions": [{"province": "gyeonggi", "district": "성남시"}],
+    "activity_types": ["volunteering"],
+    "paid_preference": "unpaid",
+    "available_weekdays": [1, 2, 3, 4, 5],
+    "hours_per_week": 4,
+    "mobility_note": "성남시 안 이동 가능",
+    "residence_region": {"province": "gyeonggi", "district": "성남시"},
+    "birth_year": 1961,
+    "certifications": null,
+    "completed_courses": ["서울시 디지털 안내사 교육"],
+    "activity_constraints": null
+  },
+  "must_not_extract": {"exact": [], "semantic": []},
+  "expected_roles": ["디지털 기기 사용 교육 봉사", "키오스크 안내 봉사"],
+  "notes": "'평일 오전'은 요일만 확정하고 시간대는 현재 계약에 필드가 없으므로 버리지 않고 사용자 확인 대상으로 남긴다. '가르쳐 드리고 싶다'는 희망이지 경험이 아니므로 '디지털 기기 교육'은 역량이 아니라 expected_roles에서만 다룬다."
+}

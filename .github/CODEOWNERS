@@ -1,0 +1,34 @@
+# 에이전트 지시 파일·CI·보안 설정을 바꾸는 PR은 아래 리뷰어 중 한 명의 승인이 있어야 병합된다.
+# (main·develop 브랜치 보호의 "Require review from Code Owners"가 켜져 있을 때 강제된다)
+#
+# - 이 파일들은 AI 개발 도구(Claude Code 등)의 동작과 CI 점검 자체를 바꿀 수 있다.
+#   숨긴 지시문이나 점검 우회가 일반 리뷰에 묻히지 않게 지정 리뷰어가 본다.
+# - PR 작성자 본인의 승인은 인정되지 않아서 두 명을 지정한다. 둘 중 한 명이 승인하면 된다.
+# - 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md (AGT-02),
+#   docs/security/ci-pipeline.md "CODEOWNERS"
+# - 대상은 .github/scripts/check_hidden_text.py의 AGENT_PATHSPECS와 맞춘다.
+#
+# 뒤에 오는 줄이 앞의 줄보다 우선한다. 리뷰어를 바꿀 때는 모든 줄을 함께 바꾼다.
+
+# 에이전트 지시 파일 (Claude Code 명령·스킬, 다른 AI 도구 지시·설정 파일)
+# 앞에 /가 없는 이름은 어느 폴더에 있든 맞는다. 하위 폴더에서 도구를 열면 그 폴더의 지시 파일도 쓰인다.
+.claude/                   @SeungwonKwon @JBR-313
+.codex/                    @SeungwonKwon @JBR-313
+.cursor/                   @SeungwonKwon @JBR-313
+.gemini/                   @SeungwonKwon @JBR-313
+CLAUDE.md                  @SeungwonKwon @JBR-313
+CLAUDE.local.md            @SeungwonKwon @JBR-313
+AGENTS.md                  @SeungwonKwon @JBR-313
+AGENTS.override.md         @SeungwonKwon @JBR-313
+GEMINI.md                  @SeungwonKwon @JBR-313
+.mcp.json                  @SeungwonKwon @JBR-313
+**/.vscode/mcp.json        @SeungwonKwon @JBR-313
+.cursorrules               @SeungwonKwon @JBR-313
+.windsurfrules             @SeungwonKwon @JBR-313
+
+# CI·저장소 설정 (워크플로, 점검 스크립트, PR 템플릿, Copilot 지시 파일, 이 파일)
+/.github/                  @SeungwonKwon @JBR-313
+
+# 점검 예외: 비밀값 탐지 예외, binary 지정(숨은 문자 검사를 건너뜀. 하위 폴더 파일도 적용됨)
+/.gitleaks.toml            @SeungwonKwon @JBR-313
+.gitattributes             @SeungwonKwon @JBR-313
