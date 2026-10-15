@@ -40,6 +40,11 @@ describe('read aloud consent and resources', () => {
     expect(await posts[1]!.json()).toEqual({ target, segment: 1 })
     expect(posts[0]!.headers.get('Idempotency-Key')).not.toBe(posts[1]!.headers.get('Idempotency-Key'))
     expect(screen.queryByRole('button', { name: '다음 부분 읽어주기' })).not.toBeInTheDocument()
+    act(() => window.dispatchEvent(new Event('pagehide')))
+    expect(screen.queryByText(/개 부분 중/)).not.toBeInTheDocument()
+    await user.click(screen.getByRole('button', { name: '제목 읽어주기' }))
+    expect(await screen.findByText(/2개 부분 중 1번째 부분/)).toBeVisible()
+    expect(fetch).toHaveBeenCalledTimes(6)
   })
   it.each([null, '0', '1.5', '9007199254740992', 'private count'])('rejects missing or invalid segment counts %s before playback', async (count) => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'

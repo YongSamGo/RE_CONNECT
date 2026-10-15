@@ -30,7 +30,7 @@ export function ReadAloud({ target, label }: { target: components['schemas']['Sp
   const pending = state.status === 'pending'
   const stale = state.status === 'error' && state.error.code === 'VERSION_CONFLICT'
   function start(segment: number) {
-    if (pending || playing || stale || !Number.isSafeInteger(segment) || segment < 0 || (position.value.count === null ? segment !== 0 : segment >= position.value.count)) return
+    if (pending || (playing && !!blob) || stale || !Number.isSafeInteger(segment) || segment < 0 || (position.value.count === null ? segment !== 0 : segment >= position.value.count)) return
     setFailed(false); setPlaying(false)
     position.setValue((previous) => ({ ...previous, segment }))
     void request.run(async (api, signal) => {
