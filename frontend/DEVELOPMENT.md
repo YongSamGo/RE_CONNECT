@@ -2,6 +2,8 @@
 
 담당 A. 기준은 `Plan/01_UX_Flow.md`와 `Plan/03_Architecture_and_Dependencies.md` v1.1이다. 이 PR은 React·TypeScript·Vite 실행 기반, UX01~10 경로, 오류 경계를 제공한다. W02-08 API 타입·클라이언트, W11의 실제 기능 구현은 후속 작업이다.
 
+W02-08.a의 후속 준비 구현은 [API 타입·통신 안내](src/api/README.md)를 참고한다. 아직 미병합인 계약은 고정 커밋·해시로 확인하며, 그동안 `build`의 계약 검사에는 네트워크가 필요하다. 기존 화면은 여전히 API에 연결하지 않는다.
+
 ## 실행
 
 Node 24와 npm을 사용한다. 저장소 루트에서 `cd frontend` 후:
