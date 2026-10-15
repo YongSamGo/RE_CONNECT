@@ -26,7 +26,7 @@ function OpportunityCard({ item }: { item: Opportunity }) {
       <div><dt>보수</dt><dd>{item.paid === null ? '보수 확인 필요' : item.paid ? '보수 있음' : '무보수'}</dd></div>
       <div><dt>마감</dt><dd>{deadlineLabel(item)}</dd></div></dl>
     <Link className="text-link" to={`/opportunities/${item.id}`} aria-label={`${item.title} 공고 상세 화면으로`}>공고 상세 화면으로 →</Link>
-    <p className="catalog-note">상세·공식 원문 연결은 준비 중입니다. 지원 자격과 신청 완료를 뜻하지 않습니다.</p>
+    <p className="catalog-note">상세에서 최신 모집 상태와 원문 조건을 확인하세요. 지원 자격과 신청 완료를 뜻하지 않습니다.</p>
   </article></li>
 }
 

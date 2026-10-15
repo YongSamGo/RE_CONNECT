@@ -19,3 +19,10 @@
 .opportunity-card .catalog-note { margin-bottom: 0; }
 .catalog-pagination { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 @media (max-width: 500px) { .catalog-form { grid-template-columns: 1fr; gap: 20px; } .opportunity-card { padding: 20px; } .opportunity-card dl > div { grid-template-columns: 1fr; gap: 0; margin-top: 16px; } }
+.public-detail > .text-link { display: inline-block; margin: 28px 0; }
+.opportunity-detail { margin-bottom: 24px; overflow-wrap: anywhere; }
+.opportunity-detail h2 { font-size: 28px; }
+.opportunity-detail h3 { margin-top: 32px; }
+.detail-facts { display: grid; gap: 16px; }
+.detail-facts dt { font-weight: 700; }
+.detail-facts dd { margin: 4px 0 0; }

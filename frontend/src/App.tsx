@@ -6,6 +6,7 @@ import { CheckboxField, TextAreaField } from './ui/Fields'
 import { StatusNotice } from './ui/StatusNotice'
 import { useMemoryScope } from './state/useMemoryScope'
 import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
+import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
 import './App.css'
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
@@ -86,7 +87,6 @@ function Profile({ experience }: { experience: string }) {
 
 const pendingScreens = {
   voice: { step: '음성 입력', title: '말로 경험을 이야기하기', heading: '음성 입력은 연결 준비 중이에요', body: '녹음·전사 확인은 음성 서비스 연결 후 제공됩니다. 현재는 마이크에 접근하지 않습니다.', link: '/conversation', action: '글로 작성하기' },
-  detail: { step: '공고 상세', title: '공고의 조건을 함께 확인해요', heading: '공고 상세는 연결 준비 중이에요', body: '공식 원문·자격 조건·접수 방법·오류 신고는 상세 기능 연결 후 제공됩니다.', link: '/opportunities', action: '공고 화면으로' },
   preparation: { step: '03 · 신청 준비', title: '신청 전, 차근차근 준비해요', heading: '신청 준비는 연결 준비 중이에요', body: '검수한 공고의 서류 안내와 확정 프로필을 연결한 뒤 지원서 작성·수정·승인·복사를 제공합니다. 공식 신청처 이동은 신청 완료를 의미하지 않습니다.', link: '/opportunities', action: '공고 화면으로' },
   me: { step: '내 정보', title: '저장한 자료를 관리해요', heading: '로그인과 저장은 연결 준비 중이에요', body: '카카오 인증과 별도 저장 동의 연결 후 내 저장 자료를 조회·삭제할 수 있습니다. 미리보기의 입력은 회원 자료로 저장되지 않습니다.', link: '/', action: '시작 화면으로' },
   admin: { step: '운영자', title: '운영자 인증이 필요해요', heading: '운영자 화면은 연결 준비 중이에요', body: '서버의 운영자 권한과 MFA 확인 후 공고 검수·신고·운영 상태를 제공합니다. 현재 화면은 관리 데이터 조회나 변경을 수행하지 않습니다.', link: '/', action: '시작 화면으로' },
@@ -134,7 +134,7 @@ export default function App() {
       <Route path="/transcription" element={requirePreview(<Placeholder kind="voice" />)} />
       <Route path="/profile" element={requirePreview(<Profile experience={preview.experience} />)} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
-      <Route path="/opportunities/:id" element={<Placeholder kind="detail" />} />
+      <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
       <Route path="/preparation" element={requirePreview(<Placeholder kind="preparation" />)} />
       <Route path="/me" element={<Placeholder kind="me" />} />
       <Route path="/admin/*" element={<Placeholder kind="admin" />} />

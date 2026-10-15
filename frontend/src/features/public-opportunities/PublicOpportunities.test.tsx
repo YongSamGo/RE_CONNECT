@@ -59,7 +59,7 @@ describe('public search without AI or login', () => {
     expect(await screen.findByRole('heading', { name: attack })).toBeVisible()
     expect(container.querySelector('img, script')).toBeNull()
     expect(screen.getByRole('link', { name: `${attack} 공고 상세 화면으로` })).toHaveAttribute('href', '/opportunities/12345678-1234-1234-1234-123456789001')
-    expect(screen.getByText(/상세·공식 원문 연결은 준비 중/)).toBeVisible()
+    expect(screen.getByText(/상세에서 최신 모집 상태와 원문 조건/)).toBeVisible()
   })
   it('uses the applied filter snapshot for pagination while leaving edited filters unapplied', async () => {
     const fetch = vi.fn(async (request: Request) => {

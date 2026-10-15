@@ -41,7 +41,7 @@ npm audit --omit=dev --audit-level=high
 | 04 | `/transcription` | 음성 연동 대기·텍스트 복귀 |
 | 05 | `/profile` | 직접 작성한 텍스트 확인·수정 복귀 |
 | 06 | `/opportunities` | 공개 검색·페이지·오류 UI, 실제 서버 검증 대기 |
-| 07 | `/opportunities/:id` | 공고 상세 연동 대기 |
+| 07 | `/opportunities/:id` | 공개 상세 조회·원문 조건·공식 링크, 실제 서버 검증 대기 |
 | 08 | `/preparation` | 신청 준비 연동 대기 |
 | 09 | `/me` | 로그인·저장 연동 대기 |
 | 10 | `/admin/*` | 서버 역할·MFA 연동 대기 |

@@ -7,11 +7,11 @@ export type Province = components['schemas']['Province']
 export const provinces = { seoul: '서울', gyeonggi: '경기', incheon: '인천' } satisfies Record<Province, string>
 export type Search = { q: string; province: Province | ''; activity_type: Opportunity['activity_type'] | '' }
 
-const invalid = (): never => { throw new ApiError('INVALID_RESPONSE') }
-function record(value: unknown): Record<string, unknown> {
+export const invalid = (): never => { throw new ApiError('INVALID_RESPONSE') }
+export function record(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : invalid()
 }
-function text(value: unknown, max: number): string {
+export function text(value: unknown, max: number): string {
   return typeof value === 'string' && value.trim().length > 0 && value.length <= max ? value : invalid()
 }
 function integer(value: unknown, min: number): number {
@@ -29,7 +29,7 @@ function date(value: unknown): string | null {
   const parsed = new Date(`${value}T00:00:00Z`)
   return Number.isFinite(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value ? value : invalid()
 }
-function timestamp(value: unknown): string | null {
+export function timestamp(value: unknown): string | null {
   if (value === null) return null
   if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,9})?(?:Z|[+-](?:[01]\d|2[0-3]):[0-5]\d)$/.test(value)) return invalid()
   date(value.slice(0, 10))
@@ -40,14 +40,15 @@ function koreanDate(value: string): string {
   const part = (type: string) => parts.find((item) => item.type === type)!.value
   return `${part('year')}-${part('month')}-${part('day')}`
 }
-function opportunity(value: unknown): Opportunity {
+export function isOpportunityId(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)
+}
+export function publicSummary(value: unknown): Omit<Opportunity, 'recruitment_status'> & { recruitment_status: 'open' | 'closed' | 'unknown' } {
   const item = record(value)
   const id = text(item.id, 36)
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) return invalid()
+  if (!isOpportunityId(id)) return invalid()
   if (item.activity_type !== 'employment' && item.activity_type !== 'volunteering') return invalid()
-  // Closed items violate the public-list contract. Do not silently discard them
-  // while keeping a misleading total/page count from the response.
-  if (item.recruitment_status !== 'open' && item.recruitment_status !== 'unknown') return invalid()
+  if (item.recruitment_status !== 'open' && item.recruitment_status !== 'closed' && item.recruitment_status !== 'unknown') return invalid()
   if (typeof item.change_pending !== 'boolean') return invalid()
   const region = item.activity_region === null ? null : record(item.activity_region)
   if (region && region.district !== null && (typeof region.district !== 'string' || !/^[a-z0-9_]{2,40}$/.test(region.district))) return invalid()
@@ -70,12 +71,17 @@ export function parseList(value: unknown, requestedPage: number): OpportunityLis
   const page_size = integer(list.page_size, 1)
   const total = integer(list.total, 0)
   if (page !== requestedPage || page_size !== 20 || !Array.isArray(list.items) || list.items.length > page_size || total < list.items.length) return invalid()
-  const items = list.items.map(opportunity)
+  const items = list.items.map((value): Opportunity => {
+    const item = publicSummary(value)
+    // Closed details remain readable, but violate the public-list contract.
+    if (item.recruitment_status === 'closed') return invalid()
+    return { ...item, recruitment_status: item.recruitment_status }
+  })
   if (new Set(items.map((item) => item.id)).size !== items.length) return invalid()
   return { items, page, page_size, total }
 }
 
-export function deadlineLabel(item: Opportunity): string {
+export function deadlineLabel(item: Pick<Opportunity, 'deadline_at' | 'deadline_date'>): string {
   if (item.deadline_at) {
     return `${new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(item.deadline_at))} 마감 (한국시간)`
   }
