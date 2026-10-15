@@ -48,3 +48,30 @@ security-reports/
 
 # 공고 출처 원본 샘플 — 담당자 연락처 등 개인정보가 섞일 수 있어 커밋하지 않음
 worker/samples/
+
+# 모델 가중치 — 공식 배포원에서 revision·digest를 고정해 받는다. 저장소에 넣지 않음 (speech/README.md)
+# (backend 안의 DB 모델 파일·폴더와 겹치지 않게 경로를 한정한다)
+/models/
+/speech/models/
+*.gguf
+*.safetensors
+*.onnx
+*.pt
+*.pth
+*.ckpt
+# faster-whisper(CTranslate2) model.bin·Hugging Face pytorch_model.bin
+/speech/**/*.bin
+# Hugging Face 캐시 폴더 (models--<조직>--<모델>/)
+models--*/
+# Ollama 모델 저장소 (blobs/sha256-…, manifests/)
+**/ollama/blobs/
+**/ollama/manifests/
+
+# 프론트엔드 테스트·도구 출력
+coverage/
+*.tsbuildinfo
+
+# AI 개발 도구 개인 파일 — 팀 공용 지침은 AGENTS.md·CLAUDE.md (개인 규칙은 각자 전역 설정에)
+CLAUDE.local.md
+**/.claude/settings.local.json
+.claude/worktrees/
