@@ -97,6 +97,7 @@ paths:
           description: 탈퇴 완료
           headers:
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403':
           description: 재인증 필요·CSRF 실패
@@ -1698,6 +1699,7 @@ paths:
           description: 공고 이용 불가·미확정·멱등 키 충돌
           headers:
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
@@ -1713,6 +1715,7 @@ paths:
                     message: 프로필을 먼저 확정해 주세요.
                     request_id: req_01JABCDXYZ
                 idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
@@ -1821,6 +1824,7 @@ paths:
           description: 로그아웃 완료
           headers:
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
 
