@@ -1,0 +1,6 @@
+# 패키지 배포 설정이 아니라 도구 설정만 둔다. 의존성은 requirements*.in에서 관리한다.
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = ["--strict-markers", "--strict-config"]

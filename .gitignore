@@ -50,7 +50,7 @@ security-reports/
 worker/samples/
 
 # 모델 가중치 — 공식 배포원에서 revision·digest를 고정해 받는다. 저장소에 넣지 않음 (speech/README.md)
-# (backend의 DB 모델 폴더 app/models/와 겹치지 않게 경로를 한정한다)
+# (backend 안의 DB 모델 파일·폴더와 겹치지 않게 경로를 한정한다)
 /models/
 /speech/models/
 *.gguf
