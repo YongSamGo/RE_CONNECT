@@ -1,6 +1,6 @@
 # KISA 보안 점검 키트 (Claude Code)
 
-KISA 시큐어코딩 기준과 SW 공급망 보안 기준으로 저장소를 정적 점검하는 Claude Code 스킬과 슬래시 명령입니다. README 5.2절 흐름의 **② 설계 · ⑥ 리뷰** 단계에서 씁니다. 매 PR에 자동으로 도는 점검은 [CI 보안 파이프라인](ci-pipeline.md)이 맡고, 이 키트는 사람이 코드 흐름을 따라가며 판정해야 하는 항목(인증·인가·IDOR·경쟁조건 등)을 맡습니다.
+KISA 시큐어코딩 기준과 SW 공급망 보안 기준, OWASP LLM Top 10(2025) 기준으로 저장소를 정적 점검하는 Claude Code 스킬과 슬래시 명령입니다. README 5.2절 흐름의 **② 설계 · ⑥ 리뷰** 단계에서 씁니다. 매 PR에 자동으로 도는 점검은 [CI 보안 파이프라인](ci-pipeline.md)이 맡고, 이 키트는 사람이 코드 흐름을 따라가며 판정해야 하는 항목(인증·인가·IDOR·경쟁조건 등)을 맡습니다.
 
 ## 설치
 
@@ -22,12 +22,14 @@ Claude Code에서:
 /kisa-review backend/             # 특정 경로만
 /kisa-review --code-only          # 코드(구현 49개)만
 /kisa-review --supply-chain       # 의존성·CI·Dockerfile·SBOM만
+/kisa-review --llm-only           # LLM 연동(LLM-01~10)·AI 개발 도구 경로(AGT-01~04)만
 /kisa-review --roadmap            # 로드맵(2026) 대비 현황까지 포함
 /kisa-review PR 111               # PR 변경분만 점검 (결과는 보고서로만)
 /kisa-review PR 111 --comment     # PR 변경분 점검 + 승인 후 PR 리뷰 댓글
 ```
 
 - PR 번호는 `PR 111`, `#111`, `111` 모두 됩니다.
+- LLM 코드가 아직 없으면 `--llm-only`는 설계 문서(`Plan/`, README 5장)로 판정합니다. 보고서에 `LLM-01 (설계) 부분충족`처럼 나옵니다.
 - `--comment`는 PR 대상일 때만 동작합니다. **취약점의 원인(검증 누락·위험한 호출 등)이 PR이 추가·변경한 줄에 있는 발견만** 인라인 댓글로 올립니다. PR이 기존의 취약한 함수를 새로 호출하기만 하는 경우처럼 원인이 기존 코드에 있으면 요약에 건수만 적습니다. 댓글의 데이터 흐름에도 PR이 바꾼 줄만 적습니다. 댓글은 올리기 전에 대화창에서 확인을 받습니다.
 - 댓글에는 P1~P4 배지와 Claude 리뷰 표시가 붙고, 리뷰 상태는 항상 `Comment`입니다(승인·변경 요청은 사람이 합니다). 등급 기준은 [명령 파일](../../.claude/commands/kisa-review.md) 4절에 있습니다.
 
@@ -55,9 +57,10 @@ Claude Code에서:
 
 - **비신뢰 데이터 범위 확대**: 사용자 입력뿐 아니라 외부 공고 원문과 LLM 출력도 외부 입력(Source)으로 추적합니다 (README 5.1 원칙 3).
 - **FastAPI 기준 인증·인가 점검**: 라우트마다 `Depends()` 체인과 프로필·지원서의 소유자 확인을 표로 확인합니다.
-- **개인정보 로그·LLM 마스킹** 확인 (SEC-05, ERR-01).
-- **KISA 밖 위험** 섹션: 프롬프트 인젝션, LLM 비용 상한, 동의·삭제 정책, React/TS 프런트엔드는 키트 49개 항목에 없어서 보고서에 따로 `확인 필요`로 적습니다 (README 5.3).
-- **CI 연계**: 공급망 항목(SCP-06·10·11·17)은 `.github/` 설정을 근거로 판정합니다.
+- **개인정보 로그·LLM 마스킹** 확인 (SEC-05, ERR-01, LLM-02).
+- **LLM·AI 도구 점검 항목**: 프롬프트 인젝션·LLM 호출 비용 상한처럼 KISA 49개 항목에 없는 LLM 위험을 [`llm-security.md`](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)의 `LLM-01~10`(OWASP LLM Top 10 2025와 번호가 같음)으로 판정합니다. 로컬 LLM(Ollama + Qwen3, `Plan/03`)과 외부 LLM API(README 2장)를 모두 다룹니다. 저장소의 숨은 문자·에이전트 지시 파일이 AI 개발 도구를 조종하는 경로는 `AGT-01~04`로 판정합니다 (README 5.3).
+- **KISA 밖 위험** 섹션: 동의·삭제 정책, React/TS 프런트엔드는 키트 항목에 없어서 보고서에 따로 `확인 필요`로 적습니다 (README 5.3).
+- **CI 연계**: 공급망 항목(SCP-06·10·11·17)과 AGT-01·02는 `.github/` 설정(워크플로·CODEOWNERS)을 근거로 판정합니다.
 
 ## 구성
 
@@ -69,8 +72,11 @@ Claude Code에서:
 | `references/impl-1~3*.md` | 구현단계 49개: KISA 2021 + Python 가이드(2023) 원문 + Python 판정 기준 |
 | `references/supply-chain-guideline.md` | SW 공급망 보안 가이드라인 1.0: SC-01~30, SCP-01~20 |
 | `references/supply-chain-roadmap.md` | SW 공급망 보안 강화 로드맵(2026.6): RM-01~12 |
+| `references/llm-security.md` | OWASP LLM Top 10(2025) 기준 LLM-01~10, 저장소 → AI 개발 도구 경로 AGT-01~04 (판정 기준·탐지 신호·설계 판정) |
 | `scripts/sbom_check.py` | SBOM 필드(NTIA·NIS-SBOM) 점검 |
 | `scripts/typo_check.py` | 타이포스쿼팅 의심 패키지 탐지 (다시잇다 스택 패키지 포함) |
+
+숨은 문자 검사 스크립트(`.github/scripts/check_hidden_text.py`)는 CI와 함께 쓰므로 `.github/`에 있습니다. AGT-01 점검 때 키트가 이 스크립트를 실행합니다.
 
 ## 직접 돌려볼 때 필요한 것
 
@@ -86,6 +92,7 @@ Claude Code로 점검할 때는 따로 설치할 것이 없습니다. `SKILL.md`
 - KISA 「Python 시큐어코딩 가이드」(2023)
 - 국가정보원·과기정통부·디지털플랫폼정부위원회 「SW 공급망 보안 가이드라인 1.0」(2024.05)
 - 관계부처 합동 「SW 공급망 보안 강화 로드맵」(2026.06)
+- OWASP 「Top 10 for LLM Applications」(2025) — <https://genai.owasp.org/llm-top-10/>. 판정 기준·탐지 신호는 키트가 다시잇다 스택에 맞게 정한 것입니다
 
 ## 키트 원본 대비 변경 사항
 
@@ -103,3 +110,4 @@ Claude Code로 점검할 때는 따로 설치할 것이 없습니다. `SKILL.md`
 | `rg`·Windows 실행 안내 추가 | `rg`가 없는 환경에서 패턴 실행 실패 |
 | 명령에 `0-1. 다시잇다 프로젝트 맥락`, 보고서에 `KISA 밖 위험` 섹션 추가 | 프로젝트 스택·README 보안 원칙 반영 |
 | 명령에 PR 대상 점검과 `--comment`(4절) 추가 | PR 변경분 발견을 머지 전에 리뷰 댓글로 전달. 기존 코드 발견은 비공개 유지 |
+| `references/llm-security.md`(LLM-01~10·AGT-01~04) 추가, 명령·SKILL.md에 LLM 점검 단계·인덱스·탐지 패턴과 `--llm-only` 추가, "KISA 밖 위험"에서 프롬프트 인젝션·LLM 비용 상한을 분리 | 프롬프트 인젝션에 정해진 점검 항목·판정 기준이 없었음. 설계 문서만으로도 판정할 수 있게 함 (#113) |
