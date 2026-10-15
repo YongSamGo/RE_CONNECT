@@ -1631,6 +1631,7 @@ export interface components {
         };
         /**
          * @description Plan/02 §2 프로필 계약. null은 미확인, 빈 배열은 "없다고 확인함"이다.
+         *     예외로 experiences·preferred_regions·activity_types의 빈 배열은 "아직 입력하지 않음"이며 missing_for_recommendation으로 다시 묻는다.
          *     추천을 시작하려면 확정본에 experiences·preferred_regions·activity_types가 1개 이상 있어야 한다.
          */
         ProfileContent: {
