@@ -1,7 +1,10 @@
 import logging
 
 import pytest
-from fastapi import APIRouter, FastAPI, HTTPException
+import uuid
+from typing import Annotated
+
+from fastapi import APIRouter, FastAPI, Header, HTTPException
 from fastapi.testclient import TestClient
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -28,6 +31,14 @@ def app_with_sample_routes(settings: Settings) -> FastAPI:
     @router.post("/sample")
     async def sample(body: SampleBody) -> dict[str, str]:
         return {"name": body.name}
+
+    @router.post("/sample-dict")
+    async def sample_dict(body: dict[str, int]) -> dict[str, int]:
+        return body
+
+    @router.post("/idempotent")
+    async def idempotent(idempotency_key: Annotated[uuid.UUID, Header(alias="Idempotency-Key")]) -> dict[str, str]:
+        return {"key": str(idempotency_key)}
 
     @router.get("/boom")
     async def boom() -> None:
@@ -198,3 +209,36 @@ def test_whole_body_errors_point_to_body(
 
     assert response.status_code == 422
     assert response.json()["fields"] == [{"path": "body", "reason": reason}]
+
+
+def test_dict_keys_from_client_are_not_reflected(make_client, test_settings: Settings) -> None:
+    # dict 필드의 키도 클라이언트 입력이다. extra_forbidden이 아니어도 가려야 한다.
+    client = make_client(app_with_sample_routes(test_settings))
+
+    response = client.post("/sample-dict", json={"<img src=x>": "not-int", "ok_key": "nope"})
+
+    assert response.status_code == 422
+    paths = sorted(field["path"] for field in response.json()["fields"])
+    assert paths == ["<unknown>", "ok_key"]
+    assert "img" not in response.text
+
+
+@pytest.mark.parametrize(
+    ("headers", "reason"),
+    [
+        ({}, "required"),
+        ({"Idempotency-Key": "not-a-uuid"}, "invalid_type"),
+    ],
+)
+def test_header_names_from_schema_are_kept(
+    make_client, test_settings: Settings, headers: dict[str, str], reason: str
+) -> None:
+    client = make_client(app_with_sample_routes(test_settings))
+
+    response = client.post("/idempotent", headers=headers)
+
+    assert response.status_code == 422
+    fields = response.json()["fields"]
+    assert [field["path"] for field in fields] == ["Idempotency-Key"]
+    assert fields[0]["reason"] == reason
+    assert "not-a-uuid" not in response.text

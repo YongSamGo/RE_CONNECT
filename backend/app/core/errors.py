@@ -36,9 +36,12 @@ FieldReason = Literal[
 MAX_FIELD_ERRORS = 50
 _MAX_PATH_LENGTH = 200
 _LOCATIONS = frozenset({"body", "query", "path", "header", "cookie"})
-# 경로 조각으로 되돌려 줄 수 있는 키. 정의하지 않은 필드는 키 이름 자체가 클라이언트 입력이므로
-# 식별자 형식이 아니면 고정 표시로 바꿔 반사하지 않는다.
+# 경로 조각으로 되돌려 줄 수 있는 키. 정의하지 않은 필드와 dict 필드의 키는 키 이름 자체가 클라이언트 입력이므로
+# 식별자 형식이 아니면 고정 표시로 바꿔 반사하지 않는다. 오류 종류로 가려내면 dict 키 같은 경우를 놓치므로
+# 모든 키에 형식 검사를 건다.
 _SAFE_KEY = re.compile(r"^[A-Za-z_][A-Za-z0-9_]{0,63}$")
+# 헤더는 스키마에 정의한 이름만 검증 대상이 되고(`Idempotency-Key` 등) 하이픈을 쓰므로 하이픈을 허용한다.
+_SAFE_HEADER_KEY = re.compile(r"^[A-Za-z][A-Za-z0-9-]{0,63}$")
 _UNSAFE_KEY = "<unknown>"
 
 # Pydantic 오류 type → 계약의 reason. 목록에 없는 type은 invalid_value로 둔다.
@@ -112,12 +115,13 @@ def _field_path(loc: Sequence[int | str], error_type: str) -> str:
     # JSON 문법 오류의 loc 뒤쪽은 필드가 아니라 글자 위치다.
     if error_type == "json_invalid":
         parts = ()
+    safe_key = _SAFE_HEADER_KEY if location == "header" else _SAFE_KEY
     path = ""
     for part in parts:
         if isinstance(part, int):
             path += f"[{part}]"
         else:
-            key = part if _SAFE_KEY.fullmatch(part) else _UNSAFE_KEY
+            key = part if safe_key.fullmatch(part) else _UNSAFE_KEY
             path += f".{key}" if path else key
     # 본문 전체에 대한 오류(본문 없음·배열 본문 등)는 위치 이름으로 표시한다.
     if not path or path.startswith("["):
