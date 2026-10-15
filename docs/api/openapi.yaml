@@ -36,7 +36,7 @@ paths:
       summary: 현재 세션의 계정·권한·동의·저장 대기 상태
       description: |
         비회원 세션도 200을 돌려준다(`authenticated=false`). 화면은 시작할 때 이 경로를 불러
-        CSRF 쿠키와 동의 상태를 받는다. 응답에 CSRF 쿠키가 함께 설정될 수 있다.
+        CSRF 쿠키와 동의 상태를 받는다. 세션이 없으면 익명 세션 쿠키를, CSRF 쿠키가 없거나 세션과 맞지 않으면 새 CSRF 쿠키를 내려준다.
       security:
         - sessionCookie: []
         - {}
@@ -44,6 +44,7 @@ paths:
         '200':
           description: 현재 상태
           headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
             Cache-Control: { $ref: '#/components/headers/NoStore' }
           content:
@@ -183,6 +184,7 @@ paths:
           description: 버전 충돌·미확정·미승인·회원 세션·멱등 키 충돌
           headers:
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
@@ -199,6 +201,7 @@ paths:
                     message: 이미 로그인되어 있습니다. 바로 저장할 수 있습니다.
                     request_id: req_01JABCDXYZ
                 idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '422':
           description: 형식 오류
@@ -208,6 +211,15 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
               examples:
+                nothingToSave:
+                  summary: profile·draft가 모두 null
+                  value:
+                    code: VALIDATION_FAILED
+                    message: 저장할 프로필이나 지원서를 선택해 주세요.
+                    request_id: req_01JABCDXYZ
+                    fields:
+                      - path: profile
+                        reason: required
                 profileRequiredWithDraft:
                   value:
                     code: VALIDATION_FAILED
@@ -233,9 +245,15 @@ paths:
       operationId: startKakaoLogin
       summary: 카카오 로그인 시작
       description: |
-        브라우저 이동으로 부른다. `purpose=save`이면 이 세션의 저장 대기를 OAuth state에 결합한다.
-        `purpose=reauth`는 로그인한 회원의 탈퇴 전 재인증이며, 같은 카카오 계정이면 5분 동안 재인증 상태가 된다.
-        저장 대기가 없거나 만료됐으면 카카오로 가지 않고 `/auth/result?purpose=save&status=expired`로 보낸다.
+        브라우저 이동으로 부른다. GET이지만 OAuth state를 발급하므로 아래 규칙으로 보호한다.
+
+        - 새 state(가능하면 PKCE `code_verifier` 포함)를 만들어 **현재 세션에 저장**한다. 1회용, 10분 만료.
+          세션당 최대 3개를 두고 기존 state를 덮어쓰지 않는다(넘치면 가장 오래된 것부터 버린다).
+          그래서 다른 사이트가 이 경로로 보내도 진행 중인 로그인·저장 흐름은 끊기지 않는다.
+        - state에는 목적(`purpose`)만 기록한다. 저장 대기는 state가 아니라 세션에 결합돼 있다.
+        - `purpose=reauth`는 로그인한 회원의 탈퇴 전 재인증이다. 같은 카카오 계정으로 돌아오면 5분 동안 재인증 상태가 된다.
+        - `purpose=save`인데 세션에 저장 대기가 없거나 만료됐으면 카카오로 가지 않고 `/auth/result?purpose=save&status=expired`로 보낸다.
+        - 세션이 없으면 익명 세션을 만든다.
       security:
         - sessionCookie: []
         - {}
@@ -250,6 +268,7 @@ paths:
         '302':
           description: 카카오 인가 페이지 또는 화면 결과 경로로 이동
           headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
             Location:
               description: 카카오 인가 URL 또는 `/auth/result?purpose=save&status=expired`
               schema: { type: string }
@@ -263,9 +282,13 @@ paths:
       operationId: kakaoCallback
       summary: 카카오 인가 결과 처리
       description: |
-        CSRF 헤더 예외 경로이며 OAuth state로 보호한다. 성공하면 세션을 교체하고 저장 대기를 새 세션으로 옮긴다.
-        진행 중이던 체험은 옮기지 않는다. 인증 성공만으로 자료를 저장하지 않는다.
-        결과는 항상 화면의 `/auth/result`로 보내며 code·state를 Location에 남기지 않는다.
+        카카오가 보내는 GET이라 CSRF 헤더 대신 세션 결합 state로 보호한다(로그인 CSRF 방지).
+
+        - 쿼리 `state`가 **요청 세션에 저장된 state**와 같을 때만 처리하고, 쓴 state는 바로 지운다.
+          세션이 없거나, 다른 세션이 발급한 state이거나, 만료·재사용이면 카카오 토큰 교환을 하지 않고 `status=failed`로 보낸다.
+        - 성공하면 세션을 교체(새 세션·새 CSRF 쿠키)하고, 시작 세션의 저장 대기를 새 세션으로 옮긴다. 진행 중이던 체험은 옮기지 않는다.
+        - 인증 성공만으로 자료를 저장하지 않는다.
+        - 결과는 항상 화면의 `/auth/result`로 보내며 code·state·오류 설명을 Location에 남기지 않는다.
       security:
         - sessionCookie: []
       parameters:
@@ -277,6 +300,7 @@ paths:
         '302':
           description: 화면 결과 경로로 이동
           headers:
+            Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
             Location:
               description: |
                 `/auth/result?purpose={login|save|reauth}&status={success|cancelled|failed|expired}`
@@ -455,6 +479,7 @@ paths:
           description: 버전 충돌·근거 프로필 미저장·미승인·멱등 키 충돌
           headers:
             X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
@@ -629,7 +654,24 @@ paths:
                 contentMediaType: audio/wav
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
-        '409': { $ref: '#/components/responses/Conflict' }
+        '409':
+          description: 버전 충돌·멱등 키 충돌
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                versionConflict: { $ref: '#/components/examples/VersionConflict' }
+                requestInProgress: { $ref: '#/components/examples/RequestInProgress' }
+                requestAlreadyCompleted:
+                  summary: 음성은 보관하지 않으므로 완료된 키는 다시 쓸 수 없다
+                  value:
+                    code: REQUEST_ALREADY_COMPLETED
+                    message: 이미 처리한 요청입니다. 다시 들으려면 읽어주기 버튼을 다시 눌러 주세요.
+                    request_id: req_01JABCDXYZ
+                idempotencyKeyReused: { $ref: '#/components/examples/IdempotencyKeyReused' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '422':
           description: 형식 오류·허용하지 않는 필드·범위 밖 조각
@@ -2716,6 +2758,8 @@ components:
       description: |
         CSRF 쿠키(`__Host-rc_csrf`, 로컬 `rc_csrf`) 값을 그대로 넣는다. GET이 아닌 모든 요청에 필수.
         서버는 헤더·쿠키 일치, 세션 결합 서명, Origin을 함께 확인한다.
+        CSRF 쿠키 속성: `Path=/; Secure; SameSite=Strict`, HttpOnly 아님(화면이 읽는다), 세션 쿠키와 같은 수명.
+        로컬 HTTP 개발에서만 `Secure`를 뺀다.
 
   parameters:
     IdempotencyKey:
@@ -2769,6 +2813,12 @@ components:
     XRequestId:
       description: 서버가 붙인 추적 ID. 오류 본문의 `request_id`와 같다
       schema: { type: string, pattern: '^req_[0-9A-Za-z]{10,32}$' }
+    SetSessionCookies:
+      description: |
+        세션 쿠키(`__Host-rc_session`: HttpOnly; Secure; SameSite=Lax; Path=/)와
+        CSRF 쿠키(`__Host-rc_csrf`: Secure; SameSite=Strict; Path=/)를 새로 만들거나 바꿀 때만 붙는다.
+        로그인·로그아웃·탈퇴에서는 두 쿠키를 모두 교체한다.
+      schema: { type: string }
     NoStore:
       description: 개인 자료·음성 응답은 저장하지 않는다
       schema: { type: string, const: no-store }
@@ -3109,7 +3159,14 @@ components:
       type: object
       additionalProperties: false
       required: [journey_id, profile, draft]
-      description: profile·draft 중 하나 이상. draft가 있으면 profile도 필수
+      description: |
+        profile·draft 중 하나 이상. draft가 있으면 profile도 필수.
+        둘 다 null이면 422 `fields: [{path: profile, reason: required}]`, draft만 있으면 422 `fields: [{path: profile, reason: required_with}]`.
+      not:
+        description: profile·draft가 모두 null이면 거절
+        properties:
+          profile: { type: 'null' }
+          draft: { type: 'null' }
       properties:
         journey_id: { type: string, format: uuid }
         profile:
