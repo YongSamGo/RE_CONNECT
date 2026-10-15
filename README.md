@@ -53,7 +53,7 @@
 | 공고 수집 | Python 배치 워커 (공개 API 수집, 정규화, 중복·마감 확인) |
 | 문서 보관 | AES-256-GCM 암호화 저장소 |
 | 배포 | Docker Compose, Nginx (TLS 종료, 요청 크기·속도 제한) |
-| 품질·보안 점검 | Pytest, Bandit, pip-audit, gitleaks, GitHub Actions, 접근성·사용성 수동 검증 |
+| 품질·보안 점검 | GitHub Actions CI (Pytest, Bandit, CodeQL, pip-audit, dependency-review, gitleaks, zizmor, 숨은 문자 검사), `/kisa-review` 점검 키트 (KISA·공급망·OWASP LLM Top 10), 접근성·사용성 수동 검증 |
 
 ## 3. 저장소 구조
 
@@ -129,7 +129,8 @@ Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 �
 ② 설계        진단가이드 설계단계 기준으로 입력·인증/인가·에러·세션 요구사항 정리
 ③ 구현        Python 가이드의 "안전한 코드 예시"를 기준으로 작성
 ④ 테스트      약점별 공격 시나리오를 Pytest로 작성 (정상 + 공격 입력)
-⑤ 자동 점검   Bandit(코드), pip-audit(의존성), gitleaks(비밀값) 통과
+⑤ 자동 점검   CI 통과 — Bandit·CodeQL(코드), pip-audit(의존성), gitleaks(비밀값),
+               zizmor(워크플로), 숨은 문자 검사(문서·에이전트 지시 파일)
 ⑥ 리뷰        PR에 대응 약점·테스트를 명시하고 보안 담당 리뷰 후 병합
 ⑦ 기록        발견·조치 내용을 docs/security/ 진단 기록에 남김
 ```
@@ -155,7 +156,10 @@ Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 �
 
 - **프롬프트 인젝션**: 공고 원문은 도구 입력으로 격리하고 명령으로 취급하지 않음, 외부 발송·파일 접근 도구 금지, 악성 공고 지시문 샘플 테스트
 - **LLM 호출 비용 상한**: 사용자·세션별 호출 횟수 제한
+- **AI 개발 도구를 노린 숨은 지시문**: 저장소 문서·에이전트 지시 파일(`.claude/` 등)에 보이지 않는 문자로 숨긴 문장. CI 숨은 문자 검사로 막고, 지시 파일 변경은 CODEOWNERS 리뷰를 거침
 - **동의·보관기간·삭제 정책**: 개인정보보호위원회 생성형 AI 안내서 등 별도 기준 참고
+
+LLM 관련 위험은 [LLM·AI 도구 점검 기준](.claude/skills/kisa-secure-coding-python/references/llm-security.md)에 OWASP LLM Top 10(2025) 번호로 정리했습니다. 프롬프트 인젝션은 `LLM-01`, 호출 비용 상한은 `LLM-10`, 숨은 지시문은 `AGT-01~03`이며 `/kisa-review --llm-only`로 점검합니다 ([점검 키트](docs/security/kisa-review.md)).
 
 ## 6. 개발 로드맵
 
@@ -174,6 +178,7 @@ Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 �
 - `develop` — 개발 통합 브랜치이자 저장소 기본 브랜치. 모든 작업 브랜치는 여기서 만들고 여기로 PR을 보낸다
 - 작업 브랜치: `feat/<기능>` · `fix/<내용>` · `sec/<약점>` · `docs/<내용>` · `chore/<내용>`
 - `main`·`develop` 모두 직접 push 금지(관리자 포함). PR 승인 1명 + `CI 통과` + 리뷰 대화 해결 후 병합
+- `.claude/`·`.github/`·`.gitleaks.toml` 같은 에이전트 지시·CI 파일을 바꾸면 [`CODEOWNERS`](.github/CODEOWNERS)의 지정 리뷰어 승인이 필요하다 ([CI 문서](docs/security/ci-pipeline.md#codeowners))
 - 병합 방식
   - 작업 브랜치 → `develop`: **Squash and merge** (작업 하나가 커밋 하나)
   - `develop` → `main`: **Create a merge commit**. squash하면 `main`에 `develop` 이력에 없는 커밋이 생겨, 다음 릴리스 PR부터 이미 반영된 변경이 다시 보이거나 충돌한다
@@ -202,6 +207,8 @@ PR을 열면 [`.github/pull_request_template.md`](.github/pull_request_template.
 - `CI 통과` 체크가 초록색이어야 병합한다 ([CI 보안 파이프라인](docs/security/ci-pipeline.md))
 - 비밀값·개인정보가 코드·로그·커밋에 없다
 - 사용자 입력·공고 원문·LLM 출력을 비신뢰 데이터로 처리한다
+- LLM 프롬프트에서 외부 데이터를 지시문과 분리한다
+- 에이전트 지시 파일(`.claude/` 등)을 바꿨다면 PR 본문에 사유를 적는다
 
 ### 절대 커밋하지 않는 것
 

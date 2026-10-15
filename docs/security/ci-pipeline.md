@@ -9,6 +9,8 @@
 | `.github/workflows/ci.yml` | 테스트·보안약점·의존성·비밀값·워크플로 점검, 최종 판정 `CI 통과` |
 | `.github/workflows/codeql.yml` | CodeQL 정적 분석 (결과는 Security 탭 → Code scanning) |
 | `.github/dependabot.yml` | 의존성 업데이트 PR 자동 생성 |
+| `.github/scripts/check_hidden_text.py` | 숨은 문자 검사(실패)와 에이전트 지시 파일 의심 문구 검사(경고). 표준 라이브러리만 사용 |
+| `.github/CODEOWNERS` | 에이전트 지시 파일·CI·`.gitleaks.toml` 변경 시 지정 리뷰어 승인 필수 ([아래](#codeowners)) |
 | `.gitleaks.toml` | 비밀값 탐지 규칙 (KISA 원문·[점검 키트](kisa-review.md) 참조 문서의 예제 코드만 예외) |
 
 ## 점검 항목
@@ -17,6 +19,7 @@
 | --- | --- | --- | --- | --- |
 | 비밀값 유출 점검 | gitleaks | API 키·비밀번호·개인키 커밋 (지워진 커밋 포함) | 하드코드된 중요정보 | 항상 |
 | 워크플로 보안 점검 | zizmor | CI 자체의 권한 과다, 스크립트 삽입, 고정 안 된 액션 | — (공급망 보안) | 항상 |
+| 숨은 문자·지시문 점검 | `check_hidden_text.py` (회귀 시험 `test_check_hidden_text.py` 먼저 실행) | **실패**: 저장소 텍스트 파일·경로의 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자·단독 CR 등 제어 문자), UTF-8이 아닌 텍스트 파일(UTF-16·잘못된 바이트로 검사를 피하는 것 방지), 심볼릭 링크이거나 `.gitattributes`로 PR 화면에서 내용이 숨겨지는 에이전트 지시 파일. **경고**: 에이전트 지시 파일(`.claude/`, `CLAUDE.md`, `AGENTS.md` 등)에 새로 추가된 "지시 무시"류 문구 | — (OWASP LLM, [AGT-01·03](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)) | 항상 (경고는 PR에서만) |
 | Python 점검 | pytest | 기능 오류, 약점별 공격 시나리오 | 약점별 테스트 전체 | `backend/` 또는 `worker/`에 `requirements.txt`가 있을 때 |
 | | bandit | SQL 삽입, 명령어 삽입, 취약한 해시·난수, 하드코드 비밀값 등 | SQL 삽입, 운영체제 명령어 삽입, 취약한 암호화 알고리즘 사용 등 | 〃 |
 | | pip-audit | 알려진 취약점(CVE)이 있는 라이브러리 | 취약한 API 사용 | 〃 |
@@ -49,6 +52,7 @@
    - Require a pull request before merging (승인 1명 이상)
    - Require status checks to pass → **`CI 통과`** 하나만 지정
    - Require conversation resolution before merging
+   - **Require review from Code Owners** — `.github/CODEOWNERS`가 develop에 병합된 뒤 켭니다 ([CODEOWNERS](#codeowners))
    - **Do not allow bypassing the above settings** — 팀원 전원이 조직 관리자라, 이 옵션이 꺼져 있으면 보호 규칙이 아무에게도 적용되지 않습니다
    - Settings → General → Pull Requests: **Allow merge commits**와 **Allow squash merging**을 모두 켭니다 (작업 → `develop`은 squash, `develop` → `main`은 merge commit, README 7장)
 2. **Settings → Code security** (공개 레포는 무료)
@@ -60,6 +64,21 @@
    - Workflow permissions: **Read repository contents** (기본 읽기 전용)
    - Fork PR 실행 전 승인 필요
 
+## CODEOWNERS
+
+`.github/CODEOWNERS`는 아래 파일을 바꾸는 PR에 지정 리뷰어 리뷰를 자동으로 요청합니다. 브랜치 보호의 **Require review from Code Owners**가 켜져 있으면 지정 리뷰어 중 한 명이 승인해야 병합됩니다.
+
+| 대상 | 이유 |
+| --- | --- |
+| 어느 폴더에 있든 `.claude/`, `.codex/`, `.cursor/`, `.gemini/`, `CLAUDE.md`, `CLAUDE.local.md`, `AGENTS.md`, `GEMINI.md`, `.mcp.json`, `.vscode/mcp.json`, `.cursorrules`, `.windsurfrules` | AI 개발 도구의 동작을 바꾸는 에이전트 지시·설정 파일 ([AGT-02](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)). 하위 폴더에서 도구를 열면 그 폴더의 파일도 쓰입니다 |
+| `.github/` | CI 점검·PR 템플릿·이 규칙 자체 |
+| `.gitleaks.toml` | 비밀값 탐지 예외 |
+| `.gitattributes` (어느 폴더든) | `binary` 지정 파일은 숨은 문자 검사를 건너뜀 |
+
+- 리뷰어는 보안 담당(C)과 AI·데이터 담당(B) 두 명입니다. GitHub는 **PR 작성자 본인의 승인을 Code Owner 승인으로 치지 않아서**, 한 명만 지정하면 그 사람이 연 PR은 병합할 수 없습니다(관리자 우회도 꺼져 있음).
+- 리뷰어를 바꾸려면 `CODEOWNERS`의 모든 줄을 함께 바꾸는 PR을 엽니다. 그 PR도 현재 리뷰어의 승인이 필요합니다.
+- 에이전트 지시 파일을 바꿀 때는 PR 본문에 사유를 적습니다(PR 템플릿 체크 항목).
+
 ## 실패했을 때
 
 | 실패한 잡 | 할 일 |
@@ -68,12 +87,18 @@
 | bandit | 코드를 고치는 것이 원칙입니다. 오탐이면 해당 줄에 `# nosec B000 - 사유`를 적고 PR에서 리뷰어 승인을 받습니다. |
 | pip-audit / npm audit | 패치된 버전으로 올립니다. 패치가 없으면 이슈로 남기고 팀이 판단합니다. |
 | zizmor | 워크플로 수정 시 권한·삽입 경고를 고칩니다. |
+| 숨은 문자·지시문 점검 | 로그의 `파일:줄:열`과 `U+XXXX` 코드로 위치를 찾아 문자를 지웁니다. 화면에 안 보이므로 아래 로컬 명령으로 확인합니다. 복사·붙여넣기나 PDF 변환에서 섞인 경우가 많지만, 출처를 모르면 팀에 알리고 같은 커밋의 다른 변경도 확인합니다. 이모지 사이 ZWJ, 글자 뒤 이체 선택자 1개, 파일 맨 앞 BOM, 줄 끝 CRLF는 허용됩니다. "UTF-8이 아님"이면 편집기에서 UTF-8로 다시 저장합니다(Windows PowerShell 5.1의 `Out-File`·`>`는 UTF-16으로 저장할 수 있음). **검사 예외는 `.gitattributes`의 `binary` 지정 하나뿐**이며, 진짜 바이너리 파일에만 쓰고 CODEOWNERS 리뷰를 받습니다. 리뷰어는 `.gitattributes` 변경을 검사 우회 경로로 보고 확인합니다. "에이전트 지시 파일이 심볼릭 링크" 또는 "`.gitattributes`의 `diff`·`binary`·`linguist-generated` 지정"으로 실패하면 지시 파일을 실제 파일로 두고 그 속성을 지웁니다(PR 화면에서 내용이 숨겨지기 때문). **경고**(의심 문구)는 실패가 아니며, 리뷰어가 의도한 내용인지 확인합니다. |
 
 ## 로컬에서 먼저 돌려보기
 
 push 전에 같은 점검을 돌리면 CI 실패를 줄일 수 있습니다.
 
 ```bash
+# 저장소 최상위에서: 숨은 문자 검사 (+ develop에서 갈라진 뒤 지시 파일에 추가한 줄의 의심 문구)
+python -I .github/scripts/check_hidden_text.py --diff-base origin/develop
+# 검사 스크립트를 고쳤다면 회귀 시험도
+python -I .github/scripts/test_check_hidden_text.py
+
 # backend/ 안에서
 python -m pytest
 bandit -r . --exclude ./tests,./.venv --severity-level low --confidence-level medium
