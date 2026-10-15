@@ -24,7 +24,9 @@ tags:
   - name: 읽어주기
     description: 화면에 보이는 자료의 한국어 음성
   - name: 운영자
-    description: 운영자 역할과 MFA가 필요한 관리 기능
+    description: |
+      운영자 역할과 이 세션의 MFA 확인이 필요한 관리 기능(`/admin/mfa/verify` 제외).
+      상태를 바꾸는 연산은 모두 감사 기록(행위자·대상·이전/이후 상태·사유 코드)을 남긴다.
   - name: 내부 상태
     description: Compose 내부에서만 부르는 상태 확인
 
@@ -69,6 +71,7 @@ paths:
                       id: 7d3c1d9e-3a52-4c55-9a43-2f1f6d1b8a10
                       roles: [user]
                       mfa_verified: false
+                      reauth_until: null
                     consents:
                       - purpose: ai_processing
                         notice_version: ai-2026-10-15
@@ -252,7 +255,7 @@ paths:
           세션당 최대 3개를 두고 기존 state를 덮어쓰지 않는다(넘치면 가장 오래된 것부터 버린다).
           그래서 다른 사이트가 이 경로로 보내도 진행 중인 로그인·저장 흐름은 끊기지 않는다.
         - state에는 목적(`purpose`)만 기록한다. 저장 대기는 state가 아니라 세션에 결합돼 있다.
-        - `purpose=reauth`는 로그인한 회원의 탈퇴 전 재인증이다. 같은 카카오 계정으로 돌아오면 5분 동안 재인증 상태가 된다.
+        - `purpose=reauth`는 로그인한 회원의 탈퇴 전 재인증이다. 비회원 세션이면 카카오로 가지 않고 `/auth/result?purpose=reauth&status=failed`로 보낸다.
         - `purpose=save`인데 세션에 저장 대기가 없거나 만료됐으면 카카오로 가지 않고 `/auth/result?purpose=save&status=expired`로 보낸다.
         - 세션이 없으면 익명 세션을 만든다.
       security:
@@ -271,7 +274,7 @@ paths:
           headers:
             Set-Cookie: { $ref: '#/components/headers/SetSessionCookies' }
             Location:
-              description: 카카오 인가 URL 또는 `/auth/result?purpose=save&status=expired`
+              description: 카카오 인가 URL, `/auth/result?purpose=save&status=expired`, 또는 `/auth/result?purpose=reauth&status=failed`
               schema: { type: string }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
@@ -287,7 +290,8 @@ paths:
 
         - 쿼리 `state`가 **요청 세션에 저장된 state**와 같을 때만 처리하고, 쓴 state는 바로 지운다.
           세션이 없거나, 다른 세션이 발급한 state이거나, 만료·재사용이면 카카오 토큰 교환을 하지 않고 `status=failed`로 보낸다.
-        - 성공하면 세션을 교체(새 세션·새 CSRF 쿠키)하고, 시작 세션의 저장 대기를 새 세션으로 옮긴다. 진행 중이던 체험은 옮기지 않는다.
+        - `login`·`save`가 성공하면 세션을 교체(새 세션·새 CSRF 쿠키)하고, 시작 세션의 저장 대기를 새 세션으로 옮긴 뒤 시작 세션의 진행 중 체험을 지운다(새 세션으로 옮기지 않는다).
+        - `reauth`는 세션을 교체하지 않는다. 지금 로그인한 계정과 같은 카카오 계정이면 5분 동안 재인증 상태(`GET /me`의 `user.reauth_until`)가 되고, 다른 계정이면 세션을 그대로 두고 `status=failed`로 보낸다.
         - 인증 성공만으로 자료를 저장하지 않는다.
         - 결과는 항상 화면의 `/auth/result`로 보내며 code·state·오류 설명을 Location에 남기지 않는다.
       security:
@@ -939,6 +943,11 @@ paths:
         AI 처리 동의가 필요하다. 원본 음성은 메모리·tmpfs에서만 처리하고 전사 후 바로 정리한다.
         전사 결과는 자동으로 프로필에 쓰이지 않는다. 사용자가 확인·수정한 텍스트를 `messages`로 보낸다.
         90초를 넘는 녹음은 422(`audio`, `out_of_range`), 6MiB를 넘으면 413이다.
+
+        - 서버는 Content-Type을 믿지 않고 파일 시그니처(WebM·Ogg·MP4·RIFF/WAVE)와 디코더 프로브(길이·코덱)로 형식을 확인한다.
+          맞지 않으면 422(`audio`, `invalid_value`). 디코더는 허용 코덱만 쓰고 시간·메모리 제한을 둔다.
+        - 화면은 압축 형식(webm/opus 또는 mp4/aac)을 권장한다. WAV는 16kHz·16비트 모노로만 보낸다(90초 약 2.9MB).
+          44.1kHz 이상 WAV는 90초 전에 6MiB를 넘어 413이 된다.
       security:
         - sessionCookie: []
           csrfToken: []
@@ -957,7 +966,7 @@ paths:
                 audio:
                   type: string
                   contentMediaType: application/octet-stream
-                  description: 녹음 파일. 최대 90초·6MiB
+                  description: 녹음 파일. 최대 90초·6MiB. WebM·Ogg·MP4 압축 형식 권장, WAV는 16kHz·16비트 모노
             encoding:
               audio:
                 contentType: audio/webm, audio/ogg, audio/mp4, audio/wav
@@ -2035,11 +2044,13 @@ paths:
       operationId: createReport
       summary: 공고 오류 신고
       description: |
-        비회원도 신고할 수 있다. 공고 오류 유형 중심으로 받고, 설명에는 개인정보를 적지 않도록 화면에서 안내한다.
+        비회원도 신고할 수 있다. 같은 멱등 키로 다시 보내면 첫 접수 결과를 돌려주고 중복 신고를 만들지 않는다. 공고 오류 유형 중심으로 받고, 설명에는 개인정보를 적지 않도록 화면에서 안내한다.
         `type=other`이면 `note`가 필수(422 `required_with`).
       security:
         - sessionCookie: []
           csrfToken: []
+      parameters:
+        - $ref: '#/components/parameters/IdempotencyKey'
       requestBody:
         required: true
         content:
@@ -2072,6 +2083,7 @@ paths:
                     received_at: '2026-10-15T04:10:00Z'
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
@@ -2083,8 +2095,12 @@ paths:
       operationId: verifyMfa
       summary: 운영자 MFA 확인
       description: |
-        운영자 역할이 있는 회원 세션만 쓸 수 있다(아니면 403 `FORBIDDEN`). OTP가 틀리면 403 `MFA_INVALID`이고,
-        시도 횟수를 넘으면 429 `RATE_LIMITED`다. 같은 OTP는 다시 쓸 수 없다. OTP 값은 로그·감사 기록에 남기지 않는다.
+        운영자 역할이 있는 회원 세션만 쓸 수 있다(아니면 403 `FORBIDDEN`). OTP가 틀리면 403 `MFA_INVALID`이다.
+        같은 OTP는 다시 쓸 수 없다. OTP 값은 로그·감사 기록에 남기지 않는다.
+
+        - 실패는 세션이 아니라 **운영자 계정** 단위로 센다. 로그아웃·재로그인으로 초기화되지 않는다.
+        - 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After` 포함)로 응답한다. 잠금 중에는 OTP를 확인하지 않는다.
+        - 성공하면 실패 횟수를 0으로 되돌린다. 실패와 잠금은 감사 기록(`mfa.fail`, `mfa.lock`)에 남긴다.
       security:
         - sessionCookie: []
           csrfToken: []
@@ -2130,7 +2146,25 @@ paths:
                     message: 이 작업을 할 권한이 없습니다.
                     request_id: req_01JABCDXYZ
         '422': { $ref: '#/components/responses/ValidationFailed' }
-        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '429':
+          description: OTP 실패로 잠김·호출 한도
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Retry-After: { $ref: '#/components/headers/RetryAfter' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+              examples:
+                mfaLocked:
+                  value:
+                    code: MFA_LOCKED
+                    message: 인증 번호를 여러 번 틀려 잠시 잠겼습니다. 잠시 후 다시 시도해 주세요.
+                    request_id: req_01JABCDXYZ
+                rateLimited:
+                  value:
+                    code: RATE_LIMITED
+                    message: 요청이 많습니다. 잠시 후 다시 시도해 주세요.
+                    request_id: req_01JABCDXYZ
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
 
   /admin/opportunities:
@@ -2188,7 +2222,7 @@ paths:
                     page_size: 20
                     total: 1
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
@@ -2279,7 +2313,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/AdminOpportunity' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
@@ -2324,7 +2358,7 @@ paths:
                     source_checked_at: '2026-10-15T00:00:00Z'
                     updated_at: '2026-10-15T00:05:00Z'
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
@@ -2364,7 +2398,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/AdminOpportunity' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
@@ -2411,7 +2445,7 @@ paths:
                     review_status: approved
                     reviewed_at: '2026-10-15T04:00:00Z'
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
@@ -2462,7 +2496,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/OpportunityReviewResult' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
@@ -2500,7 +2534,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/OpportunityReviewResult' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
@@ -2545,7 +2579,7 @@ paths:
                       slots_total: 1
                     checked_at: '2026-10-15T04:20:00Z'
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
 
   /admin/reports:
@@ -2589,7 +2623,7 @@ paths:
                     page_size: 20
                     total: 1
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
@@ -2627,7 +2661,7 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/AdminReport' }
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '413': { $ref: '#/components/responses/PayloadTooLarge' }
@@ -2680,7 +2714,7 @@ paths:
                     page_size: 20
                     total: 1
         '401': { $ref: '#/components/responses/Unauthorized' }
-        '403': { $ref: '#/components/responses/Forbidden' }
+        '403': { $ref: '#/components/responses/AdminForbidden' }
         '422': { $ref: '#/components/responses/ValidationFailed' }
         '429': { $ref: '#/components/responses/TooManyRequests' }
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
@@ -2866,6 +2900,29 @@ components:
               value:
                 code: CONSENT_REQUIRED
                 message: 이 기능을 쓰려면 먼저 안내를 확인하고 동의해 주세요.
+                request_id: req_01JABCDXYZ
+    AdminForbidden:
+      description: 운영자 역할 없음·MFA 미완료·CSRF 실패
+      headers:
+        X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          examples:
+            mfaRequired:
+              value:
+                code: MFA_REQUIRED
+                message: 추가 인증이 필요합니다.
+                request_id: req_01JABCDXYZ
+            forbidden:
+              value:
+                code: FORBIDDEN
+                message: 이 작업을 할 권한이 없습니다.
+                request_id: req_01JABCDXYZ
+            csrfFailed:
+              value:
+                code: CSRF_FAILED
+                message: 요청을 확인할 수 없습니다. 화면을 새로 고친 뒤 다시 시도해 주세요.
                 request_id: req_01JABCDXYZ
     NotFound:
       description: 없는 자원 또는 접근할 수 없는 사적 자원(둘을 구분하지 않음)
@@ -3056,6 +3113,7 @@ components:
         - CSRF_FAILED
         - MFA_REQUIRED
         - MFA_INVALID
+        - MFA_LOCKED
         - CONSENT_REQUIRED
         - REAUTH_REQUIRED
         - NOT_FOUND
@@ -3141,7 +3199,7 @@ components:
             - type: 'null'
             - type: object
               additionalProperties: false
-              required: [id, roles, mfa_verified]
+              required: [id, roles, mfa_verified, reauth_until]
               properties:
                 id: { type: string, format: uuid }
                 roles:
@@ -3150,6 +3208,10 @@ components:
                 mfa_verified:
                   type: boolean
                   description: 운영자 MFA를 이 세션에서 완료했는지. 일반 사용자는 항상 false
+                reauth_until:
+                  type: [string, 'null']
+                  format: date-time
+                  description: 탈퇴 전 재인증이 유효한 시각. 재인증하지 않았거나 지났으면 null
         consents:
           type: array
           description: 현재 유효한 동의만. 철회·폐기 버전은 빠진다
@@ -3686,9 +3748,29 @@ components:
       required: [id, description, skill_tags, duration_note]
       properties:
         id:
+          type: string
+          format: uuid
+          description: 서버가 부여한 경험 ID
+        description: { type: string, minLength: 1, maxLength: 1000 }
+        skill_tags:
+          type: array
+          maxItems: 20
+          uniqueItems: true
+          items: { type: string, minLength: 1, maxLength: 50 }
+        duration_note:
+          type: [string, 'null']
+          maxLength: 200
+          description: 사용자가 말한 기간. 불명확하면 추정하지 않고 null
+
+    ExperienceInput:
+      type: object
+      additionalProperties: false
+      required: [id, description, skill_tags, duration_note]
+      properties:
+        id:
           type: [string, 'null']
           format: uuid
-          description: 서버가 부여한 경험 ID. 수정 요청에서 새 경험은 null로 보내고, 응답에서는 항상 값이 있다
+          description: 기존 경험은 서버가 부여한 ID, 새 경험은 null
         description: { type: string, minLength: 1, maxLength: 1000 }
         skill_tags:
           type: array
@@ -3727,6 +3809,78 @@ components:
           type: array
           maxItems: 20
           items: { $ref: '#/components/schemas/Experience' }
+        skills:
+          type: array
+          maxItems: 30
+          uniqueItems: true
+          items: { type: string, minLength: 1, maxLength: 50 }
+        preferred_regions:
+          type: array
+          maxItems: 10
+          items: { $ref: '#/components/schemas/Region' }
+        activity_types:
+          type: array
+          maxItems: 2
+          uniqueItems: true
+          items: { type: string, enum: [employment, volunteering] }
+        paid_preference:
+          type: [string, 'null']
+          enum: [paid, unpaid, any, null]
+        available_weekdays:
+          type: [array, 'null']
+          maxItems: 7
+          uniqueItems: true
+          items: { type: integer, minimum: 1, maximum: 7 }
+          description: 1=월 ~ 7=일
+        hours_per_week: { type: [number, 'null'], minimum: 0, maximum: 168 }
+        mobility_note: { type: [string, 'null'], maxLength: 300 }
+        residence_region:
+          description: 거주 자격 대조용. 희망 활동 지역과 다르다
+          oneOf:
+            - type: 'null'
+            - $ref: '#/components/schemas/Region'
+        birth_year: { type: [integer, 'null'], minimum: 1900, maximum: 2026 }
+        certifications:
+          type: [array, 'null']
+          maxItems: 20
+          items: { type: string, minLength: 1, maxLength: 100 }
+        completed_courses:
+          type: [array, 'null']
+          maxItems: 20
+          items: { type: string, minLength: 1, maxLength: 100 }
+        activity_constraints:
+          type: [array, 'null']
+          maxItems: 10
+          description: 활동 수행 조건. 진단명·상세 병력은 받지 않는다
+          items: { type: string, minLength: 1, maxLength: 200 }
+
+    ProfileContentInput:
+      type: object
+      description: |
+        프로필 초안 수정 요청용. ProfileContent와 같고, 새 경험만 id를 null로 보낸다.
+        추천을 시작하려면 확정본에 experiences·preferred_regions·activity_types가 1개 이상 있어야 한다.
+      additionalProperties: false
+      required:
+        - schema_version
+        - experiences
+        - skills
+        - preferred_regions
+        - activity_types
+        - paid_preference
+        - available_weekdays
+        - hours_per_week
+        - mobility_note
+        - residence_region
+        - birth_year
+        - certifications
+        - completed_courses
+        - activity_constraints
+      properties:
+        schema_version: { type: integer, const: 1 }
+        experiences:
+          type: array
+          maxItems: 20
+          items: { $ref: '#/components/schemas/ExperienceInput' }
         skills:
           type: array
           maxItems: 30
@@ -3946,7 +4100,7 @@ components:
       required: [draft, base_revision]
       description: 초안 전체를 바꾼다. 새 경험은 id를 null로 보낸다
       properties:
-        draft: { $ref: '#/components/schemas/ProfileContent' }
+        draft: { $ref: '#/components/schemas/ProfileContentInput' }
         base_revision: { type: integer, minimum: 1 }
 
     BaseRevision:
@@ -4773,6 +4927,7 @@ components:
             - report.update
             - mfa.verify
             - mfa.fail
+            - mfa.lock
             - role.grant
             - role.revoke
             - access.denied
