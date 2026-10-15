@@ -1,6 +1,10 @@
 import { Component, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Button } from './ui/Button'
+import { CheckboxField, TextAreaField } from './ui/Fields'
+import { StatusNotice } from './ui/StatusNotice'
+import { useMemoryScope } from './state/useMemoryScope'
 import './App.css'
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
@@ -32,7 +36,7 @@ function Heading({ step, title, children }: { step: string; title: string; child
   return <header className="page-heading"><p className="eyebrow">{step}</p><h1>{title}</h1><p>{children}</p></header>
 }
 function Pending({ title, children }: { title: string; children: ReactNode }) {
-  return <section className="notice"><span className="badge">연결 준비 중</span><h2>{title}</h2><p>{children}</p></section>
+  return <StatusNotice title={title}>{children}</StatusNotice>
 }
 
 function Home() {
@@ -59,17 +63,17 @@ function Consent({ onStart }: { onStart: () => void }) {
       <h2>확정과 저장은 따로예요</h2><p>AI가 만든 초안은 직접 고치고 확정합니다. 회원 저장은 별도의 로그인과 저장 동의 후에만 진행합니다.</p>
       <h2>지금은 화면 미리보기예요</h2><p>AI·서버·회원 저장은 연결되지 않았습니다. 아래에서 입력한 내용은 이 화면의 메모리에서만 사용하며 새로고침하거나 종료하면 사라집니다. 실제 개인정보는 입력하지 마세요.</p>
       <p className="policy-draft">안내문 초안 · 운영 주체, 문의처, AWS 리전과 실제 보관·삭제 안내는 확인 후 확정해야 합니다. 이 선택은 운영 서비스의 처리 동의로 기록되지 않습니다.</p>
-      <form onSubmit={(event) => { event.preventDefault(); if (checked) onStart() }}><label className="checkbox-label"><input type="checkbox" checked={checked} onChange={(event) => setChecked(event.target.checked)} />안내를 확인했고, 가상의 경험으로 화면을 살펴볼게요.</label>
-        <div className="actions"><button className="button primary" disabled={!checked}>미리보기 시작하기 <span aria-hidden="true">→</span></button><Link to="/opportunities">공고 화면 살펴보기</Link></div></form>
+      <form onSubmit={(event) => { event.preventDefault(); if (checked) onStart() }}>
+        <CheckboxField label="안내를 확인했고, 가상의 경험으로 화면을 살펴볼게요." checked={checked} onChange={(event) => setChecked(event.target.checked)} />
+        <div className="actions"><Button type="submit" disabled={!checked}>미리보기 시작하기 <span aria-hidden="true">→</span></Button><Link className="text-link" to="/opportunities">공고 화면 살펴보기</Link></div></form>
     </section></div>
 }
 
 function Conversation({ preview, onChange }: { preview: Preview; onChange: (value: string) => void }) {
   return <div className="reading-width"><Heading step="01 · 경험 이야기" title="어떤 일을 해오셨나요?">직장 밖에서 해온 일도 좋아요. 한 가지 경험부터 적어 주세요.</Heading>
     <section className="panel"><p className="question">예를 들어, 동네 시설을 관리하거나 이웃에게 무언가를 가르쳐 준 경험이 있나요?</p>
-      <label htmlFor="experience">내가 해온 일</label><textarea id="experience" value={preview.experience} onChange={(event) => onChange(event.target.value)} maxLength={2000} rows={6} aria-describedby="experience-help experience-length" placeholder="가상의 경험을 적어보세요. 예: 동네 도서관에서 책 정리를 도왔어요." />
-      <div className="input-meta"><p id="experience-help">연락처·주민등록번호·상세 병력은 적지 마세요.</p><p id="experience-length">{preview.experience.length.toLocaleString('ko-KR')} / 2,000자</p></div>
-      <div className="actions"><Link className="button primary" to="/profile">작성한 내용 확인하기 <span aria-hidden="true">→</span></Link><Link to="/transcription">음성 입력 안내</Link></div></section>
+      <TextAreaField id="experience" label="내가 해온 일" value={preview.experience} onChange={(event) => onChange(event.target.value)} maxLength={2000} rows={6} hint="연락처·주민등록번호·상세 병력은 적지 마세요." placeholder="가상의 경험을 적어보세요. 예: 동네 도서관에서 책 정리를 도왔어요." />
+      <div className="actions"><Link className="button primary" to="/profile">작성한 내용 확인하기 <span aria-hidden="true">→</span></Link><Link className="text-link" to="/transcription">음성 입력 안내</Link></div></section>
     <Pending title="대화와 AI 정리는 연결 준비 중이에요">현재는 직접 적은 경험만 확인할 수 있습니다. 다음 질문과 프로필 추출은 서버 연결 후 제공됩니다.</Pending></div>
 }
 
@@ -98,7 +102,7 @@ function Placeholder({ kind }: { kind: keyof typeof pendingScreens }) {
 }
 
 export default function App() {
-  const [preview, setPreview] = useState<Preview>(emptyPreview)
+  const { value: preview, setValue: setPreview, clear: clearPreview } = useMemoryScope<Preview>(emptyPreview)
   const [notice, setNotice] = useState('')
   const location = useLocation()
   const navigate = useNavigate()
@@ -112,13 +116,13 @@ export default function App() {
   }, [location.pathname])
   useEffect(() => {
     // React memory can survive a full-page departure via the back/forward cache.
-    const clearOnLeave = () => { setPreview(emptyPreview()); setNotice('') }
+    const clearOnLeave = () => setNotice('')
     const clearOnRestore = (event: PageTransitionEvent) => { if (event.persisted) clearOnLeave() }
     window.addEventListener('pagehide', clearOnLeave)
     window.addEventListener('pageshow', clearOnRestore)
     return () => { window.removeEventListener('pagehide', clearOnLeave); window.removeEventListener('pageshow', clearOnRestore) }
   }, [])
-  const endPreview = () => { setPreview(emptyPreview()); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
+  const endPreview = () => { clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
   const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={notice ? '/' : '/consent'} replace />
@@ -126,11 +130,11 @@ export default function App() {
     <a className="skip-link" href="#main">본문으로 바로가기</a>
     <div className="preview-banner">개발 중인 화면 미리보기 <span>· AI·공고·로그인 미연결 · 가상 정보로 살펴보세요</span></div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
-    {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><button className="button compact" onClick={endPreview}>종료하고 삭제</button></div>}
+    {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
     <div className="status-line" role="status">{notice}</div>
     <main id="main" ref={mainRef} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
-      <Route path="/consent" element={<Consent onStart={() => { setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
+      <Route path="/consent" element={<Consent onStart={() => { clearPreview(); setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value }))} />)} />
       <Route path="/transcription" element={requirePreview(<Placeholder kind="voice" />)} />
       <Route path="/profile" element={requirePreview(<Profile experience={preview.experience} />)} />
