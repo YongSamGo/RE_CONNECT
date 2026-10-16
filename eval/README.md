@@ -13,7 +13,7 @@
 
 `requirements`의 각 조건은 [API 계약](../docs/api/openapi.yaml)의 `Requirement`를 그대로 따르므로 `id`·`group_id`가 UUID다. 사람이 읽는 라벨(`J1-R1`, 그룹은 `J1-G1`)은 공고별 `labels`에 라벨 → UUID로 적었고, `cases[].conditions`도 이 라벨을 키로 쓴다. UUID는 라벨에서 uuid5로 만든 고정값이라 다시 만들어도 같다.
 
-`expected_profile`은 [02 데이터 설계 §2 프로필 계약](../Plan/02_Data_Design.md#2-프로필-계약)을 따르며, 서버가 부여하는 `id`·`version`·`confirmed_at`은 뺐다. 시·군·구는 W02-04(#15) 지역 목록이 정해지기 전이라 한글 이름으로 적었다. 기대값은 사용자 확인 **전** 추출 결과다. 대화만으로 정할 수 없는 값은 넣지 않고 `needs_confirmation`에 항목과 이유를 적는다.
+`expected_profile`은 [02 데이터 설계 §2 프로필 계약](../Plan/02_Data_Design.md#2-프로필-계약)을 따르며, 서버가 부여하는 `id`·`version`·`confirmed_at`은 뺐다. 시·군·구는 서버 지역 목록([backend/app/contracts/regions.py](../backend/app/contracts/regions.py), `GET /api/v1/regions`)의 slug로 적는다(예: 성동구 → `seongdong`). 목록에 없는 값은 백엔드 테스트가 거절한다. 기대값은 사용자 확인 **전** 추출 결과다. 대화만으로 정할 수 없는 값은 넣지 않고 `needs_confirmation`에 항목과 이유를 적는다.
 
 `activity_types`는 계약상 `null`을 쓸 수 없고, 추천에 1개 이상 필요한 필드다. 계약의 초안은 `activity_types: []`와 `missing_for_recommendation: [..., activity_types]`로 "아직 정하지 않음 → 추천 전에 재질문"을 표현한다([openapi.yaml](../docs/api/openapi.yaml) `ProfileDraftView`). 그래서 미확인인 P03·P06·P08의 기대값은 `[]`이고, 이 `[]`는 "원하는 활동 없음 확인"이 아니다. 추출기는 `missing_for_recommendation`에 `activity_types`를 넣고 확인 질문을 이어 가야 통과한다(`needs_confirmation`).
 

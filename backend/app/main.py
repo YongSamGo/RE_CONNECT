@@ -19,6 +19,7 @@ from app.modules.operations.readiness import (
     ReadinessProbe,
     ReadinessService,
 )
+from app.modules.regions import router as regions
 
 API_PREFIX = "/api/v1"
 
@@ -51,6 +52,7 @@ def create_app(
 
     app.include_router(operations.router)
     # 공개 API 라우터는 API_PREFIX 아래에 더한다.
+    app.include_router(regions.router, prefix=API_PREFIX)
 
     return app
 

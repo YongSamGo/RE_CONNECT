@@ -57,6 +57,8 @@ _REASON_BY_PYDANTIC_TYPE: dict[str, FieldReason] = {
     "less_than": "out_of_range",
     "less_than_equal": "out_of_range",
     "multiple_of": "out_of_range",
+    # app/contracts가 내는 사용자 정의 오류
+    "required_with": "required_with",
 }
 _INVALID_TYPE_SUFFIXES = ("_type", "_parsing")
 
