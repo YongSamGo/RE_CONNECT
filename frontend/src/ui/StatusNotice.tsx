@@ -2,13 +2,13 @@ import { useId } from 'react'
 import type { ReactNode } from 'react'
 import { ApiError } from '../api/errors'
 
-type Props = { title: string; children: ReactNode; kind?: 'info' | 'loading' | 'error'; actions?: ReactNode }
+type Props = { title: string; children: ReactNode; kind?: 'info' | 'loading' | 'error'; label?: string; actions?: ReactNode }
 
-export function StatusNotice({ title, children, kind = 'info', actions }: Props) {
+export function StatusNotice({ title, children, kind = 'info', label, actions }: Props) {
   const id = useId()
   return <section className={`notice notice-${kind}`} aria-labelledby={id}>
     <div role={kind === 'error' ? 'alert' : kind === 'loading' ? 'status' : undefined} aria-atomic={kind === 'info' ? undefined : true}>
-      <span className="badge">{kind === 'loading' ? '처리 중' : kind === 'error' ? '확인 필요' : '연결 준비 중'}</span>
+      <span className="badge">{label ?? (kind === 'loading' ? '처리 중' : kind === 'error' ? '확인 필요' : '연결 준비 중')}</span>
       <h2 id={id}>{title}</h2><p>{children}</p>
     </div>
     {actions && <div className="actions">{actions}</div>}

@@ -93,6 +93,23 @@ describe('contract transport', () => {
     })).rejects.toMatchObject({ code: 'INVALID_TARGET' })
     expect(fetch).not.toHaveBeenCalled()
   })
+  it.each(['timeout', 'cancel'] as const)('keeps %s active while the speech body is downloading', async (kind) => {
+    sessionCookie()
+    const caller = new AbortController()
+    const fetch = async (request: Request) => new Response(new ReadableStream({
+      start(controller) {
+        controller.enqueue(new Uint8Array([82, 73, 70, 70]))
+        request.signal.addEventListener('abort', () => controller.error(new DOMException('Aborted', 'AbortError')), { once: true })
+        if (kind === 'cancel') setTimeout(() => caller.abort(), 0)
+      },
+    }), { headers: { 'Content-Type': 'audio/wav' } })
+    await expect(createApiClient({ fetch, timeoutMs: 20 }).POST('/speech', {
+      signal: caller.signal,
+      params: { header: { 'Idempotency-Key': crypto.randomUUID() } },
+      body: { target: { kind: 'opportunity', opportunity_id: crypto.randomUUID(), version: 1, field: 'title' }, segment: 0 },
+      parseAs: 'blob',
+    })).rejects.toMatchObject({ code: kind === 'timeout' ? 'TIMEOUT' : 'CANCELLED' })
+  })
   it('rejects an unexpected JSON success body for speech', async () => {
     sessionCookie()
     await expect(createApiClient({ fetch: async () => json({ message: 'private' }) }).POST('/speech', {
