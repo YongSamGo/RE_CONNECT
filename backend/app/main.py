@@ -29,6 +29,8 @@ from app.modules.sessions import router as sessions
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
+from app.modules.requests.repository import RedisRequestStore
+from app.modules.requests.service import RequestService, UnavailableRequestStore
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -82,6 +84,7 @@ def create_app(
     app.state.db_engine = engine
     app.state.redis = redis_client
     app.state.session_service = SessionService(RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore())
+    app.state.request_service = RequestService(RedisRequestStore(redis_client) if redis_client is not None else UnavailableRequestStore())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
