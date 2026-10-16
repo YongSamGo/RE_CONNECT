@@ -22,7 +22,9 @@ def open_test_database(backend):
     url = "sqlite://" if backend == "sqlite" else os.environ.get("PERSISTENCE_TEST_DATABASE_URL")
     if url is None:
         pytest.skip("PostgreSQL 실행 환경 없음. CI의 DB/Redis 통합 잡에서 실행한다")
-    engine = create_engine(url, echo=False, hide_parameters=True)
+    # HTTP 동기 라우터의 worker thread에서도 같은 시험 트랜잭션을 순차 조회한다.
+    # 연결을 동시에 공유하지 않으며 SQLite 시험에만 thread 소유 제약을 해제한다.
+    engine = create_engine(url, echo=False, hide_parameters=True, connect_args={"check_same_thread": False} if backend == "sqlite" else {})
     if backend == "sqlite":
         @event.listens_for(engine, "connect")
         def enable_foreign_keys(connection, record):

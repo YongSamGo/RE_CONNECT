@@ -219,6 +219,9 @@ jobs:
       - name: 실제 Redis 세션 수명과 원자 교체 시험
         working-directory: backend
         run: python -m pytest tests/test_sessions.py -q
+      - name: 실제 PostgreSQL 공개 공고 검색 시험
+        working-directory: backend
+        run: python -m pytest tests/test_public_opportunities.py -q
       - name: 개발 컨테이너 종료
         if: always()
         run: docker compose --env-file .env.example -f infra/compose.dev.yaml down

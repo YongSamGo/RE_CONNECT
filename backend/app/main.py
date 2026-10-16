@@ -29,6 +29,9 @@ from app.modules.sessions import router as sessions
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
+from app.modules.opportunities import router as opportunities
+from app.modules.opportunities.repository import SqlPublicOpportunityRepository
+from app.modules.opportunities.service import PublicOpportunityService, UnavailableOpportunityRepository
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -81,6 +84,7 @@ def create_app(
 
     app.state.db_engine = engine
     app.state.redis = redis_client
+    app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.session_service = SessionService(RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
@@ -103,6 +107,7 @@ def create_app(
     # 공개 API 라우터는 API_PREFIX 아래에 더한다.
     app.include_router(regions.router, prefix=API_PREFIX)
     app.include_router(sessions.router, prefix=API_PREFIX)
+    app.include_router(opportunities.router, prefix=API_PREFIX)
 
     return app
 
