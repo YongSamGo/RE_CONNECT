@@ -95,7 +95,7 @@ def test_request_separates_instructions_and_turns_and_fixes_options() -> None:
     assert body["format"] == Extracted.model_json_schema()
     assert body["stream"] is False
     assert body["think"] is False
-    assert body["options"] == {"temperature": 0, "num_predict": 256}
+    assert body["options"] == {"temperature": 0, "num_predict": 256, "num_ctx": 16384}
 
 
 def test_think_is_omitted_when_not_configured() -> None:
@@ -189,6 +189,34 @@ def test_connection_failure_is_unavailable() -> None:
 
     with pytest.raises(LLMUnavailableError):
         generate(make_adapter(handler))
+
+
+def test_decoding_failure_is_unavailable_without_leaking_input() -> None:
+    async def handler(request: httpx.Request) -> httpx.Response:
+        raise httpx.DecodingError(SECRET_INPUT, request=request)
+
+    with pytest.raises(LLMUnavailableError) as info:
+        generate(make_adapter(handler))
+    assert SECRET_INPUT not in str(info.value)
+    assert info.value.__suppress_context__
+
+
+@pytest.mark.parametrize("kind", ["turns", "text", "instructions", "schema"])
+def test_oversized_input_is_rejected_before_transport(kind: str) -> None:
+    async def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError("입력 한도 초과 시 전송하면 안 된다")
+
+    class LargeSchema(BaseModel):
+        model_config = ConfigDict(json_schema_extra={"description": "가" * 20000})
+        value: str
+
+    turns = [UntrustedTurn(role="user", text="x")] * 65 if kind == "turns" else [UntrustedTurn(role="user", text="가" * 20000 if kind == "text" else "x")]
+    with pytest.raises(ValueError, match="입력 한도"):
+        asyncio.run(make_adapter(handler).generate_structured(
+            instructions="가" * 20000 if kind == "instructions" else "x",
+            untrusted_turns=turns,
+            output_model=LargeSchema if kind == "schema" else Extracted,
+        ))
 
 
 def test_slow_runtime_times_out_within_total_limit() -> None:

@@ -47,6 +47,7 @@ class Settings(BaseSettings):
     ollama_timeout_seconds: float = Field(default=60.0, gt=0, le=60)
     # 출력 토큰 상한. 넘으면 응답이 잘리고(`done_reason=length`) 형식 오류로 처리한다.
     ollama_num_predict: int = Field(default=2048, gt=0, le=8192)
+    ollama_num_ctx: int = Field(default=16384, ge=12288, le=32768)
     # 구조화 추출은 추론 과정을 쓰지 않는다 (Plan/03 §3). 모델이 think를 지원하지 않으면 None으로 두어 보내지 않는다.
     ollama_think: bool | None = False
     ollama_max_response_bytes: int = Field(default=1_048_576, gt=0)

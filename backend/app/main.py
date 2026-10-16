@@ -30,6 +30,7 @@ def build_llm_adapter(settings: Settings) -> OllamaLLMAdapter:
         model=settings.ollama_model,
         timeout_seconds=settings.ollama_timeout_seconds,
         num_predict=settings.ollama_num_predict,
+        num_ctx=settings.ollama_num_ctx,
         think=settings.ollama_think,
         max_response_bytes=settings.ollama_max_response_bytes,
         ready_timeout_seconds=settings.health_check_timeout_seconds,

@@ -41,6 +41,7 @@ class OllamaLLMAdapter:
         num_predict: int,
         think: bool | None,
         max_response_bytes: int,
+        num_ctx: int = 16384,
         ready_timeout_seconds: float = 2.0,
         transport: httpx.AsyncBaseTransport | None = None,
     ) -> None:
@@ -48,6 +49,9 @@ class OllamaLLMAdapter:
         self._model = model
         self._timeout_seconds = timeout_seconds
         self._num_predict = num_predict
+        if num_ctx < num_predict + 4096:
+            raise ValueError("컨텍스트에 입력과 출력의 여유가 필요합니다")
+        self._num_ctx = num_ctx
         self._think = think
         self._max_response_bytes = max_response_bytes
         self._ready_timeout_seconds = ready_timeout_seconds
@@ -102,8 +106,14 @@ class OllamaLLMAdapter:
             "messages": messages,
             "format": output_model.model_json_schema(),
             "stream": False,
-            "options": {"temperature": 0, "num_predict": self._num_predict},
+            "options": {"temperature": 0, "num_predict": self._num_predict, "num_ctx": self._num_ctx},
         }
+        # 토큰을 문자 수로 추정하지 않는다. UTF-8 바이트에 보수적인 한도를 두고
+        # 템플릿·특수 토큰에 2048, 출력에 num_predict를 별도로 남긴다.
+        # 실제 모델 토크나이저·템플릿에 대한 대조는 모델 실측 단계에서 수행한다.
+        input_bytes = len(json.dumps({"messages": messages, "format": payload["format"]}, ensure_ascii=False).encode("utf-8"))
+        if len(turns) > 64 or input_bytes > min(16384, self._num_ctx - self._num_predict - 2048):
+            raise ValueError("모델 입력 한도를 초과했습니다")
         if self._think is not None:
             payload["think"] = self._think
         return payload
@@ -123,7 +133,7 @@ class OllamaLLMAdapter:
                 data = await asyncio.wait_for(self._post_json(client, "/api/chat", payload), self._timeout_seconds)
         except (TimeoutError, httpx.TimeoutException):
             raise LLMTimeoutError("모델 응답 시간이 초과되었습니다") from None
-        except httpx.TransportError as exc:
+        except httpx.RequestError as exc:
             logger.warning("Ollama 연결 실패: type=%s", type(exc).__name__)
             raise LLMUnavailableError("모델 런타임에 연결하지 못했습니다") from None
         except (_ResponseTooLarge, ValueError):
