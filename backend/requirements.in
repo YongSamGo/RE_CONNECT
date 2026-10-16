@@ -6,3 +6,5 @@ pydantic-settings
 httpx
 # 영구 저장 모델 (W02-05). 드라이버와 마이그레이션은 W02-07에서 더한다.
 sqlalchemy
+# 개인 승인 본문의 AEAD 암호화와 목적/대상별 키 파생 (W03-06).
+cryptography

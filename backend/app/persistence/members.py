@@ -50,7 +50,7 @@ class ProfileDocument(Base):
     """논리 ProfileVersion의 안정 ID·소유자. 회원당 프로필 계열은 하나다."""
 
     __tablename__ = "profile_documents"
-    __table_args__ = (UniqueConstraint("owner_id", "id"),)
+    __table_args__ = (UniqueConstraint("owner_id", "id", name="uq_profile_documents_owner_identity"),)
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), unique=True)
