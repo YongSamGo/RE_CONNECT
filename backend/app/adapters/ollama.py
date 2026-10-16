@@ -127,6 +127,8 @@ class OllamaLLMAdapter:
     ) -> OutputT:
         if not untrusted_turns:
             raise ValueError("대화 턴이 비어 있습니다")
+        if output_model.model_config.get("extra") != "forbid":
+            raise ValueError("출력 모델은 정의하지 않은 필드를 거절해야 합니다")
         payload = self._payload(instructions, untrusted_turns, output_model)
         try:
             async with self._client(self._timeout_seconds) as client:

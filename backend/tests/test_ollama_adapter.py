@@ -207,7 +207,7 @@ def test_oversized_input_is_rejected_before_transport(kind: str) -> None:
         raise AssertionError("입력 한도 초과 시 전송하면 안 된다")
 
     class LargeSchema(BaseModel):
-        model_config = ConfigDict(json_schema_extra={"description": "가" * 20000})
+        model_config = ConfigDict(extra="forbid", json_schema_extra={"description": "가" * 20000})
         value: str
 
     turns = [UntrustedTurn(role="user", text="x")] * 65 if kind == "turns" else [UntrustedTurn(role="user", text="가" * 20000 if kind == "text" else "x")]
@@ -235,6 +235,19 @@ def test_empty_turns_are_rejected_before_calling_runtime() -> None:
     adapter = make_adapter(handler)
     with pytest.raises(ValueError):
         asyncio.run(adapter.generate_structured(instructions="x", untrusted_turns=[], output_model=Extracted))
+
+
+def test_output_model_must_reject_extra_fields_before_transport() -> None:
+    class Permissive(BaseModel):
+        value: str
+
+    async def handler(request: httpx.Request) -> httpx.Response:
+        raise AssertionError("출력 계약 검증 전 전송하면 안 된다")
+
+    with pytest.raises(ValueError, match="출력 모델"):
+        asyncio.run(make_adapter(handler).generate_structured(
+            instructions="x", untrusted_turns=[UntrustedTurn(role="user", text="x")], output_model=Permissive,
+        ))
 
 
 @pytest.mark.parametrize(
