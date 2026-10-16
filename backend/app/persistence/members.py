@@ -116,6 +116,7 @@ class ApplicationDraft(EncryptedContent, Base):
     __table_args__ = (
         ForeignKeyConstraint(["owner_id", "document_id", "profile_id"], ["application_documents.owner_id", "application_documents.id", "application_documents.profile_id"], ondelete="CASCADE"),
         ForeignKeyConstraint(["owner_id", "profile_id", "profile_version"], ["profile_versions.owner_id", "profile_versions.profile_id", "profile_versions.version"], ondelete="CASCADE"),
+        ForeignKeyConstraint(["opportunity_id", "opportunity_version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="RESTRICT"),
         CheckConstraint("version > 0 AND profile_version > 0 AND opportunity_version > 0", name="versions"),
         CheckConstraint("saved_at >= approved_at", name="approval_order"),
         Index("ix_application_drafts_profile", "owner_id", "profile_id", "profile_version"),
@@ -127,7 +128,6 @@ class ApplicationDraft(EncryptedContent, Base):
     owner_id: Mapped[UUID] = mapped_column(Uuid)
     profile_id: Mapped[UUID] = mapped_column(Uuid)
     profile_version: Mapped[int] = mapped_column(Integer)
-    # #17에서 공고 저장 모델과 복합 FK를 연결한다.
     opportunity_id: Mapped[UUID] = mapped_column(Uuid)
     opportunity_version: Mapped[int] = mapped_column(Integer)
     approved_at: Mapped[datetime] = mapped_column(UTCDateTime())

@@ -1,6 +1,6 @@
-# 영구 저장 스키마 구현 (W02-05)
+# 영구 저장 스키마 구현 (W02-05/06)
 
-관련: #16. 기준: Plan/02 §1·§4·§5, API의 SavedProfile/SavedDraft/ConsentPurpose.
+관련: #16·#17. 기준: Plan/02 §1·§3·§4·§5·§6, API의 SavedProfile/SavedDraft/ConsentPurpose.
 SQLAlchemy 메타데이터 구현과 SQLite 제약 시험 단계다. PostgreSQL 실행·마이그레이션은 #18,
 암호화·저장 API는 #25/#75/#76에서 검증한다.
 
@@ -33,8 +33,43 @@ schema_version만 둔다. DB에 별도 키 테이블을 만들지 않는다.
 ORM UPDATE는 거절하고 새 승인 버전을 INSERT한다. Core/bulk SQL도 차단하는 PostgreSQL
 트리거는 #18에서 연결한다. 메타데이터만으로 서비스의 동의·권한·확정 검사를 대신하지 않는다.
 
-ApplicationDraft의 공고 ID/버전은 지금은 양의 참조 메타데이터이며 #17에서 공고 모델과
-복합 FK를 연결한다. 공개/추천용 모델과 암호화 저장 모델을 혼합하지 않는다.
+ApplicationDraft의 공고 ID/버전은 공고 모델의 복합 FK와 연결했다. 참조한 과거 공고 버전은
+지원서/신고가 남아 있으면 삭제할 수 없다. 공개/추천용 모델과 암호화 저장 모델을 혼합하지 않는다.
+
+## 공고·수집·운영 모델
+
+| 논리 엔터티 | 테이블 | 저장 경계 |
+| --- | --- | --- |
+| Source | sources | 코드·고정 출처 설정·이용 조건 URL·최종 성공 시각. 서비스 키 없음 |
+| IngestionRun | ingestion_runs | 출처 FK·실행/종료 시각·상태·건수·고정 실패 코드. 원문 예외 없음 |
+| RoleDefinition | role_definitions | 역할 ID·표시명·설명·태그·별칭·경험 연결 규칙. 실제 후보 경험은 체험에 보관 |
+| OpportunityVersion | opportunity_documents + opportunity_versions + opportunity_publications | 출처별 안정 ID, 검색 가능한 공고 버전/조건, 승인 공개 포인터 |
+| Report | reports | 대상 공고 버전·유형·상태·버전, 선택 설명/처리 문구는 암호화 봉투 |
+| AuditEvent | audit_events | 행위·결과 허용표·주체/대상 UUID·추적 ID·만료 시각. 임의 메시지 없음 |
+| DeletionRecord | deletion_records | 삭제 주체/대상 내부 UUID·범위·상태·시각·만료. 원문·외부 계정 식별자 없음 |
+
+영구 논리 엔터티는 11개이며 Journey를 더한 12개 논리 엔터티의 저장 경계를 구분했다.
+Journey는 Redis 대상이라 RDS 테이블이나 FK가 없다. 물리 테이블은 안정 ID 3개와 공개
+포인터 1개를 더해 15개다. 감사·삭제 UUID는 User FK로 묶지 않아 회원 삭제로 함께 사라지지 않는다.
+30일 보관의 만료 시각은 쓰기 서비스가 정하고 #57/#96에서 실제 정리한다. DB에 만료 인덱스를 둔다.
+
+출처별 `(source_id, external_id)`는 유일하다. 외부 ID 없는 수동 공고는 서로 자동 병합하지 않고
+#47에서 공식 URL·기관·제목·모집기간을 대조한다. 출처 URL의 DB HTTPS 접두사 제약은 SSRF
+허용표가 아니다. #45는 통신 전에 고정 출처 레지스트리와 실제 목적지·리다이렉트를 별도 검증해야 한다.
+
+공고 scalar 필드는 검색 가능한 칼럼, 역할/역량·조건·서류는 PostgreSQL JSONB다.
+JSON 구조·지역 목록·원문 조건·URL 검증은 공통 OpportunityContent와 저장 서비스의 책임이다.
+`change_pending`은 저장 필드가 아니라 공개본/새 버전의 차이로 계산한다(#47).
+content_hash는 변경 감지용이며 공개 승인이나 콘텐츠의 진위를 증명하지 않는다.
+
+공개 포인터의 PK로 공고당 공개본 하나를 강제한다. `(공고 ID, 버전, approved)` 복합 FK로
+미승인·다른 공고 버전 공개를 거절한다. 승인본을 숨길 때는 같은 트랜잭션에서 먼저 공개 포인터를
+제거한다. 새 pending 버전은 이전 공개 포인터를 변경하지 않는다. 실제 승인·반려·동시성은 #54이다.
+신고 설명의 선택 암호화 봉투 형식은 AES-256-GCM(태그 포함)이며 키 원문은 두지 않는다.
+
+운영 모델 시험은 출처 ID 중복, pending/다른 공고 공개, 공개 포인터 중복·숨김 순서,
+설명 길이·검수 시각, 신고 대상/암호화 봉투, 실행 종료 시각·음수 집계, 감사/삭제 기록의
+회원 삭제 후 생존을 포함한다. 실제 PostgreSQL 실행 증거는 #18에서 추가한다.
 
 ## 검증 범위
 
