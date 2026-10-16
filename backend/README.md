@@ -12,7 +12,8 @@ backend/
 │   ├── main.py           # 앱 조립. 구체 구현(DB·Redis·Ollama·음성)은 여기서만 고른다
 │   ├── core/             # 설정·요청 추적 ID·공통 오류 처리
 │   ├── adapters/         # LLM·Speech Adapter 인터페이스(Protocol). 구현은 각 작업에서 더한다
-│   └── modules/          # 기능 모듈 (Plan/03 §2). 지금은 operations(상태 확인)만 있다
+│   ├── contracts/        # 공통 데이터 타입(프로필·공고·조건)·지역 목록·시각 처리 (W02-04)
+│   └── modules/          # 기능 모듈 (Plan/03 §2). 지금은 operations(상태 확인)·regions(지역 목록)가 있다
 ├── tests/                # 이 패키지의 단위·통합 테스트 (pytest)
 ├── pyproject.toml        # pytest 설정만 둔다
 ├── requirements.in       # 직접 쓰는 운영 의존성
@@ -25,7 +26,7 @@ backend/
 
 ### 의존 방향
 
-`router → service → repository/Adapter` 한 방향만 허용한다. 라우터는 저장소·Adapter를 직접 import하지 않고, 모듈은 다른 모듈의 저장소를 부르지 않는다. `core`·`adapters`는 `modules`에 의존하지 않는다. [tests/test_architecture.py](tests/test_architecture.py)가 이 규칙을 검사한다.
+`router → service → repository/Adapter` 한 방향만 허용한다. 라우터는 저장소·Adapter를 직접 import하지 않고, 모듈은 다른 모듈의 저장소를 부르지 않는다. `core`·`adapters`는 `modules`에 의존하지 않는다. `contracts`는 수집기·평가 도구도 쓰므로 `app` 안의 다른 패키지를 import하지 않는다. [tests/test_architecture.py](tests/test_architecture.py)가 이 규칙을 검사한다.
 
 ### 공통 동작
 
@@ -34,6 +35,16 @@ backend/
 - 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. 서버 로그에는 예외 종류와 `request_id`만 남는다.
 - `/health/live`·`/health/ready`는 `/api/v1` 밖의 내부 전용 경로다. DB·Redis 실패는 503 `unavailable`, LLM·음성만 실패하면 200 `degraded`다. 연결 구현이 없는 구성 요소는 `fail`로 답한다.
 - `APP_ENV`가 `development`일 때만 `/docs`·`/openapi.json`을 연다. 값이 없으면 `production`으로 본다.
+
+## 공통 데이터 계약
+
+[app/contracts/](app/contracts/)는 API·수집기·평가 도구가 함께 쓰는 Pydantic 타입이다. 필드 정의의 원본은 [openapi.yaml](../docs/api/openapi.yaml)과 [Plan/02](../Plan/02_Data_Design.md)이고, 바꿀 때는 세 곳을 함께 고친다.
+
+- 모든 모델은 정의하지 않은 키를 거절하고(`unknown_field`), 선택 항목도 키가 있어야 한다(`required`). 값이 없으면 `null`을 보낸다.
+- 숫자·불리언·문자열은 형 변환 없이 받는다. number 자리의 `"3"`이나 `true`는 `invalid_type`이다.
+- 지역은 [regions.py](app/contracts/regions.py)의 목록으로 검증한다. 시·군·구는 영문 slug이고, 경기도는 시·군 단위, 인천은 2026-07-01 행정체제 개편 뒤 기준이다. 목록을 바꾸면 `REGION_CATALOG_VERSION`을 올린다. 외부 출처의 지역코드 매핑은 수집기가 출처별로 맡는다.
+- 자격조건은 [requirement.py](app/contracts/requirement.py)의 field·operator 허용표에 있는 조합만 받는다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`로 남긴다.
+- 시각은 시간대가 있어야 하고 UTC로 바꿔 다룬다. 한국 날짜는 [time.py](app/contracts/time.py)의 `kst_date`·`kst_today`로만 계산한다. 한국은 서머타임이 없어 고정 오프셋 +09:00을 쓴다.
 
 ## 의존성 고정
 
