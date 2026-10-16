@@ -7,6 +7,11 @@ import { Button } from '../../ui/Button'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { deadlineLabel, parseList, provinces, searchDescription } from './catalog'
 import type { Opportunity, OpportunityList, Search } from './catalog'
+import { required, useRequest } from '../../state/useRequest'
+import { FormErrorSummary } from '../../ui/FormErrorSummary'
+import type { FieldError } from '../../ui/FormErrorSummary'
+import { parseRegionCatalog } from '../regions/catalog'
+import type { RegionCatalog } from '../regions/catalog'
 import './catalog.css'
 
 type State = { status: 'idle' }
@@ -14,7 +19,7 @@ type State = { status: 'idle' }
   | { status: 'loaded'; query: Search; result: OpportunityList }
   | { status: 'error'; query: Search; page: number; error: ApiError }
 const initial = (): State => ({ status: 'idle' })
-const emptySearch = (): Search => ({ q: '', province: '', activity_type: '' })
+const emptySearch = (): Search => ({ q: '', province: '', district: '', districtName: '', regionVersion: null, activity_type: '' })
 
 function OpportunityCard({ item }: { item: Opportunity }) {
   return <li className="opportunity-card"><article aria-labelledby={`opportunity-${item.id}`}>
@@ -34,6 +39,12 @@ export function PublicOpportunities() {
   const [api] = useState(() => createApiClient())
   const { value: draft, setValue: setDraft } = useMemoryScope(emptySearch)
   const scope = useMemoryScope(initial)
+  const regionRequest = useRequest<RegionCatalog>()
+  const errors = useMemoryScope<FieldError[]>(() => [])
+  const catalog = regionRequest.state.status === 'success' ? regionRequest.state.data : null
+  const regionsPending = regionRequest.state.status === 'pending'
+  const districts = catalog?.provinces.find((province) => province.id === draft.province)?.districts ?? []
+  const selectedDistrict = districts.find((district) => district.id === draft.district)
   const state = scope.value
   const active = useRef<{ id: number; signal?: AbortSignal } | undefined>(undefined)
   const sequence = useRef(0)
@@ -59,6 +70,7 @@ export function PublicOpportunities() {
           const { data } = await api.GET('/opportunities', { signal, params: { query: {
             page, page_size: 20, ...(query.q ? { q: query.q } : {}),
             ...(query.province ? { province: query.province } : {}), ...(query.activity_type ? { activity_type: query.activity_type } : {}),
+            ...(query.province && query.district ? { district: query.district } : {}),
           } } })
           return parseList(data, page)
         } finally { signal.removeEventListener('abort', release) }
@@ -68,23 +80,42 @@ export function PublicOpportunities() {
     } finally { if (active.current?.id === id) active.current = undefined }
   }
   function cancel() { scope.clear(); active.current = undefined }
+  function submitSearch() {
+    if (regionsPending) return
+    if (draft.district && (!draft.province || !selectedDistrict)) {
+      errors.setValue([{ fieldId: 'catalog-district', message: '시·군·구 목록을 다시 불러와 선택을 확인하거나, 활동 범위를 직접 변경해 주세요.' }]); return
+    }
+    errors.clear()
+    void load({ ...draft, q: draft.q.trim(), districtName: selectedDistrict?.name ?? '', regionVersion: draft.district ? catalog!.version : null })
+  }
 
   return <div className="reading-width public-catalog">
     <header className="page-heading"><p className="eyebrow">로그인 없이 · 공개 공고 탐색</p><h1>나의 다음 기회를 찾아봐요</h1>
       <p>취업·공공일자리와 봉사 공고를 찾아보세요. 검색에는 AI 처리 동의나 프로필이 필요하지 않습니다.</p></header>
-    <form className="panel catalog-form" onSubmit={(event) => { event.preventDefault(); void load({ ...draft, q: draft.q.trim() }) }}>
+    <form className="panel catalog-form" onSubmit={(event) => { event.preventDefault(); submitSearch() }}>
+      <FormErrorSummary errors={errors.value} />
       <div className="catalog-keyword"><label htmlFor="catalog-query">어떤 기회를 찾으세요?</label>
         <input id="catalog-query" type="search" maxLength={100} autoComplete="off" value={draft.q} onChange={(event) => setDraft((previous) => ({ ...previous, q: event.target.value }))} aria-describedby="catalog-query-help" placeholder="공고 제목, 기관명, 역량으로 검색" />
         <p className="field-hint" id="catalog-query-help">검색어는 100자까지 입력할 수 있어요. 비워두면 모든 공고를 살펴봅니다.</p></div>
       <div><label htmlFor="catalog-province">활동 지역</label><select id="catalog-province" value={draft.province} onChange={(event) => {
         const value = event.target.value
-        if (value === '' || value === 'seoul' || value === 'gyeonggi' || value === 'incheon') setDraft((previous) => ({ ...previous, province: value }))
+        if (value === '' || value === 'seoul' || value === 'gyeonggi' || value === 'incheon') { errors.clear(); setDraft((previous) => ({ ...previous, province: value, district: '', districtName: '', regionVersion: null })) }
       }}><option value="">지역 전체</option>{Object.entries(provinces).map(([id, name]) => <option key={id} value={id}>{name}</option>)}</select></div>
+      <div><label htmlFor="catalog-district">시·군·구</label><select id="catalog-district" disabled={!draft.province || regionsPending} value={draft.district} aria-invalid={errors.value.length ? true : undefined} aria-describedby="catalog-district-help" onChange={(event) => {
+        const value = event.target.value, district = districts.find((district) => district.id === value)
+        if (value === '' || district) { errors.clear(); setDraft((previous) => ({ ...previous, district: value, districtName: district?.name ?? '', regionVersion: value ? catalog!.version : null })) }
+      }}><option value="">{draft.province ? `${provinces[draft.province]} 전체` : '시·도를 먼저 선택하세요'}</option>{draft.district && !selectedDistrict && <option value={draft.district}>{draft.districtName || draft.district} · 목록 대조 필요</option>}{districts.map((district) => <option key={district.id} value={district.id}>{district.name}</option>)}</select>
+        <p id="catalog-district-help">세부 지역은 목록을 불러온 뒤 고르세요. 시·도를 바꾸면 세부 지역 선택이 해제됩니다. 목록 조회가 실패해도 기존 선택은 유지합니다.</p></div>
+      <div className="catalog-keyword"><Button variant="secondary" disabled={loading} pending={regionsPending} onClick={() => { errors.clear(); void regionRequest.run(async (api, signal) => parseRegionCatalog(required((await api.GET('/regions', { signal })).data))) }}>{catalog ? '시·군·구 목록 새로 불러오기' : '시·군·구 목록 불러오기'}</Button>
+        {regionsPending && <Button variant="secondary" onClick={regionRequest.clear}>지역 목록 조회 취소</Button>}
+        {regionRequest.state.status === 'error' && <RequestError error={regionRequest.state.error} />}
+        {catalog && <p>지역 목록 버전: {catalog.version}</p>}
+      </div>
       <div><label htmlFor="catalog-activity">활동 유형</label><select id="catalog-activity" value={draft.activity_type} onChange={(event) => {
         const value = event.target.value
         if (value === '' || value === 'employment' || value === 'volunteering') setDraft((previous) => ({ ...previous, activity_type: value }))
       }}><option value="">활동 유형 전체</option><option value="employment">취업·공공일자리</option><option value="volunteering">봉사</option></select></div>
-      <div className="actions catalog-keyword"><Button type="submit" pending={loading} pendingLabel="공고를 불러오고 있어요">공고 검색하기</Button>{loading && <Button variant="secondary" onClick={cancel}>조회 취소하기</Button>}</div>
+      <div className="actions catalog-keyword"><Button type="submit" disabled={regionsPending} pending={loading} pendingLabel="공고를 불러오고 있어요">공고 검색하기</Button>{loading && <Button variant="secondary" onClick={cancel}>조회 취소하기</Button>}</div>
     </form>
     <section className="catalog-results" ref={resultRef} tabIndex={-1} aria-label="공고 조회 결과">
       {state.status === 'idle' && <StatusNotice label="공개 탐색" title="검색 조건을 고르고 공고를 불러오세요">검색 버튼을 누르면 공개 공고 API에서 조회합니다. 현재 서버는 연결 검증 전이며, 응답이 없으면 오류를 안내합니다.</StatusNotice>}
@@ -92,6 +123,7 @@ export function PublicOpportunities() {
       {state.status === 'error' && <><p className="applied-search">조회한 조건: {searchDescription(state.query)}</p><RequestError error={state.error} actions={state.error.code !== 'DAILY_QUOTA_EXCEEDED' ? <Button onClick={() => void load(state.query, state.page)}>같은 조건으로 다시 조회</Button> : undefined} /></>}
       {state.status === 'loaded' && <>
         <h2>공개 공고 검색 결과</h2><p className="applied-search">적용한 조건: {searchDescription(state.query)}</p>
+        {state.query.regionVersion && <p>검색에 적용한 지역 목록 버전: {state.query.regionVersion}</p>}
         <p role="status">검색 결과 {state.result.total.toLocaleString('ko-KR')}건 · {state.result.page}페이지</p>
         <p className="catalog-note">맞춤 추천이나 자격 판정 결과가 아닙니다. 필터를 바꾼 뒤에는 검색 버튼을 눌러 주세요.</p>
         {state.result.items.length ? <ul className="opportunity-list">{state.result.items.map((item) => <OpportunityCard key={item.id} item={item} />)}</ul>

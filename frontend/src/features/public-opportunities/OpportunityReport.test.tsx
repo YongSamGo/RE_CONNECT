@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { anonymousSession } from '../../api/fixtures'
@@ -8,6 +8,16 @@ const json = (value: unknown, status = 200) => new Response(JSON.stringify(value
 const id = '12345678-1234-1234-1234-123456789012'
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 describe('opportunity report submission', () => {
+  it('rejects notes beyond the 500 character contract limit before any request', async () => {
+    const fetch = vi.fn(); vi.stubGlobal('fetch', fetch)
+    render(<OpportunityReport id={id} version={2} />)
+    const user = userEvent.setup()
+    await user.click(screen.getByText('공고 정보 오류 알리기'))
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'a'.repeat(501) } })
+    await user.click(screen.getByRole('button', { name: '공고 오류 신고 보내기' }))
+    expect(screen.getByText('오류: 오류 설명은 500자 이내로 적어 주세요.')).toBeVisible()
+    expect(fetch).not.toHaveBeenCalled()
+  })
   it('requires explanation for other and never sends a partial report', async () => {
     const fetch = vi.fn(); vi.stubGlobal('fetch', fetch)
     render(<OpportunityReport id={id} version={2} />)

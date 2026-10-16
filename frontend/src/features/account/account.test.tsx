@@ -23,6 +23,7 @@ describe('member and operator request boundaries', () => {
     expect(fetch).toHaveBeenCalledTimes(1)
     expect((fetch.mock.calls[0] as unknown as [Request])[0].url).toBe('https://reconnect.test/api/v1/me')
     expect(screen.queryByRole('button', { name: '공고 목록 조회' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '새 공고 등록' })).not.toBeInTheDocument()
   })
   it('requires server MFA verification and clears OTP before a failed attempt', async () => {
     const fetch = vi.fn().mockResolvedValueOnce(json({ ...member, user: { ...member.user, roles: ['operator'] } })).mockResolvedValueOnce(json({ code: 'MFA_INVALID', message: 'private otp and path' }, 403))

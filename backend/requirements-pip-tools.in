@@ -1,0 +1,2 @@
+# requirements.txt를 컴파일하는 도구 (backend/README.md "의존성 고정")
+pip-tools==7.6.2
