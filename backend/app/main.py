@@ -31,6 +31,9 @@ from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
 from app.modules.requests.repository import RedisRequestStore
 from app.modules.requests.service import RequestService, UnavailableRequestStore
+from app.modules.admission.llm import ControlledLLMAdapter
+from app.modules.admission.repository import RedisAdmissionStore
+from app.modules.admission.service import AdmissionService, UnavailableAdmissionService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -78,7 +81,15 @@ def create_app(
         openapi_url="/openapi.json" if docs_enabled else None,
     )
 
-    llm_adapter = build_llm_adapter(settings)
+    admission = UnavailableAdmissionService()
+    if redis_client is not None and settings.request_limit_key is not None and settings.inference_control_epoch is not None:
+        try:
+            admission = AdmissionService(RedisAdmissionStore(redis_client, epoch=settings.inference_control_epoch), identity_key=bytes.fromhex(settings.request_limit_key.get_secret_value()))
+        except ValueError:
+            # 설정 원문·비밀키를 예외/로그로 내보내지 않고 기능만 중단한다.
+            admission = UnavailableAdmissionService()
+    app.state.admission_service = admission
+    llm_adapter = ControlledLLMAdapter(build_llm_adapter(settings), admission)
     app.state.llm_adapter = llm_adapter
 
     app.state.db_engine = engine

@@ -14,6 +14,8 @@ async def get_me(request: Request):
     service = request.app.state.session_service
     session_name, csrf_name = cookie_names(request)
     session = await service.resolve(read_cookie(request, session_name))
+    # 새 주체 발급 전 IP 한도부터 확인한다. peer는 신뢰 프록시 처리가 끝난 ASGI 주소다.
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id if session else None)
     issued = None
     if session is None:
         issued = await service.issue()

@@ -13,7 +13,7 @@ from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from app.core.config import Settings, canonical_origin
 from app.main import create_app
 from app.modules.sessions.service import SessionService, StoreUnavailable
-from tests.test_sessions import FakeStore
+from tests.test_sessions import FakeStore, HttpAdmissionStub
 
 ORIGIN = "https://testserver"
 
@@ -22,6 +22,7 @@ def secure_app(origin=ORIGIN):
     app = create_app(Settings(_env_file=None, app_env="test", public_origin=origin))
     store = FakeStore()
     app.state.session_service = SessionService(store)
+    app.state.admission_service = HttpAdmissionStub()
     called = []
 
     @app.post("/api/v1/change")

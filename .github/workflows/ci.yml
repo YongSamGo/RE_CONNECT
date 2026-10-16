@@ -222,6 +222,9 @@ jobs:
       - name: 실제 Redis 중복 요청과 리비전 경합 시험
         working-directory: backend
         run: python -m pytest tests/test_request_coordination.py -q
+      - name: 실제 Redis 호출 한도와 공유 슬롯 시험
+        working-directory: backend
+        run: python -m pytest tests/test_admission.py -q
       - name: 개발 컨테이너 종료
         if: always()
         run: docker compose --env-file .env.example -f infra/compose.dev.yaml down

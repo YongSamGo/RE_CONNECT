@@ -22,6 +22,8 @@ from app.modules.requests.service import (
 from app.modules.sessions.http import require_session
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService
+from app.modules.admission.repository import RedisAdmissionStore
+from app.modules.admission.service import AdmissionService
 
 
 def check_error(code, callback):
@@ -235,6 +237,7 @@ def test_real_redis_http_csrf_session_scope_replay_and_fixed_conflicts():
         app = create_app(Settings(_env_file=None, app_env="test", public_origin="https://testserver"))
         app.state.session_service = SessionService(RedisSessionStore(redis, prefix=store.prefix + "session:"))
         app.state.request_service = service
+        app.state.admission_service = AdmissionService(RedisAdmissionStore(redis, epoch=uuid4(), prefix=store.prefix + "limits:"), identity_key=bytes(range(32)))
         executed = []
 
         # 시험용 업무 경로. 운영 경로를 추가하거나 외부 추론을 흉내 내지 않는다.
