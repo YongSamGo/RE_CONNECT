@@ -4,6 +4,8 @@
 
 React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을 Nginx 컨테이너가 제공하고, Vite 개발 서버는 로컬 개발에서만 쓴다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)). 실행·검사 방법은 [개발 안내](DEVELOPMENT.md), 구현 범위와 연동 대기 사항은 [진행 기록](PROGRESS.md)을 따른다.
 
+로컬 별도 구현과의 통합 기준·제외 범위·이전 주소 전환·검증 결과는 [중복 정리 기록](CONSOLIDATION.md)을 참고한다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.

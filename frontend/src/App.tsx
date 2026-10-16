@@ -138,6 +138,10 @@ export default function App() {
       <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
       <Route path="/me" element={<AccountPage onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
       <Route path="/me/saved" element={<SavedMaterials />} />
+      <Route path="/my" element={<Navigate to="/me" replace />} />
+      <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
+      <Route path="/preparation/:legacyId" element={<div className="reading-width"><Heading step="이전 미리보기 주소" title="예시별 작성 화면을 정리했어요">가상 공고별 작성 화면은 기존 프론트의 직접 작성 연습 화면으로 통합했습니다. 이 주소를 실제 공고의 신청 준비로 사용하지 않습니다.</Heading><div className="actions"><Link className="button primary" to="/preparation">직접 작성 연습으로 이동</Link><Link className="text-link" to="/opportunities">공개 공고 살펴보기</Link></div></div>} />
+      <Route path="/recommendations" element={<div className="reading-width"><Heading step="추천 연결 준비" title="추천은 실제 확정 프로필 연동 후 제공해요">이전 로컬 미리보기의 확인 표시는 서버 확정이나 추천 결과가 아닙니다. 공고 탐색과 프로필 화면을 이용해 주세요.</Heading><div className="actions"><Link className="button primary" to="/opportunities">공개 공고 살펴보기</Link><Link className="text-link" to="/profile">프로필 화면으로</Link></div></div>} />
       <Route path="/admin/*" element={<AdminPage />} />
       <Route path="*" element={<div className="reading-width"><Heading step="주소 확인" title="페이지를 찾을 수 없어요">주소를 확인하거나 시작 화면으로 돌아가 주세요.</Heading><Link className="button primary" to="/">시작 화면으로</Link></div>} />
     </Routes></main>
