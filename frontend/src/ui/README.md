@@ -61,3 +61,6 @@ scope.clear()
 18px/44px, 브라우저 메모리 전용 보관과 세대별 폐기는 프로젝트 01 §4~5·02 §5·05 §2 및 W11-01에 따른 구현 판단이다. 공식 가이드가 이 hook이나 특정 접근성 수치를 직접 정한다고 설명하지 않는다.
 
 접근성 기술 참고: [W3C 폼 오류 안내](https://www.w3.org/WAI/tutorials/forms/notifications/), [WAI alert 패턴](https://www.w3.org/WAI/ARIA/apg/patterns/alert/).
+# 2026-10-17 W11-01.b / #80 보완
+
+TextAreaField와 CheckboxField는 호출자가 지정한 `aria-invalid`와 외부 오류 설명을 유지하며, 컴포넌트의 `error`가 있으면 `aria-invalid=true`를 우선한다. 도움말·글자 수·필수 표식은 18px로 표시한다. UI의 오류 상태 보존·설명 연결·자체 오류 우선 회귀 시험을 추가했다. 실제 기기·스크린리더 검증과 #80 전체 완료는 별도다.

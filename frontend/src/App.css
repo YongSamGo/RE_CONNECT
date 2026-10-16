@@ -51,12 +51,12 @@ main { max-width: 1280px; padding: 0 48px 70px; margin: auto; min-height: 50vh; 
 .policy-draft { font-size: 16px; border-top: 1px solid var(--line); padding-top: 20px; }
 .checkbox-label { display: flex; align-items: flex-start; gap: 12px; padding: 14px 0; font-weight: 400; cursor: pointer; }
 .input-meta { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
-.input-meta p { font-size: 14px; margin: 4px 0 0; }
+.input-meta p { font-size: 18px; margin: 4px 0 0; }
 .question { border-bottom: 1px solid var(--line); padding-bottom: 24px; }
 .user-text { white-space: pre-wrap; }
 .preview-toolbar { padding: 12px max(24px, calc((100% - 1184px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 16px; border-bottom: 1px solid var(--line); background: white; }
-.preview-toolbar p { font-size: 16px; margin: 0; }
-.compact { min-height: 44px; padding: 8px 16px; font-size: 16px; flex-shrink: 0; }
+.preview-toolbar p { font-size: 18px; margin: 0; }
+.compact { min-height: 44px; padding: 8px 16px; font-size: 18px; flex-shrink: 0; }
 .status-line { max-width: 1184px; margin: auto; color: var(--green); }
 .status-line:not(:empty) { padding: 16px 24px; }
 .site-footer { border-top: 1px solid var(--line); max-width: 1184px; margin: auto; padding: 30px 0; color: var(--muted); font-size: 14px; }
@@ -71,7 +71,7 @@ main { max-width: 1280px; padding: 0 48px 70px; margin: auto; min-height: 50vh; 
 @media (max-width: 700px) {
   .preview-banner { font-size: 13px; } .preview-banner span { display: block; }
   .site-header { padding: 20px 24px; align-items: flex-start; flex-wrap: wrap; gap: 12px; }
-  .site-header nav { gap: 24px; font-size: 16px; } .brand { font-size: 26px; } .brand-symbol { width: 34px; height: 34px; }
+  .site-header nav { gap: 24px; font-size: 18px; } .brand { font-size: 26px; } .brand-symbol { width: 34px; height: 34px; }
   main { padding: 0 24px 48px; } .hero { grid-template-columns: 1fr; gap: 32px; padding: 42px 0; } .hero h1 { font-size: 40px; }
   .hero-description { font-size: 18px; } .desktop-break { display: none; } .journey-card { padding: 24px; }
   .principles { grid-template-columns: 1fr; gap: 28px; padding-top: 32px; } .principles h2 br { display: none; } .principles article p { font-size: 18px; }

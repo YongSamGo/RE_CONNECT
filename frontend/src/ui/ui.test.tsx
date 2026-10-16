@@ -25,6 +25,18 @@ function ExampleForm({ submit }: { submit: () => void }) {
 }
 
 describe('accessible shared controls', () => {
+  it('preserves caller-provided invalid state and external error descriptions', () => {
+    render(<><p id="external-error">입력을 확인해 주세요.</p><TextAreaField label="외부 검증 입력" value="" onChange={() => {}} aria-invalid="true" aria-describedby="external-error" /><CheckboxField label="외부 검증 선택" aria-invalid="true" aria-describedby="external-error" /></>)
+    for (const field of [screen.getByRole('textbox'), screen.getByRole('checkbox')]) {
+      expect(field).toHaveAttribute('aria-invalid', 'true')
+      expect(field).toHaveAccessibleDescription('입력을 확인해 주세요.')
+    }
+  })
+  it('marks a visible component error invalid even if the caller passes false', () => {
+    render(<><TextAreaField label="경험 오류" value="" onChange={() => {}} aria-invalid="false" error="경험을 확인해 주세요." /><CheckboxField label="선택 오류" aria-invalid="false" error="선택을 확인해 주세요." /></>)
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByRole('checkbox')).toHaveAttribute('aria-invalid', 'true')
+  })
   it('focuses an error summary and lets a keyboard user jump to the invalid input', async () => {
     const user = userEvent.setup()
     render(<ExampleForm submit={vi.fn()} />)

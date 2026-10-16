@@ -14,9 +14,9 @@ main:focus { outline: none; }
 input[type='checkbox'] { width: 24px; height: 24px; flex-shrink: 0; accent-color: var(--green); }
 input, textarea, button { min-width: 0; }
 textarea[aria-invalid='true'] { border: 2px solid #9c3528; }
-.field-required { font-size: 16px; font-weight: 400; }
+.field-required { font-size: 18px; font-weight: 400; }
 .field-error { color: #9c3528 !important; margin: 8px 0 0; font-size: 18px; }
-.field-hint { font-size: 16px; color: var(--muted); }
+.field-hint { font-size: 18px; color: var(--muted); }
 .error-summary { border: 2px solid #9c3528; border-radius: 12px; padding: 24px; margin-bottom: 24px; background: #fff; }
 .error-summary h2 { font-size: 22px; }
 .error-summary ul { margin-bottom: 0; padding-left: 24px; }
