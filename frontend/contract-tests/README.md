@@ -2,7 +2,7 @@
 
 기준: `docs/api/openapi.yaml`, backend `app/modules/regions/router.py`·`app/contracts/regions.py`, frontend `src/features/regions/catalog.ts`.
 
-기존 API 타입 생성·클라이언트를 재작성하지 않고 이미 구현된 공개 지역 API만 대조한다. 정적 예시나 복사한 지역 JSON을 실제 서버 응답처럼 사용하지 않는다. Python `TestClient`가 실제 지역 라우터를 테스트용 FastAPI 앱에 마운트해 ASGI 응답을 얻는다. 서비스 설정·`.env`·DB·Redis·모델·네트워크 수신 포트는 사용하지 않는다. 전체 앱의 미들웨어·인증·배포·브라우저 HTTP 통합을 통과했다고 해석하면 안 된다.
+기존 API 타입 생성·클라이언트를 재작성하지 않고 이미 구현된 공개 지역 API와 미구현 API의 공통 오류를 대조한다. 정적 예시나 복사한 지역 JSON을 실제 서버 응답처럼 사용하지 않는다. `regions.test.ts`는 Python `TestClient`가 실제 지역 라우터를 독립 FastAPI 앱에 마운트해 ASGI 응답을 얻는다. 이 검사는 서비스 설정·`.env`·DB·Redis·모델·네트워크 수신 포트를 사용하지 않는다. 아래 W02-08.c HTTP 검사는 별도로 전체 앱과 프록시를 검증한다.
 
 ## 실행
 
@@ -29,6 +29,21 @@ Linux/macOS에서는 `python3.12 -m venv backend/.venv`와 `backend/.venv/bin/py
 5. 존재하지 않거나 다른 시도의 시군구를 선택하면 지역 전체로 넓히지 않고 거절하는지 확인한다.
 
 OpenAPI 3.1에 맞춰 Ajv의 JSON Schema 2020-12 클래스를 사용한다([공식 문서](https://ajv.js.org/json-schema.html#draft-2020-12-breaking)). OpenAPI 컨테이너인 `components`만 annotation 키워드로 등록하며 다른 알 수 없는 스키마 키워드는 strict 검사로 거절한다. YAML은 JSON_SCHEMA로 읽고 외부 스키마 다운로드·임의 태그 실행은 하지 않는다. 전체 API·모든 JSON Schema 형식의 자동 검증기를 서비스 런타임에 도입한 작업은 아니다.
+
+## W02-08.c · 실제 HTTP·프론트 연결 (2026-10-16)
+
+동일한 `npm run test:backend-contract`에 `http.test.ts` 3건을 더했다. 전체 명령은 이제 2개 파일·8건이다.
+
+- Python 3.12 Uvicorn으로 실제 `create_app`과 미들웨어를 실행한다. 설정은 `_env_file=None`, `app_env=test`로 명시하며 module-level app 초기화에도 같은 설정을 주입한다. 개발자의 `.env`는 읽지 않는다.
+- Vite 개발 서버와 backend는 시험마다 임시 루프백 포트를 사용한다. 포트를 고르는 짧은 경합에서 다른 프로세스가 먼저 차지하면 시작 실패로 처리한다. shell 실행·외부 서버·모의 응답은 사용하지 않는다. 테스트 종료 시 Vite와 자식 Python을 종료한다.
+- 기존 `createApiClient`가 실제 HTTP로 `/api/v1/regions`를 조회해 catalog를 처리하고 실제 request ID를 받는지 검사한다. Node 시험의 window.location/document.cookie만 테스트 origin으로 지정하며 fetch·응답·API 클라이언트는 대체하지 않는다.
+- 미구현 `/api/v1/opportunities`는 실제 middleware의 JSON 404 `NOT_FOUND`로 처리해야 한다. 성공 데이터나 SPA HTML로 바뀌면 실패한다. 화면 `/profile`은 HTML SPA 문서로 반환되어야 한다.
+
+일반 로컬 개발에서도 Vite의 `/api/v1` 요청은 고정 대상 `http://127.0.0.1:8000`으로 전달한다. 개발 서버는 `127.0.0.1`에만 바인딩하며 요청 Host를 임의로 바꾸지 않는다. 임의 환경변수·사용자 URL로 proxy 대상을 지정하지 않는다. Vite proxy는 개발용이며 운영 Nginx 라우팅·HTTPS·세션/Origin·CSRF 검증의 대체가 아니다.
+
+브라우저 수동 확인을 반복하려면 frontend 디렉터리에서 `../backend/.venv/Scripts/python.exe -I contract-tests/serve_app.py 8000`(Linux는 `../backend/.venv/bin/python`)으로 시험 앱을 실행하고 `npm run dev` 화면의 공고 탐색에서 지역 목록을 불러온다. 이 앱은 명시적 test 설정이며 실제 사용자 자료 처리용이 아니다. 검증 뒤 Python은 Ctrl+C로 종료한다.
+
+로컬 검증: 계약/HTTP 8건, lint·API 타입 비교·TS·build 통과. 인앱 Chromium에서 실제 지역 버전 `2026-10-16`, 서울·성동구 선택, 공고 검색의 실제 JSON 404 오류와 선택 조건 유지도 확인했다. 기존 지역 router 독립 대조에 더해 전체 앱의 해당 공개 GET·공통 404 경로까지 확인했으며, 다른 API·인증·CSRF 변경 요청·운영 배포·다른 기기 검증은 남아 있다. 원격 CI나 #19 전체 통과는 주장하지 않는다.
 
 ## 보안 근거·한계
 

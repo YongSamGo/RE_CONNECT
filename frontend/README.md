@@ -10,6 +10,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 실제 지역 라우터의 응답을 OpenAPI와 프론트 파서에 대조하는 `npm run test:backend-contract`는 [계약 대조 안내](contract-tests/README.md)를 따른다. Python 3.12·backend 의존성이 필요하며 기존 CI에서도 실행한다.
 
+로컬 Vite는 `127.0.0.1`에서만 열고 `/api/v1`을 `http://127.0.0.1:8000`의 backend로 전달한다. 화면 경로는 SPA로 유지한다. backend를 실행하지 않으면 API 연결 오류가 나며 예시 성공 응답으로 대체하지 않는다. 운영 proxy·HTTPS·인증 검증은 별도다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.
