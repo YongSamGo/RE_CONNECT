@@ -68,6 +68,10 @@ CI의 `PostgreSQL Redis 통합` 잡은 같은 Compose를 실제로 올리고 아
 파일 로그 없음·실제 루프백 포트 바인딩·내부 데이터 네트워크를 검사한다. 환경변수 등을 포함한
 inspect 원문은 출력하지 않는다.
 
+2026-10-17 KST [실제 CI 실행](https://github.com/YongSamGo/RE_CONNECT/actions/runs/38942135015)에서
+위 Compose/마이그레이션/컨테이너 검사와 PostgreSQL·Redis 통합 시험 90개가 통과했다.
+로컬 Windows에는 Docker가 없어서 해당 39개 환경 의존 시험은 skip하며 CI에서 실행한다.
+
 실제 서버로 로컬에서 반복하려면 PERSISTENCE_TEST_DATABASE_URL·PERSISTENCE_TEST_REDIS_URL을
 가상 시험용 DB로 설정하고 해당 pytest를 실행한다. 각 PostgreSQL 시험은 임의의 별도 schema를
 만들고 제거하므로 운영 DB URL을 지정하지 않는다. CI에는 한 번 쓰고 폐기하는 공개 가상 자격증명만 둔다.
