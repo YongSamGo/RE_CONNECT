@@ -216,6 +216,9 @@ jobs:
       - name: PostgreSQL 실제 제약과 마이그레이션 Redis 비영속화 시험
         working-directory: backend
         run: python -m pytest tests/test_member_models.py tests/test_operational_models.py tests/test_migrations.py tests/test_persistence_connections.py -q
+      - name: 실제 Redis 세션 수명과 원자 교체 시험
+        working-directory: backend
+        run: python -m pytest tests/test_sessions.py -q
       - name: 개발 컨테이너 종료
         if: always()
         run: docker compose --env-file .env.example -f infra/compose.dev.yaml down
