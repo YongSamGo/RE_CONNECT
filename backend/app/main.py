@@ -28,6 +28,7 @@ from app.modules.regions import router as regions
 from app.modules.sessions import router as sessions
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
+from app.modules.sessions.middleware import RequestSecurityMiddleware
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -93,6 +94,7 @@ def create_app(
 
     register_error_handlers(app)
     # 나중에 더한 미들웨어가 바깥에 선다. 처리하지 못한 예외의 500 응답에도 X-Request-ID가 붙는다.
+    app.add_middleware(RequestSecurityMiddleware)
     app.add_middleware(UnhandledErrorMiddleware)
     app.add_middleware(RequestLogMiddleware)
     app.add_middleware(RequestIdMiddleware)

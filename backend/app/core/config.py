@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, SecretStr, field_validator
+from pydantic import Field, IPvAnyAddress, SecretStr, ValidationInfo, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -24,6 +24,25 @@ def default_env_file(config_path: Path) -> Path | None:
 
 
 _ROOT_ENV_FILE = default_env_file(Path(__file__))
+
+
+def canonical_origin(value: str) -> str:
+    if not value.isascii() or not value.isprintable() or any(char in value for char in (" ", "\\", ",", "?", "#")):
+        raise ValueError("허용하지 않는 Origin 형식")
+    try:
+        parsed = urlsplit(value)
+        port = parsed.port
+    except ValueError:
+        raise ValueError("허용하지 않는 Origin 형식") from None
+    if (
+        parsed.scheme not in ("https", "http") or not parsed.hostname or parsed.username is not None
+        or parsed.password is not None or parsed.path or parsed.query or parsed.fragment
+    ):
+        raise ValueError("Origin에는 scheme과 host 및 port만 허용합니다")
+    host = parsed.hostname.lower()
+    host = f"[{host}]" if ":" in host else host
+    suffix = f":{port}" if port is not None and port != (443 if parsed.scheme == "https" else 80) else ""
+    return f"{parsed.scheme}://{host}{suffix}"
 
 
 class Settings(BaseSettings):
@@ -54,6 +73,21 @@ class Settings(BaseSettings):
     # 구조화 추출은 추론 과정을 쓰지 않는다 (Plan/03 §3). 모델이 think를 지원하지 않으면 None으로 두어 보내지 않는다.
     ollama_think: bool | None = False
     ollama_max_response_bytes: int = Field(default=1_048_576, gt=0)
+
+    # 프론트와 API가 공유하는 단일 출처. 비어 있으면 API 변경 요청은 거절한다.
+    public_origin: str | None = None
+    # Uvicorn의 전달 헤더를 신뢰할 직접 연결 프록시 IP만 허용한다. wildcard/CIDR 기본 신뢰 없음.
+    trusted_proxy_ips: list[IPvAnyAddress] = Field(default_factory=list, max_length=10)
+
+    @field_validator("public_origin")
+    @classmethod
+    def _public_origin(cls, value: str | None, info: ValidationInfo) -> str | None:
+        if value is None:
+            return None
+        origin = canonical_origin(value)
+        if not origin.startswith("https://") and info.data.get("app_env") != "development":
+            raise ValueError("운영 Origin은 HTTPS여야 합니다")
+        return origin
 
     @field_validator("ollama_base_url")
     @classmethod
