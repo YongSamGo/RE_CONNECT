@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Literal
 from urllib.parse import urlsplit
 
-from pydantic import Field, field_validator
+from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -36,6 +36,9 @@ class Settings(BaseSettings):
 
     # 기본값을 production으로 두어, 설정을 빠뜨려도 개발용 기능(API 문서 화면 등)이 켜지지 않게 한다.
     app_env: Literal["development", "test", "production"] = "production"
+
+    database_url: SecretStr | None = None
+    redis_url: SecretStr | None = None
 
     # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
     health_check_timeout_seconds: float = 2.0

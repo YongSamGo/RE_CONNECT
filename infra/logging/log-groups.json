@@ -1,0 +1,31 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "RE_CONNECT operational and audit log retention. Collection is configured separately.",
+  "Parameters": {
+    "Environment": {
+      "Type": "String",
+      "AllowedValues": ["development", "staging", "production"],
+      "Default": "staging"
+    }
+  },
+  "Resources": {
+    "OperationalLogs": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {"Fn::Sub": "/re-connect/${Environment}/operations"},
+        "RetentionInDays": 14
+      }
+    },
+    "AuditLogs": {
+      "Type": "AWS::Logs::LogGroup",
+      "Properties": {
+        "LogGroupName": {"Fn::Sub": "/re-connect/${Environment}/audit"},
+        "RetentionInDays": 30
+      }
+    }
+  },
+  "Outputs": {
+    "OperationalLogGroup": {"Value": {"Ref": "OperationalLogs"}},
+    "AuditLogGroup": {"Value": {"Ref": "AuditLogs"}}
+  }
+}
