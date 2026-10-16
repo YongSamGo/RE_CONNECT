@@ -64,6 +64,10 @@ CI의 `PostgreSQL Redis 통합` 잡은 같은 Compose를 실제로 올리고 아
 4. 직접 SQL UPDATE 차단과 허용된 운영 상태 갱신.
 5. 실제 DB/Redis probe, Redis 영속화가 켜지면 readiness 거절.
 
+`infra/check_dev_services.py`는 실행 중인 두 컨테이너를 inspect해 데이터 tmpfs·영구 볼륨 없음·
+파일 로그 없음·실제 루프백 포트 바인딩·내부 데이터 네트워크를 검사한다. 환경변수 등을 포함한
+inspect 원문은 출력하지 않는다.
+
 실제 서버로 로컬에서 반복하려면 PERSISTENCE_TEST_DATABASE_URL·PERSISTENCE_TEST_REDIS_URL을
 가상 시험용 DB로 설정하고 해당 pytest를 실행한다. 각 PostgreSQL 시험은 임의의 별도 schema를
 만들고 제거하므로 운영 DB URL을 지정하지 않는다. CI에는 한 번 쓰고 폐기하는 공개 가상 자격증명만 둔다.
