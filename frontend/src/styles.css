@@ -135,6 +135,15 @@ select { width: 100%; min-height: 52px; border: 1px solid #98a995; border-radius
 .copy-panel { margin: 28px 0 22px; padding-top: 4px; border-top: 1px solid #d7dfd2; }
 .copy-panel h3 { font-size: 1.1em; }
 .draft-state { color: #405d4a; }
+.my-page .section-heading { margin-bottom: 12px; }
+.my-page h2:focus { outline: none; }
+.application-count { display: inline-block; margin-left: 8px; font-size: .85em; color: #547054; }
+.application-list { display: grid; gap: 18px; margin: 24px 0; }
+.application-list .panel { margin: 0; }
+.review-needed { color: #79551e; font-weight: 650; }
+.delete-link { min-height: 48px; padding: 10px 12px; border: 0; background: transparent; color: #70442e; text-decoration: underline; text-underline-offset: 5px; }
+.native-dialog { width: min(600px, calc(100% - 32px)); max-height: 90vh; overflow-y: auto; margin: auto; color: inherit; }
+.native-dialog::backdrop { background: #13251c88; }
 @media (max-width: 850px) { .browse-layout { grid-template-columns: 1fr; } .browse-page { padding: 24px 0; } }
 @media (max-width: 450px) { .detail-facts > div { grid-template-columns: 1fr; gap: 5px; } .browse-page h1 { font-size: 1.65em; } }
 @media (min-width: 1000px) { .large-text .header { flex-wrap: wrap; } }

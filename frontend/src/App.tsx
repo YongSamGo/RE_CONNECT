@@ -2,6 +2,7 @@ import { Component, startTransition, useEffect, useRef, useState, type ReactNode
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { OpportunityDetail, OpportunityList, PreparationPage } from './OpportunityPages'
 import type { ApplicationDraft } from './application'
+import { MyPage } from './MyPage'
 import { canConfirm, emptyProfile, type Activity, type Profile } from './journey'
 
 const activityNames: Record<Activity, string> = { employment: '취업·공공일자리', volunteering: '봉사' }
@@ -162,7 +163,7 @@ export function App() {
         <Route path="/opportunities" element={<OpportunityList examples={examples} showExamples={() => setExamples(true)} />} />
         <Route path="/opportunities/:id" element={<OpportunityDetail examples={examples} />} />
         <Route path="/preparation/:id" element={<PreparationPage examples={examples} checks={preparationChecks} update={(id, checked) => setPreparationChecks(previous => ({ ...previous, [id]: checked }))} applications={applications} updateApplication={(id, application) => setApplications(previous => ({ ...previous, [id]: application }))} profile={confirmed} profileVersion={profileVersion} />} />
-        <Route path="/my" element={<EmptyPage eyebrow="내 정보" title="저장한 자료를 한곳에서"><p>카카오 로그인과 별도 저장 동의는 연결 준비 중이에요.</p><p>이번 화면 체험에서 입력한 내용은 영구 저장되지 않아요.</p></EmptyPage>} />
+        <Route path="/my" element={<MyPage profile={confirmed} profileVersion={profileVersion} applications={applications} deleteApplication={id => setApplications(previous => Object.fromEntries(Object.entries(previous).filter(([key]) => key !== id)))} />} />
         <Route path="/admin" element={<EmptyPage eyebrow="운영자" title="운영자 연결 준비 중"><p>운영 기능은 아직 제공하지 않아요. 서버에서 권한과 추가 인증을 확인한 뒤 연결할 예정이에요.</p></EmptyPage>} />
         <Route path="*" element={<EmptyPage eyebrow="페이지를 찾을 수 없어요" title="다시 시작해볼까요?"><p>주소를 확인하거나 시작 화면으로 이동해주세요.</p></EmptyPage>} />
       </Routes>
