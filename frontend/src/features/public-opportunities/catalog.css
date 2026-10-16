@@ -1,5 +1,6 @@
 .catalog-form { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .catalog-keyword { grid-column: 1 / -1; }
+.catalog-form .error-summary { grid-column: 1 / -1; }
 .catalog-form .actions { margin-top: 0; }
 .catalog-form input, .catalog-form select { width: 100%; min-width: 0; min-height: 52px; border: 1px solid #7f8b7d; border-radius: 8px; padding: 12px; font: inherit; color: var(--ink); background: #fff; }
 .catalog-form .field-hint { margin: 8px 0 0; }
@@ -19,3 +20,10 @@
 .opportunity-card .catalog-note { margin-bottom: 0; }
 .catalog-pagination { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 @media (max-width: 500px) { .catalog-form { grid-template-columns: 1fr; gap: 20px; } .opportunity-card { padding: 20px; } .opportunity-card dl > div { grid-template-columns: 1fr; gap: 0; margin-top: 16px; } }
+.public-detail > .text-link { display: inline-block; margin: 28px 0; }
+.opportunity-detail { margin-bottom: 24px; overflow-wrap: anywhere; }
+.opportunity-detail h2 { font-size: 28px; }
+.opportunity-detail h3 { margin-top: 32px; }
+.detail-facts { display: grid; gap: 16px; }
+.detail-facts dt { font-weight: 700; }
+.detail-facts dd { margin: 4px 0 0; }
