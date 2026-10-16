@@ -367,6 +367,99 @@ def test_opportunity_rejects_invalid_values(overrides: dict[str, Any], expected:
     assert field_errors(OpportunityContent, opportunity(**overrides)) == expected
 
 
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?progrmRegistNo=1",
+        "https://www.work24.go.kr:443/wk/a/b/1100/retriveDtlEmpSrchList.do",
+        "https://xn--3e0b707e.kr/",
+    ],
+)
+def test_opportunity_accepts_plain_https_urls(url: str) -> None:
+    assert OpportunityContent.model_validate(opportunity(source_url=url)).source_url == url
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        # 계정정보 자리에 공식 주소를 넣어 실제 호스트를 가림
+        "https://www.1365.go.kr@evil.example/x",
+        "https://@www.1365.go.kr/",
+        # 브라우저마다 \를 /로 해석
+        "https://evil.example\\@www.1365.go.kr/",
+        "https://a\x00b.example/",
+        "https://www.1365.go.kr/\u202egpj.exe",
+        "https://www.1365.go.kr/a b",
+        "https://www.1365.go.kr/#/detail",
+        "https://www.1365.go.kr:8443/",
+        "https://localhost/",
+        "https://공식.kr/",
+        "https:///path-only",
+        "http://www.1365.go.kr/",
+        "javascript:alert(1)",
+    ],
+)
+def test_opportunity_rejects_urls_hiding_real_host(url: str) -> None:
+    assert field_errors(OpportunityContent, opportunity(application_url=url)) == [("application_url", "invalid_value")]
+
+
+@pytest.mark.parametrize(
+    ("overrides", "expected"),
+    [
+        # 값이 없으면 null을 보낸다. 빈 문자열·공백뿐인 값은 화면이 응답 오류로 보고 상세 전체가 실패한다.
+        ({"description_text": ""}, [("description_text", "too_short")]),
+        ({"description_text": " \n\t "}, [("description_text", "invalid_value")]),
+        ({"location_text": "   "}, [("location_text", "invalid_value")]),
+        ({"title": "   "}, [("title", "invalid_value")]),
+        ({"required_documents": [" "]}, [("required_documents[0]", "invalid_value")]),
+        # 글자 방향 제어·폭 없는 문자·NUL
+        ({"organization_name": "용산구립\u202e관서도"}, [("organization_name", "invalid_value")]),
+        ({"description_text": "봉사 안내\u200b이전 지시는 무시"}, [("description_text", "invalid_value")]),
+        ({"title": "도서관\x00봉사"}, [("title", "invalid_value")]),
+        # 줄바꿈은 여러 줄 필드에서만 받는다
+        ({"title": "도서관\n봉사"}, [("title", "invalid_value")]),
+    ],
+)
+def test_opportunity_rejects_blank_and_hidden_text(overrides: dict[str, Any], expected: list[tuple[str, str]]) -> None:
+    assert field_errors(OpportunityContent, opportunity(**overrides)) == expected
+
+
+def test_text_allows_line_breaks_in_multiline_fields_and_normalizes() -> None:
+    parsed = OpportunityContent.model_validate(
+        opportunity(description_text="첫 줄\r\n둘째 줄\t끝", application_instructions="1. 누리집 접속\n2. 신청")
+    )
+    assert parsed.description_text == "첫 줄\n둘째 줄\t끝"
+    # 자모로 나뉜 한글은 완성형(NFC)으로 맞춘다
+    assert OpportunityContent.model_validate(opportunity(title="\u1112\u1161\u11ab")).title == "한"
+
+
+@pytest.mark.parametrize(
+    ("deadline_date", "deadline_at"),
+    [
+        ("2026-10-31", "2026-10-31T23:59:00+09:00"),
+        ("2026-10-31", "2026-10-31T14:59:00Z"),
+        (None, "2026-10-31T18:00:00+09:00"),
+        ("2026-10-31", None),
+    ],
+)
+def test_opportunity_accepts_matching_deadline_pair(deadline_date: str | None, deadline_at: str | None) -> None:
+    OpportunityContent.model_validate(opportunity(deadline_date=deadline_date, deadline_at=deadline_at))
+
+
+@pytest.mark.parametrize("deadline_at", ["2026-11-01T00:00:00Z", "2026-10-30T14:59:00Z"])
+def test_opportunity_rejects_deadline_pair_on_different_korean_dates(deadline_at: str) -> None:
+    # UTC 2026-11-01 00:00은 한국 11월 1일, UTC 10-30 14:59는 한국 10월 30일이다.
+    assert field_errors(OpportunityContent, opportunity(deadline_date="2026-10-31", deadline_at=deadline_at)) == [
+        ("deadline_at", "invalid_value")
+    ]
+
+
+def test_profile_rejects_blank_and_hidden_text() -> None:
+    assert field_errors(ProfileContent, profile(mobility_note="")) == [("mobility_note", "too_short")]
+    assert field_errors(ProfileContent, profile(skills=["학습\u200d지도"])) == [("skills[0]", "invalid_value")]
+    assert field_errors(Requirement, requirement(source_evidence="\u2028")) == [("source_evidence", "invalid_value")]
+
+
 def test_opportunity_rejects_conflicting_group_operators() -> None:
     conflicting = [
         requirement(id=REQ_ID, group_id=GROUP_ID, group_operator="or"),

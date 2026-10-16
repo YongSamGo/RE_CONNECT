@@ -26,7 +26,6 @@ from pydantic import (
     BaseModel,
     Field,
     StrictInt,
-    StrictStr,
     TypeAdapter,
     ValidationError,
     ValidationInfo,
@@ -34,7 +33,7 @@ from pydantic import (
 )
 from pydantic_core import PydanticCustomError
 
-from app.contracts.fields import CONTRACT_CONFIG, HoursPerWeek, Unique, Weekday
+from app.contracts.fields import CONTRACT_CONFIG, HoursPerWeek, Unique, Weekday, text
 from app.contracts.regions import Region
 
 RequirementField = Literal[
@@ -51,7 +50,7 @@ GroupOperator = Literal["and", "or"]
 Clarity = Literal["clear", "needs_review"]
 
 Age = Annotated[StrictInt, Field(ge=0, le=150)]
-_ConditionText = Annotated[StrictStr, Field(min_length=1, max_length=100)]
+_ConditionText = text(100)
 
 _AGE = TypeAdapter(Age)
 _AGE_RANGE = TypeAdapter(Annotated[list[Age], Field(min_length=2, max_length=2)])
@@ -89,7 +88,7 @@ class Requirement(BaseModel):
     group_id: UUID | None
     group_operator: GroupOperator | None
     reference_date: date | None
-    source_evidence: Annotated[StrictStr, Field(min_length=1, max_length=1000)]
+    source_evidence: text(1000, multiline=True)
     clarity: Clarity
 
     @field_validator("operator")

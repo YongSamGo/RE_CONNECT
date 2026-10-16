@@ -9,10 +9,10 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, StrictInt, StrictStr, field_validator
+from pydantic import BaseModel, Field, StrictInt, field_validator
 from pydantic_core import PydanticCustomError
 
-from app.contracts.fields import CONTRACT_CONFIG, ActivityType, HoursPerWeek, SkillTag, Unique, Weekday
+from app.contracts.fields import CONTRACT_CONFIG, ActivityType, HoursPerWeek, SkillTag, Unique, Weekday, text
 from app.contracts.regions import Region
 from app.contracts.time import kst_today
 
@@ -22,16 +22,16 @@ PaidPreference = Literal["paid", "unpaid", "any"]
 # 추천에 1개 이상 필요한 항목. 비어 있으면 missing_for_recommendation에 넣는다.
 RecommendationField = Literal["experiences", "preferred_regions", "activity_types"]
 
-_ShortText = Annotated[StrictStr, Field(min_length=1, max_length=100)]
+_ShortText = text(100)
 
 
 class _ExperienceBase(BaseModel):
     model_config = CONTRACT_CONFIG
 
-    description: Annotated[StrictStr, Field(min_length=1, max_length=1000)]
+    description: text(1000, multiline=True)
     skill_tags: Annotated[list[SkillTag], Field(max_length=20), Unique]
     # 사용자가 말한 기간. 불명확하면 추정하지 않고 null
-    duration_note: Annotated[StrictStr, Field(max_length=200)] | None
+    duration_note: text(200) | None
 
 
 class Experience(_ExperienceBase):
@@ -54,14 +54,14 @@ class _ProfileContentBase(BaseModel):
     paid_preference: PaidPreference | None
     available_weekdays: Annotated[list[Weekday], Field(max_length=7), Unique] | None
     hours_per_week: HoursPerWeek | None
-    mobility_note: Annotated[StrictStr, Field(max_length=300)] | None
+    mobility_note: text(300) | None
     # 거주 자격 대조용. 희망 활동 지역과 다르다
     residence_region: Region | None
     birth_year: Annotated[StrictInt, Field(ge=1900)] | None
     certifications: Annotated[list[_ShortText], Field(max_length=20)] | None
     completed_courses: Annotated[list[_ShortText], Field(max_length=20)] | None
     # 활동 수행 조건. 진단명·상세 병력은 받지 않는다
-    activity_constraints: Annotated[list[Annotated[StrictStr, Field(min_length=1, max_length=200)]], Field(max_length=10)] | None
+    activity_constraints: Annotated[list[text(200)], Field(max_length=10)] | None
 
     @field_validator("birth_year")
     @classmethod

@@ -42,6 +42,8 @@ backend/
 
 - 모든 모델은 정의하지 않은 키를 거절하고(`unknown_field`), 선택 항목도 키가 있어야 한다(`required`). 값이 없으면 `null`을 보낸다.
 - 숫자·불리언·문자열은 형 변환 없이 받는다. number 자리의 `"3"`이나 `true`는 `invalid_type`이다.
+- 자유 텍스트는 `fields.text()`로 만든다. NFC로 맞추고, 빈 문자열·공백뿐인 값과 보이지 않는 문자(제어 문자·폭 없는 문자·글자 방향 제어)를 거절한다. 줄바꿈·탭은 설명·안내처럼 여러 줄인 필드에서만 받는다.
+- 공고 URL은 `https`이고 계정정보·백슬래시·fragment·443 외 포트가 없는 주소만 받는다. `deadline_date`와 `deadline_at`이 함께 있으면 같은 한국 날짜여야 한다.
 - 지역은 [regions.py](app/contracts/regions.py)의 목록으로 검증한다. 시·군·구는 영문 slug이고, 경기도는 시·군 단위, 인천은 2026-07-01 행정체제 개편 뒤 기준이다. 목록을 바꾸면 `REGION_CATALOG_VERSION`을 올린다. 외부 출처의 지역코드 매핑은 수집기가 출처별로 맡는다.
 - 자격조건은 [requirement.py](app/contracts/requirement.py)의 field·operator 허용표에 있는 조합만 받는다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`로 남긴다.
 - 시각은 시간대가 있어야 하고 UTC로 바꿔 다룬다. 한국 날짜는 [time.py](app/contracts/time.py)의 `kst_date`·`kst_today`로만 계산한다. 한국은 서머타임이 없어 고정 오프셋 +09:00을 쓴다.
