@@ -12,9 +12,13 @@ def docker(*arguments):
     return subprocess.run(["docker", *arguments], check=True, capture_output=True, text=True).stdout
 
 
+class InvalidServiceConfiguration(Exception):
+    pass
+
+
 def require(condition, message):
     if not condition:
-        raise ValueError(message)
+        raise InvalidServiceConfiguration(message)
 
 
 def main():
@@ -24,7 +28,9 @@ def main():
         container = json.loads(docker("inspect", container_id))[0]
         require(container["State"]["Health"]["Status"] == "healthy", "Development service is unhealthy")
         mounts = container["Mounts"]
-        require(any(item["Destination"] == destination and item["Type"] == "tmpfs" for item in mounts), "Development data must use tmpfs")
+        # Docker의 --tmpfs/Compose tmpfs는 HostConfig.Tmpfs에 기록되며 Mounts에는 없을 수 있다.
+        configured_tmpfs = container["HostConfig"].get("Tmpfs") or {}
+        require(destination in configured_tmpfs or any(item["Destination"] == destination and item["Type"] == "tmpfs" for item in mounts), "Development data must use tmpfs")
         require(all(item["Type"] != "volume" for item in mounts), "Persistent data volume is present")
         bindings = container["NetworkSettings"]["Ports"].get(port)
         require(bindings and all(item["HostIp"] == "127.0.0.1" for item in bindings), "Development port must bind loopback")
@@ -37,6 +43,10 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+    except InvalidServiceConfiguration as error:
+        # 위의 고정 진단 문구만 출력한다. inspect 원문·환경변수는 포함하지 않는다.
+        print(str(error))
+        raise SystemExit(1) from None
     except (OSError, subprocess.CalledProcessError, ValueError, KeyError):
         print("Development service verification failed; inspect configuration locally without sharing secrets")
         raise SystemExit(1) from None
