@@ -204,6 +204,7 @@ jobs:
         run: |
           docker compose --env-file .env.example -f infra/compose.dev.yaml config --quiet
           docker compose --env-file .env.example -f infra/compose.dev.yaml up -d --wait --wait-timeout 90
+          python infra/check_dev_services.py
       - name: 빈 DB 마이그레이션과 정상 조회
         working-directory: backend
         env:
