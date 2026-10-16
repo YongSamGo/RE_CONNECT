@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     # 기본값을 production으로 두어, 설정을 빠뜨려도 개발용 기능(API 문서 화면 등)이 켜지지 않게 한다.
     app_env: Literal["development", "test", "production"] = "production"
 
+    database_url: SecretStr | None = None
+    redis_url: SecretStr | None = None
     # DB·소스·DB 백업 밖에서 제공하는 키 버전 → base64 32바이트 master key의 JSON.
     data_encryption_keys: SecretStr | None = None
     data_encryption_active_key_id: str | None = None

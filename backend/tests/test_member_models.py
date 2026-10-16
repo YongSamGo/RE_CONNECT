@@ -7,31 +7,23 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, delete, event, insert, select
+from sqlalchemy import delete, insert, select
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy.orm import Session
 from sqlalchemy.schema import CreateTable
 
 from app.persistence import ApplicationDocument, ApplicationDraft, Base, Consent, ProfileDocument, ProfileVersion, User
+from tests.persistence_helpers import OPPORTUNITY_ID, open_test_database, seed_opportunity
 
 NOW = datetime(2026, 10, 17, tzinfo=UTC)
 
 
-@pytest.fixture
-def db():
-    engine = create_engine("sqlite://", echo=False, hide_parameters=True)
-
-    @event.listens_for(engine, "connect")
-    def enable_foreign_keys(connection, record):
-        connection.execute("PRAGMA foreign_keys=ON")
-
-    Base.metadata.create_all(engine)
-    try:
-        with engine.begin() as connection:
-            yield connection
-    finally:
-        engine.dispose()
+@pytest.fixture(params=["sqlite", "postgresql"])
+def db(request):
+    with open_test_database(request.param) as connection:
+        Base.metadata.create_all(connection)
+        yield connection
 
 
 def encrypted(**updates):
@@ -40,6 +32,7 @@ def encrypted(**updates):
 
 
 def seed(db):
+    seed_opportunity(db)
     owner, other, profile_id, document_id = uuid4(), uuid4(), uuid4(), uuid4()
     db.execute(insert(User), [{"id": owner, "kakao_subject": "fictional-owner"}, {"id": other, "kakao_subject": "fictional-other"}])
     db.execute(insert(ProfileDocument), {"id": profile_id, "owner_id": owner})
@@ -49,7 +42,7 @@ def seed(db):
 
 
 def saved_draft(owner, profile_id, document_id, **updates):
-    return {"owner_id": owner, "profile_id": profile_id, "profile_version": 1, "document_id": document_id, "version": 1, "opportunity_id": uuid4(), "opportunity_version": 1, "approved_at": NOW, "saved_at": NOW, **encrypted(), **updates}
+    return {"owner_id": owner, "profile_id": profile_id, "profile_version": 1, "document_id": document_id, "version": 1, "opportunity_id": OPPORTUNITY_ID, "opportunity_version": 1, "approved_at": NOW, "saved_at": NOW, **encrypted(), **updates}
 
 
 def test_saved_draft_must_reference_same_owner_document_and_profile_version(db):
@@ -133,7 +126,7 @@ def test_timezone_is_required_and_values_roundtrip_as_utc(db):
 
 def test_orm_cannot_overwrite_saved_version(db):
     owner, _, profile_id, _ = seed(db)
-    with Session(bind=db) as session:
+    with Session(bind=db, join_transaction_mode="create_savepoint") as session:
         saved = session.get(ProfileVersion, (profile_id, 1))
         saved.ciphertext = b"changed" * 10
         with pytest.raises(ValueError, match="새 버전"):
