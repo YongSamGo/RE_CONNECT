@@ -1,0 +1,33 @@
+{
+  "id": "P04",
+  "summary": "58세 회계 경력자. 시니어 대상 공고의 연령 조건(60세 이상)에 미달한다.",
+  "test_focus": ["연령 미충족 판정", "만 나이 미달을 추천에서 제외"],
+  "interview": [
+    "중소기업 경리, 회계 업무를 이십오 년 했어요. 작년에 회사가 문을 닫았어요.",
+    "세금계산서 발행하고 월말 결산, 급여 정산까지 다 했죠. 전산회계 1급 있어요.",
+    "급여 받는 일을 찾아요. 주 이십 시간 정도로요. 요일은 아무 때나 괜찮아요.",
+    "마포구 살고 서울 서쪽이면 어디든 다닐 수 있어요.",
+    "1968년생이에요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "중소기업 경리·회계 25년 (세금계산서, 월말 결산, 급여 정산)", "skill_tags": ["회계", "결산", "급여 정산", "세금계산서 발행"], "duration_note": "25년"}
+    ],
+    "skills": ["회계", "결산", "급여 정산", "세금계산서 발행"],
+    "preferred_regions": [{"province": "seoul", "district": null}],
+    "activity_types": ["employment"],
+    "paid_preference": "paid",
+    "available_weekdays": [1, 2, 3, 4, 5, 6, 7],
+    "hours_per_week": 20,
+    "mobility_note": "서울 서쪽 지역 이동 가능",
+    "residence_region": {"province": "seoul", "district": "mapo"},
+    "birth_year": 1968,
+    "certifications": ["전산회계 1급"],
+    "completed_courses": null,
+    "activity_constraints": null
+  },
+  "must_not_extract": {"exact": [], "semantic": []},
+  "expected_roles": ["사무 보조(회계)", "경리 사무원"],
+  "notes": "'서울 서쪽'은 구 목록으로 임의 확장하지 않는다. 시·도 전체(district=null)로 두고 이동 범위는 mobility_note로 보존."
+}

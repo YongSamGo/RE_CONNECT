@@ -1,0 +1,5 @@
+-c requirements.txt
+# 테스트 (TestClient가 쓰는 httpx는 운영 의존성에 있다)
+pytest
+# pytest의 Windows 전용 의존성. Linux에서 컴파일하면 빠지므로 직접 적는다 (README.md "의존성 고정")
+colorama

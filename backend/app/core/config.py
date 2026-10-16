@@ -1,0 +1,73 @@
+"""환경변수 설정.
+
+값은 루트 `.env` 또는 실행 환경의 환경변수에서 읽는다. `.env`는 모든 서비스가 함께 쓰므로
+이 서비스가 모르는 항목은 무시한다. 비밀값이 생기면 `SecretStr`로 받아 로그·repr에 드러나지 않게 한다.
+"""
+
+from functools import lru_cache
+from pathlib import Path
+from typing import Literal
+from urllib.parse import urlsplit
+
+from pydantic import Field, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def default_env_file(config_path: Path) -> Path | None:
+    """backend/app/core/config.py 기준 저장소 루트의 .env.
+
+    컨테이너처럼 패키지가 얕은 경로에 놓이면 루트를 계산할 수 없으므로 None을 돌려주고 환경변수만 쓴다.
+    파일이 없어도 pydantic-settings는 환경변수만 읽는다.
+    """
+    parents = config_path.resolve().parents
+    return parents[3] / ".env" if len(parents) > 3 else None
+
+
+_ROOT_ENV_FILE = default_env_file(Path(__file__))
+
+
+class Settings(BaseSettings):
+    model_config = SettingsConfigDict(
+        env_file=_ROOT_ENV_FILE,
+        env_file_encoding="utf-8",
+        extra="ignore",
+        frozen=True,
+    )
+
+    # 기본값을 production으로 두어, 설정을 빠뜨려도 개발용 기능(API 문서 화면 등)이 켜지지 않게 한다.
+    app_env: Literal["development", "test", "production"] = "production"
+
+    # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
+    health_check_timeout_seconds: float = 2.0
+
+    # 내부 Ollama (W04-02). 주소는 Compose 내부 서비스로 고정하고 사용자 요청으로 바꾸지 않는다 (Plan/05 §2).
+    ollama_base_url: str = "http://ollama:11434"
+    ollama_model: str = "qwen3:4b"
+    # 요청 하나의 전체 시간(초). AI 처리 제한(60초, Plan/05 §3)을 넘지 않는다.
+    ollama_timeout_seconds: float = Field(default=60.0, gt=0, le=60)
+    # 출력 토큰 상한. 넘으면 응답이 잘리고(`done_reason=length`) 형식 오류로 처리한다.
+    ollama_num_predict: int = Field(default=2048, gt=0, le=8192)
+    ollama_num_ctx: int = Field(default=16384, ge=12288, le=32768)
+    # 구조화 추출은 추론 과정을 쓰지 않는다 (Plan/03 §3). 모델이 think를 지원하지 않으면 None으로 두어 보내지 않는다.
+    ollama_think: bool | None = False
+    ollama_max_response_bytes: int = Field(default=1_048_576, gt=0)
+
+    @field_validator("ollama_base_url")
+    @classmethod
+    def _internal_origin_only(cls, value: str) -> str:
+        """경로·쿼리·계정 정보가 없는 http(s) 출처만 받는다. 끝의 `/`는 뗀다."""
+        url = urlsplit(value)
+        if url.scheme not in ("http", "https") or not url.hostname:
+            raise ValueError("ollama_base_url은 http(s) 주소여야 합니다")
+        if url.username or url.password or url.query or url.fragment or url.path not in ("", "/"):
+            raise ValueError("ollama_base_url에는 출처(scheme://host:port)만 적습니다")
+        return value.rstrip("/")
+
+    @property
+    def docs_enabled(self) -> bool:
+        return self.app_env == "development"
+
+
+@lru_cache
+def get_settings() -> Settings:
+    return Settings()

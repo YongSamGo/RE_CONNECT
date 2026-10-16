@@ -1,4 +1,4 @@
-# 다시잇다 CI — 모든 PR과 main push에 보안 점검을 자동으로 건다.
+# 다시잇다 CI — 모든 PR과 main·develop push에 보안 점검을 자동으로 건다.
 #
 # 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
 # (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
@@ -15,9 +15,10 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
   schedule:
-    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사
+    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사.
+    # schedule은 기본 브랜치(develop)에서만 돌기 때문에, 아래 weekly-main 잡이 main에도 CI·CodeQL을 실행시킨다.
     - cron: "0 0 * * 1"
   workflow_dispatch:
 
@@ -110,6 +111,31 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: zizmor --min-severity low .
 
+  hidden-text:
+    name: 숨은 문자·지시문 점검
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2 # PR 병합 커밋의 첫 부모(base)와 비교해 새로 추가된 줄을 찾는다
+          persist-credentials: false
+      - name: 검사 스크립트 회귀 시험
+        run: python3 -I .github/scripts/test_check_hidden_text.py
+      - name: 숨은 문자(실패)·에이전트 지시 파일 의심 문구(경고) 검사
+        # AI 개발 도구가 읽는 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자 등)를 막는다.
+        # 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md AGT-01·AGT-03
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            python3 -I .github/scripts/check_hidden_text.py --diff-base HEAD^1
+          else
+            python3 -I .github/scripts/check_hidden_text.py
+          fi
+
   python:
     # 매트릭스 값은 이름 뒤에 자동으로 붙는다 (예: "Python 점검 (backend)")
     name: Python 점검
@@ -201,10 +227,27 @@ jobs:
           fail-on-severity: moderate
           comment-summary-in-pr: never
 
+  weekly-main:
+    name: main 주간 재검사 요청
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write # main 브랜치에서 워크플로를 실행(workflow_dispatch)하기 위해 필요
+    steps:
+      - name: main에서 CI·CodeQL 실행
+        # 제출·시연용 main도 새 CVE로 재검사한다. main의 워크플로 파일 기준으로 돈다.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run ci.yml --ref main
+          gh workflow run codeql.yml --ref main
+
   ci-ok:
     name: CI 통과
     if: always()
-    needs: [detect, secrets, workflow-audit, python, frontend, dependency-review]
+    needs: [detect, secrets, workflow-audit, hidden-text, python, frontend, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}

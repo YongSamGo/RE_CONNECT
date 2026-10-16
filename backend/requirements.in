@@ -1,0 +1,6 @@
+# 직접 쓰는 운영 의존성. 컴파일 방법은 README.md "의존성 고정"을 본다.
+fastapi
+uvicorn
+pydantic-settings
+# 내부 Ollama 호출 (app/adapters/ollama.py)
+httpx
