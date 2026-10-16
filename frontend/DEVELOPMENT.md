@@ -26,7 +26,7 @@ npm run lint
 npm test
 npm run build
 npm audit signatures
-npm audit --omit=dev --audit-level=high
+npm audit --audit-level=moderate
 ```
 
 기존 CI는 lockfile을 감지해 위 검사를 자동 실행한다. 설치 스크립트 없이 빌드·테스트가 가능하다. 직접 의존성은 정확한 버전, 전이 의존성은 `package-lock.json`으로 고정했다. `VITE_` 값은 브라우저에 공개되므로 키·토큰을 넣지 않는다.

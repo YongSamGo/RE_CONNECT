@@ -200,8 +200,8 @@ jobs:
         run: npm ci --ignore-scripts
       - name: 패키지 서명·출처 검증
         run: npm audit signatures
-      - name: 의존성 취약점 점검 (운영 의존성, 높음 이상)
-        run: npm audit --omit=dev --audit-level=high
+      - name: 의존성 취약점 점검 (개발 포함, 중간 이상)
+        run: npm audit --audit-level=moderate
       - name: 린트
         run: npm run lint
       - name: 테스트
