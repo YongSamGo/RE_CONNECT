@@ -4,7 +4,7 @@ import { invalid, isOpportunityId, record, timestamp } from '../public-opportuni
 export type OpportunityInput = components['schemas']['OpportunityInput']
 type Requirement = components['schemas']['Requirement']
 function string(value: unknown, max: number, required = false): string {
-  return typeof value === 'string' && value.length <= max && (!required || !!value.trim()) ? value : invalid()
+  return typeof value === 'string' && [...value].length <= max && (!required || !!value.trim()) ? value : invalid()
 }
 const nullableText = (value: unknown, max: number) => value === null ? null : string(value, max)
 function enumeration<const T extends string>(value: unknown, values: readonly T[]): T {

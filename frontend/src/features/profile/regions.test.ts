@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseRegionCatalog, regionsMatchCatalog } from './regions'
+import { parseRegionCatalog, regionsMatchCatalog } from '../regions/catalog'
 
 const district = { id: 'test_district', name: '가상구' }
 const province = { id: 'seoul', name: '서울', districts: [district] }

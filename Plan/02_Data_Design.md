@@ -1,6 +1,8 @@
 # 다시잇다 — 02. Data Design
 
-기준일: 2026-10-13 · 버전: v1.1 · 상태: 사용자 승인 설계 명세(EC2 로컬 추론 반영)
+기준일: 2026-10-15 · 버전: v1.2 · 상태: 사용자 승인 설계 명세(EC2 로컬 추론 반영)
+
+> **v1.2 변경 (2026-10-15, W01-02):** API 계약 확정에 따라 공고 설명·변경 대기 필드, Requirement 연산 허용표, 중요 변경 필드 목록을 더하고, 선택 항목을 생략하지 않고 `null`로 보내도록 바꿨다. 세부 형식과 결정 이유는 [API 계약](../docs/api/README.md)을 따른다.
 
 관련 문서: [UX Flow](01_UX_Flow.md) · [Architecture & Dependencies](03_Architecture_and_Dependencies.md) · [Functional Specification](04_Functional_Specification.md) · [Engineering Constraints](05_Engineering_Constraints.md)
 
@@ -86,7 +88,7 @@ erDiagram
 
 시·도는 서울·경기·인천을 지원하고 시·군·구는 서버의 지역 목록으로 검증한다. 외부 출처의 지역코드는 별도 매핑하고 미확인 매핑을 자동 확정하지 않는다.
 
-`null`은 미확인, 빈 배열은 사용자가 없다고 확인한 상태로 구분한다. 초안에는 현재 대화의 근거 참조를 붙이며 영구 확정본에 대화 원문을 복제하지 않는다. 선택 항목의 생략은 요청 처리 시 `null`로 정규화하며 필수 항목은 생략을 허용하지 않는다.
+`null`은 미확인, 빈 배열은 사용자가 없다고 확인한 상태로 구분한다. 예외로 추천에 1개 이상 필요하고 `null`을 허용하지 않는 `experiences`·`preferred_regions`·`activity_types`의 빈 배열은 "아직 입력하지 않음"이며, 추천 전에 `missing_for_recommendation`으로 다시 묻는다(v1.2). 초안에는 현재 대화의 근거 참조를 붙이며 영구 확정본에 대화 원문을 복제하지 않는다. 요청에서는 선택 항목도 키를 보내고 값을 `null`로 둔다. 키를 빠뜨리면 입력 오류로 거절한다(v1.2).
 
 프로필 상태는 자료형과 별도로 서버가 관리한다. AI나 클라이언트가 보낸 `confirmed_at`, 확정 여부, 소유자를 신뢰하지 않는다. 시각은 시간대가 있는 UTC로 저장하고 사용자에게 한국시간으로 표시한다.
 
@@ -101,7 +103,7 @@ erDiagram
 | `organization_name` | string | O | 모집 기관 |
 | `activity_type` | enum | O | `employment`, `volunteering` |
 | `is_public_job` | boolean / null | X | 공공일자리 여부 |
-| `role_tags`, `skill_tags` | string[] | O | 운영자가 확인한 역할·역량. 빈 값 가능 |
+| `role_tags`, `skill_tags` | string[] | O | 운영자가 확인한 역할·역량. 빈 값 가능. `role_tags`는 역할 사전(RoleDefinition)의 키 |
 | `activity_region` | Region / null | 조건부 | 활동 지역. 원격 공고는 별도 표시 |
 | `location_text` | string / null | X | 공식 장소 설명 |
 | `remote_allowed` | boolean / null | X | 원격 활동 가능 여부 |
@@ -109,6 +111,8 @@ erDiagram
 | `hours_per_week` | number / null | X | 명시된 주당 시간 |
 | `paid` | boolean / null | X | 보수 여부 |
 | `compensation_text` | string / null | X | 원문 보수 설명 |
+| `description_text` | string / null | X | 공식 원문 설명(일반 텍스트, 최대 5,000자). 검색 계산·상세 표시에 쓰고 검수 대상. 없으면 만들어 채우지 않음 |
+| `description_truncated` | boolean | O | 원문이 5,000자를 넘어 앞부분만 저장했으면 `true` |
 | `requirements` | Requirement[] | O | 정규화한 조건. 빈 값과 미해석 조건 구분 |
 | `required_documents` | string[] / null | X | 공식 제출 서류 |
 | `application_method` | enum | O | `online`, `phone`, `visit`, `email`, `mixed` |
@@ -122,10 +126,11 @@ erDiagram
 | `source_checked_at` | datetime | O | 출처 데이터 확인 시각 |
 | `reviewed_at` | datetime / null | 승인 시 | 운영자 검수 시각 |
 | `content_hash` | string | O | 변경 감지용 해시 |
+| `change_pending` | boolean | 응답 | 중요 변경이 검수 대기 중인지. 저장 필드가 아니라 공개 응답에서 계산 |
 
 날짜만 있는 마감은 시간까지 확정된 것처럼 표시하지 않는다. 해당 날짜가 지난 공고는 종료 처리하고 마감 당일의 정확한 시간은 확인 필요로 안내한다. `deadline_at`은 실제 시각이 제공된 경우에만 채우며 날짜와 충돌하면 검수 대기로 둔다.
 
-공개·추천에는 검수 승인, 모집 중, 유효한 출처·공식 접수 경로가 필요하다. 원격이 아닌 공고의 지역을 알 수 없으면 지역 기준 추천에 사용하지 않는다. 같은 공고의 중요한 변경은 새 버전으로 관리하고 미검수 변경본을 공개본에 덮어쓰지 않는다.
+공개·추천에는 검수 승인, 모집 중, 유효한 출처·공식 접수 경로가 필요하다. 원격이 아닌 공고의 지역을 알 수 없으면 지역 기준 추천에 사용하지 않는다. 같은 공고의 변경은 모두 새 버전으로 관리하고 미검수 변경본을 공개본에 덮어쓰지 않는다. 중요 변경이 검수 대기 중이면 이전 공개본은 조회에 남기되 추천·지원서 생성을 보류한다(§6).
 
 ## 4. 조건·추천·지원서 계약
 
@@ -143,7 +148,19 @@ erDiagram
 | `source_evidence` | string | 원문 조건 문장 |
 | `clarity` | `clear`, `needs_review` | 명확 또는 해석 필요 |
 
-알 수 없는 연산·조건·기준일은 통과로 처리하지 않는다. 원문에 필수조건이 없다고 검수한 빈 배열과, 조건을 해석하지 못한 상태를 구분한다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`와 원문 근거로 보존한다.
+필드별 허용 연산과 값:
+
+| `field` | `operator` | `value` |
+|---|---|---|
+| `age` | `gte`, `lte` | integer(만 나이) |
+| `age` | `between` | `[min, max]` integer 2개 |
+| `residence_region` | `in` | Region[] |
+| `certification`, `completed_course` | `has_all`, `has_any` | string[] |
+| `weekday` | `includes_all`, `includes_any` | integer[] (1=월 ~ 7=일) |
+| `hours_per_week` | `gte`, `lte` | number |
+| `other` | `null` | `null` (`clarity=needs_review`) |
+
+표에 없는 조합은 입력 오류로 거절한다. 알 수 없는 연산·조건·기준일은 통과로 처리하지 않는다. 원문에 필수조건이 없다고 검수한 빈 배열과, 조건을 해석하지 못한 상태를 구분한다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`와 원문 근거로 보존한다.
 
 독립 필수조건과 논리 그룹은 전체 AND로 평가한다. 그룹 안에서는 지정된 AND/OR를 적용한다. 중첩 구조를 현재 계약으로 표현할 수 없거나 그룹 정의가 충돌하면 임의로 평탄화하지 않고 확인 필요로 둔다.
 
@@ -212,6 +229,8 @@ STT 입력·TTS 생성 음성의 서버 임시 처리는 메모리 또는 tmpfs�
 - 원본 공개 자료에서 출처·식별·조건·모집 상태의 근거를 보존한다. 원문에 없는 값을 LLM이나 기본값으로 사실처럼 채우지 않는다.
 - `(source_id, external_id)`로 같은 출처 중복을 방지한다. 고유 ID가 없는 수동 자료는 공식 URL·기관·제목·모집기간을 대조하고 출처 간 유사 공고는 자동 병합하지 않는다.
 - 정상 수집의 확인 시각과 운영자 검수 시각을 구분한다. 수집 실패·일시 누락을 모집 종료로 해석하지 않는다.
-- 자격·일정·마감·지역·접수 경로 등 중요한 변경은 새 버전·재검수 대상으로 처리한다.
+- 수집·운영자 수정으로 생긴 변경은 모두 새 `pending` 버전이다. 승인 전까지 이전 공개본을 보여 준다.
+- 중요 변경 필드: `activity_type`, `requirements`, `activity_region`, `remote_allowed`, `schedule_text`, `hours_per_week`, `deadline_date`, `deadline_at`, `application_method`, `application_url`, `application_instructions`, `required_documents`, `paid`, `source_url`, `recruitment_status`(`closed`→`open`, `open`→`unknown`). 이 필드가 바뀌면 승인 전까지 이전 공개본의 추천·지원서 생성을 보류한다.
+- 모집 종료·마감 경과처럼 추천에서 빼는 방향의 변경은 검수 없이 바로 반영한다. `source_checked_at` 갱신만으로는 새 버전을 만들지 않는다.
 - API 제공 필드·승인·실제 응답과 로컬 모델 검증의 미확인은 [05 §4](05_Engineering_Constraints.md#4-연동로컬-추론-검증-조건)에 유지한다.
 - API와 프론트엔드 타입은 이 계약을 함께 사용한다. 변경은 `schema_version`, 영향받는 API·기능·시험을 함께 검토한다.

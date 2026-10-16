@@ -9,8 +9,8 @@ import { required, useRequest } from '../../state/useRequest'
 import { provinces } from '../public-opportunities/catalog'
 import type { Province } from '../public-opportunities/catalog'
 import type { ProfilePreferences } from './model'
-import { parseRegionCatalog, regionsMatchCatalog } from './regions'
-import type { Region, RegionCatalog } from './regions'
+import { parseRegionCatalog, regionsMatchCatalog } from '../regions/catalog'
+import type { Region, RegionCatalog } from '../regions/catalog'
 
 export function ProfilePreview({ experience, preferences, onChange }: { experience: string; preferences: ProfilePreferences; onChange: (value: ProfilePreferences) => void }) {
   const [errors, setErrors] = useState<FieldError[]>([])
