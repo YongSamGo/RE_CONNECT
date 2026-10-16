@@ -1,0 +1,52 @@
+name: reconnect-dev
+
+services:
+  postgres:
+    image: postgres:16-alpine@sha256:721873c34ceb9f8d8fc265984940dc982404c105f19ad51be9fdc5970a6080ea
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-reconnect}
+      POSTGRES_USER: ${POSTGRES_USER:-reconnect}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?개발 DB 비밀번호를 설정하세요}
+    ports:
+      - "127.0.0.1:5432:5432"
+    networks: [data]
+    tmpfs:
+      - /var/lib/postgresql/data:rw,noexec,nosuid,size=512m
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging:
+      driver: none
+
+  redis:
+    image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:?개발 Redis 비밀번호를 설정하세요}
+      REDISCLI_AUTH: ${REDIS_PASSWORD:?개발 Redis 비밀번호를 설정하세요}
+    command:
+      - sh
+      - -ec
+      - |
+        case "$$REDIS_PASSWORD" in *[!a-fA-F0-9]*|'') exit 1;; esac
+        [ "$${#REDIS_PASSWORD}" -ge 32 ]
+        exec redis-server - --save '' --appendonly no --protected-mode yes <<EOF
+        requirepass $$REDIS_PASSWORD
+        EOF
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks: [data]
+    tmpfs:
+      - /data:rw,noexec,nosuid,size=64m
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    logging:
+      driver: none
+
+networks:
+  data:
+    internal: true

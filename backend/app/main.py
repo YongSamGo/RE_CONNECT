@@ -5,10 +5,13 @@
 """
 
 from collections.abc import Mapping
+from contextlib import asynccontextmanager
+import asyncio
 
 from fastapi import FastAPI
 
 from app.adapters.ollama import OllamaLLMAdapter
+from app.adapters.redis import RedisProbe, build_redis
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
 from app.core.request_id import RequestIdMiddleware
@@ -21,6 +24,7 @@ from app.modules.operations.readiness import (
     ReadinessService,
 )
 from app.modules.regions import router as regions
+from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
 
@@ -45,8 +49,22 @@ def create_app(
     settings = settings or get_settings()
     docs_enabled = settings.docs_enabled
 
+    engine = build_engine(settings) if settings.database_url is not None else None
+    redis_client = build_redis(settings) if settings.redis_url is not None else None
+
+    @asynccontextmanager
+    async def lifespan(app: FastAPI):
+        try:
+            yield
+        finally:
+            if redis_client is not None:
+                await redis_client.aclose()
+            if engine is not None:
+                await asyncio.to_thread(engine.dispose)
+
     app = FastAPI(
         title="다시잇다 API",
+        lifespan=lifespan,
         # 운영에서는 API 문서 화면과 스키마를 열지 않는다. 계약 원본은 docs/api/openapi.yaml이다.
         docs_url="/docs" if docs_enabled else None,
         redoc_url=None,
@@ -56,8 +74,13 @@ def create_app(
     llm_adapter = build_llm_adapter(settings)
     app.state.llm_adapter = llm_adapter
 
-    # 각 연결 구현이 생기면(#18 DB·Redis, W04 음성) 해당 probe로 바꾼다.
+    app.state.db_engine = engine
+    app.state.redis = redis_client
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
+    if engine is not None:
+        probes["db"] = DatabaseProbe(engine)
+    if redis_client is not None:
+        probes["redis"] = RedisProbe(redis_client)
     probes["llm"] = llm_adapter
     probes.update(readiness_probes or {})
     app.state.settings = settings

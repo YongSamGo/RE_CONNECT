@@ -102,6 +102,10 @@ uv 자체를 갱신할 때는 `requirements-uv.in`과 `requirements-uv.txt`를 �
 저장하지 않는다. API 소유권 검사·암호화·실제 DB 마이그레이션과는 별도다.
 [모델의 관계·제약·검증 범위](../docs/data/persistence.md)를 따른다.
 
+마이그레이션은 `python -m alembic upgrade head`와 `python -m alembic check`를 사용한다.
+DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화를 검사한다.
+[개발 Compose·연결·마이그레이션](../docs/data/development-db.md)에 초기화와 검증 범위를 기록했다.
+
 ## 설정
 
 설정값은 루트 `.env`에서 환경변수로 읽는다 ([.env.example](../.env.example)). 코드·테스트·로그에 비밀값을 적지 않는다.

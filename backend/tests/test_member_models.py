@@ -7,32 +7,23 @@ from datetime import UTC, datetime, timedelta
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, delete, event, insert, select
+from sqlalchemy import delete, insert, select
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.exc import IntegrityError, StatementError
 from sqlalchemy.orm import Session
 from sqlalchemy.schema import CreateTable
 
 from app.persistence import ApplicationDocument, ApplicationDraft, Base, Consent, ProfileDocument, ProfileVersion, User
-from tests.persistence_helpers import OPPORTUNITY_ID, seed_opportunity
+from tests.persistence_helpers import OPPORTUNITY_ID, open_test_database, seed_opportunity
 
 NOW = datetime(2026, 10, 17, tzinfo=UTC)
 
 
-@pytest.fixture
-def db():
-    engine = create_engine("sqlite://", echo=False, hide_parameters=True)
-
-    @event.listens_for(engine, "connect")
-    def enable_foreign_keys(connection, record):
-        connection.execute("PRAGMA foreign_keys=ON")
-
-    Base.metadata.create_all(engine)
-    try:
-        with engine.begin() as connection:
-            yield connection
-    finally:
-        engine.dispose()
+@pytest.fixture(params=["sqlite", "postgresql"])
+def db(request):
+    with open_test_database(request.param) as connection:
+        Base.metadata.create_all(connection)
+        yield connection
 
 
 def encrypted(**updates):
@@ -135,7 +126,7 @@ def test_timezone_is_required_and_values_roundtrip_as_utc(db):
 
 def test_orm_cannot_overwrite_saved_version(db):
     owner, _, profile_id, _ = seed(db)
-    with Session(bind=db) as session:
+    with Session(bind=db, join_transaction_mode="create_savepoint") as session:
         saved = session.get(ProfileVersion, (profile_id, 1))
         saved.ciphertext = b"changed" * 10
         with pytest.raises(ValueError, match="새 버전"):
