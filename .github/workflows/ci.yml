@@ -111,6 +111,31 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: zizmor --min-severity low .
 
+  hidden-text:
+    name: 숨은 문자·지시문 점검
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2 # PR 병합 커밋의 첫 부모(base)와 비교해 새로 추가된 줄을 찾는다
+          persist-credentials: false
+      - name: 검사 스크립트 회귀 시험
+        run: python3 -I .github/scripts/test_check_hidden_text.py
+      - name: 숨은 문자(실패)·에이전트 지시 파일 의심 문구(경고) 검사
+        # AI 개발 도구가 읽는 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자 등)를 막는다.
+        # 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md AGT-01·AGT-03
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            python3 -I .github/scripts/check_hidden_text.py --diff-base HEAD^1
+          else
+            python3 -I .github/scripts/check_hidden_text.py
+          fi
+
   python:
     # 매트릭스 값은 이름 뒤에 자동으로 붙는다 (예: "Python 점검 (backend)")
     name: Python 점검
@@ -222,7 +247,7 @@ jobs:
   ci-ok:
     name: CI 통과
     if: always()
-    needs: [detect, secrets, workflow-audit, python, frontend, dependency-review]
+    needs: [detect, secrets, workflow-audit, hidden-text, python, frontend, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}
