@@ -1,5 +1,6 @@
 .catalog-form { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
 .catalog-keyword { grid-column: 1 / -1; }
+.catalog-form .error-summary { grid-column: 1 / -1; }
 .catalog-form .actions { margin-top: 0; }
 .catalog-form input, .catalog-form select { width: 100%; min-width: 0; min-height: 52px; border: 1px solid #7f8b7d; border-radius: 8px; padding: 12px; font: inherit; color: var(--ink); background: #fff; }
 .catalog-form .field-hint { margin: 8px 0 0; }

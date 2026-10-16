@@ -7,11 +7,21 @@ import { StatusNotice } from './ui/StatusNotice'
 import { useMemoryScope } from './state/useMemoryScope'
 import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
 import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
+import { ManualPreparation } from './features/preparation/ManualPreparation'
+import { emptyManualDraft } from './features/preparation/model'
+import type { ManualDraft } from './features/preparation/model'
+import { AccountPage } from './features/account/AccountPage'
+import { SavedMaterials } from './features/account/SavedMaterials'
+import { AdminPage } from './features/admin/AdminPage'
+import { VoicePreview } from './features/voice/VoicePreview'
+import { ProfilePreview } from './features/profile/ProfilePreview'
+import { emptyPreferences } from './features/profile/model'
+import type { ProfilePreferences } from './features/profile/model'
 import './App.css'
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
-type Preview = { consent: boolean; experience: string }
-const emptyPreview = (): Preview => ({ consent: false, experience: '' })
+type Preview = { consent: boolean; experience: string; draft: ManualDraft; preferences: ProfilePreferences }
+const emptyPreview = (): Preview => ({ consent: false, experience: '', draft: emptyManualDraft(), preferences: emptyPreferences() })
 const screens = [
   { path: '/', id: 'UX01', title: '시작' },
   { path: '/consent', id: 'UX02', title: 'AI 처리 안내' },
@@ -79,35 +89,25 @@ function Conversation({ preview, onChange }: { preview: Preview; onChange: (valu
     <Pending title="대화와 AI 정리는 연결 준비 중이에요">현재는 직접 적은 경험만 확인할 수 있습니다. 다음 질문과 프로필 추출은 서버 연결 후 제공됩니다.</Pending></div>
 }
 
-function Profile({ experience }: { experience: string }) {
-  return <div className="reading-width"><Heading step="02 · 프로필 확인" title="내 경험을 다시 살펴봐요">직접 적은 내용을 확인해 주세요. 아직 확정된 프로필은 아닙니다.</Heading>
-    <section className="panel"><h2>내가 적은 경험</h2>{experience.trim() ? <p className="user-text">{experience}</p> : <p>아직 적은 경험이 없어요. 떠오르는 경험부터 한 가지 적어보세요.</p>}<Link className="button secondary" to="/conversation">경험 수정하기</Link></section>
-    <Pending title="프로필 확정은 연결 준비 중이에요">경험·희망 활동 지역·활동 유형을 확인하고 서버에서 확정한 뒤 역할과 추천을 제공할 예정입니다. 현재 화면은 정보를 확정하거나 저장하지 않습니다.</Pending><Link className="text-link" to="/opportunities">공개 공고 화면 살펴보기 →</Link></div>
-}
-
-const pendingScreens = {
-  voice: { step: '음성 입력', title: '말로 경험을 이야기하기', heading: '음성 입력은 연결 준비 중이에요', body: '녹음·전사 확인은 음성 서비스 연결 후 제공됩니다. 현재는 마이크에 접근하지 않습니다.', link: '/conversation', action: '글로 작성하기' },
-  preparation: { step: '03 · 신청 준비', title: '신청 전, 차근차근 준비해요', heading: '신청 준비는 연결 준비 중이에요', body: '검수한 공고의 서류 안내와 확정 프로필을 연결한 뒤 지원서 작성·수정·승인·복사를 제공합니다. 공식 신청처 이동은 신청 완료를 의미하지 않습니다.', link: '/opportunities', action: '공고 화면으로' },
-  me: { step: '내 정보', title: '저장한 자료를 관리해요', heading: '로그인과 저장은 연결 준비 중이에요', body: '카카오 인증과 별도 저장 동의 연결 후 내 저장 자료를 조회·삭제할 수 있습니다. 미리보기의 입력은 회원 자료로 저장되지 않습니다.', link: '/', action: '시작 화면으로' },
-  admin: { step: '운영자', title: '운영자 인증이 필요해요', heading: '운영자 화면은 연결 준비 중이에요', body: '서버의 운영자 권한과 MFA 확인 후 공고 검수·신고·운영 상태를 제공합니다. 현재 화면은 관리 데이터 조회나 변경을 수행하지 않습니다.', link: '/', action: '시작 화면으로' },
-}
-function Placeholder({ kind }: { kind: keyof typeof pendingScreens }) {
-  const content = pendingScreens[kind]
-  return <div className="reading-width"><Heading step={content.step} title={content.title}>필요한 기능을 순서대로 준비하고 있습니다.</Heading><Pending title={content.heading}>{content.body}</Pending><Link className="button secondary" to={content.link}>{content.action}</Link></div>
-}
-
 export default function App() {
   const { value: preview, setValue: setPreview, clear: clearPreview } = useMemoryScope<Preview>(emptyPreview)
   const [notice, setNotice] = useState('')
   const location = useLocation()
+  const previousPath = useRef(location.pathname)
+  const [endingKey, setEndingKey] = useState<string | null>(null)
   const navigate = useNavigate()
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const current = screens.find((screen) => screen.path === location.pathname)
       ?? (location.pathname.startsWith('/opportunities/') ? screens[6] : undefined)
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
+      ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
-    mainRef.current?.focus({ preventScroll: true })
+    if (previousPath.current !== location.pathname) {
+      previousPath.current = location.pathname
+      window.scrollTo(0, 0)
+      mainRef.current?.focus({ preventScroll: true })
+    }
   }, [location.pathname])
   useEffect(() => {
     // React memory can survive a full-page departure via the back/forward cache.
@@ -117,27 +117,28 @@ export default function App() {
     window.addEventListener('pageshow', clearOnRestore)
     return () => { window.removeEventListener('pagehide', clearOnLeave); window.removeEventListener('pageshow', clearOnRestore) }
   }, [])
-  const endPreview = () => { clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
+  const endPreview = () => { setEndingKey(location.key); clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/', { replace: true }) }
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
-  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={notice ? '/' : '/consent'} replace />
+  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={endingKey === location.key ? '/' : '/consent'} replace />
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
     <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험은 가상 정보로 살펴보세요 · AI·로그인 미연결</span></div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
     {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
-    <div className="status-line" role="status">{notice}</div>
+    <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
     <main id="main" ref={mainRef} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
       <Route path="/consent" element={<Consent onStart={() => { clearPreview(); setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
-      <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value }))} />)} />
-      <Route path="/transcription" element={requirePreview(<Placeholder kind="voice" />)} />
-      <Route path="/profile" element={requirePreview(<Profile experience={preview.experience} />)} />
+      <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } }))} />)} />
+      <Route path="/transcription" element={requirePreview(<VoicePreview onUseText={(experience) => { setPreview((previous) => ({ ...previous, experience, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } })); navigate('/conversation') }} />)} />
+      <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
-      <Route path="/preparation" element={requirePreview(<Placeholder kind="preparation" />)} />
-      <Route path="/me" element={<Placeholder kind="me" />} />
-      <Route path="/admin/*" element={<Placeholder kind="admin" />} />
+      <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
+      <Route path="/me" element={<AccountPage onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
+      <Route path="/me/saved" element={<SavedMaterials />} />
+      <Route path="/admin/*" element={<AdminPage />} />
       <Route path="*" element={<div className="reading-width"><Heading step="주소 확인" title="페이지를 찾을 수 없어요">주소를 확인하거나 시작 화면으로 돌아가 주세요.</Heading><Link className="button primary" to="/">시작 화면으로</Link></div>} />
     </Routes></main>
     <footer className="site-footer"><p><strong>다시잇다</strong><span>당신의 다음 걸음을 응원합니다.</span></p><p>신청은 공식 신청처에서 직접 진행합니다.</p><details className="screen-map"><summary>개발 화면 목록</summary><nav aria-label="개발 화면 목록">{screens.map((screen) => <Link key={screen.id} to={screen.path}>{screen.id} · {screen.title}</Link>)}</nav></details></footer>

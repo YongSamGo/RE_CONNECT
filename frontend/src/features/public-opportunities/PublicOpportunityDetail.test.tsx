@@ -143,7 +143,8 @@ describe('public detail request and state', () => {
     expect(screen.getByText(/조건 해석 확인 필요/)).toBeVisible()
     expect(screen.getByText('기관 지정 서식')).toBeVisible()
     expect(screen.getByText(/주 0시간/)).toBeVisible()
-    expect(screen.queryByRole('button', { name: /지원|신고/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /지원/ })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: '공고 오류 신고 보내기' })).toBeInTheDocument()
   })
   it('uses fixed service failure text and never retries automatically', async () => {
     const fetch = vi.fn(async () => json({ code: 'SERVICE_UNAVAILABLE', message: 'private upstream address' }, 503))
