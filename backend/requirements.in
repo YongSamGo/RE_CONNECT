@@ -4,3 +4,5 @@ uvicorn
 pydantic-settings
 # 내부 Ollama 호출 (app/adapters/ollama.py)
 httpx
+# 영구 저장 모델 (W02-05). 드라이버와 마이그레이션은 W02-07에서 더한다.
+sqlalchemy
