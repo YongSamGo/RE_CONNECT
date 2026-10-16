@@ -18,6 +18,40 @@ function fill() {
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 describe('opportunity create and edit', () => {
+  it('blocks parent submission while staging a rule and patches only explicit requirement changes', async () => {
+    document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    const fetch = vi.fn(async (request: Request) => request.method === 'GET'
+      ? json({ id, version: 2, review_status: 'approved', content: existing() })
+      : json({ id, version: 3, review_status: 'pending', content: { ...existing(), ...(await request.clone().json()).changes } }))
+    vi.stubGlobal('fetch', fetch)
+    render(<OpportunityEditor target={{ id, version: 2 }} onBack={vi.fn()} />)
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '편집할 공고 불러오기' }))
+    await user.click(await screen.findByRole('button', { name: '조건 1 편집' }))
+    change('조건 값 (한 줄에 하나)', '65')
+    expect(screen.getByRole('button', { name: '검수 대기 버전으로 저장' })).toBeDisabled()
+    fireEvent.submit(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }).closest('form')!)
+    expect(fetch).toHaveBeenCalledTimes(1)
+    await user.click(screen.getByRole('button', { name: '조건 편집 적용' }))
+    expect(screen.getByRole('checkbox', { name: '공식 원문과 입력 내용을 비교해 확인했습니다.' })).not.toBeChecked()
+    await user.click(screen.getByRole('checkbox', { name: '공식 원문과 입력 내용을 비교해 확인했습니다.' }))
+    await user.click(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }))
+    expect(await screen.findByText('검수 대기 버전 3을 저장했습니다. 아직 공개되지 않았습니다.')).toBeVisible()
+    expect(await fetch.mock.calls[1]![0].json()).toEqual({ base_version: 2, changes: { requirements: [{ ...existing().requirements[0], value: 65, clarity: 'needs_review' }] } })
+  })
+  it('requires an explicit no-condition confirmation after deleting the final rule', async () => {
+    const fetch = vi.fn(async () => json({ id, version: 2, review_status: 'approved', content: existing() }))
+    vi.stubGlobal('fetch', fetch)
+    render(<OpportunityEditor target={{ id, version: 2 }} onBack={vi.fn()} />)
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('button', { name: '편집할 공고 불러오기' }))
+    await user.click(await screen.findByRole('button', { name: '조건 1 삭제 검토' }))
+    await user.click(screen.getByRole('button', { name: '원문 대조 후 조건 삭제' }))
+    await user.click(screen.getByRole('checkbox', { name: '공식 원문과 입력 내용을 비교해 확인했습니다.' }))
+    await user.click(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }))
+    expect(screen.getByRole('checkbox', { name: '공식 원문에 명시된 필수조건이 없는 것을 확인했어요.' })).toHaveAttribute('aria-invalid', 'true')
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
   it('validates required input before any request', async () => {
     const fetch = vi.fn(); vi.stubGlobal('fetch', fetch)
     render(<OpportunityEditor onBack={vi.fn()} />)

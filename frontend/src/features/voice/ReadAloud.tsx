@@ -5,14 +5,16 @@ import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { RequestError } from '../../ui/StatusNotice'
 import { parseSession } from '../account/session'
+import { useMemoryScope } from '../../state/useMemoryScope'
 
 export function ReadAloud({ target, label }: { target: components['schemas']['SpeechTarget']; label: string }) {
-  const request = useRequest<Blob>()
+  const request = useRequest<{ blob: Blob; count: number }>()
+  const position = useMemoryScope(() => ({ segment: 0, count: null as number | null }))
   const [failed, setFailed] = useState(false)
   const [playing, setPlaying] = useState(false)
   const audio = useRef<HTMLAudioElement | null>(null)
   const state = request.state
-  const blob = state.status === 'success' ? state.data : null
+  const blob = state.status === 'success' ? state.data.blob : null
   useEffect(() => {
     if (!blob) return
     const url = URL.createObjectURL(blob)
@@ -26,17 +28,30 @@ export function ReadAloud({ target, label }: { target: components['schemas']['Sp
     return () => { active = false; player.onended = null; player.onerror = null; player.pause(); player.removeAttribute('src'); player.load(); URL.revokeObjectURL(url); if (audio.current === player) audio.current = null }
   }, [blob])
   const pending = state.status === 'pending'
-  return <div className="read-aloud"><div className="actions"><Button variant="secondary" pending={pending} disabled={!!blob && playing} pendingLabel="읽을 소리를 준비하고 있어요…" onClick={() => { setFailed(false); setPlaying(false); void request.run(async (api, signal) => {
+  const stale = state.status === 'error' && state.error.code === 'VERSION_CONFLICT'
+  function start(segment: number) {
+    if (pending || (playing && !!blob) || stale || !Number.isSafeInteger(segment) || segment < 0 || (position.value.count === null ? segment !== 0 : segment >= position.value.count)) return
+    setFailed(false); setPlaying(false)
+    position.setValue((previous) => ({ ...previous, segment }))
+    void request.run(async (api, signal) => {
     const session = parseSession(required((await api.GET('/me', { signal })).data))
     if (!session.consents.some((consent) => consent.purpose === 'ai_processing')) throw new ApiError('CONSENT_REQUIRED', 403)
-    const options = { signal, body: { target, segment: 0 }, params: { header: { 'Idempotency-Key': crypto.randomUUID() } }, parseAs: 'blob' } as const
+    const options = { signal, body: { target, segment }, params: { header: { 'Idempotency-Key': crypto.randomUUID() } }, parseAs: 'blob' } as const
     const response = await api.POST<'/speech', typeof options>('/speech', options)
     const result = required(response.data)
-    if (!(result instanceof Blob) || result.type.split(';')[0] !== 'audio/wav' || result.size === 0) throw new ApiError('INVALID_RESPONSE')
-    return result
-  }) }}>{label}</Button>{(pending || blob) && <Button variant="secondary" onClick={() => { audio.current?.pause(); setPlaying(false); setFailed(false); request.clear() }}>읽어주기 중지</Button>}</div>
+    const rawCount = response.response.headers.get('X-Speech-Segment-Count')
+    const count = rawCount && /^[1-9]\d*$/.test(rawCount) ? Number(rawCount) : NaN
+    if (!(result instanceof Blob) || result.type.split(';')[0] !== 'audio/wav' || result.size === 0 || !Number.isSafeInteger(count) || count < 1 || segment >= count || (position.value.count !== null && position.value.count !== count)) throw new ApiError('INVALID_RESPONSE')
+    return { blob: result, count }
+  }, ({ count }) => position.setValue({ segment, count }))
+  }
+  return <div className="read-aloud"><div className="actions"><Button variant="secondary" pending={pending} disabled={stale || !!blob && playing} pendingLabel="읽을 소리를 준비하고 있어요…" onClick={() => start(position.value.segment)}>{label}</Button>
+    {state.status === 'success' && position.value.count !== null && position.value.segment + 1 < position.value.count && <Button variant="secondary" disabled={playing} onClick={() => start(position.value.segment + 1)}>다음 부분 읽어주기</Button>}
+    {!stale && (pending || blob || position.value.count !== null) && <Button variant="secondary" onClick={() => { audio.current?.pause(); setPlaying(false); setFailed(false); request.clear(); position.clear() }}>읽어주기 중지</Button>}</div>
+    {position.value.count !== null && <p>{position.value.count}개 부분 중 {position.value.segment + 1}번째 부분. 다음 부분은 버튼을 눌러 요청합니다.</p>}
     <p role="status">{blob && playing ? '읽어주기를 재생하고 있어요.' : ''}</p>
     {state.status === 'error' && <RequestError error={state.error} />}
+    {stale && <p>자료가 바뀌었어요. 최신 내용을 다시 불러온 뒤 읽어주기를 요청해 주세요.</p>}
     {blob && failed && <p role="alert">소리를 재생하지 못했어요. 화면의 글을 계속 읽거나 다시 시도해 주세요.</p>}
     <p className="quiet">서버에서 AI 처리 동의가 확인된 경우에만 요청합니다. 현재 동의문·음성 서버 연결은 준비 중입니다.</p>
   </div>
