@@ -16,6 +16,7 @@ import json
 import re
 import sys
 import uuid
+from datetime import date
 from pathlib import Path
 
 EVAL_DIR = Path(__file__).resolve().parent
@@ -24,6 +25,15 @@ LABEL_NAMESPACE = uuid.uuid5(uuid.NAMESPACE_URL, "https://github.com/YongSamGo/R
 SATISFIED, NOT_SATISFIED, UNKNOWN = "satisfied", "not_satisfied", "unknown"
 # 등급만 다른 같은 종목: 끝의 N급·기능사·산업기사·기사·기능장·기술사를 뗀 이름이 같다
 GRADE_SUFFIX = re.compile(r"(\s*[1-3]급|기능사|산업기사|기사|기능장|기술사)$")
+ALLOWED_OPERATORS = {
+    "age": {"gte", "lte", "between"},
+    "residence_region": {"in"},
+    "certification": {"has_all", "has_any"},
+    "completed_course": {"has_all", "has_any"},
+    "weekday": {"includes_all", "includes_any"},
+    "hours_per_week": {"gte", "lte"},
+    "other": {None},
+}
 
 
 def all_of(results: list[str]) -> str:
@@ -64,13 +74,17 @@ def compare(op: str, actual: float, value) -> bool:
 
 def judge(requirement: dict, profile: dict, reference_year: int) -> str:
     field, op, value = requirement["field"], requirement["operator"], requirement["value"]
+    if field not in ALLOWED_OPERATORS or op not in ALLOWED_OPERATORS[field]:
+        raise ValueError("허용되지 않은 조건·연산")
     if requirement["clarity"] == "needs_review" or op is None:
         return UNKNOWN
 
     if field == "age":
         birth_year = profile["birth_year"]
-        if birth_year is None:
+        reference_date = requirement["reference_date"]
+        if birth_year is None or reference_date is None:
             return UNKNOWN
+        reference_year = date.fromisoformat(reference_date).year
         # 출생연도만 있으면 만 나이는 (기준연도 - 출생연도 - 1) 또는 (기준연도 - 출생연도)
         results = [compare(op, age, value) for age in (reference_year - birth_year - 1, reference_year - birth_year)]
         return SATISFIED if all(results) else NOT_SATISFIED if not any(results) else UNKNOWN
@@ -79,11 +93,14 @@ def judge(requirement: dict, profile: dict, reference_year: int) -> str:
         region = profile["residence_region"]
         if region is None:
             return UNKNOWN
-        inside = any(
-            region["province"] == allowed["province"] and allowed["district"] in (None, region["district"])
+        results = [
+            NOT_SATISFIED if region["province"] != allowed["province"]
+            else SATISFIED if allowed["district"] is None
+            else UNKNOWN if region["district"] is None
+            else SATISFIED if region["district"] == allowed["district"] else NOT_SATISFIED
             for allowed in value
-        )
-        return SATISFIED if inside else NOT_SATISFIED
+        ]
+        return any_of(results)
 
     if field in ("certification", "completed_course"):
         held = profile["certifications" if field == "certification" else "completed_courses"]
@@ -113,6 +130,11 @@ def judge_posting(posting: dict, profile: dict, reference_year: int) -> tuple[st
     independent: list[str] = []
     groups: dict[str, tuple[str, list[str]]] = {}
     for requirement in posting["requirements"]:
+        group_id, operator = requirement["group_id"], requirement["group_operator"]
+        if (group_id is None) != (operator is None) or (group_id is not None and operator not in ("and", "or")):
+            raise ValueError("그룹 식별자와 연산자가 맞지 않음")
+        if group_id in groups and groups[group_id][0] != operator:
+            raise ValueError("같은 그룹의 연산자가 다름")
         result = judge(requirement, profile, reference_year)
         # labels가 깨졌으면 UUID를 그대로 키로 써서 아래 비교에서 "조건 라벨이 다름"으로 보고되게 한다
         conditions[label_of.get(requirement["id"], requirement["id"])] = result
