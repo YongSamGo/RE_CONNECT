@@ -4,7 +4,7 @@
 
 담당 A. 기준은 `Plan/01_UX_Flow.md`와 `Plan/03_Architecture_and_Dependencies.md` v1.1이다. 이 PR은 React·TypeScript·Vite 실행 기반, UX01~10 경로, 오류 경계를 제공한다. W02-08 API 타입·클라이언트, W11의 실제 기능 구현은 후속 작업이다.
 
-W02-08.a의 후속 준비 구현은 [API 타입·통신 안내](src/api/README.md)를 참고한다. 아직 미병합인 계약은 고정 커밋·해시로 확인하며, 그동안 `build`의 계약 검사에는 네트워크가 필요하다. 개인 체험은 여전히 API에 연결하지 않는다.
+W02-08.a의 후속 준비 구현은 [API 타입·통신 안내](src/api/README.md)를 참고한다. 타입은 저장소의 `docs/api/openapi.yaml`에서 생성·비교한다. 원본이 없으면 실패하며 계약 검사 중 네트워크 요청은 하지 않는다. 개인 체험은 여전히 API에 연결하지 않는다.
 
 W11-01.a의 [공통 UI·메모리 경계](src/ui/README.md)는 공통 폼·안내·오류와 종료 후 늦은 응답 폐기 기반을 제공한다. 실제 기능·기기 검증 완료와 구분한다.
 

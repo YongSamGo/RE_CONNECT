@@ -4,6 +4,11 @@ import { deadlineLabel, parseList } from './catalog'
 import { sampleList, sampleOpportunity } from './test-fixtures'
 
 describe('public catalogue response boundary', () => {
+  it('counts title limits as Unicode code points, matching the API contract', () => {
+    const input = sampleList({ items: [sampleOpportunity({ title: '😀'.repeat(200) })] })
+    expect(parseList(input, 1)).toEqual(input)
+    expect(() => parseList(sampleList({ items: [sampleOpportunity({ title: '😀'.repeat(201) })] }), 1)).toThrow(ApiError)
+  })
   it('preserves unknown values rather than inventing region, pay or recruitment facts', () => {
     const input = sampleList({ items: [sampleOpportunity({ activity_region: null, paid: null, recruitment_status: 'unknown', change_pending: true })] })
     expect(parseList(input, 1)).toEqual(input)

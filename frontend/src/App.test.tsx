@@ -16,6 +16,21 @@ async function start() {
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals() })
 
 describe('화면 골격과 입력 경계', () => {
+  it('첫 진입에서는 본문으로 포커스를 강제 이동하지 않는다', async () => {
+    mount()
+    expect(screen.getByRole('main')).not.toHaveFocus()
+    const user = userEvent.setup()
+    await user.tab()
+    expect(screen.getByRole('link', { name: '본문으로 바로가기' })).toHaveFocus()
+  })
+  it('종료 뒤 체험 경로를 다시 선택하면 안내 화면으로 이동한다', async () => {
+    mount('/consent')
+    const user = await start()
+    await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
+    await user.click(screen.getByRole('link', { name: 'UX05 · 프로필 확인' }))
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('내 정보가 어떻게 쓰이나요?')
+    expect(screen.queryByText('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.')).not.toBeInTheDocument()
+  })
   it('미동의 상태에서 체험 경로 직접 진입을 안내 화면으로 돌린다', () => {
     mount('/profile')
     expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('내 정보가 어떻게 쓰이나요?')
