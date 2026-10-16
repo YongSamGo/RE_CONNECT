@@ -126,7 +126,7 @@ class SaveOnce(Protocol):
 
     DB 트랜잭션 안에서 (account, API, key)의 UNIQUE 저널·입력 해시 검사,
     base_version CAS, 암호화 저장본 생성·결과 참조 기록을 함께 커밋해야 한다.
-    커밋 응답 유실 후에는 같은 저널 결과를 재조회한다. 연결 구현은 #74/#75.
+    커밋 응답 유실 후에는 같은 저널 결과를 재조회한다. 연결 구현은 #75/#76.
     """
 
     async def save_once(self, *, account_id: UUID, api: str, key_id: UUID, input_hash: str, base_version: int, approved_reference: ResultReference) -> ResultReference: ...
