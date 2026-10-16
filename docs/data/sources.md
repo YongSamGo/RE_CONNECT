@@ -4,6 +4,8 @@
 >
 > 샘플 수집: `python worker/tools/fetch_source_samples.py <source> --operation <op>` (키는 `.env`, 원본 응답은 커밋하지 않는 `worker/samples/`에 저장)
 
+필드를 공고 계약(`Opportunity`)으로 옮기는 규칙은 [필드 매핑](field-mapping.md)(W06-01)에 있다.
+
 ## 1. 출처별 접근 상태
 
 | 출처 | 분류 | 접근 상태 | 승인 방식·한도 | 이용 조건 |
