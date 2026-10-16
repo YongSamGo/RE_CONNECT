@@ -5,10 +5,13 @@ import os
 
 import pytest
 from pydantic import SecretStr
+from fastapi.testclient import TestClient
 
 from app.adapters.redis import RedisProbe, build_redis
 from app.core.config import Settings
 from app.persistence.connection import DatabaseProbe, build_engine, database_url
+from app.main import create_app
+from tests.conftest import FakeProbe
 
 
 def settings(**updates):
@@ -71,3 +74,20 @@ def test_real_postgresql_and_redis_probes():
         asyncio.run(check())
     finally:
         engine.dispose()
+
+    app = create_app(configured, {"llm": FakeProbe(False), "speech": FakeProbe(False)})
+    with TestClient(app) as client:
+        response = client.get("/health/ready")
+        assert response.status_code == 200
+        assert response.json()["status"] == "degraded"
+        assert response.json()["checks"]["db"] == response.json()["checks"]["redis"] == "ok"
+        assert client.get("/api/v1/regions").status_code == 200
+
+
+def test_database_probe_failure_does_not_log_connection_details(caplog):
+    class FailedEngine:
+        def connect(self):
+            raise RuntimeError("postgresql://private-token@private-host/test")
+
+    assert asyncio.run(DatabaseProbe(FailedEngine()).is_ready()) is False
+    assert "private-" not in caplog.text

@@ -29,7 +29,10 @@ python -m alembic check
 종료는 루트에서 `docker compose --env-file .env -f infra/compose.dev.yaml down`이다.
 개발 PostgreSQL과 Redis는 모두 tmpfs이며 영구 볼륨·파일 로그가 없다. 컨테이너 종료/재생성 시
 데이터가 사라질 수 있으므로 실제 개인정보를 넣지 않는다. 운영 DB로 쓰면 안 된다.
-호스트 포트는 127.0.0.1에만 바인딩하고, 컨테이너 간 데이터 네트워크는 internal이다.
+호스트 포트는 127.0.0.1에만 바인딩한다. 컨테이너 간 `data` 네트워크는 internal이며,
+호스트 개발 백엔드가 접속할 수 있도록 별도 `local` 브리지에도 연결한다. internal 네트워크만
+연결하면 Docker가 호스트 포트를 게시하지 않는다. local 브리지가 있으므로 두 컨테이너의
+인터넷 송신까지 격리한 구성이 아니며, 운영의 비공개 네트워크 구성을 대신하지 않는다.
 Redis RDB save와 AOF를 모두 끈다. 호스트의 swap·Docker VM snapshot은 tmpfs만으로
 통제되지 않으므로 운영 음성/개인정보의 저장 경계 검증은 #92/#102에서 별도로 한다.
 

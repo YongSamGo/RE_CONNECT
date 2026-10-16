@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?개발 DB 비밀번호를 설정하세요}
     ports:
       - "127.0.0.1:5432:5432"
-    networks: [data]
+    networks: [data, local]
     tmpfs:
       - /var/lib/postgresql/data:rw,noexec,nosuid,size=512m
     healthcheck:
@@ -36,7 +36,7 @@ services:
         EOF
     ports:
       - "127.0.0.1:6379:6379"
-    networks: [data]
+    networks: [data, local]
     tmpfs:
       - /data:rw,noexec,nosuid,size=64m
     healthcheck:
@@ -50,3 +50,9 @@ services:
 networks:
   data:
     internal: true
+  # 호스트에서 실행하는 개발 백엔드의 루프백 포트 접속을 위한 브리지.
+  # internal 네트워크만 연결하면 Docker는 호스트 포트를 게시하지 않는다.
+  local:
+    driver: bridge
+    driver_opts:
+      com.docker.network.bridge.host_binding_ipv4: "127.0.0.1"
