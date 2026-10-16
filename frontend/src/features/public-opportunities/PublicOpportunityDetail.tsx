@@ -9,7 +9,7 @@ import { deadlineLabel, isOpportunityId, provinces } from './catalog'
 import { checkedTime, officialLink, parseDetail } from './detail'
 import type { PublicDetail } from './detail'
 import { OpportunityReport } from './OpportunityReport'
-import { ReadAloud } from '../voice/ReadAloud'
+import { OpportunityReadAloud } from '../voice/OpportunityReadAloud'
 import './catalog.css'
 
 type State = { status: 'idle' | 'loading' } | { status: 'loaded'; item: PublicDetail } | { status: 'error'; error: ApiError }
@@ -27,7 +27,7 @@ function DetailContent({ item }: { item: PublicDetail }) {
     <article className="panel opportunity-detail">
       <p className="eyebrow">{item.activity_type === 'employment' ? '취업·공공일자리' : '봉사'} · 공고 버전 {item.version}</p>
       <h2>{item.title}</h2><p>{item.organization_name}</p>
-      <ReadAloud key={`${item.id}:${item.version}`} target={{ kind: 'opportunity', opportunity_id: item.id, version: item.version, field: 'title' }} label="공고 제목 읽어주기" />
+      <OpportunityReadAloud key={`${item.id}:${item.version}`} item={item} />
       <p className="badge">{item.recruitment_status === 'closed' ? '모집 마감' : item.recruitment_status === 'open' ? '모집 중' : '모집 여부 확인 필요'}</p>
       {item.change_pending && <StatusNotice label="검수 상태" title="변경 확인 중">중요 변경을 검수하고 있습니다. 확인이 끝나기 전에는 이 공고로 추천·지원서를 만들 수 없습니다.</StatusNotice>}
       {item.recruitment_status === 'closed' && <p>마감된 공고입니다. 내용을 참고할 수 있지만 신청 안내 링크는 제공하지 않습니다.</p>}
