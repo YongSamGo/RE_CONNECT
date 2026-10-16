@@ -5,7 +5,7 @@ from uuid import uuid4
 
 import pytest
 from sqlalchemy import delete, insert, select, update
-from sqlalchemy.exc import IntegrityError
+from sqlalchemy.exc import DataError, IntegrityError
 
 from app.persistence import AuditEvent, DeletionRecord, IngestionRun, OpportunityDocument, OpportunityPublication, OpportunityVersion, Report, Source, User
 from tests.persistence_helpers import NOW, OPPORTUNITY_ID, opportunity_values, seed_opportunity
@@ -64,7 +64,8 @@ def test_invalid_public_version_metadata_is_rejected(db, updates):
     source_id = uuid4()
     db.execute(insert(Source), {"id": source_id, "code": "fictional", "name": "가상", "base_url": "https://example.org"})
     db.execute(insert(OpportunityDocument), {"id": OPPORTUNITY_ID, "source_id": source_id, "external_id": "test"})
-    with pytest.raises(IntegrityError), db.begin_nested():
+    # PostgreSQL은 varchar 한도에서 먼저 DataError, SQLite는 CHECK에서 IntegrityError를 낸다.
+    with pytest.raises((IntegrityError, DataError)), db.begin_nested():
         db.execute(insert(OpportunityVersion), opportunity_values(**updates))
 
 
