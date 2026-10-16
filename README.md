@@ -72,10 +72,12 @@ RE_CONNECT/
 │           ├── SW-Diagnosis-2021/       # SW 보안약점 진단가이드 (2021) 원문
 │           └── assets/                  # 원문 페이지 이미지
 ├── backend/                             # (예정) FastAPI 서버
-├── frontend/                            # (예정) React 클라이언트
+├── frontend/                            # React·TypeScript·Vite 화면 체험 (API 미연동)
 ├── worker/                              # (예정) 공고 수집 배치 워커
 └── docs/security/                       # CI 파이프라인·KISA 리뷰 안내
 ```
+
+프론트엔드 실행·구현 범위는 [`frontend/README.md`](frontend/README.md)를 참고하세요. 시작·경험 직접 입력·프로필 확인 흐름과 전체 화면 라우트 골격을 제공하며, 실제 AI·로그인·공고 API는 아직 연결하지 않았습니다.
 
 ## 4. 보안 지식 베이스 (Obsidian)
 
