@@ -9,7 +9,7 @@
 | 용도 | 모델 | 공식 배포원 | 라이선스 | 접근 제한 | 실행 코드 |
 |---|---|---|---|---|---|
 | 텍스트 (대화·추출·지원서) | Qwen3 4B | Ollama 라이브러리 `qwen3:4b` (모델 계열: [Qwen/Qwen3-4B](https://huggingface.co/Qwen/Qwen3-4B)) | Apache-2.0 (Ollama 매니페스트의 license 레이어, Hugging Face 카드 모두) | 없음 | Ollama |
-| 음성 인식 | Whisper small (CTranslate2 변환) | [Systran/faster-whisper-small](https://huggingface.co/Systran/faster-whisper-small) | MIT | 없음 | [faster-whisper](https://pypi.org/project/faster-whisper/) 1.2.1 (MIT) + ctranslate2 4.8.3 (MIT) |
+| 음성 인식 | Whisper small (CTranslate2 변환) | [Systran/faster-whisper-small](https://huggingface.co/Systran/faster-whisper-small) | MIT | 없음 | [faster-whisper](https://pypi.org/project/faster-whisper/) 1.2.1 (MIT) + ctranslate2 4.x (MIT, 배포 후 7일 경과·호환성 검증 뒤 정확한 버전 확정) |
 | 읽어주기 | Qwen3-TTS 12Hz 0.6B CustomVoice | [Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice](https://huggingface.co/Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice) | Apache-2.0 | 없음 | [qwen-tts](https://pypi.org/project/qwen-tts/) 0.1.1 (Apache-2.0) |
 
 - 세 모델 모두 상업적 이용·서비스 제공을 막는 조건이 없는 라이선스다. 배포물에 모델 가중치를 넣지 않으므로 재배포 고지 의무는 생기지 않지만, 서비스 안내(오픈소스 고지)에 모델·라이선스 이름을 적는다.
@@ -39,7 +39,7 @@
 |---|---|---|
 | ctranslate2 최신(4.x) | **CUDA 12 + cuDNN 9** | faster-whisper 문서: 최신 ctranslate2는 CUDA 12·cuDNN 9만 지원. CUDA 12 + cuDNN 8이면 ctranslate2 4.4.0으로 내려야 한다 |
 | faster-whisper 컨테이너 | 공식 예시 이미지 `nvidia/cuda:12.3.2-cudnn9-runtime-ubuntu22.04` | 같은 문서. digest 고정과 실제 조합은 3단계에서 확정 |
-| qwen-tts | `transformers==4.57.3`, `accelerate==1.12.0`을 정확히 고정해 요구 | PyPI 메타데이터. 백엔드와 다른 컨테이너이므로 충돌은 없지만 이 버전에 묶인다 |
+| qwen-tts | `transformers==4.57.3`, `accelerate==1.12.0`을 정확히 고정해 요구 | PyPI 메타데이터. 백엔드와 분리되지만 같은 음성 이미지의 faster-whisper·CUDA 의존성 공존은 검증 전이다 |
 | qwen-tts 예시 설정 | `dtype=bfloat16`, `attn_implementation="flash_attention_2"` | 모델 카드. flash-attn은 별도 빌드 의존성이라 3단계에서 사용 여부를 정한다 |
 | Ollama | `OLLAMA_NO_CLOUD=1`, 내부 네트워크만 | Plan/03 |
 
@@ -57,6 +57,10 @@ GPU 종류·VRAM·동시 처리량은 이 문서에서 추정하지 않는다(Pl
 | 유지 상태 | 마지막 릴리스 2026-02-06 (0.1.1) | 공급망 점검(`pip-audit`) 대상에 넣고, 갱신이 없으면 고정 버전으로 유지 |
 
 ## 5. 다음 단계
+
+- 가중치 준비는 safetensors와 필요한 JSON·토크나이저 파일만 허용하고 pickle 기반 `.pt`·`.pth`·`.pkl`·`pytorch_model.bin`은 받지 않는다. 지원 로더는 `use_safetensors=True`를 사용한다. CTranslate2 `model.bin`은 pickle이 아닌 전용 모델 형식이므로 고정 revision·해시 확인 대상으로 별도 허용한다.
+- Ollama 런타임 이미지도 배포 후 7일이 지난 버전의 digest로 고정하고 `think`·JSON Schema·컨텍스트 처리 동작을 실제 모델에서 검증한다. 현재 표는 모델 레이어만 고정하며 런타임 조합은 확정 전이다.
+- STT·TTS를 한 이미지에서 실행하기 전에 의존성 해석, torch·CTranslate2의 CUDA/cuDNN 공존과 onnxruntime 설치 조합을 시험한다. 함께 실행할 수 없으면 서비스를 분리한다.
 
 - [x] 1단계: 후보·라이선스 확인 (이 문서 §1·§4)
 - [ ] 2단계: 공식 가중치·revision/digest 준비 — 고정값은 §2. 준비 스크립트(받기 → digest 확인)와 Compose 볼륨 위치는 #29·#31·#32와 함께
