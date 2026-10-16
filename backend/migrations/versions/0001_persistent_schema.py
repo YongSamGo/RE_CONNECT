@@ -131,7 +131,7 @@ def upgrade():
     sa.Column('owner_id', sa.Uuid(), nullable=False),
     sa.ForeignKeyConstraint(['owner_id'], ['users.id'], name=op.f('fk_profile_documents_owner_id_users'), ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('id', name=op.f('pk_profile_documents')),
-    sa.UniqueConstraint('owner_id', 'id', name=op.f('uq_profile_documents_owner_id')),
+    sa.UniqueConstraint('owner_id', 'id', name='uq_profile_documents_owner_identity'),
     sa.UniqueConstraint('owner_id', name=op.f('uq_profile_documents_owner_id'))
     )
     op.create_table('application_documents',
