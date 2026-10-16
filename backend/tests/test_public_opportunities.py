@@ -47,7 +47,7 @@ def test_public_pointer_deadline_unknown_hidden_and_internal_field_boundaries(ba
         stale = add(9, source_checked_at=NOW - timedelta(hours=49))
         hidden = add(10, public=False, review_status="hidden")
         rejected = add(11, public=False, review_status="rejected")
-        db.execute(insert(OpportunityVersion), opportunity_values(live, 2, title="공개하면 안 되는 새 검수 원문"))
+        db.execute(insert(OpportunityVersion), opportunity_values(live, 2, title="공개하면 안 되는 새 검수 원문", schedule_text="새 일정"))
         repository = SqlPublicOpportunityRepository(lambda: nullcontext(db))
         page = repository.list(OpportunitySearch(), NOW)
         assert {item.id for item in page.items} == {live, unknown, same_day, future, stale}

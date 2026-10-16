@@ -14,6 +14,7 @@ from app.contracts.opportunity import OpportunityContent
 from app.contracts.time import kst_date
 from app.core.business_errors import AppError
 from app.modules.opportunities.lifecycle import assess_lifecycle
+from app.modules.opportunities.versions import IMPORTANT_FIELDS, IMPORTANT_STATUS_TRANSITIONS
 from app.modules.opportunities.service import OpportunityPage, OpportunitySearch, OpportunitySummary, PublicOpportunity
 from app.persistence.operations import OpportunityPublication as P, OpportunityVersion as V, RoleDefinition
 
@@ -25,7 +26,11 @@ class SqlPublicOpportunityRepository:
     @staticmethod
     def _base():
         pending = V.__table__.alias("pending")
-        change_pending = exists(select(1).select_from(pending).where(pending.c.opportunity_id == V.opportunity_id, pending.c.version > V.version, pending.c.review_status == "pending"))
+        columns = set(IMPORTANT_FIELDS) - {"activity_region"}
+        columns |= {"activity_province", "activity_district"}
+        significant = [pending.c[name].is_distinct_from(V.__table__.c[name]) for name in sorted(columns)]
+        significant += [(V.recruitment_status == before) & (pending.c.recruitment_status == after) for before, after in sorted(IMPORTANT_STATUS_TRANSITIONS)]
+        change_pending = exists(select(1).select_from(pending).where(pending.c.opportunity_id == V.opportunity_id, pending.c.version > V.version, pending.c.review_status == "pending", or_(*significant)))
         return select(V.__table__, change_pending.label("change_pending")).join(P, (P.opportunity_id == V.opportunity_id) & (P.version == V.version)).where(P.review_status == "approved", V.review_status == "approved")
 
     @staticmethod
