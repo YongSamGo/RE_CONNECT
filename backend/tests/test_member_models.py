@@ -14,6 +14,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.schema import CreateTable
 
 from app.persistence import ApplicationDocument, ApplicationDraft, Base, Consent, ProfileDocument, ProfileVersion, User
+from tests.persistence_helpers import OPPORTUNITY_ID, seed_opportunity
 
 NOW = datetime(2026, 10, 17, tzinfo=UTC)
 
@@ -40,6 +41,7 @@ def encrypted(**updates):
 
 
 def seed(db):
+    seed_opportunity(db)
     owner, other, profile_id, document_id = uuid4(), uuid4(), uuid4(), uuid4()
     db.execute(insert(User), [{"id": owner, "kakao_subject": "fictional-owner"}, {"id": other, "kakao_subject": "fictional-other"}])
     db.execute(insert(ProfileDocument), {"id": profile_id, "owner_id": owner})
@@ -49,7 +51,7 @@ def seed(db):
 
 
 def saved_draft(owner, profile_id, document_id, **updates):
-    return {"owner_id": owner, "profile_id": profile_id, "profile_version": 1, "document_id": document_id, "version": 1, "opportunity_id": uuid4(), "opportunity_version": 1, "approved_at": NOW, "saved_at": NOW, **encrypted(), **updates}
+    return {"owner_id": owner, "profile_id": profile_id, "profile_version": 1, "document_id": document_id, "version": 1, "opportunity_id": OPPORTUNITY_ID, "opportunity_version": 1, "approved_at": NOW, "saved_at": NOW, **encrypted(), **updates}
 
 
 def test_saved_draft_must_reference_same_owner_document_and_profile_version(db):

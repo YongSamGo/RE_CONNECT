@@ -2,5 +2,10 @@
 
 from app.persistence.base import Base
 from app.persistence.members import ApplicationDocument, ApplicationDraft, Consent, ProfileDocument, ProfileVersion, User
+from app.persistence.operations import AuditEvent, DeletionRecord, IngestionRun, OpportunityDocument, OpportunityPublication, OpportunityVersion, Report, RoleDefinition, Source
 
-__all__ = ["Base", "User", "Consent", "ProfileDocument", "ProfileVersion", "ApplicationDocument", "ApplicationDraft"]
+__all__ = [
+    "Base", "User", "Consent", "ProfileDocument", "ProfileVersion", "ApplicationDocument", "ApplicationDraft",
+    "Source", "IngestionRun", "RoleDefinition", "OpportunityDocument", "OpportunityVersion", "OpportunityPublication",
+    "Report", "AuditEvent", "DeletionRecord",
+]
