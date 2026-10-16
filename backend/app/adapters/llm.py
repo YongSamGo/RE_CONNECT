@@ -12,6 +12,26 @@ from pydantic import BaseModel, ConfigDict
 OutputT = TypeVar("OutputT", bound=BaseModel)
 
 
+class LLMError(Exception):
+    """LLM 호출 실패. 메시지는 고정 문구이며 입력·모델 출력 원문을 담지 않는다.
+
+    서비스는 구현(Ollama 등)이 아니라 이 예외들로 오류 코드를 고른다 (docs/api/README.md §2.5).
+    Adapter는 재시도하지 않는다. 재시도 여부는 서비스가 전체 제한시간 안에서 정한다 (Plan/05 §3).
+    """
+
+
+class LLMTimeoutError(LLMError):
+    """제한시간 안에 응답이 오지 않음 → 503 `AI_TIMEOUT`."""
+
+
+class LLMUnavailableError(LLMError):
+    """런타임에 연결할 수 없거나, 모델이 없거나, 런타임이 오류로 답함 → 503 `MODEL_UNAVAILABLE`."""
+
+
+class LLMInvalidOutputError(LLMError):
+    """응답이 잘렸거나 JSON·`output_model` 검증에 실패함. 같은 입력으로 바로 재시도하지 않는다."""
+
+
 class UntrustedTurn(BaseModel):
     """대화 한 턴. 역할은 서버가 정하고, `text`는 비신뢰 데이터(사용자 답변·이전 모델 출력)다.
 
@@ -40,6 +60,7 @@ class LLMAdapter(Protocol):
         """서버가 만든 지시문과 비신뢰 대화 턴을 분리해 넘기고, `output_model`로 검증한 결과를 받는다.
 
         한 번만 묻는 추출(공고 원문 등)은 `user` 턴 하나로 넘긴다.
-        제한시간 초과·모델 장애·검증 실패는 구현이 정의하는 예외로 알린다. 예외 메시지에 입력 원문을 넣지 않는다.
+        output_model은 extra='forbid'를 설정해 정의하지 않은 필드를 거절해야 한다.
+        제한시간 초과·모델 장애·검증 실패는 위의 `LLMError` 하위 예외로 알린다. 예외 메시지에 입력 원문을 넣지 않는다.
         """
         ...
