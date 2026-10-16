@@ -32,7 +32,7 @@ backend/
 
 - 모든 응답에 서버가 만든 `X-Request-ID`(`req_` + 32자 hex)를 붙인다. 클라이언트가 보낸 값은 쓰지 않는다.
 - 오류는 `{code, message, request_id}`로 돌려준다(422만 `fields` 추가). 입력값·식별자 형식이 아닌 필드 이름·예외 메시지·추적 정보는 넣지 않는다. 405는 계약에 코드가 없어 404 `NOT_FOUND`로, 계약 코드가 없는 400·415 등은 422 `VALIDATION_FAILED`로 답한다.
-- 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. 서버 로그에는 예외 종류와 `request_id`만 남는다.
+- 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. `python -m app`의 JSON 로그에는 허용한 메타데이터와 `request_id`만 남는다 ([오류·로그 정책](../docs/security/errors-and-logging.md)).
 - `/health/live`·`/health/ready`는 `/api/v1` 밖의 내부 전용 경로다. DB·Redis 실패는 503 `unavailable`, LLM·음성만 실패하면 200 `degraded`다. 연결 구현이 없는 구성 요소는 `fail`로 답한다.
 - `APP_ENV`가 `development`일 때만 `/docs`·`/openapi.json`을 연다. 값이 없으면 `production`으로 본다.
 

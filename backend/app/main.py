@@ -1,6 +1,6 @@
 """FastAPI 앱 조립.
 
-실행: `backend/`에서 `uvicorn app.main:app`. 테스트는 `create_app()`에 가짜 구성 요소를 넘겨 만든다.
+실행: `backend/`에서 `python -m app`. 테스트는 `create_app()`에 가짜 구성 요소를 넘겨 만든다.
 구체 구현(DB·Redis·Ollama·음성 서비스)은 여기서만 고르고, 모듈은 Protocol로 받는다.
 """
 
@@ -12,6 +12,7 @@ from app.adapters.ollama import OllamaLLMAdapter
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
 from app.core.request_id import RequestIdMiddleware
+from app.core.safe_logging import RequestLogMiddleware
 from app.modules.operations import router as operations
 from app.modules.operations.readiness import (
     COMPONENTS,
@@ -66,6 +67,7 @@ def create_app(
     register_error_handlers(app)
     # 나중에 더한 미들웨어가 바깥에 선다. 처리하지 못한 예외의 500 응답에도 X-Request-ID가 붙는다.
     app.add_middleware(UnhandledErrorMiddleware)
+    app.add_middleware(RequestLogMiddleware)
     app.add_middleware(RequestIdMiddleware)
 
     app.include_router(operations.router)
