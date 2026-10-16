@@ -206,6 +206,15 @@ jobs:
         run: npm run lint
       - name: 테스트
         run: npm test --if-present
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: 지역 API 계약 대조용 백엔드 의존성 설치
+        run: python -m pip install --require-hashes -r ../backend/requirements.txt
+      - name: 실제 지역 라우터·OpenAPI·프론트 파서 대조
+        env:
+          CONTRACT_PYTHON: python
+        run: npm run test:backend-contract
       - name: 빌드 (타입 검사 포함)
         run: npm run build
 

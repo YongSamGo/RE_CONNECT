@@ -99,3 +99,13 @@ Plan §3.2의 날짜는 기존 목표이며 이번 문서에서 새 약속으로
 - 재사용 검증 증거: `4513c77`의 lint·26개 파일 319건·API 타입 비교·TS·빌드 통과. 이번 변경은 문서이므로 코드 통과 결과를 새로 실행한 것처럼 적지 않는다.
 - 검증: 상대 링크 대상과 A 담당 OPEN 이슈 23개의 번호를 스크립트로 대조해 일치함을 확인했다. 선행 #5/#12/#15 CLOSED 및 PR #118 OPEN·REVIEW_REQUIRED는 GitHub 조회로 확인했다. 상태 구분·미검증·일정 변경 기록 위치를 검토했고 `git diff --check`를 통과했다.
 - 기존 계획 날짜의 변경은 결정하지 않았다. 예상 일정 지연·가용시간은 담당자 확인 전 미정으로 남긴다.
+
+## #19 후속 기록 · W02-08.b (2026-10-16)
+
+- 단계: 진행(지역 라우터 계약 대조 범위 로컬 통과). GitHub #19 OPEN, PR #118 OPEN·REVIEW_REQUIRED를 재조회했다. #13 선행의 원격 완료와 구분한다.
+- 브랜치: `feat/w02-08-region-contract`, 시작 기준 `dfd4cbf`. 상세 실행·의존성·범위·보안 근거는 [contract-tests/README.md](contract-tests/README.md).
+- 범위: 실제 공개 지역 router의 ASGI 응답과 OpenAPI 스키마·FE 파서·backend Region 모델 간 식별값 일치 검사, 계약 이탈·미등록 지역 거절 및 CI 실행. 화면/서비스 계약·원본 KB는 변경하지 않았다.
+- 검증: frontend 319건 + 계약 대조 5건, backend 지역·공통 계약 127건. lint·build(계약 비교·타입 검사 포함), audit 0건·142개 패키지 서명·53개 attestation 검증, 숨은 문자 검사 1,195개 파일 실패/경고 0건 통과.
+- 알려진 시험 환경 알림: 고정된 Starlette가 기존 httpx TestClient 사용에 deprecation warning을 출력한다. 시험은 통과했으며 의존성 교체는 이번 범위에 포함하지 않았다.
+- 미검증: 전체 앱 middleware·세션·배포, 실제 브라우저의 같은 origin HTTP 연결, 다른 API 전체, GitHub 원격 CI. router 독립 실행을 이 항목들의 통과로 계산하지 않는다.
+- 다음 확인: 2026-10-17 또는 다음 착수 시 #13 승인·원격 CI와 공개 `/regions` 전체 앱 HTTP 대조 가능 여부(A·C). 사람 실제 인시간은 미기록, 남은 인시간은 미산정. 기존 일정은 변경하지 않았다.
