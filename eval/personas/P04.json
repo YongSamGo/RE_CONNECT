@@ -21,7 +21,7 @@
     "available_weekdays": [1, 2, 3, 4, 5, 6, 7],
     "hours_per_week": 20,
     "mobility_note": "서울 서쪽 지역 이동 가능",
-    "residence_region": {"province": "seoul", "district": "마포구"},
+    "residence_region": {"province": "seoul", "district": "mapo"},
     "birth_year": 1968,
     "certifications": ["전산회계 1급"],
     "completed_courses": null,

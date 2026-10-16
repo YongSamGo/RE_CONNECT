@@ -8,6 +8,7 @@ from collections.abc import Mapping
 
 from fastapi import FastAPI
 
+from app.adapters.ollama import OllamaLLMAdapter
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
 from app.core.request_id import RequestIdMiddleware
@@ -19,8 +20,22 @@ from app.modules.operations.readiness import (
     ReadinessProbe,
     ReadinessService,
 )
+from app.modules.regions import router as regions
 
 API_PREFIX = "/api/v1"
+
+
+def build_llm_adapter(settings: Settings) -> OllamaLLMAdapter:
+    return OllamaLLMAdapter(
+        base_url=settings.ollama_base_url,
+        model=settings.ollama_model,
+        timeout_seconds=settings.ollama_timeout_seconds,
+        num_predict=settings.ollama_num_predict,
+        num_ctx=settings.ollama_num_ctx,
+        think=settings.ollama_think,
+        max_response_bytes=settings.ollama_max_response_bytes,
+        ready_timeout_seconds=settings.health_check_timeout_seconds,
+    )
 
 
 def create_app(
@@ -38,8 +53,12 @@ def create_app(
         openapi_url="/openapi.json" if docs_enabled else None,
     )
 
-    # 각 연결 구현이 생기면(#18 DB·Redis, W04 LLM·음성) 해당 probe로 바꾼다.
+    llm_adapter = build_llm_adapter(settings)
+    app.state.llm_adapter = llm_adapter
+
+    # 각 연결 구현이 생기면(#18 DB·Redis, W04 음성) 해당 probe로 바꾼다.
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
+    probes["llm"] = llm_adapter
     probes.update(readiness_probes or {})
     app.state.settings = settings
     app.state.readiness_service = ReadinessService(probes, settings.health_check_timeout_seconds)
@@ -51,6 +70,7 @@ def create_app(
 
     app.include_router(operations.router)
     # 공개 API 라우터는 API_PREFIX 아래에 더한다.
+    app.include_router(regions.router, prefix=API_PREFIX)
 
     return app
 

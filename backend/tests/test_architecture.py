@@ -50,6 +50,7 @@ def test_app_directory_has_python_files() -> None:
     assert python_files(APP_DIR / "modules")
     assert python_files(APP_DIR / "core")
     assert python_files(APP_DIR / "adapters")
+    assert python_files(APP_DIR / "contracts")
 
 
 def test_routers_do_not_import_repositories_or_adapters() -> None:
@@ -77,6 +78,14 @@ def test_core_and_adapters_do_not_depend_on_modules() -> None:
             for name in imported_modules(path):
                 assert not name.startswith("app.modules"), f"{module_name(path)} → {name}"
                 assert not name.startswith("app.main"), f"{module_name(path)} → {name}"
+
+
+def test_contracts_depend_only_on_themselves() -> None:
+    # 수집기·평가 도구도 공통 타입을 쓰므로 웹 앱 구성 요소(core·modules·adapters)를 끌어오지 않는다.
+    for path in python_files(APP_DIR / "contracts"):
+        for name in imported_modules(path):
+            if name == "app" or name.startswith("app."):
+                assert name.startswith("app.contracts"), f"{module_name(path)} → {name}"
 
 
 def test_only_main_assembles_the_app() -> None:
