@@ -93,6 +93,8 @@ export default function App() {
   const { value: preview, setValue: setPreview, clear: clearPreview } = useMemoryScope<Preview>(emptyPreview)
   const [notice, setNotice] = useState('')
   const location = useLocation()
+  const previousPath = useRef(location.pathname)
+  const [ending, setEnding] = useState(false)
   const navigate = useNavigate()
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
@@ -101,8 +103,14 @@ export default function App() {
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
-    mainRef.current?.focus({ preventScroll: true })
-  }, [location.pathname])
+    if (previousPath.current !== location.pathname) {
+      previousPath.current = location.pathname
+      window.scrollTo(0, 0)
+      mainRef.current?.focus({ preventScroll: true })
+      if (ending && location.pathname === '/') setEnding(false)
+      else setNotice('')
+    }
+  }, [location.pathname, ending])
   useEffect(() => {
     // React memory can survive a full-page departure via the back/forward cache.
     const clearOnLeave = () => setNotice('')
@@ -111,10 +119,10 @@ export default function App() {
     window.addEventListener('pageshow', clearOnRestore)
     return () => { window.removeEventListener('pagehide', clearOnLeave); window.removeEventListener('pageshow', clearOnRestore) }
   }, [])
-  const endPreview = () => { clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
+  const endPreview = () => { setEnding(true); clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
-  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={notice ? '/' : '/consent'} replace />
+  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={ending ? '/' : '/consent'} replace />
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
     <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험은 가상 정보로 살펴보세요 · AI·로그인 미연결</span></div>

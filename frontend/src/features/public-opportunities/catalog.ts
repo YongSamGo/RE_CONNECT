@@ -12,7 +12,7 @@ export function record(value: unknown): Record<string, unknown> {
   return value !== null && typeof value === 'object' && !Array.isArray(value) ? value as Record<string, unknown> : invalid()
 }
 export function text(value: unknown, max: number): string {
-  return typeof value === 'string' && value.trim().length > 0 && value.length <= max ? value : invalid()
+  return typeof value === 'string' && value.trim().length > 0 && [...value].length <= max ? value : invalid()
 }
 function integer(value: unknown, min: number): number {
   return typeof value === 'number' && Number.isSafeInteger(value) && value >= min ? value : invalid()
