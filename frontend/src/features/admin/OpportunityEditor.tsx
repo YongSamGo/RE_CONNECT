@@ -13,10 +13,11 @@ import { provinces } from '../public-opportunities/catalog'
 import { koreaDateTimeInput } from './audit'
 import { emptyOpportunity, isHttpsReference, opportunityChanges, parseEditable, parseOpportunityInput } from './editor'
 import type { OpportunityInput } from './editor'
+import { RequirementEditor } from './RequirementEditor'
 
-type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; noRequirements: boolean; errors: FieldError[] }
+type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; noRequirements: boolean; editing: boolean; errors: FieldError[] }
 function initial(input: OpportunityInput | null, version: number | null = null): State {
-  return { input, original: version === null ? null : input, version, hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, noRequirements: !!version && input?.requirements.length === 0, errors: [] }
+  return { input, original: version === null ? null : input, version, hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, noRequirements: !!version && input?.requirements.length === 0, editing: false, errors: [] }
 }
 function InputField({ label, error, id, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; id: string }) {
   return <div className="form-field"><label htmlFor={id}>{label}</label><input {...props} id={id} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} />{error && <p className="field-error" id={`${id}-error`}>{error}</p>}</div>
@@ -58,7 +59,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     void load.run(async (api, signal) => parseEditable(required((await api.GET('/admin/opportunities/{opportunity_id}', { signal, params: { path: { opportunity_id: target.id } } })).data), target), (result) => form.setValue(initial(result.input, result.version)))
   }
   async function submit() {
-    if (!input || locked) return
+    if (!input || locked || state.editing) return
     const errors: FieldError[] = []
     const add = (fieldId: string, message: string) => errors.push({ fieldId, message })
     if (!input.title.trim() || input.title.length > 200) add('editor-title', '공고 제목을 200자 이내로 적어 주세요.')
@@ -68,7 +69,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     if (!input.application_instructions.trim()) add('editor-instructions', '공식 접수 방법을 적어 주세요.')
     const hours = state.hours === '' ? null : Number(state.hours)
     if (hours !== null && (!Number.isFinite(hours) || hours < 0 || hours > 168)) add('editor-hours', '주당 시간은 0~168 사이로 적거나 비워 주세요.')
-    if (!target && input.requirements.length + state.additions.length === 0 && !state.noRequirements) add('editor-no-requirements', '원문 조건을 적거나, 원문에 필수조건이 없는지 확인해 주세요.')
+    if (input.requirements.length + state.additions.length === 0 && !state.noRequirements) add('editor-no-requirements', '원문 조건을 적거나, 원문에 필수조건이 없는지 확인해 주세요.')
     if (input.requirements.length + state.additions.length > 30 || state.additions.some((value) => value.source_evidence.length > 1000)) add('editor-extra', '추가 조건은 한 줄 1,000자 이내, 기존 조건과 합계 30개 이내로 적어 주세요.')
     const documents = input.required_documents === null ? null : state.documents === input.required_documents.join('\n') ? input.required_documents : lines(state.documents)
     if (documents && (documents.length > 20 || documents.some((value) => value.length > 200))) add('editor-documents', '서류는 한 줄 200자 이내, 최대 20개로 적어 주세요.')
@@ -119,9 +120,9 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <InputField id="editor-deadline-time" label="마감 시각 (한국시간, 모르면 비워두기)" type="datetime-local" value={state.at} onChange={(event) => updateRaw({ at: event.target.value })} />
       </fieldset>
       <fieldset disabled={locked}><legend>원문 조건·필요 서류</legend>
-        {input.requirements.length > 0 && <><h3>기존 필수조건</h3><ul>{input.requirements.map((value) => <li key={value.id}>{value.source_evidence}</li>)}</ul><p>기존 조건의 판정 규칙·묶음·기준일·역할 태그는 보존합니다. 이 화면에서는 기존 구조화 조건을 다시 해석하거나 삭제하지 않습니다.</p></>}
+        <RequirementEditor key={load.state.status === 'success' ? load.state.data.version : 'new'} items={input.requirements} disabled={locked} onEditingChange={(editing) => updateRaw({ editing })} onChange={(requirements) => { update('requirements', requirements); updateRaw({ noRequirements: false }) }} />
         <TextAreaField id="editor-extra" label="추가 필수조건 원문 (한 줄에 하나)" value={state.extraText} maxLength={30029} error={error('editor-extra')} hint="추가 조건은 해석하지 않고 확인 필요로 등록합니다. 검수 전까지 지원 가능으로 판정하지 않습니다." onChange={(event) => updateRaw({ extraText: event.target.value, noRequirements: false, additions: lines(event.target.value).slice(0, 31).map((source_evidence) => ({ id: crypto.randomUUID(), source_evidence, field: 'other', operator: null, value: null, group_id: null, group_operator: null, reference_date: null, clarity: 'needs_review' })) })} />
-        {!target && <CheckboxField id="editor-no-requirements" label="공식 원문에 명시된 필수조건이 없는 것을 확인했어요." checked={state.noRequirements} disabled={state.additions.length > 0} error={error('editor-no-requirements')} onChange={(event) => updateRaw({ noRequirements: event.target.checked })} />}
+        {input.requirements.length === 0 && <CheckboxField id="editor-no-requirements" label="공식 원문에 명시된 필수조건이 없는 것을 확인했어요." checked={state.noRequirements} disabled={state.additions.length > 0 || state.editing} error={error('editor-no-requirements')} onChange={(event) => updateRaw({ noRequirements: event.target.checked })} />}
         <CheckboxField label="공식 원문에서 필요 서류 안내를 확인했어요." checked={input.required_documents !== null} onChange={(event) => update('required_documents', event.target.checked ? [] : null)} />
         {input.required_documents !== null && <TextAreaField id="editor-documents" label="필요 서류 (한 줄에 하나)" value={state.documents} maxLength={4019} error={error('editor-documents')} hint="원문에 명시된 서류가 없으면 비워두세요. 미확인은 위 확인 선택을 해제해 구분합니다." onChange={(event) => updateRaw({ documents: event.target.value })} />}
       </fieldset>
@@ -133,7 +134,8 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <TextAreaField id="editor-instructions" label="공식 접수 방법 (필수)" value={input.application_instructions} maxLength={2000} error={error('editor-instructions')} onChange={(event) => update('application_instructions', event.target.value)} />
         <CheckboxField id="editor-checked" label="공식 원문과 입력 내용을 비교해 확인했습니다." checked={state.checked} error={error('editor-checked')} onChange={(event) => form.setValue((previous) => ({ ...previous, checked: event.target.checked, errors: [] }))} />
       </fieldset>
-      <Button type="submit" pending={save.state.status === 'pending'} disabled={locked}>검수 대기 버전으로 저장</Button>
+      {state.editing && <p role="status">조건 편집을 적용하거나 취소한 뒤 공고를 저장해 주세요.</p>}
+      <Button type="submit" pending={save.state.status === 'pending'} disabled={locked || state.editing}>검수 대기 버전으로 저장</Button>
     </form>}
     {save.state.status === 'error' && <RequestError error={save.state.error} />}
     {stale && <StatusNotice label="최신 목록 필요" title="다른 작업으로 공고가 변경됐어요">입력은 유지했습니다. 목록으로 돌아가 최신 버전을 선택한 뒤 변경 내용을 다시 대조해 주세요.</StatusNotice>}

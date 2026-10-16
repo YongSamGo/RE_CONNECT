@@ -6,8 +6,10 @@ import { CheckboxField, TextAreaField } from '../../ui/Fields'
 import { RequestError } from '../../ui/StatusNotice'
 import { invalid, record, text, timestamp } from '../public-opportunities/catalog'
 import { officialLink } from '../public-opportunities/detail'
+import { parseRequirements } from './editor'
+import { RequirementSummary } from './RequirementEditor'
 
-type Content = { title: string; description: string | null; instructions: string; requirements: string[]; documents: string[] | null; source: string }
+type Content = { title: string; description: string | null; instructions: string; requirements: components['schemas']['Requirement'][]; documents: string[] | null; source: string }
 type Review = { version: number; status: string; content: Content; previous: Content | null; changed: string[]; important: boolean }
 type RejectReason = components['schemas']['OpportunityRejectRequest']['reason_code']
 type CloseBasis = components['schemas']['OpportunityCloseRequest']['basis']
@@ -16,11 +18,11 @@ const closeReasons: Record<CloseBasis, string> = { source_closed: '공식 원문
 function content(value: unknown): Content {
   const item = record(value)
   if (!Array.isArray(item.requirements) || (item.required_documents !== null && !Array.isArray(item.required_documents))) return invalid()
-  return { title: text(item.title, 200), description: item.description_text === null ? null : text(item.description_text, 5000), instructions: text(item.application_instructions, 2000), source: text(item.source_url, 2048), requirements: item.requirements.map((value) => text(record(value).source_evidence, 1000)), documents: item.required_documents === null ? null : item.required_documents.map((value) => text(value, 200)) }
+  return { title: text(item.title, 200), description: item.description_text === null ? null : text(item.description_text, 5000), instructions: text(item.application_instructions, 2000), source: text(item.source_url, 2048), requirements: parseRequirements(item.requirements), documents: item.required_documents === null ? null : item.required_documents.map((value) => text(value, 200)) }
 }
 function ShowContent({ value, title }: { value: Content; title: string }) {
   const source = officialLink(value.source)
-  return <section><h3>{title} · {value.title}</h3><p className="user-text">{value.description ?? '설명 없음'}</p><h4>조건 원문</h4><ul>{value.requirements.map((value, index) => <li key={index}>{value}</li>)}</ul><h4>필요 서류</h4>{value.documents === null ? <p>서류 확인 필요</p> : <ul>{value.documents.map((value, index) => <li key={index}>{value}</li>)}</ul>}<h4>신청 방법</h4><p className="user-text">{value.instructions}</p>{source ? <a href={source.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">공식 원문 · {source.host} (새 창)</a> : <p>확인된 공식 상세 주소가 없어 승인할 수 없습니다.</p>}</section>
+  return <section><h3>{title} · {value.title}</h3><p className="user-text">{value.description ?? '설명 없음'}</p><h4>조건 원문</h4><RequirementSummary items={value.requirements} /><h4>필요 서류</h4>{value.documents === null ? <p>서류 확인 필요</p> : <ul>{value.documents.map((value, index) => <li key={index}>{value}</li>)}</ul>}<h4>신청 방법</h4><p className="user-text">{value.instructions}</p>{source ? <a href={source.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">공식 원문 · {source.host} (새 창)</a> : <p>확인된 공식 상세 주소가 없어 승인할 수 없습니다.</p>}</section>
 }
 export function OpportunityReview({ id, version }: { id: string; version: number }) {
   const request = useRequest<Review>()

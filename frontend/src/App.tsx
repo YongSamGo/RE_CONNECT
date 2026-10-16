@@ -93,6 +93,8 @@ export default function App() {
   const { value: preview, setValue: setPreview, clear: clearPreview } = useMemoryScope<Preview>(emptyPreview)
   const [notice, setNotice] = useState('')
   const location = useLocation()
+  const previousPath = useRef(location.pathname)
+  const [endingKey, setEndingKey] = useState<string | null>(null)
   const navigate = useNavigate()
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
@@ -101,7 +103,11 @@ export default function App() {
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
-    mainRef.current?.focus({ preventScroll: true })
+    if (previousPath.current !== location.pathname) {
+      previousPath.current = location.pathname
+      window.scrollTo(0, 0)
+      mainRef.current?.focus({ preventScroll: true })
+    }
   }, [location.pathname])
   useEffect(() => {
     // React memory can survive a full-page departure via the back/forward cache.
@@ -111,16 +117,16 @@ export default function App() {
     window.addEventListener('pageshow', clearOnRestore)
     return () => { window.removeEventListener('pagehide', clearOnLeave); window.removeEventListener('pageshow', clearOnRestore) }
   }, [])
-  const endPreview = () => { clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/') }
+  const endPreview = () => { setEndingKey(location.key); clearPreview(); setNotice('미리보기 입력을 삭제했습니다. 새로 시작할 수 있어요.'); navigate('/', { replace: true }) }
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
-  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={notice ? '/' : '/consent'} replace />
+  const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={endingKey === location.key ? '/' : '/consent'} replace />
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
     <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험은 가상 정보로 살펴보세요 · AI·로그인 미연결</span></div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
     {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
-    <div className="status-line" role="status">{notice}</div>
+    <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
     <main id="main" ref={mainRef} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
       <Route path="/consent" element={<Consent onStart={() => { clearPreview(); setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
