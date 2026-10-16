@@ -5,7 +5,7 @@
 - 사용자 지시: 중복을 먼저 정리하고 이후에는 GitHub 이슈의 우선순위·선행 조건을 보고 작업한다. 이미 허용된 로컬 개발을 매번 재확인하지 않는다.
 - 작업 저장소: `YongSamGo/RE_CONNECT`. 원래 remote URL `jokebear117/RE_CONNECT`는 이전 주소다.
 - **현재 작업 폴더:** `C:/Users/seong/.codex/worktrees/frontend-deduplicate/SW개발보안`. 원래 `Documents/ChatGPT/SW개발보안` 폴더에서 새 기능을 작성하지 않는다. 그 폴더는 이전 구현·미추적 Vault/PDF 등을 보존 중이다.
-- **현재 브랜치:** `fix/w11-01-form-accessibility`, #19 HTTP 대조 기준 `0918ea4`에서 후속 작업.
+- **현재 브랜치:** `chore/w11-01-accessibility-audit`, 폼 보완 `1a54f48`에서 후속 작업.
 - 단일 프론트: PR #118의 `891c8e2` 기반. `origin/develop`의 `10d196f` 포함. 원래 자체 구현 `c733f0e`·`d29b4f0`는 이력에 보존했지만 중복 소스는 실행 트리에서 제외했다. [정리 기록](CONSOLIDATION.md).
 - API 계약은 `docs/api/openapi.yaml`, 생성 타입·클라이언트는 `src/api/`. 기존 기능에 이어 작성하고 두 번째 상태/통신/스타일 체계를 만들지 않는다.
 - 기동 중인 미리보기: `http://127.0.0.1:5173/`는 현재 작업트리의 Vite. 실제 서버·AI·인증·음성 연동 성공과 구분한다.
@@ -18,3 +18,5 @@
 - 위험한 저장소 변경·원격 병합·보호 우회·실제 인증/개인 자료 삭제는 이 인계의 자동 허가가 아니다.
 
 2026-10-17 후속: #80 W11-01의 공통 폼 접근성 일부를 보완했다. TextAreaField/CheckboxField가 호출자가 준 aria-invalid를 보존하고 자체 오류가 있으면 true를 우선한다. 도움말·글자 수·필수 표식·종료 안내/버튼·모바일 메뉴 글씨를 18px로 맞췄다. 프론트 321건·lint·build 통과, Chromium에서 도움말 18px·종료 버튼 44px 이상·좁은 화면 넘침 없음을 확인했다. 실제 기기/스크린리더는 미검증. #13/#19는 여전히 선행 통과 대기이며 #80을 완료 처리하지 않았다.
+
+PR 상태 재조회: #118의 HEAD 1a54f48에서 CI·CodeQL 모두 통과, OPEN/REVIEW_REQUIRED 유지. 이번 후속 #80 W11-01.c는 axe-core 기반 자동 접근성 회귀 검사 10건 추가. 초기 8화면·동적 입력/오류/문장 확인·검색 오류의 DOM/ARIA 검증을 기본 CI에 포함한다. 전체 프론트 331건·lint·build 통과. 화면 제품 코드는 변경하지 않았고 범위·수동 검사 한계는 ACCESSIBILITY.md에 기록했다. 새 커밋의 원격 CI와 실제 기기 검증을 기존 PR 결과로 대체하지 않는다.
