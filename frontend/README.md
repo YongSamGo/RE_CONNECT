@@ -14,6 +14,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 로컬 Vite는 `127.0.0.1`에서만 열고 `/api/v1`을 `http://127.0.0.1:8000`의 backend로 전달한다. 화면 경로는 SPA로 유지한다. backend를 실행하지 않으면 API 연결 오류가 나며 예시 성공 응답으로 대체하지 않는다. 운영 proxy·HTTPS·인증 검증은 별도다.
 
+공고별 공식 준비 안내와 임시 서류 체크의 부분 구현 범위·실제 API 연동 대기는 [준비 안내 구현 기록](src/features/preparation/OFFICIAL.md)을 따른다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.

@@ -8,6 +8,7 @@ import { useMemoryScope } from './state/useMemoryScope'
 import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
 import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
 import { ManualPreparation } from './features/preparation/ManualPreparation'
+import { OfficialPreparation } from './features/preparation/OfficialPreparation'
 import { emptyManualDraft } from './features/preparation/model'
 import type { ManualDraft } from './features/preparation/model'
 import { AccountPage } from './features/account/AccountPage'
@@ -99,6 +100,7 @@ export default function App() {
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const current = screens.find((screen) => screen.path === location.pathname)
+      ?? (location.pathname.startsWith('/opportunities/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/opportunities/') ? screens[6] : undefined)
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
@@ -135,6 +137,7 @@ export default function App() {
       <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
+      <Route path="/opportunities/:id/preparation" element={<OfficialPreparation />} />
       <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
       <Route path="/me" element={<AccountPage onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
       <Route path="/me/saved" element={<SavedMaterials />} />

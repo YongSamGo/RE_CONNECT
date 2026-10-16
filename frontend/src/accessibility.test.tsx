@@ -28,7 +28,7 @@ function app(path: string) {
   return view
 }
 
-it.each(['/', '/consent', '/opportunities', '/opportunities/preview', '/me', '/me/saved', '/admin', '/missing'])('%s 화면의 구조·레이블·ARIA를 자동 검사한다', async path => {
+it.each(['/', '/consent', '/opportunities', '/opportunities/preview', '/opportunities/preview/preparation', '/me', '/me/saved', '/admin', '/missing'])('%s 화면의 구조·레이블·ARIA를 자동 검사한다', async path => {
   vi.stubGlobal('fetch', vi.fn())
   app(path)
   await audit()
