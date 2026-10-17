@@ -1,6 +1,6 @@
 # 공고 출처 조사 (W01-05)
 
-> 기준일: 2026-10-14 · 담당: B(AI·데이터) · 관련 이슈: #8 → 후속 #44(출처 설정과 실제 필드 매핑)
+> 기준일: 2026-10-14 (서울50플러스 2026-10-17) · 담당: B(AI·데이터) · 관련 이슈: #8 → 후속 #44(출처 설정과 실제 필드 매핑)
 >
 > 샘플 수집: `python worker/tools/fetch_source_samples.py <source> --operation <op>` (키는 `.env`, 원본 응답은 커밋하지 않는 `worker/samples/`에 저장)
 
@@ -12,7 +12,7 @@
 |---|---|---|---|---|
 | [한국노인인력개발원 노인 구인정보](https://www.data.go.kr/data/15015153/openapi.do) | 취업·공공일자리 | **실제 호출 성공** (목록·상세) | 개발·운영 모두 자동승인, 개발계정 일 10,000건 | 이용허락범위 제한 없음 |
 | [행정안전부 봉사참여정보서비스_GW (1365)](https://www.data.go.kr/data/15157582/openapi.do) | 봉사 | **실제 호출 성공** (목록·지역 필터·상세) | 개발 자동승인 / 운영 심의승인, 개발계정 1,000건 | 이용허락범위 제한 없음 |
-| [서울50플러스 API](https://www.50plus.or.kr/apiIndex.do) | 교육·사회참여 일자리·인턴십 | **승인 대기** (2026-10-14 신청) | 관리자 승인, 소요기간 미안내 | 약관(`/fpp/terms.do`) 확인 필요. 미승인 시 같은 데이터의 CSV를 수동 자료 경로로 사용 |
+| [서울50플러스 API](https://www.50plus.or.kr/apiIndex.do) | 사회공헌 일자리·중장년 일자리·교육 | **실제 호출 성공** (2026-10-17, 세 데이터셋) | 관리자 승인(2026-10-14 신청, 2026-10-17 발급 확인). 한도 미안내 | **확인 필요**: 데이터 페이지는 "이용허락범위 제한 없음"(교육은 표기 없음)인데 포털 회원 약관은 사전 승낙 없는 제3자 제공·상업적 사용을 금지한다(§5) |
 
 인증키는 data.go.kr 두 API가 같은 일반 인증키(Decoding)를 쓴다. 운영 키는 팀 계정으로 발급해 EC2의 비밀값 저장소에 두고 저장소에 넣지 않는다.
 
@@ -55,13 +55,34 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 - 시니어 대상 판정은 `adultPosblAt`만 있고 연령 조건 필드는 없다. 본문(`progrmCn`)의 연령 표현은 F07 원칙대로 **추정하지 않고 "확인 필요"**로 둔다.
 - 공식 신청 경로: `https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=<번호>` (브라우저로 확인). 모집기간이 아닌 공고는 안내 후 목록 페이지로 이동한다.
 
-## 4. 개인정보 취급
+## 4. 서울50플러스 (`openapi.50plus.or.kr/openapi/service`)
+
+요청은 `GET <경로>?_type=json&year=<연도>&pageNo=&numOfRows=&accessKey=<키>`, 응답은 JSON(`response.header.resultCode` `0000` = 정상)이다. 경로는 **API 매뉴얼 PDF(2025-10)** 기준이다. 웹페이지 설명의 `job/list`·`internship/list`는 404("No service was found")다.
+
+| 데이터셋 | 경로 | 2026년 `totalCount` | 필드 |
+|---|---|---|---|
+| 가치동행 일자리(사회공헌) | `job1/list` | 99 | `bizYear`, `orgNm`(운영 기관), `bizNm`(사업명), `rcrtPpl`(모집 인원), `actamtHamt`(활동비 시급), `actperStartDe`/`actperEndDe`(활동기간), `appdurngStartDe`/`appdurngEndDe`(신청기간), `annApprvStatView`(공고 승인 상태) |
+| 일자리(구 인턴십) | `job2/list` | 421 | 위와 같은 구조 + `bizSeNm`(사업 구분: 취업훈련·채용설명회·경력인재지원·시니어 특화), `annRcrtStatNm`(모집 상태) |
+| 교육 | `education/list` | 2,686 | `lctNm`(강좌명), `lctCtt`(강좌 설명), `orgNm`, `crStartDe`/`crEndDe`, `regStartDe`/`regEndDe`(접수기간), `crPpl`, `lctCost`, `lctTypeView`(유료/무료·선착순/승인), `lctStatView`(모집 상태), `rpstLctr`(대표 강사명), `schdCnt` |
+
+**확인된 데이터 문제**
+- **공고 ID·공식 상세/신청 URL이 없다.** 계약의 `application_url`·`source_url`을 응답만으로 만들 수 없다. 중복 판정 키도 `(bizYear, orgNm, bizNm, 신청기간)` 같은 조합으로 만들어야 한다.
+- **지역 필드가 없다.** `orgNm`(예: `성동센터`, `동부캠퍼스`)으로만 추정할 수 있다. 센터는 이름의 자치구, 캠퍼스는 소재지 확인이 필요하다.
+- 가치동행 일자리의 `annApprvStatView`는 샘플 199건 모두 `승인완료`로 **모집 상태가 아니다**. 모집 여부는 신청기간으로 판단한다. 일자리는 `annRcrtStatNm`(`마감`, `신청·접수중`), 교육은 `lctStatView`(샘플에 `마감`, `폐강`)가 있다.
+- 날짜는 매뉴얼의 `YYYYMMDD`가 아니라 실제로는 `YYYY-MM-DD`다. 일자리의 활동기간에는 `-`가 온다.
+- 교육 `lctCtt`에 담당자 이름·전화가, `rpstLctr`에 강사 이름이 들어 있다(개인정보).
+- 교육은 공고 계약의 `activity_type`(`employment`·`volunteering`)에 맞는 값이 없다. MVP에서 교육을 공고로 넣을지 팀 결정이 필요하다.
+
+## 5. 개인정보 취급
 
 두 API 모두 담당자 이름·전화·이메일·상세주소를 준다. 서비스 화면에는 공식 링크로 대신 안내하고, 수집 단계에서 이 필드를 저장할지는 #46(정규화)에서 최소 수집 기준으로 정한다. 원본 샘플(`worker/samples/`)은 `.gitignore`로 커밋을 막았다.
 
-## 5. 남은 확인 사항
+## 6. 남은 확인 사항
 
-- [ ] 서울50플러스 인증키 승인 → 교육·가치동행 일자리 샘플 (미승인 시 CSV 경로)
+- [x] 서울50플러스 인증키 승인 → 세 데이터셋 2025·2026년 샘플 (§4)
+- [ ] 서울50플러스 이용 조건: 회원 약관의 제3자 제공·상업적 사용 금지와 데이터 페이지의 "이용허락범위 제한 없음" 중 어느 것이 API 데이터에 적용되는지 재단에 서면 확인
+- [ ] 서울50플러스 공고별 공식 안내 페이지 URL 형식 (응답에 없음)
+- [ ] 서울50플러스 `orgNm` → 자치구 대응표 (캠퍼스 소재지)
 - [x] 고용24·1365 공식 상세 URL을 브라우저로 확인
 - [ ] `emplymShp`, `acptMthdCd`, `srvcClCode` 코드표 확보 (`progrmSttusSe`는 2·3만 확인)
 - [ ] `getVltrPeriodList` 요청 변수 확인
