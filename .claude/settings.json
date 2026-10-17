@@ -7,6 +7,14 @@
       "Read(!.env.example)",
       "Read(*.pem)",
       "Read(*.key)",
+      "Read(//**/.env)",
+      "Read(//**/.env.local)",
+      "Read(//**/.env.*.local)",
+      "Read(//**/.env.development)",
+      "Read(//**/.env.production)",
+      "Read(//**/.env.test)",
+      "Read(//**/*.pem)",
+      "Read(//**/*.key)",
       "Bash(git push --force*)",
       "Bash(git push * --force*)",
       "Bash(git push -f)",
@@ -21,6 +29,26 @@
       "PowerShell(git push * -f)",
       "PowerShell(git push * -f *)",
       "PowerShell(git push * +*)"
+    ],
+    "ask": [
+      "Bash(git push --delete*)",
+      "Bash(git push * --delete*)",
+      "Bash(git push -d *)",
+      "Bash(git push * -d *)",
+      "Bash(git push * :*)",
+      "Bash(git push * --mirror*)",
+      "Bash(git push --mirror*)",
+      "Bash(git push * --prune*)",
+      "Bash(git push --prune*)",
+      "PowerShell(git push --delete*)",
+      "PowerShell(git push * --delete*)",
+      "PowerShell(git push -d *)",
+      "PowerShell(git push * -d *)",
+      "PowerShell(git push * :*)",
+      "PowerShell(git push * --mirror*)",
+      "PowerShell(git push --mirror*)",
+      "PowerShell(git push * --prune*)",
+      "PowerShell(git push --prune*)"
     ]
   }
 }
