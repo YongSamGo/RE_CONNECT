@@ -13,3 +13,12 @@ paths = [
   '''^team-vault/SW개발보안_obsidian/Security/(Python-2023|SW-Diagnosis-2021)/''',
   '''^\.claude/skills/kisa-secure-coding-python/references/[^/]+\.md$''',
 ]
+
+# 원본 PDF 355쪽의 동일한 하드코드 중요정보 예시를 보존한 전사와 원시 추출본.
+# 실행 코드나 다른 캐시 파일은 예외로 두지 않는다.
+[[allowlists]]
+description = "KISA 2021 PDF 355쪽의 하드코드 중요정보 교육 예시"
+paths = [
+  '''^SW개발보안_obsidian/Security/SW-Diagnosis-2021/제4장-구현단계-보안약점-진단/제2절-보안기능/067-6\.-하드코드된-중요정보\.md$''',
+  '''^legacy/security_kb/data/SW-Diagnosis-2021/extracted/p0355\.txt$''',
+]
