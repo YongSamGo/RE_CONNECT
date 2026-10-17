@@ -31,6 +31,8 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 ## 3. 폴더 구조
 
+작업 착수 전 [진행 기록·통합 게이트](progress.md)와 [이슈 기반 다음 작업 후보](progress/next-tasks.md)를 확인한다. 목록 갱신 명령은 [저장소 관리 도구](../tools/README.md)에 있다.
+
 | 폴더 | 내용 | 담당 |
 | --- | --- | --- |
 | [backend/](../backend/README.md) | FastAPI 서버. 공고 수집기도 이 안의 모듈 | C |
