@@ -1,0 +1,859 @@
+{
+ "lines": [
+  {
+   "text": "467",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    117.31112670898438,
+    301.42083740234375,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:public class G02 extends HttpServlet { ",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    249.3012237548828,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    86.42539978027344,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void doPost(HttpServletRequest req, HttpServletResponse res) throws",
+   "bbox": [
+    108.41957092285156,
+    156.63821411132812,
+    438.84710693359375,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    171.03823852539062,
+    86.39984130859375,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ServletException, IOException {",
+   "bbox": [
+    108.39401245117188,
+    171.03823852539062,
+    237.10446166992188,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    185.43826293945312,
+    86.42540740966797,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ObjectInputStream ois = null;",
+   "bbox": [
+    139.19996643066406,
+    185.43826293945312,
+    260.3963317871094,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    199.83828735351562,
+    86.42540740966797,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ImageInformation retImgInfo = null;",
+   "bbox": [
+    139.199951171875,
+    199.83828735351562,
+    285.6432189941406,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    214.23831176757812,
+    86.42540740966797,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    228.6383056640625,
+    86.41217803955078,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    139.18673706054688,
+    228.6383056640625,
+    156.8252716064453,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    243.03829956054688,
+    86.39278411865234,
+    252.93829345703125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// HttpServletRequest의 InputStream은 사용자 입력값이다.",
+   "bbox": [
+    170.00680541992188,
+    243.03829956054688,
+    401.45245361328125,
+    252.93829345703125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    257.43829345703125,
+    86.42540740966797,
+    267.3382873535156
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ois = new ObjectInputStream(req.getInputStream()); ·····················②",
+   "bbox": [
+    170.03941345214844,
+    257.43829345703125,
+    447.7255554199219,
+    267.3382873535156
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    271.8382873535156,
+    91.40515899658203,
+    281.73828125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "retImgInfo = (ImageInformation) ois.readObject(); ··························①",
+   "bbox": [
+    170.5797882080078,
+    271.8382873535156,
+    447.7274475097656,
+    281.73828125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    78.66000366210938,
+    286.23828125,
+    91.35404205322266,
+    296.1382751464844
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "retImgInfo.setImgUrl(\"SERVERIMGURL\");",
+   "bbox": [
+    170.52865600585938,
+    286.23828125,
+    334.0586853027344,
+    296.1382751464844
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    300.6382751464844,
+    91.33464813232422,
+    310.53826904296875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (Exception e) {",
+   "bbox": [
+    139.7288818359375,
+    300.6382751464844,
+    233.2979736328125,
+    310.53826904296875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    315.03826904296875,
+    91.3840103149414,
+    324.9382629394531
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    139.7782440185547,
+    315.03826904296875,
+    147.72434997558594,
+    324.9382629394531
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    329.4382629394531,
+    91.38578033447266,
+    339.3382568359375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} finally ",
+   "bbox": [
+    108.93968200683594,
+    329.4382629394531,
+    141.59243774414062,
+    339.3382568359375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    78.66000366210938,
+    343.8382568359375,
+    91.3840103149414,
+    353.7382507324219
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    108.93791961669922,
+    343.8382568359375,
+    116.88404083251953,
+    353.7382507324219
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:}",
+   "bbox": [
+    78.66000366210938,
+    358.2382507324219,
+    94.11234283447266,
+    368.13824462890625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음 예제에서 XMLEncoder와 XMLDecoder는 JDK에 포함된 컴포넌트로, javaBeans Persistence ",
+   "bbox": [
+    70.86000061035156,
+    390.6111145019531,
+    459.1934814453125,
+    401.63311767578125
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "기능을 제공하기 위해 XML 직렬화를 사용한다. 아래 코드와 같이 4라인에서 XMLDecoder를 사용",
+   "bbox": [
+    70.86001586914062,
+    407.651123046875,
+    456.3224182128906,
+    418.6731262207031
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하여 사용자가 제공한 데이터를 8라인에서 readObject()를 실행하면서 역직렬화하는 경우 공격자의 ",
+   "bbox": [
+    70.86001586914062,
+    424.6310119628906,
+    459.1611328125,
+    435.65301513671875
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "명령이 실행될 수 있으므로 취약하다고 판정한다.",
+   "bbox": [
+    70.86001586914062,
+    441.61090087890625,
+    258.4090576171875,
+    452.6329040527344
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    478.1512145996094,
+    291.27935791015625,
+    489.1732177734375
+   ],
+   "block": 45,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:private static void byXmlString( String xml ) { ",
+   "bbox": [
+    78.66000366210938,
+    503.0780944824219,
+    277.48822021484375,
+    512.9780883789062
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    517.4780883789062,
+    86.42540740966797,
+    527.3781127929688
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XMLDecoder xd = null; ",
+   "bbox": [
+    108.4195785522461,
+    517.4780883789062,
+    206.65817260742188,
+    527.3781127929688
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    531.8780517578125,
+    86.41217803955078,
+    541.778076171875
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    108.40635681152344,
+    531.8780517578125,
+    128.56871032714844,
+    541.778076171875
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    546.278076171875,
+    86.42539978027344,
+    556.1781005859375
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "xd = new XMLDecoder(new ByteArrayInputStream(xml.getBytes()));",
+   "bbox": [
+    139.199951171875,
+    546.278076171875,
+    415.5252685546875,
+    556.1781005859375
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    560.6780395507812,
+    86.42540740966797,
+    570.5780639648438
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (Exception e) { ",
+   "bbox": [
+    108.4195785522461,
+    560.6780395507812,
+    204.517822265625,
+    570.5780639648438
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    575.0780639648438,
+    86.39366912841797,
+    584.9780883789062
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "e.printStackTrace();",
+   "bbox": [
+    139.168212890625,
+    575.0780639648438,
+    216.21746826171875,
+    584.9780883789062
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    589.47802734375,
+    86.42540740966797,
+    599.3780517578125
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    108.4195785522461,
+    589.47802734375,
+    111.1523208618164,
+    599.3780517578125
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    603.8780517578125,
+    86.42363739013672,
+    613.778076171875
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Object s2 = xd.readObject(); ",
+   "bbox": [
+    108.41780853271484,
+    603.8780517578125,
+    228.2786407470703,
+    613.778076171875
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    618.2780151367188,
+    86.42540740966797,
+    628.1780395507812
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "xd.close();",
+   "bbox": [
+    108.4195785522461,
+    618.2780151367188,
+    149.30581665039062,
+    628.1780395507812
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: }",
+   "bbox": [
+    78.66000366210938,
+    632.6780395507812,
+    98.49266815185547,
+    642.5780639648438
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1:public class G02 extends HttpServlet { \n2:         protected void doPost(HttpServletRequest req, HttpServletResponse res) throws\n3:         ServletException, IOException {\n4:                       ObjectInputStream ois = null;\n5:                       ImageInformation retImgInfo = null;\n6:\n7:                       try {\n8:                                    // HttpServletRequest의 InputStream은 사용자 입력값이다.\n9:                                    ois = new ObjectInputStream(req.getInputStream()); ·····················②\n10:                                  retImgInfo = (ImageInformation) ois.readObject(); ··························①\n11:                                  retImgInfo.setImgUrl(\"SERVERIMGURL\");\n12:                     } catch (Exception e) {\n13:                     ...\n14:        } finally \n15:        ...\n16:}",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    447.7274475097656,
+    369.33824462890624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54
+   ],
+   "text": "1:private static void byXmlString( String xml ) { \n2:         XMLDecoder xd = null; \n3:         try { \n4:                       xd = new XMLDecoder(new ByteArrayInputStream(xml.getBytes()));\n5:         } catch (Exception e) { \n6:                       e.printStackTrace();\n7:         }\n8:         Object s2 = xd.readObject(); \n9:         xd.close();\n10: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    501.8780944824219,
+    415.5252685546875,
+    643.7780639648438
+   ]
+  }
+ ],
+ "native": "467\n제4장구현단계 보안약점 진단\n일반적인 진단의 예\n1:public class G02 extends HttpServlet { \n2:\nprotected void doPost(HttpServletRequest req, HttpServletResponse res) throws\n3:\nServletException, IOException {\n4:\nObjectInputStream ois = null;\n5:\nImageInformation retImgInfo = null;\n6:\n7:\ntry {\n8:\n// HttpServletRequest의 InputStream은 사용자 입력값이다.\n9:\nois = new ObjectInputStream(req.getInputStream()); ·····················②\n10:\nretImgInfo = (ImageInformation) ois.readObject(); ··························①\n11:\nretImgInfo.setImgUrl(\"SERVERIMGURL\");\n12:\n} catch (Exception e) {\n13:\n...\n14:\n} finally \n15:\n...\n16:}\n다음 예제에서 XMLEncoder와 XMLDecoder는 JDK에 포함된 컴포넌트로, javaBeans Persistence \n기능을 제공하기 위해 XML 직렬화를 사용한다. 아래 코드와 같이 4라인에서 XMLDecoder를 사용\n하여 사용자가 제공한 데이터를 8라인에서 readObject()를 실행하면서 역직렬화하는 경우 공격자의 \n명령이 실행될 수 있으므로 취약하다고 판정한다.\n정탐코드의 예\n1:private static void byXmlString( String xml ) { \n2:\nXMLDecoder xd = null; \n3:\ntry { \n4:\nxd = new XMLDecoder(new ByteArrayInputStream(xml.getBytes()));\n5:\n} catch (Exception e) { \n6:\ne.printStackTrace();\n7:\n}\n8:\nObject s2 = xd.readObject(); \n9:\nxd.close();\n10: }\n",
+ "native_sha256": "73dd5acafac4bd52c1dfed9fd670d21e8f5d49b09db544fe031d5b5351a76220",
+ "chars": 1075,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

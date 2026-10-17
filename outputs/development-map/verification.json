@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "tasks": 106,
+  "records": 232,
+  "checks": [
+    "source coverage and fidelity",
+    "search and task navigation",
+    "dependency paths",
+    "group navigation",
+    "zoom buttons and wheel",
+    "pan",
+    "SVG text bounds",
+    "mobile overflow",
+    "runtime errors"
+  ],
+  "errors": []
+}

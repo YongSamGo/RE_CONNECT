@@ -1,0 +1,474 @@
+{
+ "lines": [
+  {
+   "text": "152",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등",
+   "bbox": [
+    76.5,
+    139.81112670898438,
+    400.5531921386719,
+    150.8331298828125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    76.5,
+    186.8150634765625,
+    226.03147888183594,
+    198.89306640625
+   ],
+   "block": 16,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    164.63999938964844,
+    211.17813110351562,
+    179.7670440673828,
+    221.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    339.8399963378906,
+    211.17813110351562,
+    387.18792724609375,
+    221.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    157.1999969482422,
+    231.51821899414062,
+    187.20726013183594,
+    241.418212890625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "취약한 암호화 알고리즘 사용",
+   "bbox": [
+    316.01995849609375,
+    231.51821899414062,
+    411.01104736328125,
+    241.418212890625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    157.1999969482422,
+    251.7982177734375,
+    187.20726013183594,
+    261.6982116699219
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "충분하지 않은 키 길이 사용",
+   "bbox": [
+    318.47943115234375,
+    251.7982177734375,
+    408.55072021484375,
+    261.6982116699219
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    157.1999969482422,
+    272.1380920410156,
+    187.20726013183594,
+    282.0380859375
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "적절하지 않은 난수 값 사용",
+   "bbox": [
+    318.47943115234375,
+    272.1380920410156,
+    408.55072021484375,
+    282.0380859375
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    157.1999969482422,
+    292.4781188964844,
+    187.20726013183594,
+    302.37811279296875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "부적절한 인증서 유효성 검증",
+   "bbox": [
+    316.01995849609375,
+    292.4781188964844,
+    411.01104736328125,
+    302.37811279296875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    157.1999969482422,
+    312.75811767578125,
+    187.20726013183594,
+    322.6581115722656
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "솔트 없이 일방향 해쉬함수 사용",
+   "bbox": [
+    311.22003173828125,
+    312.75811767578125,
+    415.871826171875,
+    322.6581115722656
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    363.455078125,
+    132.05699157714844,
+    375.5330810546875
+   ],
+   "block": 23,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐327 Use of a Broken or Riscky Cryptographic Algorithm, MITRE,",
+   "bbox": [
+    91.5,
+    387.1199951171875,
+    408.74749755859375,
+    398.1531066894531
+   ],
+   "block": 24,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/defini- tions/327.html",
+   "bbox": [
+    105.23997497558594,
+    403.1510925292969,
+    320.07342529296875,
+    414.173095703125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE‐326 Inadequate Encryption Strength, MITRE,",
+   "bbox": [
+    91.49956512451172,
+    424.1401062011719,
+    325.2966613769531,
+    435.1732177734375
+   ],
+   "block": 26,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/326.html",
+   "bbox": [
+    105.23995971679688,
+    440.17120361328125,
+    311.67547607421875,
+    451.1932067871094
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③WASC Insufficient Data Protection Working, WASC,",
+   "bbox": [
+    91.49954986572266,
+    461.1711120605469,
+    331.43536376953125,
+    472.193115234375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/33923604/Insufficient%20Data%20Prote",
+   "bbox": [
+    105.23995971679688,
+    477.1309814453125,
+    461.52606201171875,
+    488.1529846191406
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ction%20Working",
+   "bbox": [
+    105.23995971679688,
+    493.1509704589844,
+    182.25018310546875,
+    504.1729736328125
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④2016 OWASP Application Security Verification Standard, OWASP, Cryptography ",
+   "bbox": [
+    91.49954986572266,
+    514.1508178710938,
+    464.84576416015625,
+    525.1728515625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "at Rest Verification Re- quirements,",
+   "bbox": [
+    105.239013671875,
+    530.1708374023438,
+    263.3645324707031,
+    541.19287109375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    105.239013671875,
+    546.1306762695312,
+    461.67462158203125,
+    557.1527099609375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Stan- dard_Project",
+   "bbox": [
+    105.239013671875,
+    562.150634765625,
+    213.38768005371094,
+    573.1726684570312
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Cryptographic Storage Cheat Sheet, OWASP,",
+   "bbox": [
+    91.49860382080078,
+    583.1505737304688,
+    303.1278381347656,
+    594.172607421875
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet",
+   "bbox": [
+    105.239013671875,
+    599.1705322265625,
+    418.0505065917969,
+    610.1925659179688
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "bbox": [
+    76.31999969482422,
+    205.50800069173178,
+    459.3600158691406,
+    327.4280090332031
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "보안기능",
+     "취약한 암호화 알고리즘 사용"
+    ],
+    [
+     "보안기능",
+     "충분하지 않은 키 길이 사용"
+    ],
+    [
+     "보안기능",
+     "적절하지 않은 난수 값 사용"
+    ],
+    [
+     "보안기능",
+     "부적절한 인증서 유효성 검증"
+    ],
+    [
+     "보안기능",
+     "솔트 없이 일방향 해쉬함수 사용"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n보안기능\n취약한 암호화 알고리즘 사용\n보안기능\n충분하지 않은 키 길이 사용\n보안기능\n적절하지 않은 난수 값 사용\n보안기능\n부적절한 인증서 유효성 검증\n보안기능\n솔트 없이 일방향 해쉬함수 사용"
+  }
+ ],
+ "native": "152\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n보안기능\n취약한 암호화 알고리즘 사용\n보안기능\n충분하지 않은 키 길이 사용\n보안기능\n적절하지 않은 난수 값 사용\n보안기능\n부적절한 인증서 유효성 검증\n보안기능\n솔트 없이 일방향 해쉬함수 사용\n마. 참고자료\n①CWE‐327 Use of a Broken or Riscky Cryptographic Algorithm, MITRE,\nhttp://cwe.mitre.org/data/defini- tions/327.html\n②CWE‐326 Inadequate Encryption Strength, MITRE,\nhttp://cwe.mitre.org/data/definitions/326.html\n③WASC Insufficient Data Protection Working, WASC,\nhttp://projects.webappsec.org/w/page/33923604/Insufficient%20Data%20Prote\nction%20Working\n④2016 OWASP Application Security Verification Standard, OWASP, Cryptography \nat Rest Verification Re- quirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Stan- dard_Project\n⑤Cryptographic Storage Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet\n",
+ "native_sha256": "5243d7ce020cb2f6d7857e5686949dc8158b62041c9a442873319461c9cf14b7",
+ "chars": 868,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

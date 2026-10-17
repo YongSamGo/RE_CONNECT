@@ -1,0 +1,711 @@
+{
+ "lines": [
+  {
+   "text": "355",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "암호화 과정에 사용하는 암호화 키는 외부 공간(파일)에 안전한 방식으로 암호화하여 보관해야 하며, ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.2110290527344,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "암호화된 암호화 키는 복호화하여 사용한다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    238.4868927001953,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    170.77108764648438,
+    303.40240478515625,
+    181.7930908203125
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다. ",
+   "bbox": [
+    77.94000244140625,
+    190.17813110351562,
+    349.2361145019531,
+    200.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    77.94000244140625,
+    218.97811889648438,
+    85.70540618896484,
+    228.87811279296875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] key = GetKey(./password.ini);",
+   "bbox": [
+    94.4395980834961,
+    218.97811889648438,
+    242.79493713378906,
+    228.87811279296875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94000244140625,
+    233.37811279296875,
+    85.70540618896484,
+    243.27810668945312
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] iv = GetIV(./password.ini);",
+   "bbox": [
+    94.4395980834961,
+    233.37811279296875,
+    228.63841247558594,
+    243.27810668945312
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    247.77810668945312,
+    85.70539855957031,
+    257.6781005859375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);",
+   "bbox": [
+    94.4395980834961,
+    247.77810668945312,
+    371.6050109863281,
+    257.6781005859375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    276.5780944824219,
+    85.70539855957031,
+    286.47808837890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "CryptoStream cStream = new CryptoStream(fStream, new ",
+   "bbox": [
+    94.4395980834961,
+    276.5780944824219,
+    336.77301025390625,
+    286.47808837890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "TripleDESCryptoServiceProvider().CreateEncryptor(Decrypt(key),",
+   "bbox": [
+    94.4395980834961,
+    290.97808837890625,
+    348.56689453125,
+    300.8780822753906
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Decrypt(iv)),",
+   "bbox": [
+    91.14002990722656,
+    305.3780822753906,
+    139.38970947265625,
+    315.278076171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "CryptoStreamMode.Write);",
+   "bbox": [
+    97.44032287597656,
+    319.778076171875,
+    204.08343505859375,
+    329.6780700683594
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하드코드된 비밀번호를 사용할 경우, 코드에 접근 권한이 있는 사용자가 비밀번호를 알 수 있습니다.",
+   "bbox": [
+    70.86000061035156,
+    352.2110900878906,
+    451.6288146972656,
+    363.23309326171875
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    209.4600067138672,
+    392.1711120605469,
+    314.99664306640625,
+    403.193115234375
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: typedef int SQLSMALLINT; ",
+   "bbox": [
+    77.94000244140625,
+    411.5780944824219,
+    203.29629516601562,
+    421.47808837890625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: int dbaccess(char *user, char *passwd){ ",
+   "bbox": [
+    77.94000244140625,
+    425.97808837890625,
+    256.8316345214844,
+    435.8780822753906
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    440.3780822753906,
+    85.67454528808594,
+    450.278076171875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char *server = \"DBserver\"; ",
+   "bbox": [
+    94.40874481201172,
+    440.3780822753906,
+    206.0985870361328,
+    450.278076171875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    454.778076171875,
+    85.6710205078125,
+    464.6780700683594
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char *cpasswd; ",
+   "bbox": [
+    94.40522003173828,
+    454.778076171875,
+    159.55296325683594,
+    464.6780700683594
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    469.1780700683594,
+    85.70539855957031,
+    479.07806396484375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLHENV henv; ",
+   "bbox": [
+    94.4395980834961,
+    469.1780700683594,
+    163.6732177734375,
+    479.07806396484375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    483.57806396484375,
+    85.70539855957031,
+    493.4780578613281
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLHDBC hdbc; ",
+   "bbox": [
+    94.4395980834961,
+    483.57806396484375,
+    164.4983367919922,
+    493.4780578613281
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.94000244140625,
+    497.9780578613281,
+    85.70540618896484,
+    507.8780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv); ",
+   "bbox": [
+    94.43960571289062,
+    497.9780578613281,
+    368.6756286621094,
+    507.8780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.94000244140625,
+    512.3780517578125,
+    85.70539855957031,
+    522.278076171875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); ",
+   "bbox": [
+    94.4395980834961,
+    512.3780517578125,
+    305.8684387207031,
+    522.278076171875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//암호화된 비밀번호와 솔트를 사용합니다. 코드에 접근 권한이 있는 사용자는 해당 비밀번호와 솔트를 ",
+   "bbox": [
+    86.75971221923828,
+    526.7780151367188,
+    442.3624572753906,
+    536.6780395507812
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "획득할 수 있습니다.",
+   "bbox": [
+    94.55947875976562,
+    541.177978515625,
+    163.6890869140625,
+    551.0780029296875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.9391098022461,
+    555.5780029296875,
+    85.67189025878906,
+    565.47802734375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "cpasswd = crypt(passwd, “salt”);",
+   "bbox": [
+    94.40608978271484,
+    555.5780029296875,
+    229.46441650390625,
+    565.47802734375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: if (strcmp(cpasswd, \"68af404b513073582b6c63e6b\") != 0) { ",
+   "bbox": [
+    77.94000244140625,
+    569.97802734375,
+    342.3980407714844,
+    579.8780517578125
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94088745117188,
+    584.3779907226562,
+    90.60848236083984,
+    594.2780151367188
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// USE_OF_HARDCODED_CRYPTOGRAPHIC_KEY ",
+   "bbox": [
+    99.40262603759766,
+    584.3779907226562,
+    302.5898742675781,
+    594.2780151367188
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94088745117188,
+    598.7779541015625,
+    90.62081146240234,
+    608.677978515625
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "printf(\"Incorrect password\\n\"); ",
+   "bbox": [
+    99.41495513916016,
+    598.7779541015625,
+    223.04420471191406,
+    608.677978515625
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    77.94088745117188,
+    613.177978515625,
+    90.62611389160156,
+    623.0780029296875
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return -1;",
+   "bbox": [
+    99.42025756835938,
+    613.177978515625,
+    140.35678100585938,
+    623.0780029296875
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "text": "//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다. \n1:    byte[] key = GetKey(./password.ini);\n2:    byte[] iv = GetIV(./password.ini);\n3:    FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);\n4:    CryptoStream cStream = new CryptoStream(fStream, new \nTripleDESCryptoServiceProvider().CreateEncryptor(Decrypt(key),\nDecrypt(iv)),\nCryptoStreamMode.Write);",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    181.8930908203125,
+    371.6050109863281,
+    330.87807006835936
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34
+   ],
+   "text": "1: typedef int SQLSMALLINT; \n2: int dbaccess(char *user, char *passwd){ \n3:    char *server = \"DBserver\"; \n4:    char *cpasswd; \n5:    SQLHENV henv; \n6:    SQLHDBC hdbc; \n7:    SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv); \n8:    SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); \n//암호화된 비밀번호와 솔트를 사용합니다. 코드에 접근 권한이 있는 사용자는 해당 비밀번호와 솔트를 \n획득할 수 있습니다.",
+   "language": "c",
+   "label": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    77.94000244140625,
+    403.293115234375,
+    442.3624572753906,
+    552.2780029296875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+   ],
+   "text": "9:    cpasswd = crypt(passwd, “salt”);\n10: if (strcmp(cpasswd, \"68af404b513073582b6c63e6b\") != 0) { \n11:    // USE_OF_HARDCODED_CRYPTOGRAPHIC_KEY \n12:    printf(\"Incorrect password\\n\"); \n13:    return -1;",
+   "language": "text",
+   "label": "획득할 수 있습니다.",
+   "bbox": [
+    77.9391098022461,
+    554.3780029296875,
+    342.3980407714844,
+    624.2780029296875
+   ]
+  }
+ ],
+ "native": "355\n제4장구현단계 보안약점 진단\n암호화 과정에 사용하는 암호화 키는 외부 공간(파일)에 안전한 방식으로 암호화하여 보관해야 하며, \n암호화된 암호화 키는 복호화하여 사용한다.\n안전한 코드의 예 C#\n//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다. \n1:\nbyte[] key = GetKey(./password.ini);\n2:\nbyte[] iv = GetIV(./password.ini);\n3:\nFileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);\n4:\nCryptoStream cStream = new CryptoStream(fStream, new \nTripleDESCryptoServiceProvider().CreateEncryptor(Decrypt(key),\nDecrypt(iv)),\nCryptoStreamMode.Write);\n하드코드된 비밀번호를 사용할 경우, 코드에 접근 권한이 있는 사용자가 비밀번호를 알 수 있습니다.\n안전하지 않은 코드의 예 C\n1: typedef int SQLSMALLINT; \n2: int dbaccess(char *user, char *passwd){ \n3:\nchar *server = \"DBserver\"; \n4:\nchar *cpasswd; \n5:\nSQLHENV henv; \n6:\nSQLHDBC hdbc; \n7:\nSQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv); \n8:\nSQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); \n//암호화된 비밀번호와 솔트를 사용합니다. 코드에 접근 권한이 있는 사용자는 해당 비밀번호와 솔트를 \n획득할 수 있습니다.\n9:\ncpasswd = crypt(passwd, “salt”);\n10: if (strcmp(cpasswd, \"68af404b513073582b6c63e6b\") != 0) { \n11:\n// USE_OF_HARDCODED_CRYPTOGRAPHIC_KEY \n12:\nprintf(\"Incorrect password\\n\"); \n13:\nreturn -1;\n",
+ "native_sha256": "bb707f60e14d3cdaa6ba1e8781175460d8abf417093e974985bcb45116322d0a",
+ "chars": 1065,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

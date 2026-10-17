@@ -1,0 +1,533 @@
+{
+ "lines": [
+  {
+   "text": "378",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.0654067993164,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Enumeration<JarEntry> ens = jf.entries(); ",
+   "bbox": [
+    114.05957794189453,
+    142.23818969726562,
+    282.6142883300781,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    92.0654067993164,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while (ens.hasMoreElements()) { ",
+   "bbox": [
+    114.05957794189453,
+    156.63821411132812,
+    248.5334930419922,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30000305175781,
+    171.03823852539062,
+    92.0654067993164,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "JarEntry en = ens.nextElement(); ",
+   "bbox": [
+    149.2793426513672,
+    171.03823852539062,
+    287.9952087402344,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30000305175781,
+    185.43826293945312,
+    97.0099105834961,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (!en.isDirectory()) { ",
+   "bbox": [
+    149.7844696044922,
+    185.43826293945312,
+    237.40151977539062,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30000305175781,
+    199.83828735351562,
+    97.04515838623047,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (en.toString().equals(path)) { ",
+   "bbox": [
+    180.59921264648438,
+    199.83828735351562,
+    305.100341796875,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30000305175781,
+    214.23831176757812,
+    97.04517364501953,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] data = readAll(jar.getInputStream(en), en.getSize());",
+   "bbox": [
+    211.43955993652344,
+    214.23831176757812,
+    447.65771484375,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30000305175781,
+    228.6383056640625,
+    97.04515838623047,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "CodeSigner[] signers = en.getCodeSigners();",
+   "bbox": [
+    211.43954467773438,
+    228.6383056640625,
+    393.1264343261719,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30000305175781,
+    243.03829956054688,
+    97.04515838623047,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (signers != null && signers.length != 0){",
+   "bbox": [
+    211.43954467773438,
+    243.03829956054688,
+    387.0745849609375,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.30000305175781,
+    257.43829345703125,
+    97.02400970458984,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    233.37820434570312,
+    257.43829345703125,
+    241.32431030273438,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.30000305175781,
+    271.8382873535156,
+    97.04517364501953,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    211.4395751953125,
+    271.8382873535156,
+    214.1723175048828,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: ",
+   "bbox": [
+    84.30000305175781,
+    286.23828125,
+    99.57603454589844,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    180.59922790527344,
+    286.23828125,
+    183.33197021484375,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    84.30000305175781,
+    300.6382751464844,
+    97.04517364501953,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    149.81973266601562,
+    300.6382751464844,
+    152.55247497558594,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    84.30000305175781,
+    315.03826904296875,
+    97.04517364501953,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    114.59907531738281,
+    315.03826904296875,
+    117.33181762695312,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    84.30000305175781,
+    329.4382629394531,
+    96.98699188232422,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return null; ",
+   "bbox": [
+    114.5408935546875,
+    329.4382629394531,
+    162.0668487548828,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:}",
+   "bbox": [
+    84.30000305175781,
+    343.8382568359375,
+    99.7523422241211,
+    353.7382507324219
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    396.2751770019531,
+    132.05699157714844,
+    408.3531799316406
+   ],
+   "block": 30,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-347 : Improper Verification of Cryptographic Signature, MITRE,",
+   "bbox": [
+    91.5,
+    419.95111083984375,
+    406.193603515625,
+    430.9731140136719
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/347.html",
+   "bbox": [
+    105.24041748046875,
+    435.9710998535156,
+    311.67596435546875,
+    446.99310302734375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "7:         Enumeration<JarEntry> ens = jf.entries(); \n8:         while (ens.hasMoreElements()) { \n9:                         JarEntry en = ens.nextElement(); \n10:                       if (!en.isDirectory()) { \n11:                                    if (en.toString().equals(path)) { \n12:                                                 byte[] data = readAll(jar.getInputStream(en), en.getSize());\n13:                                                 CodeSigner[] signers = en.getCodeSigners();\n14:                                                 if (signers != null && signers.length != 0){\n15:                                                           ...\n16:                                                 }\n17:                                    }\n18:                       }\n19:        }\n20:        return null; \n21:}",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    447.65771484375,
+    354.93825073242186
+   ]
+  }
+ ],
+ "native": "378\n오탐코드의 예\n7:\nEnumeration<JarEntry> ens = jf.entries(); \n8:\nwhile (ens.hasMoreElements()) { \n9:\nJarEntry en = ens.nextElement(); \n10:\nif (!en.isDirectory()) { \n11:\nif (en.toString().equals(path)) { \n12:\nbyte[] data = readAll(jar.getInputStream(en), en.getSize());\n13:\nCodeSigner[] signers = en.getCodeSigners();\n14:\nif (signers != null && signers.length != 0){\n15:\n...\n16:\n}\n17: \n}\n18:\n}\n19:\n}\n20:\nreturn null; \n21:}\n마. 참고자료\n①CWE-347 : Improper Verification of Cryptographic Signature, MITRE,\nhttp://cwe.mitre.org/data/definitions/347.html\n",
+ "native_sha256": "dce9c299718980ee7a2eb0addf098f922fa45a66bebd585fef189012db312667",
+ "chars": 541,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

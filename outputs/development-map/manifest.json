@@ -1,0 +1,42 @@
+{
+  "sources": [
+    {
+      "path": "Plan/Implementation_Plan.md",
+      "sha256": "3f078cf630452299d8ff97c8f5e275d08221f7e190a81860606c202aa579b0cb",
+      "sections": 174
+    },
+    {
+      "path": "Plan/01_UX_Flow.md",
+      "sha256": "ff059b429ffa5d7f94eaa2b186f9bdeef04bb6a90cbdb92af82ec16399d233cc",
+      "sections": 12
+    },
+    {
+      "path": "Plan/02_Data_Design.md",
+      "sha256": "246e461b22561edf5160547d0e10cb06f2b3c319b33f40222fb76f33ff89bfb8",
+      "sections": 11
+    },
+    {
+      "path": "Plan/03_Architecture_and_Dependencies.md",
+      "sha256": "e2127c6bcc11c8c84f913c151e7f28e81ab5e722accea586f44cf957b4d42278",
+      "sections": 10
+    },
+    {
+      "path": "Plan/04_Functional_Specification.md",
+      "sha256": "5cdc9e0613731765cfeb8a52fa274c701d7a2afde4350a3757e783ff541bb4e3",
+      "sections": 15
+    },
+    {
+      "path": "Plan/05_Engineering_Constraints.md",
+      "sha256": "386d7aae3ad0b0c9cea32b32e8f3ca5e486f7cfa37d4ee45998ae53169dd98a2",
+      "sections": 10
+    }
+  ],
+  "tasks": 106,
+  "groups": 14,
+  "records": 232,
+  "dependency_edges": 245,
+  "svg_dimensions": [
+    8400,
+    23522
+  ]
+}

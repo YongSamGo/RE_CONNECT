@@ -1,0 +1,22 @@
+192
+정탐코드의 예
+3: ......
+4: String name = request.getParameter(“name”); 
+5: Query query = session.createQuery(“from Student where studentName = ‘” +  name 
++ “’ “);
+아래 코드에서는 외부 입력값이 위치하는 부분을 ?로 설정하고, 실행 시에 해당 파라미터가 전달되도록 
+수정함으로써 외부의 입력(name)이 쿼리의 구조를 변경시키는 것을 방지하고 있어 취약하지 않다.
+오탐코드의 예
+1: import org.hibernate.Query
+2: import org.hibernate.Session
+3: ......
+4: String name = request.getParameter(“name”);
+5: Query query = session.createQuery(“from Student where studentName = ? “);
+6: query.setString(0, name);
+오탐코드의 예
+1: import org.hibernate.Query
+2: import org.hibernate.Session
+3: ......
+4: String name = request.getParameter(“name”);
+5: Query query = session.createQuery(“from Student where studentName = :name “);
+6: query.setParameter(“name”, name);

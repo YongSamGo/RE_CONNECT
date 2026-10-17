@@ -1,0 +1,33 @@
+533
+제5장부록
+1.6.1. 주요기능에 CSRF 토큰 운영
+<input type=”hidden” name=”PARAM_CSRF_TOKEN”
+value=”${SESSION_CSRF_TOKEN}”/> 
+ : 
+XSS 취약점을 이용한 자동화된 공격을 방어하기 위해서는 CAPTCHA를 이용하여 사용자와 상호 처리 가능하도록 
+해야 한다.
+클라이언트에서 데이터 처리를 요청하면 세션에 저장된 토큰과 파라미터로 전달된 토큰을 비교하여 일치하는 경우
+에는 요청을 처리하고, 일치하지 않는 경우에는 오류 처리한다.
+String sessionToken = (String)session.getAttribute(“SESSION_CSRF_TOKEN”);
+String paramToken = request.getParameter(“PARAM_CSRF_TOKEN”); 
+if (paramToken != null && paramToken.equals(sessionToken)) { 
+ // 토큰 일치 = 정상적인 절차에 따른 요청 -> 요청 처리 
+} else { 
+ // 토큰 불일치 = 비정상적인 절차에 따른 요청 -> 오류 처리 
+} 
+: 
+토큰 검증 로직은 개별 컨트롤러 또는 인터셉터(interceptor)와 같은 공통 모듈에서 구현할 수 있다.
+1.6.2. 주요 기능에 대해 재인증 처리
+비밀번호 변경, 회원 정보 수정, 계좌 이체, ... 와 같은 주요 기능에 대해서는 요청을 처리하기 전에 재인증을 수행하며, 
+필요에 따라서는 추가 인증수단 도입을 검토한다.
+1.6.3. CSRF 방어를 위한 프레임워크 및 라이브러리
+개발환경
+활용 가능한 프레임워크 및 라이브러리
+Java
+• Spring Security
+• Apache Struts
+• OWASP CSRFGuard
+Python
+• Django
+PHP
+• CSRF Protector

@@ -1,0 +1,51 @@
+237
+제4장구현단계 보안약점 진단
+다음의 예제는 파일의 확장자를 체크하여 필터링하고 있으나, 확장자의 대소문자구분을 하지 않아 
+JSP, Jsp, ASP, PHP, Php 등의 확장자가 업로드 가능하다.
+정탐코드의 예
+1: … 
+2: String fileName = file.getOriginalFilename(); 
+3:
+if ( fileName != null ) { 
+4:
+if ( !fileName.endsWith(“.jsp”) ) { 
+5:
+/* file 업로드 루틴 */ 
+6:
+}
+7:
+}
+8: …
+다음의 예제는 파일의 확장자를 체크하여 필터링하고 있으므로 안전하다.
+오탐코드의 예
+1:
+String orginFileName = file.getOriginalFilename(); 
+2:
+//--------------------------------------
+3:
+// 원 파일명이 없는 경우 처리 
+4:
+// (첨부가 되지 않은 input file type) 
+5:
+//--------------------------------------
+6:
+if (“”.equals(orginFileName)) { continue } 
+7:
+////------------------------------------
+8:
+int index = orginFileName.lastIndexOf(“.”); 
+9:
+//String fileName = orginFileName.substring(0, index); 
+10:
+String fileExt = orginFileName.substring(index + 1);11:
+/* 확장자 체크 */
+12:
+for(Object fileExclusionExt : this.fileExclusionExtension) { 
+13:
+if( ((String) fileExclusionExt).equals(fileExt.toLowerCase())){ 
+14:
+throw new Exception(“egume.message.error.file.exclusion.extension”);
+15:
+}
+16:
+}

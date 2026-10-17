@@ -1,0 +1,264 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "110",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    78.60518646240234,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "프로그램 개발 시에 주석문 등에 남겨놓은 사용자 계정이나 패스워드 등의 정보는 개발 완료 후 확실하게 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.9637451171875,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "삭제해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    111.89009094238281,
+    125.37830352783203,
+    121.83747863769531
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    155.03536987304688,
+    319.7541809082031,
+    164.9827423095703
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    176.44021606445312,
+    94.51471710205078,
+    184.94943237304688
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    191.66091918945312,
+    94.51471710205078,
+    200.17013549804688
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    207.00144958496094,
+    94.51471710205078,
+    215.5106658935547
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    222.22215270996094,
+    94.51471710205078,
+    230.7313690185547
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def user_login(id, passwd):",
+   "bbox": [
+    104.41199493408203,
+    175.9385223388672,
+    210.5545196533203,
+    184.94943237304688
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 주석문에 포함된 민감한 정보는 삭제",
+   "bbox": [
+    104.41199493408203,
+    191.1592254638672,
+    249.93128967285156,
+    200.17013549804688
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  result = login(id, passwd)",
+   "bbox": [
+    104.41199493408203,
+    206.499755859375,
+    213.8599853515625,
+    215.5106658935547
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return result",
+   "bbox": [
+    104.41199493408203,
+    221.720458984375,
+    161.49826049804688,
+    230.7313690185547
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    298.4934387207031,
+    119.12395477294922,
+    309.0400390625
+   ],
+   "block": 16,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-615: Inclusion of Sensitive Information in Source Code Comments, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    320.2338562011719,
+    410.87469482421875,
+    329.22247314453125
+   ],
+   "block": 17,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/615.html",
+   "bbox": [
+    77.32001495361328,
+    335.57440185546875,
+    267.01031494140625,
+    344.5630187988281
+   ],
+   "block": 18,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "text": "1: def user_login(id, passwd):\n2:   # 주석문에 포함된 민감한 정보는 삭제\n3:   result = login(id, passwd)\n4:   return result",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    165.0827423095703,
+    249.93128967285156,
+    231.93136901855468
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n110\n프로그램 개발 시에 주석문 등에 남겨놓은 사용자 계정이나 패스워드 등의 정보는 개발 완료 후 확실하게 \n삭제해야 한다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\ndef user_login(id, passwd):\n  # 주석문에 포함된 민감한 정보는 삭제\n  result = login(id, passwd)\n  return result\n라. 참고자료\n① CWE-615: Inclusion of Sensitive Information in Source Code Comments, MITRE,\nhttps://cwe.mitre.org/data/definitions/615.html\n",
+ "native_sha256": "0ffc10fcaaa0f1d7f41d3445e7e1d24c6f88008235e5a04704f1dcf4ff74e8a9",
+ "chars": 341,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

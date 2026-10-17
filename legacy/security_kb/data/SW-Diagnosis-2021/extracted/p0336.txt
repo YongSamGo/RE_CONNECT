@@ -1,0 +1,10 @@
+336
+마. 참고자료
+[1] CWE-327 Use of a Broken or Riscky Cryptographic Algorithm, MITRE,
+http://cwe.mitre.org/data/definitions/327.html 
+[2] Do not use insecure or weak cryptographic algorithms, CERT,
+http://www.securecoding.cert.org/confluence/display/java/MSC61-J.+Do+not+
+use+insecure+or+weak+cryptographic+algorithms?focusedCommentId=1 
+86843241#comment-186843241 
+[3] Cryptanalysis, OWASP,
+https://www.owasp.org/index.php/Cryptanalysis

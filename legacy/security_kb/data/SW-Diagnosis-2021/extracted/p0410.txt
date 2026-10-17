@@ -1,0 +1,29 @@
+410
+아래 C 코드는 공유 자원 account에 대해 lock을 설정하지 않아 경쟁 조건이 발생할 수 있다. 입금과 
+출금이 빈번하게 발생하는 상황에서 경쟁 조건이 발생하면 account의 값이 달라진다. 아래 ex1은 
+정상적으로 deposit과 withdraw가 호출되는 상황이고 ex2는 경쟁 조건이 발생하는 상황이다. 최종 
+account의 값이 0과 -100으로 다른 것을 확인할 수 있다.
+ex1) deposit(100) 호출 : (account: 0)
+deposit(100) 종료 : (account: 100)
+withdraw(100) 호출: (account: 100)
+withdraw(100) 종료: (account: 0) 
+ex2) deposit(100) 호출 : (account: 0)
+withdraw(100) 호출: (account: 0)
+deposit(100) 종료 : (account: 100)
+withdraw(100) 종료: (account: -100)
+안전하지 않은 코드의 예 C
+1: static volatile double account;
+2: void deposit(int amount) {
+// lock 없이 공유 자원에 접근
+3:
+account += amount;
+4: }
+5: void withdraw(int amount) {
+6:
+account -= amount;
+7: }
+아래 C 코드는 mutex_lock()로 공유 자원에 대한 동시 접근을 제한한 것이다.
+안전한 코드의 예 C
+1: static volatile double account; 
+2: static mtx_t account_lock;
+3: void deposit(int amount) {

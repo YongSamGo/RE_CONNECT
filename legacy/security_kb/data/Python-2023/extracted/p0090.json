@@ -1,0 +1,738 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "84",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    82.23493194580078,
+    119.392578125,
+    94.51488494873047,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    82.23493194580078,
+    133.05523681640625,
+    94.51488494873047,
+    141.564453125
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    82.23493194580078,
+    146.5980682373047,
+    94.51488494873047,
+    155.10728454589844
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    82.23493194580078,
+    160.14088439941406,
+    94.51488494873047,
+    168.6501007080078
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    82.23493194580078,
+    173.6837158203125,
+    94.51488494873047,
+    182.19293212890625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    82.23493194580078,
+    187.22653198242188,
+    94.51488494873047,
+    195.73574829101562
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    82.23493194580078,
+    200.7693634033203,
+    94.51488494873047,
+    209.27857971191406
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    82.23493194580078,
+    214.43203735351562,
+    94.51488494873047,
+    222.94125366210938
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    82.23493194580078,
+    227.974853515625,
+    94.51488494873047,
+    236.48406982421875
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25:",
+   "bbox": [
+    82.23493194580078,
+    241.51768493652344,
+    94.51488494873047,
+    250.0269012451172
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26:",
+   "bbox": [
+    82.23493194580078,
+    255.06051635742188,
+    94.51488494873047,
+    263.5697326660156
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27:",
+   "bbox": [
+    82.23493194580078,
+    268.60333251953125,
+    94.51488494873047,
+    277.112548828125
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28:",
+   "bbox": [
+    82.23493194580078,
+    282.1461486816406,
+    94.51488494873047,
+    290.6553649902344
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29:",
+   "bbox": [
+    82.23493194580078,
+    295.8088073730469,
+    94.51488494873047,
+    304.3180236816406
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30:",
+   "bbox": [
+    82.23493194580078,
+    309.3516540527344,
+    94.51488494873047,
+    317.8608703613281
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "31:",
+   "bbox": [
+    82.23493194580078,
+    322.89447021484375,
+    94.51488494873047,
+    331.4036865234375
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "32:",
+   "bbox": [
+    82.23493194580078,
+    336.4372863769531,
+    94.51488494873047,
+    344.9465026855469
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "33:",
+   "bbox": [
+    82.23493194580078,
+    349.9801025390625,
+    94.51488494873047,
+    358.48931884765625
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "34:",
+   "bbox": [
+    82.23493194580078,
+    363.52294921875,
+    94.51488494873047,
+    372.03216552734375
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "35:",
+   "bbox": [
+    82.23493194580078,
+    377.18560791015625,
+    94.51488494873047,
+    385.69482421875
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "36:",
+   "bbox": [
+    82.23493194580078,
+    390.7284240722656,
+    94.51488494873047,
+    399.2376403808594
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:",
+   "bbox": [
+    104.41199493408203,
+    119.392578125,
+    370.46875,
+    127.90178680419922
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    s.connect((HOST, PORT))",
+   "bbox": [
+    104.41199493408203,
+    133.05523681640625,
+    220.0941925048828,
+    141.564453125
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    s.sendall(enc_passowrd.encode('utf-8'))",
+   "bbox": [
+    104.41199493408203,
+    146.5980682373047,
+    273.6802673339844,
+    155.10728454589844
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    data = s.recv(1024)",
+   "bbox": [
+    104.41199493408203,
+    160.14088439941406,
+    198.27584838867188,
+    168.6501007080078
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    .......",
+   "bbox": [
+    104.41199493408203,
+    173.6837158203125,
+    139.2135772705078,
+    182.19293212890625
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "class AEScipher:",
+   "bbox": [
+    104.41199493408203,
+    200.7693634033203,
+    169.6766357421875,
+    209.27857971191406
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  BS = AES.block_size",
+   "bbox": [
+    104.41199493408203,
+    214.43203735351562,
+    194.30715942382812,
+    222.94125366210938
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def __init__(self, s_key):",
+   "bbox": [
+    104.41199493408203,
+    241.51768493652344,
+    208.03753662109375,
+    250.0269012451172
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    self.s_key = hashlib.sha256(s_key.encode(\"utf-8\")).digest()",
+   "bbox": [
+    104.41199493408203,
+    255.06051635742188,
+    349.32470703125,
+    263.5697326660156
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def pad(self, m):",
+   "bbox": [
+    104.41199493408203,
+    282.1461486816406,
+    179.5067901611328,
+    290.6553649902344
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return m + bytes([self.BS - len(m) % self.BS] * (self.BS - len(m) % self.BS))",
+   "bbox": [
+    104.41199493408203,
+    295.8088073730469,
+    433.9526672363281,
+    304.3180236816406
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def encrypt(self, plain):",
+   "bbox": [
+    104.41199493408203,
+    322.89447021484375,
+    204.44198608398438,
+    331.4036865234375
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    plain = self.pad(plain.encode())",
+   "bbox": [
+    104.41199493408203,
+    336.4372863769531,
+    241.43447875976562,
+    344.9465026855469
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    iv = Random.new().read(AES.block_size)",
+   "bbox": [
+    104.41199493408203,
+    349.9801025390625,
+    278.594970703125,
+    358.48931884765625
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    cipher = AES.new(self.s_key, AES.MODE_CBC, iv)",
+   "bbox": [
+    104.41199493408203,
+    363.52294921875,
+    320.54962158203125,
+    372.03216552734375
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return base64.b64encode(iv + cipher.encrypt(plain)).decode(\"utf-8\")",
+   "bbox": [
+    104.41199493408203,
+    377.18560791015625,
+    384.565673828125,
+    385.69482421875
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ......",
+   "bbox": [
+    104.41199493408203,
+    390.7284240722656,
+    136.6959686279297,
+    399.2376403808594
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    437.39727783203125,
+    119.12395477294922,
+    447.9438781738281
+   ],
+   "block": 44,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-312: Cleartext Storage of Sensitive Information, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    459.25750732421875,
+    330.9185791015625,
+    468.2461242675781
+   ],
+   "block": 45,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/312.html",
+   "bbox": [
+    77.32001495361328,
+    472.6805114746094,
+    267.01031494140625,
+    481.66912841796875
+   ],
+   "block": 46,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② CWE-319: Cleartext Transmission of Sensitive Information, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    491.2569274902344,
+    352.6149597167969,
+    500.24554443359375
+   ],
+   "block": 47,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/319.html",
+   "bbox": [
+    77.32001495361328,
+    504.6799011230469,
+    267.01031494140625,
+    513.6685180664062
+   ],
+   "block": 48,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Password Plaintext Storage, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    523.2564086914062,
+    229.7432403564453,
+    532.2449951171875
+   ],
+   "block": 49,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/vulnerabilities/Password_Plaintext_Storage",
+   "bbox": [
+    77.32001495361328,
+    536.6793823242188,
+    395.0045166015625,
+    545.66796875
+   ],
+   "block": 50,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+   ],
+   "text": "16:   with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n17:     s.connect((HOST, PORT))\n18:     s.sendall(enc_passowrd.encode('utf-8'))\n19:     data = s.recv(1024)\n20:     .......\n21:\n22: class AEScipher:\n23:   BS = AES.block_size\n24:\n25:   def __init__(self, s_key):\n26:     self.s_key = hashlib.sha256(s_key.encode(\"utf-8\")).digest()\n27:\n28:   def pad(self, m):\n29:     return m + bytes([self.BS - len(m) % self.BS] * (self.BS - len(m) % self.BS))\n30:\n31:   def encrypt(self, plain):\n32:     plain = self.pad(plain.encode())\n33:     iv = Random.new().read(AES.block_size)\n34:     cipher = AES.new(self.s_key, AES.MODE_CBC, iv)\n35:     return base64.b64encode(iv + cipher.encrypt(plain)).decode(\"utf-8\")\n36:     ......",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    108.3946548461914,
+    433.9526672363281,
+    400.43764038085936
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n84\n안전한 코드 예시\n16:\n17:\n18:\n19:\n20:\n21:\n22:\n23:\n24:\n25:\n26:\n27:\n28:\n29:\n30:\n31:\n32:\n33:\n34:\n35:\n36:\n  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:\n    s.connect((HOST, PORT))\n    s.sendall(enc_passowrd.encode('utf-8'))\n    data = s.recv(1024)\n    .......\nclass AEScipher:\n  BS = AES.block_size\n  def __init__(self, s_key):\n    self.s_key = hashlib.sha256(s_key.encode(\"utf-8\")).digest()\n  def pad(self, m):\n    return m + bytes([self.BS - len(m) % self.BS] * (self.BS - len(m) % self.BS))\n  def encrypt(self, plain):\n    plain = self.pad(plain.encode())\n    iv = Random.new().read(AES.block_size)\n    cipher = AES.new(self.s_key, AES.MODE_CBC, iv)\n    return base64.b64encode(iv + cipher.encrypt(plain)).decode(\"utf-8\")\n    ......\n라. 참고자료\n① CWE-312: Cleartext Storage of Sensitive Information, MITRE,\nhttps://cwe.mitre.org/data/definitions/312.html\n② CWE-319: Cleartext Transmission of Sensitive Information, MITRE,\nhttps://cwe.mitre.org/data/definitions/319.html\n③ Password Plaintext Storage, OWASP,\nhttps://owasp.org/www-community/vulnerabilities/Password_Plaintext_Storage\n",
+ "native_sha256": "379cf2be2e75d81f595db9abda2ac24c2b857c537dd4a722d7e664316130eccc",
+ "chars": 1106,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,41 @@
+365
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+6: }
+7: public Static String getAuthKey() {
+//매번 변경되는 시드값을 사용하여 다른 난수값이 생성되나 보안결정을 위한 난수로는
+안전하지 않다.
+8:
+Random random = new Random();
+9:
+String authKey = Integer.toString(random.nextInt());
+java.util.Random 클래스는 setSeed로 매번 변경되는 시드값을 설정 하거나, 현재 시간 기반으로 
+매번 변경되는 별도 seed를 설정하지 않는 기본값을 사용한다. 보안결정을 위해 난수 사용시에는 
+java.security.SecureRandom 클래스를 사용하는 것이 보다 안전하다.
+안전한 코드의 예 JAVA
+1: import java.util.Random; 
+2: import java.security.SecureRandom;
+3: ...
+4: public Static int getRandomValue(int maxValue) { 
+//setSeed로 매번 변경되는 시드값을 설정 하거나, 기본값인 현재 시간 기반으로 매번
+변경되는 시드값을 사용하도록 한다.
+5:
+Random random = new Random();
+6:
+return random.nextInt(maxValue);
+7: }
+8: public Static String getAuthKey() { 
+//보안결정을 위한 난수로는 예측이 거의 불가능하게 암호학적으로 보호된 SecureRandom을 
+사용한다.
+9: try{
+10:
+SecureRandom secureRandom = SecureRandom.getInstance("SHA1PRNG");
+11:
+MessageDigest digest = MessageDigest.getInstance("SHA-256");
+12:
+secureRandom.setSeed(secureRandom.generateSeed(128));
+13:
+String authKey = new String(digest.digest((secureRandom.nextLong() + "").getBytes()));
+14:
+...
+15: } catch (NoSuchAlgorithmException e) {

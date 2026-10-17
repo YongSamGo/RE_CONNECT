@@ -1,0 +1,31 @@
+209
+제4장구현단계 보안약점 진단
+정탐코드의 예
+10:String source = request.getParameter(“source”); 
+11:String target = request.getParameter(“target”); 
+12:if (source != null && source.length() > 0 && target != null && target.length() > 0) {
+13:isCompressed = EgovFileCmprs.cmprsFile(source, target); 
+14:… 
+15:%>
+< EgovFileCmprs.java >
+1: public static boolean cmprsFile(String source, String target) throwsException {
+2: boolean result = false; 
+3: int cnt = 0; 
+4: FileInputStream finput = null; 
+5: FileOutputStream foutput = null; 
+6: ZipOutputStream zoutput = null; 
+7: String source1 = source.replace(‘\\’, FILE_SEPARATOR).replace(‘/’,
+FILE_SEPARA- TOR); 
+8: String target1 = target.replace(‘\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPARATOR);
+9: File srcFile = new File(source1);
+다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 
+취약하지 않다고 판정한다.
+오탐코드의 예
+1: File file = new File(getServletConfig().getServletContext().getRealPath(“/”)+
+2: “/jsp/gis/gcc/cmm/xml/”+(String)tempChartImgList.get(k));
+다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 
+취약 하지 않다고 판정한다.
+오탐코드의 예
+1: File[] f_list = f.listFiles( new FilenameFilter() { 
+2: public boolean accept(File dir, String name) { 
+3: String org_code = SystemierConfig.getPropertiesBean().getProperty(“is.OrgCode”);

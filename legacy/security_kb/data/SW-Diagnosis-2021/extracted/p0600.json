@@ -1,0 +1,167 @@
+{
+ "lines": [
+  {
+   "text": "600",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "3.1.3. 오류메시지로 정보노출 방지",
+   "bbox": [
+    78.95999908447266,
+    118.09121704101562,
+    218.26412963867188,
+    129.11322021484375
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "웹 애플리케이션 서버를 설정해 특정 에러나 예외사항에 대해 지정된 페이지가 사용자에게 보여지도록 한다.",
+   "bbox": [
+    79.5,
+    136.59823608398438,
+    431.30023193359375,
+    146.49822998046875
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<error-page>",
+   "bbox": [
+    85.14002990722656,
+    158.13790893554688,
+    135.55032348632812,
+    168.03790283203125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<error-code>404</error-code>",
+   "bbox": [
+    85.14002990722656,
+    172.53793334960938,
+    204.6084442138672,
+    182.43792724609375
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<location>/WEB-INF/jsp/common/error/404error.jsp</location>",
+   "bbox": [
+    85.14002990722656,
+    186.93795776367188,
+    335.8525085449219,
+    196.83795166015625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "</error-page>",
+   "bbox": [
+    85.14002990722656,
+    201.33798217773438,
+    139.55686950683594,
+    211.23797607421875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<error-page>",
+   "bbox": [
+    85.14002990722656,
+    215.73800659179688,
+    135.55032348632812,
+    225.63800048828125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<exception-type>java.lang.Throwable</exception-type>",
+   "bbox": [
+    85.14002990722656,
+    230.13800048828125,
+    303.32928466796875,
+    240.03799438476562
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<location>/WEB-INF/jsp/common/error/error.jsp</location>",
+   "bbox": [
+    85.14002990722656,
+    244.53799438476562,
+    320.97491455078125,
+    254.43798828125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "</error-page>",
+   "bbox": [
+    85.14002990722656,
+    258.93798828125,
+    139.55686950683594,
+    268.8379821777344
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "600\n3.1.3. 오류메시지로 정보노출 방지\n웹 애플리케이션 서버를 설정해 특정 에러나 예외사항에 대해 지정된 페이지가 사용자에게 보여지도록 한다.\n<error-page>\n<error-code>404</error-code>\n<location>/WEB-INF/jsp/common/error/404error.jsp</location>\n</error-page>\n<error-page>\n<exception-type>java.lang.Throwable</exception-type>\n<location>/WEB-INF/jsp/common/error/error.jsp</location>\n</error-page>\n",
+ "native_sha256": "0ac19b0bb43a42e868e24a5c294d514e68fa74f73081c1f609e4b865afa30226",
+ "chars": 337,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,9 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+47
+라. 참고자료
+① CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection'), MITRE,
+https://cwe.mitre.org/data/definitions/90.html
+② LDAP Injection Prevention Cheat Sheet, OWASP,
+https://cheatsheetseries.owasp.org/cheatsheets/LDAP_Injection_Prevention_Cheat_ Sheet.html
+③ LDAP filter handling, python-ldap project team
+https://www.python-ldap.org/en/python-ldap-3.3.0/reference/ldap-filter.html

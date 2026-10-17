@@ -1,0 +1,618 @@
+{
+ "lines": [
+  {
+   "text": "376",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "쿠키의 만료시간은 해당 기능에 맞춰 최소로 설정하고 영속적인 쿠키에는 중요 정보가 포함되지 않도록 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.76885986328125,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    96.4720230102539,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    170.77108764648438,
+    314.61773681640625,
+    181.7930908203125
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:File f = new File(downloadedFilePath); ",
+   "bbox": [
+    83.58000183105469,
+    190.17813110351562,
+    251.90365600585938,
+    200.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:JarFile jf = new JarFile(f, true);",
+   "bbox": [
+    83.58000183105469,
+    204.57815551757812,
+    221.5482940673828,
+    214.4781494140625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:Enumeration<JarEntry> ens = jf.entries(); ",
+   "bbox": [
+    83.58000183105469,
+    218.97817993164062,
+    259.7996520996094,
+    228.878173828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:while (ens.hasMoreElements()) { ",
+   "bbox": [
+    83.58000183105469,
+    233.378173828125,
+    225.8527069091797,
+    243.27816772460938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    247.77816772460938,
+    91.34540557861328,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "JarEntry en = ens.nextElement(); ",
+   "bbox": [
+    113.27963256835938,
+    247.77816772460938,
+    252.0343475341797,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58000183105469,
+    262.17816162109375,
+    91.3462905883789,
+    272.0781555175781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (!en.isDirectory()) { ",
+   "bbox": [
+    113.28140258789062,
+    262.17816162109375,
+    200.82705688476562,
+    272.0781555175781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58000183105469,
+    276.5781555175781,
+    91.34539794921875,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (en.toString().equals(path)) { ",
+   "bbox": [
+    144.11996459960938,
+    276.5781555175781,
+    268.5751647949219,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    290.9781494140625,
+    91.34540557861328,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] data = readAll(jar.getInputStream(en), en.getSize());",
+   "bbox": [
+    144.11996459960938,
+    290.9781494140625,
+    380.4380187988281,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    305.3781433105469,
+    91.34540557861328,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "CoeSigner[] signers = en.getCodeSigners();",
+   "bbox": [
+    144.11996459960938,
+    305.3781433105469,
+    320.8824768066406,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000946044922,
+    319.77813720703125,
+    96.27580261230469,
+    329.6781311035156
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    144.6700439453125,
+    319.77813720703125,
+    152.58795166015625,
+    329.6781311035156
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58000946044922,
+    334.1781311035156,
+    96.2652359008789,
+    344.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    144.6594696044922,
+    334.1781311035156,
+    147.3922119140625,
+    344.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.58000946044922,
+    348.578125,
+    96.2652359008789,
+    358.4781188964844
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    113.87996673583984,
+    348.578125,
+    116.61270904541016,
+    358.4781188964844
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:}",
+   "bbox": [
+    83.58000946044922,
+    362.9781188964844,
+    98.97239685058594,
+    372.87811279296875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:jf.close();",
+   "bbox": [
+    83.58000946044922,
+    377.37811279296875,
+    132.90602111816406,
+    387.2781066894531
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    76.5,
+    429.8150939941406,
+    132.05699157714844,
+    441.8930969238281
+   ],
+   "block": 31,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "JarFile을 생성할 때 전자서명 여부를 확인하는 Boolean형 파라미터가 있는 생성자를 사용하여 전자",
+   "bbox": [
+    76.5,
+    458.53118896484375,
+    461.9662780761719,
+    469.5531921386719
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "서명 여부를 검증하는지 확인한다. 또한 JarEntry.getCodeSigners() 메소드로 전자서명 주체 검증 ",
+   "bbox": [
+    76.5,
+    475.5110778808594,
+    464.8334655761719,
+    486.5330810546875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "여부를 확인한다.",
+   "bbox": [
+    76.5,
+    492.490966796875,
+    141.8981475830078,
+    503.5129699707031
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    230.6999969482422,
+    529.0310668945312,
+    306.34197998046875,
+    540.0531005859375
+   ],
+   "block": 35,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:List<FileItem> fileItemsList = uploader.parseRequest(request); ",
+   "bbox": [
+    83.58000183105469,
+    553.9580688476562,
+    344.8558044433594,
+    563.8580932617188
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); ",
+   "bbox": [
+    83.58001708984375,
+    568.3580322265625,
+    331.9563903808594,
+    578.258056640625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:while (fileItemsIterator.hasNext()) { ",
+   "bbox": [
+    83.58001708984375,
+    582.758056640625,
+    235.75148010253906,
+    592.6580810546875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58001708984375,
+    597.1580810546875,
+    91.34542083740234,
+    607.05810546875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileItem fileItem = fileItemsIterator.next(); ",
+   "bbox": [
+    113.27964782714844,
+    597.1580810546875,
+    288.0580139160156,
+    607.05810546875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58001708984375,
+    611.5580444335938,
+    91.3101577758789,
+    621.4580688476562
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File file = new File(request.getServletContext().getAttribute(\"FILES_DIR\") + ",
+   "bbox": [
+    113.244384765625,
+    611.5580444335938,
+    420.15875244140625,
+    621.4580688476562
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File.separator + fileItem.getName());",
+   "bbox": [
+    83.58001708984375,
+    625.9580688476562,
+    231.2186737060547,
+    635.8580932617188
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "1:File f = new File(downloadedFilePath); \n2:JarFile jf = new JarFile(f, true);\n3:Enumeration<JarEntry> ens = jf.entries(); \n4:while (ens.hasMoreElements()) { \n5:         JarEntry en = ens.nextElement(); \n6:         if (!en.isDirectory()) { \n7:                       if (en.toString().equals(path)) { \n8:                       byte[] data = readAll(jar.getInputStream(en), en.getSize());\n9:                       CoeSigner[] signers = en.getCodeSigners();\n10:                     ...\n11:                     }\n12:        }\n13:}\n14:jf.close();",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.58000183105469,
+    181.8930908203125,
+    380.4380187988281,
+    388.4781066894531
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38
+   ],
+   "text": "1:List<FileItem> fileItemsList = uploader.parseRequest(request); \n2:Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); \n3:while (fileItemsIterator.hasNext()) { \n4:         FileItem fileItem = fileItemsIterator.next(); \n5:         File file = new File(request.getServletContext().getAttribute(\"FILES_DIR\") + \nFile.separator + fileItem.getName());",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    83.58000183105469,
+    552.7580688476562,
+    420.15875244140625,
+    637.0580932617188
+   ]
+  }
+ ],
+ "native": "376\n쿠키의 만료시간은 해당 기능에 맞춰 최소로 설정하고 영속적인 쿠키에는 중요 정보가 포함되지 않도록 \n한다.\n안전한 코드의 예 JAVA\n1:File f = new File(downloadedFilePath); \n2:JarFile jf = new JarFile(f, true);\n3:Enumeration<JarEntry> ens = jf.entries(); \n4:while (ens.hasMoreElements()) { \n5:\nJarEntry en = ens.nextElement(); \n6:\nif (!en.isDirectory()) { \n7:\nif (en.toString().equals(path)) { \n8:\nbyte[] data = readAll(jar.getInputStream(en), en.getSize());\n9:\nCoeSigner[] signers = en.getCodeSigners();\n10:\n...\n11:\n}\n12:\n}\n13:}\n14:jf.close();\n라. 진단방법\nJarFile을 생성할 때 전자서명 여부를 확인하는 Boolean형 파라미터가 있는 생성자를 사용하여 전자\n서명 여부를 검증하는지 확인한다. 또한 JarEntry.getCodeSigners() 메소드로 전자서명 주체 검증 \n여부를 확인한다.\n일반적인 진단의 예\n1:List<FileItem> fileItemsList = uploader.parseRequest(request); \n2:Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); \n3:while (fileItemsIterator.hasNext()) { \n4:\nFileItem fileItem = fileItemsIterator.next(); \n5:\nFile file = new File(request.getServletContext().getAttribute(\"FILES_DIR\") + \nFile.separator + fileItem.getName());\n",
+ "native_sha256": "ee3c595e6f418fba82040428ab2d1bef7ccd6df1445834c71e71b1ef908f47be",
+ "chars": 990,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

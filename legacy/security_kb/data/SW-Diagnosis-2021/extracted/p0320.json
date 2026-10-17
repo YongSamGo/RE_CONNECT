@@ -1,0 +1,532 @@
+{
+ "lines": [
+  {
+   "text": "320",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    461.9487609863281,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    269.6923828125,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    170.77108764648438,
+    314.61773681640625,
+    181.7930908203125
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private BoardDao boardDao; ",
+   "bbox": [
+    83.58000183105469,
+    190.17813110351562,
+    212.85646057128906,
+    200.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String action = request.getParameter(\"action\"); ",
+   "bbox": [
+    83.58000183105469,
+    204.57815551757812,
+    287.5007019042969,
+    214.4781494140625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: String contentId = request.getParameter(\"contentId\"); ",
+   "bbox": [
+    83.58000183105469,
+    218.97817993164062,
+    314.9437561035156,
+    228.878173828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 세션에 저장된 사용자 정보를 얻어온다. ",
+   "bbox": [
+    92.39971160888672,
+    233.378173828125,
+    240.8775634765625,
+    243.27816772460938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    247.77816772460938,
+    91.34540557861328,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "User user= (User)session.getAttribute(\"user\");",
+   "bbox": [
+    104.51986694335938,
+    247.77816772460938,
+    289.8924865722656,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "//사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.",
+   "bbox": [
+    92.39971160888672,
+    262.17816162109375,
+    421.5623779296875,
+    272.0781555175781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    276.5781555175781,
+    91.34540557861328,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (action != null && action.equals(\"delete\") && checkAccessControlList(user,action)) {",
+   "bbox": [
+    104.51986694335938,
+    276.5781555175781,
+    448.2655944824219,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.5791015625,
+    290.9781494140625,
+    91.3445053100586,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "boardDao.delete(contenId);",
+   "bbox": [
+    117.718994140625,
+    290.9781494140625,
+    225.43052673339844,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.5791015625,
+    305.3781433105469,
+    91.3445053100586,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    104.51896667480469,
+    305.3781433105469,
+    107.251708984375,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    83.5791015625,
+    319.77813720703125,
+    98.4320068359375,
+    329.6781311035156
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "운영자 권한 검사 없이 컨트롤러와 내부의 개별액션에 접근이 가능한 C# 코드이다.",
+   "bbox": [
+    76.5,
+    352.2110900878906,
+    392.70233154296875,
+    363.23309326171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    392.1711120605469,
+    323.5413513183594,
+    403.193115234375
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// 운영자 권한 검사 없이 컨트롤러와 내부의 개별 액션에 접근 가능 ",
+   "bbox": [
+    83.58000183105469,
+    411.5780944824219,
+    318.8665771484375,
+    421.47808837890625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public class AdministrationController : Controller",
+   "bbox": [
+    83.57999420166016,
+    425.97808837890625,
+    293.2598571777344,
+    435.8780822753906
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: {",
+   "bbox": [
+    83.57999420166016,
+    440.3780822753906,
+    98.43289184570312,
+    450.278076171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.57999420166016,
+    454.778076171875,
+    91.34539794921875,
+    464.6780700683594
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    104.51985931396484,
+    454.778076171875,
+    112.45362854003906,
+    464.6780700683594
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    83.57999420166016,
+    469.1780700683594,
+    98.43289184570312,
+    479.07806396484375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "운영자 권한 검사 후에 개별 액션에 접근해야 한다.",
+   "bbox": [
+    76.5,
+    501.5511169433594,
+    269.6923828125,
+    512.5731201171875
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    226.67999267578125,
+    541.5711059570312,
+    309.04241943359375,
+    552.5931396484375
+   ],
+   "block": 35,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// 운영자 권한 검사 후 개별 액션에 접근 ",
+   "bbox": [
+    83.58000183105469,
+    560.9780883789062,
+    226.83921813964844,
+    570.8781127929688
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: [Authorize(Roles = \"Administrator\")]",
+   "bbox": [
+    83.58000183105469,
+    575.3780517578125,
+    238.9700164794922,
+    585.278076171875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public class AdministrationController : Controller",
+   "bbox": [
+    83.58000183105469,
+    589.778076171875,
+    293.2881164550781,
+    599.6781005859375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: {",
+   "bbox": [
+    83.58000183105469,
+    604.1780395507812,
+    98.43290710449219,
+    614.0780639648438
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "text": "1: private BoardDao boardDao; \n2: String action = request.getParameter(\"action\"); \n3: String contentId = request.getParameter(\"contentId\"); \n// 세션에 저장된 사용자 정보를 얻어온다. \n4:      User user= (User)session.getAttribute(\"user\");\n//사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.\n5:      if (action != null && action.equals(\"delete\") && checkAccessControlList(user,action)) {\n6:           boardDao.delete(contenId);\n7:      }\n8: }",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.5791015625,
+    181.8930908203125,
+    448.2655944824219,
+    330.8781311035156
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "// 운영자 권한 검사 없이 컨트롤러와 내부의 개별 액션에 접근 가능 \n1: public class AdministrationController : Controller\n2: {\n3:      …\n4: }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.57999420166016,
+    403.293115234375,
+    318.8665771484375,
+    480.27806396484374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "// 운영자 권한 검사 후 개별 액션에 접근 \n1: [Authorize(Roles = \"Administrator\")]\n2: public class AdministrationController : Controller\n3: {",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    552.6931396484375,
+    293.2881164550781,
+    615.2780639648438
+   ]
+  }
+ ],
+ "native": "320\n아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인\n한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.\n안전한 코드의 예 JAVA\n1: private BoardDao boardDao; \n2: String action = request.getParameter(\"action\"); \n3: String contentId = request.getParameter(\"contentId\"); \n// 세션에 저장된 사용자 정보를 얻어온다. \n4:\nUser user= (User)session.getAttribute(\"user\");\n//사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.\n5:\nif (action != null && action.equals(\"delete\") && checkAccessControlList(user,action)) {\n6:\nboardDao.delete(contenId);\n7:\n}\n8: }\n운영자 권한 검사 없이 컨트롤러와 내부의 개별액션에 접근이 가능한 C# 코드이다.\n안전하지 않은 코드의 예 C#\n// 운영자 권한 검사 없이 컨트롤러와 내부의 개별 액션에 접근 가능 \n1: public class AdministrationController : Controller\n2: {\n3:\n…\n4: }\n운영자 권한 검사 후에 개별 액션에 접근해야 한다.\n안전한 코드의 예 C#\n// 운영자 권한 검사 후 개별 액션에 접근 \n1: [Authorize(Roles = \"Administrator\")]\n2: public class AdministrationController : Controller\n3: {\n",
+ "native_sha256": "326335923016dd6be58c01593d2cdb697414894a012842e44b4769dd51aee1df",
+ "chars": 844,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

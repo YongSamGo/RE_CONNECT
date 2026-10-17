@@ -1,0 +1,50 @@
+Python 시큐어코딩 가이드
+118
+안전한 코드 예시
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+36:
+37:
+  # 로그인 실패 기록 가져오기
+  if LoginFail.objects.filter(user_id=user_id).exists():
+    login_fail = LoginFail.objects.get(user_id=user_id)
+    COUNT = login_fail.count
+  else:
+    COUNT = 0
+  if COUNT >= LOGIN_TRY_LIMIT:
+    # 로그인 실패횟수 초과로 인해 잠금된 계정에 대한 인증 시도 제한
+    return render(request, "/account_lock.html", {"state": "account_lock"})
+  else:
+    # 로그인 실패 횟수 DB 기록
+    # 첫 시도라면 DB에 insert,
+    # 실패 기록이 존재한다면 update
+    LoginFail.objects.update_or_create(
+      user_id=user_id,
+      defaults={"count": COUNT + 1},
+    )
+    return render(request, "/login.html", {"state": "login_failed"})
+라. 참고자료
+① CWE-307: Improper Restriction of Excessive Authentication Attempts, MITRE,
+https://cwe.mitre.org/data/definitions/307.html
+② Blocking Brute Force Attacks, OWASP,
+https://owasp.org/www-community/controls/Blocking_Brute_Force_Attacks
+➂ additional security topics, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/security/#additional-security-topics
+➃ Django-defender,
+https://github.com/jazzband/django-defender

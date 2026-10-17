@@ -1,0 +1,28 @@
+283
+제4장구현단계 보안약점 진단
+• IDNA2003 변환을 이용한 SSRF 예시
+URL
+설명
+/ssrf.php?url=http://ⓖⓞⓞⓖⓛⓔ.com
+http://google.com (원문자는 영문으로 인식됨)
+/ssrf.php?url=http://wordpreß.com
+http://wordpress.com (독일어로 ß는 ‘ss’가 됨)
+• Broken Parser를 이용한 SSRF 예시
+URL
+설명
+/ssrf.php?url=https://evil-host#expected-host
+#을 추가하여 탐지룰 회피 시도
+/ssrf.php?url=https://expected-host@evil-host
+@을 추가하여 탐지룰 회피 시도
+• SSRF를 이용한 LFI 예시
+URL
+설명
+/ssrf.php?url=file:///etc/passwd
+로컬 파일을 읽음
+/ssrf.php?url=ldap://localhost:1337/%0astats%0aquit
+로컬 LDAP을 읽음
+마. 참고자료
+①CWE-918: Server-Side Request Forgery (SSRF), MITRE,
+https://cwe.mitre.org/data/definitions/918.html
+②Server Side Request Forgery, OWASP
+https://owasp.org/www-community/attacks/Server_Side_Request_Forgery

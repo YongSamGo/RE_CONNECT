@@ -1,0 +1,587 @@
+{
+ "lines": [
+  {
+   "text": "216",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "[ 크로스사이트 스크립트 : Reflected ]",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    226.04583740234375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 @ModelAttribute(“apApsCommonCodeVO”) ApApsCommonCodeVO apAp ",
+   "bbox": [
+    76.5,
+    135.79092407226562,
+    464.83251953125,
+    146.81292724609375
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sCommonCodeVO 어노테이션에 따라 apsApsCommonCodeVO는 외부 입력값이다. 20라인에서 ",
+   "bbox": [
+    76.5,
+    152.83096313476562,
+    464.8509826660156,
+    163.85296630859375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부 입력값의 target값을 저장하고 26번째 라인에서 외부 입력값을 response의 output stream에 ",
+   "bbox": [
+    76.5,
+    169.81088256835938,
+    464.7738342285156,
+    180.8328857421875
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "출력하고 있다. 그 과정에서 입력값에 대한 필터링이 없으므로 취약한 것으로 판정한다.",
+   "bbox": [
+    76.5,
+    186.79080200195312,
+    408.943359375,
+    197.81280517578125
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    217.33108520507812,
+    296.1402587890625,
+    228.35308837890625
+   ],
+   "block": 19,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "16: @RequestMapping(“/aps/common/makeCommonCode.do”) ",
+   "bbox": [
+    83.58000183105469,
+    242.25811767578125,
+    341.364013671875,
+    252.15811157226562
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: public void makeCommonCode(HttpSession session,",
+   "bbox": [
+    83.58000183105469,
+    256.6581115722656,
+    315.1482849121094,
+    266.55810546875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "@ModelAttribute(“apApsCom- monCodeVO”)",
+   "bbox": [
+    100.67991638183594,
+    271.05810546875,
+    282.72467041015625,
+    280.9580993652344
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: ApApsCommonCodeVO apApsCommonCodeVO, HttpServletRequest request, ",
+   "bbox": [
+    83.58000183105469,
+    285.4580993652344,
+    417.51409912109375,
+    295.35809326171875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpServletResponse",
+   "bbox": [
+    100.67990112304688,
+    299.85809326171875,
+    184.69586181640625,
+    309.7580871582031
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19: response, ModelMap model) throws Exception {",
+   "bbox": [
+    83.57998657226562,
+    314.2580871582031,
+    299.1749267578125,
+    324.1580810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20: String target = apApsCommonCodeVO.getTarget();",
+   "bbox": [
+    83.57998657226562,
+    328.6580810546875,
+    307.61114501953125,
+    338.5580749511719
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21: List resultList = apApsExcelService.selectCommonCode(apApsCommonCodeVO);",
+   "bbox": [
+    83.57998657226562,
+    343.0580749511719,
+    429.37872314453125,
+    352.95806884765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22: JSONArray jsonArray = new JSONArray();",
+   "bbox": [
+    83.57998657226562,
+    357.45806884765625,
+    272.1912536621094,
+    367.3580627441406
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23: jsonArray = JSONArray.fromObject(resultList);",
+   "bbox": [
+    83.57998657226562,
+    371.8580627441406,
+    287.20819091796875,
+    381.758056640625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24: response.setContentType(“text/xml;charset=utf-8”);",
+   "bbox": [
+    83.5799789428711,
+    386.258056640625,
+    309.6598815917969,
+    396.1580505371094
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25: PrintWriter printWriter = response.getWriter();",
+   "bbox": [
+    83.5799789428711,
+    400.6580505371094,
+    289.3749084472656,
+    410.55804443359375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26: printWriter.print(target);",
+   "bbox": [
+    83.5799789428711,
+    415.05804443359375,
+    195.27513122558594,
+    424.9580383300781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27: printWriter.print(jsonArray.toString());",
+   "bbox": [
+    83.5799789428711,
+    429.4580383300781,
+    248.03204345703125,
+    439.3580322265625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28: printWriter.flush();",
+   "bbox": [
+    83.5799789428711,
+    443.8580322265625,
+    173.43878173828125,
+    453.7580261230469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29: printWriter.close();",
+   "bbox": [
+    83.5799789428711,
+    458.2580261230469,
+    174.7936553955078,
+    468.15802001953125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30: }",
+   "bbox": [
+    83.5799789428711,
+    472.65802001953125,
+    103.41265106201172,
+    482.5580139160156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서는 2라인에서 외부 입력값으로 request.getQueryString()를 입력받아 6라인에서 ",
+   "bbox": [
+    76.5,
+    505.0310974121094,
+    464.9358825683594,
+    516.0531005859375
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "URL을 구성하여 출력하고 있어 취약하다.",
+   "bbox": [
+    76.5,
+    522.0109252929688,
+    237.47021484375,
+    533.032958984375
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    558.5510864257812,
+    296.1402587890625,
+    569.5731201171875
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    83.58000183105469,
+    583.4780883789062,
+    91.34540557861328,
+    593.3781127929688
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    100.07960510253906,
+    583.4780883789062,
+    108.01337432861328,
+    593.3781127929688
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    597.8780517578125,
+    91.3242416381836,
+    607.778076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<%@ taglib prefix=”c” url=”http://java.sun.com/jsp/jstl/core”%> ",
+   "bbox": [
+    100.05844116210938,
+    597.8780517578125,
+    359.67608642578125,
+    607.778076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.57998657226562,
+    612.278076171875,
+    91.31452941894531,
+    622.1781005859375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<%@ taglib uri=”http://java.sun.com/jsp/jstl/functions” prefix=”fn”%>",
+   "bbox": [
+    100.0487289428711,
+    612.278076171875,
+    379.94683837890625,
+    622.1781005859375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.57998657226562,
+    626.6781005859375,
+    91.34539031982422,
+    636.578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    100.07958984375,
+    626.6781005859375,
+    108.01335906982422,
+    636.578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.57998657226562,
+    641.0780639648438,
+    91.31100463867188,
+    650.9780883789062
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<c:out value=”${param.name}” escapeXml=”false” />",
+   "bbox": [
+    100.04520416259766,
+    641.0780639648438,
+    312.4252014160156,
+    650.9780883789062
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "text": "16: @RequestMapping(“/aps/common/makeCommonCode.do”) \n17: public void makeCommonCode(HttpSession session,\n@ModelAttribute(“apApsCom- monCodeVO”)\n18: ApApsCommonCodeVO apApsCommonCodeVO, HttpServletRequest request, \nHttpServletResponse\n19: response, ModelMap model) throws Exception {\n20: String target = apApsCommonCodeVO.getTarget();\n21: List resultList = apApsExcelService.selectCommonCode(apApsCommonCodeVO);\n22: JSONArray jsonArray = new JSONArray();\n23: jsonArray = JSONArray.fromObject(resultList);\n24: response.setContentType(“text/xml;charset=utf-8”);\n25: PrintWriter printWriter = response.getWriter();\n26: printWriter.print(target);\n27: printWriter.print(jsonArray.toString());\n28: printWriter.flush();\n29: printWriter.close();\n30: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.5799789428711,
+    241.05811767578126,
+    429.37872314453125,
+    483.7580139160156
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "text": "1:    …\n2:    <%@ taglib prefix=”c” url=”http://java.sun.com/jsp/jstl/core”%> \n3:    <%@ taglib uri=”http://java.sun.com/jsp/jstl/functions” prefix=”fn”%>\n4:    …\n5:    <c:out value=”${param.name}” escapeXml=”false” />",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.57998657226562,
+    582.2780883789062,
+    379.94683837890625,
+    652.1780883789063
+   ]
+  }
+ ],
+ "native": "216\n[ 크로스사이트 스크립트 : Reflected ]\n다음의 예제에서 @ModelAttribute(“apApsCommonCodeVO”) ApApsCommonCodeVO apAp \nsCommonCodeVO 어노테이션에 따라 apsApsCommonCodeVO는 외부 입력값이다. 20라인에서 \n외부 입력값의 target값을 저장하고 26번째 라인에서 외부 입력값을 response의 output stream에 \n출력하고 있다. 그 과정에서 입력값에 대한 필터링이 없으므로 취약한 것으로 판정한다.\n정탐코드의 예\n16: @RequestMapping(“/aps/common/makeCommonCode.do”) \n17: public void makeCommonCode(HttpSession session,\n@ModelAttribute(“apApsCom- monCodeVO”)\n18: ApApsCommonCodeVO apApsCommonCodeVO, HttpServletRequest request, \nHttpServletResponse\n19: response, ModelMap model) throws Exception {\n20: String target = apApsCommonCodeVO.getTarget();\n21: List resultList = apApsExcelService.selectCommonCode(apApsCommonCodeVO);\n22: JSONArray jsonArray = new JSONArray();\n23: jsonArray = JSONArray.fromObject(resultList);\n24: response.setContentType(“text/xml;charset=utf-8”);\n25: PrintWriter printWriter = response.getWriter();\n26: printWriter.print(target);\n27: printWriter.print(jsonArray.toString());\n28: printWriter.flush();\n29: printWriter.close();\n30: }\n다음의 예제에서는 2라인에서 외부 입력값으로 request.getQueryString()를 입력받아 6라인에서 \nURL을 구성하여 출력하고 있어 취약하다.\n정탐코드의 예\n1:\n…\n2:\n<%@ taglib prefix=”c” url=”http://java.sun.com/jsp/jstl/core”%> \n3:\n<%@ taglib uri=”http://java.sun.com/jsp/jstl/functions” prefix=”fn”%>\n4:\n…\n5:\n<c:out value=”${param.name}” escapeXml=”false” />\n",
+ "native_sha256": "a81e7d4b43b640dbbbd6a109a0502e2d0b931450b53518e96682746cb84e4c04",
+ "chars": 1329,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

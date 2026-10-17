@@ -1,0 +1,141 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "47",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    93.79303741455078,
+    119.12395477294922,
+    104.33966064453125
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    115.6533203125,
+    504.0182800292969,
+    124.64192199707031
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/90.html",
+   "bbox": [
+    77.32001495361328,
+    130.99386596679688,
+    262.0950622558594,
+    139.98245239257812
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② LDAP Injection Prevention Cheat Sheet, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    151.2481689453125,
+    279.3710021972656,
+    160.2367706298828
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/LDAP_Injection_Prevention_Cheat_ Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    166.58871459960938,
+    459.7726745605469,
+    175.5773162841797
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ LDAP filter handling, python-ldap project team",
+   "bbox": [
+    65.09266662597656,
+    186.843017578125,
+    269.8196105957031,
+    195.8316192626953
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://www.python-ldap.org/en/python-ldap-3.3.0/reference/ldap-filter.html",
+   "bbox": [
+    77.32001495361328,
+    202.18356323242188,
+    390.2422790527344,
+    211.1721649169922
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n47\n라. 참고자료\n① CWE-90: Improper Neutralization of Special Elements used in an LDAP Query ('LDAP Injection'), MITRE,\nhttps://cwe.mitre.org/data/definitions/90.html\n② LDAP Injection Prevention Cheat Sheet, OWASP,\nhttps://cheatsheetseries.owasp.org/cheatsheets/LDAP_Injection_Prevention_Cheat_ Sheet.html\n③ LDAP filter handling, python-ldap project team\nhttps://www.python-ldap.org/en/python-ldap-3.3.0/reference/ldap-filter.html\n",
+ "native_sha256": "6b460ff96e40f50ccf1a2bbc5efee8cd7cf69b07377bb0e5fbb616187abaa4a5",
+ "chars": 464,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

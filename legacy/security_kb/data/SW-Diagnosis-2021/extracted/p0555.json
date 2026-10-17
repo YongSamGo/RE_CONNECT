@@ -1,0 +1,503 @@
+{
+ "lines": [
+  {
+   "text": "555",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제5장부록",
+   "bbox": [
+    421.8599853515625,
+    72.36726379394531,
+    458.2915954589844,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "개발가이드에는 중요 기능/리소스의 노출을 막기 위한 인증 여부 확인 방법, 폼 기반의 인증 방법, ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.0645751953125,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2단계 인증 기법을 제시하고 있다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    201.52627563476562,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 보안설계의 예 : 개발가이드",
+   "bbox": [
+    196.73997497558594,
+    163.81088256835938,
+    330.4775695800781,
+    174.8328857421875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2.1.1 인증 여부 확인",
+   "bbox": [
+    73.31999969482422,
+    185.05111694335938,
+    157.3327178955078,
+    196.0731201171875
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "인증 여부를 확인하는 공통 모듈로 개발한다.",
+   "bbox": [
+    73.86000061035156,
+    203.55813598632812,
+    219.55137634277344,
+    213.4581298828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public boolean isAuthenticated(HttpSession s) ",
+   "bbox": [
+    79.50003051757812,
+    225.09780883789062,
+    269.1021728515625,
+    234.997802734375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{ ",
+   "bbox": [
+    79.50003051757812,
+    238.65811157226562,
+    84.81653594970703,
+    248.55810546875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " boolean authenticated = false; ",
+   "bbox": [
+    79.50003051757812,
+    252.15811157226562,
+    211.26589965820312,
+    262.05810546875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " try { ",
+   "bbox": [
+    79.50003051757812,
+    279.2184143066406,
+    104.0162582397461,
+    289.118408203125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    authenticated ",
+   "bbox": [
+    79.50003051757812,
+    292.7184143066406,
+    153.57061767578125,
+    302.618408203125
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    = getBooleanSessionAttribute(s, getUserId() +",
+   "bbox": [
+    79.50003051757812,
+    306.2184143066406,
+    285.0993347167969,
+    316.118408203125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“.isAuthenticated”); ",
+   "bbox": [
+    79.50003051757812,
+    319.7787170410156,
+    159.0933837890625,
+    329.6787109375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } catch (ParameterNotFoundException e) { ",
+   "bbox": [
+    79.50003051757812,
+    333.2787170410156,
+    259.52349853515625,
+    343.1787109375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  // error ",
+   "bbox": [
+    79.50003051757812,
+    346.7787170410156,
+    121.89633178710938,
+    356.6787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } ",
+   "bbox": [
+    79.50003051757812,
+    360.3390197753906,
+    89.19686126708984,
+    370.239013671875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " return authenticated; ",
+   "bbox": [
+    79.50003051757812,
+    373.8390197753906,
+    171.27081298828125,
+    383.739013671875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} ",
+   "bbox": [
+    79.50003051757812,
+    387.3390197753906,
+    84.81653594970703,
+    397.239013671875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected boolean getBooleanSessionAttribute(HttpSession s,",
+   "bbox": [
+    79.50003051757812,
+    414.3993225097656,
+    329.70465087890625,
+    424.29931640625
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String",
+   "bbox": [
+    79.50003814697266,
+    427.8993225097656,
+    102.67546844482422,
+    437.79931640625
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " name) throws ParameterNotFoundException ",
+   "bbox": [
+    79.50003814697266,
+    441.4596252441406,
+    265.77081298828125,
+    451.359619140625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{ ",
+   "bbox": [
+    79.50003814697266,
+    454.9596252441406,
+    84.81654357910156,
+    464.859619140625
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " boolean value = false; ",
+   "bbox": [
+    79.50003814697266,
+    468.4596252441406,
+    178.15208435058594,
+    478.359619140625
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " Object attribute = s.getRequest().getSession().getAttribute(name);",
+   "bbox": [
+    79.50003814697266,
+    495.5199279785156,
+    352.1044006347656,
+    505.419921875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (attribute ==",
+   "bbox": [
+    79.50004577636719,
+    509.0199279785156,
+    139.7288360595703,
+    518.919921875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " null) { ",
+   "bbox": [
+    79.50004577636719,
+    522.5802001953125,
+    110.25838470458984,
+    532.480224609375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   throw new ParameterNotFoundException(); ",
+   "bbox": [
+    79.50004577636719,
+    536.0802001953125,
+    270.38909912109375,
+    545.980224609375
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } else { ",
+   "bbox": [
+    79.50004577636719,
+    549.5802001953125,
+    117.03734588623047,
+    559.480224609375
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   value = ((Boolean) attribute).booleanValue(); ",
+   "bbox": [
+    79.50004577636719,
+    563.1405029296875,
+    273.94085693359375,
+    573.04052734375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } ",
+   "bbox": [
+    79.50004577636719,
+    576.6405029296875,
+    89.1968765258789,
+    586.54052734375
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " return value; ",
+   "bbox": [
+    79.50004577636719,
+    590.1405029296875,
+    138.16677856445312,
+    600.04052734375
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    79.50004577636719,
+    603.7008056640625,
+    82.2327880859375,
+    613.600830078125
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 ",
+   "bbox": [
+    73.86000061035156,
+    625.1781005859375,
+    453.0369567871094,
+    635.078125
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증 여부를 확인할 수 있도록 한다.",
+   "bbox": [
+    73.86001586914062,
+    638.2578125,
+    190.4503173828125,
+    648.1578369140625
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "555\n제5장부록\n개발가이드에는 중요 기능/리소스의 노출을 막기 위한 인증 여부 확인 방법, 폼 기반의 인증 방법, \n2단계 인증 기법을 제시하고 있다.\n안전한 보안설계의 예 : 개발가이드\n2.1.1 인증 여부 확인\n인증 여부를 확인하는 공통 모듈로 개발한다.\npublic boolean isAuthenticated(HttpSession s) \n{ \n boolean authenticated = false; \n try { \n    authenticated \n    = getBooleanSessionAttribute(s, getUserId() +\n“.isAuthenticated”); \n } catch (ParameterNotFoundException e) { \n  // error \n } \n return authenticated; \n} \nprotected boolean getBooleanSessionAttribute(HttpSession s,\nString\n name) throws ParameterNotFoundException \n{ \n boolean value = false; \n Object attribute = s.getRequest().getSession().getAttribute(name);\nif (attribute ==\n null) { \n   throw new ParameterNotFoundException(); \n } else { \n   value = ((Boolean) attribute).booleanValue(); \n } \n return value; \n}\n인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 \n인증 여부를 확인할 수 있도록 한다.\n",
+ "native_sha256": "3c9c8c6d50d4695b116f273455aa3db86846c9190780f6eb7d0ba2a2e95def97",
+ "chars": 865,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

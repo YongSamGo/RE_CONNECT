@@ -1,0 +1,570 @@
+{
+ "lines": [
+  {
+   "text": "295",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 pubKey.available() 함수는 int 값을 리턴 한다. 그러므로 정수 값 한계를 벗어난 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1328430175781,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "값은 발생하지 않는다.",
+   "bbox": [
+    70.8599853515625,
+    130.81100463867188,
+    156.2926483154297,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    167.29122924804688,
+    291.27935791015625,
+    178.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "31:",
+   "bbox": [
+    78.66000366210938,
+    192.21823120117188,
+    91.3840103149414,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    100.17815399169922,
+    192.21823120117188,
+    120.28850555419922,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "32:",
+   "bbox": [
+    78.66000366210938,
+    206.61825561523438,
+    91.3205337524414,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "URL url = Util.class.getClassLoader().getResource(publicKeyFilepath);",
+   "bbox": [
+    104.4949951171875,
+    206.61825561523438,
+    385.1080627441406,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "33:",
+   "bbox": [
+    78.66000366210938,
+    221.01828002929688,
+    91.4051742553711,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pubKey = url.openStream();",
+   "bbox": [
+    104.57964324951172,
+    221.01828002929688,
+    216.92886352539062,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "34:",
+   "bbox": [
+    78.66000366210938,
+    235.41827392578125,
+    91.33464813232422,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (MalformedURLException e) {",
+   "bbox": [
+    100.1287841796875,
+    235.41827392578125,
+    253.41099548339844,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "35:",
+   "bbox": [
+    78.66000366210938,
+    249.81826782226562,
+    91.40515899658203,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pubKey = new FileInputStream(publicKeyFilepath);",
+   "bbox": [
+    104.57962799072266,
+    249.81826782226562,
+    309.2479248046875,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "36:",
+   "bbox": [
+    78.66000366210938,
+    264.21826171875,
+    91.4051742553711,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.1993179321289,
+    264.21826171875,
+    102.93206024169922,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "37:",
+   "bbox": [
+    78.66000366210938,
+    278.6182556152344,
+    91.40515899658203,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] bytes = new byte[pubKey.available()];",
+   "bbox": [
+    100.19930267333984,
+    278.6182556152344,
+    281.0935974121094,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 입력 값은 HTTP 헤더의 한계값이 있으므로 정수의 한계를 초과할 가능성이 없다.",
+   "bbox": [
+    70.86000061035156,
+    311.0511169433594,
+    446.9422302246094,
+    322.0731201171875
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    347.53118896484375,
+    291.27935791015625,
+    358.5531921386719
+   ],
+   "block": 35,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    372.45819091796875,
+    86.42540740966797,
+    382.3581848144531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String[] referer_split = Util.split(request.getHeader(“Referer”).toString(),”/”);",
+   "bbox": [
+    99.59986877441406,
+    372.45819091796875,
+    403.9992980957031,
+    382.3581848144531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    386.8581848144531,
+    86.42540740966797,
+    396.7581787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String refererValue = referer_split[referer_split.length-1];",
+   "bbox": [
+    99.5998764038086,
+    386.8581848144531,
+    330.22735595703125,
+    396.7581787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 인자의 개수가 정수의 한계 이상으로 입력된다는 것은 실현 가능성이 희박하므로 ",
+   "bbox": [
+    70.86000061035156,
+    419.2311096191406,
+    459.1377258300781,
+    430.25311279296875
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약하지 않은 것으로 판단한다.",
+   "bbox": [
+    70.86000061035156,
+    436.2711181640625,
+    193.2474365234375,
+    447.2931213378906
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    472.7511901855469,
+    291.27935791015625,
+    483.773193359375
+   ],
+   "block": 40,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    497.6781005859375,
+    86.42540740966797,
+    507.5780944824219
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public static void main(String[] args) {",
+   "bbox": [
+    99.5998764038086,
+    497.6781005859375,
+    255.3221435546875,
+    507.5780944824219
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    512.0780639648438,
+    86.42540740966797,
+    521.9780883789062
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String[] jsargs = {“-j=”+args[0]};",
+   "bbox": [
+    104.0401382446289,
+    512.0780639648438,
+    234.32676696777344,
+    521.9780883789062
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    526.47802734375,
+    86.42540740966797,
+    536.3780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String[] allArgs = new String[jsargs.length + args.length];",
+   "bbox": [
+    104.0401382446289,
+    526.47802734375,
+    339.0562438964844,
+    536.3780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용자 입력 값 등 외부 값이 아닌 경우 취약하지 않다.",
+   "bbox": [
+    70.86000061035156,
+    558.85107421875,
+    278.2706298828125,
+    569.8731079101562
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "31:    try { \n32:      URL url = Util.class.getClassLoader().getResource(publicKeyFilepath);\n33:      pubKey = url.openStream();\n34:    } catch (MalformedURLException e) {\n35:      pubKey = new FileInputStream(publicKeyFilepath);\n36:    }\n37:    byte[] bytes = new byte[pubKey.available()];",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    191.0182312011719,
+    385.1080627441406,
+    289.71824951171874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    21,
+    22,
+    23,
+    24
+   ],
+   "text": "1:      String[] referer_split = Util.split(request.getHeader(“Referer”).toString(),”/”);\n2:      String refererValue = referer_split[referer_split.length-1];",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    371.25819091796876,
+    403.9992980957031,
+    397.9581787109375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    28,
+    29,
+    30,
+    31,
+    32,
+    33
+   ],
+   "text": "1:      public static void main(String[] args) {\n2:        String[] jsargs = {“-j=”+args[0]};\n3:        String[] allArgs = new String[jsargs.length + args.length];",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    496.4781005859375,
+    339.0562438964844,
+    537.5780517578125
+   ]
+  }
+ ],
+ "native": "295\n제4장구현단계 보안약점 진단\n다음의 예제에서 pubKey.available() 함수는 int 값을 리턴 한다. 그러므로 정수 값 한계를 벗어난 \n값은 발생하지 않는다.\n오탐코드의 예\n31:\ntry { \n32:\nURL url = Util.class.getClassLoader().getResource(publicKeyFilepath);\n33:\npubKey = url.openStream();\n34:\n} catch (MalformedURLException e) {\n35:\npubKey = new FileInputStream(publicKeyFilepath);\n36:\n}\n37:\nbyte[] bytes = new byte[pubKey.available()];\n다음의 예제에서 입력 값은 HTTP 헤더의 한계값이 있으므로 정수의 한계를 초과할 가능성이 없다.\n오탐코드의 예\n1:\nString[] referer_split = Util.split(request.getHeader(“Referer”).toString(),”/”);\n2:\nString refererValue = referer_split[referer_split.length-1];\n다음의 예제에서 인자의 개수가 정수의 한계 이상으로 입력된다는 것은 실현 가능성이 희박하므로 \n취약하지 않은 것으로 판단한다.\n오탐코드의 예\n1:\npublic static void main(String[] args) {\n2:\nString[] jsargs = {“-j=”+args[0]};\n3:\nString[] allArgs = new String[jsargs.length + args.length];\n사용자 입력 값 등 외부 값이 아닌 경우 취약하지 않다.\n",
+ "native_sha256": "19880cf49674f545aa66a8e9402118165097f5c640b91320b50ad03d19ec6327",
+ "chars": 838,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

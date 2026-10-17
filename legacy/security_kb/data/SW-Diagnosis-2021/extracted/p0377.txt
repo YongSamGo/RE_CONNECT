@@ -1,0 +1,41 @@
+377
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+6:
+fileItem.write(file);
+7:
+// 입력받은 FileItem 을 이용해서 JarFile 을 생성한다. 
+8:
+JarFile driver = new JarFile(file);
+9:
+// 생성된 JarFile을 이용한다. 
+10:
+useDriver(driver);
+11:}
+다음 예제는 사용자가 업로드한 데이터를 이용해 JarFile 객체를 생성 시, 전자서명 여부를 확인하는 
+생성자를 사용하고 있으나 전자서명 주체를 검증하는 코드를 사용하지 않으므로 취약하다고 판정한다.
+정탐코드의 예
+1:@RequestMapping(value = "/upload", method = RequestMethod.POST)
+2:public Student upload(@RequestParam("file") MultipartFile multipartFile)
+3:throws IllegalStateException, IOException {
+4:
+File f = new File(multipartFile.getOriginalFilename());
+5:
+multipartFile.transferTo(f);
+6:
+JarFile jf = new JarFile(f, true);
+7:
+...
+8:}
+다음 예제는 전자서명 여부를 확인하는 생성자를 사용하고, 전자서명 주체를 검증하는 코드를 사용
+하므로 취약하지 않다고 판정한다.
+오탐코드의 예
+1:@RequestMapping(value = "/upload", method = RequestMethod.POST)
+2:public Student upload(@RequestParam("file") MultipartFile multipartFile)
+3:throws IllegalStateException, IOException {
+4:
+File f = new File(multipartFile.getOriginalFilename());
+5:
+multipartFile.transferTo(f);
+6:
+JarFile jf = new JarFile(f, true);

@@ -1,0 +1,491 @@
+{
+ "lines": [
+  {
+   "text": "468",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음 예제는 서버가 특정 포트를 열어 클라이언트가 데이터를 보낼 때까지 기다렸다가 데이터를 받으면 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.76885986328125,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "역직렬화 코드가 실행된다. 이 경우 신뢰할 수 없는 데이터 값에 대한 검증 과정이 없으므로 아래 ",
+   "bbox": [
+    76.5,
+    129.79092407226562,
+    464.8236389160156,
+    140.81292724609375
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "코드는 취약하다고 판정한다.",
+   "bbox": [
+    76.5,
+    145.81088256835938,
+    187.61737060546875,
+    156.8328857421875
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    165.31112670898438,
+    296.1402587890625,
+    176.3331298828125
+   ],
+   "block": 17,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:conn,addr = self.receiver_socket.accept()",
+   "bbox": [
+    83.58000183105469,
+    190.23818969726562,
+    257.6848449707031,
+    200.13818359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:data = conn.recv(1024)",
+   "bbox": [
+    83.58000183105469,
+    203.73818969726562,
+    185.92388916015625,
+    213.63818359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:return Pickle.loads(data)",
+   "bbox": [
+    83.58000183105469,
+    217.29849243164062,
+    188.25469970703125,
+    227.198486328125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음 예제는 HMAC을 사용하여 데이터 무결성을 검증하므로 취약하지 않다고 판정한다.",
+   "bbox": [
+    76.5,
+    248.65121459960938,
+    414.25543212890625,
+    259.6732177734375
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ㆍ클라이언트 코드",
+   "bbox": [
+    76.5,
+    272.651123046875,
+    150.236572265625,
+    283.6731262207031
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    291.19110107421875,
+    296.91937255859375,
+    302.2131042480469
+   ],
+   "block": 23,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:pickled_data = pickle.dumps(data) ",
+   "bbox": [
+    84.30000305175781,
+    316.11810302734375,
+    232.13356018066406,
+    326.0180969238281
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()",
+   "bbox": [
+    84.30000305175781,
+    329.61810302734375,
+    384.091552734375,
+    339.5180969238281
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:header = '%s' % (digest)",
+   "bbox": [
+    84.29998779296875,
+    343.11810302734375,
+    194.5432586669922,
+    353.0180969238281
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:conn.send(header + ' ' + pickled_data)",
+   "bbox": [
+    84.29998779296875,
+    356.67840576171875,
+    249.91921997070312,
+    366.5783996582031
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ㆍ서버 코드",
+   "bbox": [
+    76.5,
+    387.07110595703125,
+    124.67400360107422,
+    398.0931091308594
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    405.5511169433594,
+    296.91937255859375,
+    416.5731201171875
+   ],
+   "block": 29,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:conn,addr = self.receiver_socket.accept() ",
+   "bbox": [
+    84.30000305175781,
+    430.4781188964844,
+    260.9602966308594,
+    440.37811279296875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:data = conn.recv(1024) ",
+   "bbox": [
+    84.30000305175781,
+    443.9781188964844,
+    189.239990234375,
+    453.87811279296875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:recvd_digest, pickled_data = data.split(' ') ",
+   "bbox": [
+    84.30000305175781,
+    457.5384216308594,
+    263.5502624511719,
+    467.43841552734375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:new_digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()",
+   "bbox": [
+    84.30000305175781,
+    471.0384216308594,
+    405.3365783691406,
+    480.93841552734375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:if recvd_digest != new_digest:",
+   "bbox": [
+    84.29910278320312,
+    484.5384216308594,
+    216.6863555908203,
+    494.43841552734375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:print 'Integrity check failed'",
+   "bbox": [
+    84.29910278320312,
+    498.0987243652344,
+    203.4757537841797,
+    507.99871826171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:else:",
+   "bbox": [
+    84.29910278320312,
+    511.5987243652344,
+    111.13639831542969,
+    521.4987182617188
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:unpickled_data = pickle.loads(pickled_data)",
+   "bbox": [
+    84.29910278320312,
+    525.0986938476562,
+    265.1485900878906,
+    534.9987182617188
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    576.5750732421875,
+    132.05699157714844,
+    588.653076171875
+   ],
+   "block": 38,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-918: Server-Side Request Forgery (SSRF), MITRE,",
+   "bbox": [
+    91.5,
+    599.111083984375,
+    353.35247802734375,
+    610.1331176757812
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/918.html",
+   "bbox": [
+    105.24040985107422,
+    614.1110229492188,
+    316.6106262207031,
+    625.133056640625
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②Server Side Request Forgery, OWASP,",
+   "bbox": [
+    91.5,
+    634.0908813476562,
+    274.1826477050781,
+    645.1129150390625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Server_Side_Request_Forgery",
+   "bbox": [
+    105.24040985107422,
+    649.0908203125,
+    438.30535888671875,
+    660.1128540039062
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7
+   ],
+   "text": "1:conn,addr = self.receiver_socket.accept()\n2:data = conn.recv(1024)\n3:return Pickle.loads(data)",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    189.03818969726564,
+    257.6848449707031,
+    228.398486328125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "1:pickled_data = pickle.dumps(data) \n2:digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()\n3:header = '%s' % (digest)\n4:conn.send(header + ' ' + pickled_data)",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    314.91810302734376,
+    384.091552734375,
+    367.7783996582031
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+   ],
+   "text": "1:conn,addr = self.receiver_socket.accept() \n2:data = conn.recv(1024) \n3:recvd_digest, pickled_data = data.split(' ') \n4:new_digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()\n5:if recvd_digest != new_digest:\n6:print 'Integrity check failed'\n7:else:\n8:unpickled_data = pickle.loads(pickled_data)",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29910278320312,
+    429.2781188964844,
+    405.3365783691406,
+    536.1987182617188
+   ]
+  }
+ ],
+ "native": "468\n다음 예제는 서버가 특정 포트를 열어 클라이언트가 데이터를 보낼 때까지 기다렸다가 데이터를 받으면 \n역직렬화 코드가 실행된다. 이 경우 신뢰할 수 없는 데이터 값에 대한 검증 과정이 없으므로 아래 \n코드는 취약하다고 판정한다.\n정탐코드의 예\n1:conn,addr = self.receiver_socket.accept()\n2:data = conn.recv(1024)\n3:return Pickle.loads(data)\n다음 예제는 HMAC을 사용하여 데이터 무결성을 검증하므로 취약하지 않다고 판정한다.\nㆍ클라이언트 코드\n오탐코드의 예\n1:pickled_data = pickle.dumps(data) \n2:digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()\n3:header = '%s' % (digest)\n4:conn.send(header + ' ' + pickled_data)\nㆍ서버 코드\n오탐코드의 예\n1:conn,addr = self.receiver_socket.accept() \n2:data = conn.recv(1024) \n3:recvd_digest, pickled_data = data.split(' ') \n4:new_digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()\n5:if recvd_digest != new_digest:\n6:print 'Integrity check failed'\n7:else:\n8:unpickled_data = pickle.loads(pickled_data)\n마. 참고자료\n①CWE-918: Server-Side Request Forgery (SSRF), MITRE,\nhttps://cwe.mitre.org/data/definitions/918.html\n②Server Side Request Forgery, OWASP,\nhttps://owasp.org/www-community/attacks/Server_Side_Request_Forgery\n",
+ "native_sha256": "fb2d7fd31efad6add1c9122d60c2da59dccfad56ef4de6dcff90900ec6e6add9",
+ "chars": 1027,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

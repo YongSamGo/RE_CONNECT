@@ -1,0 +1,26 @@
+526
+1.4.1. 서버 자원 참조
+String helpFile =
+args[0]; if (helpFile != 
+null) { 
+helpFile = helpFile.replaceAll(“\\.{2,}[/\\\\]”, “”); 
+} 
+BufferedReader br = new BufferedReader(new FileReader(safeDir + helpFile));
+해당 검증 로직은 공통 모듈로 개발하여 검증 규칙이 일관되게 적용될 수 있도록 한다.
+1.4.2. 운영체제 명령어 실행
+가급적이면 웹 인터페이스로 서버 내부로 시스템 명령어를 전달시키지 않도록 한다.
+외부 입력에 따라 명령어를 생성하거나 선택이 필요한 경우에는 명령어 생성에 필요한 값들을 미리 지정해 놓고 
+외부 입력에 따라 선택하여 사용하도록 한다.
+List<String> allowedCommands = new ArrayList<String>();
+allowedCommands.add(“notepad”); 
+allowedCommands.add(“calc”); 
+ : 
+String cmd =
+request.getParameter(“cmd”); if
+(!allowedCommands.contains(cmd)) { 
+ throw new Exception(“허용되지 않은 명령어입니다.”); 
+} 
+ : 
+Runtime.getRuntime().exec(cmd); 
+ : 
+해당 검증 로직은 공통 모듈로 개발하여 검증 규칙이 일관되게 적용될 수 있도록 한다.

@@ -1,0 +1,42 @@
+262
+일반적인 진단의 예
+9:
+}
+10: DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+11: domFactory.setNamespaceAware(true); 
+12: DocumentBuilder builder = domFactory.newDocumentBuilder(); 
+13: Document doc = builder.parse(“accounts.xml”); 
+14: XPathFactory factory = XPathFactory.newInstance(); 
+15: XPath xpath = factory.newXPath(); 
+16: XPathExpression expr = xpath.compile(query); ·································································①
+17: Object result = expr.evaluate(doc, XPathConstants.NODESET); 
+18: …
+다음의 예제에서는 name의 값으로 “”user1””, passwd의 값으로 “”’ or “=’””을 전달하면 다음과 
+같은 쿼리문이 생성되어 인증과정을 거치지 않고 로그인할 수 있어 취약하다고 판정한다.
+(//users/user[login/text()=’user1’ or ‘’=’’ and password/text() = “” or “”=””]/home_dir/text())
+정탐코드의 예
+1:
+… 
+2:
+// 외부로부터 입력을 받음 
+3:
+String name = props.getProperty(“name”); 
+4:
+String passwd = props.getProperty(“password”); 
+5:
+…
+6:
+XPathFactory factory = XPathFactory.newInstance(); 
+7:
+XPath xpath = factory.newXPath(); 
+8:
+… 
+9:
+// 외부 입력이 xpath의 인자로 사용 
+10: XPathExpression expr = xpath.compile(“//users/user[login/text()=’” + name + “’ and 
+password/text() = ‘” + passwd + “’]/home_dir/text()”); 
+11: Object result = expr.evaluate(doc, XPathConstants.NODESET); 
+12: NodeList nodes = (NodeList) result; 
+13: for (int i = 0; i < nodes.getLength(); i++) { 
+14: String value = nodes.item(i).getNodeValue(); 
+15: if (value.indexOf(“>”) < 0) {

@@ -1,0 +1,11 @@
+Python 시큐어코딩 가이드
+38
+라. 참고자료
+① CWE-601: URL Redirection to Untrusted Site ('Open Redirect'), MITRE,
+https://cwe.mitre.org/data/definitions/601.html
+② Unvalidated Redirects and Forwards Cheat Sheet, OWASP
+https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html
+③ Django shortcut functions – redirect, Django Sowftware Foundation,
+https://docs.djangoproject.com/en/3.2/topics/http/shortcuts/
+④ Redirects and Errors, Flask,
+https://flask.palletsprojects.com/en/2.0.x/quickstart/#redirects-and-errors

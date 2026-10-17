@@ -1,0 +1,27 @@
+75
+제3장분석․ 설계단계 보안항목 진단
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 프로그램 명세서, 클래스설계서, 
+단위 테스트케이스 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+크로스사이트 요청 위조
+마. 참고자료
+①“Cross-Site Request Forgery”, Wikipedia 
+http://en.wikipedia.org/wiki/Cross-site_request_forgery 
+②2013 OWASP Top 10 ‐ A8 Cross‐Site Request Forgery(CSRF), OWASP,
+https://www.owasp.org/index.php/ Top_10_2013
+③CSRF Prevention Cheat Sheet, OWASP, 
+http://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Preventi
+on_Cheat_Sheet
+④Spring MVC support for CSRF prevention, eyallupu,
+http://blog.eyallupu.com/2012/04/csrf-defense-in-spring-mvc-31.html
+⑤Cross-Site Request Forgery: Demystified, ynori7,
+http://halls-of-valhalla.org/beta/articles/cross-site-re-quest-forgery-demystifi
+ed,47/
+⑥Cross-Site Request Forgeries: Exploitation and Prevention, William Zeller and 
+Edward W. Felten, 
+http://people.eecs.berkeley.edu/~daw/teaching/cs261-f11/reading/csrf.pdf
+⑦Cross Site Request Forgery Protection, Django,
+http://docs.djangoproject.com/en/1.8/ref/csrf/

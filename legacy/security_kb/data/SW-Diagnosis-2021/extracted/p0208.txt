@@ -1,0 +1,48 @@
+208
+[ 자원 삽입]
+파일명, 소켓의 포트 등과 같은 자원을 사용하는지 확인하고(①), 해당 자원에 대한 접근이 외부에서 
+직접 접근하는지 확인한다(②). 직접 접근하지 않고 매핑표나 리스트를 가질 경우엔 기본적으로 안전 
+하다고 판단하고, 그 외의 경우엔 취약하다고 판정한다.
+일반적인 진단의 예
+1: public class U99 {
+2:
+public void f() throws IOException { 
+3:
+int def = 1000; 
+4:
+ServerSocket serverSocket; 
+5:
+Properties props = new Properties(); 
+6:
+String fileName = “file_list”; 
+7:
+FileInputStream in = new FileInputStream(filename);
+8:
+props.load(in); 
+9:
+10:
+String service = props.getProperty(“Service No”); 
+11:
+int port = Integer.parseInt(service); ···················································································②
+12:
+13:
+if (port != 0) 
+14: serverSocket = new ServerSocket(port + 3000); ·····························································①
+15:
+else
+16: serverSocket = new ServerSocket(def + 3000); ······························································①
+17:
+ServerSocket.close(); 
+18:
+}
+19: }
+중요 자원(파일, 소켓 등)을 사용할 때, 식별자를 구성하는 외부 입력값에 대한 검증 프로세스가 존재 
+하지 않으면 취약한 것으로 판정한다.
+다음의 예제를 살펴보면, EgovFileCmprs.jsp에서 10라인에 외부 입력값인 source를 받아서 13
+라인에서 static 함수인 EgovFileCmprs.cmprsFile를 호출하고 있다. 이 함수 내에서 7라인에서 
+source 파라미터를 source1 변수에 저장하고, 9라인에서 그 변수를 사용하여 파일을 생성하고 있어 
+취약하다고 판정한다.
+정탐코드의 예
+< EgovFileCmprs.jsp >
+8: <%
+9: boolean isCompressed = false;

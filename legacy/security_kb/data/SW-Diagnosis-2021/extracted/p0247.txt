@@ -1,0 +1,38 @@
+247
+제4장구현단계 보안약점 진단
+PHP에서는 libxml_disable_entity_loader 함수를 이용하여 외부 엔티티 사용을 비활성화 할 수 
+있다.
+안전한 코드의 예 JAVA
+1:value = libxml_disable_entity_loader(true);
+2:$dom = new DOMDocument();
+3:$dom -> loadXML($xml); 
+4:libxml_disable_entity_loader($value);
+라. 진단방법
+XML 파일을 파싱하고 있는지 확인한 후(①) 신뢰할 수 없는 외부 입력 값의 파일에 대한 외부 엔티티를 
+비활성화하는 코드가 없을 경우 취약하다고 판정한다.
+일반적인 진단의 예
+1:public class G06 extends HttpServlet { 
+2:
+private ServletFileUpload uploader = null; 
+3:
+...
+4:
+protected void doPost(HttpServletRequest request, HttpServletResponse response)
+5:
+throws ServletException, IOException { 
+6:
+...
+7:
+try {
+8:
+List<FileItem> fileItemsList = uploader.parseRequest(request); 
+9:
+Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); 
+10:
+while (fileItemsIterator.hasNext()) { 
+11:
+FileItem fileItem = fileItemsIterator.next(); 
+12:
+File xmlFile = new File( 
+13:
+request.getServletContext().getAttribute("FILES_DIR") + File.separator+ fileItem.getName());

@@ -1,0 +1,464 @@
+{
+ "lines": [
+  {
+   "text": "288",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "아래 코드를 살펴보면, 2번째 라인에서 request의 last_login 파라미터에서 가져온 값을 6번 라인에서 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.828369140625,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "개행문자를 필터링한 후 7번째 라인에서 lastLogin값을 쿠키에 설정하고 있어 취약하지 않다고 판단",
+   "bbox": [
+    76.50099182128906,
+    130.81100463867188,
+    461.98779296875,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한다.",
+   "bbox": [
+    76.50099182128906,
+    147.79092407226562,
+    96.47301483154297,
+    158.81292724609375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    184.33108520507812,
+    296.91937255859375,
+    195.35308837890625
+   ],
+   "block": 17,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: String lastLogin = request.getParameter(“last_login”); ",
+   "bbox": [
+    84.30000305175781,
+    209.25808715820312,
+    315.0546875,
+    219.1580810546875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: if (lastLogin == null || “”.equals(lastLogin)) { ",
+   "bbox": [
+    84.30000305175781,
+    223.65811157226562,
+    281.660400390625,
+    233.55810546875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    238.05810546875,
+    92.06539916992188,
+    247.95809936523438
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return;",
+   "bbox": [
+    109.68013000488281,
+    238.05810546875,
+    136.22474670410156,
+    247.95809936523438
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    84.30000305175781,
+    252.45809936523438,
+    99.21285247802734,
+    262.35809326171875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: // 외부 입력값에서 개행문자를 제거한 후 쿠키의 값으로 설정 ",
+   "bbox": [
+    84.30000305175781,
+    266.85809326171875,
+    326.3779296875,
+    276.7580871582031
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: lastLogin = lastLogin.replaceAll(“[￦￦r ￦￦n]”,",
+   "bbox": [
+    84.30000305175781,
+    281.2580871582031,
+    284.7607727050781,
+    291.1580810546875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“”); 7:Cookie c = new Cookie(“LASTLOGIN”,",
+   "bbox": [
+    84.30000305175781,
+    295.6580810546875,
+    267.1204833984375,
+    305.5580749511719
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "lastLogin); 8: c.setMaxAge(1000); ",
+   "bbox": [
+    84.30000305175781,
+    310.0580749511719,
+    224.0569305419922,
+    319.95806884765625
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: c.setSecure(true); ",
+   "bbox": [
+    84.30000305175781,
+    324.45806884765625,
+    169.95823669433594,
+    334.3580627441406
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:response.addCookie(c); ",
+   "bbox": [
+    84.30000305175781,
+    338.8580627441406,
+    192.455810546875,
+    348.758056640625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:response.setContentType(“text/html”); ",
+   "bbox": [
+    84.30000305175781,
+    353.258056640625,
+    254.05442810058594,
+    363.1580505371094
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30000305175781,
+    367.6580505371094,
+    97.01696014404297,
+    377.55804443359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    127.77088928222656,
+    367.6580505371094,
+    143.65164184570312,
+    377.55804443359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래코드의 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴 하므로 ",
+   "bbox": [
+    76.5,
+    400.03118896484375,
+    464.8334045410156,
+    411.0531921386719
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HTTP응답 분할이 이루어지지 않는다.",
+   "bbox": [
+    76.49996948242188,
+    417.0110778808594,
+    222.54244995117188,
+    428.0330810546875
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    453.5511169433594,
+    296.91937255859375,
+    464.5731201171875
+   ],
+   "block": 32,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    478.4781188964844,
+    92.0654067993164,
+    488.37811279296875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: response.sendRedirect(request.getContextPath() + “/login.do”);",
+   "bbox": [
+    100.85954284667969,
+    478.4781188964844,
+    368.5564270019531,
+    488.37811279296875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Long, Integer 값 등 Numeric 값은 문자열로 치환 했을때 \\r\\n 등의 문자열이 포함될 수 없으므로 ",
+   "bbox": [
+    76.5,
+    510.8511047363281,
+    464.7738342285156,
+    521.8731079101562
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약 하지 않다.",
+   "bbox": [
+    76.5,
+    527.8309936523438,
+    136.2499237060547,
+    538.85302734375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    564.37109375,
+    296.91937255859375,
+    575.3931274414062
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    589.298095703125,
+    92.06539916992188,
+    599.1981201171875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: 1: response.setHeader(“Content-Length”,Long.toString(file.length()));",
+   "bbox": [
+    100.85954284667969,
+    589.298095703125,
+    390.50653076171875,
+    599.1981201171875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "text": "1: String lastLogin = request.getParameter(“last_login”); \n2: if (lastLogin == null || “”.equals(lastLogin)) { \n3:        return;\n4: }\n5: // 외부 입력값에서 개행문자를 제거한 후 쿠키의 값으로 설정 \n6: lastLogin = lastLogin.replaceAll(“[￦￦r ￦￦n]”,\n“”); 7:Cookie c = new Cookie(“LASTLOGIN”,\nlastLogin); 8: c.setMaxAge(1000); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    208.05808715820314,
+    326.3779296875,
+    321.15806884765624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "9: c.setSecure(true); \n10:response.addCookie(c); \n11:response.setContentType(“text/html”); \n12:             ......",
+   "language": "text",
+   "label": "lastLogin); 8: c.setMaxAge(1000); ",
+   "bbox": [
+    84.30000305175781,
+    323.25806884765626,
+    254.05442810058594,
+    378.75804443359374
+   ]
+  }
+ ],
+ "native": "288\n아래 코드를 살펴보면, 2번째 라인에서 request의 last_login 파라미터에서 가져온 값을 6번 라인에서 \n개행문자를 필터링한 후 7번째 라인에서 lastLogin값을 쿠키에 설정하고 있어 취약하지 않다고 판단\n한다.\n오탐코드의 예\n1: String lastLogin = request.getParameter(“last_login”); \n2: if (lastLogin == null || “”.equals(lastLogin)) { \n3:\nreturn;\n4: }\n5: // 외부 입력값에서 개행문자를 제거한 후 쿠키의 값으로 설정 \n6: lastLogin = lastLogin.replaceAll(“[￦￦r ￦￦n]”,\n“”); 7:Cookie c = new Cookie(“LASTLOGIN”,\nlastLogin); 8: c.setMaxAge(1000); \n9: c.setSecure(true); \n10:response.addCookie(c); \n11:response.setContentType(“text/html”); \n12:\n......\n아래코드의 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴 하므로 \nHTTP응답 분할이 이루어지지 않는다.\n오탐코드의 예\n1:\n1: response.sendRedirect(request.getContextPath() + “/login.do”);\nLong, Integer 값 등 Numeric 값은 문자열로 치환 했을때 \\r\\n 등의 문자열이 포함될 수 없으므로 \n취약 하지 않다.\n오탐코드의 예\n1:\n1: 1: response.setHeader(“Content-Length”,Long.toString(file.length()));\n",
+ "native_sha256": "a027fa72e1774ef4063090ba05cd2de2b8b4697a563faefbfee69b00e472f077",
+ "chars": 861,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

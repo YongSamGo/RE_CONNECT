@@ -1,0 +1,50 @@
+441
+제4장구현단계 보안약점 진단
+다음의 예제에서 System.out.println(“After Throw 1”);은 실행되지 않는다.
+오탐코드의 예
+1: public static void testFunction(String dateStr1) throws Exception { 
+2:
+SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());
+3:
+Date date1 = null;
+4:
+try {
+5:
+date1 = sdf.parse(dateStr1);
+6:
+} catch (ParseException e) {
+7:
+System.err.println(“Inner Function”);
+8:
+e.printStackTrace();
+9:
+thrownew Exception(e);
+10:
+}
+11:
+System.out.println(“After Throw 1”);
+12:
+int days1 = (int)((date1.getTime()/100000)/24);
+13:
+System.out.println(“After Throw 2”);
+14:
+}
+다음의 예제에서 intdays1 = (int)((date1.getTime()/100000)/24);에서 data1이 널(Null)일 경우, 
+널 (Null) 포인터 역참조가 발생하고 다음 단계로 진행되지 않게 된다. 이러한 이유로 intdays2 = (int) 
+((date1.getTime()/100000)/24); 문은 실행되지 않으며 널(Null)을 참조하지 않게 된다.
+오탐코드의 예
+1:SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());
+2:Date date1 = null; 
+3:try { 
+4:date1 = sdf.parse(dateStr1); 
+5:} catch (ParseException e) { 
+6:System.err.println(“Inner Function”); 
+7:e.printStackTrace(); 
+8:} 
+9:
+System.out.println(“After Throw 1”); 
+10:intdays1 = 
+(int)((date1.getTime()/100000)/24);
+11: intdays2
+= (int)((date1.getTime()/100000)/24); 12:
+System.out.println(“After Throw 2”); 

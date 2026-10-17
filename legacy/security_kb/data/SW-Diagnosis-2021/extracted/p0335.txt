@@ -1,0 +1,41 @@
+335
+제4장구현단계 보안약점 진단
+정탐코드의 예
+14:
+// 유효성 점검없이 패스워드를 문자열로 읽는다. 
+15:
+con = DriverManager.getConnection(url, usr, password.toString());
+16: } catch (FileNotFoundException e) { 
+17:
+…
+18: } catch (SQLException e) { 
+19:
+…
+20: }
+MD5 등의 낮은 보안 수준의 알고리즘을 사용하는 경우는 안전하지 않다.
+정탐코드의 예
+1:
+public static EgovFormBasedUUID nameUUIDFromBytes(byte[] name) {
+2:
+MessageDigest md = null; 
+3:
+try { 
+4:
+md = MessageDigest.getInstance(“MD5”); 
+5:
+} catch (NoSuchAlgorithmException e) { 
+6:
+throw new InternalError(“MD5 not supported”); 
+7:
+}
+8:
+byte[] md5Bytes = md.digest(name); 
+9:
+md5Bytes[6] &= 0x0f; /* clear version */ 
+10:
+md5Bytes[6] |= 0x30; /* set to version 3 */ 
+11:
+md5Bytes[8] &= 0x3f; /* clear variant */ 
+12: md5Bytes[8] |= 0x80; /* set to IETF variant */
+13:return new EgovFormBasedUUID(md5Bytes);
+14:}

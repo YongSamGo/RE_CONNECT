@@ -1,0 +1,17 @@
+308
+정탐코드의 예
+20: 
+21:
+// return string without trailing whitespace 
+22:
+retMessage = message; 
+23:
+return retMessage; 
+24:
+}
+마. 참고자료
+[1] CWE-119 Improper Restriction of Operations within the Bounds of a Memory 
+Buffer, MITRE,
+http://cwe.mitre.org/data/definitions/119.html
+[2] Buffer overflow attack, OWASP,
+https://www.owasp.org/index.php/Buffer_overflow_attack

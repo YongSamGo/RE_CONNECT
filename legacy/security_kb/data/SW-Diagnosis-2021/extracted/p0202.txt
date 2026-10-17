@@ -1,0 +1,50 @@
+202
+안전하지 않은 코드의 예 JAVA
+1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.
+2: String fileName = request.getParameter("P");
+3: BufferedInputStream bis = null;
+4: BufferedOutputStream bos = null;
+5: FileInputStream fis = null;
+6: try {
+7:
+response.setHeader("Content-Disposition", "attachment;filename="+fileName+";");
+8:
+...
+9:
+//외부로부터 입력받은 값이 검증 또는 처리 없이 파일처리에 수행되었다.
+10:
+fis = new FileInputStream("C:/datas/" + fileName);
+11:
+bis = new BufferedInputStream(fis);
+12:
+bos = new BufferedOutputStream(response.getOutputStream());
+외부 입력값에 대하여 상대경로를 설정할 수 없도록 경로순회 문자열( / \ & .. 등 )을 제거하고 파일의 
+경로설정에 사용한다.
+안전한 코드의 예 JAVA
+1:
+String fileName = request.getParameter("P");
+2:
+BufferedInputStream bis = null; 
+3:
+BufferedOutputStream bos = null; 
+4:
+FileInputStream fis = null; 
+5:
+try { 
+6:
+response.setHeader("Content-Disposition", "attachment;filename="+fileName+";");
+7: ...
+8:
+// 외부 입력받은 값을 경로순회 문자열(./\)을 제거하고 사용해야한다.
+9:
+filename = filename.replaceAll("\\.", "").replaceAll("/", "").replaceAll("\\\\", "");
+10:
+fis = new FileInputStream("C:/datas/" + fileName);
+11:
+bis = new BufferedInputStream(fis);
+12:
+bos = new BufferedOutputStream(response.getOutputStream());
+13:
+int read;
+14:
+while((read = bis.read(buffer, 0, 1024)) != -1) {

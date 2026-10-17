@@ -1,0 +1,139 @@
+{
+ "lines": [
+  {
+   "text": "432",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-754 Improper Check for Unusual or Exceptional Conditions, MITRE",
+   "bbox": [
+    91.5,
+    137.53121948242188,
+    426.01220703125,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/754.html ",
+   "bbox": [
+    107.87985229492188,
+    153.55117797851562,
+    317.12384033203125,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not complete abruptly from a finally block, CERT,",
+   "bbox": [
+    91.5000228881836,
+    174.55111694335938,
+    335.5683288574219,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/ERR04-J.+Do+not+",
+   "bbox": [
+    107.87985229492188,
+    190.51095581054688,
+    461.4600830078125,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "complete+abruptly+from+a+finally+block ",
+   "bbox": [
+    107.87985229492188,
+    206.53091430664062,
+    288.08428955078125,
+    217.55291748046875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Exception Handling in Spring MVC, Spring,",
+   "bbox": [
+    91.5000228881836,
+    227.53082275390625,
+    293.6426696777344,
+    238.55282592773438
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc",
+   "bbox": [
+    107.87985229492188,
+    243.55081176757812,
+    413.3037414550781,
+    254.57281494140625
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "432\n마. 참고자료\n[1] CWE-754 Improper Check for Unusual or Exceptional Conditions, MITRE\nhttp://cwe.mitre.org/data/definitions/754.html \n[2] Do not complete abruptly from a finally block, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/ERR04-J.+Do+not+\ncomplete+abruptly+from+a+finally+block \n[3] Exception Handling in Spring MVC, Spring,\nhttp://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc\n",
+ "native_sha256": "ed1220e59bd0acc6b5773067e1d0f7fde89986882e1e4a3f09d9bee04fbca6cc",
+ "chars": 415,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

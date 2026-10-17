@@ -1,0 +1,19 @@
+210
+오탐코드의 예
+4: if(name.matches(org_code + “.*CVDTST.*” + “.txt”)) { 
+5: return true; 
+6: } 
+7: return false; 
+8: } 
+9: });
+10:BufferedReader in = new BufferedReader( new FileReader(f_list[0].getPath()) );
+일반적으로 프레임워크를 사용하면서 시스템 프로퍼티에서 가져오는 명령어는 취약하지 않다. 하지만 
+시스템 프로퍼티 등 공용으로 사용하는 프로퍼티가 아닌 개별 사용 프로퍼티일 경우는 정탐, 시스템 
+프로퍼티 사용은 오탐으로 처리한다.
+마. 참고자료
+[1] CWE-99 Resource Injection, MITRE,
+http://cwe.mitre.org/data/definitions/99.html
+[2] CWE-22 Path Traversal, MITRE,
+http://cwe.mitre.org/data/definitions/22.html
+[3] Path Traversal, OWASP,
+https://www.owasp.org/index.php/Path_Traversal

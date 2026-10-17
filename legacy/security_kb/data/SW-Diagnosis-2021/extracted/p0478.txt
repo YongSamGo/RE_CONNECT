@@ -1,0 +1,29 @@
+478
+아래는 디버그용 코드가 남아있는 C 코드의 예제이다. 공격자가 출력되는 콜 스택으로 프로그램 구조
+를 유추할 수 있다.
+안전하지 않은 코드의 예 C
+1: void LeftoverDebugCode() { 
+2:
+int i, ntprs; 
+3:
+char **strings; 
+4:
+nptrs = backtrace(buffer, 100); 
+5:
+strings = backtrace_symbols(buffer, nptrs); 
+6:
+… 
+7:
+// 디버그 모드일 시 콜스택을 출력한다
+8:
+if(debug) {
+9:
+for(i=0; i < nptr; i++) printf(“%s\n”, strings[j]);
+10:
+}
+11:}
+릴리즈 시에는 디버그용 코드를 삭제 하여야 한다.
+안전한 코드의 예 C
+1: void LeftoverDebugCode() { 
+2: … // 디버그 코드를 삭제하고 동작 코드만 남긴다.
+3: }

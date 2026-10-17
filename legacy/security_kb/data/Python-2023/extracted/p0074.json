@@ -1,0 +1,895 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "68",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    98.3472671508789,
+    335.33807373046875,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    120.83074951171875,
+    94.51471710205078,
+    129.33995056152344
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    133.1750946044922,
+    94.51471710205078,
+    141.68431091308594
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    145.3995819091797,
+    94.51471710205078,
+    153.90879821777344
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    157.74392700195312,
+    94.51471710205078,
+    166.25314331054688
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    169.9684295654297,
+    94.51471710205078,
+    178.47764587402344
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    182.31277465820312,
+    94.51471710205078,
+    190.82199096679688
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    194.53726196289062,
+    94.51471710205078,
+    203.04647827148438
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    206.88160705566406,
+    94.51471710205078,
+    215.3908233642578
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    219.10610961914062,
+    94.51471710205078,
+    227.61532592773438
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    231.450439453125,
+    94.51488494873047,
+    239.95965576171875
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.23493194580078,
+    243.67494201660156,
+    94.51488494873047,
+    252.1841583251953
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    82.23493194580078,
+    256.019287109375,
+    94.51488494873047,
+    264.52850341796875
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.41199493408203,
+    120.32905578613281,
+    247.8092498779297,
+    129.33995056152344
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "AUTHENTICATE_KEY = 'Passw0rd'",
+   "bbox": [
+    104.41199493408203,
+    132.67340087890625,
+    239.60574340820312,
+    141.68431091308594
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def make_user_message(request):",
+   "bbox": [
+    104.41199493408203,
+    157.74392700195312,
+    238.4858856201172,
+    166.25314331054688
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  user_info = get_user_info(request.POST.get('user_id', ''))",
+   "bbox": [
+    104.41199493408203,
+    169.46673583984375,
+    331.81793212890625,
+    178.47764587402344
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    182.31277465820312,
+    119.58747100830078,
+    190.82199096679688
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  format_string = request.POST.get('msg_format', '')",
+   "bbox": [
+    104.41199493408203,
+    194.0355682373047,
+    309.04150390625,
+    203.04647827148438
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 내부의 민감한 정보가 외부로 노출될 수 있다.",
+   "bbox": [
+    104.41199493408203,
+    206.88160705566406,
+    283.18304443359375,
+    215.3908233642578
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 사용자가 입력한 문자열을 포맷 문자열로 사용하고 있어 안전하지 않다",
+   "bbox": [
+    104.41199493408203,
+    218.6044158935547,
+    370.40594482421875,
+    227.61532592773438
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  message = format_string.format(user=user_info)",
+   "bbox": [
+    104.41199493408203,
+    230.94874572753906,
+    301.3700866699219,
+    239.95965576171875
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    243.67494201660156,
+    119.58747100830078,
+    252.1841583251953
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return render(request, '/user_page.html', {'message':message})",
+   "bbox": [
+    104.41199493408203,
+    255.51759338378906,
+    358.909912109375,
+    264.52850341796875
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부에서 입력 받은 문자열은 반드시 포맷 지정자를 이용해 바인딩 후 사용해야 하며 직접적으로 포맷문자열로 ",
+   "bbox": [
+    75.04237365722656,
+    296.3361511230469,
+    507.2037353515625,
+    306.2835388183594
+   ],
+   "block": 9,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "사용해서는 안 된다.",
+   "bbox": [
+    65.09266662597656,
+    314.3133544921875,
+    147.7951202392578,
+    324.2607421875
+   ],
+   "block": 10,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    352.0654602050781,
+    319.7541809082031,
+    362.0128479003906
+   ],
+   "block": 11,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    374.6687927246094,
+    94.51471710205078,
+    383.1780090332031
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    386.893310546875,
+    94.51471710205078,
+    395.40252685546875
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    399.2376403808594,
+    94.51471710205078,
+    407.7468566894531
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    411.4621276855469,
+    94.51471710205078,
+    419.9713439941406
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    423.8064880371094,
+    94.51471710205078,
+    432.3157043457031
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    436.0309753417969,
+    94.51471710205078,
+    444.5401916503906
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    448.3753356933594,
+    94.51471710205078,
+    456.8845520019531
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    460.5998229980469,
+    94.51471710205078,
+    469.1090393066406
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    472.94415283203125,
+    94.51471710205078,
+    481.453369140625
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    485.1686706542969,
+    94.51488494873047,
+    493.6778869628906
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.41199493408203,
+    374.1671142578125,
+    247.8092498779297,
+    383.1780090332031
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "AUTHENTICATE_KEY = 'Passw0rd'",
+   "bbox": [
+    104.41199493408203,
+    386.3916320800781,
+    239.60574340820312,
+    395.40252685546875
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def make_user_message(request):",
+   "bbox": [
+    104.41199493408203,
+    411.4621276855469,
+    238.4858856201172,
+    419.9713439941406
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  user_info = get_user_info(request.POST.get('user_id', ''))",
+   "bbox": [
+    104.41199493408203,
+    423.3048095703125,
+    331.81793212890625,
+    432.3157043457031
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    436.0309753417969,
+    119.58747100830078,
+    444.5401916503906
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 사용자가 입력한 문자열을 포맷 문자열로 사용하지 않아 안전하다",
+   "bbox": [
+    104.41199493408203,
+    447.8736572265625,
+    351.34576416015625,
+    456.8845520019531
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  message = 'user name is {}'.format(user_info.name)",
+   "bbox": [
+    104.41199493408203,
+    460.09814453125,
+    318.1539611816406,
+    469.1090393066406
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    472.4424743652344,
+    121.37445068359375,
+    480.9526672363281
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "    return render(request, '/user_page.html', {'message':message})",
+   "bbox": [
+    104.41199493408203,
+    484.6669921875,
+    367.3012390136719,
+    493.6778869628906
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    531.7175903320312,
+    119.12395477294922,
+    542.2642211914062
+   ],
+   "block": 18,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-134: Use of Externally-Controlled Format String, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    551.420654296875,
+    334.2751159667969,
+    560.4092407226562
+   ],
+   "block": 19,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/134.html",
+   "bbox": [
+    77.32001495361328,
+    565.8024291992188,
+    267.01031494140625,
+    574.791015625
+   ],
+   "block": 20,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Format string attack, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    585.2177734375,
+    201.0919647216797,
+    594.2063598632812
+   ],
+   "block": 21,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Format_string_attack",
+   "bbox": [
+    77.32001495361328,
+    599.5995483398438,
+    340.795166015625,
+    608.588134765625
+   ],
+   "block": 22,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ 파이썬 format, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    618.8950805664062,
+    254.7967529296875,
+    627.8836669921875
+   ],
+   "block": 23,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/functions.html#format",
+   "bbox": [
+    77.32001495361328,
+    633.27685546875,
+    299.2761535644531,
+    642.2654418945312
+   ],
+   "block": 24,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Format String Syntax, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    652.6921997070312,
+    287.5219421386719,
+    661.6807861328125
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/string.html#format-string-syntax",
+   "bbox": [
+    77.32001495361328,
+    667.073974609375,
+    342.8360290527344,
+    676.0625610351562
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "1: from django.shortcuts import render\n2: AUTHENTICATE_KEY = 'Passw0rd'\n3:\n4: def make_user_message(request):\n5:   user_info = get_user_info(request.POST.get('user_id', ''))\n6:     \n7:   format_string = request.POST.get('msg_format', '')\n8:   # 내부의 민감한 정보가 외부로 노출될 수 있다.\n9:   # 사용자가 입력한 문자열을 포맷 문자열로 사용하고 있어 안전하지 않다\n10:   message = format_string.format(user=user_info)\n11:     \n12:   return render(request, '/user_page.html', {'message':message})",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    108.3946548461914,
+    370.40594482421875,
+    265.72850341796874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+   ],
+   "text": "1: from django.shortcuts import render\n2: AUTHENTICATE_KEY = 'Passw0rd'\n3:\n4: def make_user_message(request):\n5:   user_info = get_user_info(request.POST.get('user_id', ''))\n6:     \n7:   # 사용자가 입력한 문자열을 포맷 문자열로 사용하지 않아 안전하다\n8:   message = 'user name is {}'.format(user_info.name)\n9:     \n10:     return render(request, '/user_page.html', {'message':message})",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    362.11284790039065,
+    367.3012390136719,
+    494.8778869628906
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n68\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\nfrom django.shortcuts import render\nAUTHENTICATE_KEY = 'Passw0rd'\ndef make_user_message(request):\n  user_info = get_user_info(request.POST.get('user_id', ''))\n    \n  format_string = request.POST.get('msg_format', '')\n  # 내부의 민감한 정보가 외부로 노출될 수 있다.\n  # 사용자가 입력한 문자열을 포맷 문자열로 사용하고 있어 안전하지 않다\n  message = format_string.format(user=user_info)\n    \n  return render(request, '/user_page.html', {'message':message})\n외부에서 입력 받은 문자열은 반드시 포맷 지정자를 이용해 바인딩 후 사용해야 하며 직접적으로 포맷문자열로 \n사용해서는 안 된다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\nfrom django.shortcuts import render\nAUTHENTICATE_KEY = 'Passw0rd'\ndef make_user_message(request):\n  user_info = get_user_info(request.POST.get('user_id', ''))\n    \n  # 사용자가 입력한 문자열을 포맷 문자열로 사용하지 않아 안전하다\n  message = 'user name is {}'.format(user_info.name)\n    \n    return render(request, '/user_page.html', {'message':message})\n라. 참고자료\n① CWE-134: Use of Externally-Controlled Format String, MITRE,\nhttps://cwe.mitre.org/data/definitions/134.html\n② Format string attack, OWASP,\nhttps://owasp.org/www-community/attacks/Format_string_attack\n③ 파이썬 format, Python Software Foundation,\nhttps://docs.python.org/3/library/functions.html#format\n④ Format String Syntax, Python Software Foundation,\nhttps://docs.python.org/3/library/string.html#format-string-syntax\n",
+ "native_sha256": "6a0cfb11703e1eae2c47e15c99b5e0c942bb8970d096ab17c7dfcc7f86eed63b",
+ "chars": 1349,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

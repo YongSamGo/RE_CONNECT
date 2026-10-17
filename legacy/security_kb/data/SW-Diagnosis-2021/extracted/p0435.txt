@@ -1,0 +1,43 @@
+435
+제4장구현단계 보안약점 진단
+null을 가질 수 있는 참조 변수를 사용해 객체의 속성이나 메소드를 사용하는 경우 null 검사를 수행 
+하고 사용한다.
+안전한 코드의 예 JAVA
+1: String url = reuqest.getParamter("url");
+2: //null값을 가지는 참조 변수를 사용할 경우, null 검사를 수행하고 사용한다.
+3: if ( url != null || url.equals("") )
+다음 예제의 경우 Request 객체에서 QeuryString을 사용하여 url의 파라미터 중 name에 해당하는 
+값을 가져오는 코드이다. url의 파라미터에 name이 없으면 QueryString[“name”]은 null을 리턴
+하게 되고, username은 null 값을 가지게 되어 널(Null) 포인터 역참조가 발생한다.
+안전하지 않은 코드의 예 C#
+1: protected void Page_Load(object sender, EventArgs e) { 
+2:
+// url 파라미터에 name이 없으면 username은 null 값을 가지게 된다.
+3:
+string username = Request.QueryString[“name”];
+4:
+// null 값을 가지는 username을 참조하여 널(Null) 포인터 역참조가 발생한다.
+5:
+if (username.Length > 20) { 
+6:
+// length error 
+7:
+}
+8: }
+null을 가질 수 있는 참조 변수를 사용해 객체의 속성이나 메소드를 사용하는 경우 null 검사를 수행
+하고 사용한다.
+안전한 코드의 예 C#
+1: protected void Page_Load(object sender, EventArgs e) { 
+2:
+// url 파라미터에 name 이 없으면 username은 null 값을 가지게 된다.
+3:
+string username = Request.QueryString[“name”];
+4:
+// null 값을 가지는 username을 참조하기 전에 null 검사를 수행하므로 안전하다.
+5:
+if ( username != null && username > 20) {
+6:
+// length error
+7:
+}
+8: }

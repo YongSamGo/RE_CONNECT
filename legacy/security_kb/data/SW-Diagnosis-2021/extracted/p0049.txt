@@ -1,0 +1,30 @@
+49
+제3장분석․ 설계단계 보안항목 진단
+2. 입력값이 DB 쿼리의 구조를 변경시키는지 점검하기 위한 테스트 계획이 수립되어 있는가?
+진단방법
+관련산출물 검토예시
+2-1 쿼리문의 구조를 변경할 수 있는 입력값이 쿼리 구조 변경에 영향을 
+주는지 점검할 수 있는 테스트 계획이 수립되어 있는지 확인
+테스트 입력값 : 
+특수문자( ‘ , “ , = , & , | , ! , ( , ) , { , } , $ , % , @ 등 ) 예약어 
+(UNION, SELECT, THEN, IF, INSTANCE, END, COLUMN 등) 
+함수 명(DATABASE(), CONCAT(), COUNT(), LOWER() 등)
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 프로그램명세서, 클래스설계서, 개발가이드,
+단위 테스트케이스, 단위테스트시나리오 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+SQL 삽입
+마. 참고자료
+①SDL Quick security references on SQL injection, Bala Neerumalla,
+http://go.microsoft.com/?linkid=9707610 
+②SQL Injection Prevention Cheat Sheet, OWASP,
+www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet
+③CAPEC-66 SQL Injection, CAPEC,
+http://capec.mitre.org/data/definitions/66.html
+④CWE-89 SQL Injection, MITRE, http://cwe.mitre.org/data/definitions/89.html
+⑤2016 OWASP Application Security Verification Standard, OWASP, Malicious Input 
+Handling Verification Re- quirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Veri 
+fication_Stan- dard_Project

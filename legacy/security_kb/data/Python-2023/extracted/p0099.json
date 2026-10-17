@@ -1,0 +1,421 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능",
+   "bbox": [
+    315.39373779296875,
+    46.76085662841797,
+    498.9757385253906,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "93",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "패스워드나 인증정보 및 보안토큰 생성에 사용하는 경우 안전한 secrets 라이브러리로 생성한 난수를 이용",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    504.2438049316406,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    111.89009094238281,
+    107.87640380859375,
+    121.83747863769531
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    156.83309936523438,
+    319.7541809082031,
+    166.7804718017578
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    89.78712463378906,
+    179.67611694335938,
+    97.27186584472656,
+    188.18533325195312
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    89.78712463378906,
+    194.05787658691406,
+    97.27186584472656,
+    202.5670928955078
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    89.78712463378906,
+    208.43963623046875,
+    97.27186584472656,
+    216.9488525390625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    89.78712463378906,
+    222.9412384033203,
+    97.27186584472656,
+    231.45045471191406
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    89.78712463378906,
+    237.322998046875,
+    97.27186584472656,
+    245.83221435546875
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    89.78712463378906,
+    251.70477294921875,
+    97.27186584472656,
+    260.2139892578125
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    89.78712463378906,
+    266.0865173339844,
+    97.27186584472656,
+    274.5957336425781
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import secrets",
+   "bbox": [
+    107.28901672363281,
+    179.67611694335938,
+    164.22183227539062,
+    188.18533325195312
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import string",
+   "bbox": [
+    107.28901672363281,
+    194.05787658691406,
+    157.62481689453125,
+    202.5670928955078
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def generate_session_key():",
+   "bbox": [
+    107.28901672363281,
+    222.9412384033203,
+    216.18862915039062,
+    231.45045471191406
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  RANDOM_STRING_CHARS = string.ascii_letters+string.digits",
+   "bbox": [
+    107.28901672363281,
+    237.322998046875,
+    351.5886535644531,
+    245.83221435546875
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 보안 기능과 관련된 난수는 secrets 라이브러리를 사용해야 안전하다",
+   "bbox": [
+    107.28901672363281,
+    251.70477294921875,
+    367.5290222167969,
+    260.2139892578125
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return “”.join(secrets.choice(RANDOM_STRING_CHARS) for i in range(32))",
+   "bbox": [
+    107.28901672363281,
+    266.0865173339844,
+    407.10076904296875,
+    274.5957336425781
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    343.6761169433594,
+    119.12395477294922,
+    354.22271728515625
+   ],
+   "block": 21,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-330: Use of Insufficiently Random Values, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    365.536376953125,
+    309.0999755859375,
+    374.5249938964844
+   ],
+   "block": 22,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/330.html",
+   "bbox": [
+    77.32001495361328,
+    380.8769226074219,
+    267.01031494140625,
+    389.86553955078125
+   ],
+   "block": 23,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Insecure Randomness, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    401.1312561035156,
+    207.92520141601562,
+    410.119873046875
+   ],
+   "block": 24,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/vulnerabilities/Insecure_Randomness",
+   "bbox": [
+    77.32001495361328,
+    416.4717712402344,
+    373.2847900390625,
+    425.46038818359375
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Generate pseudo-random numbers, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    436.7261047363281,
+    344.5829162597656,
+    445.7147216796875
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/random.html",
+   "bbox": [
+    77.32001495361328,
+    452.066650390625,
+    261.6150207519531,
+    461.0552673339844
+   ],
+   "block": 27,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Generate secure random numbers for managing secrets, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    472.3209533691406,
+    432.8125305175781,
+    481.3095703125
+   ],
+   "block": 28,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/secrets.html",
+   "bbox": [
+    77.32001495361328,
+    487.6614990234375,
+    260.8948059082031,
+    496.6501159667969
+   ],
+   "block": 29,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "text": "1: import secrets\n2: import string\n3:\n4: def generate_session_key():\n5:   RANDOM_STRING_CHARS = string.ascii_letters+string.digits\n6:   # 보안 기능과 관련된 난수는 secrets 라이브러리를 사용해야 안전하다\n7:   return “”.join(secrets.choice(RANDOM_STRING_CHARS) for i in range(32))",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    89.78712463378906,
+    166.8804718017578,
+    407.10076904296875,
+    275.7957336425781
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능\n93\n패스워드나 인증정보 및 보안토큰 생성에 사용하는 경우 안전한 secrets 라이브러리로 생성한 난수를 이용\n해야 한다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\nimport secrets\nimport string\ndef generate_session_key():\n  RANDOM_STRING_CHARS = string.ascii_letters+string.digits\n  # 보안 기능과 관련된 난수는 secrets 라이브러리를 사용해야 안전하다\n  return “”.join(secrets.choice(RANDOM_STRING_CHARS) for i in range(32))\n라. 참고자료\n① CWE-330: Use of Insufficiently Random Values, MITRE,\nhttps://cwe.mitre.org/data/definitions/330.html\n② Insecure Randomness, OWASP,\nhttps://owasp.org/www-community/vulnerabilities/Insecure_Randomness\n③ Generate pseudo-random numbers, Python Software Foundation,\nhttps://docs.python.org/3/library/random.html\n④ Generate secure random numbers for managing secrets, Python Software Foundation,\nhttps://docs.python.org/3/library/secrets.html\n",
+ "native_sha256": "dde17d1b1fec06a93e82d34f8323b1068ffd886859d2943ac1b380e72aa98a3d",
+ "chars": 811,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

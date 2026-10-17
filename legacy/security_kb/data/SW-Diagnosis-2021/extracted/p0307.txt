@@ -1,0 +1,54 @@
+307
+제4장구현단계 보안약점 진단
+정탐코드의 예
+8:
+addr = inet_addr(user_supplied_addr);
+9:
+hp = gethostbyaddr( addr, sizeof(struct in_addr), AF_INET);
+10:
+strcpy(hostname, hp->h_name);
+11:}
+다음 예제는 버퍼에 메시지를 저장하고 메시지의 뒷부분 공백을 제거하는 함수이다. 먼저 4번 라인에서 
+버퍼의 생성은 널(Null)문자 저장을 위해 대상 데이터 보다 큰 공간을 할당하고 있으며, 9~11 라인으
+로 인덱스 값을 버퍼의 범위에 맞추어 변경해가면서 값을 할당하고 있다. 12번 라인의 경우 널
+(Null) 문자를 할당하여 올바른 방식으로 코딩이 이루어 졌다. 그러나 16~19번 라인의 공백문자를 제
+거하기 위한 코드에서 버퍼 인덱스 len의 값이 반복문 안에서 감소되고 있지만 0보다 작아질 경우 를 검
+사하고 있지 않다. 따라서 루프의 조건값에 따라 len 값이 0보다 작아질 수 있으며, 아래의 예제는 버
+퍼의 범위를 벗어난 값을 참조하게 되므로 보안약점이 존재하는 코드로 진단할 수 있다.
+정탐코드의 예
+1:
+char* trimTrailingWhitespace(char *strMessage, int length) 
+2:
+{
+3:
+char *retMessage; 
+4:
+char *message = malloc(sizeof(char)*(length+1)); 
+5:
+6:
+// copy input string to a temporary string 
+7:
+char message[length+1]; 
+8:
+int index; 
+9:
+for (index = 0; index < length; index++) { 
+10:
+message[index] = strMessage[index]; 
+11:
+}
+12:
+message[index] = ‘\0’; 
+13:
+14:
+// trim trailing whitespace 
+15:
+int len = index-1; 
+16:
+while (isspace(message[len])) { 
+17:
+message[len] = ‘\0’; 
+18:
+len--;
+19:
+}

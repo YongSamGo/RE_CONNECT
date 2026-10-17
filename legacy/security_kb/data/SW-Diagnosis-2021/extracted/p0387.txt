@@ -1,0 +1,27 @@
+387
+제4장구현단계 보안약점 진단
+주석에 비밀번호를 포함하고 있는 C# 코드이다.
+안전하지 않은 코드의 예 C#
+//주석문으로 DB연결 ID, 비밀번호의 중요한 정보를 노출시켜 안전하지 않다. 
+//DB연결 root / a1q2w3r3f2!@
+1: conn = customGetConnection(USER, PASS);
+프로그램 개발 시에 주석문 등에 남겨놓은 사용자 계정이나 비밀번호 등의 정보는 개발 완료 시에 
+확실하게 삭제하여야 한다.
+안전한 코드의 예 C#
+// ID, 비밀번호등의 중요 정보는 주석에 포함해서는 안된다. 
+1: conn = customGetConnection(USER, PASS);
+주석에 비밀번호를 포함하고 있는 C 예제 코드이다.
+안전하지 않은 코드의 예 C
+/* password is "admin" */
+/* passwd is "admin" */
+1: int verfiyAuth(char *ipasswd, char *orgpasswd){
+2:
+char *admin = "admin";
+3:
+if(strncmp(ipasswd, oprgpasswd, sizeof(ipasswd)) != 0){
+4:
+printf("Authentication Fail!\n");
+5:
+}
+6:
+return admin;

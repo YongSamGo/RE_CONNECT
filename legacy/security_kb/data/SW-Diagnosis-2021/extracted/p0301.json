@@ -1,0 +1,737 @@
+{
+ "lines": [
+  {
+   "text": "301",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음의 예제에서는 평문으로 사용자의 인증정보 및 “authenticated”를 쿠키에 저장하고 있다. 공격 자는 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1307067871094,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "쿠키정보를 변경 가능하기 때문에 중요한 정보를 쿠키에 저장 시에는 암호화해서 사용하고, 가급적 ",
+   "bbox": [
+    70.86001586914062,
+    130.81100463867188,
+    459.1924133300781,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "해당정보는 WAS(Web Application Server) 서버의 세션에 저장한다.",
+   "bbox": [
+    70.86001586914062,
+    147.79092407226562,
+    343.2261962890625,
+    158.81292724609375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    178.33108520507812,
+    291.27935791015625,
+    189.35308837890625
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10: <% ",
+   "bbox": [
+    78.66000366210938,
+    203.25808715820312,
+    109.73394012451172,
+    213.1580810546875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: String username = request.getParameter(“username”); ",
+   "bbox": [
+    78.66000366210938,
+    217.65811157226562,
+    320.5395202636719,
+    227.55810546875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: String password = request.getParameter(“password”); ",
+   "bbox": [
+    78.66000366210938,
+    232.05810546875,
+    317.8648986816406,
+    241.95809936523438
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: if (username==nill || password==null || !isAuthenticatedUser(usename, password)) {",
+   "bbox": [
+    78.66000366210938,
+    246.45809936523438,
+    442.1731262207031,
+    256.35809326171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.65911865234375,
+    260.85809326171875,
+    91.4042739868164,
+    270.7580871582031
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throw new MyException(“인증 에러”);",
+   "bbox": [
+    104.57874298095703,
+    260.85809326171875,
+    254.60726928710938,
+    270.7580871582031
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: }",
+   "bbox": [
+    78.65911865234375,
+    275.2580871582031,
+    98.49179077148438,
+    285.1580810546875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16: Cookie userCookie = new",
+   "bbox": [
+    78.65911865234375,
+    289.6580810546875,
+    202.20382690429688,
+    299.5580749511719
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Cookie(“user”,username);17:",
+   "bbox": [
+    215.41354370117188,
+    289.6580810546875,
+    329.7392883300781,
+    299.5580749511719
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Cookie authCookie =",
+   "bbox": [
+    78.65911865234375,
+    304.0580749511719,
+    163.75320434570312,
+    313.95806884765625
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "new Cookie(“authenticated”,”1”);18: ",
+   "bbox": [
+    78.65911865234375,
+    318.45806884765625,
+    226.13467407226562,
+    328.3580627441406
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19: response.addCookie(userCookie); ",
+   "bbox": [
+    78.65911865234375,
+    332.8580627441406,
+    230.95571899414062,
+    342.758056640625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20: response.addCookie(authCookie); ",
+   "bbox": [
+    78.65911865234375,
+    347.258056640625,
+    230.9839630126953,
+    357.1580505371094
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21: %>",
+   "bbox": [
+    78.65911865234375,
+    361.6580505371094,
+    107.17662048339844,
+    371.55804443359375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서는 HIDDEN 필드로 전송된 price를 가격으로 사용하지 않고 8번 라인에서 정해진 ",
+   "bbox": [
+    70.86000061035156,
+    394.03118896484375,
+    459.2080993652344,
+    405.0531921386719
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "가격을 사용하고 있어 취약하지 않다.",
+   "bbox": [
+    70.86000061035156,
+    411.0110778808594,
+    212.92628479003906,
+    422.0330810546875
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    441.5511169433594,
+    291.27935791015625,
+    452.5731201171875
+   ],
+   "block": 42,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    466.4781188964844,
+    86.42540740966797,
+    476.37811279296875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<input type=”hidden” name=”price” value=”1000”/> ",
+   "bbox": [
+    95.21955108642578,
+    466.4781188964844,
+    305.313720703125,
+    476.37811279296875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    479.9781188964844,
+    86.3971939086914,
+    489.87811279296875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<br/>품목 : HDTV ",
+   "bbox": [
+    95.19133758544922,
+    479.9781188964844,
+    166.9188232421875,
+    489.87811279296875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    493.4781188964844,
+    86.42540740966797,
+    503.37811279296875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<br/>수량 : <input type=”hidden” name=”quantity” />개 ",
+   "bbox": [
+    95.21954345703125,
+    493.4781188964844,
+    318.5605163574219,
+    503.37811279296875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    507.0384216308594,
+    86.42540740966797,
+    516.9384155273438
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<br/><input type=”submit” value=”구입” /> ",
+   "bbox": [
+    95.21955108642578,
+    507.0384216308594,
+    266.7599792480469,
+    516.9384155273438
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    520.5383911132812,
+    86.40953826904297,
+    530.4384155273438
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    125.98406982421875,
+    520.5383911132812,
+    141.85604858398438,
+    530.4384155273438
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    534.0383911132812,
+    86.41217803955078,
+    543.9384155273438
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    95.2063217163086,
+    534.0383911132812,
+    112.784912109375,
+    543.9384155273438
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    547.5986938476562,
+    86.40071868896484,
+    557.4987182617188
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 서버가 보유하고 있는 정보를 이용하여 가격을 처리 ",
+   "bbox": [
+    104.01544952392578,
+    547.5986938476562,
+    306.5205993652344,
+    557.4987182617188
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    561.0986938476562,
+    86.42011260986328,
+    570.9987182617188
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "price = 1000;",
+   "bbox": [
+    104.03484344482422,
+    561.0986938476562,
+    160.00494384765625,
+    570.9987182617188
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    574.5986938476562,
+    86.42540740966797,
+    584.4987182617188
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "quantity = request.getParameter(“quantity”);",
+   "bbox": [
+    104.04013061523438,
+    574.5986938476562,
+    283.29046630859375,
+    584.4987182617188
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    588.1589965820312,
+    91.36638641357422,
+    598.0590209960938
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "total = quantity * Float.parseFloat(price); ",
+   "bbox": [
+    104.54084777832031,
+    588.1589965820312,
+    273.2560119628906,
+    598.0590209960938
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:}catch (Exception e) { ",
+   "bbox": [
+    78.66000366210938,
+    601.6589965820312,
+    183.02346801757812,
+    611.5590209960938
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    615.1589965820312,
+    91.37696075439453,
+    625.0590209960938
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    122.13088989257812,
+    615.1589965820312,
+    138.0116424560547,
+    625.0590209960938
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "text": "10: <% \n11: String username = request.getParameter(“username”); \n12: String password = request.getParameter(“password”); \n13: if (username==nill || password==null || !isAuthenticatedUser(usename, password)) {\n14:      throw new MyException(“인증 에러”);\n15: }\n16: Cookie userCookie = new      Cookie(“user”,username);17:\nCookie authCookie =\nnew Cookie(“authenticated”,”1”);18: ",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.65911865234375,
+    202.05808715820314,
+    442.1731262207031,
+    329.5580627441406
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    17,
+    18,
+    19
+   ],
+   "text": "19: response.addCookie(userCookie); \n20: response.addCookie(authCookie); \n21: %>",
+   "language": "text",
+   "label": "new Cookie(“authenticated”,”1”);18: ",
+   "bbox": [
+    78.65911865234375,
+    331.65806274414064,
+    230.9839630126953,
+    372.75804443359374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+   ],
+   "text": "1:    <input type=”hidden” name=”price” value=”1000”/> \n2:    <br/>품목 : HDTV \n3:    <br/>수량 : <input type=”hidden” name=”quantity” />개 \n4:    <br/><input type=”submit” value=”구입” /> \n5:                 ......\n6:    try {\n7:        // 서버가 보유하고 있는 정보를 이용하여 가격을 처리 \n8:        price = 1000;\n9:        quantity = request.getParameter(“quantity”);\n10:      total = quantity * Float.parseFloat(price); \n11:}catch (Exception e) { \n12:             ......",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    465.2781188964844,
+    318.5605163574219,
+    626.2590209960938
+   ]
+  }
+ ],
+ "native": "301\n제4장구현단계 보안약점 진단\n다음의 예제에서는 평문으로 사용자의 인증정보 및 “authenticated”를 쿠키에 저장하고 있다. 공격 자는 \n쿠키정보를 변경 가능하기 때문에 중요한 정보를 쿠키에 저장 시에는 암호화해서 사용하고, 가급적 \n해당정보는 WAS(Web Application Server) 서버의 세션에 저장한다.\n정탐코드의 예\n10: <% \n11: String username = request.getParameter(“username”); \n12: String password = request.getParameter(“password”); \n13: if (username==nill || password==null || !isAuthenticatedUser(usename, password)) {\n14:\nthrow new MyException(“인증 에러”);\n15: }\n16: Cookie userCookie = new\nCookie(“user”,username);17:\nCookie authCookie =\nnew Cookie(“authenticated”,”1”);18: \n19: response.addCookie(userCookie); \n20: response.addCookie(authCookie); \n21: %>\n다음의 예제에서는 HIDDEN 필드로 전송된 price를 가격으로 사용하지 않고 8번 라인에서 정해진 \n가격을 사용하고 있어 취약하지 않다.\n오탐코드의 예\n1:\n<input type=”hidden” name=”price” value=”1000”/> \n2:\n<br/>품목 : HDTV \n3:\n<br/>수량 : <input type=”hidden” name=”quantity” />개 \n4:\n<br/><input type=”submit” value=”구입” /> \n5:\n......\n6:\ntry {\n7:\n// 서버가 보유하고 있는 정보를 이용하여 가격을 처리 \n8:\nprice = 1000;\n9:\nquantity = request.getParameter(“quantity”);\n10:\ntotal = quantity * Float.parseFloat(price); \n11:}catch (Exception e) { \n12:\n......\n",
+ "native_sha256": "26162ca808e145d5d935c0149337e70db492c70fbe6ec4368236bf1574adce76",
+ "chars": 1103,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

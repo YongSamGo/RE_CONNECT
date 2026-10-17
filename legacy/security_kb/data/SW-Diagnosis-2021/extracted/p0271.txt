@@ -1,0 +1,12 @@
+271
+제4장구현단계 보안약점 진단
+마. 참고자료
+[1] CWE-90 LDAP Injection, MITRE,
+http://cwe.mitre.org/data/definitions/90.html 
+[2] Prevent LDAP injection, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS54-J.+Prevent+ 
+LDAP+injection
+[3] LDAP injection, OWASP
+https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet
+[4] “LDAP Resources”
+http://ldapman.org/

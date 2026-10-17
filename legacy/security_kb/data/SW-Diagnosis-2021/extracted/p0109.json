@@ -1,0 +1,609 @@
+{
+ "lines": [
+  {
+   "text": "109",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    220.3914794921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    159.0,
+    134.25808715820312,
+    174.12704467773438,
+    144.1580810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    334.20001220703125,
+    134.25808715820312,
+    381.5479431152344,
+    144.1580810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    125.58000183105469,
+    148.89822387695312,
+    207.54905700683594,
+    158.7982177734375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "서버사이드 요청 위조",
+   "bbox": [
+    322.49969482421875,
+    148.89822387695312,
+    393.24957275390625,
+    158.7982177734375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    151.55999755859375,
+    163.59823608398438,
+    181.5672607421875,
+    173.49822998046875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "적절한 인증 없는 중요기능 허용",
+   "bbox": [
+    305.5800476074219,
+    163.59823608398438,
+    410.2318420410156,
+    173.49822998046875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안기능",
+   "bbox": [
+    151.55999755859375,
+    178.23818969726562,
+    181.5672607421875,
+    188.13818359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "부적절한 인증서 유효성 검증",
+   "bbox": [
+    310.37994384765625,
+    178.23818969726562,
+    405.37103271484375,
+    188.13818359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "API 오용",
+   "bbox": [
+    151.13999938964844,
+    192.87808227539062,
+    181.92654418945312,
+    202.778076171875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "DNS lookup에 의존한 보안 결정",
+   "bbox": [
+    302.939453125,
+    192.87808227539062,
+    412.8099060058594,
+    202.778076171875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    227.73519897460938,
+    126.4169921875,
+    239.81320190429688
+   ],
+   "block": 30,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐306 Missing Authentication for Critical Function, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    250.3199920654297,
+    369.1077880859375,
+    261.3531188964844
+   ],
+   "block": 31,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/306.html",
+   "bbox": [
+    99.59996032714844,
+    265.3310546875,
+    306.03546142578125,
+    276.3530578613281
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,",
+   "bbox": [
+    85.85955047607422,
+    285.29998779296875,
+    426.86639404296875,
+    296.3330993652344
+   ],
+   "block": 33,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/ Top_10_2013",
+   "bbox": [
+    99.60025024414062,
+    300.31103515625,
+    318.1471252441406,
+    311.3330383300781
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③Authentication Cheat Sheet, OWASP,",
+   "bbox": [
+    85.8598403930664,
+    320.2909240722656,
+    263.82061767578125,
+    331.31292724609375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Authentication_Cheat_Sheet",
+   "bbox": [
+    99.60025024414062,
+    335.2908630371094,
+    376.7166748046875,
+    346.3128662109375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④2016 OWASP Application Security Verification Standard, OWASP, Authentication ",
+   "bbox": [
+    85.8598403930664,
+    355.33087158203125,
+    459.1815490722656,
+    366.3528747558594
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Verification Requirements,",
+   "bbox": [
+    99.59927368164062,
+    370.330810546875,
+    215.41505432128906,
+    381.3528137207031
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    99.59927368164062,
+    385.33074951171875,
+    456.03485107421875,
+    396.3527526855469
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project ",
+   "bbox": [
+    99.5992431640625,
+    400.3306884765625,
+    202.16026306152344,
+    411.3526916503906
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Digital Authentication - The Basics, Dawn M. Turnet,",
+   "bbox": [
+    85.85883331298828,
+    420.3105773925781,
+    331.04412841796875,
+    431.33258056640625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.cryptomathic.com/news-events/blog/digi-tal-authentication-the-basics",
+   "bbox": [
+    99.5992431640625,
+    435.3105163574219,
+    449.42901611328125,
+    446.33251953125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥일회용 비밀번호(OTP) 알고리즘 프로파일, 한국정보통신기술협회,",
+   "bbox": [
+    85.85882568359375,
+    455.2904052734375,
+    354.0679626464844,
+    466.3124084472656
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&pk_num=TTAK",
+   "bbox": [
+    99.59923553466797,
+    470.29034423828125,
+    456.18634033203125,
+    481.3123474121094
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": ".KO-12.0193&nowSu=4&standard_no=&kor_standard=otp&-publish_date=&secti",
+   "bbox": [
+    99.5992431640625,
+    485.290283203125,
+    455.93426513671875,
+    496.3122863769531
+   ],
+   "block": 45,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "on_code=&acode1=&acode2=&scode1=&scode2=&order=publish_date&by=desc",
+   "bbox": [
+    99.5992431640625,
+    500.29022216796875,
+    456.3221740722656,
+    511.3122253417969
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "&to-talSu=14",
+   "bbox": [
+    99.5992431640625,
+    515.2901000976562,
+    159.27197265625,
+    526.3121337890625
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦홍채 등 생채인식 기반 간편 공인인증 가이드라인, 한국인터넷진흥원,",
+   "bbox": [
+    85.85883331298828,
+    535.3301391601562,
+    363.87506103515625,
+    546.3521728515625
+   ],
+   "block": 48,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.kisa.or.kr/notice/press_View.jsp?mode=view&p_No=8&b_No=8&d_",
+   "bbox": [
+    99.5992431640625,
+    550.330078125,
+    455.8053283691406,
+    561.3521118164062
+   ],
+   "block": 49,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "No=1484",
+   "bbox": [
+    99.5992431640625,
+    565.3300170898438,
+    139.6439208984375,
+    576.35205078125
+   ],
+   "block": 50,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧Spring Security - Authentication, eGovFrame 표준프레임워크 포털,",
+   "bbox": [
+    85.85883331298828,
+    585.3098754882812,
+    382.0765380859375,
+    596.3319091796875
+   ],
+   "block": 51,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.egovframe.go.kr/wiki/doku.",
+   "bbox": [
+    99.59925079345703,
+    600.3098754882812,
+    277.3265686035156,
+    611.3319091796875
+   ],
+   "block": 52,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "php?id=egovframework:rte:fdl:server_security:authentication",
+   "bbox": [
+    99.59925079345703,
+    615.3097534179688,
+    366.65631103515625,
+    626.331787109375
+   ],
+   "block": 53,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑨ASP.NET Authentication, Microsoft,",
+   "bbox": [
+    85.85884094238281,
+    635.2896728515625,
+    255.19985961914062,
+    646.3117065429688
+   ],
+   "block": 54,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://msdn.microsoft.com/en-us/library/eeyk640h.aspx",
+   "bbox": [
+    99.59925079345703,
+    650.2896118164062,
+    351.6455078125,
+    661.3116455078125
+   ],
+   "block": 55,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "bbox": [
+    70.68000030517578,
+    131.40802001953125,
+    453.7200012207031,
+    204.72802734375
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "서버사이드 요청 위조"
+    ],
+    [
+     "보안기능",
+     "적절한 인증 없는 중요기능 허용"
+    ],
+    [
+     "보안기능",
+     "부적절한 인증서 유효성 검증"
+    ],
+    [
+     "API 오용",
+     "DNS lookup에 의존한 보안 결정"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n입력데이터 검증 및 표현\n서버사이드 요청 위조\n보안기능\n적절한 인증 없는 중요기능 허용\n보안기능\n부적절한 인증서 유효성 검증\nAPI 오용\nDNS lookup에 의존한 보안 결정"
+  }
+ ],
+ "native": "109\n제3장분석․ 설계단계 보안항목 진단\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n입력데이터 검증 및 표현\n서버사이드 요청 위조\n보안기능\n적절한 인증 없는 중요기능 허용\n보안기능\n부적절한 인증서 유효성 검증\nAPI 오용\nDNS lookup에 의존한 보안 결정\n마. 참고자료\n①CWE‐306 Missing Authentication for Critical Function, MITRE,\nhttp://cwe.mitre.org/data/definitions/306.html\n②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,\nhttps://www.owasp.org/index.php/ Top_10_2013\n③Authentication Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Authentication_Cheat_Sheet\n④2016 OWASP Application Security Verification Standard, OWASP, Authentication \nVerification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project \n⑤Digital Authentication - The Basics, Dawn M. Turnet,\nhttp://www.cryptomathic.com/news-events/blog/digi-tal-authentication-the-basics\n⑥일회용 비밀번호(OTP) 알고리즘 프로파일, 한국정보통신기술협회,\nhttp://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&pk_num=TTAK\n.KO-12.0193&nowSu=4&standard_no=&kor_standard=otp&-publish_date=&secti\non_code=&acode1=&acode2=&scode1=&scode2=&order=publish_date&by=desc\n&to-talSu=14\n⑦홍채 등 생채인식 기반 간편 공인인증 가이드라인, 한국인터넷진흥원,\nhttp://www.kisa.or.kr/notice/press_View.jsp?mode=view&p_No=8&b_No=8&d_\nNo=1484\n⑧Spring Security - Authentication, eGovFrame 표준프레임워크 포털,\nhttp://www.egovframe.go.kr/wiki/doku.\nphp?id=egovframework:rte:fdl:server_security:authentication\n⑨ASP.NET Authentication, Microsoft,\nhttp://msdn.microsoft.com/en-us/library/eeyk640h.aspx\n",
+ "native_sha256": "67bdf14c0749d8fdaaf79f62d09574d7821df080546089338488e35efe748820",
+ "chars": 1445,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

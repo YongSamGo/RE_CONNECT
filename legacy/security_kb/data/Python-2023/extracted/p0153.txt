@@ -1,0 +1,59 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화
+147
+다. 코드예제
+다음은 Django의 미들웨어 세팅 파일인 settings.py 파일 예시로, 개발 시 사용된 DEBUG 옵션이 True로 
+설정되어 있어 정보 노출의 위험이 있다.
+가) Django 예제
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from django.urls import reverse_lazy
+from django.utils.text import format_lazy
+DEBUG = True
+ROOT_URLCONF = 'test.urls'
+SITE_ID = 1
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ':memory:',
+  }
+}
+개발이 끝난 소스코드를 배포 및 운영할 경우에는 반드시 DEBUG 옵션을 False로 변경해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from django.urls import reverse_lazy
+from django.utils.text import format_lazy
+DEBUG = False
+ROOT_URLCONF = 'test.urls'
+SITE_ID = 1
+DATABASES = {
+  'default': {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': ':memory:',
+  }
+}

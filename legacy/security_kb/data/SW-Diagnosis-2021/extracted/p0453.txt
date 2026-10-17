@@ -1,0 +1,42 @@
+453
+제4장구현단계 보안약점 진단
+함수의 역할이 자원을 리턴하는 경우에는 자원의 해제는 함수를 호출한 쪽에서 담당하므로 취약하지 
+않다.
+오탐코드의 예
+1: public class DBUtil { 
+2:
+public static Connection getConnection() { 
+3:
+Connection conn = null; 
+4:
+try { 
+5:
+Class.forName(“oracle.jdbc.driver.OracleDriver”); 
+6:
+conn = DriverManager.getConnection(DbInfo.url,DbInfo.id, DbInfo.password);
+7:
+} catch (SQLException e) { 
+8:
+// TODO Auto-generated catch block 
+9:
+e.printStackTrace(); 
+10:
+} catch (ClassNotFoundException e) { 
+11:
+// TODO Auto-generated catch block 
+12:
+e.printStackTrace(); 
+13:
+}
+14:
+return conn;
+15: }
+16:}
+마. 참고자료
+[1] CWE-404 Improper Resource Shutdown or Release, MITRE,
+http://cwe.mitre.org/data/definitions/404.html
+[2] Release resources when they are no longer needed, CERT,
+http://www.securecoding.cert.org/confluence/display/java/FIO04-J.+Release+r
+esources+when+they+are+no+longer+needed
+[3] Unreleased Resource, OWASP,
+https://www.owasp.org/index.php/Unreleased_Resource

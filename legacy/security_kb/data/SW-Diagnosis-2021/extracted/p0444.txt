@@ -1,0 +1,29 @@
+444
+JRE 기본 패키지 클래스의 생성자의 경우, 널(Null) 을 반환 할 수 있다고 명시되어 있지 않은한 널
+(Null)을 리턴 한다고 판단하지 않는다.
+오탐코드의 예
+1:
+if(infoList == null) infoList = new ArrayList(); 
+2:
+for(int i=0; containers != null && i < containers.length; i++) { 
+3:
+hm = new HashMap(); 
+4:
+for(int j=0; j < paramRecvData.length; j++) { 
+5:
+hm.put(paramRecvData[j], containers[i].getField(paramRecvData[j]).getValueAs-
+String()); 
+6:
+}
+7:
+infoList.add(hm); 
+8:
+}
+마. 참고자료
+[1] CWE-476 NULL Pointer Dereference, MITRE,
+http://cwe.mitre.org/data/definitions/476.html
+[2] Do not dereference null pointers, CERT,
+http://www.securecoding.cert.org/confluence/display/c/EXP34-C.+Do+not+der
+eference+null+pointers
+[3] Null Dereference, OWASP,
+https://www.owasp.org/index.php/Null_Dereference

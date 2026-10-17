@@ -1,0 +1,198 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "63",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    102.7816390991211,
+    119.12395477294922,
+    113.32826232910156
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-190: Integer Overflow or Wraparound, MITRE",
+   "bbox": [
+    65.09266662597656,
+    124.64191436767578,
+    289.2215270996094,
+    133.63050842285156
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": " https://cwe.mitre.org/data/definitions/190.html",
+   "bbox": [
+    77.32001495361328,
+    140.8214111328125,
+    271.44635009765625,
+    149.80999755859375
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Integer Overflow Error, ZAP,",
+   "bbox": [
+    65.09266662597656,
+    162.03448486328125,
+    194.37953186035156,
+    171.02308654785156
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://www.zaproxy.org/docs/alerts/30003/",
+   "bbox": [
+    77.32001495361328,
+    178.21395874023438,
+    257.306640625,
+    187.2025604248047
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Arbitrary-precision arithmetic,",
+   "bbox": [
+    65.09266662597656,
+    199.42706298828125,
+    197.49508666992188,
+    208.41566467285156
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic",
+   "bbox": [
+    77.32001495361328,
+    215.60653686523438,
+    312.7467956542969,
+    224.5951385498047
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ PEP 237 – Unifying Long Integers and Integers,",
+   "bbox": [
+    65.09266662597656,
+    236.16983032226562,
+    275.5348815917969,
+    245.68838500976562
+   ],
+   "block": 9,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://peps.python.org/pep-0237/",
+   "bbox": [
+    77.32001495361328,
+    252.8792724609375,
+    218.9478302001953,
+    261.8678894042969
+   ],
+   "block": 10,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ Numpy Types",
+   "bbox": [
+    65.09266662597656,
+    274.0923767089844,
+    133.416015625,
+    283.08099365234375
+   ],
+   "block": 11,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://numpy.org/doc/stable/user/basics.types.html?highlight=s",
+   "bbox": [
+    77.32001495361328,
+    290.2718505859375,
+    336.8427429199219,
+    299.2604675292969
+   ],
+   "block": 12,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n63\n라. 참고자료\n① CWE-190: Integer Overflow or Wraparound, MITRE\n https://cwe.mitre.org/data/definitions/190.html\n② Integer Overflow Error, ZAP,\nhttps://www.zaproxy.org/docs/alerts/30003/\n③ Arbitrary-precision arithmetic,\nhttps://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic\n④ PEP 237 – Unifying Long Integers and Integers,\nhttps://peps.python.org/pep-0237/\n⑤ Numpy Types\nhttps://numpy.org/doc/stable/user/basics.types.html?highlight=s\n",
+ "native_sha256": "0e0592495f3ab379f54e37a4e22e6f04c44cce041d29389747abdaea7fe2df26",
+ "chars": 478,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

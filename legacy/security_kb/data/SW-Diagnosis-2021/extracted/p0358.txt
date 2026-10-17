@@ -1,0 +1,58 @@
+358
+일반적인 진단의 예
+1:
+…public Connection DBConnect(String url, String usr) { 
+2:
+String password = “68af404b513073584c4b6f22b6c63e6b”; ·······································②
+3:
+try { 
+4:
+// 비밀번호로 상수를 사용하고있다. 
+5:
+con = DriverManager.getConnection(url, usr, password); ···········································①
+6:
+} catch (SQLException e) {
+7:
+System.err.println(“…”);
+8:
+}
+9:
+return con;
+10: }
+11: …
+암호화를 하는데 사용되는 암호화 키를 소스에 하드코딩해서 사용하는 경우 취약하다.
+정탐코드의 예
+1: public class U321 { 
+2:
+public void foo(String url, String usr) { 
+3:
+try { 
+4:
+String encryptedPwd = getpassword(); 
+5:
+// private key를 상수로 정의 
+6:
+byte[] privateKey = { ‘6’, ‘8’, ‘a’, ‘f’, ‘4’, ‘0’, ‘4’, ‘b’, ‘5’, ‘1’, ‘3’, ‘0’, ‘7’ };
+7:
+javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(“RSA”);
+8:
+// 상수 key를 사용하여 보안키 생성 
+9:
+javax.crypto.SecretKey myDesKey = new javax.crypto.spec.SecretKeySpec(privateKey,
+10:
+“DES”); 
+11:
+cipher.init(javax.crypto.Cipher.DECRYPT_MODE, myDesKey);
+12:
+// 암호화된 password를 복호화 
+13:
+byte[] plainTextPwdBytes = cipher.doFinal(encryptedPwd.getBytes());
+14:
+15:
+// DB 연결 
+16:
+java.sql.DriverManager.getConnection(url, usr, new String(plainTextPwdBytes));
+17:
+} catch (SQLException e) { 
+18:
+…

@@ -1,0 +1,492 @@
+{
+ "lines": [
+  {
+   "text": "550",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "1.10.1. 파일 업로드",
+   "bbox": [
+    78.95999908447266,
+    118.09121704101562,
+    160.0027618408203,
+    129.11322021484375
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": " <!‐‐ max size of file in memory (in bytes) ‐‐> ",
+   "bbox": [
+    85.13999938964844,
+    145.0301055908203,
+    276.8164978027344,
+    154.9581298828125
+   ],
+   "block": 15,
+   "size": 8.939798355102539,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": " <property name=”maxInMemorySize” value=”1048576” /> <!‐‐ 1MB",
+   "bbox": [
+    85.14013671875,
+    159.43019104003906,
+    360.8138732910156,
+    169.35821533203125
+   ],
+   "block": 16,
+   "size": 8.939798355102539,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "‐‐> ",
+   "bbox": [
+    85.13999938964844,
+    173.8301544189453,
+    95.97648620605469,
+    183.7581787109375
+   ],
+   "block": 17,
+   "size": 8.939798355102539,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "</bean> ",
+   "bbox": [
+    85.13983917236328,
+    188.25820922851562,
+    118.29505157470703,
+    198.158203125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "파일 업로드 기능을 구현할 경우에는 웹쉘과 같은 악성 프로그램의 실행을 막기 위해 업로드 파일의 종류를 제한하고, ",
+   "bbox": [
+    79.5,
+    209.79812622070312,
+    458.61517333984375,
+    219.6981201171875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "저장 경로와 저장 파일명을 외부에서 알 수 없도록 해야 하며, 실행 속성을 제거하고 저장해야 한다.",
+   "bbox": [
+    79.5,
+    222.81845092773438,
+    402.200927734375,
+    232.71844482421875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "파일의 종류는 파일의 확장자, 파일의 Content-Type, 파일의 시그니쳐(signature) 등을 이용하여 검증할 수 있다. ",
+   "bbox": [
+    79.5,
+    244.89816284179688,
+    458.677734375,
+    254.79815673828125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "파일의 종류를 검증할 때는 허용 목록(white list)을 정의하고, 허용 범위 내에서 사용될 수 있도록 해야 하며, 파일의 ",
+   "bbox": [
+    79.5,
+    257.91845703125,
+    458.67767333984375,
+    267.8184509277344
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "확장자와 Content-Type은 위변조가 쉬우므로 파일의 시그니쳐를 이용해 파일의 종류를 검증하는 것이 안전하다.",
+   "bbox": [
+    79.5,
+    270.9387512207031,
+    446.16357421875,
+    280.8387451171875
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public boolean isImageFile(File filename) throws Exception",
+   "bbox": [
+    85.1400146484375,
+    292.47845458984375,
+    325.84442138671875,
+    302.3784484863281
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " { Magic magic = new Magic(); ",
+   "bbox": [
+    85.1400146484375,
+    306.8784484863281,
+    217.837646484375,
+    316.7784423828125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " FileInputStream is = new",
+   "bbox": [
+    85.1400146484375,
+    321.2784423828125,
+    193.92613220214844,
+    331.1784362792969
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " FileInputStream(filename); byte[] data = new ",
+   "bbox": [
+    85.1400146484375,
+    335.6784362792969,
+    276.1790771484375,
+    345.57843017578125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " byte[512]; ",
+   "bbox": [
+    85.1400146484375,
+    350.07843017578125,
+    132.47467041015625,
+    359.9784240722656
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " is.read(data); ",
+   "bbox": [
+    85.1400146484375,
+    364.4784240722656,
+    143.4911346435547,
+    374.37841796875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " MagicMatch match = magic.getMagicMatch(data); if",
+   "bbox": [
+    85.1400146484375,
+    378.87841796875,
+    302.3199462890625,
+    388.7784118652344
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " (match.getMimeType().contains(“images”)) { ",
+   "bbox": [
+    85.1400146484375,
+    393.2784118652344,
+    268.77862548828125,
+    403.17840576171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   return true; ",
+   "bbox": [
+    85.1400146484375,
+    407.67840576171875,
+    147.68988037109375,
+    417.5783996582031
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } else { ",
+   "bbox": [
+    85.1400146484375,
+    422.0783996582031,
+    122.67731475830078,
+    431.9783935546875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   return false; ",
+   "bbox": [
+    85.1400146484375,
+    436.4783935546875,
+    150.69589233398438,
+    446.3783874511719
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " } ",
+   "bbox": [
+    85.1400146484375,
+    450.8783874511719,
+    94.83684539794922,
+    460.77838134765625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} ",
+   "bbox": [
+    85.1400146484375,
+    465.27838134765625,
+    90.4565200805664,
+    475.1783752441406
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "업로드 파일은 외부에서 알 수 없는 경로에 유일한 파일명으로 저장해야 한다. 일반적으로 분리된 스토리지에 저장",
+   "bbox": [
+    79.5,
+    486.8180847167969,
+    456.0799560546875,
+    496.71807861328125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하며, 저장 파일명은 랜덤한 숫자 또는 시간과 같이 유일한 값을 사용한다.",
+   "bbox": [
+    79.5,
+    499.8384094238281,
+    319.81658935546875,
+    509.7384033203125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String savedFileName = ",
+   "bbox": [
+    85.14002990722656,
+    521.3780517578125,
+    185.40792846679688,
+    531.278076171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "UUID.randomUUID().toString(); File uploadFile = new",
+   "bbox": [
+    85.14002990722656,
+    535.778076171875,
+    301.3935852050781,
+    545.6781005859375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File(uploadPath + savedFileName); try { ",
+   "bbox": [
+    85.14002990722656,
+    550.1780395507812,
+    250.082275390625,
+    560.0780639648438
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " file.transferTo(uploadFile); ",
+   "bbox": [
+    85.14002990722656,
+    564.5780639648438,
+    195.2792510986328,
+    574.4780883789062
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (Exception e) ",
+   "bbox": [
+    85.14002990722656,
+    578.97802734375,
+    174.09083557128906,
+    588.8780517578125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " { System.out.println(“upload",
+   "bbox": [
+    85.14002990722656,
+    593.3780517578125,
+    201.90135192871094,
+    603.278076171875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " error”); ",
+   "bbox": [
+    85.14002990722656,
+    607.7780151367188,
+    119.9789810180664,
+    617.6780395507812
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    85.14002990722656,
+    622.1780395507812,
+    87.87277221679688,
+    632.0780639648438
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "550\n1.10.1. 파일 업로드\n <!‐‐ max size of file in memory (in bytes) ‐‐> \n <property name=”maxInMemorySize” value=”1048576” /> <!‐‐ 1MB\n‐‐> \n</bean> \n파일 업로드 기능을 구현할 경우에는 웹쉘과 같은 악성 프로그램의 실행을 막기 위해 업로드 파일의 종류를 제한하고, \n저장 경로와 저장 파일명을 외부에서 알 수 없도록 해야 하며, 실행 속성을 제거하고 저장해야 한다.\n파일의 종류는 파일의 확장자, 파일의 Content-Type, 파일의 시그니쳐(signature) 등을 이용하여 검증할 수 있다. \n파일의 종류를 검증할 때는 허용 목록(white list)을 정의하고, 허용 범위 내에서 사용될 수 있도록 해야 하며, 파일의 \n확장자와 Content-Type은 위변조가 쉬우므로 파일의 시그니쳐를 이용해 파일의 종류를 검증하는 것이 안전하다.\npublic boolean isImageFile(File filename) throws Exception\n { Magic magic = new Magic(); \n FileInputStream is = new\n FileInputStream(filename); byte[] data = new \n byte[512]; \n is.read(data); \n MagicMatch match = magic.getMagicMatch(data); if\n (match.getMimeType().contains(“images”)) { \n   return true; \n } else { \n   return false; \n } \n} \n업로드 파일은 외부에서 알 수 없는 경로에 유일한 파일명으로 저장해야 한다. 일반적으로 분리된 스토리지에 저장\n하며, 저장 파일명은 랜덤한 숫자 또는 시간과 같이 유일한 값을 사용한다.\nString savedFileName = \nUUID.randomUUID().toString(); File uploadFile = new\nFile(uploadPath + savedFileName); try { \n file.transferTo(uploadFile); \n} catch (Exception e) \n { System.out.println(“upload\n error”); \n}\n",
+ "native_sha256": "699651d510fb5c92349b83038fe7ea0e22fc976b6c2d716b6d9c7828c4261c2b",
+ "chars": 1135,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

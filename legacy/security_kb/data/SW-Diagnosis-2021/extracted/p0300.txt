@@ -1,0 +1,47 @@
+300
+인증 서버의 정보를 환경 변수가 아닌 고정된 정보를 이용하여 연결을 진행한다.
+안전한 코드의 예 C
+SecurityDecision() { 
+2:
+int sockfd = socket(PF_INET, SOCK_STREAM, 0); 
+3:
+struct sockaddr_in server_addr;
+4:
+memset( &server_ info, 0, sizeof(server_info));
+5:
+server_info.sin_family = AF_INET;
+6:
+server_info.sin_port = htons(5555);
+7:
+server_info.sin_addr.s_addr = inet_addr(“127.0.0.1”);
+// 고정된 서버 주소를 사용하여 연결을 진행한다.
+8:
+if( connect( sockfd, (struct sockaddr *)server_addr, sizeof(struct socketaddr) ) < 0 ) {
+9:
+return;
+10:
+}
+/* 라이선스 검증 코드 */ 
+11:}
+라. 진단방법
+인증여부를 확인하기 위해 사용하는 변수를 확인하고(①), 변수가 세션정보 등 서버내부에서 검증된 
+값인지 확인한다(②). 인증결정의 기준으로 외부 입력값을 그대로 사용하는 경우 취약하다.
+일반적인 진단의 예
+1:
+…
+2:
+Cookie[] cookies = request.getCookies() ; ·········································································②
+3:
+for(int i=0 ; i<cookies.length ; i++) { 
+4:
+Cookie c = cookies[i] ; 
+5:
+if(c.getName().equals(“authecticated”)&&Boolean.TRUE.equals(c.getValue())){ ··········①
+6:
+authenticated = true ; 
+7:
+}
+8:
+}
+9:
+…

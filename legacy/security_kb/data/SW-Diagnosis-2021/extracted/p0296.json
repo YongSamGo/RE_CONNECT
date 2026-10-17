@@ -1,0 +1,195 @@
+{
+ "lines": [
+  {
+   "text": "296",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-190 Integer Overflow, MITRE,",
+   "bbox": [
+    91.5,
+    137.53121948242188,
+    266.4139404296875,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/190.html ",
+   "bbox": [
+    107.87982940673828,
+    153.55117797851562,
+    317.1238098144531,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Enforce limits on integer values originating from tainted sources, CERT,",
+   "bbox": [
+    91.5,
+    174.55111694335938,
+    420.0336608886719,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/INT04-C.+Enforce+limi",
+   "bbox": [
+    107.87982177734375,
+    190.51095581054688,
+    461.690673828125,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ts+on+integer+values+originating+from+tainted+sources",
+   "bbox": [
+    107.87982177734375,
+    206.53091430664062,
+    356.16790771484375,
+    217.55291748046875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Verify that all integer values are in range, CERT,",
+   "bbox": [
+    91.49999237060547,
+    227.53082275390625,
+    316.4386901855469,
+    238.55282592773438
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/INT08-C.+Verify+that+",
+   "bbox": [
+    107.87982177734375,
+    243.55081176757812,
+    461.586181640625,
+    254.57281494140625
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "all+integer+values+are+in+range",
+   "bbox": [
+    107.87982177734375,
+    259.51068115234375,
+    250.5216827392578,
+    270.5326843261719
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] Integer overflow, OWASP,",
+   "bbox": [
+    91.49999237060547,
+    280.5105895996094,
+    223.2793426513672,
+    291.5325927734375
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/OWASP_Periodic_Table_of_Vulnerabilities_-_",
+   "bbox": [
+    107.87982177734375,
+    296.53057861328125,
+    462.1685791015625,
+    307.5525817871094
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Integer_Overflow/Underflow",
+   "bbox": [
+    107.87982177734375,
+    312.5505676269531,
+    233.31222534179688,
+    323.57257080078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "296\n마. 참고자료\n[1] CWE-190 Integer Overflow, MITRE,\nhttp://cwe.mitre.org/data/definitions/190.html \n[2] Enforce limits on integer values originating from tainted sources, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/INT04-C.+Enforce+limi\nts+on+integer+values+originating+from+tainted+sources\n[3] Verify that all integer values are in range, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/INT08-C.+Verify+that+\nall+integer+values+are+in+range\n[4] Integer overflow, OWASP,\nhttps://www.owasp.org/index.php/OWASP_Periodic_Table_of_Vulnerabilities_-_\nInteger_Overflow/Underflow\n",
+ "native_sha256": "b9b6b3be88547f6dd1ac08d528da19929cc849931e902250ce904941557b93c8",
+ "chars": 598,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,461 @@
+{
+ "lines": [
+  {
+   "text": "483",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)",
+   "bbox": [
+    93.0,
+    120.79122924804688,
+    431.3815002441406,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private String[] colors;",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    180.61886596679688,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: // 메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    414.9639892578125,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public void onCreate(Bundle savedInstanceState) {",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    296.12396240234375,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: super.onCreate(savedInstanceState);",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    236.33511352539062,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: String[] newColors = getColors();",
+   "bbox": [
+    77.94000244140625,
+    197.79818725585938,
+    225.07884216308594,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: ......",
+   "bbox": [
+    77.94000244140625,
+    212.19821166992188,
+    105.91622924804688,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    77.94000244140625,
+    226.59820556640625,
+    92.79290771484375,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: public String[] getColors() {",
+   "bbox": [
+    77.94000244140625,
+    240.99819946289062,
+    201.136474609375,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: String[] ret = null;",
+   "bbox": [
+    77.94000244140625,
+    255.398193359375,
+    164.78306579589844,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: if ( this.colors != null ) {",
+   "bbox": [
+    77.94000244140625,
+    269.7981872558594,
+    196.9721221923828,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94000244140625,
+    284.19818115234375,
+    90.62522888183594,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ret = new String[colors.length];",
+   "bbox": [
+    112.6194076538086,
+    284.19818115234375,
+    241.1702880859375,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94000244140625,
+    298.5981750488281,
+    90.63227081298828,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for (int i = 0; i < colors.length; i++) { ret[i] = this.colors[i]; }",
+   "bbox": [
+    108.24700164794922,
+    298.5981750488281,
+    358.4728088378906,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: }",
+   "bbox": [
+    77.93997192382812,
+    312.9981689453125,
+    97.77264404296875,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: return ret;",
+   "bbox": [
+    77.93997192382812,
+    327.3981628417969,
+    136.8843536376953,
+    337.29815673828125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: }",
+   "bbox": [
+    77.93997192382812,
+    341.79815673828125,
+    97.77264404296875,
+    351.6981506347656
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래의 코드는 멤버 변수 colors는 private로 선언되었지만 public으로 선언된 getUserColors ",
+   "bbox": [
+    70.86000061035156,
+    374.1711120605469,
+    459.1924743652344,
+    385.193115234375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "메소드로 private 배열에 대한 reference를 얻을 수 있다. 이 경우 의도하지 않은 수정이 발생할 ",
+   "bbox": [
+    70.86001586914062,
+    391.21112060546875,
+    459.1318359375,
+    402.2331237792969
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "수 있다.",
+   "bbox": [
+    70.86001586914062,
+    408.1910095214844,
+    102.17340850830078,
+    419.2130126953125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    448.1512145996094,
+    317.9013671875,
+    459.1732177734375
+   ],
+   "block": 43,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: // private 인 collection을 public인 메소드가 return한다.",
+   "bbox": [
+    77.94000244140625,
+    467.55810546875,
+    296.18133544921875,
+    477.4580993652344
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: private List<Color> colors;",
+   "bbox": [
+    77.94000244140625,
+    481.9580993652344,
+    194.33456420898438,
+    491.85809326171875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public List<Color> getUserColors() { return colors; }",
+   "bbox": [
+    77.94000244140625,
+    496.35809326171875,
+    299.67303466796875,
+    506.2580871582031
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만들어야 한다.",
+   "bbox": [
+    70.86000061035156,
+    528.7910766601562,
+    427.6219787597656,
+    539.8131103515625
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: private String[] colors;\n2: // 메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.\n3: public void onCreate(Bundle savedInstanceState) {\n4: super.onCreate(savedInstanceState);\n5: String[] newColors = getColors();\n6: ......\n7: }\n8: public String[] getColors() {\n9: String[] ret = null;\n10: if ( this.colors != null ) {\n11:         ret = new String[colors.length];\n12:        for (int i = 0; i < colors.length; i++) { ret[i] = this.colors[i]; }\n13: }\n14: return ret;\n15: }",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)",
+   "bbox": [
+    77.93997192382812,
+    131.913232421875,
+    414.9639892578125,
+    352.8981506347656
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26
+   ],
+   "text": "1: // private 인 collection을 public인 메소드가 return한다.\n2: private List<Color> colors;\n3: public List<Color> getUserColors() { return colors; }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    459.2732177734375,
+    299.67303466796875,
+    507.4580871582031
+   ]
+  }
+ ],
+ "native": "483\n제4장구현단계 보안약점 진단\n안전한 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)\n1: private String[] colors;\n2: // 메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.\n3: public void onCreate(Bundle savedInstanceState) {\n4: super.onCreate(savedInstanceState);\n5: String[] newColors = getColors();\n6: ......\n7: }\n8: public String[] getColors() {\n9: String[] ret = null;\n10: if ( this.colors != null ) {\n11:\nret = new String[colors.length];\n12:\nfor (int i = 0; i < colors.length; i++) { ret[i] = this.colors[i]; }\n13: }\n14: return ret;\n15: }\n아래의 코드는 멤버 변수 colors는 private로 선언되었지만 public으로 선언된 getUserColors \n메소드로 private 배열에 대한 reference를 얻을 수 있다. 이 경우 의도하지 않은 수정이 발생할 \n수 있다.\n안전하지 않은 코드의 예 C#\n1: // private 인 collection을 public인 메소드가 return한다.\n2: private List<Color> colors;\n3: public List<Color> getUserColors() { return colors; }\n메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만들어야 한다.\n",
+ "native_sha256": "11ebadbdaa5ba5bff149946ce2719b3572e9c6d407846e3c157df1d1ba0a541c",
+ "chars": 882,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

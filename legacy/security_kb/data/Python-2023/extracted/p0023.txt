@@ -1,0 +1,43 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+17
+다음은 위 코드를 안전하게 변환한 예제다. 우선 외부로부터 입력 받은 문자열 내부에서 발견된 라이브러리 
+이름이 사전에 정의한 화이트리스트에 포함되는지 확인하고 리스트에 없는 경우엔 에러 페이지를 반환한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from django.shortcuts import render
+WHITE_LIST = ['get_friends_list', 'get_address', 'get_phone_number']
+def request_rest_api(request):
+  function_name = request.POST.get('function_name', '')
+  # 사용 가능한 함수를 화이트리스트 목록 내의 함수로 제한
+  if function_name in WHITE_LIST:
+    exec('{}()'.format(function_name))
+    return render(request, '/success.html')
+        
+  return render(request, '/error.html', {'error':'허용되지 않은 함수입니다.'})
+라. 참고자료
+① CWE-94: Improper Control of Generation of Code ('Code Injection'), MITRE,
+https://cwe.mitre.org/data/definitions/94.html
+② CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ('Eval Injection'), MITRE,
+https://cwe.mitre.org/data/definitions/95.html
+③ Code Injection, OWASP,
+https://owasp.org/www-community/attacks/Code_Injection
+④ Python Built-in Functions - eval(), exec(), compile(), Python Software Foundation,
+https://docs.python.org/3/library/functions.html#eval
+https://docs.python.org/3/library/functions.html#exec
+https://docs.python.org/3/library/functions.html#compile
+⑤ Python Built-in Types – isalnum(), Python Software Foundation,
+https://docs.python.org/3/library/stdtypes.html
+⑥ Reqular expression operations, Python Software Foundation,
+https://docs.python.org/3/library/re.html#module-re

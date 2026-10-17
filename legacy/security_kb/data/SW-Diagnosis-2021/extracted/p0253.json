@@ -1,0 +1,772 @@
+{
+ "lines": [
+  {
+   "text": "253",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    120.79122924804688,
+    317.9013671875,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    90.6410903930664,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputProperty(Serializer.METHOD, \"xml\"); ",
+   "bbox": [
+    99.43522644042969,
+    140.19808959960938,
+    307.0832214355469,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    77.94001007080078,
+    154.59811401367188,
+    90.62699890136719,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputProperty(Serializer.DOCTYPE_PUBLIC, \"-//W3C//DTD XHTML",
+   "bbox": [
+    99.421142578125,
+    154.59811401367188,
+    410.6717834472656,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1.0 Strict//EN\");",
+   "bbox": [
+    77.93914794921875,
+    168.99813842773438,
+    143.4456329345703,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    77.93914794921875,
+    183.39816284179688,
+    90.6402359008789,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputProperty(Serializer.DOCTYPE_SYSTEM,",
+   "bbox": [
+    99.43437194824219,
+    183.39816284179688,
+    315.4735107421875,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\");",
+   "bbox": [
+    77.93915557861328,
+    197.79818725585938,
+    305.3428955078125,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    77.93916320800781,
+    212.19821166992188,
+    90.64025115966797,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputProperty(Serializer.INDENT, \"yes\"); ",
+   "bbox": [
+    99.43438720703125,
+    212.19821166992188,
+    301.0050354003906,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    77.93915557861328,
+    226.59820556640625,
+    90.62614440917969,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputProperty(Serializer.OMIT_XML_DECLARATION, \"no\");",
+   "bbox": [
+    99.4202880859375,
+    226.59820556640625,
+    371.24359130859375,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    77.93826293945312,
+    240.99819946289062,
+    90.63582611083984,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "qout.SetOutputWriter(Response.Output);",
+   "bbox": [
+    99.42996215820312,
+    240.99819946289062,
+    262.6761169433594,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//별다른 검증 없이 XML 데이터에 접근합니다. ",
+   "bbox": [
+    77.93826293945312,
+    255.398193359375,
+    244.3359375,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    77.93826293945312,
+    269.7981872558594,
+    90.62348937988281,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "eval.Run(qout);27:",
+   "bbox": [
+    99.41850280761719,
+    269.7981872558594,
+    172.2311248779297,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    91.13829040527344,
+    284.19818115234375,
+    93.87103271484375,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "문자열 필터링으로 쿼리문 조작을 막을 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    316.57110595703125,
+    252.7217254638672,
+    327.5931091308594
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    222.4199981689453,
+    356.5911865234375,
+    304.7713928222656,
+    367.6131896972656
+   ],
+   "block": 37,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:String squery = ",
+   "bbox": [
+    79.37999725341797,
+    375.99810791015625,
+    153.4320526123047,
+    385.8981018066406
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    79.37999725341797,
+    390.3981018066406,
+    87.101318359375,
+    400.298095703125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "\"for $user in doc(users.xml)//user[username='\"",
+   "bbox": [
+    104.71604919433594,
+    390.3981018066406,
+    296.0335998535156,
+    400.298095703125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    79.37999725341797,
+    404.798095703125,
+    87.11101531982422,
+    414.6980895996094
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ UserTextBox.Text",
+   "bbox": [
+    100.28547668457031,
+    404.798095703125,
+    180.7832794189453,
+    414.6980895996094
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    79.37999725341797,
+    419.1980895996094,
+    87.11101531982422,
+    429.09808349609375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ \"'and pass='\"",
+   "bbox": [
+    100.28547668457031,
+    419.1980895996094,
+    160.7311248779297,
+    429.09808349609375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    79.37999725341797,
+    433.59808349609375,
+    87.08544921875,
+    443.4980773925781
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ PwdTextBox.Text",
+   "bbox": [
+    100.25991821289062,
+    433.59808349609375,
+    179.4654083251953,
+    443.4980773925781
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    79.37999725341797,
+    447.9980773925781,
+    87.07398986816406,
+    457.8980712890625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ \"'] return $user\";",
+   "bbox": [
+    100.24845123291016,
+    447.9980773925781,
+    177.62649536132812,
+    457.8980712890625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 문자열 필터링으로 위험한 문자열을 제거해 줍니다.",
+   "bbox": [
+    92.58002471923828,
+    462.3980712890625,
+    279.4432373046875,
+    472.2980651855469
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    79.37999725341797,
+    476.7980651855469,
+    87.08545684814453,
+    486.69805908203125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "string validatedQuery = squery.Replace('/','*');",
+   "bbox": [
+    100.25991821289062,
+    476.7980651855469,
+    285.8582763671875,
+    486.69805908203125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8: Processor processor = new Processor();",
+   "bbox": [
+    79.37999725341797,
+    491.19805908203125,
+    256.79669189453125,
+    501.0980529785156
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: XQueryCompiler compiler = processor.NewXQueryCompiler(); ",
+   "bbox": [
+    79.37999725341797,
+    505.5980529785156,
+    343.9350891113281,
+    515.498046875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    79.37999725341797,
+    519.998046875,
+    92.0810775756836,
+    529.8980712890625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XdmNode indoc = processor.NewDocumentBuilder().Build(new ",
+   "bbox": [
+    131.65560913085938,
+    519.998046875,
+    388.84027099609375,
+    529.8980712890625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Uri(Server.MapPath(\"users.xml\"))); ",
+   "bbox": [
+    92.0396499633789,
+    534.3980102539062,
+    229.52301025390625,
+    544.2980346679688
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:using (StreamReader query = new StreamReader(validatedQuery)) ",
+   "bbox": [
+    79.37999725341797,
+    548.7979736328125,
+    365.1358642578125,
+    558.697998046875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:{ // tainted value propagated ",
+   "bbox": [
+    79.3800048828125,
+    563.197998046875,
+    215.07754516601562,
+    573.0980224609375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    79.3800048828125,
+    577.5980224609375,
+    92.07404327392578,
+    587.498046875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XQueryCompiler compiler = processor.NewXQueryCompiler(); ",
+   "bbox": [
+    105.24850463867188,
+    577.5980224609375,
+    357.7169494628906,
+    587.498046875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    79.3800048828125,
+    591.9979858398438,
+    92.08108520507812,
+    601.8980102539062
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XQueryExecutable exp = compiler.Compile(query.ReadToEnd()); //",
+   "bbox": [
+    105.25555419921875,
+    591.9979858398438,
+    375.5106201171875,
+    601.8980102539062
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "xquery created",
+   "bbox": [
+    79.3800048828125,
+    606.39794921875,
+    139.98959350585938,
+    616.2979736328125
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "17:    qout.SetOutputProperty(Serializer.METHOD, \"xml\"); \n18:    qout.SetOutputProperty(Serializer.DOCTYPE_PUBLIC, \"-//W3C//DTD XHTML\n1.0 Strict//EN\");\n19:    qout.SetOutputProperty(Serializer.DOCTYPE_SYSTEM,\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\");\n20:    qout.SetOutputProperty(Serializer.INDENT, \"yes\"); \n21:    qout.SetOutputProperty(Serializer.OMIT_XML_DECLARATION, \"no\");\n22:    qout.SetOutputWriter(Response.Output);\n//별다른 검증 없이 XML 데이터에 접근합니다. \n23:    eval.Run(qout);27:\n}",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.93826293945312,
+    131.913232421875,
+    410.6717834472656,
+    295.2981750488281
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+   ],
+   "text": "1:String squery = \n2:        \"for $user in doc(users.xml)//user[username='\"\n3:      + UserTextBox.Text\n4:      + \"'and pass='\"\n5:      + PwdTextBox.Text\n6:      + \"'] return $user\";\n// 문자열 필터링으로 위험한 문자열을 제거해 줍니다.\n7:      string validatedQuery = squery.Replace('/','*');\n8: Processor processor = new Processor();\n9: XQueryCompiler compiler = processor.NewXQueryCompiler(); \n10:                 XdmNode indoc = processor.NewDocumentBuilder().Build(new \nUri(Server.MapPath(\"users.xml\"))); \n11:using (StreamReader query = new StreamReader(validatedQuery)) \n12:{ // tainted value propagated \n13:      XQueryCompiler compiler = processor.NewXQueryCompiler(); \n14:      XQueryExecutable exp = compiler.Compile(query.ReadToEnd()); //\nxquery created",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    79.37999725341797,
+    367.71318969726565,
+    388.84027099609375,
+    617.4979736328125
+   ]
+  }
+ ],
+ "native": "253\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 C#\n17:\nqout.SetOutputProperty(Serializer.METHOD, \"xml\"); \n18:\nqout.SetOutputProperty(Serializer.DOCTYPE_PUBLIC, \"-//W3C//DTD XHTML\n1.0 Strict//EN\");\n19:\nqout.SetOutputProperty(Serializer.DOCTYPE_SYSTEM,\n\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\");\n20:\nqout.SetOutputProperty(Serializer.INDENT, \"yes\"); \n21:\nqout.SetOutputProperty(Serializer.OMIT_XML_DECLARATION, \"no\");\n22:\nqout.SetOutputWriter(Response.Output);\n//별다른 검증 없이 XML 데이터에 접근합니다. \n23:\neval.Run(qout);27:\n}\n문자열 필터링으로 쿼리문 조작을 막을 수 있다.\n안전한 코드의 예 C#\n1:String squery = \n2:\n\"for $user in doc(users.xml)//user[username='\"\n3:\n+ UserTextBox.Text\n4:\n+ \"'and pass='\"\n5:\n+ PwdTextBox.Text\n6:\n+ \"'] return $user\";\n// 문자열 필터링으로 위험한 문자열을 제거해 줍니다.\n7:\nstring validatedQuery = squery.Replace('/','*');\n8: Processor processor = new Processor();\n9: XQueryCompiler compiler = processor.NewXQueryCompiler(); \n10:\nXdmNode indoc = processor.NewDocumentBuilder().Build(new \nUri(Server.MapPath(\"users.xml\"))); \n11:using (StreamReader query = new StreamReader(validatedQuery)) \n12:{ // tainted value propagated \n13:\nXQueryCompiler compiler = processor.NewXQueryCompiler(); \n14:\nXQueryExecutable exp = compiler.Compile(query.ReadToEnd()); //\nxquery created\n",
+ "native_sha256": "dc5a57554f8c8b81c58082f0fafaf448c3a5ce7e5818ce605222c691d5a222b0",
+ "chars": 1233,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

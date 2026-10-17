@@ -1,0 +1,48 @@
+499
+제4장구현단계 보안약점 진단
+안전한 코드의 예 JAVA
+3:
+HttpServletResponse response) throws ServletException {
+4:
+ObjectOutputStream oos = null; 
+5:
+ObjectInputStream ois = null; 
+6:
+try { 
+7:
+URL url = new URL("http://127.0.0.1:8080/DataServlet"); 
+8:
+//보안기능을 제공하는 프레임워크의 메소드를 사용하여야한다.
+9:
+URLConnection urlConn = url.openConnection();
+10:
+urlConn.setDoOutput(true);
+11:
+.......
+아래 예제는 J2EE 프로그램에서 System.exit()를 사용하고 있다. System.exit() 메소드를 호출 
+하는 경우 웹 애플리케이션을 실행하고 있는 컨테이너를 종료할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: public class U382 extends HttpServlet { 
+2:
+public void doPost(HttpServletRequest request, HttpServletResponse response)
+3:
+throws ServletException, IOException {
+4:
+try { 
+5:
+do_something(logger); 
+6:
+} catch (IOException ase) { 
+7:
+logger.info("ERROR"); 
+8:
+// J2EE 프로그램에서 System.exit()을 사용하여 서비스가 종료 될 수 있다.
+9:
+System.exit(1);
+10:
+}
+서비스 종료를 막기 위해, J2EE 프로그램에서는 System.exit() 메소드를 사용하지 않는다.
+안전한 코드의 예 JAVA
+1: public class U382 extends HttpServlet { 
+2:
+public void doPost(HttpServletRequest request, HttpServletResponse response)

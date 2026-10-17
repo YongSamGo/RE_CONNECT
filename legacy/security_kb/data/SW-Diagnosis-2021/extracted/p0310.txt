@@ -1,0 +1,36 @@
+310
+안전하지 않은 코드의 예 JAVA
+5:
+validDate.set(2014, Calendar.OCTOBER, 14); 
+6:
+System.out.printf( args[0] + " did not match! HINT: It was issued on %1$terd of 
+some month", validate);
+7: }
+사용자로부터 입력받은 문자열을 포맷 문자열에 직접 포함시키지 않고, %s 포맷 문자열을 사용함
+으로써 정보유출을 방지한다.
+안전한 코드의 예 JAVA
+// 외부 입력값이 포맷 문자열 출력에 사용되지 않도록 수정 
+1: import java.util.Calendar 
+2:
+:
+3: public static void main(String[] args) { 
+4:
+Calendar validDate = Calendar.getInstance(); 
+5:
+validDate.set(2014, Calendar.OCTOBER, 14); 
+6:
+System.out.printf("%s did not match! HINT: It was issued on %2$terd of some 
+month", args[0], validate);
+7: }
+이 예제의 msg는 신뢰할 수 없는 사용자 입력을 포함하고 있고 fprintf() 호출에서 포맷 문자열 인자로 
+전달되기 때문에 포맷 스트링 삽입에 취약하다.
+안전하지 않은 코드의 예 C
+1: void incorrect_password(const char *user) {
+2:
+static const char msg_format[] = "%s cannot be authenticated.\n";
+3:
+size_t len = strlen(user) + sizeof(msg_format);
+4:
+char *msg = (char *)malloc(len);
+5:
+if (msg == NULL) {

@@ -1,0 +1,53 @@
+265
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+9:
+sc.setSearchScope(SearchControls.SUBTREE_SCOPE); 
+10:
+String base = "dc=example,dc=com"; 
+//userSN과 userPassword 값에 LDAP필터를 조작할 수 있는 공격 문자열에 대한 검증이 없어 안전하지 
+않다.
+11:
+String filter = "(&(sn=" + userSN + ")(userPassword=" + userPassword + "))";
+12:
+NamingEnumeration<?> results = dctx.search(base, filter, sc);
+13:
+while (results.hasMore()) { 
+14:
+SearchResult sr = (SearchResult) results.next(); 
+15:
+Attributes attrs = sr.getAttributes(); 
+16:
+Attribute attr = attrs.get("cn"); 
+17:
+......
+18:
+}
+19:
+dctx.close(); 
+20:
+} catch (NamingException e) { … } 
+21:}
+검색을 위한 필터 문자열로 사용되는 외부의 입력에서 위험한 문자열을 제거하여 위험성을 부분적으로 
+감소시킬 수 있다.
+안전한 코드의 예 JAVA
+1: private void searchRecord(String userSN, String userPassword) throws NamingException {
+2:
+Hashtable<String, String> env = new Hashtable<String, String>(); 
+3:
+env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+4:
+try {
+5:
+DirContext dctx = new InitialDirContext(env); 
+6:
+SearchControls sc = new SearchControls(); 
+7:
+String[] attributeFilter = {"cn", "mail" }; 
+8:
+sc.setReturningAttributes(attributeFilter); 
+9:
+sc.setSearchScope(SearchControls.SUBTREE_SCOPE); 
+10:
+String base = "dc=example,dc=com"; 
+// userSN과 userPassword 값에서 LDAP 필터를 조작할 수 있는 문자열을 제거하고 사용

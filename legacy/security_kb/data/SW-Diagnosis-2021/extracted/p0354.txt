@@ -1,0 +1,31 @@
+354
+암호화 과정에 사용하는 암호화 키는 외부 공간(파일)에 안전한 방식으로 암호화하여 보관해야 하며, 
+암호화된 암호화 키는 복호화하여 사용한다.
+안전한 코드의 예 JAVA
+1: import javax.crypto.KeyGenerator; 
+2: import javax.crypto.spec.SecretKeySpec; 
+3: import javax.crypto.Cipher; 
+4:
+……
+5: public String encriptString(String usr) { 
+//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다.
+6:
+String key = getPassword("./password.ini");
+7:
+key = decrypt(key);
+8:
+if (key != null) { 
+9:
+byte[] bToEncrypt = usr.getBytes("UTF-8"); 
+10:
+SecretKeySpec sKeySpec = new SecretKeySpec(key.getBytes(), "AES"); 
+소스코드 내부에 암호화 키를 상수 형태로 하드코딩하여 사용하면 악의적인 공격자에게 암호화 키가 
+노출될 위협이 있다.
+안전하지 않은 코드의 예 C#
+//암호화 키를 소스코드 내부에 사용하는 것은 안전하지 않다. 
+1: byte[] key = new byte[] { 0x43, 0x87, 0x23, 0x72 };
+2: byte[] iv = new byte[] { 0x43, 0x87, 0x23, 0x72 };
+3: FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);
+4: CryptoStream cStream = new CryptoStream(fStream,
+new TripleDESCryptoServiceProvider().CreateEncryptor(key, iv),
+CryptoStreamMode.Write);

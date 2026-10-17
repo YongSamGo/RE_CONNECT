@@ -1,0 +1,66 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+19
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+import os
+from django.shortcuts import render
+def get_info(request):
+  # 외부 입력값으로부터 파일명을 입력 받는다
+  request_file = request.POST.get('request_file')
+  (filename, file_ext) = os.path.splitext(request_file)
+  file_ext = file_ext.lower()
+  if file_ext not in ['.txt', '.csv']:
+    return render(request, '/error.html', {'error':'파일을 열 수 없습니다.'})
+  # 입력값을 검증 없이 파일 처리에 사용했다
+  with open(request_file) as f:
+    data = f.read()
+        
+  return render(request, '/success.html', {'data':data})
+외부 입력값에서 경로 조작 문자열 ( /, \, .. 등)을 제거한 후 파일의 경로 설정에 사용하면 코드를 안전하게 
+만들 수 있다. replace 함수 외에도 re.sub, filter 함수를 사용해 특수문자를 필터링 하는 것도 가능하다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+import os
+from django.shortcuts import render
+def get_info(request):
+  request_file = request.POST.get('request_file')
+  (filename, file_ext) = os.path.splitext(request_file)
+  file_ext = file_ext.lower()
+  # 외부 입력값으로 받은 파일 이름은 검증하여 사용한다.
+  if file_ext not in ['.txt', '.csv']:
+    return render(request, '/error.html', {'error':'파일을 열수 없습니다.'})
+  # 파일 명에서 경로 조작 문자열을 필터링 한다.
+  filename = filename.replace('.', '')
+  filename = filename.replace('/', '')
+  filename = filename.replace('\\', '')

@@ -1,0 +1,49 @@
+388
+불필요한 주석은 삭제해야 한다.
+안전한 코드의 예 C
+1: int verfiyAuth(char *ipasswd, char *orgpasswd){ 
+2:
+char *admin = "admin"; 
+3:
+if(strncmp(ipasswd, oprgpasswd, sizeof(ipasswd)) != 0){ 
+4:
+printf("Authentication Fail!\n"); 
+5:
+}
+6:
+return admin;
+7: }
+라. 진단방법
+DB접속, 관리자 로그인 등이 구현된 코드를 확인하고(①), 주석을 확인하여 암호 포함여부 확인한다
+(②).
+일반적인 진단의 예
+1:
+…/*
+2:
+* Password for administrator is “tiger.” ···············································································②
+3:
+*/ 
+4:
+public Connection DBConnect(String id, String password) { 
+5:
+String url = “DBServer”; 
+6:
+Connection conn = null; 
+7:
+try { 
+8:
+String CONNECT_STRING = url + “:” + id + “:” + password; 
+9:
+InitialContext ctx = new InitialContext(); 
+10:
+DataSource datasource = (DataSource) ctx.lookup(CONNECT_STRING); ·················①
+11:
+conn = datasource.getConnection(); 
+12:
+} catch (SQLException e) { 
+13:
+System.err.printf(“….”); 
+14:
+}
+15: …
+16: }

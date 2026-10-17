@@ -1,0 +1,32 @@
+181
+제4장구현단계 보안약점 진단
+다. 코드예제
+다음은 안전하지 않은 코드의 예로, 외부로부터 입력받은 gubun의 값을 아무런 검증과정을 거치지 
+않고 SQL 쿼리를 생성하는데 사용하고 있다. 이 경우 gubun의 값으로 a' or 'a' = 'a 를 입력하면 
+조건절이 b_gubun = 'a' or 'a' = 'a' 로 바뀌어 쿼리의 구조가 변경되어 board 테이블의 모든 내용이 
+조회된다.
+안전하지 않은 코드의 예 JDBC API
+1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.
+2: String gubun = request.getParameter("gubun");
+3: ......
+4: String sql = "SELECT * FROM board WHERE b_gubun = '" + gubun + "'";
+5: Connection con = db.getConnection();
+6: Statement stmt = con.createStatement();
+7: //외부로부터 입력받은 값이 검증 또는 처리 없이 쿼리로 수행되어 안전하지 않다.
+8: ResultSet rs = stmt.executeQuery(sql);
+이를 안전한 코드로 변환하면 다음과 같다. 파라미터(Parameter)를 받는 PreparedStatement 
+객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString, setParameter등의 메소드로 설정
+하여, 외부의 입력이 쿼리문의 구조를 바꾸는 것을 방지해야 한다.
+안전한 코드의 예 JDBC API
+1: String gubun = request.getParameter("gubun");
+2: ......
+3: //1. 사용자에 의해 외부로부터 입력받은 값은 안전하지 않을 수 있으므로, PreparedStatement 
+사용을 위해 ?문자로 바인딩 변수를 사용한다.
+4: String sql = "SELECT * FROM board WHERE b_gubun = ?";
+5: Connection con = db.getConnection();
+6: //2. PreparedStatement 사용한다.
+7: PreparedStatement pstmt = con.prepareStatement(sql);
+8: //3.PreparedStatement 객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString등의 메소드로 
+설정하여 안전하다.
+9: pstmt.setString(1, gubun);
+10: ResultSet rs = pstmt.executeQuery();

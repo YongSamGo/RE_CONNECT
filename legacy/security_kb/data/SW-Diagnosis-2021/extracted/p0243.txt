@@ -1,0 +1,25 @@
+243
+제4장구현단계 보안약점 진단
+정탐코드의 예
+4: String action = nvl(request.getAttribute(“action”)); 
+5: logger.debug(“>>> redirectCode - “
++ code); 6:
+logger.debug(“>>> redirectAction –
+“ + action); 7: ………
+8:
+se.sendRedirect(CP + action + “?redirectCode=” + code); 
+9:
+return;
+10:
+%>
+다음의 예제에서 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴하므로 
+안전한 URL이다.
+오탐코드의 예
+1:
+1: response.sendRedirect(request.getContextPath() + “/login.do”);
+마. 참고자료
+[1] CWE-601 URL Redirection to Untrusted Site, MITRE,
+http://cwe.mitre.org/data/definitions/601.html
+[2] Unvalidated Redirects and Forwards Cheat Sheet, OWASP 
+https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat
+_Sheet

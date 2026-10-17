@@ -1,0 +1,49 @@
+342
+안전하지 않은 코드의 예 C#
+12:
+{
+13:
+Msg.Text = "An exception occurred retrieving your password: " + 
+Server.HtmlEncode(e.Message);
+14:
+return;
+15:
+}
+16:
+MailMessage Message = new MailMessage(); 
+17:
+Message.Body = "Your password is: " + Server.HtmlEncode(password);
+//비밀번호가 포함된 메시지를 네트워크로 전송하고 있다.
+18:
+SmtpMail.Send(Message);
+19:
+Msg.Text = "Password sent via e-mail.";
+20: }
+21: else
+22: {
+23:
+Msg.Text = "User name is not valid. Please check the value and try again.";
+24: }
+25:}
+비밀번호를 네트워크로 전송할 때에는 암호화 하는 것이 바람직하다.
+안전한 코드의 예 C#
+1: public void EmailPassword_OnClick(object sender, EventArgs args) 
+2: {
+3:
+MembershipUser u = Membership.GetUser(UsernameTextBox.Text, false);
+4:
+String password;
+5:
+if (u != null) 
+6:
+{
+7:
+try
+8:
+{
+9:
+password = u.GetPassword(); 
+10:
+byte[] data = System.Text.Encoding.ASCII.GetBytes(password);
+11:
+data = new

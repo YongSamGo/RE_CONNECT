@@ -1,0 +1,45 @@
+465
+제4장구현단계 보안약점 진단
+이를 안전한 코드로 변환하기 위해서는 ObjectInputStream을 상속 받아 WhitelistedObjectInput
+Stream 객체를 구현하여 사용한다. WhitelistedObjectInputStream에서는 readObject()를 실행 시, 
+resolveClass 함수를 호출하여 설정한 화이트리스트와 비교하여 리스트에 없는 데이터일 경우 예외를 
+발생시킨다.
+안전한 코드의 예 JAVA
+1:public class WhitelistedObjectInputStream extends ObjectInputStream {
+2:
+public Set<String> whitelist;
+3:
+// WhilelistedObjectInputStream을 생성할 때 화이트리스트를 입력받는다.
+4:
+public WhitelistedObjectInputStream(InputStream inputStream, Set<String> wl)
+5:
+throws IOException {
+6:
+super(inputStream);
+7:
+whitelist = wl;
+8:
+}
+9:
+10:@Override
+11:protected Class<?> resolveClass(ObjectStreamClass cls) throws IOException, 
+ClassNotFoundException {
+12:
+// ObjectStreamClass의 클래스명이 화이트리스트에 있는지 확인한다.
+13:
+if (!whitelist.contains(cls.getName())) {
+14:
+throw new InvalidClassException("Unexpected serialized class", cls.getName());
+15:
+}
+16:
+return super.resolveClass(cls);
+17:
+}
+18:}
+19:
+20:@RequestMapping(value = "/upload", method = RequestMethod.POST)
+21:public Student upload(@RequestParam("file") MultipartFile multipartFile)
+ throws ClassNotFoundException, IOException { 
+22:
+Student student = null;

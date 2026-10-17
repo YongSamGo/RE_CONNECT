@@ -1,0 +1,506 @@
+{
+ "lines": [
+  {
+   "text": "234",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    120.79122924804688,
+    323.5413513183594,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: string fn = Path.GetFileName(FileUploadCtr.FileName);",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    317.7574768066406,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: //업로드 하는 파일명을 검증 없이 사용하고 있습니다.",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    282.61456298828125,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: FileUploadCtr.SaveAs(fn);",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    196.98794555664062,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: StatusLabel.Text = \"Upload status: File uploaed!\";",
+   "bbox": [
+    83.58000183105469,
+    183.39816284179688,
+    299.5195007324219,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "파일 타입과 크기 등을 검사하여 제한하도록 한다.",
+   "bbox": [
+    76.5,
+    215.77108764648438,
+    266.8839111328125,
+    226.7930908203125
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    226.67999267578125,
+    255.79110717773438,
+    309.04241943359375,
+    266.8131103515625
+   ],
+   "block": 20,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: //파일 타입과 크기를 제한합니다. ",
+   "bbox": [
+    83.58000183105469,
+    275.1981201171875,
+    221.8040008544922,
+    285.0981140136719
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: if (FileUploadCtr.PostedFile.ContentType == \"image/jpeg\") ",
+   "bbox": [
+    83.58000183105469,
+    289.5981140136719,
+    333.2328186035156,
+    299.49810791015625
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: { ",
+   "bbox": [
+    83.58000183105469,
+    303.99810791015625,
+    100.95672607421875,
+    313.8981018066406
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    318.3981018066406,
+    91.34539794921875,
+    328.298095703125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (FileUploadCtr.PostedFile.ContentLength < 102400) ",
+   "bbox": [
+    108.89930725097656,
+    318.3981018066406,
+    327.4366455078125,
+    328.298095703125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    332.798095703125,
+    91.34540557861328,
+    342.6980895996094
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    108.89930725097656,
+    332.798095703125,
+    111.63204956054688,
+    342.6980895996094
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58000183105469,
+    347.1980895996094,
+    91.34539794921875,
+    357.09808349609375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "string fn = Path.GetFileName(FileUploadCtr.FileName);",
+   "bbox": [
+    113.27963256835938,
+    347.1980895996094,
+    335.3009948730469,
+    357.09808349609375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58000183105469,
+    361.59808349609375,
+    91.31454467773438,
+    371.4980773925781
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileUploadCtr.SaveAs(Server.MapPath(\"~/\") + fn); ",
+   "bbox": [
+    113.24877166748047,
+    361.59808349609375,
+    313.7114562988281,
+    371.4980773925781
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    375.9980773925781,
+    91.31014251708984,
+    385.8980712890625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "StatusLabel.Text = \"Upload status: File uploaed!\"; ",
+   "bbox": [
+    113.24436950683594,
+    375.9980773925781,
+    319.6255187988281,
+    385.8980712890625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    390.3980712890625,
+    91.34540557861328,
+    400.2980651855469
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    108.89930725097656,
+    390.3980712890625,
+    111.63204956054688,
+    400.2980651855469
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    404.7980651855469,
+    96.25022888183594,
+    414.69805908203125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "else",
+   "bbox": [
+    113.86495971679688,
+    404.7980651855469,
+    130.24819946289062,
+    414.69805908203125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58000183105469,
+    419.19805908203125,
+    96.26522827148438,
+    429.0980529785156
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "StatusLabel.Text = \"Upload Status: The File has to be less than 100 kb!\";",
+   "bbox": [
+    122.63971710205078,
+    419.19805908203125,
+    430.5730895996094,
+    429.0980529785156
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: }",
+   "bbox": [
+    83.58001708984375,
+    433.5980529785156,
+    103.41268920898438,
+    443.498046875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: else",
+   "bbox": [
+    83.58001708984375,
+    447.998046875,
+    117.04818725585938,
+    457.8980407714844
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.58001708984375,
+    462.3980407714844,
+    96.2652359008789,
+    472.29803466796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "StatusLabel.Text = \"Upload Status: Only JPEG files are accepted!\";",
+   "bbox": [
+    105.05937957763672,
+    462.3980407714844,
+    382.2388916015625,
+    472.29803466796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "text": "1: string fn = Path.GetFileName(FileUploadCtr.FileName);\n2: //업로드 하는 파일명을 검증 없이 사용하고 있습니다.\n3: FileUploadCtr.SaveAs(fn);\n4: StatusLabel.Text = \"Upload status: File uploaed!\";",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    131.913232421875,
+    317.7574768066406,
+    194.49815673828124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "1: //파일 타입과 크기를 제한합니다. \n2: if (FileUploadCtr.PostedFile.ContentType == \"image/jpeg\") \n3: { \n4:        if (FileUploadCtr.PostedFile.ContentLength < 102400) \n5:        {\n6:         string fn = Path.GetFileName(FileUploadCtr.FileName);\n7:         FileUploadCtr.SaveAs(Server.MapPath(\"~/\") + fn); \n8:         StatusLabel.Text = \"Upload status: File uploaed!\"; \n9:        }\n10:        else\n11:           StatusLabel.Text = \"Upload Status: The File has to be less than 100 kb!\";\n12: }\n13: else\n14:    StatusLabel.Text = \"Upload Status: Only JPEG files are accepted!\";",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    266.9131103515625,
+    430.5730895996094,
+    473.49803466796874
+   ]
+  }
+ ],
+ "native": "234\n안전하지 않은 코드의 예 C#\n1: string fn = Path.GetFileName(FileUploadCtr.FileName);\n2: //업로드 하는 파일명을 검증 없이 사용하고 있습니다.\n3: FileUploadCtr.SaveAs(fn);\n4: StatusLabel.Text = \"Upload status: File uploaed!\";\n파일 타입과 크기 등을 검사하여 제한하도록 한다.\n안전한 코드의 예 C#\n1: //파일 타입과 크기를 제한합니다. \n2: if (FileUploadCtr.PostedFile.ContentType == \"image/jpeg\") \n3: { \n4:\nif (FileUploadCtr.PostedFile.ContentLength < 102400) \n5:\n{\n6:\nstring fn = Path.GetFileName(FileUploadCtr.FileName);\n7:\nFileUploadCtr.SaveAs(Server.MapPath(\"~/\") + fn); \n8:\nStatusLabel.Text = \"Upload status: File uploaed!\"; \n9:\n}\n10:\nelse\n11:\nStatusLabel.Text = \"Upload Status: The File has to be less than 100 kb!\";\n12: }\n13: else\n14:\nStatusLabel.Text = \"Upload Status: Only JPEG files are accepted!\";\n",
+ "native_sha256": "f8f7f6e023ea35c78c121bec1ad7a405aa63a1b161d3ae8e5aac0b7a5d45c6af",
+ "chars": 733,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

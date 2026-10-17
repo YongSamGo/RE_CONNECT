@@ -1,0 +1,28 @@
+540
+개발가이드에는 버퍼 오버플로우 공격을 방어하기 위한 메모리 버퍼 경계 설정 및 검사 방법, 버퍼 오
+버플로우를 유발할 수 있는 위험한 함수와 안전한 함수 등을 제시하고 있다.
+안전한 보안설계의 예 : 개발가이드
+1.8.1. 메모리 버퍼 경계 설정 및 검사
+메모리 버퍼를 사용할 경우 적절한 버퍼의 크기를 설정하고, 설정된 범위에서 올바르게 읽거나 쓸 수 있게 통제하여야 
+한다. 특히, 복사된 문자열은 널(NULL) 문자로 종료되도록 한다.
+typedef struct _charvoid 
+ { char x[16]; 
+ void 
+ * y;
+ void 
+ * z; 
+} charvoid 
+static void
+ goodCode()
+ { charvoid 
+ cv_struct 
+ cv_struct.y = (void *) SRC_STR;
+ printLine((char *) cv_struct.y); 
+ /* sizeof(cv_struct.x)로 변경하여 포인터 y의 덮어쓰기를 
+ 방지함 */ memcpy(cv_struct.x, SRC_STR,
+ sizeof(cv_struct.x)); 
+ /* 문자열 종료를 위해 널 문자를 삽입함 */
+ cv_struct.x[(sizeof(cv_struct.x)/sizeof(char))-1] = 
+ ‘￦0’; printLine((char *) cv_struct.x); 
+ printLine((char *) cv_struct.y); 
+}

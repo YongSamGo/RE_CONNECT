@@ -1,0 +1,27 @@
+494
+IP주소를 직접 비교하도록 한다.
+안전한 코드의 예 C#
+1: bool trusted;
+2: string remoteIpAddress = Request.ServerVariables["REMOTE_HOST"];
+3: if (remoteIpAddress.Equals(trustedAddr))
+4: {
+5:
+trusted = true;
+6:
+Do_something_for_Trust_System();
+7: }
+아래 C 코드는 요청의 신뢰성을 호스트의 이름으로 판별하고 있다. 공격자는 DNS 캐시를 조작하여 
+보안 정책을 우회할 수 있다.
+안전하지 않은 코드의 예 C
+1: struct hostent *hp;struct in_addr myaddr; 
+2: char* tHost = "trustme.example.com";
+3: myaddr.s_addr=inet_addr(ip_addr_string);
+4: hp = gethostbyaddr((char *) &myaddr, sizeof(struct in_addr), AF_INET);
+5: // 요청의 신뢰성을 호스트의 이름으로 판별하고 있다.
+6: if (hp && !strncmp(hp->h_name, tHost, sizeof(tHost))) { 
+7:
+trusted = true; 
+8: } else { 
+9:
+trusted = false; 
+10:}

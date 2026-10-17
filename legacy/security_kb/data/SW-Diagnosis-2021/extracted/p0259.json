@@ -1,0 +1,542 @@
+{
+ "lines": [
+  {
+   "text": "259",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    120.79122924804688,
+    317.9013671875,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:XPathNavigator nav = docNav.CreateNavigator(); ",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    289.6447448730469,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//외부 입력값을 검증 없이 사용하고 있습니다.",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    239.28651428222656,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12:nav.Evaluate(query);",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    171.07098388671875,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 XPathExpression을 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 ",
+   "bbox": [
+    70.86000061035156,
+    201.37118530273438,
+    459.1875,
+    212.3931884765625
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "구조가 바뀌는 것을 막을 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    218.41122436523438,
+    198.7715301513672,
+    229.4332275390625
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    258.37109375,
+    303.40240478515625,
+    269.3930969238281
+   ],
+   "block": 30,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:string xpath = \"/accounts/account[@acctID=$acctID]/email/text()\";",
+   "bbox": [
+    77.94000244140625,
+    277.7781066894531,
+    354.44512939453125,
+    287.6781005859375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:XPathExpression expr = DynamicContext.Compile(xpath);",
+   "bbox": [
+    77.94000244140625,
+    292.1781005859375,
+    318.22216796875,
+    302.0780944824219
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:DynamicContext ctx = new DynamicContext();",
+   "bbox": [
+    77.94000244140625,
+    306.5780944824219,
+    276.11322021484375,
+    316.47808837890625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:ctx.AddVariable(\"acctID\", AccountIDTextBox.Text);",
+   "bbox": [
+    77.94000244140625,
+    320.97808837890625,
+    286.40069580078125,
+    330.8780822753906
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:expr.SetContext(ctx);",
+   "bbox": [
+    77.94000244140625,
+    335.3780822753906,
+    169.8306884765625,
+    345.278076171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:XPathNodeIterator data = nav.Select(expr);",
+   "bbox": [
+    77.94000244140625,
+    349.778076171875,
+    260.2951354980469,
+    359.6780700683594
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    402.2151794433594,
+    126.4169921875,
+    414.2931823730469
+   ],
+   "block": 37,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "ㆍXQuery 삽입",
+   "bbox": [
+    75.83999633789062,
+    435.9231262207031,
+    144.59957885742188,
+    447.5256042480469
+   ],
+   "block": 38,
+   "size": 10.398963928222656,
+   "fonts": [
+    "NanumSquareRoundB"
+   ]
+  },
+  {
+   "text": "XQuery가 실행되는 부분을 확인하고(①), XQuery 쿼리스트링에 사용되는 변수가 외부 입력값 ",
+   "bbox": [
+    85.86000061035156,
+    458.7110900878906,
+    459.2274475097656,
+    469.73309326171875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "여부를 확인한 후(②), 변수에 대한 필터링 모듈이 존재하는지 확인한다. 필터링 모듈이 존재하거나 ",
+   "bbox": [
+    85.86000061035156,
+    475.69097900390625,
+    459.1269836425781,
+    486.7129821777344
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "관련 프레임워크에서 적절히 조치할 경우 안전한 것으로 판정한다.",
+   "bbox": [
+    85.86000061035156,
+    492.7309875488281,
+    338.7006530761719,
+    503.75299072265625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    529.2110595703125,
+    301.42083740234375,
+    540.2330932617188
+   ],
+   "block": 42,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    554.1380615234375,
+    86.42540740966797,
+    564.0380859375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    95.21955108642578,
+    554.1380615234375,
+    103.1533203125,
+    564.0380859375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    568.5380859375,
+    86.4051284790039,
+    578.4381103515625
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부로부터 입력을 받음",
+   "bbox": [
+    95.19927215576172,
+    568.5380859375,
+    193.09405517578125,
+    578.4381103515625
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    582.9380493164062,
+    86.42539978027344,
+    592.8380737304688
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String name = props.getProperty(“name”); ········································································②",
+   "bbox": [
+    95.21954345703125,
+    582.9380493164062,
+    447.7150573730469,
+    592.8380737304688
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    597.3380737304688,
+    86.42540740966797,
+    607.2380981445312
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Hashtable env = new Hashtable(); ",
+   "bbox": [
+    95.21954345703125,
+    597.3380737304688,
+    238.8437042236328,
+    607.2380981445312
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    611.738037109375,
+    86.42539978027344,
+    621.6380615234375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);",
+   "bbox": [
+    95.21954345703125,
+    611.738037109375,
+    431.327392578125,
+    621.6380615234375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    626.1380615234375,
+    86.42540740966797,
+    636.0380859375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”);",
+   "bbox": [
+    95.21955108642578,
+    626.1380615234375,
+    366.2054138183594,
+    636.0380859375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5
+   ],
+   "text": "11:XPathNavigator nav = docNav.CreateNavigator(); \n//외부 입력값을 검증 없이 사용하고 있습니다.\n12:nav.Evaluate(query);",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    289.6447448730469,
+    180.09813232421874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "1:string xpath = \"/accounts/account[@acctID=$acctID]/email/text()\";\n2:XPathExpression expr = DynamicContext.Compile(xpath);\n3:DynamicContext ctx = new DynamicContext();\n4:ctx.AddVariable(\"acctID\", AccountIDTextBox.Text);\n5:expr.SetContext(ctx);\n6:XPathNodeIterator data = nav.Select(expr);",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    269.49309692382815,
+    354.44512939453125,
+    360.87807006835936
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32
+   ],
+   "text": "1:    …\n2:    // 외부로부터 입력을 받음\n3:    String name = props.getProperty(“name”); ········································································②\n4:    Hashtable env = new Hashtable(); \n5:    env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);\n6:    env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”);",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    552.9380615234375,
+    447.7150573730469,
+    637.2380859375
+   ]
+  }
+ ],
+ "native": "259\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 C#\n11:XPathNavigator nav = docNav.CreateNavigator(); \n//외부 입력값을 검증 없이 사용하고 있습니다.\n12:nav.Evaluate(query);\n다음의 예제는 XPathExpression을 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 \n구조가 바뀌는 것을 막을 수 있다.\n안전한 코드의 예 C#\n1:string xpath = \"/accounts/account[@acctID=$acctID]/email/text()\";\n2:XPathExpression expr = DynamicContext.Compile(xpath);\n3:DynamicContext ctx = new DynamicContext();\n4:ctx.AddVariable(\"acctID\", AccountIDTextBox.Text);\n5:expr.SetContext(ctx);\n6:XPathNodeIterator data = nav.Select(expr);\n라. 진단방법\nㆍXQuery 삽입\nXQuery가 실행되는 부분을 확인하고(①), XQuery 쿼리스트링에 사용되는 변수가 외부 입력값 \n여부를 확인한 후(②), 변수에 대한 필터링 모듈이 존재하는지 확인한다. 필터링 모듈이 존재하거나 \n관련 프레임워크에서 적절히 조치할 경우 안전한 것으로 판정한다.\n일반적인 진단의 예\n1:\n…\n2:\n// 외부로부터 입력을 받음\n3:\nString name = props.getProperty(“name”); ········································································②\n4:\nHashtable env = new Hashtable(); \n5:\nenv.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);\n6:\nenv.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”);\n",
+ "native_sha256": "c99a86aab3152801f004a032e5aae2dce06304eb61dbf466359c033e446bd5ba",
+ "chars": 1030,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

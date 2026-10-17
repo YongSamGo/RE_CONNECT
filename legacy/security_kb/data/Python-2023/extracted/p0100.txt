@@ -1,0 +1,50 @@
+Python 시큐어코딩 가이드
+94
+9. 취약한 패스워드 허용
+가. 개요
+사용자에게 강한 패스워드 조합규칙을 요구하지 않으면 사용자 계정이 취약하게 된다. 안전한 패스워드를 
+생성하기 위해서는 「패스워드 선택 및 이용 안내서」에서 제시하는 패스워드 설정 규칙을 적용해야 한다.
+나. 안전한 코딩기법
+패스워드 생성 시 강한 조건 검증을 수행한다. 패스워드(패스워드)는 숫자와 영문자, 특수문자 등을 혼합하여 
+사용하고 주기적으로 변경하여 사용하도록 해야 한다.
+다. 코드예제
+사용자가 입력한 패스워드에 대한 복잡도 검증 없이 가입 승인 처리를 수행하고 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+from flask import request, redirect
+from Models import User
+from Models import db
+@app.route('/register', methods=['POST'])
+def register():
+  userid = request.form.get('userid')
+  password = request.form.get('password')
+  confirm_password = request.form.get('confirm_password')
+  if password != confirm_password:
+    return make_response("패스워드가 일치하지 않습니다", 400)
+  else:
+    usertable = User() 
+    usertable.userid = userid
+    usertable.password = password
+    # 패스워드 생성 규칙을 확인하지 않고 회원 가입 
+    db.session.add(usertable)
+    db.session.commit()
+    return make_response("회원가입 성공", 200)

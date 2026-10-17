@@ -1,0 +1,64 @@
+Python 시큐어코딩 가이드
+138
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+def get_config():
+  lines = None
+  try:
+    f = open('config.cfg')
+    lines = f.readlines()
+    # 예외 발생 상황 가정
+    raise Exception("Throwing the exception!")
+    # try 절에서 할당한 자원이 반환(close)되기 전에
+    # 예외가 발생하면 할당된 자원이 시스템에 반환되지 않음
+    f.close()
+    return lines
+  except Exception as e:
+    ...
+    return ''
+예외 상황이 발생하여 함수가 종료될 때 예외의 발생 여부와 상관없이 항상 실행되는 finally 블록에서 할당 
+받은 모든 자원을 반환해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+def get_config():
+  lines = None
+  try:
+    f = open('config.cfg')
+    lines = f.readlines()
+    # 예외 발생 상황 가정
+    raise Exception("Throwing the exception!")
+  except Exception as e:
+    ...
+  finally:
+    # try 절에서 할당한 자원은
+    # finally 절에서 시스템에 반환을 해야 한다
+    f.close()
+    return lines
+다른 방법은 with 문을 사용해 파일을 처리하는 방법으로 with 문의 블록이 끝날 때 자동으로 파일 자원을 
+반환하는 예시다. 이렇게 작성하면 with문 내의 코드에 예외가 발생하더라도 항상 파일 닫기가 보장된다.

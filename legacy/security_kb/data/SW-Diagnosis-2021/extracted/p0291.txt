@@ -1,0 +1,44 @@
+291
+제4장구현단계 보안약점 진단
+동적 메모리 할당을 위해 외부 입력값을 배열의 크기로 사용하는 경우 그 값이 음수가 아닌지 검사 하는 
+작업이 필요하다.
+안전한 코드의 예 JAVA
+1: String msg_str = "";
+2: String tmp = request.getParameter("slf_msg_param_num");
+3: tmp = StringUtil.isNullTrim(tmp); 
+4: if (tmp.equals("0")) { 
+5:
+msg_str = PropertyUtil.getValue(msg_id); 
+6: } else { 
+// 외부 입력값을 정수형으로 사용할 때 입력값의 크기를 검증하고 사용
+7:
+try { 
+8:
+int param_ct = Integer.parseInt(tmp);
+9:
+if (param_ct < 0) {
+10:
+throw new Exception();
+11:
+}
+12:
+String[] strArr = new String[param_ct];
+13:
+} catch(Exception e) { 
+14:
+msg_str = "잘못된 입력(접근) 입니다.";
+15:
+}
+외부 입력값으로 배열의 접근 할 경우, 입력값이 너무 클 때 음수가 되어 시스템에 문제가 발생 할 수 
+있다.
+안전하지 않은 코드의 예 C#
+1: public static void Main(string[] args) 
+2: {
+// 외부 입력값을 사용할 때, 입력 값의 크기가 너무 클 경우 오버플로우 발생
+3:
+int usrNum = Int32.Parse(args[0]);
+4:
+string[] array = {"one", "two", "three", "four"};
+5:
+string num = array[usrNum];
+6: }

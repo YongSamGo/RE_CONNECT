@@ -1,0 +1,497 @@
+{
+ "lines": [
+  {
+   "text": "213",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    120.79122924804688,
+    308.9777526855469,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7: keyword = keyword.replaceAll(\"'\", \"&#x27;\");",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    269.001953125,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: keyword = keyword.replaceAll(\"/\"\", \"&#x2F;\");",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    274.0963134765625,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: keyword = keyword.replaceAll(\"(\", \"&#x28;\");",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    270.2554931640625,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:keyword = keyword.replaceAll(\")\", \"&#x29;\");",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    270.7633056640625,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:검색어 : <%=keyword%>",
+   "bbox": [
+    77.94000244140625,
+    197.79818725585938,
+    186.8662567138672,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12://방법2. JSP에서 출력값에 JSTL c:out 을 사용하여 처리한다. ",
+   "bbox": [
+    77.93999481201172,
+    212.19821166992188,
+    327.0401611328125,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>",
+   "bbox": [
+    77.93999481201172,
+    226.59820556640625,
+    344.4950866699219,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:<%@ taglib uri=\"http://java.sun.com/jsp/jstl/functions\" prefix=\"fn\" %>",
+   "bbox": [
+    77.94000244140625,
+    240.99819946289062,
+    371.6490783691406,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:검색결과 : <c:out value=\"${m.content}\"/> ",
+   "bbox": [
+    77.93997192382812,
+    255.398193359375,
+    253.86253356933594,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:<script type=\"text/javascript\"> ",
+   "bbox": [
+    77.93997192382812,
+    269.7981872558594,
+    211.43704223632812,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: //방법3. 잘 만들어진 외부 라이브러리를 활용(NAVER Lucy-XSS-Filter, OWASP ESAPI, ",
+   "bbox": [
+    77.93997192382812,
+    284.19818115234375,
+    421.1160888671875,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "OWASP Java-Encoder-Project)",
+   "bbox": [
+    90.59963989257812,
+    298.5981750488281,
+    215.35462951660156,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "18:document.write(\"keyword:“ +",
+   "bbox": [
+    77.93998718261719,
+    312.9981689453125,
+    208.093505859375,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<%=Encoder.encodeForJS(Encoder.encodeForHTML(keyword))%>);",
+   "bbox": [
+    90.59963989257812,
+    327.3981628417969,
+    355.5355224609375,
+    337.29815673828125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19: </script>",
+   "bbox": [
+    77.94000244140625,
+    341.79815673828125,
+    128.25242614746094,
+    351.6981506347656
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음 C# 코드는 외부 입력값을 출력에 바로 사용하고 있다. 이는 XSS 공격을 유발 할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    374.1711120605469,
+    430.246826171875,
+    385.193115234375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    414.19110107421875,
+    317.9013671875,
+    425.2131042480469
+   ],
+   "block": 41,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: string usrInput = Request.QueryString[\"ID\"];",
+   "bbox": [
+    77.94000244140625,
+    433.5981140136719,
+    268.6908264160156,
+    443.49810791015625
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: // 외부 입력 값이 검증 없이 화면에 출력 됩니다.",
+   "bbox": [
+    77.94000244140625,
+    447.99810791015625,
+    258.96484375,
+    457.8981018066406
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: string str = \"ID : \" + usrinput;",
+   "bbox": [
+    77.94000244140625,
+    462.3981018066406,
+    216.13392639160156,
+    472.298095703125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: Request.Write(str);",
+   "bbox": [
+    77.94000244140625,
+    476.798095703125,
+    166.0462646484375,
+    486.6980895996094
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "AntiXss 패키지 등을 사용하여 XSS 공격을 예방할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    509.1711120605469,
+    300.70819091796875,
+    520.193115234375
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    549.1310424804688,
+    303.40240478515625,
+    560.153076171875
+   ],
+   "block": 47,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: string usrInput = Request.QueryString[\"ID\"]; ",
+   "bbox": [
+    77.94000244140625,
+    568.5380859375,
+    271.2216796875,
+    578.4381103515625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: string str = \"ID : \" + usrinput; ",
+   "bbox": [
+    77.94000244140625,
+    582.9380493164062,
+    218.61285400390625,
+    592.8380737304688
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: //AntiXss 패키지 등을 이용하여 외부 입력값을 필터링 합니다.",
+   "bbox": [
+    77.94000244140625,
+    597.3380737304688,
+    309.4756774902344,
+    607.2380981445312
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17
+   ],
+   "text": "7: keyword = keyword.replaceAll(\"'\", \"&#x27;\");\n8: keyword = keyword.replaceAll(\"/\"\", \"&#x2F;\");\n9: keyword = keyword.replaceAll(\"(\", \"&#x28;\");\n10:keyword = keyword.replaceAll(\")\", \"&#x29;\");\n11:검색어 : <%=keyword%>\n12://방법2. JSP에서 출력값에 JSTL c:out 을 사용하여 처리한다. \n13:<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>\n14:<%@ taglib uri=\"http://java.sun.com/jsp/jstl/functions\" prefix=\"fn\" %>\n15:검색결과 : <c:out value=\"${m.content}\"/> \n16:<script type=\"text/javascript\"> \n17: //방법3. 잘 만들어진 외부 라이브러리를 활용(NAVER Lucy-XSS-Filter, OWASP ESAPI, \nOWASP Java-Encoder-Project)\n18:document.write(\"keyword:“ +\n<%=Encoder.encodeForJS(Encoder.encodeForHTML(keyword))%>);\n19: </script>",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.93997192382812,
+    131.913232421875,
+    421.1160888671875,
+    352.8981506347656
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    20,
+    21,
+    22,
+    23
+   ],
+   "text": "1: string usrInput = Request.QueryString[\"ID\"];\n2: // 외부 입력 값이 검증 없이 화면에 출력 됩니다.\n3: string str = \"ID : \" + usrinput;\n4: Request.Write(str);",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    425.3131042480469,
+    268.6908264160156,
+    487.89808959960936
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    26,
+    27,
+    28
+   ],
+   "text": "1: string usrInput = Request.QueryString[\"ID\"]; \n2: string str = \"ID : \" + usrinput; \n3: //AntiXss 패키지 등을 이용하여 외부 입력값을 필터링 합니다.",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    560.253076171875,
+    309.4756774902344,
+    608.4380981445313
+   ]
+  }
+ ],
+ "native": "213\n제4장구현단계 보안약점 진단\n안전한 코드의 예 JAVA\n7: keyword = keyword.replaceAll(\"'\", \"&#x27;\");\n8: keyword = keyword.replaceAll(\"/\"\", \"&#x2F;\");\n9: keyword = keyword.replaceAll(\"(\", \"&#x28;\");\n10:keyword = keyword.replaceAll(\")\", \"&#x29;\");\n11:검색어 : <%=keyword%>\n12://방법2. JSP에서 출력값에 JSTL c:out 을 사용하여 처리한다. \n13:<%@ taglib prefix=\"c\" uri=\"http://java.sun.com/jsp/jstl/core\"%>\n14:<%@ taglib uri=\"http://java.sun.com/jsp/jstl/functions\" prefix=\"fn\" %>\n15:검색결과 : <c:out value=\"${m.content}\"/> \n16:<script type=\"text/javascript\"> \n17: //방법3. 잘 만들어진 외부 라이브러리를 활용(NAVER Lucy-XSS-Filter, OWASP ESAPI, \nOWASP Java-Encoder-Project)\n18:document.write(\"keyword:“ +\n<%=Encoder.encodeForJS(Encoder.encodeForHTML(keyword))%>);\n19: </script>\n다음 C# 코드는 외부 입력값을 출력에 바로 사용하고 있다. 이는 XSS 공격을 유발 할 수 있다.\n안전하지 않은 코드의 예 C#\n1: string usrInput = Request.QueryString[\"ID\"];\n2: // 외부 입력 값이 검증 없이 화면에 출력 됩니다.\n3: string str = \"ID : \" + usrinput;\n4: Request.Write(str);\nAntiXss 패키지 등을 사용하여 XSS 공격을 예방할 수 있다.\n안전한 코드의 예 C#\n1: string usrInput = Request.QueryString[\"ID\"]; \n2: string str = \"ID : \" + usrinput; \n3: //AntiXss 패키지 등을 이용하여 외부 입력값을 필터링 합니다.\n",
+ "native_sha256": "d864135fc958c8c11c1b5221590d21e653f9ec0c5fbb4323c1695a2d542b1a5a",
+ "chars": 1106,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,14 @@
+231
+제4장구현단계 보안약점 진단
+마. 참고자료
+[1] CWE-78 OS Command Injection, MITRE,
+http://cwe.mitre.org/data/definitions/78.html 
+[2] Sanitize untrusted data passed to the Runtime.exec() method, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS07-J.+Sanitize+u
+ntrusted+data+passed+to+the+Runtime.exec()+method?focusedCommentId=64
+65 1588#comment-64651588 
+[3] Do not call system(), CERT,
+http://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=
+2130132
+[4] Reviewing Code for OS Injection, OWASP
+https://www.owasp.org/index.php/Reviewing_Code_for_OS_Injection

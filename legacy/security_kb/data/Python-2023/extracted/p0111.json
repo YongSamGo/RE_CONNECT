@@ -1,0 +1,169 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능",
+   "bbox": [
+    315.39373779296875,
+    46.76085662841797,
+    498.9757385253906,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "105",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    93.79303741455078,
+    119.12395477294922,
+    104.33966064453125
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-295: Improper Certificate Validation, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    115.6533203125,
+    282.12786865234375,
+    124.64192199707031
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/295.html",
+   "bbox": [
+    77.32001495361328,
+    130.99386596679688,
+    267.01031494140625,
+    139.98245239257812
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Identification and Authentication Failures, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    151.2481689453125,
+    283.8064270019531,
+    160.2367706298828
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/",
+   "bbox": [
+    77.32001495361328,
+    166.58871459960938,
+    394.3247985839844,
+    175.5773162841797
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ TLS/SSL Wrapper for Socket Object, Python documentation",
+   "bbox": [
+    65.09266662597656,
+    186.843017578125,
+    323.203369140625,
+    195.8316192626953
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/ko/3/library/ssl.html",
+   "bbox": [
+    77.32001495361328,
+    202.18356323242188,
+    255.8609619140625,
+    211.1721649169922
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Improper Certificate validation, AWS.",
+   "bbox": [
+    65.09266662597656,
+    222.43789672851562,
+    228.183349609375,
+    231.42648315429688
+   ],
+   "block": 9,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.aws.amazon.com/codeguru/detector-library/python/improper-certificate-validation/",
+   "bbox": [
+    77.32001495361328,
+    237.7784423828125,
+    462.8887634277344,
+    246.76702880859375
+   ],
+   "block": 10,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능\n105\n라. 참고자료\n① CWE-295: Improper Certificate Validation, MITRE,\nhttps://cwe.mitre.org/data/definitions/295.html\n② Identification and Authentication Failures, OWASP,\nhttps://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/\n③ TLS/SSL Wrapper for Socket Object, Python documentation\nhttps://docs.python.org/ko/3/library/ssl.html\n④ Improper Certificate validation, AWS.\nhttps://docs.aws.amazon.com/codeguru/detector-library/python/improper-certificate-validation/\n",
+ "native_sha256": "0b57d2351e11b183de8d12bfaf5308225f02409f46ea2174b45a59092c89ebe6",
+ "chars": 509,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

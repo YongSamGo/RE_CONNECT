@@ -1,0 +1,451 @@
+{
+ "lines": [
+  {
+   "text": "444",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "JRE 기본 패키지 클래스의 생성자의 경우, 널(Null) 을 반환 할 수 있다고 명시되어 있지 않은한 널",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    461.9087219238281,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "(Null)을 리턴 한다고 판단하지 않는다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    224.50082397460938,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    167.29122924804688,
+    296.91937255859375,
+    178.313232421875
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    192.21823120117188,
+    92.04248046875,
+    202.11822509765625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if(infoList == null) infoList = new ArrayList(); ",
+   "bbox": [
+    100.83662414550781,
+    192.21823120117188,
+    288.3319091796875,
+    202.11822509765625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    207.57852172851562,
+    92.04512786865234,
+    217.478515625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for(int i=0; containers != null && i < containers.length; i++) { ",
+   "bbox": [
+    100.83927154541016,
+    207.57852172851562,
+    355.7169189453125,
+    217.478515625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30087280273438,
+    222.87850952148438,
+    92.06626892089844,
+    232.77850341796875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "hm = new HashMap(); ",
+   "bbox": [
+    100.86041259765625,
+    222.87850952148438,
+    196.8422393798828,
+    232.77850341796875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30087280273438,
+    238.17849731445312,
+    92.04071044921875,
+    248.0784912109375
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for(int j=0; j < paramRecvData.length; j++) { ",
+   "bbox": [
+    100.83484649658203,
+    238.17849731445312,
+    284.5086364746094,
+    248.0784912109375
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30087280273438,
+    253.53878784179688,
+    92.06098175048828,
+    263.43878173828125
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "hm.put(paramRecvData[j], containers[i].getField(paramRecvData[j]).getValueAs-",
+   "bbox": [
+    105.2354507446289,
+    253.53878784179688,
+    423.7675476074219,
+    263.43878173828125
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String()); ",
+   "bbox": [
+    100.86041259765625,
+    268.8387756347656,
+    137.48797607421875,
+    278.73876953125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30087280273438,
+    284.1387634277344,
+    92.06627655029297,
+    294.03875732421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.86042022705078,
+    284.1387634277344,
+    103.5931625366211,
+    294.03875732421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30087280273438,
+    299.4990539550781,
+    92.04688262939453,
+    309.3990478515625
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "infoList.add(hm); ",
+   "bbox": [
+    100.84102630615234,
+    299.4990539550781,
+    170.4307861328125,
+    309.3990478515625
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30087280273438,
+    314.7990417480469,
+    92.06627655029297,
+    324.69903564453125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.86042022705078,
+    314.7990417480469,
+    103.5931625366211,
+    324.69903564453125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    367.235107421875,
+    132.05699157714844,
+    379.3131103515625
+   ],
+   "block": 26,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-476 NULL Pointer Dereference, MITRE,",
+   "bbox": [
+    91.5,
+    390.91119384765625,
+    308.108154296875,
+    401.9331970214844
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/476.html",
+   "bbox": [
+    107.87982940673828,
+    407.8910827636719,
+    314.3680114746094,
+    418.9130859375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not dereference null pointers, CERT,",
+   "bbox": [
+    91.5,
+    429.9110412597656,
+    281.7649230957031,
+    440.93304443359375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/EXP34-C.+Do+not+der",
+   "bbox": [
+    107.87982940673828,
+    446.89093017578125,
+    461.3965759277344,
+    457.9129333496094
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "eference+null+pointers",
+   "bbox": [
+    107.87982177734375,
+    463.9309387207031,
+    208.78451538085938,
+    474.95294189453125
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Null Dereference, OWASP,",
+   "bbox": [
+    91.49999237060547,
+    485.8907775878906,
+    225.35105895996094,
+    496.91278076171875
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Null_Dereference",
+   "bbox": [
+    107.87982177734375,
+    502.9307861328125,
+    341.22344970703125,
+    513.9527587890625
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1:    if(infoList == null) infoList = new ArrayList(); \n2:    for(int i=0; containers != null && i < containers.length; i++) { \n3:    hm = new HashMap(); \n4:    for(int j=0; j < paramRecvData.length; j++) { \n5:      hm.put(paramRecvData[j], containers[i].getField(paramRecvData[j]).getValueAs-\nString()); \n6:    }\n7:    infoList.add(hm); \n8:    }",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    191.0182312011719,
+    423.7675476074219,
+    325.89903564453124
+   ]
+  }
+ ],
+ "native": "444\nJRE 기본 패키지 클래스의 생성자의 경우, 널(Null) 을 반환 할 수 있다고 명시되어 있지 않은한 널\n(Null)을 리턴 한다고 판단하지 않는다.\n오탐코드의 예\n1:\nif(infoList == null) infoList = new ArrayList(); \n2:\nfor(int i=0; containers != null && i < containers.length; i++) { \n3:\nhm = new HashMap(); \n4:\nfor(int j=0; j < paramRecvData.length; j++) { \n5:\nhm.put(paramRecvData[j], containers[i].getField(paramRecvData[j]).getValueAs-\nString()); \n6:\n}\n7:\ninfoList.add(hm); \n8:\n}\n마. 참고자료\n[1] CWE-476 NULL Pointer Dereference, MITRE,\nhttp://cwe.mitre.org/data/definitions/476.html\n[2] Do not dereference null pointers, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/EXP34-C.+Do+not+der\neference+null+pointers\n[3] Null Dereference, OWASP,\nhttps://www.owasp.org/index.php/Null_Dereference\n",
+ "native_sha256": "59b1215df9da4bc0bcae9349ecaa016bdb4b4781f1fb4dbbd3dec6dee39c4b6f",
+ "chars": 737,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

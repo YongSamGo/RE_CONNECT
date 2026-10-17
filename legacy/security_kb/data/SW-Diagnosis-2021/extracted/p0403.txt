@@ -1,0 +1,57 @@
+403
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C
+4:
+printf("Unable to open socket connection");
+5:
+return(FAIL); 
+6:
+}
+7:
+int isValidUser = 0; 
+8:
+char nm[NAME_SIZE]; 
+9:
+char pw[PSWD_SIZE]; 
+// 인증시도 횟수를 제한하고 있지 않음
+10:
+while (isValidUser==0) {
+11:
+if (getNextMsg(socket, nm, NAME_SIZE) > 0) {
+12:
+if (getNextMsg(socket, pw, PSWD_SIZE) > 0) {
+13:
+isValidUser = AuthenticateUser(nm, pw);
+14:
+}
+15:
+}
+16:
+}
+17:
+return(SUCCESS);
+18:}
+안전한 코드의 예 C
+1: #define MAX_ATTEMPTS 5
+2: int validateUser(char *host, int port) {
+3:
+......
+// 연속적인 사용자 인증 시도에 대한 횟수를 제한
+4:
+int count = 0;
+5:
+while ((isValidUser==0) && (count<MAX_ATTEMPTS)) {
+6:
+if (getNextMsg(socket, nm, NAME_SIZE) > 0) {
+7:
+if (getNextMsg(socket, pw, PSWD_SIZE) > 0) {
+8:
+isValidUser = AuthenticateUser(nm, pw);
+9:
+}
+10:
+}
+11:
+count++;
+12:
+}

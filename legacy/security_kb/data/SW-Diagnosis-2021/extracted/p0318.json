@@ -1,0 +1,320 @@
+{
+ "lines": [
+  {
+   "text": "318",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음의 예제에서는 클라이언트 측에서 인증을 수행 하고 있어 우회가 가능하므로 취약하다고 판정 한다.",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    454.7739562988281,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    150.31112670898438,
+    296.91937255859375,
+    161.3331298828125
+   ],
+   "block": 15,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    175.23818969726562,
+    92.03543090820312,
+    185.13818359375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<script type=’text/javascript’> ",
+   "bbox": [
+    100.82957458496094,
+    175.23818969726562,
+    221.1320343017578,
+    185.13818359375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    189.63821411132812,
+    92.06539916992188,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (${command.allowedIp} == false) { ",
+   "bbox": [
+    105.2398681640625,
+    189.63821411132812,
+    258.03369140625,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    204.03823852539062,
+    92.03719329833984,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "document.write(“”Check Administrator IP …””); ",
+   "bbox": [
+    109.65192413330078,
+    204.03823852539062,
+    304.0838928222656,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30000305175781,
+    218.43826293945312,
+    92.04512786865234,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "alert(“”권한이 없습니다.””) ",
+   "bbox": [
+    109.65986633300781,
+    218.43826293945312,
+    210.2838592529297,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    232.8382568359375,
+    92.03807830810547,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "history.back(-1); ",
+   "bbox": [
+    114.0322494506836,
+    232.8382568359375,
+    182.34555053710938,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    247.23825073242188,
+    92.0654067993164,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    109.68013763427734,
+    247.23825073242188,
+    112.41287994384766,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    299.6750793457031,
+    132.05699157714844,
+    311.7530822753906
+   ],
+   "block": 22,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-306 Missing Authentication for Critical Function, MITRE,",
+   "bbox": [
+    91.5,
+    323.3511047363281,
+    380.48638916015625,
+    334.37310791015625
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/306.html ",
+   "bbox": [
+    107.87982940673828,
+    339.37109375,
+    317.1238098144531,
+    350.3930969238281
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Access Control, OWASP,",
+   "bbox": [
+    91.5,
+    360.3710021972656,
+    216.9549102783203,
+    371.39300537109375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Access_Control_Cheat_Sheet",
+   "bbox": [
+    107.87982940673828,
+    376.33087158203125,
+    393.67755126953125,
+    387.3528747558594
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "1:    <script type=’text/javascript’> \n2:      if (${command.allowedIp} == false) { \n3:        document.write(“”Check Administrator IP …””); \n4:        alert(“”권한이 없습니다.””) \n5:         history.back(-1); \n6:        }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    174.03818969726564,
+    304.0838928222656,
+    258.33824462890624
+   ]
+  }
+ ],
+ "native": "318\n다음의 예제에서는 클라이언트 측에서 인증을 수행 하고 있어 우회가 가능하므로 취약하다고 판정 한다.\n정탐코드의 예\n1:\n<script type=’text/javascript’> \n2:\nif (${command.allowedIp} == false) { \n3:\ndocument.write(“”Check Administrator IP …””); \n4:\nalert(“”권한이 없습니다.””) \n5:\nhistory.back(-1); \n6:\n}\n마. 참고자료\n[1] CWE-306 Missing Authentication for Critical Function, MITRE,\nhttp://cwe.mitre.org/data/definitions/306.html \n[2] Access Control, OWASP,\nhttps://www.owasp.org/index.php/Access_Control_Cheat_Sheet\n",
+ "native_sha256": "969d12584ee34f925d01c9fbdcca7cfb4e1a58e6f7e430b3fb1d10fe1737de9e",
+ "chars": 454,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

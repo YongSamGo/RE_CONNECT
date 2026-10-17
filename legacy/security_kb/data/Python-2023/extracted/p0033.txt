@@ -1,0 +1,56 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+27
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+<!doctype html>
+<html>
+  <body>
+    <div class="content">
+      {% autoescape on %}
+        <!--autoescape on으로 해당 블록내의 데이터는 XSS 공격에 노출되지 않음. -->
+        {{ content }}   
+      {% endautoescape %}
+   </div>
+   <div class="content2">
+     <!-- 검증되지 않은 데이터에는 safe 필터를 사용하지 않는다. -->
+     {{ content }} 
+   </div>
+  </body>
+</html>
+autoescape 블록을 사용할 경우 많은 주의를 기울여야 한다. autoescape 옵션값을 off로 설정한 템플릿 
+페이지를 include 또는 extends하는 템플릿까지 영향이 확장된다. 공통적으로 사용하는 템플릿페이지에 off로 
+설정할 경우 템플릿 페이지가 XSS 공격에 노출될 수 있다.
+나) Flask에서의 예제
+사용자의 요청에 포함된 값, DB에 저장된 값 또는 내부의 연산을 통해서 생성된 값을 포함한 데이터를 동적 
+웹페이지 생성에 사용하는 경우 XSS 공격이 발생할 가능성이 있어 위험하다. 아래 예제는 Flask 프레임워크를 
+사용한 안전하지 않은 사례를 보여 준다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+from flask import Flask, request, render_template
+@app.route('/search', methods=['POST'])
+def search():
+    search_keyword = request.form.get('search_keyword')
+    # 사용자의 입력을 아무런 검증 또는 치환 없이 동적 웹페이지에 사용하고 있어
+    # XSS 공격이 발생할 수 있다
+    return render_template('search.html', search_keyword=search_keyword)

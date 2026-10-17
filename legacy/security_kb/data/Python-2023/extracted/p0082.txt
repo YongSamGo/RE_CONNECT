@@ -1,0 +1,24 @@
+Python 시큐어코딩 가이드
+76
+주요 파일에 대해서는 최소 권한만 할당해야 한다. 구체적으로 파일의 소유자라고 하더라도 기본적으로 읽기 
+권한만 부여해야 하며, 부득이하게 쓰기 권한이 필요한 경우에만 제한적으로 쓰기 권한을 부여해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+import os
+def write_file():
+  # 소유자 외에는 아무런 권한을 주지 않음.
+  os.chmod('/root/system_config', 0o700)
+  with open("/root/system_config", ‘'w') as f:
+    f.write("your config is broken")
+라. 참고자료
+① CWE-732: Incorrect Permission Assignment for Critical Resource, MITRE,
+https://cwe.mitre.org/data/definitions/732.html
+② OS – Miscellaneous operating system interfaces, Python Software Foundation,
+https://docs.python.org/3/library/os.html

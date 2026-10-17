@@ -1,0 +1,49 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제3절 시간 및 상태
+123
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+def factorial(num):
+  # 재귀함수 탈출조건을 설정하지 않아 동작 중 에러 발생
+  return num * factorial(num – 1)
+if __name__ == '__main__':
+  itr = 5
+  result = factorial(itr)
+  print(str(itr) + ' 팩토리얼 값은 : ' + str(result))
+특정 조건 또는 횟수에 따라 재귀 코드 실행을 중단해 프로그램이 무한 반복에 빠지지 않도록 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+def factorial(num):
+  # 재귀함수 사용 시에는 탈출 조건을 명시해야 한다.
+  if (num == 0):
+    return 1
+  else:
+    return num * factorial(num - 1)
+if __name__ == '__main__':
+  itr = 5
+  result = factorial(itr)
+  print(str(itr) + ' 팩토리얼 값은 : ' + str(result))
+파이썬의 재귀 반복 제한은 기본이 1000으로 설정되어 있다. Anaconda의 경우는 기본 값이 2000이다. 
+이 값을 과도하게 변경하지 않아야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+import sys
+sys.setrecursionlimit(1000)

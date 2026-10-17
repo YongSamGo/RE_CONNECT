@@ -1,0 +1,43 @@
+219
+제4장구현단계 보안약점 진단
+다음의 예제와 같이 출력값이 문자형이 아닌 경우에는 안전한 것으로 판정한다.
+오탐코드의 예
+1:
+Int pageNm = Integer.parseInt(request.getParameter(“pageNm”); 
+2:
+<input type=text size=10 name=”pageNm” value=’<%=pageNm%>’ /> 
+다음의 예제와 같이 subString을 이용하여 글자 수가 짧은 글자 수 이하로 제한된 경우에는 안전한 
+것으로 판정한다.
+오탐코드의 예
+1:
+<%
+2:
+// 외부로 부터 입력을 받는다. 
+3:
+String date = request.getParameter(“date”); 
+4:
+String year = date.substring(0, 4); 
+5:
+String month = date.substring(4, 6); 
+6:
+String day = date.substring(6, 8); 
+7:
+out.println(year + “년” + month + “월” + day + “일” ); 
+8:
+%>
+다음의 예제와 같이 출력값이 프로그램 내부에서 정해진 경우에는 안전한 것으로 판정한다.
+오탐코드의 예
+1:
+g1 = new WKTReader().read(geometryParam);
+2:
+p1 = (Polygon) g1.buffer(Double.parseDouble(bufferSizeParam));
+3:
+response.setContentType(“text/plain;charset=EUC-KR”);
+4:
+response.setHeader(“Cache-Control”, “no-cache”);
+5:
+response.getWriter().write(p1.toText());
+다음의 예제와 같이 웹페이지가 아닌 System 콘솔에 출력하는 경우에는 안전한 것으로 판정한다.
+오탐코드의 예
+1:
+//파라메터 설정

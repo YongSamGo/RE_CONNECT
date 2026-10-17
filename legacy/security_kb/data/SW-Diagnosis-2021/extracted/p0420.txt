@@ -1,0 +1,30 @@
+420
+안전하지 않은 코드의 예 JAVA
+1: } catch(IOException e) { 
+// 오류발생시 화면에 출력된 시스템 정보로 다른 공격의 빌미를 제공한다.
+2:
+System.err.print(e.getMessage()); 
+3: }
+아래 코드와 같이 예외 이름이나 오류추적 정보를 출력하지 않도록 한다.
+안전한 코드의 예 JAVA
+1: try { 
+2:
+rd = new BufferedReader(new FileReader(new File(filename))); 
+3: } catch(IOException e) { 
+// 에러 코드와 정보를 별도로 정의하고 최소 정보만 로깅
+4:
+logger.error("ERROR-01: 파일 열기 에러");
+5: }
+다음 예제는 오류 메시지에 예외 이름이나 오류추적 정보를 출력하여 프로그램 내부 정보가 유출되는 
+C#코드이다.
+안전하지 않은 코드의 예 C#
+1: try 
+2: { 
+3:
+//do something 
+4: }
+5: catch (CustomException e) 
+6: {
+7:
+Console.WriteLine(e);
+8: }

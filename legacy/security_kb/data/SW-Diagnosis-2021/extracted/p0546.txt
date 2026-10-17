@@ -1,0 +1,27 @@
+546
+1.9.3. 쿠키 사용 규칙
+③JBoss 5.0.1 및 JBOSS EAP 5.0.1
+- /server/<myJBossServerInstance>/deploy/jbossweb.sar/context.xml에 설정
+<Context cookies=”true” crossContext=”true”> 
+  <SessionCookie secure=”true” httpOnly=”true” /> 
+④Servlet 3.0이 지원되는 경우 web.xml에 설정
+<?xml version=”1.0” encoding=”UTF-8”?> 
+<web-app version=”3.0”
+xmlns=”http://java.sun.com/xml/ns/javaee” 
+xmlns:xsi=”http://www.w3.org/2001/XMLSchema 
+instance”
+          xsi:schemaLocation=”http://java.sun.com/xml/ns/javaee” 
+target=”_blank”>http://java.sun.com/xml/ns/javaee/web-
+app_3_0.xsd”> 
+               : 
+  <session-config> 
+   <cookie-config> 
+    <http-only>true</http-only> 
+   </cookie-config> 
+  </session-config> 
+               : 
+1-10. 업로드·다운로드 파일 검증
+다음은 “업로드·다운로드 파일 검증” 보안요구사항에 대한 안전한 설계 산출물의 예시이며, 제시된 
+설계 산출물의 종류와 내용은 개발되는 소프트웨어의 특성, 환경, 방법론 등에 따라 다를 수 있다.
+사용자 요구사항 정의서에는 “업로드·다운로드 파일 검증” 보안요구사항의 세부 보안요구사항을 비
+기능 보안요구항목으로 등록하고 해결방안과 검수기준을 제시하고 있다.

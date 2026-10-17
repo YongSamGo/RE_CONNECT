@@ -1,0 +1,23 @@
+70
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+크로스사이트 스크립트
+마. 참고자료
+①2013 OWASP Top 10 ‐ A3 Cross‐Site Scripting(XSS), OWASP,
+http://www.owasp.org/index.php/Top_10_2013
+②“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By 
+Robert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf
+③2010 OWASP Secure Coding Practices, OWASP, Input Validation,
+http://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_R
+eference_Guide 
+④“CERT” Advisory CA-2000-02 Malicious HTML Tags Embedded in Client Web 
+Requests” http://www.cert.org/advisories/CA-2000-02.html
+⑤“Cross-site Scripting Explained”, By Amit Klein
+http://crypto.stanford.edu/cs155/papers/CSS.pdf
+⑥“DOM Based Cross Site Scripting or XSS of the Third Kind” By Amit Klein (WASC 
+article) http://www.webappsec.org/projects/articles/071105.shtml
+⑦“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By 
+Robert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf

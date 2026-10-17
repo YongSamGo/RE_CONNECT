@@ -1,0 +1,43 @@
+257
+제4장구현단계 보안약점 진단
+아래 코드는 입력값을 검증하지 않고 입력값을 XPath 구문 생성 및 실행에 사용하고 있다. 입력값으로 
+any' or 'a' = 'a 와 같이 XPath 구문을 조작하는 문자열을 전달하는 경우 //food [name='any' or 'a' 
+= 'a']/price 같이 구문이 만들어지고 실행되어 모든 food의 가격(price)가 조회되게 된다.
+안전하지 않은 코드의 예 JAVA
+1:public static void main(String[] args) throws Exception { 
+2:
+if (args.length <= 0) {
+3:
+System.err.println("가격을 검색할 식품의 이름을 입력하세요."); 
+4:
+return;
+5:
+}
+6:
+String name = args[0];
+7:
+DocumentBuilder docBuilder =DocumentBuilderFactory.newInstance().newDocumentBuilder();
+Document doc = docBuilder.parse("http://www.w3schools.com/xml/simple.xml");
+8:
+XPath xpath = XPathFactory.newInstance().newXPath();
+// 프로그램의 커맨드 옵션으로 입력되는 외부값 name을 사용하여 쿼리문을 직접
+// 작성하여 수행하므로 안전하지 않다.
+9:
+NodeList nodes = (NodeList) xpath.evaluate("//food[name='" + name + "']/price", 
+doc, XPathConstants.NODESET);
+10:
+for (int i = 0; i < nodes.getLength(); i++) { 
+11:
+System.out.println(nodes.item(i).getTextContent());
+12: }
+13:}
+외부 입력값을 XPath 구문 생성 및 실행에 사용하는 경우 XPath 구문을 조작할 수 있는 문자열을 
+제거하고 사용할 수 있도록 한다.
+안전한 코드의 예 JAVA
+1:public static void main(String[] args) throws Exception { 
+2:
+if (args.length <= 0) { 
+3:
+System.err.println("가격을 검색할 식품의 이름을 입력하세요.");
+4:
+return;

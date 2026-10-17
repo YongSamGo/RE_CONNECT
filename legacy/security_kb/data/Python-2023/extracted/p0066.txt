@@ -1,0 +1,9 @@
+Python 시큐어코딩 가이드
+60
+라. 참고자료
+① CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Response Splitting'), MITRE,
+https://cwe.mitre.org/data/definitions/113.html
+② HTTP Response Splitting, OWASP,
+https://owasp.org/www-community/attacks/HTTP_Response_Splitting
+③ Django security releases issued, Django Software Foundation,
+https://www.djangoproject.com/weblog/2021/may/06/security-releases/

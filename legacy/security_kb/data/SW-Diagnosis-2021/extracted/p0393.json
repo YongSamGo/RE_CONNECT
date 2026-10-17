@@ -1,0 +1,459 @@
+{
+ "lines": [
+  {
+   "text": "393",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C",
+   "bbox": [
+    223.97999572753906,
+    120.79122924804688,
+    300.4176330566406,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3: char hashedData[512] = {0}; ",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    207.9797821044922,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: MD5HashAlgorithm( data, hashedData, salt );",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    276.0859069824219,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: ...",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    97.99039459228516,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: }",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    92.79290771484375,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    235.835205078125,
+    126.4169921875,
+    247.9132080078125
+   ],
+   "block": 29,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "getInstance 함수로 안전한 해시 알고리즘을 인자로 하여 MessageDigest 객체를 생성하는지 ",
+   "bbox": [
+    70.86000061035156,
+    264.4910888671875,
+    459.1906433105469,
+    275.5130920410156
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "확인 하고(①), 해시 값을 반환(②) 하기 전에 update 함수에 솔트를 사용하여 데이터를 해시하는지 ",
+   "bbox": [
+    70.86000061035156,
+    281.5310974121094,
+    459.21484375,
+    292.5531005859375
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "확인한다.",
+   "bbox": [
+    70.86000061035156,
+    298.510986328125,
+    107.87244415283203,
+    309.5329895019531
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서는 MessageDigest 객체를 생성하고 솔트 없이 해시 값을 반환하고 있으므로 취약 ",
+   "bbox": [
+    70.86000061035156,
+    325.5108947753906,
+    459.1485290527344,
+    336.53289794921875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하다고 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    342.49078369140625,
+    136.25814819335938,
+    353.5127868652344
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    379.03118896484375,
+    301.42083740234375,
+    390.0531921386719
+   ],
+   "block": 35,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    403.95819091796875,
+    86.42539978027344,
+    413.8581848144531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MessageDigest digest = MessageDigest.getInstance(“SHA-512”); ······························①",
+   "bbox": [
+    95.21954345703125,
+    403.95819091796875,
+    447.72210693359375,
+    413.8581848144531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    418.3581848144531,
+    86.39807891845703,
+    428.2581787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "digest.reset();",
+   "bbox": [
+    95.19221496582031,
+    418.3581848144531,
+    150.69509887695312,
+    428.2581787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    432.7581787109375,
+    86.39102172851562,
+    442.6581726074219
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return digest.digest(password.getBytes(“UTF-8”)); ···························································②",
+   "bbox": [
+    95.18516540527344,
+    432.7581787109375,
+    447.71685791015625,
+    442.6581726074219
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    485.1950988769531,
+    126.4169921875,
+    497.2731018066406
+   ],
+   "block": 39,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-759, Use of a One-Way Hash without a Salt, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    508.8711242675781,
+    360.6534118652344,
+    519.8931274414062
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/759.html",
+   "bbox": [
+    102.23983764648438,
+    524.8309326171875,
+    308.72802734375,
+    535.8529663085938
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Store passwords using a hash function, CERT,",
+   "bbox": [
+    85.8600082397461,
+    545.8308715820312,
+    304.0130920410156,
+    556.8529052734375
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/MSC62-J.+Store+pa",
+   "bbox": [
+    102.23983764648438,
+    561.850830078125,
+    456.20513916015625,
+    572.8728637695312
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sswords+using+a+hash+function",
+   "bbox": [
+    102.23983764648438,
+    577.8707885742188,
+    246.6407012939453,
+    588.892822265625
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Use_a_cryptographically_strong_credential-specific_salt, OWASP,",
+   "bbox": [
+    85.8600082397461,
+    598.8706665039062,
+    390.0516662597656,
+    609.8927001953125
+   ],
+   "block": 45,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet#Use_a_cry",
+   "bbox": [
+    102.24081420898438,
+    614.83056640625,
+    455.9461669921875,
+    625.8526000976562
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ptog raphically_strong_credential-specific_salt",
+   "bbox": [
+    102.24081420898438,
+    630.8505249023438,
+    304.06103515625,
+    641.87255859375
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "3: char hashedData[512] = {0}; \n4: MD5HashAlgorithm( data, hashedData, salt );\n5: ...\n6: }",
+   "language": "c",
+   "label": "안전한 코드의 예 C",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    276.0859069824219,
+    194.49815673828124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1:    MessageDigest digest = MessageDigest.getInstance(“SHA-512”); ······························①\n2:    digest.reset();\n3:    return digest.digest(password.getBytes(“UTF-8”)); ···························································②",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    402.75819091796876,
+    447.72210693359375,
+    443.85817260742186
+   ]
+  }
+ ],
+ "native": "393\n제4장구현단계 보안약점 진단\n안전한 코드의 예 C\n3: char hashedData[512] = {0}; \n4: MD5HashAlgorithm( data, hashedData, salt );\n5: ...\n6: }\n라. 진단방법\ngetInstance 함수로 안전한 해시 알고리즘을 인자로 하여 MessageDigest 객체를 생성하는지 \n확인 하고(①), 해시 값을 반환(②) 하기 전에 update 함수에 솔트를 사용하여 데이터를 해시하는지 \n확인한다.\n다음의 예제에서는 MessageDigest 객체를 생성하고 솔트 없이 해시 값을 반환하고 있으므로 취약 \n하다고 판정한다.\n일반적인 진단의 예\n1:\nMessageDigest digest = MessageDigest.getInstance(“SHA-512”); ······························①\n2:\ndigest.reset();\n3:\nreturn digest.digest(password.getBytes(“UTF-8”)); ···························································②\n마. 참고자료\n[1] CWE-759, Use of a One-Way Hash without a Salt, MITRE,\nhttp://cwe.mitre.org/data/definitions/759.html\n[2] Store passwords using a hash function, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/MSC62-J.+Store+pa\nsswords+using+a+hash+function\n[3] Use_a_cryptographically_strong_credential-specific_salt, OWASP,\nhttps://www.owasp.org/index.php/Password_Storage_Cheat_Sheet#Use_a_cry\nptog raphically_strong_credential-specific_salt\n",
+ "native_sha256": "df684d7fac32ad2cc0771a785272ce6c7ba4f0236e46087c797b4b9b32d06b33",
+ "chars": 1021,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

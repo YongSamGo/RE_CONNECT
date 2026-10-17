@@ -1,0 +1,77 @@
+Python 시큐어코딩 가이드
+114
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+import requests
+def execute_remote_code():
+    # 신뢰할 수 없는 사이트에서 코드를 다운로드
+    url = "https://www.somewhere.com/storage/code.py"
+    # 원격 코드 다운로드
+    file = requests.get(url)
+    remote_code = file.content
+    file_name = 'save.py'    
+    with open(file_name, 'wb') as f:
+        f.write(file.content)
+    ......
+안전한 코드 실행을 위해 다운로드한 파일과 해당 파일의 해시값 비교 등을 통해 무결성 검사를 거치고 코드를 
+실행해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+import requests
+import hashlib
+import configparser
+def execute_remote_code():
+  config = configparser.RawConfigParser()
+  config.read(‘sample_config.cfg’)
+  url = "https://www.somewhere.com/storage/code.py"
+  remote_code_hash = config.get('HASH', 'file_hash')
+  # 원격 코드 다운로드
+  file = requests.get(url)
+  remote_code = file.content
+  sha = hashlib.sha256()
+  sha.update(remote_code)
+  # 다운로드 받은 파일의 해시값 검증
+  if sha.hexdigest() != remote_code_hash:
+    raise Exception(‘파일이 손상되었습니다.’)
+  file_name = 'save.py'
+  with open(file_name, 'wb') as f
+    f.write(file.content)
+  ......

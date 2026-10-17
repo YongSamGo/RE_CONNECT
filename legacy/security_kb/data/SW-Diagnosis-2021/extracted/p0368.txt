@@ -1,0 +1,26 @@
+368
+Math.random() 함수를 사용하여 난수 값을 발생시켰을 경우 취약하다.
+정탐코드의 예
+1: public static int[] insertRandom(int[] Cnt, int i ,int scope) { 
+2: int ran = (int) (Math.random() * scope) - 1; 
+3: if (checkDigit(ran,Cnt)) { 
+4: Cnt[i] = ran; 
+5: } else { 
+6: insertRandom(Cnt,i,scope); 
+7: } 
+8: return Cnt; 
+9: }
+자체 랜덤 키 생성으로 취약점 보완하는 경우, 즉 다음의 예제와 같이 Date 요소들로 취약점을 보완 
+하는 경우는 안전하다고 판정한다.
+오탐코드의 예
+1:
+1: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-beginDate.getTi-
+meInMillis() + 1)) + beginDate.getTimeInMillis(); 
+Java.util.Random, java.security.SecurityRandom 사용시에는 복잡도가 상대적으로 높으므로 
+취약 하지 않다.
+오탐코드의 예
+1: import java.security.SecureRandom; 
+2: ….
+3: SecureRandom r = new SecureRandom(); 
+4: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-
+beginDate.getTimeInMil- lis() + 1)) + beginDate.getTimeInMillis();

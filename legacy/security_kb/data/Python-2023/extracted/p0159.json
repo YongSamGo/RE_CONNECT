@@ -1,0 +1,445 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화",
+   "bbox": [
+    322.8260498046875,
+    46.76085662841797,
+    498.9754638671875,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "153",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "아래 예제는 내부와 외부의 배열이 서로 참조되는 것을 예방하기 위해 [:]로 새로운 객체를 생성하여 값을 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.8442077636719,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "대입하고 있다.",
+   "bbox": [
+    65.09266662597656,
+    111.89009094238281,
+    125.37830352783203,
+    121.83747863769531
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    155.03536987304688,
+    319.7541809082031,
+    164.9827423095703
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    180.39520263671875,
+    94.51471710205078,
+    188.9044189453125
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    193.93801879882812,
+    94.51471710205078,
+    202.44723510742188
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    207.48085021972656,
+    94.51471710205078,
+    215.9900665283203
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    221.14352416992188,
+    94.51471710205078,
+    229.65274047851562
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    234.68634033203125,
+    94.51471710205078,
+    243.195556640625
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    248.2291717529297,
+    94.51471710205078,
+    256.7383728027344
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    261.7720031738281,
+    94.51471710205078,
+    270.2812194824219
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    275.3148193359375,
+    94.51471710205078,
+    283.82403564453125
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "class UserObj:",
+   "bbox": [
+    104.41199493408203,
+    179.8935089111328,
+    161.52523803710938,
+    188.9044189453125
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def __init__(self):",
+   "bbox": [
+    104.41199493408203,
+    193.4363250732422,
+    179.5066375732422,
+    202.44723510742188
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    self.__privateVariable = []",
+   "bbox": [
+    104.41199493408203,
+    206.97915649414062,
+    220.6929168701172,
+    215.9900665283203
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    220.64183044433594,
+    121.37445068359375,
+    229.15203857421875
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "  # private 배열에 외부 값을 바로 대입하는 경우 [:]를 사용하여 ",
+   "bbox": [
+    104.41199493408203,
+    234.1846466064453,
+    340.03851318359375,
+    243.195556640625
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 외부와 내부의 배열이 서로 참조되지 않도록 해야 한다",
+   "bbox": [
+    104.41199493408203,
+    248.2291717529297,
+    314.4238586425781,
+    256.7383728027344
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def set_private_member(self, input_list):",
+   "bbox": [
+    104.41199493408203,
+    261.27032470703125,
+    270.7322692871094,
+    270.2812194824219
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    self.__privateVariable = input_list[:]",
+   "bbox": [
+    104.41199493408203,
+    274.8131408691406,
+    257.7348327636719,
+    283.82403564453125
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    348.58990478515625,
+    119.12395477294922,
+    359.1365051269531
+   ],
+   "block": 24,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-496: Public Data Assigned to Private Array-Typed Field, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    370.4501647949219,
+    366.16094970703125,
+    379.43878173828125
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/496.html",
+   "bbox": [
+    77.32001495361328,
+    385.79071044921875,
+    267.01031494140625,
+    394.7793273925781
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Shallow and deep copy operations, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    406.0450134277344,
+    342.6648864746094,
+    415.03363037109375
+   ],
+   "block": 27,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/copy.html",
+   "bbox": [
+    77.32001495361328,
+    421.38555908203125,
+    250.34698486328125,
+    430.3741760253906
+   ],
+   "block": 28,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "➂ Private Variables, Python Software Foundation, ",
+   "bbox": [
+    65.09266662597656,
+    441.10992431640625,
+    271.9677734375,
+    450.62847900390625
+   ],
+   "block": 29,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/tutorial/classes.html#private-variables",
+   "bbox": [
+    77.32001495361328,
+    456.98040771484375,
+    335.4024658203125,
+    465.9690246582031
+   ],
+   "block": 30,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1: class UserObj:\n2:   def __init__(self):\n3:     self.__privateVariable = []\n4:     \n5:   # private 배열에 외부 값을 바로 대입하는 경우 [:]를 사용하여 \n6:   # 외부와 내부의 배열이 서로 참조되지 않도록 해야 한다\n7:   def set_private_member(self, input_list):\n8:     self.__privateVariable = input_list[:]",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    165.0827423095703,
+    340.03851318359375,
+    285.02403564453124
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화\n153\n아래 예제는 내부와 외부의 배열이 서로 참조되는 것을 예방하기 위해 [:]로 새로운 객체를 생성하여 값을 \n대입하고 있다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\nclass UserObj:\n  def __init__(self):\n    self.__privateVariable = []\n    \n  # private 배열에 외부 값을 바로 대입하는 경우 [:]를 사용하여 \n  # 외부와 내부의 배열이 서로 참조되지 않도록 해야 한다\n  def set_private_member(self, input_list):\n    self.__privateVariable = input_list[:]\n라. 참고자료\n① CWE-496: Public Data Assigned to Private Array-Typed Field, MITRE,\nhttps://cwe.mitre.org/data/definitions/496.html\n② Shallow and deep copy operations, Python Software Foundation,\nhttps://docs.python.org/3/library/copy.html\n➂ Private Variables, Python Software Foundation, \nhttps://docs.python.org/3/tutorial/classes.html#private-variables\n",
+ "native_sha256": "b93e143dda8c801c9626caa1c246ca9b41619c033743f0fac3dc4066b54a51cb",
+ "chars": 724,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

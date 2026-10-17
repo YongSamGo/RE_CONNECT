@@ -1,0 +1,33 @@
+572
+개발가이드에는 안전한 비밀번호 생성, 전송, 저장 방법, 재설정 및 변경, 관리 규칙과 방법을 제시
+하고 있다.
+안전한 보안설계의 예 : 개발가이드
+2.3.1. 비밀번호 생성 규칙
+무작위대입 및 사전대입 공격을 방어하기 위해서는 다음의 생성 규칙에 따라 비밀번호를 생성하여야 한다.
+- 세가지 유형의 문자(영문자, 숫자, 특수문자)를 조합하는 경우, 8자리 이상의 길이를 사용
+- 두가지 유형의 문자를 조합하는 경우, 10자리 이상의 길이를 사용 
+- 비밀번호로 많이 사용되는 단어 사용 금지 
+- 전화번호와 같이 개인의 신상정보가 포함된 단어 사용 금지 
+- 반복 문자열, 키보드의 배열과 같이 일정한 규칙을 가진 문자열 사용 금지 
+공통모듈에 비밀번호 검증 기능을 추가하고, 비밀번호 생성 및 변경 시 검증 후 사용될 수 있도록 한다.
+public static boolean checkPasswd(String
+  password) { if (null == password || 
+  password.equals(“”)) { 
+   return false; 
+  }
+  if (password.trim().length() < 8)
+    { LOG.info(“[ValidatorUtil_checkPasswd()] checkPasswd MIN
+    8!!”); return false; 
+  }
+  for (int i = 0; i < password.length(); i++) 
+     { char ch = password.charAt(i); 
+     if (! ((ch >= ‘0’ && ‘9’ >= ch) || (ch >= ‘a’ && ‘z’ >= ch) 
+       || (ch >= ‘A’ && ‘Z’ >= ch) 
+       || ch == ‘!’ || ch == ‘@’ || ch == ‘$’ || ch == ‘%’ 
+       || ch == ‘^’ || ch == ‘&’ || ch == ‘*’))
+       { LOG.info(“password not [“ + ch + 
+       “] !”); return false; 
+     } 
+  }
+  return true; 
+}

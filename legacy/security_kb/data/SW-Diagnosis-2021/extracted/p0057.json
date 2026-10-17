@@ -1,0 +1,239 @@
+{
+ "lines": [
+  {
+   "text": "57",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐90 LDAP Injection, MITRE, http://cwe.mitre.org/data/definitions/90.html ",
+   "bbox": [
+    85.86000061035156,
+    137.5200958251953,
+    447.360107421875,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "②2016 OWASP Application Security Verification Standard, OWASP, Malicious Input ",
+   "bbox": [
+    85.85955810546875,
+    158.53115844726562,
+    459.1832275390625,
+    169.55316162109375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Handling Verification Requirements,",
+   "bbox": [
+    99.5999755859375,
+    174.55111694335938,
+    256.55096435546875,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Ver- ",
+   "bbox": [
+    99.5999755859375,
+    190.51095581054688,
+    458.6261291503906,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ification_Standard_Project",
+   "bbox": [
+    99.5999755859375,
+    206.53091430664062,
+    212.06101989746094,
+    217.55291748046875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③“LDAP Resources”, http://ldapman.org/",
+   "bbox": [
+    85.85956573486328,
+    227.53082275390625,
+    274.53448486328125,
+    238.55282592773438
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④“LDAP Injection & Blind LDAP Injection”",
+   "bbox": [
+    85.85956573486328,
+    248.53073120117188,
+    274.7181396484375,
+    259.552734375
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http :// ww w.blackh at .com/present ations/bh -europe-08/ Alon- ",
+   "bbox": [
+    99.5999755859375,
+    264.55072021484375,
+    458.9644470214844,
+    275.5727233886719
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "so-Parada/Whitepaper/bh-eu-08-alonso-parada-WP.pdf",
+   "bbox": [
+    99.5999755859375,
+    280.5105895996094,
+    354.9560852050781,
+    291.5325927734375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤“A String Representation of LDAP Search Filters”,",
+   "bbox": [
+    85.85956573486328,
+    301.510498046875,
+    316.0733337402344,
+    312.5325012207031
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.ietf.org/rfc/rfc1960.txt",
+   "bbox": [
+    99.5999755859375,
+    317.5304870605469,
+    254.57119750976562,
+    328.552490234375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Failure to Sanitize Data into LDAP Queries(‘LDAP Injection’),",
+   "bbox": [
+    85.85956573486328,
+    338.5303955078125,
+    362.9876403808594,
+    349.5523986816406
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/90.html",
+   "bbox": [
+    99.5999755859375,
+    354.5503845214844,
+    300.596435546875,
+    365.5723876953125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "57\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①CWE‐90 LDAP Injection, MITRE, http://cwe.mitre.org/data/definitions/90.html \n②2016 OWASP Application Security Verification Standard, OWASP, Malicious Input \nHandling Verification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Ver- \nification_Standard_Project\n③“LDAP Resources”, http://ldapman.org/\n④“LDAP Injection & Blind LDAP Injection”\nhttp :// ww w.blackh at .com/present ations/bh -europe-08/ Alon- \nso-Parada/Whitepaper/bh-eu-08-alonso-parada-WP.pdf\n⑤“A String Representation of LDAP Search Filters”,\nhttp://www.ietf.org/rfc/rfc1960.txt\n⑥Failure to Sanitize Data into LDAP Queries(‘LDAP Injection’),\nhttp://cwe.mitre.org/data/definitions/90.html\n",
+ "native_sha256": "81ae1c263d77329a876abcce3a584602ba003e01287b8bdfa469bd5e62368426",
+ "chars": 718,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

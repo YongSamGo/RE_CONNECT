@@ -1,0 +1,33 @@
+492
+| 제7 절| API 오용
+의도된 사용에 반하는 방법으로 API를 사용하거나, 보안에 취약한 API를 사용하여 발생할 수 있는 
+보안약점이다.
+1. DNS lookup에 의존한 보안결정
+가. 개요
+공격자가 DNS 엔트리를 속일 수 있으므로 도메인명에 의존에서 보안결정(인증 및 접근통제 등)을 
+하지 않아야 한다. 만약, 로컬 DNS 서버의 캐시가 공격자에 의해 오염된 상황이라면, 사용자와 특정 
+서버 간의 네트워크 트래픽이 공격자를 경유하도록 할 수도 있다. 또한, 공격자가 마치 동일 도메인에 
+속한 서버인 것처럼 위장할 수도 있다.
+나. 보안대책
+보안결정에서 도메인명을 이용한 DNS lookup을 하지 않도록 한다.
+다. 코드예제
+다음의 예제는 도메인명으로 해당 요청을 신뢰할 수 있는지를 검사한다. 그러나 공격자는 DNS 캐
+시 등을 조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1:
+public void doGet(HttpServletRequest req, HttpServletResponse res) 
+throws ServletException, IOException { 
+2:
+boolean trusted = false; 
+3:
+String ip = req.getRemoteAddr(); 
+4:
+InetAddress addr = InetAddress.getByName(ip); 
+5:
+//도메인은 공격자에 의해 실행되는 서버의 DNS가 변경될 수 있으므로 안전하지 않다.
+6:
+if (addr.getCanonicalHostName().endsWith("trustme.com")) {
+7:
+do_something_for_Trust_System();
+8:
+}

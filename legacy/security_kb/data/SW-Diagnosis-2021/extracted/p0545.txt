@@ -1,0 +1,34 @@
+545
+제5장부록
+1.9.3. 쿠키 사용 규칙
+Secure 속성 및 HttpOnly 속성 설정
+// 올바르지 않은 방법
+// Cookie c = new Cookie(“name”, “value”);
+// c.setMaxAge(60*60*24*365);
+// c.setSecure(false);
+// response.addCookie(c);
+// 올바른 방법
+Cookie c = new Cookie(“name”, “value”);
+c.setMaxAge(-1); 
+c.setSecure(true);
+response.addCookie(c);
+HttpOnly 속성 설정
+①Tomcat
+- Tomcat 5.5.28, Tomcat 6.0.19부터 지원
+- /conf/context.xml에 설정
+ <?xml version=”1.0” encoding=”UTF-8”?> 
+   <Context path=”/myWebApplicationPath” useHttpOnly=”true”> : 
+②JEUS
+- JEUS 6.0 fix9부터 지원 (default가 true) 
+- WEBMain.xml 또는 jeus-web-dd.xml에 설정
+<session-config>
+ <session-cookie> 
+   <jsessionid-name>JSESSIONID</jsessionid-name>
+   <version>0</version> 
+   <domain>.tmax.co.kr</domain> 
+   <path>/</path> 
+   <max-age>-1</max-age> 
+   <secure>false</secure> 
+   <http-only>true</http-only> 
+ </session-cookie> 
+</session-config>

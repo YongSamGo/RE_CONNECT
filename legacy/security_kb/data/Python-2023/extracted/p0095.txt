@@ -1,0 +1,36 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+89
+나. 안전한 코딩기법
+RSA 알고리즘은 적어도 2,048 비트 이상의 길이를 가진 키와 함께 사용해야 하고, 대칭 암호화 알고리즘(Symmetric 
+Encryption Algorithm)의 경우에는 적어도 128비트 이상의 키를 사용해야 한다(암호 강도 112비트 이상).
+다. 코드예제
+보안성이 강한 RSA 알고리즘을 사용하는 경우에도 키 사이즈를 작게 설정하면 프로그램의 보안약점이 될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from Crypto.PublicKey import  RSA, DSA, ECC
+from tinyec import registry
+import secrets
+def make_rsa_key_pair():
+  # RSA키 길이를 2048 비트 이하로 설정하는 경우 안전하지 않음
+  private_key = RSA.generate(1024)
+  public_key = private_key.publickey()
+def make_ecc():
+  # ECC의 키 길이를 224비트 이하로 설정하는 경우 안전하지 않음
+  ecc_curve = registry.get_curve('secp192r1')
+  private_key = secrets.randbelow(ecc_curve.field.n)
+  public_key = private_key * ecc_curve.g
+RSA, DSA의 경우 키의 길이는 적어도 2048 비트를, ECC의 경우 224 비트 이상으로 설정해야 안전하다. 
+다음은 tinyec 모듈을 사용하여 ECC 키를 생성한 예제다.

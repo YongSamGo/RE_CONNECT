@@ -1,0 +1,48 @@
+472
+안전하지 않은 코드의 예 C#
+10:
+Name = ctx.Request.QueryString["name"]
+11:
+}; 
+12:
+ctx.Response.ContentType = "application/json";
+13:
+ctx.Response.Write(JsonConvert.SerializeObject(json));
+14:
+}
+15:
+public bool IsReusable
+16:
+{
+17:
+get { return false; }
+18:
+}
+19:
+}
+해당 내용을 지역 변수나 세션변수를 이용하여 처리하여야 한다.
+안전한 코드의 예 C#
+1: class DataLeakBetweenSessions : IHttpHandler 
+2:
+{
+3:
+public void ProcessRequest(HttpContext ctx) 
+4:
+{
+//지역 변수나 세션변수를 선언해서 사용해야 합니다.
+5:
+ctx.Session["id"] = ctx.Request.QueryString["id"];
+6:
+var json = new JSONResonse() 
+7:
+{
+8:
+Success = ctx.Request.QueryString["name"] != null,
+9:
+Name = ctx.Request.QueryString["name"]
+10:
+};
+11:
+ctx.Response.ContentType = "application/json";
+12:
+ctx.Response.Write(JsonConvert.SerializeObject(json));

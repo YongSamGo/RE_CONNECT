@@ -1,0 +1,297 @@
+{
+ "lines": [
+  {
+   "text": "263",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    117.31112670898438,
+    291.27935791015625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "16: System.out.println(value);",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    197.5316925048828,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: }",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    98.49267578125,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: …",
+   "bbox": [
+    78.66000366210938,
+    171.03823852539062,
+    103.6937026977539,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    223.4752197265625,
+    126.4169921875,
+    235.55322265625
+   ],
+   "block": 28,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-652 XQuery Injection, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    247.15121459960938,
+    259.55926513671875,
+    258.1732177734375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/652.html",
+   "bbox": [
+    102.23983001708984,
+    263.17120361328125,
+    308.7279968261719,
+    274.1932067871094
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Prevent XML Injection, CERT,",
+   "bbox": [
+    85.86000061035156,
+    284.1711120605469,
+    231.34841918945312,
+    295.193115234375
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/IDS16-J.+Prevent+X",
+   "bbox": [
+    102.23983001708984,
+    300.1309814453125,
+    456.1894226074219,
+    311.1529846191406
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ML+Injection",
+   "bbox": [
+    102.23983764648438,
+    316.1509704589844,
+    159.20571899414062,
+    327.1729736328125
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] CWE-643 XPath Injection, MITRE,",
+   "bbox": [
+    85.8600082397461,
+    337.15087890625,
+    252.65919494628906,
+    348.1728820800781
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/643.html ",
+   "bbox": [
+    102.23983764648438,
+    353.1708679199219,
+    311.4837951660156,
+    364.19287109375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] Prevent XPath Injection, CERT,",
+   "bbox": [
+    85.8600082397461,
+    374.1707763671875,
+    237.10321044921875,
+    385.1927795410156
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/IDS53-J.+Prevent+ ",
+   "bbox": [
+    102.23983764648438,
+    390.1306457519531,
+    458.8357849121094,
+    401.15264892578125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XPath +Injection",
+   "bbox": [
+    102.23983764648438,
+    406.150634765625,
+    173.67608642578125,
+    417.1726379394531
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[5] XPATH Injection, OWASP,",
+   "bbox": [
+    85.8600082397461,
+    427.1505432128906,
+    216.07386779785156,
+    438.17254638671875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/XPATH_Injection",
+   "bbox": [
+    102.23983764648438,
+    443.1705322265625,
+    331.8720397949219,
+    454.1925354003906
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5
+   ],
+   "text": "16: System.out.println(value);\n17: }\n18: …",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    197.5316925048828,
+    182.138232421875
+   ]
+  }
+ ],
+ "native": "263\n제4장구현단계 보안약점 진단\n정탐코드의 예\n16: System.out.println(value);\n17: }\n18: …\n마. 참고자료\n[1] CWE-652 XQuery Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/652.html\n[2] Prevent XML Injection, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/IDS16-J.+Prevent+X\nML+Injection\n[3] CWE-643 XPath Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/643.html \n[4] Prevent XPath Injection, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/IDS53-J.+Prevent+ \nXPath +Injection\n[5] XPATH Injection, OWASP,\nhttps://www.owasp.org/index.php/XPATH_Injection\n",
+ "native_sha256": "1598b17483da62c42c37681cf6b1917bf40ae5742a4633d689b881b0a80aa66d",
+ "chars": 573,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

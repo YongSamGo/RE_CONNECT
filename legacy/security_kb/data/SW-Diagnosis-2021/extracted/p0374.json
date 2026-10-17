@@ -1,0 +1,433 @@
+{
+ "lines": [
+  {
+   "text": "374",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    117.31112670898438,
+    296.1402587890625,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58000183105469,
+    142.23818969726562,
+    91.33041381835938,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "….",
+   "bbox": [
+    108.88432312011719,
+    142.23818969726562,
+    119.46444702148438,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    156.63821411132812,
+    91.31014251708984,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (SQLException e) { … } ",
+   "bbox": [
+    104.48460388183594,
+    156.63821411132812,
+    236.86306762695312,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: }",
+   "bbox": [
+    83.58000183105469,
+    171.03823852539062,
+    98.43290710449219,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 로그인시에 비밀번호를 확인하는 것은 비밀번호를 저장하는 것이 아니므로 취약하지 ",
+   "bbox": [
+    76.5,
+    203.41122436523438,
+    464.8411865234375,
+    214.4332275390625
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "않다.",
+   "bbox": [
+    76.5,
+    220.45126342773438,
+    96.4720230102539,
+    231.4732666015625
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    256.93121337890625,
+    296.1402587890625,
+    267.9532165527344
+   ],
+   "block": 20,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <% //로그인시 입력한 값받음 ",
+   "bbox": [
+    83.58000183105469,
+    281.85809326171875,
+    207.5417022705078,
+    291.7580871582031
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String id = request.getParameter(“id”); ",
+   "bbox": [
+    83.58000183105469,
+    296.2580871582031,
+    255.5311737060547,
+    306.1580810546875
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: String pass = request.getParameter(“pass”); ",
+   "bbox": [
+    83.58000183105469,
+    310.6580810546875,
+    278.1221923828125,
+    320.5580749511719
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제와 같이 비밀번호 저장을 위한 목적이 아닌 확인의 목적일 경우 취약하지 않다고 판정 한다.",
+   "bbox": [
+    76.5,
+    343.03118896484375,
+    452.0739440917969,
+    354.0531921386719
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    379.57110595703125,
+    296.1402587890625,
+    390.5931091308594
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: fis = new FileInputStream(PROPERTIES_FILE);",
+   "bbox": [
+    83.58000183105469,
+    404.49810791015625,
+    285.661865234375,
+    414.3981018066406
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: props.load(new java.io.BufferedInputStream(fis));",
+   "bbox": [
+    83.58000183105469,
+    418.8981018066406,
+    291.8572998046875,
+    428.798095703125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: userName = (String)props.getProperty(“id”);",
+   "bbox": [
+    83.58000183105469,
+    433.298095703125,
+    272.60479736328125,
+    443.1980895996094
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: password = (String)props.getProperty(“password”);",
+   "bbox": [
+    83.58000183105469,
+    447.6980895996094,
+    300.9352722167969,
+    457.59808349609375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: if (authenticate(userName, password)) { … }",
+   "bbox": [
+    83.58000183105469,
+    462.09808349609375,
+    277.4638366699219,
+    471.9980773925781
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    514.5350952148438,
+    132.05699157714844,
+    526.6130981445312
+   ],
+   "block": 31,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-521 Weak Password Requirements, MITRE,",
+   "bbox": [
+    91.5,
+    538.2110595703125,
+    326.817626953125,
+    549.2330932617188
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/521.html",
+   "bbox": [
+    107.87982940673828,
+    554.1709594726562,
+    314.3680114746094,
+    565.1929931640625
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Password Complexity, OWASP",
+   "bbox": [
+    91.5,
+    575.1708374023438,
+    242.5790557861328,
+    586.19287109375
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Authentication_Cheat_Sheet#Implement_Pr",
+   "bbox": [
+    107.87982940673828,
+    591.1907958984375,
+    461.4913635253906,
+    602.2128295898438
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "oper_ Password_Strength_Controls",
+   "bbox": [
+    107.87982177734375,
+    607.2107543945312,
+    260.5809326171875,
+    618.2327880859375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "7:        ….\n8:      } catch (SQLException e) { … } \n9: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    141.03818969726564,
+    236.86306762695312,
+    182.138232421875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    10,
+    11,
+    12
+   ],
+   "text": "1: <% //로그인시 입력한 값받음 \n2: String id = request.getParameter(“id”); \n3: String pass = request.getParameter(“pass”); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    280.65809326171876,
+    278.1221923828125,
+    321.75807495117186
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: fis = new FileInputStream(PROPERTIES_FILE);\n2: props.load(new java.io.BufferedInputStream(fis));\n3: userName = (String)props.getProperty(“id”);\n4: password = (String)props.getProperty(“password”);\n5: if (authenticate(userName, password)) { … }",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    403.29810791015626,
+    300.9352722167969,
+    473.1980773925781
+   ]
+  }
+ ],
+ "native": "374\n정탐코드의 예\n7:\n….\n8:\n} catch (SQLException e) { … } \n9: }\n다음의 예제는 로그인시에 비밀번호를 확인하는 것은 비밀번호를 저장하는 것이 아니므로 취약하지 \n않다.\n오탐코드의 예\n1: <% //로그인시 입력한 값받음 \n2: String id = request.getParameter(“id”); \n3: String pass = request.getParameter(“pass”); \n다음의 예제와 같이 비밀번호 저장을 위한 목적이 아닌 확인의 목적일 경우 취약하지 않다고 판정 한다.\n오탐코드의 예\n1: fis = new FileInputStream(PROPERTIES_FILE);\n2: props.load(new java.io.BufferedInputStream(fis));\n3: userName = (String)props.getProperty(“id”);\n4: password = (String)props.getProperty(“password”);\n5: if (authenticate(userName, password)) { … }\n마. 참고자료\n[1] CWE-521 Weak Password Requirements, MITRE,\nhttp://cwe.mitre.org/data/definitions/521.html\n[2] Password Complexity, OWASP\nhttps://www.owasp.org/index.php/Authentication_Cheat_Sheet#Implement_Pr\noper_ Password_Strength_Controls\n",
+ "native_sha256": "1dccca4af14e6c624cb20e7a2d79fc8b9999318759855ffed95934e40ee3be16",
+ "chars": 787,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

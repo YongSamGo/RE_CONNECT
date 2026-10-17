@@ -1,0 +1,471 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "54",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    119.392578125,
+    94.51471710205078,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    134.7331085205078,
+    94.51471710205078,
+    143.24232482910156
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    149.9538116455078,
+    94.51471710205078,
+    158.46302795410156
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    165.2943572998047,
+    94.51471710205078,
+    173.80357360839844
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    180.51504516601562,
+    94.51471710205078,
+    189.02426147460938
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    195.8555908203125,
+    94.51471710205078,
+    204.36480712890625
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    211.0762939453125,
+    94.51471710205078,
+    219.58551025390625
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    226.4168243408203,
+    94.51471710205078,
+    234.92604064941406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<form action=\"\" method=\"POST\">",
+   "bbox": [
+    104.41199493408203,
+    118.89088439941406,
+    232.34066772460938,
+    127.90178680419922
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <!-- form 태그 내부에 csrf_token 적용-->",
+   "bbox": [
+    104.41199493408203,
+    134.23141479492188,
+    276.81500244140625,
+    143.24232482910156
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <input type=\"hidden\" name=\"csrf_token\" value=\"{{ csrf_token() }}\" />",
+   "bbox": [
+    104.41199493408203,
+    149.45211791992188,
+    387.22027587890625,
+    158.46302795410156
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <table>",
+   "bbox": [
+    104.41199493408203,
+    164.79266357421875,
+    147.2287139892578,
+    173.80357360839844
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        {{table}}",
+   "bbox": [
+    104.41199493408203,
+    180.0133514404297,
+    167.4679718017578,
+    189.02426147460938
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    </table>",
+   "bbox": [
+    104.41199493408203,
+    195.35389709472656,
+    150.9448699951172,
+    204.36480712890625
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <input type=\"submit\"/>",
+   "bbox": [
+    104.41199493408203,
+    210.57460021972656,
+    208.96484375,
+    219.58551025390625
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "</form>",
+   "bbox": [
+    104.41199493408203,
+    226.4168243408203,
+    133.3219757080078,
+    234.92604064941406
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    294.89801025390625,
+    119.12395477294922,
+    305.4446105957031
+   ],
+   "block": 22,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-352: Cross-Site Request Forgery (CSRF), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    318.6758117675781,
+    304.66455078125,
+    327.6644287109375
+   ],
+   "block": 23,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/352.html",
+   "bbox": [
+    77.32001495361328,
+    334.016357421875,
+    267.01031494140625,
+    343.0049743652344
+   ],
+   "block": 24,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Cross Site Request Forgery (CSRF), OWASP,",
+   "bbox": [
+    65.09266662597656,
+    354.2706604003906,
+    263.1886291503906,
+    363.25927734375
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/csrf",
+   "bbox": [
+    77.32001495361328,
+    369.6112060546875,
+    273.38201904296875,
+    378.5998229980469
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Cross-Site Request Forgery Prevention Cheat Sheet, OWASP",
+   "bbox": [
+    65.09266662597656,
+    389.86553955078125,
+    330.69891357421875,
+    398.8541564941406
+   ],
+   "block": 27,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    405.2060852050781,
+    500.15673828125,
+    414.1947021484375
+   ],
+   "block": 28,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Cross Site Request Forgery protection, Django Software Foundation",
+   "bbox": [
+    65.09266662597656,
+    425.46038818359375,
+    356.16949462890625,
+    434.4490051269531
+   ],
+   "block": 29,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/ref/csrf/",
+   "bbox": [
+    77.32001495361328,
+    440.8009338378906,
+    269.053955078125,
+    449.78955078125
+   ],
+   "block": 30,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ CSRF Protection, WTForms",
+   "bbox": [
+    65.09266662597656,
+    461.05523681640625,
+    188.79869079589844,
+    470.0438537597656
+   ],
+   "block": 31,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://flask-wtf.readthedocs.io/en/0.15.x/csrf/",
+   "bbox": [
+    77.32001495361328,
+    476.3957824707031,
+    269.5321960449219,
+    485.3843994140625
+   ],
+   "block": 32,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: <form action=\"\" method=\"POST\">\n2:    <!-- form 태그 내부에 csrf_token 적용-->\n3:     <input type=\"hidden\" name=\"csrf_token\" value=\"{{ csrf_token() }}\" />\n4:     <table>\n5:         {{table}}\n6:     </table>\n7:     <input type=\"submit\"/>\n8: </form>",
+   "language": "html",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    108.3946548461914,
+    387.22027587890625,
+    236.12604064941405
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n54\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n<form action=\"\" method=\"POST\">\n   <!-- form 태그 내부에 csrf_token 적용-->\n    <input type=\"hidden\" name=\"csrf_token\" value=\"{{ csrf_token() }}\" />\n    <table>\n        {{table}}\n    </table>\n    <input type=\"submit\"/>\n</form>\n라. 참고자료\n① CWE-352: Cross-Site Request Forgery (CSRF), MITRE,\nhttps://cwe.mitre.org/data/definitions/352.html\n② Cross Site Request Forgery (CSRF), OWASP,\nhttps://owasp.org/www-community/attacks/csrf\n③ Cross-Site Request Forgery Prevention Cheat Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html\n④ Cross Site Request Forgery protection, Django Software Foundation\nhttps://docs.djangoproject.com/en/3.2/ref/csrf/\n⑤ CSRF Protection, WTForms\nhttps://flask-wtf.readthedocs.io/en/0.15.x/csrf/\n",
+ "native_sha256": "21af48b8f4bd4242eb418f8d285d606c245994c83b1585d88a658fe44af5df6b",
+ "chars": 824,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

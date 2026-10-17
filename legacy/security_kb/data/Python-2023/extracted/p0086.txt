@@ -1,0 +1,41 @@
+Python 시큐어코딩 가이드
+80
+다음 예제는 취약한 MD5 해시함수를 사용하는 예시다. 암호 알고리즘과 마찬가지로 해시함수도 수학적으로 
+취약한 것으로 확인된 MD5와 같은 함수를 사용하면 해시값을 역계산해 평문이 유출될 수 있다. 
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+import hashlib
+def make_md5(plain_text):
+  # 취약한 md5 해시함수 사용
+  hash_text = hashlib.md5(plain_text.encode('utf-8')).hexdigest()
+    
+  return hash_text
+아래 코드처럼 수학적으로 안전하다고 알려진 sha-256 해시함수 등을 적용해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+import hashlib
+def make_sha256(plain_text):
+  # 안전한 sha-256 해시함수 사용
+  hash_text = hashlib.sha256(plain_text.encode('utf-8')).hexdigest()
+  return hash_text
+라. 참고자료
+① CWE-327: Use of a Broken or Risky Cryptographic Algorithm, MITRE,
+https://cwe.mitre.org/data/definitions/327.html
+② Welcome to pyca/cryptography, Cryptography,
+https://cryptography.io/en/latest/
+③ Welcome to PyCryptodome’s documentation, PyCryptodome,
+https://www.pycryptodome.org/en/latest/
+④ Cryptographic Services, Python Software Foundation,
+https://docs.python.org/3/library/crypto.html

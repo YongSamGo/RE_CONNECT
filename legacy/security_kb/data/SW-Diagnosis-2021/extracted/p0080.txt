@@ -1,0 +1,30 @@
+80
+2. 오픈 리다이렉트 취약점을 점검하는 테스트 계획이 수립되어 있는가?
+진단방법
+관련산출물 검토예시
+1-1 외부입력값을 조작하여 의도된 페이지로 리다이렉트 되는지를 점검할 
+수 있는 테스트계획이 수립되어 있는지 확인 
+테스트 입력값 예 : 임의의 URL주소
+단위테스트케이스 검토
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+HTTP 응답분할
+입력데이터 검증 및 표현
+신뢰되지 않은 URL주소로 자동접속 연결
+마. 참고자료
+①CWE-113 Failure to Sanitize CRLF Sequences in HTTP Headers(‘Http Response 
+Splitting’), MITRE, http://cwe.mitre.org/data/definitions/113.html 
+②Unvalidated Redirects and Forwords Cheat Sheet, OWASP,
+www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet 
+③WASC Threat Classsification v2.0 HTTP Response Splitting, WASC,
+http://projects.webappsec.org/w/page/13246931/HTTP%20Response%20Splitting
+④WASC Threat Classification v2.0 URL Redirector Abuse, WASC,
+http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse
+⑤Google blog article on the dangers of open redirects, Jason Morrison,
+http://googlewebmastercentral.blog-spot.com/2009/01/open-redirect-urls-is 
+your-site-being.html
+⑥Preventing Open Redirection Attacks (C#), Hon Calloway,
+http://www.asp.net/mvc/overview/security/pre-venting-open-redirection-attacks

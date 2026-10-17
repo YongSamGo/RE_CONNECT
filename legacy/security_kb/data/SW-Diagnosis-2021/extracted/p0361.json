@@ -1,0 +1,632 @@
+{
+ "lines": [
+  {
+   "text": "361",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "공개키 암호화에 사용하는 키의 길이는 적어도 2048비트 이상으로 설정한다.",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    365.5033874511719,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    153.79122924804688,
+    308.9777526855469,
+    164.813232421875
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public static final String ALGORITHM = \"RSA\"; ",
+   "bbox": [
+    77.94000244140625,
+    173.19808959960938,
+    284.5899963378906,
+    183.09808349609375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public static final String PRIVATE_KEY_FILE = \"C:/keys/private.key\"; ",
+   "bbox": [
+    77.94000244140625,
+    187.59811401367188,
+    372.15594482421875,
+    197.49810791015625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public static final String PUBLIC_KEY_FILE = \"C:/keys/public.key\"; ",
+   "bbox": [
+    77.94000244140625,
+    201.99813842773438,
+    364.2362365722656,
+    211.89813232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: public static void generateKey() { ",
+   "bbox": [
+    77.93997192382812,
+    216.39816284179688,
+    229.0033721923828,
+    226.29815673828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.93997192382812,
+    230.79815673828125,
+    85.69214630126953,
+    240.69815063476562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    98.86660766601562,
+    230.79815673828125,
+    118.9690170288086,
+    240.69815063476562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.93997192382812,
+    245.19815063476562,
+    85.70536804199219,
+    255.09814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);",
+   "bbox": [
+    107.63960266113281,
+    245.19815063476562,
+    422.5441589355469,
+    255.09814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.93997192382812,
+    259.59814453125,
+    85.70537567138672,
+    269.4981384277344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "keyGen.initialize(2048);",
+   "bbox": [
+    107.63960266113281,
+    259.59814453125,
+    199.7427215576172,
+    269.4981384277344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.93997192382812,
+    273.9981384277344,
+    85.70536804199219,
+    283.89813232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "final KeyPair key = keyGen.generateKeyPair(); ",
+   "bbox": [
+    107.63960266113281,
+    273.9981384277344,
+    298.136474609375,
+    283.89813232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.93997192382812,
+    288.39813232421875,
+    85.67716217041016,
+    298.2981262207031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File privateKeyFile = new File(PRIVATE_KEY_FILE); ",
+   "bbox": [
+    107.61138916015625,
+    288.39813232421875,
+    318.7059631347656,
+    298.2981262207031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    77.93997192382812,
+    302.7981262207031,
+    90.63224029541016,
+    312.6981201171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File publicKeyFile = new File(PUBLIC_KEY_FILE); ",
+   "bbox": [
+    108.2469711303711,
+    302.7981262207031,
+    311.3294677734375,
+    312.6981201171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 보안성이 강한 RSA 알고리즘을 사용함에도 불구하고, 키 사이즈를 작게 설정함으로써 ",
+   "bbox": [
+    70.86000061035156,
+    335.1711120605469,
+    459.1806335449219,
+    346.193115234375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "프로그램의 보안약점을 야기한 경우이다.",
+   "bbox": [
+    70.86000061035156,
+    352.21112060546875,
+    227.1533203125,
+    363.2331237792969
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    392.1711120605469,
+    317.9013671875,
+    403.193115234375
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: static string UseRSA(string input) { ",
+   "bbox": [
+    77.94000244140625,
+    411.5780944824219,
+    236.7247314453125,
+    421.47808837890625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//RSA 키 길이를 1024 비트로 짧게 설정하는 경우 안전하지 않다.",
+   "bbox": [
+    91.14002990722656,
+    425.97808837890625,
+    322.3363342285156,
+    435.8780822753906
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94001007080078,
+    440.3780822753906,
+    85.70541381835938,
+    450.278076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "var rsa = new RSACryptoServiceProvider(1024);",
+   "bbox": [
+    98.87987518310547,
+    440.3780822753906,
+    294.8721923828125,
+    450.278076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94001007080078,
+    454.778076171875,
+    85.69306945800781,
+    464.6780700683594
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    98.8675308227539,
+    454.778076171875,
+    106.81011199951172,
+    464.6780700683594
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    77.94001007080078,
+    469.1780700683594,
+    92.79291534423828,
+    479.07806396484375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공개키 암호화에 사용하는 키의 길이는 적어도 2048비트 이상으로 설정한다.",
+   "bbox": [
+    70.86000061035156,
+    501.5511169433594,
+    365.5033874511719,
+    512.5731201171875
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    541.5711059570312,
+    303.40240478515625,
+    552.5931396484375
+   ],
+   "block": 45,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: static string UseRSA(string input) { ",
+   "bbox": [
+    77.94000244140625,
+    560.9780883789062,
+    236.7247314453125,
+    570.8781127929688
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//RSA 키 길이를 2048 비트 이상으로 길게 설정한다",
+   "bbox": [
+    90.0601577758789,
+    575.3780517578125,
+    275.17620849609375,
+    585.278076171875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.93999481201172,
+    589.778076171875,
+    85.70539855957031,
+    599.6781005859375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "var rsa = new RSACryptoServiceProvider(2048); ",
+   "bbox": [
+    98.8798599243164,
+    589.778076171875,
+    297.3431091308594,
+    599.6781005859375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.93999481201172,
+    604.1780395507812,
+    85.69305419921875,
+    614.0780639648438
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    98.86751556396484,
+    604.1780395507812,
+    106.81009674072266,
+    614.0780639648438
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    77.93999481201172,
+    618.5780639648438,
+    92.79290008544922,
+    628.4780883789062
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: public static final String ALGORITHM = \"RSA\"; \n2: public static final String PRIVATE_KEY_FILE = \"C:/keys/private.key\"; \n3: public static final String PUBLIC_KEY_FILE = \"C:/keys/public.key\"; \n4: public static void generateKey() { \n5:      try { \n6:         final KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);\n7:         keyGen.initialize(2048);\n8:         final KeyPair key = keyGen.generateKeyPair(); \n9:         File privateKeyFile = new File(PRIVATE_KEY_FILE); \n10:        File publicKeyFile = new File(PUBLIC_KEY_FILE); ",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.93997192382812,
+    164.913232421875,
+    422.5441589355469,
+    313.8981201171875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "1: static string UseRSA(string input) { \n//RSA 키 길이를 1024 비트로 짧게 설정하는 경우 안전하지 않다.\n2:      var rsa = new RSACryptoServiceProvider(1024);\n3:      ...\n4: }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    403.293115234375,
+    322.3363342285156,
+    480.27806396484374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38
+   ],
+   "text": "1: static string UseRSA(string input) { \n//RSA 키 길이를 2048 비트 이상으로 길게 설정한다\n2:      var rsa = new RSACryptoServiceProvider(2048); \n3:      ...\n4: }",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.93999481201172,
+    552.6931396484375,
+    297.3431091308594,
+    629.6780883789063
+   ]
+  }
+ ],
+ "native": "361\n제4장구현단계 보안약점 진단\n공개키 암호화에 사용하는 키의 길이는 적어도 2048비트 이상으로 설정한다.\n안전한 코드의 예 JAVA\n1: public static final String ALGORITHM = \"RSA\"; \n2: public static final String PRIVATE_KEY_FILE = \"C:/keys/private.key\"; \n3: public static final String PUBLIC_KEY_FILE = \"C:/keys/public.key\"; \n4: public static void generateKey() { \n5:\ntry { \n6:\nfinal KeyPairGenerator keyGen = KeyPairGenerator.getInstance(ALGORITHM);\n7:\nkeyGen.initialize(2048);\n8:\nfinal KeyPair key = keyGen.generateKeyPair(); \n9:\nFile privateKeyFile = new File(PRIVATE_KEY_FILE); \n10:\nFile publicKeyFile = new File(PUBLIC_KEY_FILE); \n다음의 예제는 보안성이 강한 RSA 알고리즘을 사용함에도 불구하고, 키 사이즈를 작게 설정함으로써 \n프로그램의 보안약점을 야기한 경우이다.\n안전하지 않은 코드의 예 C#\n1: static string UseRSA(string input) { \n//RSA 키 길이를 1024 비트로 짧게 설정하는 경우 안전하지 않다.\n2:\nvar rsa = new RSACryptoServiceProvider(1024);\n3:\n...\n4: }\n공개키 암호화에 사용하는 키의 길이는 적어도 2048비트 이상으로 설정한다.\n안전한 코드의 예 C#\n1: static string UseRSA(string input) { \n//RSA 키 길이를 2048 비트 이상으로 길게 설정한다\n2:\nvar rsa = new RSACryptoServiceProvider(2048); \n3:\n...\n4: }\n",
+ "native_sha256": "f792f6d6822fcacf6738d79a03037032ed28e8082518e6744469489290f572c4",
+ "chars": 1012,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,46 @@
+448
+안전한 코드의 예 C#
+//using 구문으로 자원을 할당하면 구문이 끝나는 지점에서 자동으로 자원이
+해제됩니다.
+3:
+using(FileStream fsSource = new FileStream(pathSource, FileMode.Open, 
+FileAccess.Read)){
+4:
+byte[] bytes = new byte[fsSource.Length]; 
+5:
+int numBytesToRead = (int)fsSource.Length; 
+6:
+int numBytesRead = 0; 
+7:
+while(numBytesToRead > 0) 
+8:
+{
+9:
+int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+10:
+if(n==0)
+11:
+break;
+12:
+numBytesToRead += n; 
+13:
+numBytesToRead -= n; 
+14:
+}
+15:
+}
+16:
+using(FileStream fsNew = new FileStream(pathNew, FileMode.Create, 
+FileAccess.Write)) { /* OK */ 
+17:
+fsNew.Write(bytes, 0, numBytesToRead); 
+18:
+}
+19:}
+아래 C 코드는 파일을 연 상태에서 오류가 발생했을 때 자원 누수가 발생한다.
+안전하지 않은 코드의 예 C
+1: void ImproperResourceRelease(char* filename) { 
+2:
+char buf[BUF_SIZE]; 
+3:
+FILE *f = fopen(filename, “r”);

@@ -1,0 +1,320 @@
+{
+ "lines": [
+  {
+   "text": "491",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "아래 코드는 새로운 배열을 새로 생성하고 for문을 이용하여 복사하였으나, 배열의 원소가 일반객체이기 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.2021179199219,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "때문에 원본(userRoles)의 주소값만 복사되어 취약하다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    287.83258056640625,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    167.29122924804688,
+    291.27935791015625,
+    178.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private UserRole[] userRoles; ",
+   "bbox": [
+    78.66000366210938,
+    192.21823120117188,
+    212.73008728027344,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: … ",
+   "bbox": [
+    78.66000366210938,
+    206.61825561523438,
+    101.31708526611328,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public void setUserRoles(UserRole[] userRoles) { ",
+   "bbox": [
+    78.66000366210938,
+    221.01828002929688,
+    292.8919982910156,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    235.41827392578125,
+    86.42539978027344,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "this.userRoles = new UserRole[userRoles.length]; ",
+   "bbox": [
+    95.21954345703125,
+    235.41827392578125,
+    300.62481689453125,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    249.81826782226562,
+    86.42539978027344,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for(int i =0; i < userRoles.length; i++) { ",
+   "bbox": [
+    95.21954345703125,
+    249.81826782226562,
+    260.16265869140625,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    264.21826171875,
+    86.39984130859375,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "this.userRoles[i] = userRoles[i]; // 일반 객체일 경우 주소값만 복사된다.",
+   "bbox": [
+    99.57430267333984,
+    264.21826171875,
+    379.23358154296875,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    278.6182556152344,
+    86.42540740966797,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    95.21955108642578,
+    278.6182556152344,
+    97.9522933959961,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    78.66000366210938,
+    293.01824951171875,
+    93.5728530883789,
+    302.9182434082031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    345.455078125,
+    126.4169921875,
+    357.5330810546875
+   ],
+   "block": 35,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-496 Public Data Assigned to Private Array-Typed Field, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    369.131103515625,
+    405.1689147949219,
+    380.1531066894531
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/496.html",
+   "bbox": [
+    102.23980712890625,
+    385.1510925292969,
+    308.7279968261719,
+    396.173095703125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+   ],
+   "text": "1: private UserRole[] userRoles; \n2: … \n3: public void setUserRoles(UserRole[] userRoles) { \n4:    this.userRoles = new UserRole[userRoles.length]; \n5:    for(int i =0; i < userRoles.length; i++) { \n6:      this.userRoles[i] = userRoles[i]; // 일반 객체일 경우 주소값만 복사된다.\n7:    }\n8: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    191.0182312011719,
+    379.23358154296875,
+    304.1182434082031
+   ]
+  }
+ ],
+ "native": "491\n제4장구현단계 보안약점 진단\n아래 코드는 새로운 배열을 새로 생성하고 for문을 이용하여 복사하였으나, 배열의 원소가 일반객체이기 \n때문에 원본(userRoles)의 주소값만 복사되어 취약하다.\n정탐코드의 예\n1: private UserRole[] userRoles; \n2: … \n3: public void setUserRoles(UserRole[] userRoles) { \n4:\nthis.userRoles = new UserRole[userRoles.length]; \n5:\nfor(int i =0; i < userRoles.length; i++) { \n6:\nthis.userRoles[i] = userRoles[i]; // 일반 객체일 경우 주소값만 복사된다.\n7:\n}\n8: }\n마. 참고자료\n[1] CWE-496 Public Data Assigned to Private Array-Typed Field, MITRE,\nhttp://cwe.mitre.org/data/definitions/496.html\n",
+ "native_sha256": "2a6004c4da9adad75617a70757c8f3ffa9f352664739e58b0cd3d14c14b93cb9",
+ "chars": 510,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

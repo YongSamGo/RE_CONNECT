@@ -1,0 +1,60 @@
+438
+다른 유형으로 자주 발생하는 경우는 database의 Connection, Statement 등의 자원을 사용한 
+후에 해제하는 과정에서 해당 자원이 널(Null) 인지 확인하지 않는 경우이다.
+다음의 예제에서는 4번째 라인에서 Statement를 널(Null)로 초기화하고 있고 85번째 라인에서 
+예외가 발생하면 10번 라인의 Statement의 값을 대입하지 못하고 20번의 finally 문으로 분기한 후 
+25번 라인이 실행되면서 널(Null) 값을 참조하게 된다.
+정탐코드의 예
+1: private static void makeList() {
+2:
+Connection con = null; 
+3:
+StringBuffer sql = new StringBuffer(); 
+4:
+PreparedStatement statement = null; 
+5:
+ResultSet rs = null; 
+6:
+list.clear(); 
+7:
+try { 
+8:
+con = GenericDAO.getDataSource().getConnection();
+9:
+……..
+10:
+statement = con.prepareStatement(sql.toString());
+11:
+rs = statement.executeQuery();
+12:
+while (rs.next()) {
+13:
+String authGrp = rs.getString(“AUTHORITY_GROUP”);
+14:
+…….
+15:
+}
+16:
+} catch (Exception e) {
+17:
+if (verbose) {
+18:
+………..
+19:
+}
+20:
+} finally {
+21:
+try {
+22:
+rs.close();
+23:
+} catch (Exception e1) {}
+24:
+try {
+25:
+statement.close();
+26:
+} catch (Exception e1) {}
+27:
+if (con != null) {

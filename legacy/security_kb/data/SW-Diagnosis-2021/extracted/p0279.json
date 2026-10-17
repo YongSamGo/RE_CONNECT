@@ -1,0 +1,859 @@
+{
+ "lines": [
+  {
+   "text": "279",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음 예제에서는 openConnection에 사용하는 URL을 properties에서 참조하고 있다. properties는 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.13385009765625,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다른 공격 등으로 위변조 될 수 있으므로 취약하다고 판정한다.",
+   "bbox": [
+    70.86001586914062,
+    130.81100463867188,
+    309.5244140625,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    161.29122924804688,
+    290.500244140625,
+    172.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:public class ConnectProperties {",
+   "bbox": [
+    77.94000244140625,
+    186.21823120117188,
+    218.0248565673828,
+    196.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94000244140625,
+    199.77853393554688,
+    85.70540618896484,
+    209.67852783203125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileReader newFile = new FileReader(“File.properties”);",
+   "bbox": [
+    107.63963317871094,
+    199.77853393554688,
+    333.85162353515625,
+    209.67852783203125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    213.27853393554688,
+    85.70540618896484,
+    223.17852783203125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Properties properties = new Properties();",
+   "bbox": [
+    107.63963317871094,
+    213.27853393554688,
+    276.3953857421875,
+    223.17852783203125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    226.77853393554688,
+    85.69834899902344,
+    236.67852783203125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "properties.load(newFile);",
+   "bbox": [
+    107.63258361816406,
+    226.77853393554688,
+    205.59173583984375,
+    236.67852783203125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    240.33883666992188,
+    85.70540618896484,
+    250.23883056640625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    253.83883666992188,
+    85.70540618896484,
+    263.73883056640625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void doGet(HttpServletRequestreq, HttpServletResponseresp) throws IOException{",
+   "bbox": [
+    107.63963317871094,
+    253.83883666992188,
+    444.4504089355469,
+    263.73883056640625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.94000244140625,
+    267.3388366699219,
+    85.70539855957031,
+    277.23883056640625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "URL url = new URL(properties.getProperty(\"connectUrl\"));",
+   "bbox": [
+    142.85940551757812,
+    267.3388366699219,
+    377.64447021484375,
+    277.23883056640625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.93998718261719,
+    280.8991394042969,
+    85.70539093017578,
+    290.79913330078125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpURLConnection conn = (HttpURLConnection) url.openConnection();",
+   "bbox": [
+    142.85939025878906,
+    280.8991394042969,
+    433.2847595214844,
+    290.79913330078125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.93997192382812,
+    294.3991394042969,
+    85.70537567138672,
+    304.29913330078125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    107.63960266113281,
+    294.3991394042969,
+    110.37234497070312,
+    304.29913330078125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:}",
+   "bbox": [
+    77.93997192382812,
+    307.8991394042969,
+    93.33235931396484,
+    317.79913330078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음 예제에서는 inURL 값이 추가적인 검증 없이 3번의 URL(url).openStream()에 전달된다. 이 때, ",
+   "bbox": [
+    70.86000061035156,
+    340.33111572265625,
+    459.1328430175781,
+    351.3531188964844
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공격자가 inURL 입력 값을 악의적으로 조작하여 피해를 끼칠 수 있으므로 취약하다고 판정한다.",
+   "bbox": [
+    70.8599853515625,
+    357.3110046386719,
+    438.3633728027344,
+    368.3330078125
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    387.7911071777344,
+    291.27935791015625,
+    398.8131103515625
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:private String getRemoteContent(String url) throws IOException { ",
+   "bbox": [
+    78.66000366210938,
+    412.7181091308594,
+    357.45623779296875,
+    422.61810302734375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    426.2784118652344,
+    86.42539978027344,
+    436.17840576171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "BufferedReader in = new BufferedReader(new InputStreamReader(",
+   "bbox": [
+    108.41957092285156,
+    426.2784118652344,
+    383.6189880371094,
+    436.17840576171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    439.7784118652344,
+    86.42540740966797,
+    449.67840576171875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "new URL(url).openStream()));",
+   "bbox": [
+    108.4195785522461,
+    439.7784118652344,
+    226.50404357910156,
+    449.67840576171875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    453.2784118652344,
+    86.42540740966797,
+    463.17840576171875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return FileCopyUtils.copyToString(in);",
+   "bbox": [
+    108.4195785522461,
+    453.2784118652344,
+    257.7216491699219,
+    463.17840576171875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:}",
+   "bbox": [
+    78.66000366210938,
+    466.8387145996094,
+    89.13257598876953,
+    476.73870849609375
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    480.3387145996094,
+    86.42540740966797,
+    490.23870849609375
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:public String getContent(String inUrl) throws IOException { ",
+   "bbox": [
+    78.66000366210938,
+    493.8387145996094,
+    330.9336242675781,
+    503.73870849609375
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    507.3990173339844,
+    86.41217803955078,
+    517.2990112304688
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    108.40635681152344,
+    507.3990173339844,
+    125.98494720458984,
+    517.2990112304688
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    520.8989868164062,
+    86.42540740966797,
+    530.7990112304688
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String str = getRemoteContent(inUrl);",
+   "bbox": [
+    143.63934326171875,
+    520.8989868164062,
+    297.7458190917969,
+    530.7990112304688
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    534.3989868164062,
+    91.4051742553711,
+    544.2990112304688
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "str = str.replace(\"<head>\", \"<head><base href='\" + inUrl ",
+   "bbox": [
+    144.1797332763672,
+    534.3989868164062,
+    368.89581298828125,
+    544.2990112304688
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    78.66000366210938,
+    547.9592895507812,
+    91.3416976928711,
+    557.8593139648438
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ \"' /><base target='_blank' /><script>top.studio.startPageIFrameLoaded();“",
+   "bbox": [
+    144.11624145507812,
+    547.9592895507812,
+    443.0545654296875,
+    557.8593139648438
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    561.4592895507812,
+    91.3681411743164,
+    571.3593139648438
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ \"</script>\"); ",
+   "bbox": [
+    144.1427001953125,
+    561.4592895507812,
+    200.62586975097656,
+    571.3593139648438
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    574.9592895507812,
+    91.40515899658203,
+    584.8593139648438
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return str; ",
+   "bbox": [
+    144.17971801757812,
+    574.9592895507812,
+    188.07542419433594,
+    584.8593139648438
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    588.5195922851562,
+    91.4051742553711,
+    598.4196166992188
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (Exception e) { ",
+   "bbox": [
+    144.17971801757812,
+    588.5195922851562,
+    240.2779541015625,
+    598.4196166992188
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    78.66000366210938,
+    602.0195922851562,
+    91.4051742553711,
+    611.9196166992188
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return \"\";",
+   "bbox": [
+    179.39950561523438,
+    602.0195922851562,
+    215.90277099609375,
+    611.9196166992188
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    78.66000366210938,
+    615.5195922851562,
+    91.4051742553711,
+    625.4196166992188
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    144.17971801757812,
+    615.5195922851562,
+    146.91246032714844,
+    625.4196166992188
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    78.66000366210938,
+    629.0798950195312,
+    91.4051742553711,
+    638.9799194335938
+   ],
+   "block": 56,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    108.95907592773438,
+    629.0798950195312,
+    111.69181823730469,
+    638.9799194335938
+   ],
+   "block": 56,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1:public class ConnectProperties {\n2:         FileReader newFile = new FileReader(“File.properties”);\n3:         Properties properties = new Properties();\n4:         properties.load(newFile);\n5:\n6:         protected void doGet(HttpServletRequestreq, HttpServletResponseresp) throws IOException{\n7:                         URL url = new URL(properties.getProperty(\"connectUrl\"));\n8:                         HttpURLConnection conn = (HttpURLConnection) url.openConnection();\n9:         }\n10:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.93997192382812,
+    185.0182312011719,
+    444.4504089355469,
+    318.99913330078124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54
+   ],
+   "text": "1:private String getRemoteContent(String url) throws IOException { \n2:         BufferedReader in = new BufferedReader(new InputStreamReader(\n3:         new URL(url).openStream()));\n4:         return FileCopyUtils.copyToString(in);\n5:}\n6:\n7:public String getContent(String inUrl) throws IOException { \n8:         try {\n9:                         String str = getRemoteContent(inUrl);\n10:                       str = str.replace(\"<head>\", \"<head><base href='\" + inUrl \n11:                       + \"' /><base target='_blank' /><script>top.studio.startPageIFrameLoaded();“\n12:                       + \"</script>\"); \n13:                       return str; \n14:                       } catch (Exception e) { \n15:                                      return \"\";\n16:                       }\n17:        }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    411.5181091308594,
+    443.0545654296875,
+    640.1799194335938
+   ]
+  }
+ ],
+ "native": "279\n제4장구현단계 보안약점 진단\n다음 예제에서는 openConnection에 사용하는 URL을 properties에서 참조하고 있다. properties는 \n다른 공격 등으로 위변조 될 수 있으므로 취약하다고 판정한다.\n정탐코드의 예\n1:public class ConnectProperties {\n2:\nFileReader newFile = new FileReader(“File.properties”);\n3:\nProperties properties = new Properties();\n4:\nproperties.load(newFile);\n5:\n6:\nprotected void doGet(HttpServletRequestreq, HttpServletResponseresp) throws IOException{\n7:\nURL url = new URL(properties.getProperty(\"connectUrl\"));\n8:\nHttpURLConnection conn = (HttpURLConnection) url.openConnection();\n9:\n}\n10:}\n다음 예제에서는 inURL 값이 추가적인 검증 없이 3번의 URL(url).openStream()에 전달된다. 이 때, \n공격자가 inURL 입력 값을 악의적으로 조작하여 피해를 끼칠 수 있으므로 취약하다고 판정한다.\n정탐코드의 예\n1:private String getRemoteContent(String url) throws IOException { \n2:\nBufferedReader in = new BufferedReader(new InputStreamReader(\n3:\nnew URL(url).openStream()));\n4:\nreturn FileCopyUtils.copyToString(in);\n5:}\n6:\n7:public String getContent(String inUrl) throws IOException { \n8:\ntry {\n9:\nString str = getRemoteContent(inUrl);\n10:\nstr = str.replace(\"<head>\", \"<head><base href='\" + inUrl \n11:\n+ \"' /><base target='_blank' /><script>top.studio.startPageIFrameLoaded();“\n12:\n+ \"</script>\"); \n13:\nreturn str; \n14:\n} catch (Exception e) { \n15:\nreturn \"\";\n16:\n}\n17:\n}\n",
+ "native_sha256": "e9de38f4ebd4bc751c7d1bb51a5eb0a278aae9669ae96165e8efb5afe0885cb7",
+ "chars": 1229,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

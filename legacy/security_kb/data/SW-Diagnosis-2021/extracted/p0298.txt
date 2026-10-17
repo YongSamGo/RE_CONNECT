@@ -1,0 +1,36 @@
+298
+안전하지 않은 코드의 예 JAVA
+7:
+price = request.getParameter("price");
+8:
+quantity = request.getParameter("quantity"); 
+9:
+total = Integer.parseInt(quantity) * Float.parseFloat(price); 
+10:} catch (Exception e) { 
+11:......
+사용자 권한, 인증 여부 등 보안결정에 사용하는 값은 사용자 입력값을 사용하지 않고 서버 내부의 값을 
+활용한다. 또한 사용자 입력에 의존해야 하는 값을 제외하고는 반드시 서버가 보유하고 있는 정보를 
+이용하여 처리한다.
+안전한 코드의 예 JAVA
+1: <input type="hidden" name="price" value="1000"/>
+2: <br/>품목 : HDTV 
+3: <br/>수량 : <input type="hidden" name="quantity" />개 
+4: <br/><input type="submit" value="구입" /> 
+5: ......
+6: try { 
+7:
+item = request.getParameter(“item”);
+// 가격이 아니라 item 항목을 가져와서 서버가 보유하고 있는 가격 정보를
+// 이용하여 전체 가격을 계산
+8:
+price = productService.getPrice(item);
+9:
+quantity = request.getParameter("quantity");
+10:
+total = Integer.parseInt(quantity) * price;
+11:} catch (Exception e) { 
+12:
+......
+13:}
+14:
+......

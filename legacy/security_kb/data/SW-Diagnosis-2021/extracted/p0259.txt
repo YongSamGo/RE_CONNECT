@@ -1,0 +1,33 @@
+259
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C#
+11:XPathNavigator nav = docNav.CreateNavigator(); 
+//외부 입력값을 검증 없이 사용하고 있습니다.
+12:nav.Evaluate(query);
+다음의 예제는 XPathExpression을 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 
+구조가 바뀌는 것을 막을 수 있다.
+안전한 코드의 예 C#
+1:string xpath = "/accounts/account[@acctID=$acctID]/email/text()";
+2:XPathExpression expr = DynamicContext.Compile(xpath);
+3:DynamicContext ctx = new DynamicContext();
+4:ctx.AddVariable("acctID", AccountIDTextBox.Text);
+5:expr.SetContext(ctx);
+6:XPathNodeIterator data = nav.Select(expr);
+라. 진단방법
+ㆍXQuery 삽입
+XQuery가 실행되는 부분을 확인하고(①), XQuery 쿼리스트링에 사용되는 변수가 외부 입력값 
+여부를 확인한 후(②), 변수에 대한 필터링 모듈이 존재하는지 확인한다. 필터링 모듈이 존재하거나 
+관련 프레임워크에서 적절히 조치할 경우 안전한 것으로 판정한다.
+일반적인 진단의 예
+1:
+…
+2:
+// 외부로부터 입력을 받음
+3:
+String name = props.getProperty(“name”); ········································································②
+4:
+Hashtable env = new Hashtable(); 
+5:
+env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);
+6:
+env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”);

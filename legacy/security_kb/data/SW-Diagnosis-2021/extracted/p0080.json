@@ -1,0 +1,498 @@
+{
+ "lines": [
+  {
+   "text": "80",
+   "bbox": [
+    62.7599983215332,
+    696.9080810546875,
+    72.35669708251953,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "2. 오픈 리다이렉트 취약점을 점검하는 테스트 계획이 수립되어 있는가?",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    353.0162353515625,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "진단방법",
+   "bbox": [
+    191.82000732421875,
+    135.09823608398438,
+    221.8272705078125,
+    144.99822998046875
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "관련산출물 검토예시",
+   "bbox": [
+    363.3599853515625,
+    135.09823608398438,
+    433.0282897949219,
+    144.99822998046875
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "1-1 외부입력값을 조작하여 의도된 페이지로 리다이렉트 되는지를 점검할 ",
+   "bbox": [
+    82.32028198242188,
+    152.55825805664062,
+    333.8825378417969,
+    162.458251953125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "수 있는 테스트계획이 수립되어 있는지 확인 ",
+   "bbox": [
+    100.92056274414062,
+    165.63796997070312,
+    246.94337463378906,
+    175.5379638671875
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "테스트 입력값 예 : 임의의 URL주소",
+   "bbox": [
+    100.92056274414062,
+    178.65829467773438,
+    219.55245971679688,
+    188.55828857421875
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "단위테스트케이스 검토",
+   "bbox": [
+    343.02044677734375,
+    165.63796997070312,
+    418.63018798828125,
+    175.5379638671875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등",
+   "bbox": [
+    76.5,
+    239.89111328125,
+    400.5531921386719,
+    250.91311645507812
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    76.5,
+    286.89508056640625,
+    226.03147888183594,
+    298.97308349609375
+   ],
+   "block": 20,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    164.63999938964844,
+    311.25811767578125,
+    179.7670440673828,
+    321.1581115722656
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    339.8399963378906,
+    311.25811767578125,
+    387.18792724609375,
+    321.1581115722656
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    131.22064208984375,
+    331.5981140136719,
+    213.189697265625,
+    341.49810791015625
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "HTTP 응답분할",
+   "bbox": [
+    337.38055419921875,
+    331.5981140136719,
+    389.6482238769531,
+    341.49810791015625
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    131.2206573486328,
+    351.8778076171875,
+    213.18971252441406,
+    361.7778015136719
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "신뢰되지 않은 URL주소로 자동접속 연결",
+   "bbox": [
+    295.800537109375,
+    351.8778076171875,
+    431.2326965332031,
+    361.7778015136719
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    402.5751037597656,
+    132.05699157714844,
+    414.6531066894531
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-113 Failure to Sanitize CRLF Sequences in HTTP Headers(‘Http Response ",
+   "bbox": [
+    91.5,
+    426.2511901855469,
+    464.83245849609375,
+    437.273193359375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Splitting’), MITRE, http://cwe.mitre.org/data/definitions/113.html ",
+   "bbox": [
+    105.23944091796875,
+    442.27117919921875,
+    396.67376708984375,
+    453.2931823730469
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②Unvalidated Redirects and Forwords Cheat Sheet, OWASP,",
+   "bbox": [
+    91.50003051757812,
+    463.2710876464844,
+    363.4683532714844,
+    474.2930908203125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet ",
+   "bbox": [
+    105.24044036865234,
+    479.29107666015625,
+    455.3497619628906,
+    490.3130798339844
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③WASC Threat Classsification v2.0 HTTP Response Splitting, WASC,",
+   "bbox": [
+    91.50103759765625,
+    500.2909851074219,
+    399.1724853515625,
+    511.31298828125
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246931/HTTP%20Response%20Splitting",
+   "bbox": [
+    105.241455078125,
+    516.2507934570312,
+    453.3308410644531,
+    527.2728271484375
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④WASC Threat Classification v2.0 URL Redirector Abuse, WASC,",
+   "bbox": [
+    91.50106811523438,
+    537.250732421875,
+    383.0106201171875,
+    548.2727661132812
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse",
+   "bbox": [
+    105.2414779663086,
+    553.2706909179688,
+    460.3022766113281,
+    564.292724609375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Google blog article on the dangers of open redirects, Jason Morrison,",
+   "bbox": [
+    91.5020751953125,
+    574.2706298828125,
+    407.3321533203125,
+    585.2926635742188
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://googlewebmastercentral.blog-spot.com/2009/01/open-redirect-urls-is ",
+   "bbox": [
+    105.24249267578125,
+    590.2905883789062,
+    464.1837463378906,
+    601.3126220703125
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "your-site-being.html",
+   "bbox": [
+    105.24249267578125,
+    606.2504272460938,
+    198.1693572998047,
+    617.2724609375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Preventing Open Redirection Attacks (C#), Hon Calloway,",
+   "bbox": [
+    91.50208282470703,
+    627.2503662109375,
+    355.52972412109375,
+    638.2723999023438
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.asp.net/mvc/overview/security/pre-venting-open-redirection-attacks",
+   "bbox": [
+    105.24249267578125,
+    643.2703247070312,
+    453.0944519042969,
+    654.2923583984375
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "bbox": [
+    76.31999969482422,
+    130.80798848470053,
+    459.3600158691406,
+    191.88800048828125
+   ],
+   "cells": [
+    [
+     "진단방법",
+     "관련산출물 검토예시"
+    ],
+    [
+     "1-1 외부입력값을 조작하여 의도된 페이지로 리다이렉트 되는지를 점검할\n수 있는 테스트계획이 수립되어 있는지 확인\n테스트 입력값 예 : 임의의 URL주소",
+     "단위테스트케이스 검토"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "진단방법\n관련산출물 검토예시\n1-1 외부입력값을 조작하여 의도된 페이지로 리다이렉트 되는지를 점검할 \n수 있는 테스트계획이 수립되어 있는지 확인 \n테스트 입력값 예 : 임의의 URL주소\n단위테스트케이스 검토"
+  },
+  {
+   "kind": "table",
+   "indices": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "bbox": [
+    76.31999969482422,
+    305.5880126953125,
+    459.3600158691406,
+    366.5480041503906
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "HTTP 응답분할"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "신뢰되지 않은 URL주소로 자동접속 연결"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n입력데이터 검증 및 표현\nHTTP 응답분할\n입력데이터 검증 및 표현\n신뢰되지 않은 URL주소로 자동접속 연결"
+  }
+ ],
+ "native": "80\n2. 오픈 리다이렉트 취약점을 점검하는 테스트 계획이 수립되어 있는가?\n진단방법\n관련산출물 검토예시\n1-1 외부입력값을 조작하여 의도된 페이지로 리다이렉트 되는지를 점검할 \n수 있는 테스트계획이 수립되어 있는지 확인 \n테스트 입력값 예 : 임의의 URL주소\n단위테스트케이스 검토\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n입력데이터 검증 및 표현\nHTTP 응답분할\n입력데이터 검증 및 표현\n신뢰되지 않은 URL주소로 자동접속 연결\n마. 참고자료\n①CWE-113 Failure to Sanitize CRLF Sequences in HTTP Headers(‘Http Response \nSplitting’), MITRE, http://cwe.mitre.org/data/definitions/113.html \n②Unvalidated Redirects and Forwords Cheat Sheet, OWASP,\nwww.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet \n③WASC Threat Classsification v2.0 HTTP Response Splitting, WASC,\nhttp://projects.webappsec.org/w/page/13246931/HTTP%20Response%20Splitting\n④WASC Threat Classification v2.0 URL Redirector Abuse, WASC,\nhttp://projects.webappsec.org/w/page/13246981/URL%20Redirector%20Abuse\n⑤Google blog article on the dangers of open redirects, Jason Morrison,\nhttp://googlewebmastercentral.blog-spot.com/2009/01/open-redirect-urls-is \nyour-site-being.html\n⑥Preventing Open Redirection Attacks (C#), Hon Calloway,\nhttp://www.asp.net/mvc/overview/security/pre-venting-open-redirection-attacks\n",
+ "native_sha256": "7fcea1b2cfd28743d5807d73b28d13630d3953fb76add33dcdccabdc48c6c8fd",
+ "chars": 1149,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

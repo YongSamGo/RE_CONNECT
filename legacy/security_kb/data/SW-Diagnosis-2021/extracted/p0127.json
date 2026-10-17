@@ -1,0 +1,324 @@
+{
+ "lines": [
+  {
+   "text": "127",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐521 Weak Password Requirements, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.5200958251953,
+    315.38037109375,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/521.html",
+   "bbox": [
+    99.59996032714844,
+    153.55117797851562,
+    306.03546142578125,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10‐A2 Broken Authentication and Session Management, OWASP,",
+   "bbox": [
+    85.85955047607422,
+    174.5399932861328,
+    452.2288818359375,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/ index.php/Top_10_2013",
+   "bbox": [
+    99.60026550292969,
+    190.51095581054688,
+    318.1110534667969,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③2016 OWASP Application Security Verification Standard, OWASP, Authentication ",
+   "bbox": [
+    85.85985565185547,
+    211.51089477539062,
+    459.18157958984375,
+    222.53289794921875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Verification Requirements,",
+   "bbox": [
+    99.59930419921875,
+    228.5509033203125,
+    215.4150848388672,
+    239.57290649414062
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    99.59930419921875,
+    245.53079223632812,
+    456.034912109375,
+    256.55279541015625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project",
+   "bbox": [
+    99.59930419921875,
+    262.51068115234375,
+    199.3586883544922,
+    273.5326843261719
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④WASC Threat Classification Abuse of Functionality, WASC,",
+   "bbox": [
+    85.85889434814453,
+    284.5306396484375,
+    355.8788146972656,
+    295.5526428222656
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246913/Abuse%20of%20Functionality",
+   "bbox": [
+    99.59930419921875,
+    300.5506286621094,
+    454.78411865234375,
+    311.5726318359375
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤WASC Threat Classification Insufficient Password Recovery, WASC,",
+   "bbox": [
+    85.85983276367188,
+    321.550537109375,
+    395.69091796875,
+    332.5725402832031
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246942/Insufficient%20Password%20",
+   "bbox": [
+    99.60025024414062,
+    337.5104064941406,
+    456.3408203125,
+    348.53240966796875
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Recovery",
+   "bbox": [
+    99.60025024414062,
+    353.5303955078125,
+    139.98306274414062,
+    364.5523986816406
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥암호이용 안내서, 한국인터넷진흥원,",
+   "bbox": [
+    85.8598403930664,
+    374.5303039550781,
+    238.91375732421875,
+    385.55230712890625
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.kisa.or.kr/jsp/common/downloadAction.jsp?bno=259&dno=31&fseq=1",
+   "bbox": [
+    99.60025024414062,
+    390.55029296875,
+    454.4431457519531,
+    401.5722961425781
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦Forgot Password Cheat Sheet, OWASP,",
+   "bbox": [
+    85.86083984375,
+    411.5502014160156,
+    273.269287109375,
+    422.57220458984375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet",
+   "bbox": [
+    99.60124969482422,
+    427.51007080078125,
+    388.1479187011719,
+    438.5320739746094
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧Password Storage Cheat Sheet, OWASP,",
+   "bbox": [
+    85.86083984375,
+    448.5099792480469,
+    279.1109313964844,
+    459.531982421875
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Password_Storage_Cheat_Sheet",
+   "bbox": [
+    99.60124969482422,
+    464.52996826171875,
+    393.9856872558594,
+    475.5519714355469
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "127\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①CWE‐521 Weak Password Requirements, MITRE,\nhttp://cwe.mitre.org/data/definitions/521.html\n②2013 OWASP Top 10‐A2 Broken Authentication and Session Management, OWASP,\nhttps://www.owasp.org/ index.php/Top_10_2013\n③2016 OWASP Application Security Verification Standard, OWASP, Authentication \nVerification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project\n④WASC Threat Classification Abuse of Functionality, WASC,\nhttp://projects.webappsec.org/w/page/13246913/Abuse%20of%20Functionality\n⑤WASC Threat Classification Insufficient Password Recovery, WASC,\nhttp://projects.webappsec.org/w/page/13246942/Insufficient%20Password%20\nRecovery\n⑥암호이용 안내서, 한국인터넷진흥원,\nhttp://www.kisa.or.kr/jsp/common/downloadAction.jsp?bno=259&dno=31&fseq=1\n⑦Forgot Password Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet\n⑧Password Storage Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Password_Storage_Cheat_Sheet\n",
+ "native_sha256": "40a06818f4af592cd8c011dc637c49d36eb9189873e8bf026fea280f4b28931c",
+ "chars": 1015,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

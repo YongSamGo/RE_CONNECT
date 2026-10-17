@@ -1,0 +1,32 @@
+214
+안전한 코드의 예 C#
+4: var sanitizedStr = Sanitizer.GetSafeHtmlFragment(str);
+5: Request.Write(sanitizedStr);
+아래 C 코드 예제는 외부 입력값으로 사용자로부터 받은 입력값을 검증 없이 바로 cgi에 출력하는 
+화면이다.
+안전하지 않은 코드의 예 C
+1: int XSS(int argc, char* argv[]) { 
+2:
+unsigned int i = 0; 
+3:
+char data[1024]; 
+4:
+…
+5:
+// cgiFromString으로 받아온 사용자 입력값이 검증 없이 화면에 출력됩니다.
+6:   cgiFromString(“user input”, data, sizeof(data));
+7:   fprintf(cgiOut, “Print user input = %s<br/>”, data);
+8:
+fprintf(cgiOut, “</body></html>\n”);
+9:
+return 0;13:
+10: }
+cgi에 출력하기 전에 사용자 입력값을 검증하여야 한다.
+안전한 코드의 예 C
+1: cgiFromString(“user input”, data, sizeof(data)); 
+2: // data에 위험한 문자열을 검사하는 코드를 추가한다. 
+3: if(strchr(p, ‘<’)) return; 
+4: if(strchr(p, ‘>’)) return; 
+5: … 
+6: fprintf(cgiOut, “Print user input = %s<br/>”, data); 
+7: fprintf(cgiOut, “</body></html>\n”);

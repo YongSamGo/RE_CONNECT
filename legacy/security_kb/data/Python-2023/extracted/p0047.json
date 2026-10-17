@@ -1,0 +1,919 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "41",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "만약 sax 패키지를 사용해 XML을 파싱할 경우 외부 엔티티를 처리하는 방식의 옵션(feature_external_ges)을 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.9639892578125,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "False로 설정해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    111.89009094238281,
+    162.6597442626953,
+    121.83747863769531
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    249.10232543945312,
+    141.2528533935547,
+    319.9939270019531,
+    151.20022583007812
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.26972961425781,
+    162.41799926757812,
+    94.75447082519531,
+    170.92721557617188
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.26972961425781,
+    175.12188720703125,
+    94.75447082519531,
+    183.631103515625
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.26972961425781,
+    187.82577514648438,
+    94.75447082519531,
+    196.33499145507812
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.26972961425781,
+    200.5296630859375,
+    94.75447082519531,
+    209.03887939453125
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.26972961425781,
+    213.23355102539062,
+    94.75447082519531,
+    221.74276733398438
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.26972961425781,
+    226.05728149414062,
+    94.75447082519531,
+    234.56649780273438
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.26972961425781,
+    238.76116943359375,
+    94.75447082519531,
+    247.2703857421875
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.26972961425781,
+    251.46505737304688,
+    94.75447082519531,
+    259.9742736816406
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.26972961425781,
+    264.1689453125,
+    94.75447082519531,
+    272.67816162109375
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.47468566894531,
+    276.8728332519531,
+    94.754638671875,
+    285.3820495605469
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.47468566894531,
+    289.57672119140625,
+    94.754638671875,
+    298.0859375
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    82.47468566894531,
+    302.40045166015625,
+    94.754638671875,
+    310.90966796875
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    82.47468566894531,
+    315.1043395996094,
+    94.754638671875,
+    323.6135559082031
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    82.47468566894531,
+    327.8082275390625,
+    94.754638671875,
+    336.31744384765625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    82.47468566894531,
+    340.5121154785156,
+    94.754638671875,
+    349.0213317871094
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    82.47468566894531,
+    353.21600341796875,
+    94.754638671875,
+    361.7252197265625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    82.47468566894531,
+    365.9198913574219,
+    94.754638671875,
+    374.4291076660156
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    82.47468566894531,
+    378.7436218261719,
+    94.754638671875,
+    387.2528381347656
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    82.47468566894531,
+    391.447509765625,
+    94.754638671875,
+    399.95672607421875
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    82.47468566894531,
+    404.1513977050781,
+    94.754638671875,
+    412.6606140136719
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    82.47468566894531,
+    416.85528564453125,
+    94.754638671875,
+    425.364501953125
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    82.47468566894531,
+    429.5591735839844,
+    94.754638671875,
+    438.0683898925781
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.sax import make_parser",
+   "bbox": [
+    104.65174865722656,
+    161.9163055419922,
+    237.9794464111328,
+    170.92721557617188
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.sax.handler import feature_external_ges",
+   "bbox": [
+    104.65174865722656,
+    174.6201934814453,
+    299.6808776855469,
+    183.631103515625
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.dom.pulldom import parseString, START_ELEMENT",
+   "bbox": [
+    104.65174865722656,
+    187.32408142089844,
+    344.5715026855469,
+    196.33499145507812
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.65174865722656,
+    200.02796936035156,
+    248.04872131347656,
+    209.03887939453125
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from .model import comments",
+   "bbox": [
+    104.65174865722656,
+    213.23355102539062,
+    226.91561889648438,
+    221.74276733398438
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def get_xml(request):",
+   "bbox": [
+    104.65174865722656,
+    238.2594757080078,
+    188.61721801757812,
+    247.2703857421875
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    if request.method == “GET”:",
+   "bbox": [
+    104.65174865722656,
+    251.46505737304688,
+    235.60899353027344,
+    259.9742736816406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      data = comments.objects.all()",
+   "bbox": [
+    104.65174865722656,
+    264.1689453125,
+    246.58680725097656,
+    272.67816162109375
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      com = data[0].comment",
+   "bbox": [
+    104.65174865722656,
+    276.8728332519531,
+    225.2727813720703,
+    285.3820495605469
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return render(request, '/xml_view.html', {'com':com})",
+   "bbox": [
+    104.65174865722656,
+    289.0750427246094,
+    336.13348388671875,
+    298.0859375
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    elif request.method == “POST”:",
+   "bbox": [
+    104.65174865722656,
+    315.1043395996094,
+    247.83645629882812,
+    323.6135559082031
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      parser = make_parser()",
+   "bbox": [
+    104.65174865722656,
+    327.8082275390625,
+    221.53175354003906,
+    336.31744384765625
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      parser.setFeature(feature_external_ges, False)",
+   "bbox": [
+    104.65174865722656,
+    340.5121154785156,
+    309.1611633300781,
+    349.0213317871094
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      doc = parseString(request.body.decode(‘utf-8’), parser=parser)",
+   "bbox": [
+    104.65174865722656,
+    353.21600341796875,
+    375.932373046875,
+    361.7252197265625
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      for event, node in doc:",
+   "bbox": [
+    104.65174865722656,
+    365.9198913574219,
+    223.38096618652344,
+    374.4291076660156
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        if event == START_ELEMENT and node.tagName == “foo”:",
+   "bbox": [
+    104.65174865722656,
+    378.7436218261719,
+    374.3056945800781,
+    387.2528381347656
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "          doc.expandNode(node)",
+   "bbox": [
+    104.65174865722656,
+    391.447509765625,
+    235.1990966796875,
+    399.95672607421875
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "          text = node.toxml()",
+   "bbox": [
+    104.65174865722656,
+    404.1513977050781,
+    223.33078002929688,
+    412.6606140136719
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      comments.objects.filter(id=1).update(comment=text);",
+   "bbox": [
+    104.65174865722656,
+    416.85528564453125,
+    335.3429260253906,
+    425.364501953125
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return render(request, '/xml_view.html')",
+   "bbox": [
+    104.65174865722656,
+    429.0574951171875,
+    285.4259338378906,
+    438.0683898925781
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    470.4753112792969,
+    119.12395477294922,
+    481.02191162109375
+   ],
+   "block": 16,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-611: Improper Restriction of XML External Entity Reference, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    490.6576843261719,
+    384.142333984375,
+    499.64630126953125
+   ],
+   "block": 17,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/611.html",
+   "bbox": [
+    77.32001495361328,
+    505.5188293457031,
+    267.01031494140625,
+    514.5074462890625
+   ],
+   "block": 18,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② XML External Entity (XXE) Processing, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    522.8968505859375,
+    272.6582336425781,
+    531.8854370117188
+   ],
+   "block": 19,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_ Processing",
+   "bbox": [
+    77.32001495361328,
+    537.6381225585938,
+    442.2402038574219,
+    546.626708984375
+   ],
+   "block": 20,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ XML External Entity Prevention Cheat Sheet, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    555.01611328125,
+    300.4700927734375,
+    564.0046997070312
+   ],
+   "block": 21,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    569.7573852539062,
+    476.4286804199219,
+    578.7459716796875
+   ],
+   "block": 22,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ XML vulnerabilities, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    587.1353759765625,
+    277.3318786621094,
+    596.1239624023438
+   ],
+   "block": 23,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/xml.html#xml-vulnerabilities ",
+   "bbox": [
+    77.32001495361328,
+    601.9965209960938,
+    326.63018798828125,
+    610.985107421875
+   ],
+   "block": 24,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ lxml API, lxml library,",
+   "bbox": [
+    65.09266662597656,
+    619.254638671875,
+    165.3680419921875,
+    628.2432250976562
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://lxml.de/api/lxml.etree.XMLParser-class.html",
+   "bbox": [
+    77.32001495361328,
+    634.1157836914062,
+    285.59051513671875,
+    643.1043701171875
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑥ PyGoat, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    651.3739013671875,
+    146.78814697265625,
+    660.3624877929688
+   ],
+   "block": 27,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://github.com/adeyosemanputra/pygoat",
+   "bbox": [
+    77.32001495361328,
+    666.2350463867188,
+    256.24127197265625,
+    675.2236328125
+   ],
+   "block": 28,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "text": "1: from xml.sax import make_parser\n2: from xml.sax.handler import feature_external_ges\n3: from xml.dom.pulldom import parseString, START_ELEMENT\n4: from django.shortcuts import render\n5: from .model import comments\n6:\n7: def get_xml(request):\n8:     if request.method == “GET”:\n9:       data = comments.objects.all()\n10:       com = data[0].comment\n11:       return render(request, '/xml_view.html', {'com':com})\n12:\n13:     elif request.method == “POST”:\n14:       parser = make_parser()\n15:       parser.setFeature(feature_external_ges, False)\n16:       doc = parseString(request.body.decode(‘utf-8’), parser=parser)\n17:       for event, node in doc:\n18:         if event == START_ELEMENT and node.tagName == “foo”:\n19:           doc.expandNode(node)\n20:           text = node.toxml()\n21:       comments.objects.filter(id=1).update(comment=text);\n22:       return render(request, '/xml_view.html')",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.47468566894531,
+    151.30022583007812,
+    375.932373046875,
+    439.2683898925781
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n41\n만약 sax 패키지를 사용해 XML을 파싱할 경우 외부 엔티티를 처리하는 방식의 옵션(feature_external_ges)을 \nFalse로 설정해야 한다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\n17:\n18:\n19:\n20:\n21:\n22:\nfrom xml.sax import make_parser\nfrom xml.sax.handler import feature_external_ges\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom django.shortcuts import render\nfrom .model import comments\ndef get_xml(request):\n    if request.method == “GET”:\n      data = comments.objects.all()\n      com = data[0].comment\n      return render(request, '/xml_view.html', {'com':com})\n    elif request.method == “POST”:\n      parser = make_parser()\n      parser.setFeature(feature_external_ges, False)\n      doc = parseString(request.body.decode(‘utf-8’), parser=parser)\n      for event, node in doc:\n        if event == START_ELEMENT and node.tagName == “foo”:\n          doc.expandNode(node)\n          text = node.toxml()\n      comments.objects.filter(id=1).update(comment=text);\n      return render(request, '/xml_view.html')\n라. 참고자료\n① CWE-611: Improper Restriction of XML External Entity Reference, MITRE,\nhttps://cwe.mitre.org/data/definitions/611.html\n② XML External Entity (XXE) Processing, OWASP,\nhttps://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_ Processing\n③ XML External Entity Prevention Cheat Sheet, OWASP,\nhttps://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html\n④ XML vulnerabilities, Python Software Foundation,\nhttps://docs.python.org/3/library/xml.html#xml-vulnerabilities \n⑤ lxml API, lxml library,\nhttps://lxml.de/api/lxml.etree.XMLParser-class.html\n⑥ PyGoat, OWASP,\nhttps://github.com/adeyosemanputra/pygoat\n",
+ "native_sha256": "e9cb5a815d60e9dede1c04c8726da8ab9f1e9f8b334827b3c07db2f8db5eafe5",
+ "chars": 1702,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

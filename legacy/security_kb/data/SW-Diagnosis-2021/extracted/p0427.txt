@@ -1,0 +1,38 @@
+427
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+3: } catch (CustomException e) { 
+//예외 상황에 대해 적절한 조치를 수행하여야 한다.
+4:
+logger.Debug(“log message”);
+5: }
+라. 진단방법
+오류가 발생할 수 있는 부분에 대하여 예외처리를 수행했는지 확인하고 제어문으로 예외 처리하는 루틴
+이 비어있는지 확인한다.
+다음의 예제는 try 블록에서 발생하는 오류를 포착(catch)하고 있지만 그 오류에 대해서 아무 조치를 
+하고 있지 않다. 따라서 프로그램이 계속 실행되기 때문에 프로그램에서 어떤 일이 일어났는지 전혀 
+알 수 없게 된다.
+일반적인 진단의 예
+1: …
+2: private Connection conn; 
+3:
+4: public Connection DBConnect(String url, String id, String password) { 
+5:
+try { 
+6:
+String CONNECT_STRING = url + “:” + id + “:” + password; 
+7:
+InitialContext ctx = new InitialContext(); 
+8:
+DataSource datasource = (DataSource) ctx.lookup(CONNECT_STRING);
+9:
+conn = datasource.getConnection(); 
+10: } catch (SQLException e) { 
+11:
+// catch 블록이 비어있음 
+12: } catch (NamingException e) { 
+13:
+// catch 블록이 비어있음 
+14: } 
+15: return conn; 
+16:}

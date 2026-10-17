@@ -1,0 +1,38 @@
+356
+안전하지 않은 코드의 예 C
+14:
+}
+15: }
+암호화되어 저장된 암호를 외부에서 불러오고 이를 비교하는 코드가 작성되어야 한다.
+안전한 코드의 예 C
+1: extern char *salt; 
+2: typedef int SQLSMALLINT; 
+3: int dbaccess(char *user, char *passwd){ 
+4:
+char *server = "DBserver"; 
+5:
+char *cpasswd;
+// 외부에 있는 암호화된 비밀번호와 솔트를 불러옵니다.
+6:
+char* storedpasswd = getenv(“password”);
+7: char* salt = getenv(“salt”);
+8:
+SQLHENV henv; 
+9:
+SQLHDBC hdbc; 
+10: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
+11: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); 
+// 외부에서 불러온 솔트 값을 사용해 비빌번호를 암호화합니다.
+12: cpasswd = crypt(passwd, salt);
+// 암호화된 비밀번호와 외부에서 불러온 값을 비교합니다.
+13: if (strcmp(cpasswd, storedpasswd) != 0){
+14:
+printf("Incorrect password\n"); 
+15:
+SQLFreeHandle(SQL_HANDLE_DBC, &hdbc); 
+16:
+SQLFreeHandle(SQL_HANDLE_ENV, &henv); 
+17:
+return -1; 
+18: }
+19:}

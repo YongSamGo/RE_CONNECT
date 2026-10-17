@@ -1,0 +1,39 @@
+195
+제4장구현단계 보안약점 진단
+다음 예제는 외부 입력 값을 javascript의 new Function()으로 동적으로 코드를 실행할 수 있다.
+안전하지 않은 코드의 예 JSP
+1: <body>
+2: <%
+3:
+String name = request.getparameter("name");
+4: %>
+5: ...
+6:<script>
+7: // 외부 입력값인 name을 javascript new Function()을 이용하여 문자열을 함수로 실행하고 있다.
+8:
+(new Function(<%=name%>))();
+9: </script>
+10: </body>
+외부 입력 값에 실행이 가능한 코드가 포함되어 있을 경우 입력 값을 필터링 하여 사전에 검증하는 
+코드를 추가하면 코드삽입을 완화할 수 있다. 이런 조치를 취할 경우 입력 값의 형태에 따라 정규 
+표현식을 변형하여 적용해야 한다.
+안전한 코드의 예 JAVA
+1: @RequestMapping(value = "/execute", method = RequestMethod.GET)
+2: public String execute(@RequestParam("src") String src) throws ScriptException {
+3:
+// 정규식을 이용하여 특수문자 입력시 예외를 발생시킨다.
+4:
+if (src.matches("[\\w]*") == false) { 
+5:
+throw new IllegalArgumentException();
+6:
+}
+7:
+ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+8:
+ScriptEngine scriptEngine = scriptEngineManager.getEngineByName("javascript");
+9:
+String retValue = (String)scriptEngine.eval(src);
+10:
+return retValue;
+11: }

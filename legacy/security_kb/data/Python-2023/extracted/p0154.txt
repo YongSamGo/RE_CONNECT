@@ -1,0 +1,54 @@
+Python 시큐어코딩 가이드
+148
+나) Flask 예제
+다음은 Flask의 예제로, debug 모드가 True로 설정되어 정보 노출의 위험이 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from flask import Flask
+app = Flask(__name__)
+# 디버그 모드 설정 방법1
+app.debug = True
+@app.route('/')
+def hello_world():
+  return 'Hello World!'
+if __name__ == '__main__':
+  app.run()
+  # 디버그 모드 설정 방법2
+  app.run(debug=True)
+마찬가지로 개발이 끝난 소스코드를 배포 및 운영 시 반드시 debug 옵션을 False로 변경해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from flask import Flask
+app = Flask(__name__)
+app.debug = False
+@app.route('/')
+def hello_world():
+    return 'Hello World!'
+if __name__ == '__main__':
+    app.run()
+  app.run(debug=False)

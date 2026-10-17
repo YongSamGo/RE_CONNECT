@@ -1,0 +1,44 @@
+385
+제4장구현단계 보안약점 진단
+아래 예제에서는 쿠키의 만료시간을 해당 기능에 맞춰 최소로 설정하고 있어 안전하다.
+오탐코드의 예
+1: protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+2:
+…… 
+3:
+String username = request.getParameter(“username”); 
+4:
+char[] password = request.getParameter(“password”).toCharArray();
+5:
+boolean rememberMe = Boolean.valueOf(request.getParameter(“rememberme”));
+6:
+7:
+LoginService loginService = new LoginServiceImpl();
+8:
+if (rememberMe) { 
+9:
+Cookie loginCookie = new Cookie(“rememberme”, “YES”); 
+10:
+loginCookie.setMaxAge(60*60*24); 
+11:
+response.addCookie(loginCookie); 
+12:
+……
+13:
+} else { 
+14:
+……
+15:
+}
+16:
+Arrays.fill(password, ‘ ‘); 
+17:}
+마. 참고자료
+[1] CWE-539 Information Exposure Through Persistent Cookies, MITRE,
+http://cwe.mitre.org/data/definitions/539.html
+[2] Do not store unencrypted sensitive information on the client side, CERT,
+http://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s
+tore+unencrypted+sensitive+information+on+the+client+side
+[3] Expire and Max-Age Attributes, OWASP,
+https://www.owasp.org/index.php/Session_Management_Cheat_Sheet#Expire_
+and _Max-Age_Attributes

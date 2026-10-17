@@ -1,0 +1,35 @@
+473
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+13:
+}
+14:
+public bool IsReusable
+15:
+{
+16:
+get { return false; } 
+17:
+}
+18:
+}
+라. 진단방법
+HttpServlet의 하위클래스에 멤버필드가 선언되어 있고 final이 아닌 경우는 취약한 것으로 판단한다.
+일반적인 진단의 예
+1: public class U488 extends HttpServlet 
+2: {
+3: private String name; 
+4: protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+throws ServletException, IOException 
+5: {
+6: name = request.getParameter(“name”); 
+7: …
+8: out.println(name + “, thanks for visiting!”); 
+9: }
+10:}
+서블릿(JSP 포함)에서 상수로 사용하지 않는 멤버 변수를 사용하면 취약하다.
+정탐코드의 예
+1:
+<%@ page import=”javax.xml.namespace.*” %>
+2:
+<%@ page import=”maha.ns.web.fta.gaa.comm.util.*” %>

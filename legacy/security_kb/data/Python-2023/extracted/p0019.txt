@@ -1,0 +1,17 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+13
+라. 참고자료
+① CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'), MITRE, 
+https://cwe.mitre.org/data/definitions/89.html
+② SQL Injection Prevention Cheat Sheet, OWASP
+https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html
+③ Sqlite3 DB-API, Python, Python Software Foundation,
+https://docs.python.org/ko/3/library/sqlite3.html
+④ MySQL, Python Coding Examples, Oracle Corporation
+https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html
+⑤ Django QuerySet API reference, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/ref/models/querysets/
+⑥ Django Performing raw SQL queries, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/db/sql/
+⑦ SQL Expression Language Tutorial, SQLAlchemy,
+https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql

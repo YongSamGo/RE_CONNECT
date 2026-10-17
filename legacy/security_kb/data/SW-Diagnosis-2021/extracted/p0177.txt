@@ -1,0 +1,31 @@
+177
+제3장분석․ 설계단계 보안항목 진단
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+캡슐화
+잘못된 세션에 의한 데이터 정보 노출
+마. 참고자료
+①CWE‐488 Exposure of Data Element to Wrong Session, MITRE,
+http://cwe.mitre.org/data/definitions/488. html
+②2013 OWASP Top 10 – A6 Sensitive Data Exposure, OWASP,
+https://www.owasp.org/index.php/Top_10_2013
+③WASC Threat Classification Credential and Session Prediction, WASC, 
+http://projects.webappsec.org/w/page/13246918/Credential%20and%20Sessio
+n%20Prediction
+④2016 OWASP Application Security Verification Standard, OWASP, Session 
+Management Verification Re-quirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Stan- dard_Project
+⑤Session Management Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Session_Management_ Cheat_Sheet
+⑥“HTTP State Management Mechanism”, RFC 6265, IETF,
+http://tools.ietf.org/html/rfc6265
+⑦Unauthenticated Session Fixation Attacks, Christian Schneider,
+http://www.christian-schneider.net/UnauthenticatedSessionFixationAttacks.html#main
+⑧Session Fixation Attacks and Protections in Web Applications, Raul Siles, 
+http://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_
+Session-WP.pdf
+⑨Insufficient Session-ID Length, OWASP,
+http://www.owasp.org/index.php/Insufficient_Session-ID_Length

@@ -1,0 +1,487 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "112",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    78.60518646240234,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "짧은 길이의 패스워드로 강도 높은 해시값을 생성하기 위해서는 반드시 솔트 값을 함께 전달해야 한다.",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    500.1106872558594,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    138.61619567871094,
+    319.7541809082031,
+    148.56356811523438
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    159.78134155273438,
+    94.51471710205078,
+    168.29055786132812
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    175.12188720703125,
+    94.51471710205078,
+    183.631103515625
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    190.34259033203125,
+    94.51471710205078,
+    198.851806640625
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    205.68312072753906,
+    94.51471710205078,
+    214.1923370361328
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    220.90382385253906,
+    94.51471710205078,
+    229.4130401611328
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    236.24436950683594,
+    94.51471710205078,
+    244.7535858154297
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    251.46505737304688,
+    94.51471710205078,
+    259.9742736816406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    266.80560302734375,
+    94.51471710205078,
+    275.3148193359375
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    282.02630615234375,
+    94.51471710205078,
+    290.5355224609375
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    297.3668518066406,
+    94.51488494873047,
+    305.8760681152344
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import hashlib",
+   "bbox": [
+    104.41199493408203,
+    159.27964782714844,
+    160.022705078125,
+    168.29055786132812
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import secrets",
+   "bbox": [
+    104.41199493408203,
+    175.12188720703125,
+    161.46311950683594,
+    183.631103515625
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def get_hash_from_pwd(pw):",
+   "bbox": [
+    104.41199493408203,
+    205.18142700195312,
+    217.74708557128906,
+    214.1923370361328
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 솔트 값을 사용하면 길이가 짧은 패스워드로도 고강도의 해시를 생성할 수 있다.",
+   "bbox": [
+    104.41199493408203,
+    220.40213012695312,
+    403.5385437011719,
+    229.4130401611328
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 솔트 값은 사용자별로 유일하게 생성해야 하며, 패스워드와 함께 DB에 저장해야 한다",
+   "bbox": [
+    104.41199493408203,
+    236.24436950683594,
+    422.672607421875,
+    244.7535858154297
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  salt = secrets.token_hex(32)",
+   "bbox": [
+    104.41199493408203,
+    251.46505737304688,
+    224.40992736816406,
+    259.9742736816406
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  h = hashlib.sha256(salt.encode() + pw.encode())",
+   "bbox": [
+    104.41199493408203,
+    266.3039245605469,
+    303.1686706542969,
+    275.3148193359375
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return h.digest(), salt",
+   "bbox": [
+    104.41199493408203,
+    296.86517333984375,
+    196.14285278320312,
+    305.8760681152344
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    373.2785949707031,
+    119.12395477294922,
+    383.8251953125
+   ],
+   "block": 25,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-759: Use of a One-Way Hash without a Salt, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    395.13885498046875,
+    325.2832336425781,
+    404.1274719238281
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/759.html",
+   "bbox": [
+    77.32001495361328,
+    410.3595275878906,
+    267.01031494140625,
+    419.34814453125
+   ],
+   "block": 27,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Password Storage Cheat Sheet – Salting, OWASP, ",
+   "bbox": [
+    65.09266662597656,
+    430.2037353515625,
+    287.5537414550781,
+    439.7223205566406
+   ],
+   "block": 28,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#salting",
+   "bbox": [
+    77.32001495361328,
+    445.95440673828125,
+    452.9036865234375,
+    454.9430236816406
+   ],
+   "block": 29,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ hashlib – Secure hashes and message digests, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    465.798583984375,
+    392.654052734375,
+    475.3171691894531
+   ],
+   "block": 30,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/hashlib.html",
+   "bbox": [
+    77.32001495361328,
+    481.54925537109375,
+    259.3376770019531,
+    490.5378723144531
+   ],
+   "block": 31,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ secrets, Python Software Foundation, ",
+   "bbox": [
+    65.09266662597656,
+    501.92340087890625,
+    233.36831665039062,
+    510.9120178222656
+   ],
+   "block": 32,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/ko/3/library/secrets.html#module-secrets",
+   "bbox": [
+    77.32001495361328,
+    517.1441040039062,
+    342.35498046875,
+    526.1326904296875
+   ],
+   "block": 33,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: import hashlib\n2: import secrets\n3:\n4: def get_hash_from_pwd(pw):\n5:   # 솔트 값을 사용하면 길이가 짧은 패스워드로도 고강도의 해시를 생성할 수 있다.\n6:   # 솔트 값은 사용자별로 유일하게 생성해야 하며, 패스워드와 함께 DB에 저장해야 한다\n7:   salt = secrets.token_hex(32)\n8:   h = hashlib.sha256(salt.encode() + pw.encode())\n9:\n10:   return h.digest(), salt",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    148.66356811523437,
+    422.672607421875,
+    307.07606811523436
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n112\n짧은 길이의 패스워드로 강도 높은 해시값을 생성하기 위해서는 반드시 솔트 값을 함께 전달해야 한다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\nimport hashlib\nimport secrets\ndef get_hash_from_pwd(pw):\n  # 솔트 값을 사용하면 길이가 짧은 패스워드로도 고강도의 해시를 생성할 수 있다.\n  # 솔트 값은 사용자별로 유일하게 생성해야 하며, 패스워드와 함께 DB에 저장해야 한다\n  salt = secrets.token_hex(32)\n  h = hashlib.sha256(salt.encode() + pw.encode())\n  return h.digest(), salt\n라. 참고자료\n① CWE-759: Use of a One-Way Hash without a Salt, MITRE,\nhttps://cwe.mitre.org/data/definitions/759.html\n② Password Storage Cheat Sheet – Salting, OWASP, \nhttps://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#salting\n③ hashlib – Secure hashes and message digests, Python Software Foundation,\nhttps://docs.python.org/3/library/hashlib.html\n④ secrets, Python Software Foundation, \nhttps://docs.python.org/ko/3/library/secrets.html#module-secrets\n",
+ "native_sha256": "91cb37fd5216860578371435c67465609f6c939940db80826dda7672f835c504",
+ "chars": 859,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

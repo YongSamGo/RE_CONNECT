@@ -1,0 +1,41 @@
+501
+제4장구현단계 보안약점 진단
+라. 진단방법
+취약한 API의 리스트를 작성하고 검사하고자 하는 프로그램에서 해당 API를 사용하는지 확인한다. 
+해당 API를 사용하는 경우 프로그램에 예기치 않은 문제가 발생할 수 있으므로 취약한 것으로 판단한다. 
+만약 취약한 API를 대체할 수 있는 API가 없을 경우, 해당 API의 인자와 반환 값에 대한 검사가 이루어
+지는지 확인한다.
+다음 예제는 함수의 매개변수를 버퍼에 복사하는 코드이다. 예제에서 버퍼에 값을 복사하기 위해 
+사용한 strcpy() 함수는 보안에서 취약한 대표적인 API중 하나로, 만약 매개 변수의 길이가 지정된 
+버퍼의 크기보다 클 경우 예기치 못한 문제가 발생 할 수가 있다. 따라서 해당 코드는 보안약점이 
+존재한다고 진단할 수 있다.
+정탐코드의 예
+1: void manipulate_string(char * string) 
+2: { 
+3:
+char buf[24]; 
+4:
+strcpy(buf, string); 
+5:
+… 
+6: }
+아래 예제는 J2EE 프로그램에서 System.exit()를 사용하고 있다. System.exit() 메소드를 호출 하는 
+경우 웹 애플리케이션을 실행하고 있는 컨테이너를 종료할 수 있다.
+정탐코드의 예
+1: public class U382 extends HttpServlet { 
+2:
+public void doPost(HttpServletRequest request, HttpServletResponse response)
+3:
+throws ServletException, IOException { 
+4:
+try { 
+5:
+do_something(logger); 
+6:
+} catch (IOException ase) { 
+7:
+System.exit(1); /* J2EE 프로그램에서 System.exit()을 사용하고 있음 */
+8:
+}
+9:
+.......

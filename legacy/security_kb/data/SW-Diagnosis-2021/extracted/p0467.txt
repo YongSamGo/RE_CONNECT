@@ -1,0 +1,55 @@
+467
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+1:public class G02 extends HttpServlet { 
+2:
+protected void doPost(HttpServletRequest req, HttpServletResponse res) throws
+3:
+ServletException, IOException {
+4:
+ObjectInputStream ois = null;
+5:
+ImageInformation retImgInfo = null;
+6:
+7:
+try {
+8:
+// HttpServletRequest의 InputStream은 사용자 입력값이다.
+9:
+ois = new ObjectInputStream(req.getInputStream()); ·····················②
+10:
+retImgInfo = (ImageInformation) ois.readObject(); ··························①
+11:
+retImgInfo.setImgUrl("SERVERIMGURL");
+12:
+} catch (Exception e) {
+13:
+...
+14:
+} finally 
+15:
+...
+16:}
+다음 예제에서 XMLEncoder와 XMLDecoder는 JDK에 포함된 컴포넌트로, javaBeans Persistence 
+기능을 제공하기 위해 XML 직렬화를 사용한다. 아래 코드와 같이 4라인에서 XMLDecoder를 사용
+하여 사용자가 제공한 데이터를 8라인에서 readObject()를 실행하면서 역직렬화하는 경우 공격자의 
+명령이 실행될 수 있으므로 취약하다고 판정한다.
+정탐코드의 예
+1:private static void byXmlString( String xml ) { 
+2:
+XMLDecoder xd = null; 
+3:
+try { 
+4:
+xd = new XMLDecoder(new ByteArrayInputStream(xml.getBytes()));
+5:
+} catch (Exception e) { 
+6:
+e.printStackTrace();
+7:
+}
+8:
+Object s2 = xd.readObject(); 
+9:
+xd.close();
+10: }

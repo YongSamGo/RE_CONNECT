@@ -1,0 +1,44 @@
+490
+안전한 코드의 예 C#
+6:
+{
+7:
+int length = userRoles.Length;
+8:
+this.userRoles = new String[length];
+9:
+for(int i = 0; i < length; i++) {\
+10:
+this.userRoles[i] = userRoles[i];
+11:
+}
+12:
+}
+13:
+}
+라. 진단방법
+private 배열이 선언되어 있는지 확인하고(①), public 메소드의 인자로 받은 배열을 private 배열 
+필드에 직접 할당할 경우 취약하다고 판단한다(②). 이때 선언된 private 배열의 원소가 일반 객체일 
+경우 각 원소별로 객체를 생성하고 객체 내부의 값을 복사하는지 확인한다.
+userRoles 필드는 private이지만, public인 setUserRoles()로 외부의 배열이 할당되면, 사실상 
+public 필드가 된다.
+일반적인 진단의 예
+1: public class U496 { 
+2:
+private String[] userRoles; ·····································································································①
+3:
+public void setUserRoles(String[] userRoles) { 
+4:
+this.userRoles = userRoles; ·································································································②
+5:
+}
+6:
+7:
+public void print() {
+8:
+for (int i = 0; i < userRoles.length; i++)
+9:
+System.out.println(userRoles[i]);
+10:
+}
+11: }

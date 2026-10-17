@@ -1,0 +1,31 @@
+234
+안전하지 않은 코드의 예 C#
+1: string fn = Path.GetFileName(FileUploadCtr.FileName);
+2: //업로드 하는 파일명을 검증 없이 사용하고 있습니다.
+3: FileUploadCtr.SaveAs(fn);
+4: StatusLabel.Text = "Upload status: File uploaed!";
+파일 타입과 크기 등을 검사하여 제한하도록 한다.
+안전한 코드의 예 C#
+1: //파일 타입과 크기를 제한합니다. 
+2: if (FileUploadCtr.PostedFile.ContentType == "image/jpeg") 
+3: { 
+4:
+if (FileUploadCtr.PostedFile.ContentLength < 102400) 
+5:
+{
+6:
+string fn = Path.GetFileName(FileUploadCtr.FileName);
+7:
+FileUploadCtr.SaveAs(Server.MapPath("~/") + fn); 
+8:
+StatusLabel.Text = "Upload status: File uploaed!"; 
+9:
+}
+10:
+else
+11:
+StatusLabel.Text = "Upload Status: The File has to be less than 100 kb!";
+12: }
+13: else
+14:
+StatusLabel.Text = "Upload Status: Only JPEG files are accepted!";

@@ -1,0 +1,531 @@
+{
+ "lines": [
+  {
+   "text": "556",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "2.1.1 인증 여부 확인",
+   "bbox": [
+    78.95999908447266,
+    118.09121704101562,
+    162.97271728515625,
+    129.11322021484375
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "<mvc:interceptors>",
+   "bbox": [
+    85.13999938964844,
+    145.05813598632812,
+    159.55963134765625,
+    154.9581298828125
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "         <bean class=”kr.co.openeg.lab.common.interceptor.SessionInterceptor” /> ",
+   "bbox": [
+    85.13999938964844,
+    158.61843872070312,
+    424.33349609375,
+    168.5184326171875
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "</mvc:interceptors> ",
+   "bbox": [
+    85.1400146484375,
+    172.11843872070312,
+    165.99925231933594,
+    182.0184326171875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public class SessionInterceptor extends HandlerInterceptorAdapter ",
+   "bbox": [
+    85.1400146484375,
+    185.61843872070312,
+    359.2552795410156,
+    195.5184326171875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  { @Override ",
+   "bbox": [
+    85.1400146484375,
+    199.17874145507812,
+    145.2779998779297,
+    209.0787353515625
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  public boolean preHandle(HttpServletRequest ",
+   "bbox": [
+    85.1400146484375,
+    212.67874145507812,
+    280.39361572265625,
+    222.5787353515625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "request, HttpServletResponse ",
+   "bbox": [
+    156.96002197265625,
+    226.17874145507812,
+    280.7559814453125,
+    236.0787353515625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response, ",
+   "bbox": [
+    156.96002197265625,
+    239.73904418945312,
+    198.58499145507812,
+    249.6390380859375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Object handler) throws",
+   "bbox": [
+    156.96002197265625,
+    253.23904418945312,
+    250.861572265625,
+    263.1390380859375
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    Exception { if",
+   "bbox": [
+    85.1400146484375,
+    266.7390441894531,
+    158.22413635253906,
+    276.6390380859375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "(isAuthenticated(request.getSession())) { ",
+   "bbox": [
+    102.78031158447266,
+    280.2993469238281,
+    266.9415588378906,
+    290.1993408203125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return true; ",
+   "bbox": [
+    85.1400146484375,
+    293.7993469238281,
+    160.89080810546875,
+    303.6993408203125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    } else { ",
+   "bbox": [
+    85.1400146484375,
+    307.2993469238281,
+    135.8782196044922,
+    317.1993408203125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "       return false; ",
+   "bbox": [
+    85.1400146484375,
+    320.8596496582031,
+    168.2780303955078,
+    330.7596435546875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    }",
+   "bbox": [
+    85.1400146484375,
+    334.3596496582031,
+    105.51394653320312,
+    344.2596435546875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  }",
+   "bbox": [
+    85.1400146484375,
+    347.8596496582031,
+    96.69335174560547,
+    357.7596435546875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  @Override ",
+   "bbox": [
+    85.1400146484375,
+    374.9199523925781,
+    138.1940155029297,
+    384.8199462890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  public void postHandle(HttpServletRequest request,",
+   "bbox": [
+    85.1400146484375,
+    388.4199523925781,
+    304.7124328613281,
+    398.3199462890625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpServletResponse response, Object handler,",
+   "bbox": [
+    147.17945861816406,
+    401.9802551269531,
+    341.35687255859375,
+    411.8802490234375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ModelAndView modelAndView) throws Exception { ",
+   "bbox": [
+    147.17945861816406,
+    415.4802551269531,
+    358.0582580566406,
+    425.3802490234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  }",
+   "bbox": [
+    85.1400146484375,
+    428.9802551269531,
+    96.69335174560547,
+    438.8802490234375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    85.1400146484375,
+    442.5405578613281,
+    87.87275695800781,
+    452.4405517578125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 ",
+   "bbox": [
+    79.5,
+    462.45819091796875,
+    458.67694091796875,
+    472.3581848144531
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증 여부를 확인할 수 있도록 한다.",
+   "bbox": [
+    79.5,
+    473.8584899902344,
+    196.09030151367188,
+    483.75848388671875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2.1.1 인증 여부 확인",
+   "bbox": [
+    78.95999908447266,
+    491.3511047363281,
+    162.97271728515625,
+    502.37310791015625
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "사용자가 입력한 아이디와 비밀번호를 POST 방식으로 서버로 전달한다. 요청 파라미터로 전달된 아이디와 비밀",
+   "bbox": [
+    79.5,
+    509.8581237792969,
+    456.1337890625,
+    519.7581176757812
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "번호와 일치하는 사용자 정보가 존재하는 경우 “사용자ID.isAuthenticated” 형식의 세션ID를 생성하고, 처리에 ",
+   "bbox": [
+    79.5,
+    522.5777587890625,
+    458.7359619140625,
+    532.477783203125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "필요한 정보를 세션에 저장한다.",
+   "bbox": [
+    79.5,
+    535.238037109375,
+    184.1490936279297,
+    545.1380615234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증 처리과정에서 유의할 사항은 다음과 같다.",
+   "bbox": [
+    79.5,
+    555.098388671875,
+    232.45166015625,
+    564.9984130859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- 아이디와 비밀번호는 POST 방식으로 전달한다. ",
+   "bbox": [
+    79.5,
+    567.8180541992188,
+    248.32273864746094,
+    577.7180786132812
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- 아이디와 비밀번호는 서버에서 입력값 검증 후 사용한다. ",
+   "bbox": [
+    79.5,
+    580.4783935546875,
+    275.68536376953125,
+    590.37841796875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- 비밀번호는 서버에서 일방향 해시함수로 변환한다. ",
+   "bbox": [
+    79.5,
+    593.138671875,
+    256.364013671875,
+    603.0386962890625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- 사용자 정보를 조회할 때 SQL 삽입과 같은 취약점이 발생하지 않도록 시큐어코딩 기법에 따른다.",
+   "bbox": [
+    79.5,
+    605.8583374023438,
+    405.49871826171875,
+    615.7583618164062
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- 세션에 저장할 내용과 식별자는 분석/설계 단계에 정의하여 관리한다.",
+   "bbox": [
+    79.5,
+    618.5186767578125,
+    315.6751403808594,
+    628.418701171875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String id = request.getParameter(“id”); ",
+   "bbox": [
+    85.14002990722656,
+    639.6983642578125,
+    245.08920288085938,
+    649.598388671875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "556\n2.1.1 인증 여부 확인\n<mvc:interceptors>\n         <bean class=”kr.co.openeg.lab.common.interceptor.SessionInterceptor” /> \n</mvc:interceptors> \npublic class SessionInterceptor extends HandlerInterceptorAdapter \n  { @Override \n  public boolean preHandle(HttpServletRequest \nrequest, HttpServletResponse \nresponse, \nObject handler) throws\n    Exception { if\n(isAuthenticated(request.getSession())) { \n      return true; \n    } else { \n       return false; \n    }\n  }\n  @Override \n  public void postHandle(HttpServletRequest request,\nHttpServletResponse response, Object handler,\nModelAndView modelAndView) throws Exception { \n  }\n}\n인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 \n인증 여부를 확인할 수 있도록 한다.\n2.1.1 인증 여부 확인\n사용자가 입력한 아이디와 비밀번호를 POST 방식으로 서버로 전달한다. 요청 파라미터로 전달된 아이디와 비밀\n번호와 일치하는 사용자 정보가 존재하는 경우 “사용자ID.isAuthenticated” 형식의 세션ID를 생성하고, 처리에 \n필요한 정보를 세션에 저장한다.\n인증 처리과정에서 유의할 사항은 다음과 같다.\n- 아이디와 비밀번호는 POST 방식으로 전달한다. \n- 아이디와 비밀번호는 서버에서 입력값 검증 후 사용한다. \n- 비밀번호는 서버에서 일방향 해시함수로 변환한다. \n- 사용자 정보를 조회할 때 SQL 삽입과 같은 취약점이 발생하지 않도록 시큐어코딩 기법에 따른다.\n- 세션에 저장할 내용과 식별자는 분석/설계 단계에 정의하여 관리한다.\nString id = request.getParameter(“id”); \n",
+ "native_sha256": "bc5f56655992afe146d4f1268b4460f0b2a57a48e4d19e2ff0c7533d30e1b14b",
+ "chars": 1140,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

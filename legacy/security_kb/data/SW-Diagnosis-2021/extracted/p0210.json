@@ -1,0 +1,301 @@
+{
+ "lines": [
+  {
+   "text": "210",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    117.31112670898438,
+    296.1402587890625,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: if(name.matches(org_code + “.*CVDTST.*” + “.txt”)) { ",
+   "bbox": [
+    83.58000183105469,
+    142.23818969726562,
+    317.4004211425781,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: return true; ",
+   "bbox": [
+    83.58000183105469,
+    156.63821411132812,
+    145.02703857421875,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: } ",
+   "bbox": [
+    83.58000183105469,
+    171.03823852539062,
+    100.95672607421875,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: return false; ",
+   "bbox": [
+    83.58000183105469,
+    185.43826293945312,
+    148.01632690429688,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: } ",
+   "bbox": [
+    83.58000183105469,
+    199.83828735351562,
+    100.95672607421875,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: });",
+   "bbox": [
+    83.58000183105469,
+    214.23831176757812,
+    103.94599914550781,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:BufferedReader in = new BufferedReader( new FileReader(f_list[0].getPath()) );",
+   "bbox": [
+    83.58000183105469,
+    228.6383056640625,
+    421.5603942871094,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적으로 프레임워크를 사용하면서 시스템 프로퍼티에서 가져오는 명령어는 취약하지 않다. 하지만 ",
+   "bbox": [
+    76.5,
+    267.0111083984375,
+    464.8431091308594,
+    278.0331115722656
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "시스템 프로퍼티 등 공용으로 사용하는 프로퍼티가 아닌 개별 사용 프로퍼티일 경우는 정탐, 시스템 ",
+   "bbox": [
+    76.5,
+    284.0511169433594,
+    464.8305358886719,
+    295.0731201171875
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "프로퍼티 사용은 오탐으로 처리한다.",
+   "bbox": [
+    76.5,
+    301.031005859375,
+    215.75096130371094,
+    312.0530090332031
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    348.0950927734375,
+    132.05699157714844,
+    360.173095703125
+   ],
+   "block": 25,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-99 Resource Injection, MITRE,",
+   "bbox": [
+    91.5,
+    371.7710876464844,
+    268.1915588378906,
+    382.7930908203125
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/99.html",
+   "bbox": [
+    107.87982940673828,
+    387.73095703125,
+    308.8146057128906,
+    398.7529602050781
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] CWE-22 Path Traversal, MITRE,",
+   "bbox": [
+    91.5,
+    408.7308654785156,
+    248.291748046875,
+    419.75286865234375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/22.html",
+   "bbox": [
+    107.87982940673828,
+    424.7508544921875,
+    308.8146057128906,
+    435.7728576660156
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Path Traversal, OWASP,",
+   "bbox": [
+    91.5,
+    445.7507629394531,
+    212.75880432128906,
+    456.77276611328125
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Path_Traversal",
+   "bbox": [
+    107.87982940673828,
+    461.770751953125,
+    328.6439208984375,
+    472.7927551269531
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "4: if(name.matches(org_code + “.*CVDTST.*” + “.txt”)) { \n5: return true; \n6: } \n7: return false; \n8: } \n9: });\n10:BufferedReader in = new BufferedReader( new FileReader(f_list[0].getPath()) );",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    141.03818969726564,
+    421.5603942871094,
+    239.73829956054686
+   ]
+  }
+ ],
+ "native": "210\n오탐코드의 예\n4: if(name.matches(org_code + “.*CVDTST.*” + “.txt”)) { \n5: return true; \n6: } \n7: return false; \n8: } \n9: });\n10:BufferedReader in = new BufferedReader( new FileReader(f_list[0].getPath()) );\n일반적으로 프레임워크를 사용하면서 시스템 프로퍼티에서 가져오는 명령어는 취약하지 않다. 하지만 \n시스템 프로퍼티 등 공용으로 사용하는 프로퍼티가 아닌 개별 사용 프로퍼티일 경우는 정탐, 시스템 \n프로퍼티 사용은 오탐으로 처리한다.\n마. 참고자료\n[1] CWE-99 Resource Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/99.html\n[2] CWE-22 Path Traversal, MITRE,\nhttp://cwe.mitre.org/data/definitions/22.html\n[3] Path Traversal, OWASP,\nhttps://www.owasp.org/index.php/Path_Traversal\n",
+ "native_sha256": "51388d4aea00007963d43470cb4d7391941746ec81cf11fee224a51c1575498b",
+ "chars": 580,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

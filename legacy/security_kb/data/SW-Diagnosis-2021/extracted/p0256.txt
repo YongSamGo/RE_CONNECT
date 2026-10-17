@@ -1,0 +1,44 @@
+256
+안전한 코드의 예 JAVA
+8:Nodes results = xquery.execute(doc, null, vars).toNodes();
+9:for (int i=0; i<results.size(); i++) {
+10:
+System.out.println(results.get(i).toXML());21:
+11:}
+파라미터화된 쿼리를 지원하는 XQuery 구문으로 대체할 수 없는 경우에는 XPath 삽입을 유발할 수 
+있는 문자들을 입력값에서 제거하고 XPath 구문을 생성, 실행하도록 한다.
+안전한 코드의 예 JAVA
+// XPath 삽입을 유발할 수 있는 문자들을 입력값에서 제거
+1:public String XPathFilter(String input) {
+2:
+if (input != null) return input.replaceAll("[',\\[]", "");
+3:
+else return "";
+4:}
+5:......
+// 외부 입력값에 사용 
+6:String nm = XPathFilter(props.getProperty("name"));
+7:String pw = XPathFilter(props.getProperty("password"));
+8:
+......
+9:XPathFactory factory = XPathFactory.newInstance(); 
+10:XPath xpath = factory.newXPath();
+11:
+......
+//외부 입력값인 nm, pw를 검증하여 쿼리문을 생성하므로 안전하다.
+12:XPathExpression expr = xpath.compile("//users/user[login/text()='"+nm+"' and 
+password/text()='"+pw+"']/home_dir/text()");
+13:Object result = expr.evaluate(doc, XPathConstants.NODESET);
+14:NodeList nodes = (NodeList) result;
+15:for (int i=0; i<nodes.getLength(); i++) {
+16:
+String value = nodes.item(i).getNodeValue();
+17:
+if (value.indexOf(">") < 0) {
+18:
+System.out.println(value);
+19:
+}
+20:}
+21:
+......

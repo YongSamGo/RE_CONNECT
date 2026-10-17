@@ -1,0 +1,33 @@
+518
+2. 아키텍처 요구사항 및 구형방안
+요구사항ID
+SR-010102
+요구사항 내용
+동적으로 SQL문이 생성, 실행되지 않도록 해야 한다.
+구현방안
+SQL 삽입 취약점을 방어할 수 있도록 외부 또는 사용자 입력값을 MyBatis의 쿼리맵에 바인딩하는 경우, 
+반드시 “#” 기호를 이용하여 정의하도록 한다.
+만약, “$” 기호를 사용하는 경우에는 파라미터로 전달되는 값이 해당 애플리케이션에서 정의한 상수 또는 
+고정된 값인 것을 보장해야 한다.
+개발가이드에는 안전한 DBMS 조회 및 결과검증에 필요한 데이터베이스 사용자 계정 및 권한 설정 
+방법, 정적 쿼리 실행 방법, 동적 쿼리 실행 시 입력값 검증 방법 등을 제시하고 있다.
+안전한 보안설계의 예 : 개발가이드
+1.1.1. 데이터베이스 사용자 계정 및 권한 설정
+SQL 삽입 공격에 대응하기 위해서는 애플리케이션에서 사용하는 데이터베이스 사용자 계정은 필요한 만큼 최소한
+으로 설정하여야 한다.
+특히, 관리자에게 제한된 권한이 부여되지 않도록 해야 하며, 해당 애플리케이션에서 필요한 테이블, 뷰, 프로시저 
+등에 대한 권한만 부여하여야 한다.
+1.1.2. 정적 쿼리 실행
+SQL 삽입 공격에 대응하기 위해서는 입력값의 형태와 관계없이 쿼리가 실행되는 정적 쿼리 실행을 구현해야 한다. 
+Java의 경우, PreparedStatement 객체를 이용하여 정적 쿼리를 구현할 수 있으며, 적용 예는 아래와 같다.
+String id = request.getParameter(“id”); 
+ : 
+String sql = “select * from users where id = ? ”;
+PreparedStatement pstmt = conn.prepareStatement(sql);
+pstmt.setInt(1, Integer.parseInt(id)); 
+rs = pstmt.executeQuery(); 
+만약, MyBatis와 같은 ORM 프레임워크를 사용하는 경우에는 외부 입력값을 쿼리 맵에 바인딩할 때 “#” 기호를 
+이용하도록 한다.
+<select id=“selectUser” parameterType=“userVO”
+ resultMap=“userVO”> select * from users where id = #{userId} 
+</select>

@@ -1,0 +1,391 @@
+{
+ "lines": [
+  {
+   "text": "546",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "1.9.3. 쿠키 사용 규칙",
+   "bbox": [
+    78.95999908447266,
+    118.09121704101562,
+    166.00173950195312,
+    129.11322021484375
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "③JBoss 5.0.1 및 JBOSS EAP 5.0.1",
+   "bbox": [
+    79.5,
+    136.59823608398438,
+    213.8549346923828,
+    146.49822998046875
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- /server/<myJBossServerInstance>/deploy/jbossweb.sar/context.xml에 설정",
+   "bbox": [
+    92.70002746582031,
+    149.61856079101562,
+    384.3665771484375,
+    159.5185546875
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<Context cookies=”true” crossContext=”true”> ",
+   "bbox": [
+    85.1400146484375,
+    171.15823364257812,
+    273.4313049316406,
+    181.0582275390625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  <SessionCookie secure=”true” httpOnly=”true” /> ",
+   "bbox": [
+    85.1400146484375,
+    185.55825805664062,
+    295.96856689453125,
+    195.458251953125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Servlet 3.0이 지원되는 경우 web.xml에 설정",
+   "bbox": [
+    79.5,
+    207.09823608398438,
+    246.91134643554688,
+    216.99822998046875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<?xml version=”1.0” encoding=”UTF-8”?> ",
+   "bbox": [
+    85.14002990722656,
+    228.637939453125,
+    254.72616577148438,
+    238.53793334960938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<web-app version=”3.0”",
+   "bbox": [
+    85.14002990722656,
+    243.03793334960938,
+    183.01718139648438,
+    252.93792724609375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "xmlns=”http://java.sun.com/xml/ns/javaee” ",
+   "bbox": [
+    85.14002990722656,
+    257.43792724609375,
+    262.8731689453125,
+    267.3379211425781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "xmlns:xsi=”http://www.w3.org/2001/XMLSchema ",
+   "bbox": [
+    128.58006286621094,
+    271.8379211425781,
+    332.31219482421875,
+    281.7379150390625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "instance”",
+   "bbox": [
+    85.14002990722656,
+    286.2379150390625,
+    121.8733901977539,
+    296.1379089355469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "          xsi:schemaLocation=”http://java.sun.com/xml/ns/javaee” ",
+   "bbox": [
+    85.14002990722656,
+    300.6379089355469,
+    361.2960510253906,
+    310.53790283203125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "target=”_blank”>http://java.sun.com/xml/ns/javaee/web-",
+   "bbox": [
+    85.14004516601562,
+    329.4378967285156,
+    314.5486145019531,
+    339.337890625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "app_3_0.xsd”> ",
+   "bbox": [
+    128.5201416015625,
+    343.837890625,
+    187.66201782226562,
+    353.7378845214844
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "               : ",
+   "bbox": [
+    85.14004516601562,
+    358.2378845214844,
+    156.4611358642578,
+    368.13787841796875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  <session-config> ",
+   "bbox": [
+    85.14004516601562,
+    372.63787841796875,
+    163.16868591308594,
+    382.5378723144531
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <cookie-config> ",
+   "bbox": [
+    85.14004516601562,
+    387.0378723144531,
+    163.0567169189453,
+    396.9378662109375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <http-only>true</http-only> ",
+   "bbox": [
+    85.14004516601562,
+    401.4378662109375,
+    214.14926147460938,
+    411.3378601074219
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   </cookie-config> ",
+   "bbox": [
+    85.14004516601562,
+    415.8378601074219,
+    166.9469451904297,
+    425.73785400390625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  </session-config> ",
+   "bbox": [
+    85.14004516601562,
+    430.23785400390625,
+    167.07118225097656,
+    440.1378479003906
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "               : ",
+   "bbox": [
+    85.14004516601562,
+    444.6378479003906,
+    156.4611358642578,
+    454.537841796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1-10. 업로드·다운로드 파일 검증",
+   "bbox": [
+    76.5,
+    496.1151123046875,
+    226.7296142578125,
+    508.2480163574219
+   ],
+   "block": 35,
+   "size": 10.87141227722168,
+   "fonts": [
+    "NanumSquareRoundB"
+   ]
+  },
+  {
+   "text": "다음은 “업로드·다운로드 파일 검증” 보안요구사항에 대한 안전한 설계 산출물의 예시이며, 제시된 ",
+   "bbox": [
+    76.5,
+    529.7510375976562,
+    464.8373107910156,
+    540.7730712890625
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "설계 산출물의 종류와 내용은 개발되는 소프트웨어의 특성, 환경, 방법론 등에 따라 다를 수 있다.",
+   "bbox": [
+    76.5,
+    546.7910766601562,
+    445.9919738769531,
+    557.8131103515625
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용자 요구사항 정의서에는 “업로드·다운로드 파일 검증” 보안요구사항의 세부 보안요구사항을 비",
+   "bbox": [
+    76.5,
+    573.7909545898438,
+    461.99749755859375,
+    584.81298828125
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "기능 보안요구항목으로 등록하고 해결방안과 검수기준을 제시하고 있다.",
+   "bbox": [
+    76.5,
+    590.7708740234375,
+    352.0703430175781,
+    601.7929077148438
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "546\n1.9.3. 쿠키 사용 규칙\n③JBoss 5.0.1 및 JBOSS EAP 5.0.1\n- /server/<myJBossServerInstance>/deploy/jbossweb.sar/context.xml에 설정\n<Context cookies=”true” crossContext=”true”> \n  <SessionCookie secure=”true” httpOnly=”true” /> \n④Servlet 3.0이 지원되는 경우 web.xml에 설정\n<?xml version=”1.0” encoding=”UTF-8”?> \n<web-app version=”3.0”\nxmlns=”http://java.sun.com/xml/ns/javaee” \nxmlns:xsi=”http://www.w3.org/2001/XMLSchema \ninstance”\n          xsi:schemaLocation=”http://java.sun.com/xml/ns/javaee” \ntarget=”_blank”>http://java.sun.com/xml/ns/javaee/web-\napp_3_0.xsd”> \n               : \n  <session-config> \n   <cookie-config> \n    <http-only>true</http-only> \n   </cookie-config> \n  </session-config> \n               : \n1-10. 업로드·다운로드 파일 검증\n다음은 “업로드·다운로드 파일 검증” 보안요구사항에 대한 안전한 설계 산출물의 예시이며, 제시된 \n설계 산출물의 종류와 내용은 개발되는 소프트웨어의 특성, 환경, 방법론 등에 따라 다를 수 있다.\n사용자 요구사항 정의서에는 “업로드·다운로드 파일 검증” 보안요구사항의 세부 보안요구사항을 비\n기능 보안요구항목으로 등록하고 해결방안과 검수기준을 제시하고 있다.\n",
+ "native_sha256": "8a85b8ac855cfc13bc457884dc3d4b030485048775edb60ea77b5c93cc645efd",
+ "chars": 922,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,49 @@
+270
+외부의 입력(name)이 검색을 위한 base 문자열의 생성에 사용되고 있다. 이 경우 임의의 루트 디렉
+터리를 지정하여 정보에 접근할 수 있으며, 적절한 접근제어가 동반되지 않을 경우 정보 누출이 발생 
+할 수 있다.
+정탐코드의 예
+1:
+…
+2:
+try { 
+3:
+…
+4:
+// 외부로부터 입력을 받는다. 
+5:
+String name = props.getProperty(““ldap.properties”); 
+6:
+// 입력 값에 대한 BasicAttribute를 생성한다. 
+7:
+BasicAttribute attr = new BasicAttribute(“name”, name); 
+8:
+// 외부 입력 값이 LDAP search의 인자로 사용이 된다. 
+9:
+NamingEnumeration answer = ctx.search(“ou=NewHires”, attr.getID(), new Search- 
+Controls()); 
+10:
+printSearchEnumeration(answer); 
+11:
+ctx.close();
+12:
+}
+13:
+catch (NamingException e) { … } 
+14: }
+15:
+16: public void printSearchEnumeration(NamingEnumeration value) {
+17:
+try {
+18:
+while (value.hasMore()) { 
+19:
+SearchResult sr = (SearchResult) value.next(); 
+20:
+System.out.println(“>>>” + sr.getName() + “\n” + sr.getAttributes());
+21:
+}
+22: }
+23:
+catch (NamingException e) { … } 
+24: …

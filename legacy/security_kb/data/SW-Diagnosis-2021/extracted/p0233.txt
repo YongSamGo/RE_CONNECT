@@ -1,0 +1,51 @@
+233
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+11:
+pstmt.setString(4, stre_step);
+12:
+pstmt.setString(5, stre_num);
+13:
+pstmt.setString(6, fileName);
+14:
+pstmt.executeUpdate();
+15:
+Thumbnail.create(savePath+"/"+fileName, savePath+"/"+"s_"+fileName, 150);
+아래 코드는 업로드 파일의 확장자를 검사하여 허용되지 않은 확장자인 경우 업로드를 제한하고 있다.
+안전한 코드의 예 JAVA
+1:
+MultipartRequest multi
+= new MultipartRequest(request,savePath,sizeLimit,"euc-kr",new DefaultFileRenamePolicy());
+2:
+......
+3:
+String fileName = multi.getFilesystemName("filename");
+4:
+if (fileName != null) {
+5:
+//1.업로드 파일의 마지막 “.” 문자열의 기준으로 실제 확장자 여부를 확인하고, 대소문자 구별을 
+해야한다.
+6:
+String fileExt = FileName.substring(fileName.lastIndexOf(".")+1).toLowerCase();
+7:
+//2.되도록 화이트 리스트 방식으로 허용되는 확장자로 업로드를 제한해야 안전하다.
+8:
+if (!"gif".equals(fileExt) && !"jpg".equals(fileExt) && !"png".equals(fileExt)) {
+9:
+alertMessage("업로드 불가능한 파일입니다.");
+10:
+return;
+11:
+}
+12: }
+13: ......
+14: sql = " INSERT INTO board(email,r_num,w_date,pwd,content,re_step,re_num,filename)
+“ + " values ( ?, 0, sysdate(), ?, ?, ?, ?, ? ) ";
+15:
+PreparedStatement pstmt = con.prepareStatement(sql); 
+16:
+......
+17:
+Thumbnail.create(savePath+"/"+fileName, savePath+"/"+"s_"+fileName, 150);
+업로드할 파일에 대한 유효성을 검사하지 않으면, 위험한 유형의 파일을 공격자가 업로드하거나 전송 
+할 수 있다.

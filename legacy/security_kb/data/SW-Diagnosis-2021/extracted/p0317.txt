@@ -1,0 +1,54 @@
+317
+제4장구현단계 보안약점 진단
+라. 진단방법
+해당 취약점은 보안특성 중 개인정보와 관련된 취약점으로 정적도구를 사용하여 이를 판단하는 것은 
+쉽지 않다. 이에 따라 진단원이 직접 코드를 보며 해당 정보가 중요정보인지 파악해야한다. 비밀번호, 
+개인정보(주민등록번호, 여권번호, 외국인 식별번호 등), 금융정보(카드번호, 계좌정보 등) 게시글 
+수정, 삭제 등을 포함하여 접근 및 사용이 제한되어야 하는 중요정보 및 기능을 정의하였는지 확인 하고 
+사용여부를 확인한다(①). 중요정보를 사용하는 경우 접근 변경 시 적절한 인증 여부를 확인하여 허용
+하는 기능이 구현되었는지 확인(②)한다. 만약 적절한 인증여부를 확인하는 경우 안전 하다고 판단하고, 
+인증여부를 확인하지 않는 경우 취약하다고 판단한다.
+일반적인 진단의 예
+1:
+…
+2:
+@Controller
+3:
+@RequestMapping(“bbs”) 
+4:
+public class BbsController { 
+5:
+@Autowired 
+6:
+private BoardDao boardDao; 
+7:
+@RequestMapping(“delete”) 
+8:
+public String delete(@Requestparam(“contentid”) int contentId, HttpServletRequest 
+reques, Map model) { 
+9:
+if(request.getSession().getAttribute(“isLogin”) == “logined”) { ······································②
+10:
+boardDao.delete(contenId); ·······························································································①
+11:
+}
+12:
+…
+다음의 예제에서는 재인증을 거치지 않고 계좌이체를 하고 있으므로 취약하다고 판정한다.
+정탐코드의 예
+1: public void sendBankAccount(String accountNumber,double balance) {
+2:
+…
+3:
+BankAccount account = new BankAccount(); 
+4:
+account.setAccountNumber(accountNumber); 
+5:
+account.setToPerson(toPerson); 
+6:
+account.setBalance(balance); 
+7:
+AccountManager.send(account); 
+8:
+…
+9: }

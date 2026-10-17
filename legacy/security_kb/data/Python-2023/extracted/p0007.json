@@ -1,0 +1,85 @@
+{
+ "lines": [
+  {
+   "text": "1",
+   "bbox": [
+    362.0255126953125,
+    297.10321044921875,
+    421.0794372558594,
+    401.9701843261719
+   ],
+   "block": 0,
+   "size": 104.8792495727539,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "PART 제1장",
+   "bbox": [
+    320.9080505371094,
+    399.7409973144531,
+    405.2472839355469,
+    413.7632141113281
+   ],
+   "block": 1,
+   "size": 14.023853302001953,
+   "fonts": [
+    "GmarketSansTTFBold"
+   ]
+  },
+  {
+   "text": "개 요",
+   "bbox": [
+    320.30865478515625,
+    423.11138916015625,
+    405.28326416015625,
+    455.11077880859375
+   ],
+   "block": 1,
+   "size": 32.00315475463867,
+   "fonts": [
+    "GmarketSansTTFBold"
+   ]
+  },
+  {
+   "text": "제1절 배경",
+   "bbox": [
+    208.584228515625,
+    475.0295104980469,
+    288.4150695800781,
+    490.96929931640625
+   ],
+   "block": 2,
+   "size": 15.941645622253418,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "제2절 가이드 목적 및 구성",
+   "bbox": [
+    208.82398986816406,
+    500.677001953125,
+    405.17431640625,
+    516.6167602539062
+   ],
+   "block": 3,
+   "size": 15.941645622253418,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "GmarketSansTTFMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "1\nPART 제1장\n개 요\n제1절 배경\n제2절 가이드 목적 및 구성\n",
+ "native_sha256": "578ff5fc8bd51593010b891eac9e40c584eac4c01115d21cd1529041e169ae6b",
+ "chars": 38,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

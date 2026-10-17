@@ -1,0 +1,37 @@
+423
+제4장구현단계 보안약점 진단
+오류 메시지로 환경, 사용자, 관련 데이터 등의 내부 정보가 유출될 경우 취약하다.
+오탐코드의 예
+1: BufferedReader br = null; 
+2: try { 
+3:
+br = new BufferedReader(new InputStreamReader(new FileInputStream(file), “UTF 
+8”)); 
+4:
+String line = null; 
+5:
+while ((line = br.readLine()) != null) { 
+6:
+// … 
+7:
+}
+8:
+} catch (IOException e) { 
+9:
+logger.error(e, e); 
+10: } finally { 
+11:
+if (br != null) { 
+12:
+try { 
+13:
+br.close(); 
+14:
+} catch (IOException e) { 
+15:
+logger.error(e, e); 
+16:
+}
+17:
+}
+18: }

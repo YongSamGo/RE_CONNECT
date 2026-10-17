@@ -1,0 +1,313 @@
+{
+ "lines": [
+  {
+   "text": "399",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "클래스를 로드하기 위한 코드를 확인(①)하고 클래스를 로드하기 전에 체크섬을 실행 및 비교하여 ",
+   "bbox": [
+    70.86000061035156,
+    142.51107788085938,
+    459.1934814453125,
+    153.5330810546875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "로드하려는 코드가 변조되지 않았음을 확인하다. 다음의 예제에서는 로드하려는 클래스의 체크섬을 ",
+   "bbox": [
+    70.86000061035156,
+    159.55111694335938,
+    459.19049072265625,
+    170.5731201171875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "비교하여 무결성을 확인하고 있지 않으므로 취약하다고 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    176.53103637695312,
+    320.8667907714844,
+    187.55303955078125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    213.01107788085938,
+    301.42083740234375,
+    224.0330810546875
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: URL[] classURLs = new URL[]{ ",
+   "bbox": [
+    78.66000366210938,
+    237.93820190429688,
+    222.09112548828125,
+    247.83819580078125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: new URL(“file:subdir/”) ",
+   "bbox": [
+    78.66000366210938,
+    252.33819580078125,
+    187.21249389648438,
+    262.2381896972656
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: }; ",
+   "bbox": [
+    78.66000366210938,
+    266.7381896972656,
+    98.85674285888672,
+    276.63818359375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: URLClassLoader loader = new URLClassLoader(classURLs); ",
+   "bbox": [
+    78.66000366210938,
+    281.13818359375,
+    337.2365417480469,
+    291.0381774902344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Class loadedClass = Class.forName(“LoadMe”, true, loader); ·······································①",
+   "bbox": [
+    78.66000366210938,
+    295.5381774902344,
+    447.72027587890625,
+    305.43817138671875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    347.97509765625,
+    126.4169921875,
+    360.0531005859375
+   ],
+   "block": 34,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-494 Download of Code Without Integrity Check, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    371.6512145996094,
+    374.3930358886719,
+    382.6732177734375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/494.html",
+   "bbox": [
+    102.23983764648438,
+    388.69122314453125,
+    308.72802734375,
+    399.7132263183594
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not rely on the default automatic signature verification provided by",
+   "bbox": [
+    85.8600082397461,
+    410.65106201171875,
+    403.9846496582031,
+    421.6730651855469
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "URLClassLoader and java.util.jar, CERT,",
+   "bbox": [
+    102.23983764648438,
+    427.6910705566406,
+    273.133544921875,
+    438.71307373046875
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/SEC06-J.+Do+not",
+   "bbox": [
+    102.23983764648438,
+    444.67095947265625,
+    456.0927734375,
+    455.6929626464844
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+rely+on+the+default+automatic+signature+verification+provided+by+URLClass",
+   "bbox": [
+    102.23983764648438,
+    461.6508483886719,
+    456.3830261230469,
+    472.6728515625
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Loader+and+java.util.jar",
+   "bbox": [
+    102.23983764648438,
+    478.69085693359375,
+    205.93930053710938,
+    489.7128601074219
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "text": "1: URL[] classURLs = new URL[]{ \n2: new URL(“file:subdir/”) \n3: }; \n4: URLClassLoader loader = new URLClassLoader(classURLs); \n5: Class loadedClass = Class.forName(“LoadMe”, true, loader); ·······································①",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    236.7382019042969,
+    447.72027587890625,
+    306.63817138671874
+   ]
+  }
+ ],
+ "native": "399\n제4장구현단계 보안약점 진단\n라. 진단방법\n클래스를 로드하기 위한 코드를 확인(①)하고 클래스를 로드하기 전에 체크섬을 실행 및 비교하여 \n로드하려는 코드가 변조되지 않았음을 확인하다. 다음의 예제에서는 로드하려는 클래스의 체크섬을 \n비교하여 무결성을 확인하고 있지 않으므로 취약하다고 판정한다.\n일반적인 진단의 예\n1: URL[] classURLs = new URL[]{ \n2: new URL(“file:subdir/”) \n3: }; \n4: URLClassLoader loader = new URLClassLoader(classURLs); \n5: Class loadedClass = Class.forName(“LoadMe”, true, loader); ·······································①\n마. 참고자료\n[1] CWE-494 Download of Code Without Integrity Check, MITRE,\nhttp://cwe.mitre.org/data/definitions/494.html\n[2] Do not rely on the default automatic signature verification provided by\nURLClassLoader and java.util.jar, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/SEC06-J.+Do+not\n+rely+on+the+default+automatic+signature+verification+provided+by+URLClass\nLoader+and+java.util.jar\n",
+ "native_sha256": "3e8e95d3ff7d5fa35200e9f9ad919a16c0eb26bef27b83939a1e36e5a952b3c6",
+ "chars": 816,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

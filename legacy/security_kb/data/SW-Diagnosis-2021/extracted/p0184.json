@@ -1,0 +1,584 @@
+{
+ "lines": [
+  {
+   "text": "184",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 Hibernate",
+   "bbox": [
+    210.9600067138672,
+    120.79122924804688,
+    324.6650390625,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: String name = request.getParameter(\"name\");",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    281.843994140625,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: //1. 파라미터 바인딩을 위해 명명된 파라미터 변수를 사용한다.",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    315.7431640625,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: Query query = session.createQuery(\"from Student where studentName = :name \");",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    440.0054931640625,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: //2. 파라미터 바인딩을 사용하여 외부 입력값에 의해 쿼리 구조 변경을 못하게 사용하였다.",
+   "bbox": [
+    83.57998657226562,
+    183.39816284179688,
+    410.2915344238281,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: query.setParameter(\"name\", name);",
+   "bbox": [
+    83.57997131347656,
+    197.79818725585938,
+    238.8509521484375,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음 C# 코드는 외부 입력값을 SQL 쿼리에 직접 사용하고 있어, 쿼리의 구조가 변경될 위험이 ",
+   "bbox": [
+    76.5,
+    236.17120361328125,
+    464.8450927734375,
+    247.19320678710938
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있습니다.",
+   "bbox": [
+    76.5,
+    253.21121215820312,
+    114.41244506835938,
+    264.23321533203125
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    293.1711120605469,
+    323.5413513183594,
+    304.193115234375
+   ],
+   "block": 22,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public void ButtonClickBad(object sender, EventArgs e)",
+   "bbox": [
+    83.58000183105469,
+    312.5780944824219,
+    322.8193359375,
+    322.47808837890625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: { ",
+   "bbox": [
+    83.58000183105469,
+    326.97808837890625,
+    100.95672607421875,
+    336.8780822753906
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    341.3780822753906,
+    91.34540557861328,
+    351.278076171875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "string connect = \"MyConnString\"; ",
+   "bbox": [
+    100.07959747314453,
+    341.3780822753906,
+    238.98226928710938,
+    351.278076171875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    355.778076171875,
+    91.34540557861328,
+    365.6780700683594
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "string usrinput = Request[\"ID\"];",
+   "bbox": [
+    100.07959747314453,
+    355.778076171875,
+    228.51589965820312,
+    365.6780700683594
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5: // 외부로부터 입력받은 값을 SQL 쿼리에 직접 사용하는 것은 안전하지 않다.",
+   "bbox": [
+    83.58000183105469,
+    370.1780700683594,
+    363.2540588378906,
+    380.07806396484375
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58088684082031,
+    384.57806396484375,
+    91.3462905883789,
+    394.4780578613281
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "string query = \"Select * From Products Where ProductID = \" + usrinput;",
+   "bbox": [
+    100.08049011230469,
+    384.57806396484375,
+    403.34619140625,
+    394.4780578613281
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58087158203125,
+    398.9780578613281,
+    91.34626770019531,
+    408.8780517578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "using (var conn = new SqlConnection(connect)) ",
+   "bbox": [
+    100.0804672241211,
+    398.9780578613281,
+    298.2157287597656,
+    408.8780517578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58087158203125,
+    413.3780517578125,
+    91.3515625,
+    423.2780456542969
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{ ",
+   "bbox": [
+    100.08575439453125,
+    413.3780517578125,
+    105.39697265625,
+    423.2780456542969
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58087158203125,
+    427.7780456542969,
+    91.34627532958984,
+    437.67803955078125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "using (var cmd = new SqlCommand(query, conn)) ",
+   "bbox": [
+    104.52073669433594,
+    427.7780456542969,
+    313.6214599609375,
+    437.67803955078125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58087158203125,
+    442.17803955078125,
+    96.26609802246094,
+    452.0780334472656
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    105.06024169921875,
+    442.17803955078125,
+    107.79298400878906,
+    452.0780334472656
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58087158203125,
+    456.5780334472656,
+    96.26608276367188,
+    466.47802734375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "conn.Open();",
+   "bbox": [
+    109.4405517578125,
+    456.5780334472656,
+    160.8839874267578,
+    466.47802734375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.58087158203125,
+    470.97802734375,
+    96.26608276367188,
+    480.8780212402344
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "cmd.ExecuteReader(); /* BUG */ ",
+   "bbox": [
+    109.4405517578125,
+    470.97802734375,
+    247.3267822265625,
+    480.8780212402344
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.58087158203125,
+    485.3780212402344,
+    96.26609802246094,
+    495.27801513671875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.06024169921875,
+    485.3780212402344,
+    107.79298400878906,
+    495.27801513671875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.58087158203125,
+    499.77801513671875,
+    96.26609802246094,
+    509.6780090332031
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.06024169921875,
+    499.77801513671875,
+    107.79298400878906,
+    509.6780090332031
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: }",
+   "bbox": [
+    83.58087158203125,
+    514.177978515625,
+    103.41354370117188,
+    524.0780029296875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "4: String name = request.getParameter(\"name\");\n5: //1. 파라미터 바인딩을 위해 명명된 파라미터 변수를 사용한다.\n6: Query query = session.createQuery(\"from Student where studentName = :name \");\n7: //2. 파라미터 바인딩을 사용하여 외부 입력값에 의해 쿼리 구조 변경을 못하게 사용하였다.\n8: query.setParameter(\"name\", name);",
+   "language": "text",
+   "label": "안전한 코드의 예 Hibernate",
+   "bbox": [
+    83.57997131347656,
+    131.913232421875,
+    440.0054931640625,
+    208.89818115234374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
+   ],
+   "text": "1: public void ButtonClickBad(object sender, EventArgs e)\n2: { \n3:    string connect = \"MyConnString\"; \n4:    string usrinput = Request[\"ID\"];\n5: // 외부로부터 입력받은 값을 SQL 쿼리에 직접 사용하는 것은 안전하지 않다.\n6:    string query = \"Select * From Products Where ProductID = \" + usrinput;\n7:    using (var conn = new SqlConnection(connect)) \n8:    { \n9:      using (var cmd = new SqlCommand(query, conn)) \n10:    {\n11:      conn.Open();\n12:      cmd.ExecuteReader(); /* BUG */ \n13:    }\n14:    }\n15: }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    304.293115234375,
+    403.34619140625,
+    525.2780029296875
+   ]
+  }
+ ],
+ "native": "184\n안전한 코드의 예 Hibernate\n4: String name = request.getParameter(\"name\");\n5: //1. 파라미터 바인딩을 위해 명명된 파라미터 변수를 사용한다.\n6: Query query = session.createQuery(\"from Student where studentName = :name \");\n7: //2. 파라미터 바인딩을 사용하여 외부 입력값에 의해 쿼리 구조 변경을 못하게 사용하였다.\n8: query.setParameter(\"name\", name);\n다음 C# 코드는 외부 입력값을 SQL 쿼리에 직접 사용하고 있어, 쿼리의 구조가 변경될 위험이 \n있습니다.\n안전하지 않은 코드의 예 C#\n1: public void ButtonClickBad(object sender, EventArgs e)\n2: { \n3:\nstring connect = \"MyConnString\"; \n4:\nstring usrinput = Request[\"ID\"];\n5: // 외부로부터 입력받은 값을 SQL 쿼리에 직접 사용하는 것은 안전하지 않다.\n6:\nstring query = \"Select * From Products Where ProductID = \" + usrinput;\n7:\nusing (var conn = new SqlConnection(connect)) \n8:\n{ \n9:\nusing (var cmd = new SqlCommand(query, conn)) \n10:\n{\n11:\nconn.Open();\n12:\ncmd.ExecuteReader(); /* BUG */ \n13:\n}\n14:\n}\n15: }\n",
+ "native_sha256": "65ea1c9c96af4e98d072ea2c500929d916fca9d2444b241416f152e532c5a3df",
+ "chars": 804,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

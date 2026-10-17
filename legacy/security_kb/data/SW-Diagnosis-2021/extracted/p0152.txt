@@ -1,0 +1,29 @@
+152
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트케이스 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+보안기능
+취약한 암호화 알고리즘 사용
+보안기능
+충분하지 않은 키 길이 사용
+보안기능
+적절하지 않은 난수 값 사용
+보안기능
+부적절한 인증서 유효성 검증
+보안기능
+솔트 없이 일방향 해쉬함수 사용
+마. 참고자료
+①CWE‐327 Use of a Broken or Riscky Cryptographic Algorithm, MITRE,
+http://cwe.mitre.org/data/defini- tions/327.html
+②CWE‐326 Inadequate Encryption Strength, MITRE,
+http://cwe.mitre.org/data/definitions/326.html
+③WASC Insufficient Data Protection Working, WASC,
+http://projects.webappsec.org/w/page/33923604/Insufficient%20Data%20Prote
+ction%20Working
+④2016 OWASP Application Security Verification Standard, OWASP, Cryptography 
+at Rest Verification Re- quirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Stan- dard_Project
+⑤Cryptographic Storage Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Cryptographic_Storage_Cheat_Sheet

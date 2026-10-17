@@ -1,0 +1,13 @@
+193
+제4장구현단계 보안약점 진단
+마. 참고자료
+[1] CWE-89 SQL Injection, MITRE,
+http://cwe.mitre.org/data/definitions/89.html 
+[2] Threat and Vulnerability, "SQL Injection", Microsoft, 
+http://technet.microsoft.com/en-us/library/ms161953%28v=SQL.105%29.aspx
+[3] Input validation and Data Sanitization, Threat and Vulnerability, Prevent SQL 
+Injection, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS00-J.+Prevent+S
+QL+injection
+[4] SQL Injection Prevention Cheat Sheet, OWASP
+https://www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet

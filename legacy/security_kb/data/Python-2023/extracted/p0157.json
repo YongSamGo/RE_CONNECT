@@ -1,0 +1,759 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화",
+   "bbox": [
+    322.8260498046875,
+    46.76085662841797,
+    498.9754638671875,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "151",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    98.3472671508789,
+    335.33807373046875,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    127.54224395751953,
+    94.51471710205078,
+    136.05145263671875
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    141.9239959716797,
+    94.51471710205078,
+    150.43321228027344
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    156.30575561523438,
+    94.51471710205078,
+    164.81497192382812
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    170.68751525878906,
+    94.51471710205078,
+    179.1967315673828
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    185.18911743164062,
+    94.51471710205078,
+    193.69833374023438
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    199.5708770751953,
+    94.51471710205078,
+    208.08009338378906
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    213.95263671875,
+    94.51471710205078,
+    222.46185302734375
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    228.3343963623047,
+    94.51471710205078,
+    236.84361267089844
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "class UserObj:",
+   "bbox": [
+    104.41199493408203,
+    127.04054260253906,
+    161.52523803710938,
+    136.05145263671875
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  __private_variable = []",
+   "bbox": [
+    104.41199493408203,
+    141.9239959716797,
+    198.99571228027344,
+    150.43321228027344
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def __init__(self):",
+   "bbox": [
+    104.41199493408203,
+    155.80406188964844,
+    179.5066375732422,
+    164.81497192382812
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    pass",
+   "bbox": [
+    104.41199493408203,
+    170.68751525878906,
+    138.92759704589844,
+    179.1967315673828
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    185.18911743164062,
+    119.58747100830078,
+    193.69833374023438
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # private 배열을 리턴하는 public 메소드를 사용하는 경우 취약함",
+   "bbox": [
+    104.41199493408203,
+    199.06918334960938,
+    347.8696594238281,
+    208.08009338378906
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def get_private_member(self):",
+   "bbox": [
+    104.41199493408203,
+    213.45094299316406,
+    230.0943145751953,
+    222.46185302734375
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return self.__private_variable",
+   "bbox": [
+    104.41199493408203,
+    227.83270263671875,
+    232.3079376220703,
+    236.84361267089844
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래 예제는 내부와 외부의 배열이 서로 참조되는 것을 예방하기 위해 [:]로 새로운 객체를 생성하여 값을 ",
+   "bbox": [
+    75.04237365722656,
+    282.194091796875,
+    506.8442077636719,
+    292.1414794921875
+   ],
+   "block": 22,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "반환하고 있다.",
+   "bbox": [
+    65.09266662597656,
+    300.1712951660156,
+    125.37830352783203,
+    310.1186828613281
+   ],
+   "block": 23,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    343.3165588378906,
+    319.7541809082031,
+    353.2639465332031
+   ],
+   "block": 24,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    368.6763916015625,
+    94.51471710205078,
+    377.18560791015625
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    382.21923828125,
+    94.51471710205078,
+    390.72845458984375
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    395.7620544433594,
+    94.51471710205078,
+    404.2712707519531
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    409.4247131347656,
+    94.51471710205078,
+    417.9339294433594
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    422.9675598144531,
+    94.51471710205078,
+    431.4767761230469
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    436.5103759765625,
+    94.51471710205078,
+    445.01959228515625
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    450.0531921386719,
+    94.51471710205078,
+    458.5624084472656
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    463.59600830078125,
+    94.51471710205078,
+    472.105224609375
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    477.13885498046875,
+    94.51471710205078,
+    485.6480712890625
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "class UserObj:",
+   "bbox": [
+    104.41199493408203,
+    368.1747131347656,
+    161.52523803710938,
+    377.18560791015625
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  __private_variable = []",
+   "bbox": [
+    104.41199493408203,
+    382.21923828125,
+    198.99571228027344,
+    390.72845458984375
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def __init__(self):",
+   "bbox": [
+    104.41199493408203,
+    395.2603759765625,
+    179.5066375732422,
+    404.2712707519531
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    pass",
+   "bbox": [
+    104.41199493408203,
+    409.4247131347656,
+    138.92759704589844,
+    417.9339294433594
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    422.46588134765625,
+    121.37445068359375,
+    430.97607421875
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "  # private 배열을 반환하는 경우 [:]를 사용하여 외부와 내부의 ",
+   "bbox": [
+    104.41199493408203,
+    436.5103759765625,
+    335.8431701660156,
+    445.01959228515625
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 배열이 서로 참조되지 않도록 해야 한다",
+   "bbox": [
+    104.41199493408203,
+    450.0531921386719,
+    261.5592956542969,
+    458.5624084472656
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  def get_private_member(self):",
+   "bbox": [
+    104.41199493408203,
+    463.0943298339844,
+    230.0943145751953,
+    472.105224609375
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return self.__private_variable[:]",
+   "bbox": [
+    104.41199493408203,
+    476.6371765136719,
+    240.2337188720703,
+    485.6480712890625
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    544.0619506835938,
+    119.12395477294922,
+    554.6085815429688
+   ],
+   "block": 46,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-495: Private Data Structure Returned From A Public Method, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    565.9222412109375,
+    387.14044189453125,
+    574.9108276367188
+   ],
+   "block": 47,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/495.html",
+   "bbox": [
+    77.32001495361328,
+    581.2628173828125,
+    267.01031494140625,
+    590.2514038085938
+   ],
+   "block": 48,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Do not return references to private mutable class members, CERT,",
+   "bbox": [
+    65.09266662597656,
+    601.5171508789062,
+    356.57086181640625,
+    610.5057373046875
+   ],
+   "block": 49,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://wiki.sei.cmu.edu/confluence/display/java/OBJ05-J.+Do+not+return+references+to+private+mutable",
+   "bbox": [
+    77.32001495361328,
+    616.857666015625,
+    503.13214111328125,
+    625.8462524414062
+   ],
+   "block": 50,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "+class+members",
+   "bbox": [
+    77.32001495361328,
+    632.078369140625,
+    145.04248046875,
+    641.0669555664062
+   ],
+   "block": 51,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Shallow and deep copy operations, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    652.4525146484375,
+    342.6648864746094,
+    661.4411010742188
+   ],
+   "block": 52,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/copy.html",
+   "bbox": [
+    77.32001495361328,
+    667.6732177734375,
+    250.34698486328125,
+    676.6618041992188
+   ],
+   "block": 53,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: class UserObj:\n2:   __private_variable = []\n3:   def __init__(self):\n4:     pass\n5:     \n6:   # private 배열을 리턴하는 public 메소드를 사용하는 경우 취약함\n7:   def get_private_member(self):\n8:     return self.__private_variable",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    108.3946548461914,
+    347.8696594238281,
+    238.04361267089843
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+   ],
+   "text": "1: class UserObj:\n2:   __private_variable = []\n3:   def __init__(self):\n4:     pass\n5:     \n6:   # private 배열을 반환하는 경우 [:]를 사용하여 외부와 내부의 \n7:   # 배열이 서로 참조되지 않도록 해야 한다\n8:   def get_private_member(self):\n9:     return self.__private_variable[:]",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    353.36394653320315,
+    335.8431701660156,
+    486.8480712890625
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화\n151\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\nclass UserObj:\n  __private_variable = []\n  def __init__(self):\n    pass\n    \n  # private 배열을 리턴하는 public 메소드를 사용하는 경우 취약함\n  def get_private_member(self):\n    return self.__private_variable\n아래 예제는 내부와 외부의 배열이 서로 참조되는 것을 예방하기 위해 [:]로 새로운 객체를 생성하여 값을 \n반환하고 있다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\nclass UserObj:\n  __private_variable = []\n  def __init__(self):\n    pass\n    \n  # private 배열을 반환하는 경우 [:]를 사용하여 외부와 내부의 \n  # 배열이 서로 참조되지 않도록 해야 한다\n  def get_private_member(self):\n    return self.__private_variable[:]\n라. 참고자료\n① CWE-495: Private Data Structure Returned From A Public Method, MITRE,\nhttps://cwe.mitre.org/data/definitions/495.html\n② Do not return references to private mutable class members, CERT,\nhttps://wiki.sei.cmu.edu/confluence/display/java/OBJ05-J.+Do+not+return+references+to+private+mutable\n+class+members\n③ Shallow and deep copy operations, Python Software Foundation,\nhttps://docs.python.org/3/library/copy.html\n",
+ "native_sha256": "a1990bdf844e26b530847898c7cde9845719557b94792092956ae33e6795699f",
+ "chars": 1002,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

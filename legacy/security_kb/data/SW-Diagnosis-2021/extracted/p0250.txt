@@ -1,0 +1,28 @@
+250
+SchemaFactory의 경우 SchemaFactory 또는 Validator 클래스의 setProperty()를 사용하여 제
+한설정을 추가할 수 있다.
+오탐코드의 예
+1:SchemaFactory factory =
+SchemaFactory.newInstance("XMLConstants.W3C_XML_SCHEMA_NS_URI");
+2:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+3:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+4:Schema schema = factory.newSchema(Source); 
+오탐코드의 예
+1:SchemaFactory factory =
+SchemaFactory.newInstance("XMLConstants.W3C_XML_SCHEMA_NS_URI");
+2:Schema schema = factory.newSchema();
+3:Validator validator = schema.newValidator();
+4:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+5:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+XMLInputFactory 클래스의 setProperty()를 사용하여 제한설정을 추가할 수 있다. 
+오탐코드의 예
+1:XMLInputFactory factory = XMLInputFactory.newFactory(); 
+2:factory.setProperty(XMLInputFactory.SUPPORT_DTD, false); 
+3:factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);
+4:XMLEventReadereventReader= factory.createXMLEventReader(new FileReader("xxe.xml")); 
+마. 참고자료
+①CWE-611: Improper Restriction of XML External Entity Reference, MITRE,
+https://cwe.mitre.org/data/definitions/611.html 
+②XML Entity Prevention Cheet Sheet, OWASP
+https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_
+Cheat_Sheet.html
