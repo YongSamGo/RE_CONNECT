@@ -288,7 +288,8 @@ rg --files --hidden -g '!.git' -g '**/.claude/settings*.json' -g '.mcp.json' -g 
 rg -n --hidden -e '"Bash\(\*\)"|"Bash"\s*[,\]]' -e 'bypassPermissions|dangerously' -e '"hooks"' -e '"command"\s*:' -g '**/.claude/**' -g '.mcp.json' -g '**/.vscode/mcp.json' -g '**/.gemini/**'
 ```
 
-- 판정: 모든 명령 허용·권한 생략이 커밋돼 있으면 `취약`. hooks·MCP 서버는 실행 명령과 출처(버전 고정 여부)를 확인해 `확인 필요`로 두고 SCP-14·SCP-20과 함께 본다. 설정 파일이 없으면 `해당없음`.
+- 판정: 모든 명령 허용·권한 생략(Codex의 `approval_policy = "never"`·`sandbox_mode = "danger-full-access"` 포함)이 커밋돼 있으면 `취약`. hooks·MCP 서버·Codex 규칙의 `decision = "allow"`는 실행 명령과 출처(버전 고정 여부)를 확인해 `확인 필요`로 두고 SCP-14·SCP-20과 함께 본다. 차단(deny·`forbidden`)·확인(ask·`prompt`) 규칙만 있으면 `양호`. 설정 파일이 없으면 `해당없음`.
+- 팀 공용 차단 규칙과 그 한계는 [AGENTS.md "도구 권한 설정"](../../../../AGENTS.md#도구-권한-설정)에 있다 (#125).
 
 ---
 

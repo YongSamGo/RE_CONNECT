@@ -1,0 +1,12 @@
+# 팀 공용 Codex 규칙 (#125, AGT-04). 실수 방지용이며 완전 차단이 아니다 (AGENTS.md "도구 권한 설정").
+# - 신뢰한(trusted) 프로젝트에서만 읽힌다. 여러 규칙이 맞으면 가장 엄격한 결정이 이긴다 (forbidden > prompt > allow).
+# - pattern은 인자 목록의 앞부분 일치다. `git push origin main -f`처럼 강제 옵션이 뒤에 오면 이 규칙에 걸리지 않는다.
+# - 확인: codex execpolicy check --pretty --rules .codex/rules/default.rules -- git push --force origin main
+
+prefix_rule(
+    pattern = ["git", "push", ["--force", "-f", "--force-with-lease", "--force-if-includes"]],
+    decision = "forbidden",
+    justification = "강제 push는 막는다. 필요하면 사람이 직접 실행한다 (#125)",
+    match = ["git push --force origin main", "git push -f", "git push --force-with-lease origin feat/x"],
+    not_match = ["git push origin main", "git push -u origin feat/x"],
+)
