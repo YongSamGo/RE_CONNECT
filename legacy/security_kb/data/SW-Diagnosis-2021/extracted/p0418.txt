@@ -1,0 +1,20 @@
+418
+제어조건이 존재하여 제어가 되는 재귀인 경우 취약하지 않다.
+오탐코드의 예
+1: public MenuVO getFirstLeafChildMenu(int menuSeq) { 
+2:
+List<MenuVO> childMenuList = menuMap.get(menuSeq).getChildMenuList();
+3:
+if (CollectionUtils.isEmpty(childMenuList)) {
+4:
+return menuMap.get(menuSeq);
+5:
+}
+6:
+return getFirstLeafChildMenu(childMenuList.get(0).getMenuSeq());
+7: }
+마. 참고자료
+[1] CWE-674 Uncontrolled Recursion, MITRE,
+http://cwe.mitre.org/data/definitions/674.html
+[2] CWE-835, Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,
+http://cwe.mitre.org/data/definitions/835.html

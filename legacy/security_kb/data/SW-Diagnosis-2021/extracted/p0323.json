@@ -1,0 +1,616 @@
+{
+ "lines": [
+  {
+   "text": "323",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    117.31112670898438,
+    301.42083740234375,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    86.42540740966797,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.SECURITY_CREDENTIALS, sPwd); ",
+   "bbox": [
+    99.59986877441406,
+    142.23818969726562,
+    306.4781799316406,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    86.42540740966797,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    99.59986877441406,
+    156.63821411132812,
+    107.53363800048828,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부의 입력인 name 값이 필터가 아닌 동적인 LDAP 쿼리문 에서 사용자명으로 사용되었으며, 사용자 ",
+   "bbox": [
+    70.86000061035156,
+    189.01107788085938,
+    459.12872314453125,
+    200.0330810546875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "인증을 위한 별도의 접근제어 방법이 사용되지 않고 있다. 이는 anonymous binding을 허용 하는 ",
+   "bbox": [
+    70.86000061035156,
+    206.05111694335938,
+    459.1435546875,
+    217.0731201171875
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "것으로 볼 수 있다. 따라서 임의 사용자의 정보를 외부에서 접근할 수 있게 된다.",
+   "bbox": [
+    70.86000061035156,
+    223.03103637695312,
+    374.92938232421875,
+    234.05303955078125
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    259.5111083984375,
+    291.27935791015625,
+    270.5331115722656
+   ],
+   "block": 30,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String ",
+   "bbox": [
+    78.66000366210938,
+    284.4381103515625,
+    433.78857421875,
+    294.3381042480469
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sPwd) {",
+   "bbox": [
+    90.78018188476562,
+    298.8381042480469,
+    122.43328094482422,
+    308.73809814453125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: …",
+   "bbox": [
+    78.66002655029297,
+    313.23809814453125,
+    98.7739028930664,
+    323.1380920410156
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);",
+   "bbox": [
+    78.66002655029297,
+    327.6380920410156,
+    416.3072204589844,
+    337.5380859375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: env.put(Context.PROVIDER_URL, sServiceProvider);",
+   "bbox": [
+    78.6600341796875,
+    342.0380859375,
+    300.0272521972656,
+    351.9380798339844
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: // 익명으로 LDAP 인증을 사용",
+   "bbox": [
+    78.6600341796875,
+    356.4380798339844,
+    207.7469024658203,
+    366.33807373046875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: env.put(Context.SECURITY_AUTHENTICATION, “none”);",
+   "bbox": [
+    78.6600341796875,
+    370.83807373046875,
+    316.2834167480469,
+    380.7380676269531
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: env.put(Context.SECURITY_PRINCIPAL, sUid);",
+   "bbox": [
+    78.6600341796875,
+    385.2380676269531,
+    277.22467041015625,
+    395.1380615234375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: env.put(Context.SECURITY_CREDENTIALS, sPwd);",
+   "bbox": [
+    78.6600341796875,
+    399.6380615234375,
+    295.209716796875,
+    409.5380554199219
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: …",
+   "bbox": [
+    78.6600341796875,
+    414.0380554199219,
+    98.77391052246094,
+    423.93804931640625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:}",
+   "bbox": [
+    78.6600341796875,
+    428.43804931640625,
+    94.11237335205078,
+    438.3380432128906
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인",
+   "bbox": [
+    70.86000061035156,
+    460.8712158203125,
+    456.3087463378906,
+    471.8932189941406
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.",
+   "bbox": [
+    70.86000061035156,
+    477.8511047363281,
+    264.0523986816406,
+    488.87310791015625
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    514.3310546875,
+    291.27935791015625,
+    525.3530883789062
+   ],
+   "block": 44,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public String doSometing(HttpServletRequest request, HttpServletResponse response, ",
+   "bbox": [
+    78.66000366210938,
+    539.258056640625,
+    445.6904602050781,
+    549.1580810546875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpSession session) {",
+   "bbox": [
+    90.78018188476562,
+    553.6580810546875,
+    183.21388244628906,
+    563.55810546875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66002655029297,
+    568.0580444335938,
+    86.42543029785156,
+    577.9580688476562
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String action= request.getParameter(“action”);",
+   "bbox": [
+    99.59989166259766,
+    568.0580444335938,
+    286.0462646484375,
+    577.9580688476562
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66002655029297,
+    582.4580688476562,
+    86.40426635742188,
+    592.3580932617188
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 세션에 저장된 사용자 정보를 얻어온다.",
+   "bbox": [
+    99.5787353515625,
+    582.4580688476562,
+    255.01992797851562,
+    592.3580932617188
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66002655029297,
+    596.8580322265625,
+    86.40074157714844,
+    606.758056640625
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "User user= (User)session.getAttribute(“user”); ",
+   "bbox": [
+    99.57521057128906,
+    596.8580322265625,
+    289.0758972167969,
+    606.758056640625
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66002655029297,
+    611.258056640625,
+    86.42543029785156,
+    621.1580810546875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66002655029297,
+    625.6580810546875,
+    86.42543029785156,
+    635.55810546875
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.",
+   "bbox": [
+    99.59989166259766,
+    625.6580810546875,
+    444.969482421875,
+    635.55810546875
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66002655029297,
+    640.0580444335938,
+    86.39104461669922,
+    649.9580688476562
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (action != null && action.equals(“delete”) && checkAccessControlList(user,action))",
+   "bbox": [
+    99.56550598144531,
+    640.0580444335938,
+    444.0125732421875,
+    649.9580688476562
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "8:      env.put(Context.SECURITY_CREDENTIALS, sPwd); \n9:      …",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    306.4781799316406,
+    167.7382080078125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String \nsPwd) {\n2: …\n3: env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);\n4: env.put(Context.PROVIDER_URL, sServiceProvider);\n5: // 익명으로 LDAP 인증을 사용\n6: env.put(Context.SECURITY_AUTHENTICATION, “none”);\n7: env.put(Context.SECURITY_PRINCIPAL, sUid);\n8: env.put(Context.SECURITY_CREDENTIALS, sPwd);\n9: …\n10:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    283.2381103515625,
+    433.78857421875,
+    439.5380432128906
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "1: public String doSometing(HttpServletRequest request, HttpServletResponse response, \nHttpSession session) {\n2:      String action= request.getParameter(“action”);\n3:      // 세션에 저장된 사용자 정보를 얻어온다.\n4:      User user= (User)session.getAttribute(“user”); \n5:\n6:      // 사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.\n7:      if (action != null && action.equals(“delete”) && checkAccessControlList(user,action))",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    538.058056640625,
+    445.6904602050781,
+    651.1580688476563
+   ]
+  }
+ ],
+ "native": "323\n제4장구현단계 보안약점 진단\n일반적인 진단의 예\n8:\nenv.put(Context.SECURITY_CREDENTIALS, sPwd); \n9:\n…\n외부의 입력인 name 값이 필터가 아닌 동적인 LDAP 쿼리문 에서 사용자명으로 사용되었으며, 사용자 \n인증을 위한 별도의 접근제어 방법이 사용되지 않고 있다. 이는 anonymous binding을 허용 하는 \n것으로 볼 수 있다. 따라서 임의 사용자의 정보를 외부에서 접근할 수 있게 된다.\n정탐코드의 예\n1: public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String \nsPwd) {\n2: …\n3: env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);\n4: env.put(Context.PROVIDER_URL, sServiceProvider);\n5: // 익명으로 LDAP 인증을 사용\n6: env.put(Context.SECURITY_AUTHENTICATION, “none”);\n7: env.put(Context.SECURITY_PRINCIPAL, sUid);\n8: env.put(Context.SECURITY_CREDENTIALS, sPwd);\n9: …\n10:}\n아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인\n한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.\n오탐코드의 예\n1: public String doSometing(HttpServletRequest request, HttpServletResponse response, \nHttpSession session) {\n2:\nString action= request.getParameter(“action”);\n3:\n// 세션에 저장된 사용자 정보를 얻어온다.\n4:\nUser user= (User)session.getAttribute(“user”); \n5:\n6:\n// 사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.\n7:\nif (action != null && action.equals(“delete”) && checkAccessControlList(user,action))\n",
+ "native_sha256": "9f2172ce26a921171b70d7a55295cebf195e268a10765bf3f7bf9bb809a9d688",
+ "chars": 1151,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

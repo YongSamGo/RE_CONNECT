@@ -1,0 +1,46 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+11
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+from django.shortcuts import render
+from django.db import connection
+def update_board(request):
+   ......
+  dbconn = connection
+  with dbconn.cursor() as curs:
+    name = request.POST.get('name', '')
+    content_id = request.POST.get('content_id', '')
+    # 외부 입력값 조작으로부터 안전한 인자화된 쿼리를 생성한다.
+    sql_query = 'update board set name=%s where content_id=%s'
+    # 사용자의 입력값이 인자화된 쿼리에 바인딩 후 실행되므로 안전하다.
+    curs.execute(sql_query, (name, content_id))
+    dbconn.commit()
+    return render(request, '/success.html')
+SQLite DB API 사용 시에도 동일하게 정적인 쿼리문을 사전에 생성하고 사용자 입력을 바인딩하는 방법을 
+적용해야 한다. SQLite에서는 인자화된 쿼리를 만들기 위해 “?”를 Placeholder로 사용하거나 “:name”처럼 
+Named Placeholder를 사용하는 방법 2가지를 적용 가능하다.
+나) ORM 사용 예제
+Django의 querysets는 쿼리 인자화를 사용해 쿼리를 구성하기 때문에 SQL 삽입 공격으로부터 안전하다. 
+부득이하게 원시 SQL 또는 사용자 정의 SQL을 사용할 경우에도 외부 입력값을 인자화된 쿼리의 바인딩 변수로 
+사용하면 된다.
+아래는 Django의 원시 SQL을 사용하는 예시를 보여 준다. Django의 ORM 프레임워크는 원시 SQL 쿼리를 
+수행하기 위해 Manager.raw() 기능을 제공한다. 외부로부터 입력받은 외부 입력값(line 6)을 쿼리문 생성에 
+문자열 조합으로 사용해 쿼리문을 구성하고 있다(line 11).

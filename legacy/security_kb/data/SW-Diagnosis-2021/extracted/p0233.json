@@ -1,0 +1,801 @@
+{
+ "lines": [
+  {
+   "text": "233",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    200.94000244140625,
+    120.79122924804688,
+    323.49853515625,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    90.62521362304688,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt.setString(4, stre_step);",
+   "bbox": [
+    99.41935729980469,
+    140.19808959960938,
+    217.94187927246094,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    90.62521362304688,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt.setString(5, stre_num);",
+   "bbox": [
+    99.41935729980469,
+    154.59811401367188,
+    218.35720825195312,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    90.62522888183594,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt.setString(6, fileName);",
+   "bbox": [
+    99.41937255859375,
+    168.99813842773438,
+    216.48304748535156,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    90.61112213134766,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt.executeUpdate();",
+   "bbox": [
+    99.40525817871094,
+    183.39816284179688,
+    193.58001708984375,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    77.94000244140625,
+    197.79818725585938,
+    90.62522888183594,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Thumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);",
+   "bbox": [
+    99.42024230957031,
+    197.79818725585938,
+    407.2373352050781,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "아래 코드는 업로드 파일의 확장자를 검사하여 허용되지 않은 확장자인 경우 업로드를 제한하고 있다.",
+   "bbox": [
+    70.86000061035156,
+    230.17120361328125,
+    450.1816711425781,
+    241.19320678710938
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    270.19110107421875,
+    308.9777526855469,
+    281.2131042480469
+   ],
+   "block": 31,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    77.94000244140625,
+    289.5981140136719,
+    85.70540618896484,
+    299.49810791015625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MultipartRequest multi",
+   "bbox": [
+    94.43960571289062,
+    289.5981140136719,
+    186.72079467773438,
+    299.49810791015625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "= new MultipartRequest(request,savePath,sizeLimit,\"euc-kr\",new DefaultFileRenamePolicy());",
+   "bbox": [
+    94.4395980834961,
+    303.99810791015625,
+    444.08880615234375,
+    313.8981018066406
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94000244140625,
+    318.3981018066406,
+    85.68953704833984,
+    328.298095703125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    94.42373657226562,
+    318.3981018066406,
+    110.2956771850586,
+    328.298095703125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    332.798095703125,
+    85.70540618896484,
+    342.6980895996094
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = multi.getFilesystemName(\"filename\");",
+   "bbox": [
+    94.4395980834961,
+    332.798095703125,
+    321.2978515625,
+    342.6980895996094
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    347.1980895996094,
+    85.70540618896484,
+    357.09808349609375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (fileName != null) {",
+   "bbox": [
+    94.4395980834961,
+    347.1980895996094,
+    182.57586669921875,
+    357.09808349609375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    361.59808349609375,
+    85.70540618896484,
+    371.4980773925781
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//1.업로드 파일의 마지막 “.” 문자열의 기준으로 실제 확장자 여부를 확인하고, 대소문자 구별을 ",
+   "bbox": [
+    98.87986755371094,
+    361.59808349609375,
+    433.54815673828125,
+    371.4980773925781
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "해야한다.",
+   "bbox": [
+    90.05928039550781,
+    375.9980773925781,
+    123.42341613769531,
+    385.8980712890625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.93912506103516,
+    390.3980712890625,
+    85.70452880859375,
+    400.2980651855469
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileExt = FileName.substring(fileName.lastIndexOf(\".\")+1).toLowerCase();",
+   "bbox": [
+    103.25930786132812,
+    390.3980712890625,
+    422.0196533203125,
+    400.2980651855469
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.93911743164062,
+    404.7980651855469,
+    85.68247985839844,
+    414.69805908203125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//2.되도록 화이트 리스트 방식으로 허용되는 확장자로 업로드를 제한해야 안전하다.",
+   "bbox": [
+    103.23638153076172,
+    404.7980651855469,
+    409.98748779296875,
+    414.69805908203125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.93911743164062,
+    419.19805908203125,
+    85.70452117919922,
+    429.0980529785156
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (!\"gif\".equals(fileExt) && !\"jpg\".equals(fileExt) && !\"png\".equals(fileExt)) {",
+   "bbox": [
+    103.2593002319336,
+    419.19805908203125,
+    404.6694030761719,
+    429.0980529785156
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.93997192382812,
+    433.5980529785156,
+    85.70537567138672,
+    443.498046875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "alertMessage(\"업로드 불가능한 파일입니다.\");",
+   "bbox": [
+    120.83963012695312,
+    433.5980529785156,
+    291.4517517089844,
+    443.498046875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    77.93997192382812,
+    447.998046875,
+    90.62519836425781,
+    457.8980407714844
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return;",
+   "bbox": [
+    121.43994903564453,
+    447.998046875,
+    147.9845428466797,
+    457.8980407714844
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.93997192382812,
+    462.3980407714844,
+    90.62519836425781,
+    472.29803466796875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    103.79965209960938,
+    462.3980407714844,
+    106.53239440917969,
+    472.29803466796875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12: }",
+   "bbox": [
+    77.93997192382812,
+    476.79803466796875,
+    97.77262878417969,
+    486.6980285644531
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: ......",
+   "bbox": [
+    77.93997192382812,
+    491.1980285644531,
+    110.8844985961914,
+    501.0980224609375
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: sql = \" INSERT INTO board(email,r_num,w_date,pwd,content,re_step,re_num,filename)",
+   "bbox": [
+    77.93997192382812,
+    505.5980529785156,
+    444.88494873046875,
+    515.498046875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“ + \" values ( ?, 0, sysdate(), ?, ?, ?, ?, ? ) \";",
+   "bbox": [
+    95.03988647460938,
+    519.9979858398438,
+    289.5917663574219,
+    529.8980102539062
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    77.93997192382812,
+    534.39794921875,
+    90.62518310546875,
+    544.2979736328125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "PreparedStatement pstmt = con.prepareStatement(sql); ",
+   "bbox": [
+    99.41932678222656,
+    534.39794921875,
+    328.20098876953125,
+    544.2979736328125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    77.93997192382812,
+    548.7979736328125,
+    90.63753509521484,
+    558.697998046875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    99.43167114257812,
+    548.7979736328125,
+    115.2639389038086,
+    558.697998046875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    77.93997192382812,
+    563.197998046875,
+    90.62519836425781,
+    573.0980224609375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Thumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);",
+   "bbox": [
+    99.42021179199219,
+    563.197998046875,
+    407.2373046875,
+    573.0980224609375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "업로드할 파일에 대한 유효성을 검사하지 않으면, 위험한 유형의 파일을 공격자가 업로드하거나 전송 ",
+   "bbox": [
+    70.86000061035156,
+    595.5711059570312,
+    459.14068603515625,
+    606.5931396484375
+   ],
+   "block": 52,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    612.5509643554688,
+    113.56755828857422,
+    623.572998046875
+   ],
+   "block": 53,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "text": "11:    pstmt.setString(4, stre_step);\n12:    pstmt.setString(5, stre_num);\n13:    pstmt.setString(6, fileName);\n14:    pstmt.executeUpdate();\n15:    Thumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    407.2373352050781,
+    208.89818115234374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+   ],
+   "text": "1:    MultipartRequest multi\n= new MultipartRequest(request,savePath,sizeLimit,\"euc-kr\",new DefaultFileRenamePolicy());\n2:    ......\n3:    String fileName = multi.getFilesystemName(\"filename\");\n4:    if (fileName != null) {\n5:      //1.업로드 파일의 마지막 “.” 문자열의 기준으로 실제 확장자 여부를 확인하고, 대소문자 구별을 \n해야한다.\n6:        String fileExt = FileName.substring(fileName.lastIndexOf(\".\")+1).toLowerCase();\n7:        //2.되도록 화이트 리스트 방식으로 허용되는 확장자로 업로드를 제한해야 안전하다.\n8:        if (!\"gif\".equals(fileExt) && !\"jpg\".equals(fileExt) && !\"png\".equals(fileExt)) {\n9:               alertMessage(\"업로드 불가능한 파일입니다.\");\n10:             return;\n11:      }\n12: }\n13: ......\n14: sql = \" INSERT INTO board(email,r_num,w_date,pwd,content,re_step,re_num,filename)\n“ + \" values ( ?, 0, sysdate(), ?, ?, ?, ?, ? ) \";\n15:    PreparedStatement pstmt = con.prepareStatement(sql); \n16:    ......\n17:    Thumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.93911743164062,
+    281.3131042480469,
+    444.88494873046875,
+    574.2980224609375
+   ]
+  }
+ ],
+ "native": "233\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 JAVA\n11:\npstmt.setString(4, stre_step);\n12:\npstmt.setString(5, stre_num);\n13:\npstmt.setString(6, fileName);\n14:\npstmt.executeUpdate();\n15:\nThumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);\n아래 코드는 업로드 파일의 확장자를 검사하여 허용되지 않은 확장자인 경우 업로드를 제한하고 있다.\n안전한 코드의 예 JAVA\n1:\nMultipartRequest multi\n= new MultipartRequest(request,savePath,sizeLimit,\"euc-kr\",new DefaultFileRenamePolicy());\n2:\n......\n3:\nString fileName = multi.getFilesystemName(\"filename\");\n4:\nif (fileName != null) {\n5:\n//1.업로드 파일의 마지막 “.” 문자열의 기준으로 실제 확장자 여부를 확인하고, 대소문자 구별을 \n해야한다.\n6:\nString fileExt = FileName.substring(fileName.lastIndexOf(\".\")+1).toLowerCase();\n7:\n//2.되도록 화이트 리스트 방식으로 허용되는 확장자로 업로드를 제한해야 안전하다.\n8:\nif (!\"gif\".equals(fileExt) && !\"jpg\".equals(fileExt) && !\"png\".equals(fileExt)) {\n9:\nalertMessage(\"업로드 불가능한 파일입니다.\");\n10:\nreturn;\n11:\n}\n12: }\n13: ......\n14: sql = \" INSERT INTO board(email,r_num,w_date,pwd,content,re_step,re_num,filename)\n“ + \" values ( ?, 0, sysdate(), ?, ?, ?, ?, ? ) \";\n15:\nPreparedStatement pstmt = con.prepareStatement(sql); \n16:\n......\n17:\nThumbnail.create(savePath+\"/\"+fileName, savePath+\"/\"+\"s_\"+fileName, 150);\n업로드할 파일에 대한 유효성을 검사하지 않으면, 위험한 유형의 파일을 공격자가 업로드하거나 전송 \n할 수 있다.\n",
+ "native_sha256": "0857e4d376408c7bd73d5ca74a2c7155041ba9d0ea27add28e183cbd8c50b542",
+ "chars": 1231,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

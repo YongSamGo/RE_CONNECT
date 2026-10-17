@@ -1,0 +1,9 @@
+458
+마. 참고자료
+[1] CWE-416, Use After Free, MITRE,
+http://cwe.mitre.org/data/definitions/416.html
+[2] Do not access freed memory, CERT,
+http://www.securecoding.cert.org/confluence/display/c/MEM30-C.+Do+not+ac
+cess +freed+memory
+[3] Using freed memory, OWASP,
+https://www.owasp.org/index.php/Using_freed_memory

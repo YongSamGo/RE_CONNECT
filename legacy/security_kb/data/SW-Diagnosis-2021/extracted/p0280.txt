@@ -1,0 +1,44 @@
+280
+다음 예제는 공격자가 host 파라미터를 조작하여 내부 서버의 정보를 조회할 수 있음을 보여준다. 
+이때, host 값을 별도의 검증 없이 전달하여 내부 서버의 데이터(secrets.txt) 파일이 외부로 유출될 
+수 있으므로 취약하다고 판정한다.
+삽입 코드의 예 : /getFavicon?host=192.168.176.1:8080/secrets.txt?
+정탐코드의 예
+1:public void doGet(HttpServletRequest request, HttpServletResponse response) {
+2:
+String host = request.getParameter("host");
+3:
+4:
+byte[] bytes = getImage(host, defaultBytes);
+5:
+if (bytes != null) {
+6:
+writeBytesToStream(bytes, response);
+7:
+}
+8:}
+9: 
+10:private byte[] getImage(String host, byte[] defaultImage) { 
+11:
+byte[] bytes = getImage("http://" + host + "/favicon.ico");
+12:
+...
+13:}
+다음 예제는 11라인에서 Public Cloud의 메타데이터 서비스 주소인 169.254.169.254를 블랙리스트 
+방식으로 필터링하여 에러를 리턴하여 메타서버의 크레덴셜 조회를 차단할 수 있으므로 취약하지 
+않다고 판정한다.
+오탐코드의 예
+1:<?php
+2:
+require_once('./htmlpurifier/library/HTMLPurifier.includes.php');
+3:
+$purifier = new HTMLPurifier();
+4:
+5:
+$ch = curl_init();
+6:
+$url = $_GET['url'];
+7:
+$urlinfo = parse_url($url); // URL 파싱
+8:
+$scheme = $urlinfo['scheme'];

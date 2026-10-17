@@ -1,0 +1,698 @@
+{
+ "lines": [
+  {
+   "text": "365",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    200.94000244140625,
+    120.79122924804688,
+    323.49853515625,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6: }",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    92.79290771484375,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: public Static String getAuthKey() {",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    230.67300415039062,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//매번 변경되는 시드값을 사용하여 다른 난수값이 생성되나 보안결정을 위한 난수로는",
+   "bbox": [
+    91.14002990722656,
+    168.99813842773438,
+    390.5049133300781,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "안전하지 않다.",
+   "bbox": [
+    91.14002990722656,
+    183.39816284179688,
+    142.3824920654297,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.94000244140625,
+    197.79818725585938,
+    85.70540618896484,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Random random = new Random();",
+   "bbox": [
+    103.26018524169922,
+    197.79818725585938,
+    246.72923278808594,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.94000244140625,
+    212.19821166992188,
+    85.67719268798828,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String authKey = Integer.toString(random.nextInt());",
+   "bbox": [
+    103.2311019897461,
+    212.19821166992188,
+    312.5653991699219,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "java.util.Random 클래스는 setSeed로 매번 변경되는 시드값을 설정 하거나, 현재 시간 기반으로 ",
+   "bbox": [
+    70.86000061035156,
+    244.57110595703125,
+    459.2412414550781,
+    255.59310913085938
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "매번 변경되는 별도 seed를 설정하지 않는 기본값을 사용한다. 보안결정을 위해 난수 사용시에는 ",
+   "bbox": [
+    70.86000061035156,
+    261.6111145019531,
+    459.1611328125,
+    272.63311767578125
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "java.security.SecureRandom 클래스를 사용하는 것이 보다 안전하다.",
+   "bbox": [
+    70.86000061035156,
+    278.59100341796875,
+    348.2626037597656,
+    289.6130065917969
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    318.5511169433594,
+    308.9777526855469,
+    329.5731201171875
+   ],
+   "block": 34,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: import java.util.Random; ",
+   "bbox": [
+    77.94000244140625,
+    337.95819091796875,
+    190.86309814453125,
+    347.8581848144531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: import java.security.SecureRandom;",
+   "bbox": [
+    77.94000244140625,
+    352.3581848144531,
+    235.00218200683594,
+    362.2581787109375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ...",
+   "bbox": [
+    77.94000244140625,
+    366.7581787109375,
+    97.99039459228516,
+    376.6581726074219
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: public Static int getRandomValue(int maxValue) { ",
+   "bbox": [
+    77.94000244140625,
+    381.1581726074219,
+    293.9694519042969,
+    391.05816650390625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//setSeed로 매번 변경되는 시드값을 설정 하거나, 기본값인 현재 시간 기반으로 매번",
+   "bbox": [
+    91.14002990722656,
+    395.55816650390625,
+    389.64215087890625,
+    405.4581604003906
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "변경되는 시드값을 사용하도록 한다.",
+   "bbox": [
+    91.14002990722656,
+    409.9581604003906,
+    216.55174255371094,
+    419.858154296875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    424.358154296875,
+    85.70540618896484,
+    434.2581481933594
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Random random = new Random();",
+   "bbox": [
+    103.26018524169922,
+    424.358154296875,
+    246.72923278808594,
+    434.2581481933594
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    438.7581481933594,
+    85.67719268798828,
+    448.65814208984375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return random.nextInt(maxValue);",
+   "bbox": [
+    103.2311019897461,
+    438.7581481933594,
+    238.4040069580078,
+    448.65814208984375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    77.93998718261719,
+    453.15814208984375,
+    92.79289245605469,
+    463.0581359863281
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: public Static String getAuthKey() { ",
+   "bbox": [
+    77.93998718261719,
+    467.5581359863281,
+    233.1968231201172,
+    477.4581298828125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//보안결정을 위한 난수로는 예측이 거의 불가능하게 암호학적으로 보호된 SecureRandom을 ",
+   "bbox": [
+    91.14002990722656,
+    481.9581298828125,
+    420.06268310546875,
+    491.8581237792969
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "사용한다.",
+   "bbox": [
+    91.14002990722656,
+    496.3581237792969,
+    124.50416564941406,
+    506.25811767578125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9: try{",
+   "bbox": [
+    77.94000244140625,
+    510.7580871582031,
+    103.24520111083984,
+    520.6580810546875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    77.94000244140625,
+    525.1580810546875,
+    90.62522888183594,
+    535.05810546875
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SecureRandom secureRandom = SecureRandom.getInstance(\"SHA1PRNG\");",
+   "bbox": [
+    99.42024230957031,
+    525.1580810546875,
+    406.82562255859375,
+    535.05810546875
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94088745117188,
+    539.55810546875,
+    90.62611389160156,
+    549.4581298828125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MessageDigest digest = MessageDigest.getInstance(\"SHA-256\");",
+   "bbox": [
+    99.42112731933594,
+    539.55810546875,
+    364.92486572265625,
+    549.4581298828125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94088745117188,
+    553.9580688476562,
+    90.62611389160156,
+    563.8580932617188
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "secureRandom.setSeed(secureRandom.generateSeed(128));",
+   "bbox": [
+    99.42112731933594,
+    553.9580688476562,
+    339.5868835449219,
+    563.8580932617188
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    77.94088745117188,
+    568.3580322265625,
+    90.62610626220703,
+    578.258056640625
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String authKey = new String(digest.digest((secureRandom.nextLong() + \"\").getBytes()));",
+   "bbox": [
+    99.42024993896484,
+    568.3580322265625,
+    437.3660888671875,
+    578.258056640625
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    77.94000244140625,
+    582.758056640625,
+    90.63579559326172,
+    592.6580810546875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    99.42993927001953,
+    582.758056640625,
+    107.34784698486328,
+    592.6580810546875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: } catch (NoSuchAlgorithmException e) {",
+   "bbox": [
+    77.94000244140625,
+    597.1580810546875,
+    257.65142822265625,
+    607.05810546875
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "6: }\n7: public Static String getAuthKey() {\n//매번 변경되는 시드값을 사용하여 다른 난수값이 생성되나 보안결정을 위한 난수로는\n안전하지 않다.",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    390.5049133300781,
+    194.49815673828124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "8:        Random random = new Random();\n9:        String authKey = Integer.toString(random.nextInt());",
+   "language": "text",
+   "label": "안전하지 않다.",
+   "bbox": [
+    77.94000244140625,
+    196.5981872558594,
+    312.5653991699219,
+    223.29820556640624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1: import java.util.Random; \n2: import java.security.SecureRandom;\n3: ...\n4: public Static int getRandomValue(int maxValue) { \n//setSeed로 매번 변경되는 시드값을 설정 하거나, 기본값인 현재 시간 기반으로 매번\n변경되는 시드값을 사용하도록 한다.",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    329.6731201171875,
+    389.64215087890625,
+    421.058154296875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28
+   ],
+   "text": "5:        Random random = new Random();\n6:        return random.nextInt(maxValue);\n7: }\n8: public Static String getAuthKey() { \n//보안결정을 위한 난수로는 예측이 거의 불가능하게 암호학적으로 보호된 SecureRandom을 \n사용한다.",
+   "language": "text",
+   "label": "변경되는 시드값을 사용하도록 한다.",
+   "bbox": [
+    77.93998718261719,
+    423.158154296875,
+    420.06268310546875,
+    507.45811767578124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+   ],
+   "text": "9: try{\n10:    SecureRandom secureRandom = SecureRandom.getInstance(\"SHA1PRNG\");\n11:    MessageDigest digest = MessageDigest.getInstance(\"SHA-256\");\n12:    secureRandom.setSeed(secureRandom.generateSeed(128));\n13:    String authKey = new String(digest.digest((secureRandom.nextLong() + \"\").getBytes()));\n14:    ...\n15: } catch (NoSuchAlgorithmException e) {",
+   "language": "text",
+   "label": "사용한다.",
+   "bbox": [
+    77.94000244140625,
+    509.55808715820314,
+    437.3660888671875,
+    608.25810546875
+   ]
+  }
+ ],
+ "native": "365\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 JAVA\n6: }\n7: public Static String getAuthKey() {\n//매번 변경되는 시드값을 사용하여 다른 난수값이 생성되나 보안결정을 위한 난수로는\n안전하지 않다.\n8:\nRandom random = new Random();\n9:\nString authKey = Integer.toString(random.nextInt());\njava.util.Random 클래스는 setSeed로 매번 변경되는 시드값을 설정 하거나, 현재 시간 기반으로 \n매번 변경되는 별도 seed를 설정하지 않는 기본값을 사용한다. 보안결정을 위해 난수 사용시에는 \njava.security.SecureRandom 클래스를 사용하는 것이 보다 안전하다.\n안전한 코드의 예 JAVA\n1: import java.util.Random; \n2: import java.security.SecureRandom;\n3: ...\n4: public Static int getRandomValue(int maxValue) { \n//setSeed로 매번 변경되는 시드값을 설정 하거나, 기본값인 현재 시간 기반으로 매번\n변경되는 시드값을 사용하도록 한다.\n5:\nRandom random = new Random();\n6:\nreturn random.nextInt(maxValue);\n7: }\n8: public Static String getAuthKey() { \n//보안결정을 위한 난수로는 예측이 거의 불가능하게 암호학적으로 보호된 SecureRandom을 \n사용한다.\n9: try{\n10:\nSecureRandom secureRandom = SecureRandom.getInstance(\"SHA1PRNG\");\n11:\nMessageDigest digest = MessageDigest.getInstance(\"SHA-256\");\n12:\nsecureRandom.setSeed(secureRandom.generateSeed(128));\n13:\nString authKey = new String(digest.digest((secureRandom.nextLong() + \"\").getBytes()));\n14:\n...\n15: } catch (NoSuchAlgorithmException e) {\n",
+ "native_sha256": "c1a4f266a0e4a8293020410c8975d242c161871c8356f23d091a86043e32bd80",
+ "chars": 1127,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

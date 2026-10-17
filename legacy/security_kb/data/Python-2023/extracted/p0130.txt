@@ -1,0 +1,9 @@
+Python 시큐어코딩 가이드
+124
+라. 참고자료
+① CWE-674: Uncontrolled Recursion, MITRE,
+https://cwe.mitre.org/data/definitions/674.html
+② CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,
+https://cwe.mitre.org/data/definitions/835.html
+③ sys.setrecursionlimit, Python Software Foundation,
+https://docs.python.org/3/library/sys.html#sys.setrecursionlimit

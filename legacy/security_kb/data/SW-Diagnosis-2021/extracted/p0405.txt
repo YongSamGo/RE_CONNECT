@@ -1,0 +1,26 @@
+405
+제4장구현단계 보안약점 진단
+정탐코드의 예
+16:
+{
+17:
+if (getNextMessage(socket, password, PASSWORD_SIZE) > 0)
+18:
+{
+19:
+isValidUser = AuthenticateUser(username, password);
+20:
+}
+21:
+}
+22:
+}
+23:
+return(SUCCESS);
+24:
+}
+마. 참고자료
+[1] CWE-307, Improper Restriction of Excessive Authentication Attempts, MITRE,
+http://cwe.mitre.org/data/definitions/307.html
+[2] Blocking Brute Force Attacks, OWASP,
+https://www.owasp.org/index.php/Blocking_Brute_Force_Attacks

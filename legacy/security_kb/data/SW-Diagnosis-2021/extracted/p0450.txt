@@ -1,0 +1,47 @@
+450
+라. 진단방법
+자원(파일기술자, 힙메모리, 소켓)이 선언되고, 선언된 자원이 할당된 경우 해제되는지 확인한다. 
+진단자는 제어문, 예외처리문 등의 분기 등에 따라 모든 흐름(control flow)을 판단하여 자원해제 
+여부를 체크해야 한다. 할당된 자원이 해제될 경우 안전하다고 판단하고 자원이 해제되지 않는 분기가 
+존재할 경우 취약하다.
+일반적인 진단의 예
+1: … 
+2: try { 
+3:
+Class.forName(“com.mysql.jdbc.Driver”); 
+4:
+conn = DriverManager.getConnection(url); 
+5:
+…
+6: } catch (ClassNotFoundException e) { 
+7:
+conn.rollback(); 
+8: } finally { 
+9:
+if(conn != null) conn.close(); 
+10:}
+다음과 같은 예제는 rs.close(), pstmt.close() 등 자원 해제가 try catch 문안에서 함께 이루어지고 
+있다. 이 경우 rs.close()문에서 예외가 발생하면 pstmt.close() 이하의 자원 해제는 이루어지지 
+않으므로 자원유출이 일어난다.
+정탐코드의 예
+1:
+try {
+2:
+String sqlSelect = “SELECT USER_ID, PWD FROM USER” 
+3:
+String sqlUpdate = “UPDATE USER SET PASSWD = ? WHERE USER_ID = ?”
+4:
+Class.forName(“oracle.jdbc.driver.OracleDriver”);
+5:
+conn =
+DriverManager.getConnection(“jdbc:oracle:thin:@192.168.1.1:1521:db”, “aaa”, “AAA”);
+6:
+pstmt = conn.prepareStatement(sqlSelect); 
+7:
+pstmt1 = conn.prepareStatement(sqlUpdate); 
+8:
+rs = pstmt.executeQuery(); 
+9:
+while( rs.next()) { 
+10:
+System.out.println(“#################### user_id : “ +

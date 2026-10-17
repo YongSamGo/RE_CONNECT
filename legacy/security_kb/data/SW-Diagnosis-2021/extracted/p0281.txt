@@ -1,0 +1,48 @@
+281
+제4장구현단계 보안약점 진단
+오탐코드의 예
+9:
+$host = $urlinfo['host'];
+10:
+$ip = gethostbyname($host);
+11:
+if ($ip === "169.254.169.254") { // 퍼블릭클라우드 메타데이터 서비스 IP를 검증
+12:
+die("Invalid host");
+13:
+} elseif ($scheme !== 'http' && $scheme !== 'https') { // HTTP(S) 스킴 체크
+14:
+die("Invalid scheme");
+15:
+}
+16:
+curl_setopt($ch, CURLOPT_URL, $url);
+17:
+curl_setopt($ch, CURLOPT_FOLLOWLOCATION, false);
+18:
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+19:
+20:
+$html = curl_exec($ch);
+21:
+echo $purifier->purify($html);
+다음 예제는 내부 대역의 IP들에 대한 접근 시도를 블랙리스트 방식으로 필터링한다. 2라인에서 
+isPrivateIP() 메소드를 호출하여 입력 값을 블랙리스트 목록과 비교하여 허용되지 않은 접근에 대하여 
+오류를 리턴한다. 이 경우, 블랙리스트를 우회할 수 있는 다양한 공격을 감안해서 필터링하고 있는지 
+검토 후 취약 여부를 판단할 필요가 있다.
+오탐코드의 예
+1:private static String getRemoteContent(String url) throws IOException {
+2:
+if ( isPrivateIP(url) == true ) {
+3:
+return "invalid url"; 
+4:
+}
+5:
+BufferedReader in = new BufferedReader(new InputStreamReader(
+6:
+new URL(url).openStream())); 
+7:
+return FileCopyUtils.copyToString(in); 
+8:}
+9:

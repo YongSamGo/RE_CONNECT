@@ -1,0 +1,39 @@
+334
+특정언어에서 제공하는 암호관련 함수를 호출하는지 식별한다.
+- 취약한 알고리즘 : RC2, RC4, RC5, RC6, MD4, MD5, SHA1, DES 등
+- 안전한 알고리즘 : SHA-256, AES, SEED, ARIA 등
+일반적인 진단의 예
+1: try { 
+2: MessageDigest md = MessageDigest.getInstance(“SHA1”); 
+3: md.update(msg.getBytes()); 
+4: return md.digest(); 
+5: } catch (NoSuchAlgorithmException e) { 
+비밀번호를 Base64로 인코딩하여 configuration 파일에 저장한 경우이다. Base64 인코딩 기법 
+자체가 가지는 취약점 때문에 이 경우 비밀번호를 안전하게 보호할 수 없다.
+Base64 encoding의 경우는 암호화가 아닌 인코딩이다. 개발 시 Base64 encoding을 사용하는 
+경우는 암호화 목적이 아닌 가시성과 보관성을 위해서이다. 그러므로 Base64 encoding을 사용 
+하였을 때 취약한 암호화 알고리즘이라 하기 어렵다. 하지만 개발자가 암호화를 위해 Base64 encoding을 
+사용하였다면 취약하다고 판정한다.
+정탐코드의 예
+1: public boolean DBConnect() { 
+2:
+String url = “DBServer”; 
+3:
+String usr = “Scott”; 
+4:
+Connection con = null; 
+5:
+6:
+FileInputStream fis = null; 
+7:
+try { 
+8:
+Properties prop = new Properties(); 
+9:
+fis = new FileInputStream(“config.properties”); 
+10:
+11:
+// 비밀번호를 64bit로 decoding한다. 
+12:
+byte password[] = Base64.decode(prop.getProperty(“password”));
+13:

@@ -1,0 +1,28 @@
+364
+8. 적절하지 않은 난수 값 사용
+가. 개요
+예측 가능한 난수를 사용하는 것은 시스템에 보안약점을 유발한다. 예측 불가능한 숫자가 필요한 
+상황에서 예측 가능한 난수를 사용한다면, 공격자는 SW에서 생성되는 다음 숫자를 예상하여 시스템을 
+공격하는 것이 가능하다.
+나. 보안대책
+컴퓨터의 난수발생기는 난수 값을 결정하는 시드(Seed)값이 고정될 경우, 매번 동일한 난수값이 
+발생한다. 이를 최대한 피하기 위해 Java에서는 Random()과 Math.random() 사용 시 java.util. 
+Random 클래스에서 기본값으로 현재시간을 기반으로 조합하여 매번 변경 되는 시드(Seed)값을 
+사용하며, C에서는 rand()함수 사용 시 매번 변경되는 기본 시드(Seed)값이 없으므로, srand()로 
+매번 변경되는 현재시간 기반 등으로 시드(Seed)값을 설정 하여야 한다.
+그러나 세션 ID, 암호화키 등 보안결정을 위한 값을 생성하고 보안결정을 수행하는 경우에는, Java 
+에서 Random()과 Math.random()을 사용하지 말아야 하며, 예측이 거의 불가능하게 암호학적으로 
+보호된 java.security.SecureRandom 클래스를 사용하는 것이 안전하다.
+다. 코드예제
+java.util.Random 클래스의 random() 메소드 사용시, 고정된 seed를 설정하면 동일한 난수 값이 
+생성되어 안전하지 않다. 매번 변경되는 seed를 설정하더라도 보안결정을 위한 난수 이용시에는 
+안전하지 않다.
+안전하지 않은 코드의 예 JAVA
+1: import java.util.Random;
+2: ...
+3: public Static int getRandomValue(int maxValue) { 
+//고정된 시드값을 사용하여 동일한 난수값이 생성되어 안전하지 않다.
+4:
+Random random = new Random(100);
+5:
+return random.nextInt(maxValue);

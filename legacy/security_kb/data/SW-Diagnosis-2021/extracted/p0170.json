@@ -1,0 +1,338 @@
+{
+ "lines": [
+  {
+   "text": "170",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    226.03147888183594,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    164.63999938964844,
+    138.21823120117188,
+    179.7670440673828,
+    148.11822509765625
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    339.8399963378906,
+    138.21823120117188,
+    387.18792724609375,
+    148.11822509765625
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "에러처리",
+   "bbox": [
+    157.1999969482422,
+    158.55813598632812,
+    187.20726013183594,
+    168.4581298828125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "오류 메시지 정보노출",
+   "bbox": [
+    328.13922119140625,
+    158.55813598632812,
+    398.88909912109375,
+    168.4581298828125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    209.195068359375,
+    132.05699157714844,
+    221.2730712890625
+   ],
+   "block": 17,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐209 Information Exposure Through an Error Message, MITRE,",
+   "bbox": [
+    91.5,
+    232.86009216308594,
+    398.7125549316406,
+    243.89321899414062
+   ],
+   "block": 18,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/defini- tions/209.html",
+   "bbox": [
+    105.23995971679688,
+    248.89120483398438,
+    320.07342529296875,
+    259.9132080078125
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE‐390 Detection of Error Condition Without Action, MITRE,",
+   "bbox": [
+    91.49954986572266,
+    269.8800048828125,
+    377.29742431640625,
+    280.9131164550781
+   ],
+   "block": 20,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/390. html",
+   "bbox": [
+    105.23995971679688,
+    285.9111022949219,
+    314.5201416015625,
+    296.93310546875
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③CWE‐754 Improper Check for Unusual or Exceptional Conditions, MITRE",
+   "bbox": [
+    91.49954986572266,
+    306.8999938964844,
+    420.33331298828125,
+    317.93310546875
+   ],
+   "block": 22,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/defi- nitions/754.html",
+   "bbox": [
+    105.23995971679688,
+    322.8709716796875,
+    320.0628662109375,
+    333.8929748535156
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Error Handling, Auditing and Logging, OWASP,",
+   "bbox": [
+    91.49954986572266,
+    343.8708801269531,
+    309.4211120605469,
+    354.89288330078125
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Error_Handling,_Audit- ing_and_Logging ",
+   "bbox": [
+    105.23995971679688,
+    359.890869140625,
+    437.46649169921875,
+    370.9128723144531
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Improper Error Handling, OWASP,",
+   "bbox": [
+    91.50051879882812,
+    380.8907775878906,
+    253.65028381347656,
+    391.91278076171875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Improper_Error_Handling",
+   "bbox": [
+    105.24092864990234,
+    396.9107666015625,
+    366.5423889160156,
+    407.9327697753906
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥“Best practices with custom error pages in .Net”, Micro Support,",
+   "bbox": [
+    91.50051879882812,
+    417.9106750488281,
+    387.1719665527344,
+    428.93267822265625
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://support.microsoft.com/default.aspx-?scid=kb;en-us;834452",
+   "bbox": [
+    105.24093627929688,
+    433.87054443359375,
+    401.4653625488281,
+    444.8925476074219
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦WASC Fingerprinting, WASC,",
+   "bbox": [
+    91.50052642822266,
+    454.8704528808594,
+    233.61375427246094,
+    465.8924560546875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246925/Fingerprinting",
+   "bbox": [
+    105.24093627929688,
+    470.89044189453125,
+    389.94244384765625,
+    481.9124450683594
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧WASC Information Leakage, WASC,",
+   "bbox": [
+    91.50052642822266,
+    491.8903503417969,
+    262.4870300292969,
+    502.912353515625
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246936/Information%20Leak-age",
+   "bbox": [
+    105.24093627929688,
+    507.9103088378906,
+    441.2101135253906,
+    518.9323120117188
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "170\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n에러처리\n오류 메시지 정보노출\n마. 참고자료\n①CWE‐209 Information Exposure Through an Error Message, MITRE,\nhttp://cwe.mitre.org/data/defini- tions/209.html\n②CWE‐390 Detection of Error Condition Without Action, MITRE,\nhttp://cwe.mitre.org/data/definitions/390. html\n③CWE‐754 Improper Check for Unusual or Exceptional Conditions, MITRE\nhttp://cwe.mitre.org/data/defi- nitions/754.html\n④Error Handling, Auditing and Logging, OWASP,\nhttp://www.owasp.org/index.php/Error_Handling,_Audit- ing_and_Logging \n⑤Improper Error Handling, OWASP,\nhttp://www.owasp.org/index.php/Improper_Error_Handling\n⑥“Best practices with custom error pages in .Net”, Micro Support,\nhttp://support.microsoft.com/default.aspx-?scid=kb;en-us;834452\n⑦WASC Fingerprinting, WASC,\nhttp://projects.webappsec.org/w/page/13246925/Fingerprinting\n⑧WASC Information Leakage, WASC,\nhttp://projects.webappsec.org/w/page/13246936/Information%20Leak-age\n",
+ "native_sha256": "84f25d52bf7ab36c16af2804acffe9048c6759eed05c405775e4d1334ec92b60",
+ "chars": 925,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

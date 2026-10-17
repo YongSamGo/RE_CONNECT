@@ -1,0 +1,44 @@
+384
+라. 진단방법
+사용자 브라우저로 쿠키를 전송하는지 확인하고(①), 쿠키 유효기간 확인한다(②). 쿠키 설정 값에 id 
+정보 등 중요 정보 포함 여부를 확인한다(③)
+일반적인 진단의 예
+1:
+…
+2:
+Cookie ck = new Cookie(“id”, “test123”) ; ········································································③
+3:
+ck.setMaxAge(60*60*24*365*10) ; ·······················································································②
+4:
+response.addCookie(ck) ; ·······································································································①
+5:
+…
+다음의 예제는 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있다. 쿠키의 유효기간이 긴 경우 
+사용자 하드디스크에 쿠키가 저장되며 저장된 쿠키는 쉽게 도용될 수 있으므로 취약하다.
+정탐코드의 예
+1: protected void doPost(HttpServletRequest request, HttpServletResponse response) {
+2:
+……
+3:
+String username = request.getParameter(“username”);
+4:
+char[] password = request.getParameter(“password”).toCharArray();
+5:
+boolean rememberMe = Boolean.valueOf(request.getParameter(“rememberme”));
+6:
+7:
+LoginService loginService = new LoginServiceImpl(); 
+8:
+if (rememberMe) { 
+9:
+Cookie loginCookie = new Cookie(“rememberme”, “YES”); 
+10:
+loginCookie.setMaxAge(60*60*24*30*12);
+11:
+response.addCookie(loginCookie);
+12:
+……
+13:
+} else {
+14:
+……

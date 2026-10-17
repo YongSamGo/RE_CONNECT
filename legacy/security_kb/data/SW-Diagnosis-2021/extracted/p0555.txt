@@ -1,0 +1,35 @@
+555
+제5장부록
+개발가이드에는 중요 기능/리소스의 노출을 막기 위한 인증 여부 확인 방법, 폼 기반의 인증 방법, 
+2단계 인증 기법을 제시하고 있다.
+안전한 보안설계의 예 : 개발가이드
+2.1.1 인증 여부 확인
+인증 여부를 확인하는 공통 모듈로 개발한다.
+public boolean isAuthenticated(HttpSession s) 
+{ 
+ boolean authenticated = false; 
+ try { 
+    authenticated 
+    = getBooleanSessionAttribute(s, getUserId() +
+“.isAuthenticated”); 
+ } catch (ParameterNotFoundException e) { 
+  // error 
+ } 
+ return authenticated; 
+} 
+protected boolean getBooleanSessionAttribute(HttpSession s,
+String
+ name) throws ParameterNotFoundException 
+{ 
+ boolean value = false; 
+ Object attribute = s.getRequest().getSession().getAttribute(name);
+if (attribute ==
+ null) { 
+   throw new ParameterNotFoundException(); 
+ } else { 
+   value = ((Boolean) attribute).booleanValue(); 
+ } 
+ return value; 
+}
+인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 
+인증 여부를 확인할 수 있도록 한다.

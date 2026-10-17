@@ -1,0 +1,111 @@
+{
+ "lines": [
+  {
+   "text": "289",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-113 HTTP Response Splitting, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.53121948242188,
+    295.615966796875,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/113.html",
+   "bbox": [
+    102.23983001708984,
+    153.55117797851562,
+    308.7279968261719,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] HTTP Response Splitting, OWASP",
+   "bbox": [
+    85.86000061035156,
+    174.55111694335938,
+    251.77197265625,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/HTTP_Response_Splitting",
+   "bbox": [
+    102.23983001708984,
+    190.51095581054688,
+    372.4620361328125,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "289\n제4장구현단계 보안약점 진단\n마. 참고자료\n[1] CWE-113 HTTP Response Splitting, MITRE,\nhttp://cwe.mitre.org/data/definitions/113.html\n[2] HTTP Response Splitting, OWASP\nhttps://www.owasp.org/index.php/HTTP_Response_Splitting\n",
+ "native_sha256": "726a5a6da0f80c03e94d824c45b46fd8433cdbfba0895ce67ee47b70e55be21f",
+ "chars": 210,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

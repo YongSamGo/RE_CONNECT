@@ -1,0 +1,33 @@
+366
+보안결정을 위한 난수로는 안전하지 않은 C# 코드의 예제이다.
+안전하지 않은 코드의 예 C#
+1: static int GenerateDigit() 
+2: {
+//매번 변경되는 시드값을 사용하여 다른 난수값이 생성되나 보안결정을 위한
+난수로는 안전하지 않다.
+3:
+Random rng = new Random();
+4:
+return rng.Next(10);
+5: }
+암호학적으로 보호된 SecureRandom 을 사용한다.
+안전한 코드의 예 C#
+1: static int GenerateDigitGood() 
+2: { 
+//보안결정을 위한 난수로는 예측이 거의 불가능하게 암호학적으로 보호된
+SecureRandom을 사용한다.
+3:
+byte[] b = new byte[4]; 
+4:
+new
+System.Security.Cryptography.RNGCryptoServiceProvider().GetBytes(b);
+5:
+return (b[0] & 0x7f) << 24 | b[1] << 16 | b[2] << 8 | b[3];
+6: }
+Seeding 없이 사용하는 rand() 함수는 암호화에 사용되기 힘듭니다.
+안전하지 않은 코드의 예 C
+1: void foo(){ 
+2:
+int i; 
+3:
+for(i=0; i<20; i++)

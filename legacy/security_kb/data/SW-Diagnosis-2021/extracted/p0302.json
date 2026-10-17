@@ -1,0 +1,213 @@
+{
+ "lines": [
+  {
+   "text": "302",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "13:}",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    99.7523422241211,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    97.01696014404297,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    127.77088928222656,
+    156.63821411132812,
+    143.65164184570312,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    209.0750732421875,
+    132.05699157714844,
+    221.153076171875
+   ],
+   "block": 17,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-807 Reliance on Untrusted Inputs in a Security Decision, MITRE,",
+   "bbox": [
+    91.5,
+    232.75119018554688,
+    417.2926330566406,
+    243.773193359375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/807.html",
+   "bbox": [
+    107.87982177734375,
+    248.77117919921875,
+    314.3680114746094,
+    259.7931823730469
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not trust the values of environment variables, CERT,",
+   "bbox": [
+    91.49999237060547,
+    269.7710876464844,
+    351.2124328613281,
+    280.7930908203125
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/ENV02-J.+Do+not+t",
+   "bbox": [
+    107.87982177734375,
+    285.73095703125,
+    461.3086242675781,
+    296.7529602050781
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "rust+the+values+of+environment+variables",
+   "bbox": [
+    107.87982177734375,
+    301.7509460449219,
+    297.657958984375,
+    312.77294921875
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Session Management, OWASP",
+   "bbox": [
+    91.49999237060547,
+    322.7508544921875,
+    243.69398498535156,
+    333.7728576660156
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Session_Management_Cheat_Sheet",
+   "bbox": [
+    107.87982177734375,
+    338.7708435058594,
+    423.2467956542969,
+    349.7928466796875
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4
+   ],
+   "text": "13:}\n14:             ......",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    143.65164184570312,
+    167.7382080078125
+   ]
+  }
+ ],
+ "native": "302\n오탐코드의 예\n13:}\n14:\n......\n마. 참고자료\n[1] CWE-807 Reliance on Untrusted Inputs in a Security Decision, MITRE,\nhttp://cwe.mitre.org/data/definitions/807.html\n[2] Do not trust the values of environment variables, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/ENV02-J.+Do+not+t\nrust+the+values+of+environment+variables\n[3] Session Management, OWASP\nhttps://www.owasp.org/index.php/Session_Management_Cheat_Sheet\n",
+ "native_sha256": "e128a8a5eb80ffd8cb5ee03d7382c58bb3a915c03ae4eaf3bf933e79aec93dc2",
+ "chars": 424,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

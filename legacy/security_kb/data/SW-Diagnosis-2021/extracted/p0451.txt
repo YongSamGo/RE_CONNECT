@@ -1,0 +1,56 @@
+451
+제4장구현단계 보안약점 진단
+정탐코드의 예
+rs.getString(“US- ER_ID”)); 
+11:
+pstmt1.setString(1, CryptUtils.encrypt(rs.getString(“PWD”))); 
+12:
+pstmt1.setString(2, rs.getString(“USER_ID”)); 
+13:
+pstmt1.executeUpdate(); 
+14:
+pstmt1.clearParameters(); 
+15:
+System.out.println(“#################### 01 : “); 
+16:
+}
+17:
+conn.commit(); 
+18:} catch(Exception e) { 
+19:
+e.printStackTrace(); 
+20:
+try { 
+21:
+conn.rollback(); 
+22:
+} catch(Exception ex) {} 
+23:} finally { 
+24:
+try { 
+25:
+rs.close(); 
+26:
+pstmt.close(); 
+27:
+pstmt1.close(); 
+28:
+conn.close(); 
+29:
+} catch(Exception e) { } 
+30:
+}
+다음의 예제와 같이 finally 절에서 connection을 close 해주고 있으므로 자원의 부적절한 반환이 
+이루어지지 않는다.
+오탐코드의 예
+1: try {
+2:
+String sqlSelect = “SELECT USER_ID, PWD FROM USER” 
+3:
+String sqlUpdate = “UPDATE USER SET PASSWD = ? WHERE USER_ID = ?
+4:
+Class.forName(“oracle.jdbc.driver.OracleDriver”); 
+5:
+conn =
+DriverManager.getConnection(“jdbc:oracle:thin:@192.168.1.1:1521:db”,
+“aaa”, “AAA”);

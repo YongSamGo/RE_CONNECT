@@ -1,0 +1,7 @@
+428
+마. 참고자료
+[1] CWE-390 Detection of Error Condition Without Action, MITRE,
+http://cwe.mitre.org/data/definitions/390.html
+[2] Do not suppress or ignore checked exceptions, CERT,
+http://www.securecoding.cert.org/confluence/display/java/ERR00-J.+Do+not+
+suppress+or+ignore+checked+exceptions

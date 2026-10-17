@@ -1,0 +1,43 @@
+500
+안전한 코드의 예 JAVA
+3:
+throws ServletException, IOException { 
+4:
+try { 
+5:
+do_something(logger); 
+6:
+} catch (IOException ase) { 
+7:
+logger.info("ERROR"); 
+8:
+//서비스 종료를 막기 위해 J2EE에서는 System.exit()를 사용하지 않는다.
+9:
+}
+C# 코드에서 Application.Exit() 을 사용하면 일부 이벤트가 처리되지 않습니다. 
+안전하지 않은 코드의 예 C#
+1: try{ 
+2:
+... 
+3: } catch (Exception e){ 
+4:
+... 
+5:
+//Application.Exit() 은 즉시 프로그램을 종료하기 때문에, Form.Closed 혹은 Form.Closing 
+이벤트가 처리되지 않습니다.
+6:
+Application.Exit();
+7: }
+이벤트 처리를 위해 Application.Exit()을 사용하지 않습니다.
+안전한 코드의 예 C#
+1: try{ 
+2: ... 
+3: } catch (Exception e){ 
+4:
+...
+5:
+// Application.Exit() 을 사용하지 않으면, 이벤트를 처리하지 못하고 프로그램이 종료되는 것을 
+방지할 수 있습니다.
+6:
+this.Close();
+7: }

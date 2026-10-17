@@ -1,0 +1,921 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "46",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "사용자의 입력 중 LDAP 질의문에 사용될 변수를 이스케이프 하여 질의문 실행 시 공격에 노출되는 것을 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.9640808105469,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "예방할 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    113.92750549316406,
+    130.29322814941406,
+    123.87489318847656
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    160.1888427734375,
+    319.7541809082031,
+    170.13621520996094
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    181.35398864746094,
+    94.51471710205078,
+    189.8632049560547
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    196.6945343017578,
+    94.51471710205078,
+    205.20375061035156
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    211.91522216796875,
+    94.51471710205078,
+    220.4244384765625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    227.25576782226562,
+    94.51471710205078,
+    235.76498413085938
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    242.47645568847656,
+    94.51471710205078,
+    250.9856719970703
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    257.8170166015625,
+    94.51471710205078,
+    266.32623291015625
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    273.0376892089844,
+    94.51471710205078,
+    281.5469055175781
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    288.37823486328125,
+    94.51471710205078,
+    296.887451171875
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    303.59893798828125,
+    94.51471710205078,
+    312.108154296875
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    318.9394836425781,
+    94.51488494873047,
+    327.4486999511719
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.23493194580078,
+    334.1601867675781,
+    94.51488494873047,
+    342.6694030761719
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    82.23493194580078,
+    349.500732421875,
+    94.51488494873047,
+    358.00994873046875
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    82.23493194580078,
+    364.721435546875,
+    94.51488494873047,
+    373.23065185546875
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    82.23493194580078,
+    380.06195068359375,
+    94.51488494873047,
+    388.5711669921875
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    82.23493194580078,
+    395.28265380859375,
+    94.51488494873047,
+    403.7918701171875
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    82.23493194580078,
+    410.6231994628906,
+    94.51488494873047,
+    419.1324157714844
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    82.23493194580078,
+    425.8439025878906,
+    94.51488494873047,
+    434.3531188964844
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    82.23493194580078,
+    441.1844482421875,
+    94.51488494873047,
+    449.69366455078125
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    82.23493194580078,
+    456.4051513671875,
+    94.51488494873047,
+    464.91436767578125
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    82.23493194580078,
+    471.7456970214844,
+    94.51488494873047,
+    480.2549133300781
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    82.23493194580078,
+    486.96636962890625,
+    94.51488494873047,
+    495.4755859375
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    82.23493194580078,
+    502.3069152832031,
+    94.51488494873047,
+    510.8161315917969
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    82.23493194580078,
+    517.527587890625,
+    94.51488494873047,
+    526.0368041992188
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25:",
+   "bbox": [
+    82.23493194580078,
+    532.8681640625,
+    94.51488494873047,
+    541.3773803710938
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26:",
+   "bbox": [
+    82.23493194580078,
+    548.0888671875,
+    94.51488494873047,
+    556.5980834960938
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27:",
+   "bbox": [
+    82.23493194580078,
+    563.4293823242188,
+    94.51488494873047,
+    571.9385986328125
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28:",
+   "bbox": [
+    82.23493194580078,
+    578.6500854492188,
+    94.51488494873047,
+    587.1593017578125
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29:",
+   "bbox": [
+    82.23493194580078,
+    593.9906616210938,
+    94.51488494873047,
+    602.4998779296875
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30:",
+   "bbox": [
+    82.23493194580078,
+    609.2113647460938,
+    94.51488494873047,
+    617.7205810546875
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "31:",
+   "bbox": [
+    82.23493194580078,
+    624.5518798828125,
+    94.51488494873047,
+    633.0610961914062
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from  ldap3 import  Connection, Server, ALL",
+   "bbox": [
+    104.41199493408203,
+    180.852294921875,
+    284.9938049316406,
+    189.8632049560547
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from  ldap3.utils.conv import  escape_filter_chars",
+   "bbox": [
+    104.41199493408203,
+    196.19284057617188,
+    300.76019287109375,
+    205.20375061035156
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.41199493408203,
+    211.4135284423828,
+    247.80897521972656,
+    220.4244384765625
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "config = {",
+   "bbox": [
+    104.41199493408203,
+    242.47645568847656,
+    143.73252868652344,
+    250.9856719970703
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  \"bind_dn\": \"cn=read-only-admin,dc=example,dc=com\",",
+   "bbox": [
+    104.41199493408203,
+    257.8170166015625,
+    324.42169189453125,
+    266.32623291015625
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  \"password\": \"password\",",
+   "bbox": [
+    104.41199493408203,
+    273.0376892089844,
+    206.5810546875,
+    281.5469055175781
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    104.41199493408203,
+    288.37823486328125,
+    107.05046844482422,
+    296.887451171875
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def ldap_query(request):",
+   "bbox": [
+    104.41199493408203,
+    318.43780517578125,
+    199.4060516357422,
+    327.4486999511719
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  search_keyword = request.POST.get('search_keyword','')",
+   "bbox": [
+    104.41199493408203,
+    334.1601867675781,
+    331.7008361816406,
+    342.6694030761719
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  dn = config['bind_dn']",
+   "bbox": [
+    104.41199493408203,
+    364.721435546875,
+    197.31883239746094,
+    373.23065185546875
+   ],
+   "block": 46,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  password = config['password']",
+   "bbox": [
+    104.41199493408203,
+    380.06195068359375,
+    231.24264526367188,
+    388.5711669921875
+   ],
+   "block": 47,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  address = 'ldap.goodsource.com'",
+   "bbox": [
+    104.41199493408203,
+    394.7809753417969,
+    241.04425048828125,
+    403.7918701171875
+   ],
+   "block": 48,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  server = Server(address, get_info=ALL)",
+   "bbox": [
+    104.41199493408203,
+    410.12152099609375,
+    267.5644226074219,
+    419.1324157714844
+   ],
+   "block": 49,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  conn = Connection(server, dn, password, auto_bind=True )",
+   "bbox": [
+    104.41199493408203,
+    425.34222412109375,
+    346.68255615234375,
+    434.3531188964844
+   ],
+   "block": 50,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 사용자의 입력에 필터링을 적용하여 공격에 사용될 수 있는 문자를 ",
+   "bbox": [
+    104.41199493408203,
+    455.9034729003906,
+    359.80780029296875,
+    464.91436767578125
+   ],
+   "block": 51,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 이스케이프하고 있다",
+   "bbox": [
+    104.41199493408203,
+    471.2440185546875,
+    192.8703155517578,
+    480.2549133300781
+   ],
+   "block": 52,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  escpae_keyword = escape_filter_chars(search_keyword)",
+   "bbox": [
+    104.41199493408203,
+    486.4646911621094,
+    330.1396789550781,
+    495.4755859375
+   ],
+   "block": 53,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  search_str = '(&(objectclass=%s))' % escpae_keyword",
+   "bbox": [
+    104.41199493408203,
+    501.80523681640625,
+    323.7725830078125,
+    510.8161315917969
+   ],
+   "block": 54,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  conn.search(",
+   "bbox": [
+    104.41199493408203,
+    532.8681640625,
+    158.59683227539062,
+    541.3773803710938
+   ],
+   "block": 55,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    'dc=company,dc=com',",
+   "bbox": [
+    104.41199493408203,
+    548.0888671875,
+    201.66651916503906,
+    556.5980834960938
+   ],
+   "block": 56,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    search_str,",
+   "bbox": [
+    104.41199493408203,
+    563.4293823242188,
+    161.02943420410156,
+    571.9385986328125
+   ],
+   "block": 57,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    attributes=['sn', 'cn', 'address', 'mail', 'mobile', 'uid'],",
+   "bbox": [
+    104.41199493408203,
+    578.1483764648438,
+    308.8365173339844,
+    587.1593017578125
+   ],
+   "block": 58,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  )",
+   "bbox": [
+    104.41199493408203,
+    593.9906616210938,
+    114.9622802734375,
+    602.4998779296875
+   ],
+   "block": 59,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return render(request, '/ldap_query_response.html', {'ldap':conn.entries})",
+   "bbox": [
+    104.41199493408203,
+    624.0501708984375,
+    393.7938232421875,
+    633.0610961914062
+   ],
+   "block": 60,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58
+   ],
+   "text": "1: from  ldap3 import  Connection, Server, ALL\n2: from  ldap3.utils.conv import  escape_filter_chars\n3: from django.shortcuts import render\n4:\n5: config = {\n6:   \"bind_dn\": \"cn=read-only-admin,dc=example,dc=com\",\n7:   \"password\": \"password\",\n8: }\n9:\n10: def ldap_query(request):\n11:   search_keyword = request.POST.get('search_keyword','')\n12:\n13:   dn = config['bind_dn']\n14:   password = config['password']\n15:   address = 'ldap.goodsource.com'\n16:   server = Server(address, get_info=ALL)\n17:   conn = Connection(server, dn, password, auto_bind=True )\n19:\n20:   # 사용자의 입력에 필터링을 적용하여 공격에 사용될 수 있는 문자를 \n21:   # 이스케이프하고 있다\n22:   escpae_keyword = escape_filter_chars(search_keyword)\n23:   search_str = '(&(objectclass=%s))' % escpae_keyword\n24:\n25:   conn.search(\n26:     'dc=company,dc=com',\n27:     search_str,\n28:     attributes=['sn', 'cn', 'address', 'mail', 'mobile', 'uid'],\n29:   )\n30:\n31:   return render(request, '/ldap_query_response.html', {'ldap':conn.entries})",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    170.23621520996093,
+    393.7938232421875,
+    634.2610961914063
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n46\n사용자의 입력 중 LDAP 질의문에 사용될 변수를 이스케이프 하여 질의문 실행 시 공격에 노출되는 것을 \n예방할 수 있다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\n17:\n19:\n20:\n21:\n22:\n23:\n24:\n25:\n26:\n27:\n28:\n29:\n30:\n31:\nfrom  ldap3 import  Connection, Server, ALL\nfrom  ldap3.utils.conv import  escape_filter_chars\nfrom django.shortcuts import render\nconfig = {\n  \"bind_dn\": \"cn=read-only-admin,dc=example,dc=com\",\n  \"password\": \"password\",\n}\ndef ldap_query(request):\n  search_keyword = request.POST.get('search_keyword','')\n  dn = config['bind_dn']\n  password = config['password']\n  address = 'ldap.goodsource.com'\n  server = Server(address, get_info=ALL)\n  conn = Connection(server, dn, password, auto_bind=True )\n  # 사용자의 입력에 필터링을 적용하여 공격에 사용될 수 있는 문자를 \n  # 이스케이프하고 있다\n  escpae_keyword = escape_filter_chars(search_keyword)\n  search_str = '(&(objectclass=%s))' % escpae_keyword\n  conn.search(\n    'dc=company,dc=com',\n    search_str,\n    attributes=['sn', 'cn', 'address', 'mail', 'mobile', 'uid'],\n  )\n  return render(request, '/ldap_query_response.html', {'ldap':conn.entries})\n",
+ "native_sha256": "f20a6d922889dbcfcce468a9814d56992803ad4e0f60e0c08840d0759181a0b1",
+ "chars": 1073,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

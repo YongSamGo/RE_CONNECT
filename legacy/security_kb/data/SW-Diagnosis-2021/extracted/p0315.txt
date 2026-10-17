@@ -1,0 +1,46 @@
+315
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+5:
+String passwd = request.getParameter("oldUserPw"); 
+6: ...
+//2. 실제 수정하는 사용자와 일치 여부를 확인하지 않고, 회원정보를 수정하여 안전하지 않다.
+7:
+if (service.modifyMember(memberModel)) { 
+8:
+mav.setViewName("redirect:/board/list.do"); 
+9:
+session.setAttribute("userName", memberModel.getUserName());
+10:
+return mav;
+11:
+} else { 
+12:
+mav.addObject("errCode", 2); 
+13:
+mav.setViewName("/board/member_modify"); 
+14:
+return mav;
+15:
+}
+16:}
+로그인한 사용자와 요청한 사용자의 일치 여부를 확인한 후 회원정보를 수정하도록 한다. 
+안전한 코드의 예 JAVA
+1: @RequestMapping(value = "/modify.do", method = RequestMethod.POST) 
+2: public ModelAndView memberModifyProcess(@ModelAttribute("MemberModel") 
+MemberModel memberModel, BindingResult result, HttpServletRequest request, 
+HttpSession session) { 
+3:
+ModelAndView mav = new ModelAndView(); 
+//1. 로그인한 사용자를 불러온다.
+4:
+String userId = (String) session.getAttribute("userId");
+5:
+String passwd = request.getParameter("oldUserPw");
+//2. 회원정보를 실제 수정하는 사용자와 로그인 사용자와 동일한지 확인한다.
+6:
+String requestUser = memberModel.getUserId();
+7:
+if (userId != null && requestUser != null && !userId.equals(requestUser)) {
+8:
+mav.addObject("errCode", 1);

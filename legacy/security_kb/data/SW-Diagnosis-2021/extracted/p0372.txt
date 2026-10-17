@@ -1,0 +1,26 @@
+372
+안전하지 않은 코드의 예 C
+//비밀번호 값에 대한 검증 없이 사용합니다.
+5: mysql_real_connect(connectInstance, "192.168.100.211", id, pwd,
+"database", 0, NULL, 0);
+6: ...
+비밀번호에 대한 적절한 검증이 필요하다.
+안전한 코드의 예 C
+1: bool authentication(char* id, char* pwd) 
+2: { 
+3:
+MYSQL *connectInstance; 
+4:
+connectInstance = mysql_init(NULL); 
+//비밀번호에 대한 적절한 검증을 수행해야 한다.
+5:
+if(checkValidationId( id ) == true && checkValidationPwd( pwd ) ==
+true )
+6:
+{ 
+7:
+mysql_real_connect(connectInstance, "192.168.100.211", id, pwd,
+"database", 0, NULL, 0); 
+8: }
+9: ...
+10:}

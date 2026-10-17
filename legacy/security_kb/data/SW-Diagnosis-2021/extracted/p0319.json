@@ -1,0 +1,416 @@
+{
+ "lines": [
+  {
+   "text": "319",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "2. 부적절한 인가",
+   "bbox": [
+    70.86000061035156,
+    113.80122375488281,
+    161.15411376953125,
+    128.18832397460938
+   ],
+   "block": 24,
+   "size": 12.85500431060791,
+   "fonts": [
+    "NanumSquareB"
+   ]
+  },
+  {
+   "text": "가. 개요",
+   "bbox": [
+    70.86000061035156,
+    151.955078125,
+    107.63634490966797,
+    164.0330810546875
+   ],
+   "block": 25,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "프로그램이 모든 가능한 실행경로에 대해서 접근제어를 검사하지 않거나 불완전하게 검사하는 경우, ",
+   "bbox": [
+    70.86000061035156,
+    180.67117309570312,
+    459.1318359375,
+    191.69317626953125
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공격자는 접근 가능한 실행경로 정보를 유출할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    197.65109252929688,
+    281.0947570800781,
+    208.673095703125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "나. 보안대책",
+   "bbox": [
+    70.86000061035156,
+    244.71517944335938,
+    126.4169921875,
+    256.7931823730469
+   ],
+   "block": 28,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "응용프로그램이 제공하는 정보와 기능을 역할에 따라 배분함으로써 공격자에게 노출되는 공격노 ",
+   "bbox": [
+    70.86000061035156,
+    273.37109375,
+    459.1181640625,
+    284.3930969238281
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "출면15)(Attack Surface)을 최소화하고 사용자의 권한에 따른 ACL(Access Control List)을 관리한다. ",
+   "bbox": [
+    70.86000061035156,
+    290.3509826660156,
+    459.1321716308594,
+    301.37310791015625
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "JAAS Authorization Framework나 OWASP ESAPI Access Control 등의 프레임워크를 사용해서 ",
+   "bbox": [
+    70.85931396484375,
+    307.39111328125,
+    459.1907653808594,
+    318.4131164550781
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약점을 제거할 수도 있다.",
+   "bbox": [
+    70.85931396484375,
+    324.3710021972656,
+    176.0255584716797,
+    335.39300537109375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    70.86000061035156,
+    371.4351806640625,
+    126.4169921875,
+    383.51318359375
+   ],
+   "block": 33,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "아래의 코드는 사용자 입력값에 따라 삭제작업을 수행하고 있으며, 사용자의 권한확인을 위한 별도의 ",
+   "bbox": [
+    70.86000061035156,
+    400.0911865234375,
+    459.13189697265625,
+    411.1131896972656
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "통제가 적용되지 않고 있다.",
+   "bbox": [
+    70.86000061035156,
+    417.0710754394531,
+    176.0262451171875,
+    428.09307861328125
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    202.32000732421875,
+    457.0911865234375,
+    324.94390869140625,
+    468.1131896972656
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private BoardDao boardDao; ",
+   "bbox": [
+    79.37999725341797,
+    476.49810791015625,
+    208.58946228027344,
+    486.3981018066406
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String action = request.getParameter(\"action\"); ",
+   "bbox": [
+    79.37999725341797,
+    490.8981018066406,
+    283.2479248046875,
+    500.798095703125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: String contentId = request.getParameter(\"contentId\"); ",
+   "bbox": [
+    79.37999725341797,
+    505.2981262207031,
+    310.7535400390625,
+    515.1981201171875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//요청을 하는 사용자의 delete 작원 권한 확인 없이 수행하고 있어 안전하지 않다.",
+   "bbox": [
+    79.37999725341797,
+    519.6980590820312,
+    364.99761962890625,
+    529.5980834960938
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    79.37999725341797,
+    534.0980224609375,
+    87.08545684814453,
+    543.998046875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (action != null && action.equals(\"delete\")) { ",
+   "bbox": [
+    100.25991821289062,
+    534.0980224609375,
+    288.0274963378906,
+    543.998046875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    79.37999725341797,
+    548.498046875,
+    87.08545684814453,
+    558.3980712890625
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "boardDao.delete(contentId);",
+   "bbox": [
+    113.45994567871094,
+    548.498046875,
+    224.25686645507812,
+    558.3980712890625
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    79.37999725341797,
+    562.8980712890625,
+    87.08545684814453,
+    572.798095703125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.25991821289062,
+    562.8980712890625,
+    102.99266052246094,
+    572.798095703125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "15) OSSTMM 3 Defines Attack Surface as “The lack of specific separations and functional controls that exist ",
+   "bbox": [
+    70.86000061035156,
+    640.9850463867188,
+    458.48077392578125,
+    649.7630615234375
+   ],
+   "block": 44,
+   "size": 7.9190673828125,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for that vector”",
+   "bbox": [
+    85.97993469238281,
+    652.9854125976562,
+    138.6066131591797,
+    661.763427734375
+   ],
+   "block": 45,
+   "size": 7.9190673828125,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+   ],
+   "text": "1: private BoardDao boardDao; \n2: String action = request.getParameter(\"action\"); \n3: String contentId = request.getParameter(\"contentId\"); \n//요청을 하는 사용자의 delete 작원 권한 확인 없이 수행하고 있어 안전하지 않다.\n4:      if (action != null && action.equals(\"delete\")) { \n5:           boardDao.delete(contentId);\n6:      }",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    79.37999725341797,
+    468.21318969726565,
+    364.99761962890625,
+    573.998095703125
+   ]
+  }
+ ],
+ "native": "319\n제4장구현단계 보안약점 진단\n2. 부적절한 인가\n가. 개요\n프로그램이 모든 가능한 실행경로에 대해서 접근제어를 검사하지 않거나 불완전하게 검사하는 경우, \n공격자는 접근 가능한 실행경로 정보를 유출할 수 있다.\n나. 보안대책\n응용프로그램이 제공하는 정보와 기능을 역할에 따라 배분함으로써 공격자에게 노출되는 공격노 \n출면15)(Attack Surface)을 최소화하고 사용자의 권한에 따른 ACL(Access Control List)을 관리한다. \nJAAS Authorization Framework나 OWASP ESAPI Access Control 등의 프레임워크를 사용해서 \n취약점을 제거할 수도 있다.\n다. 코드예제\n아래의 코드는 사용자 입력값에 따라 삭제작업을 수행하고 있으며, 사용자의 권한확인을 위한 별도의 \n통제가 적용되지 않고 있다.\n안전하지 않은 코드의 예 JAVA\n1: private BoardDao boardDao; \n2: String action = request.getParameter(\"action\"); \n3: String contentId = request.getParameter(\"contentId\"); \n//요청을 하는 사용자의 delete 작원 권한 확인 없이 수행하고 있어 안전하지 않다.\n4:\nif (action != null && action.equals(\"delete\")) { \n5:\nboardDao.delete(contentId);\n6:\n}\n15) OSSTMM 3 Defines Attack Surface as “The lack of specific separations and functional controls that exist \nfor that vector”\n",
+ "native_sha256": "b3c39110cf73c4c5fef0ff8ddace06d8995312af69412108bba7d8695dcd6118",
+ "chars": 848,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

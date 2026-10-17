@@ -1,0 +1,39 @@
+207
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+10:
+byte[] buf = new byte[1024]; 
+11:
+int len = 0; 
+12:
+while ((len = in.read(buf)) > 0) { 
+13:
+os.write(buf, 0, len); 
+14:
+}
+15:
+}
+16:
+…
+다음의 예제는 4라인에서 외부에서 파일경로를 직접 접근하는 변수에 대해서 9~11라인에서 경로순회 
+문자 필터링을 하였으나 13~14라인에서 컨텍스트 경로에 접근이 가능하도록 되어있어 웹 및 서블릿 
+설정 파일에 접근이 가능하다.
+정탐코드의 예
+1: …
+2: @RequestMapping(value = “/Download.do”)
+3: public void downloadFile(
+4:
+@RequestParam(value = “filePath”, required = true) String filePath
+5:
+, HttpServletRequest request
+6:
+, HttpServletResponse response) throws Exception {
+7: …
+8:
+filePath = filePath.replaceAll(“\\.”, “”);
+9:
+filePath = filePath.replaceAll(“/”, “”);
+10: filePath = filePath.replaceAll(“\\\\”, “”);
+11: String targetFile = getServletContext().getRealPath(“/”) + filePath;
+12: File file = new File(targetFile);
+13:…

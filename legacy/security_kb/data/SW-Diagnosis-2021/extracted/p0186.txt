@@ -1,0 +1,61 @@
+186
+라. 진단방법
+Statement statement13) 객체로 쿼리가 실행되는 부분을 확인하고(①), Statement 객체가 
+Pre-paredStatement 객체인지 확인한다(②). PreparedStatement 객체를 사용하고 setString 
+등의 메소 드로 외부 입력값을 설정하는 경우에는 기본적으로 안전하다고 판정하지만, 쿼리에 사용되는 
+변수가 외부 입력값인 경우엔 적절한 필터링 모듈이 존재하는지 추가로 확인해야 한다(③). 즉, 쿼리 
+생성과 관련된 외부 입력값에 대한 필터링 모듈이 반드시 존재해야 하며, 그 외에도 관련 프레임워크
+에서 적절한 조치가 이루어질 경우에 안전하다고 판정한다.
+일반적인 진단의 예
+1:
+class Login { 
+2:
+public Connection getConnection() throws SQLException { 
+3:
+DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());
+4:
+String dbConnection = PropertyManager.getProperty(“db.connection”);
+5:
+return DriverManager.getConnection(dbConnection); 
+6:
+}
+7:
+// 외부입력 값(username, password)을 제공받음 
+8:
+public void doPrivilegedAction(String username, char[] password) throws SQLException {
+9:
+Connection connection = getConnection();
+10:
+if (connection == null) { 
+11:
+// handle error 
+12:
+}
+13:
+try {
+14:
+String pwd = HashUtil.hashPassword(password); 
+15:
+String sqlString = “SELECT * FROM db_user WHERE username = ‘”+ username 
++ “’ AND password = ‘” + pwd + “’”; ··········································································③
+16:
+Statement stmt = connection.createStatement(); ························································②
+17:
+ResultSet rs = stmt.executeQuery(sqlString); ·······························································①
+18:
+if (!rs.next()) { 
+19:
+throw new SecurityException(“User name or password incorrect”);
+20:
+}
+21:
+// Authenticated; proceed
+22:
+} finally {
+23:
+// …
+24:
+}
+25: }
+26: }
+13) statement : 자바에서 사용하는 객체 중 하나

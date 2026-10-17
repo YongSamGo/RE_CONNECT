@@ -1,0 +1,7 @@
+480
+마. 참고자료
+[1] CWE-489 Leftover Debug Code, MITRE,
+http://cwe.mitre.org/data/definitions/489.html
+[2] Production code must not contain debugging entry points, CERT,
+http://www.securecoding.cert.org/confluence/display/java/ENV06-J.+Productio
+n+code+must+not+contain+debugging+entry+points

@@ -1,0 +1,61 @@
+Python 시큐어코딩 가이드
+26
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+from django.shortcuts import render
+def profile_link(request):
+    # 외부 입력값을 검증 없이 HTML 태그 생성의 인자로 사용
+    profile_url = request.POST.get('profile_url')
+    profile_name = requst.POST.get('profile_name')
+    
+    object_link = '<a href="{}">{}</a>'.format(profile_url, profile_name)
+    # 신뢰할 수 없는 데이터에 대해서는 mark_safe 함수를 사용해선 안 된다
+    
+    return render(request, 'my_profile.html',{'object_link':object_link})
+다음은 또 다른 Django 프레임워크 템플릿 예제를 보여 준다. autoescape 블록 사용 시 설정값을 off로 
+할 경우와 개별 변수에 대해서 safe 필터를 사용할 경우 크로스사이트 스크립트 공격에 노출될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+<!doctype html>
+<html>
+  <body>
+    <div class="content">
+      {% autoescape off %}
+        <!-- autoescape off로 설정하면 해당 블록내의 데이터는 XSS 공격에 
+        노출될 수 있다 -->
+        {{ content }}   
+      {% endautoescape %}
+    </div>
+    <div class="content2">
+      <!-- safe 필터 사용으로 XSS 공격에 노출될 수 있다 -->
+      {{ content | safe }} 
+    </div>
+  </body>
+</html>
+신뢰할 수 없는 입력값 또는 동적 데이터에 대해서는 autoescape 옵션 값을 on으로 설정해야 하며, safe 
+필터를 부득이 하게 사용할 경우에는 추가적인 보안대책이 필요하다.

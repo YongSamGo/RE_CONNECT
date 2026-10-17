@@ -1,0 +1,38 @@
+73
+제3장분석․ 설계단계 보안항목 진단
+사용자의 요청을 검증하여 CSRF를 방어할 수 있도록 [표 3-9]과 같은 프레임워크나 라이브러리의 
+사용을 고려할 수 있다.
+표3‐9
+CSRF 방어를 위한 프레임워크 및 라이브러리
+개발환경
+활용 가능한 프레임워크 또는 라이브러리
+Java
+Spring Security: http://spring.io/
+인증, 인가 등 기업 애플리케이션의 보안기능을 제공하는 Java/Java EE 프레임워크이며, 3.2
+이상의 버전에서는 CSRF공격에 대한 방어기능을 제공한다. Apache Software License 
+v2.0 정책에 따라 자유롭게 사용가능하다.
+Apache Struts: http://struts.apache.org/
+Java EE 웹애플리케이션 개발을 위한 오픈소스 프레임워크이다. MVC아키텍처를 적용하는 
+개발자를 지원하기 위하여 자바 서블릿 API를 사용 및 확장하였다.
+Apache Software License v2.0 정책에 따라 자유롭게 사용가능하다.
+OWASP CSRFGuard:
+https://www.owasp.org/index.php/Category:OWASP_CSRFGuard_Project
+HTML에서 세션 또는 요청단위의 CSRF 토큰을 사용할 수 있도록 하는 자바EE 필터를 제공하
+는 라이브러리이다. BSD License에 따라 사용할 수 있다.
+Python PHP
+Django: https://www.djangoproject.com/
+파이썬으로 작성된 오픈소스 웹 애플리케이션 프레임워크로써 CSRF공격에 대한 방어기능을 
+제공한다. 3‐clause BSD License 정책에 따라 사용가능하다.
+PHP
+CSRF Protector : http://github.com/mebjas/CSRF-Protector-PHP 
+PHP 웹 개발 시 사용할 수 있는 CSRF 방어 라이브러리이다.
+Apache Software License v2.0 정책에 따라 자유롭게 사용가능하다.
+(ㄴ) 사용자와 상호 처리 기능 적용
+CSRF 토큰 방식도 XSS 취약점이 있는 사이트를 공격하게 되면 무력화될 수 있으므로 
+CAPTCHA5)와 같은 사용자와 상호 처리 가능한 기법을 적용하여 위조된 요청이 차단될 수 있도록 
+설계한다.
+(ㄷ) 재인증 요구
+중요기능의 경우 재인증으로 안전하게 실제 요청 여부를 확인하도록 설계한다.
+5) CAPTCHA(Completely Automated Public Turing test to tell Computers and Humans Apart, 완전 자동화된 사람과 
+컴퓨터 판별, 캡 차)는 HIP(Human Interaction Proof) 기술의 일종으로, 어떠한 사용자가 실제 사람인지 컴퓨터 프로그램
+인지를 구별하기 위해 사용되는 방법이다.

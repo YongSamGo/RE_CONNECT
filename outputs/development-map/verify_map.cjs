@@ -1,0 +1,43 @@
+const {chromium}=require('C:/Users/seong/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/playwright');
+const path=require('path');
+const fs=require('fs');
+(async()=>{
+ const browser=await chromium.launch({headless:true,executablePath:'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'});
+ const page=await browser.newPage({viewport:{width:1600,height:1000},deviceScaleFactor:1});
+ const errors=[]; page.on('pageerror',e=>errors.push(e.message));
+ await page.goto('file:///'+path.resolve(__dirname,'development-map.html').replace(/\\/g,'/'));
+ await page.screenshot({path:path.join(__dirname,'preview-overview.png')});
+ const assert=(ok,msg)=>{if(!ok)throw Error(msg)};
+ assert(await page.evaluate(()=>mapAudit.tasks===106),'106 tasks');
+ const initialBox=await page.evaluate(()=>mapAudit.getBox());
+ await page.locator('#architecture').click();
+ assert(await page.locator('.arch-node').count()===20,'Architecture components');
+ const archBox=await page.evaluate(()=>mapAudit.getBox());
+ assert(archBox[1]>initialBox[1],'Architecture button moves to diagram');
+ await page.locator('.arch-node').first().click();
+ assert((await page.locator('#heading').textContent()).includes('시스템 구성'),'Architecture source navigation');
+ assert((await page.evaluate(()=>mapAudit.getBox()[2]))===archBox[2],'Architecture click keeps context');
+ await page.screenshot({path:path.join(__dirname,'preview-architecture.png')});
+ await page.locator('#search').fill('W03-08');await page.locator('#search').press('Enter');
+ assert((await page.locator('#heading').textContent()).includes('W03-08'),'Search navigation');
+ assert(await page.locator('#selection-edges path').count()>0,'Dependency paths');
+ await page.screenshot({path:path.join(__dirname,'preview-detail.png')});
+ await page.locator('#plus').click();const w1=await page.evaluate(()=>mapAudit.getBox()[2]);
+ await page.locator('#minus').click();const w2=await page.evaluate(()=>mapAudit.getBox()[2]);assert(w2>w1,'Zoom buttons');
+ await page.locator('#search').fill('<script>');assert(await page.locator('#results button').count()===0,'Literal search');
+ await page.locator('#area').selectOption({label:'W12 · AWS 배포와 운영'});assert((await page.locator('#heading').textContent()).includes('W12'),'Group select');
+ await page.locator('#overview').click();
+ const pos=await page.evaluate(()=>mapAudit.getBox());await page.locator('#map').hover({position:{x:500,y:300}});await page.mouse.wheel(0,-240);await page.waitForFunction(w=>mapAudit.getBox()[2]<w,pos[2]);
+ await page.mouse.move(500,400);await page.mouse.down();await page.mouse.move(600,430);await page.mouse.up();
+ await page.evaluate(()=>document.body.classList.remove('hide-detail'));const geometry=await page.evaluate(()=>{
+   const issues=[];for(const g of document.querySelectorAll('g.node,g.arch-node')){const rect=g.querySelector('rect'),x=+rect.getAttribute('x'),y=+rect.getAttribute('y'),w=+rect.getAttribute('width'),h=+rect.getAttribute('height');for(const t of g.querySelectorAll('text')){if(getComputedStyle(t).display==='none')continue;const b=t.getBBox();if(b.x<x-1||b.x+b.width>x+w+1||b.y<y-1||b.y+b.height>y+h+1)issues.push([g.dataset.id,t.textContent,b.x+b.width-(x+w)])}}return issues;
+ });assert(geometry.length===0,'Text clipping: '+JSON.stringify(geometry.slice(0,8)));
+ await page.setViewportSize({width:390,height:844});await page.locator('#overview').click();await page.screenshot({path:path.join(__dirname,'preview-mobile.png'),fullPage:true});
+ assert(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'Mobile horizontal overflow');
+ assert(errors.length===0,'Runtime errors '+errors);
+ const data=JSON.parse(fs.readFileSync(path.join(__dirname,'map-data.json'),'utf8'));
+ for(const [name,src]of Object.entries(data.sources)){const lines=src.split(/\r?\n/);if(lines.at(-1)==='')lines.pop();const rs=data.records.filter(r=>r.source==='Plan/'+name);assert(rs[0].line===1,'First line');for(let i=0;i<rs.length;i++){assert(rs[i].raw===lines.slice(rs[i].line-1,rs[i].end).join('\n'),'Source fidelity '+rs[i].id);if(i)assert(rs[i].line===rs[i-1].end+1,'Section gap')}assert(rs.at(-1).end===lines.length,'Last line');}
+ const previewHeight=Math.round(1600*data.height/data.width);const preview=await browser.newPage({viewport:{width:1600,height:previewHeight}});const svgPath='file:///'+path.resolve(__dirname,'development-map.svg').replace(/\\/g,'/');const previewWrapper=path.join(__dirname,'preview-wrapper.html');fs.writeFileSync(previewWrapper,`<body style="margin:0"><img src="${svgPath}" style="width:1600px;height:${previewHeight}px" /></body>`);await preview.goto('file:///'+previewWrapper.replace(/\\/g,'/'));await preview.screenshot({path:path.join(__dirname,'development-map-preview.png'),fullPage:true,timeout:60000});assert(errors.length===0,'Final runtime errors '+errors);
+ fs.writeFileSync(path.join(__dirname,'verification.json'),JSON.stringify({passed:true,tasks:106,records:data.records.length,checks:['source coverage and fidelity','search and task navigation','dependency paths','group navigation','zoom buttons and wheel','pan','SVG text bounds','mobile overflow','runtime errors'],errors},null,2));
+ console.log('PASS: source fidelity, 106 tasks, interactions, text bounds, mobile, runtime');await browser.close();
+})().catch(e=>{console.error(e);process.exit(1)});

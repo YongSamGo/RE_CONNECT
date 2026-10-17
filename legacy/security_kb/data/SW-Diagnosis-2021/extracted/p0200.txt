@@ -1,0 +1,24 @@
+200
+다음의 예제코드는 동적 실행함수를 사용하였으나 외부 입력값을 실행하지 않아 취약하지 않다고 
+판정한다.
+오탐코드의 예
+1: <script>
+2:
+var obj = {};
+3:
+for(var i = 0; i < 5; i++){
+4:
+eval("obj.test" + i + "=" + i);
+5:
+}
+6:
+console.log(obj);
+7: </script>
+마. 참고자료
+①CWE-94: Improper Control of Generation of Code ('Code Injection') , MITRE,
+http://cwe.mitre.org/data/definitions/94.html 
+②CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code 
+('Eval Injection'), MITRE,
+http://cwe.mitre.org/data/definitions/95.html 
+③Code Injection Software Attack, OWASP,
+https://owasp.org/www-community/attacks/Code_Injection

@@ -1,0 +1,60 @@
+Python 시큐어코딩 가이드
+34
+다. 코드예제
+업로드 대상 파일 개수, 크기, 확장자 등의 유효성 검사를 하지 않고 파일 시스템에 그대로 저장할 경우 
+공격자에 의해 악성코드, 쉘코드 등 위험한 형식의 파일이 시스템에 업로드 될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+def file_upload(request):
+    if request.FILES['upload_file']:
+        # 사용자가 업로드하는 파일을 검증 없이 저장하고 있어 
+        # 안전하지 않다
+        upload_file = request.FILES['upload_file']
+        fs = FileSystemStorage(location='media/screenshot', base_url='media/screenshot')
+        # 업로드 하는 파일에 대한 크기, 개수, 확장자 등을 검증하지 않음
+        filename = fs.save(upload_file.name, upload_file)
+        return render(request, '/success.html', {'filename':filename})
+    return render(request, '/error.html', {'error':'파일 업로드 실패'})
+아래 코드는 업로드 하는 파일의 개수, 크기, 파일 확장자 등을 검사해 업로드를 제한하고 있다. 파일 타입 
+확인은 MIME 타입을 확인하는 과정으로 파일 이름에서 확장자만 검사할 경우 변조된 확장자를 통해 업로드 
+제한을 회피할 수 있어 파일자체의 시그니처를 확인하는 과정을 보여 준다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+import os
+from django.shortcuts import render
+from django.core.files.storage import FileSystemStorage
+# 업로드 하는 파일 개수, 크기, 확장자 제한
+FILE_COUNT_LIMIT = 5
+# 업로드 하는 파일의 최대 사이즈 제한 예 ) 5MB - 5*1024*1024
+FILE_SIZE_LIMIT = 5242880 
+# 허용하는 확장자는 화이트리스트로 관리한다.
+WHITE_LIST_EXT = [
+    '.jpg',
+    '.jpeg'
+]

@@ -1,0 +1,27 @@
+389
+제4장구현단계 보안약점 진단
+다음의 예제에서는 주석문 안에 개발자의 이해를 돕기 위한 목적 등으로 비밀번호를 적어 놓고 있으므로 
+취약하다고 판정한다.
+정탐코드의 예
+1: public void daoTest() throws Exception { 
+2:
+// db sample : 84d5d0a08a3ec5e2d91a 
+3:
+// 암호화 전, 후 : 1365ADMIN_01, aa84c40031d808196537ad3dcf81f9af
+4:
+String pwd= “46c165a343fd6841273ae04655af24dd”;
+5:
+String pwd1= ARIAEngine.decARIA(pwd);
+6:
+System.out.println(pwd1); 
+7: }
+주석문안에 “password”, “passwd”, “비밀번호”등의 텍스트가 존재하지만 실제로 그 내용이 비밀 
+번호가 아닌 경우에는 취약하지 않다고 판정한다.
+오탐코드의 예
+1: // 암호화
+2: String Sid = getSessionValue(session, “ihidnum”);
+3: Sid = AEScryptWithSaltKey.encode(StrTool.sNN(Sid));
+4: String sIhidnum = Sid;
+마. 참고자료
+[1] CWE-615 Information Exposure Through Comments, MITRE,
+http://cwe.mitre.org/data/definitions/615.html

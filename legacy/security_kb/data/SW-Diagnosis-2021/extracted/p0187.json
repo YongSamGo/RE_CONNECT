@@ -1,0 +1,554 @@
+{
+ "lines": [
+  {
+   "text": "187",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음의 예제를 살펴보면, 5라인에서 PreparedStatement 객체를 사용하고 있으나 객체를 상수 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1905212402344,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "스트링으로 생성하여 파라미터 부분을 setString 메소드로 설정하지 않아, 4라인에서 사용자의 외부 ",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    459.2305603027344,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "입력 값이 쿼리문의 구조를 바꾸게 되어 취약하다고 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    147.79092407226562,
+    306.6582946777344,
+    158.81292724609375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    178.33108520507812,
+    290.500244140625,
+    189.35308837890625
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: … ",
+   "bbox": [
+    77.94000244140625,
+    203.25808715820312,
+    100.53713989257812,
+    213.1580810546875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String tableName = props.getProperty(“jdbc.tableName”); ",
+   "bbox": [
+    77.94000244140625,
+    217.65811157226562,
+    325.2109680175781,
+    227.55810546875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: String name = props.getProperty(“jdbc.name”); ",
+   "bbox": [
+    77.94000244140625,
+    232.05810546875,
+    283.8751220703125,
+    241.95809936523438
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: String query = “SELECT * FROM “ + tableName + “ WHERE Name =‘” + name + “’”;",
+   "bbox": [
+    77.94000244140625,
+    246.45809936523438,
+    444.5065002441406,
+    256.35809326171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: stmt = con.prepareStatement(query); ",
+   "bbox": [
+    77.94000244140625,
+    260.85809326171875,
+    243.5071258544922,
+    270.7580871582031
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: rs = stmt.executeQuery(); ",
+   "bbox": [
+    77.94000244140625,
+    275.2580871582031,
+    198.69992065429688,
+    285.1580810546875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: … ",
+   "bbox": [
+    77.94000244140625,
+    289.6580810546875,
+    100.53713989257812,
+    299.5580749511719
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제를 살펴보면, 15라인에서 사용자의 입력값이 변수 pid에 저장되고, 19라인에서 comment ",
+   "bbox": [
+    70.86000061035156,
+    322.03118896484375,
+    459.2012023925781,
+    333.0531921386719
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Dao.getProjectCommentTblByWhere 함수의 파라미터로 사용된다. 해당 함수의 134라인에서 ",
+   "bbox": [
+    70.86000061035156,
+    339.0110778808594,
+    459.18560791015625,
+    350.0330810546875
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "문자열을 만들게 되고, 138번 라인에서 해당 문자열을 이용해서 쿼리를 실행하므로 취약하다고 ",
+   "bbox": [
+    70.86000061035156,
+    356.05108642578125,
+    459.1405944824219,
+    367.0730895996094
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "판정 한다.",
+   "bbox": [
+    70.86000061035156,
+    373.0309753417969,
+    110.93594360351562,
+    384.052978515625
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    403.5111083984375,
+    290.500244140625,
+    414.5331115722656
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "< projectDetail.jsp >",
+   "bbox": [
+    77.94000244140625,
+    428.4381103515625,
+    158.11692810058594,
+    438.3381042480469
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: <% ",
+   "bbox": [
+    77.94000244140625,
+    442.8381042480469,
+    108.99541473388672,
+    452.73809814453125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: String pid = request.getParameter(“projectid”) == null ? “” : ",
+   "bbox": [
+    77.94000244140625,
+    457.23809814453125,
+    344.8558044433594,
+    467.1380920410156
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "request.getParame- ter(“projectid”); ",
+   "bbox": [
+    95.0399169921875,
+    471.6380920410156,
+    242.99234008789062,
+    481.5380859375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:MashupProjectDao mashupDao = (MashupProjectDao)",
+   "bbox": [
+    77.94000244140625,
+    486.0380859375,
+    310.4866943359375,
+    495.9380798339844
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DAOHelper.getMashupPro- jectDao(application); ",
+   "bbox": [
+    90.59965515136719,
+    500.4380798339844,
+    287.6180419921875,
+    510.33807373046875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: ProjectCommentDao commentDao = (ProjectCommentDao)",
+   "bbox": [
+    77.94000244140625,
+    514.8380126953125,
+    336.96539306640625,
+    524.738037109375
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DAOHelper.getProject- CommentDao(application); ",
+   "bbox": [
+    95.0399169921875,
+    529.238037109375,
+    299.8687438964844,
+    539.1380615234375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: MashupProjectTbl prjTbl = mashupDao.getMashupProjectTbl(pid); ",
+   "bbox": [
+    77.94000244140625,
+    543.6380615234375,
+    361.8957824707031,
+    553.5380859375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19: ArrayList commentList =",
+   "bbox": [
+    77.94000244140625,
+    558.0380249023438,
+    196.2457275390625,
+    567.9380493164062
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "commentDao.getProjectCommentTblByWhere(“where projectid=” + pid +  “ order by ",
+   "bbox": [
+    95.0399169921875,
+    572.43798828125,
+    446.9773864746094,
+    582.3380126953125
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "writedate desc”); ",
+   "bbox": [
+    95.0399169921875,
+    586.8380126953125,
+    167.07061767578125,
+    596.738037109375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20: String loginID = session.getAttribute(“userid”) == null ? “” : (String)",
+   "bbox": [
+    77.94000244140625,
+    601.238037109375,
+    374.66046142578125,
+    611.1380615234375
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "session.getAt- tribute(“userid”); ",
+   "bbox": [
+    95.03993225097656,
+    615.6380004882812,
+    226.66473388671875,
+    625.5380249023438
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21: int category = prjTbl.getCategory(); ",
+   "bbox": [
+    77.94001770019531,
+    630.0380249023438,
+    240.78158569335938,
+    639.9380493164062
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22: String categoryStr = “”;",
+   "bbox": [
+    77.94001770019531,
+    644.43798828125,
+    191.87863159179688,
+    654.3380126953125
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+   ],
+   "text": "1: … \n2: String tableName = props.getProperty(“jdbc.tableName”); \n3: String name = props.getProperty(“jdbc.name”); \n4: String query = “SELECT * FROM “ + tableName + “ WHERE Name =‘” + name + “’”;\n5: stmt = con.prepareStatement(query); \n6: rs = stmt.executeQuery(); \n7: … ",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    202.05808715820314,
+    444.5065002441406,
+    300.75807495117186
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "14: <% \n15: String pid = request.getParameter(“projectid”) == null ? “” : \nrequest.getParame- ter(“projectid”); \n16:MashupProjectDao mashupDao = (MashupProjectDao)\nDAOHelper.getMashupPro- jectDao(application); \n17: ProjectCommentDao commentDao = (ProjectCommentDao)\nDAOHelper.getProject- CommentDao(application); \n18: MashupProjectTbl prjTbl = mashupDao.getMashupProjectTbl(pid); \n19: ArrayList commentList =\ncommentDao.getProjectCommentTblByWhere(“where projectid=” + pid +  “ order by \nwritedate desc”); ",
+   "language": "text",
+   "label": "< projectDetail.jsp >",
+   "bbox": [
+    77.94000244140625,
+    441.6381042480469,
+    446.9773864746094,
+    597.938037109375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    30,
+    31,
+    32,
+    33
+   ],
+   "text": "20: String loginID = session.getAttribute(“userid”) == null ? “” : (String)\nsession.getAt- tribute(“userid”); \n21: int category = prjTbl.getCategory(); \n22: String categoryStr = “”;",
+   "language": "text",
+   "label": "writedate desc”); ",
+   "bbox": [
+    77.94000244140625,
+    600.038037109375,
+    374.66046142578125,
+    655.5380126953125
+   ]
+  }
+ ],
+ "native": "187\n제4장구현단계 보안약점 진단\n다음의 예제를 살펴보면, 5라인에서 PreparedStatement 객체를 사용하고 있으나 객체를 상수 \n스트링으로 생성하여 파라미터 부분을 setString 메소드로 설정하지 않아, 4라인에서 사용자의 외부 \n입력 값이 쿼리문의 구조를 바꾸게 되어 취약하다고 판정한다.\n정탐코드의 예\n1: … \n2: String tableName = props.getProperty(“jdbc.tableName”); \n3: String name = props.getProperty(“jdbc.name”); \n4: String query = “SELECT * FROM “ + tableName + “ WHERE Name =‘” + name + “’”;\n5: stmt = con.prepareStatement(query); \n6: rs = stmt.executeQuery(); \n7: … \n다음의 예제를 살펴보면, 15라인에서 사용자의 입력값이 변수 pid에 저장되고, 19라인에서 comment \nDao.getProjectCommentTblByWhere 함수의 파라미터로 사용된다. 해당 함수의 134라인에서 \n문자열을 만들게 되고, 138번 라인에서 해당 문자열을 이용해서 쿼리를 실행하므로 취약하다고 \n판정 한다.\n정탐코드의 예\n< projectDetail.jsp >\n14: <% \n15: String pid = request.getParameter(“projectid”) == null ? “” : \nrequest.getParame- ter(“projectid”); \n16:MashupProjectDao mashupDao = (MashupProjectDao)\nDAOHelper.getMashupPro- jectDao(application); \n17: ProjectCommentDao commentDao = (ProjectCommentDao)\nDAOHelper.getProject- CommentDao(application); \n18: MashupProjectTbl prjTbl = mashupDao.getMashupProjectTbl(pid); \n19: ArrayList commentList =\ncommentDao.getProjectCommentTblByWhere(“where projectid=” + pid +  “ order by \nwritedate desc”); \n20: String loginID = session.getAttribute(“userid”) == null ? “” : (String)\nsession.getAt- tribute(“userid”); \n21: int category = prjTbl.getCategory(); \n22: String categoryStr = “”;\n",
+ "native_sha256": "fb92ae96ce272d13d328de831bd7f73d9addaa1d618f5b62cd528d839cea24ef",
+ "chars": 1356,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

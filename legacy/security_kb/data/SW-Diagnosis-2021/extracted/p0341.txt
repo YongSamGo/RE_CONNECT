@@ -1,0 +1,46 @@
+341
+제4장구현단계 보안약점 진단
+아래 예제는 비밀번호를 네트워크로 서버로 전송하기 전에 AES 등의 안전한 암호알고리즘으로 암호
+화한 안전한 프로그램이다.
+안전한 코드의 예 JAVA
+// 비밀번호를 암호화 하여 전송
+1: try {
+2:
+Socket s = new Socket("taranis", 4444);
+3:
+PrintStream o = new PrintStream(s.getOutputStream(), true);
+//비밀번호를 강력한 AES암호화 알고리즘으로 전송하여 사용한다.
+4:
+Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
+5:
+String password = getPassword();
+6:
+byte[] encPassword = c.update(password.getBytes());
+7:
+o.write(encPassword, 0, encPassword.length);
+8: } catch (FileNotFoundException e) {
+9:
+……
+아래 C# 예제 또한 비밀번호를 암호화하지 않고 네트워크로 전송하고 있다. 이 경우 패킷 스니핑으로 비
+밀번호가 노출될 수 있다.
+안전하지 않은 코드의 예 C#
+1: public void EmailPassword_OnClick(object sender, EventArgs args) 
+2: {
+3:
+MembershipUser u = Membership.GetUser(UsernameTextBox.Text, false);
+4:
+String password;
+5:
+if (u != null)
+6:
+{
+7:
+try
+8:
+{
+9:
+password = u.GetPassword(); // sensitive data created
+10:
+}
+11:
+catch (Exception e)

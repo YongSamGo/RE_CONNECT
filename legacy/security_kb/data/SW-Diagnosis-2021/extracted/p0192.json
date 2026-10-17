@@ -1,0 +1,384 @@
+{
+ "lines": [
+  {
+   "text": "192",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    117.31112670898438,
+    296.1402587890625,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3: ......",
+   "bbox": [
+    83.58000183105469,
+    142.23818969726562,
+    111.55622863769531,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: String name = request.getParameter(“name”); ",
+   "bbox": [
+    83.58000183105469,
+    156.63821411132812,
+    285.95904541015625,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Query query = session.createQuery(“from Student where studentName = ‘” +  name ",
+   "bbox": [
+    83.58000183105469,
+    171.03823852539062,
+    452.4375305175781,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ “’ “);",
+   "bbox": [
+    95.70016479492188,
+    185.43826293945312,
+    124.94847106933594,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래 코드에서는 외부 입력값이 위치하는 부분을 ?로 설정하고, 실행 시에 해당 파라미터가 전달되도록 ",
+   "bbox": [
+    76.5,
+    217.81112670898438,
+    464.84893798828125,
+    228.8331298828125
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "수정함으로써 외부의 입력(name)이 쿼리의 구조를 변경시키는 것을 방지하고 있어 취약하지 않다.",
+   "bbox": [
+    76.5,
+    234.85113525390625,
+    446.7082214355469,
+    245.87313842773438
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    271.33111572265625,
+    296.91937255859375,
+    282.3531188964844
+   ],
+   "block": 21,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: import org.hibernate.Query",
+   "bbox": [
+    84.30000305175781,
+    296.25811767578125,
+    205.55447387695312,
+    306.1581115722656
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: import org.hibernate.Session",
+   "bbox": [
+    84.30000305175781,
+    310.6581115722656,
+    212.48330688476562,
+    320.55810546875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ......",
+   "bbox": [
+    84.30000305175781,
+    325.05810546875,
+    112.33617401123047,
+    334.9580993652344
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: String name = request.getParameter(“name”);",
+   "bbox": [
+    84.30000305175781,
+    339.4580993652344,
+    284.1279602050781,
+    349.35809326171875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Query query = session.createQuery(“from Student where studentName = ? “);",
+   "bbox": [
+    84.30000305175781,
+    353.85809326171875,
+    421.76641845703125,
+    363.7580871582031
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: query.setString(0, name);",
+   "bbox": [
+    84.29998779296875,
+    368.2580871582031,
+    199.17300415039062,
+    378.1580810546875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    410.1711120605469,
+    296.1402587890625,
+    421.193115234375
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: import org.hibernate.Query",
+   "bbox": [
+    83.58000183105469,
+    435.0981140136719,
+    204.85205078125,
+    444.99810791015625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: import org.hibernate.Session",
+   "bbox": [
+    83.58000183105469,
+    449.49810791015625,
+    211.7906494140625,
+    459.3981018066406
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ......",
+   "bbox": [
+    83.58000183105469,
+    463.8981018066406,
+    111.55622863769531,
+    473.798095703125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: String name = request.getParameter(“name”);",
+   "bbox": [
+    83.58000183105469,
+    478.298095703125,
+    283.4281921386719,
+    488.1980895996094
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Query query = session.createQuery(“from Student where studentName = :name “);",
+   "bbox": [
+    83.58000183105469,
+    492.6980895996094,
+    441.6265563964844,
+    502.59808349609375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: query.setParameter(“name”, name);",
+   "bbox": [
+    83.58001708984375,
+    507.0980529785156,
+    240.58042907714844,
+    516.998046875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5
+   ],
+   "text": "3: ......\n4: String name = request.getParameter(“name”); \n5: Query query = session.createQuery(“from Student where studentName = ‘” +  name \n+ “’ “);",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    141.03818969726564,
+    452.4375305175781,
+    196.5382568359375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "1: import org.hibernate.Query\n2: import org.hibernate.Session\n3: ......\n4: String name = request.getParameter(“name”);\n5: Query query = session.createQuery(“from Student where studentName = ? “);\n6: query.setString(0, name);",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    295.05811767578126,
+    421.76641845703125,
+    379.3580810546875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: import org.hibernate.Query\n2: import org.hibernate.Session\n3: ......\n4: String name = request.getParameter(“name”);\n5: Query query = session.createQuery(“from Student where studentName = :name “);\n6: query.setParameter(“name”, name);",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    433.8981140136719,
+    441.6265563964844,
+    518.198046875
+   ]
+  }
+ ],
+ "native": "192\n정탐코드의 예\n3: ......\n4: String name = request.getParameter(“name”); \n5: Query query = session.createQuery(“from Student where studentName = ‘” +  name \n+ “’ “);\n아래 코드에서는 외부 입력값이 위치하는 부분을 ?로 설정하고, 실행 시에 해당 파라미터가 전달되도록 \n수정함으로써 외부의 입력(name)이 쿼리의 구조를 변경시키는 것을 방지하고 있어 취약하지 않다.\n오탐코드의 예\n1: import org.hibernate.Query\n2: import org.hibernate.Session\n3: ......\n4: String name = request.getParameter(“name”);\n5: Query query = session.createQuery(“from Student where studentName = ? “);\n6: query.setString(0, name);\n오탐코드의 예\n1: import org.hibernate.Query\n2: import org.hibernate.Session\n3: ......\n4: String name = request.getParameter(“name”);\n5: Query query = session.createQuery(“from Student where studentName = :name “);\n6: query.setParameter(“name”, name);\n",
+ "native_sha256": "80a09e04ed730b19f1072e66c34ca001ecf179ea580028be021519e9dc81dd0a",
+ "chars": 752,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

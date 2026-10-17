@@ -1,0 +1,24 @@
+314
+| 제2 절| 보안기능
+보안기능(인증, 접근제어, 기밀성, 암호화, 권한관리 등)을 부적절하게 구현시 발생할 수 있는 보안 
+약점으로 적절한 인증 없는 중요기능 허용, 부적절한 인가 등이 포함된다.
+1. 적절한 인증 없는 중요기능 허용
+가. 개요
+적절한 인증과정이 없이 중요정보(계좌이체 정보, 개인정보 등)를 열람(또는 변경)할 때 발생하는 
+보안약점이다.
+나. 보안대책
+클라이언트의 보안검사를 우회하여 서버에 접근하지 못하도록 설계하고 중요한 정보가 있는 페이지는 
+재인증을 적용(은행 계좌이체 등)한다. 또한 안전하다고 검증된 라이브러리나 프레임워크(OpenSSL
+이나 ESAPI의 보안기능 등)를 사용하는 것이 중요하다.
+다. 코드예제
+회원정보 수정시 수정을 요청한 사용자와 로그인한 사용자의 일치 여부를 확인하지 않고 처리하고 있다.
+안전하지 않은 코드의 예 JAVA
+1: @RequestMapping(value = "/modify.do", method = RequestMethod.POST) 
+2: public ModelAndView memberModifyProcess(@ModelAttribute("MemberModel") 
+MemberModel memberModel, BindingResult result, HttpServletRequest request, 
+HttpSession session) { 
+3:
+ModelAndView mav = new ModelAndView(); 
+//1. 로그인한 사용자를 불러온다.
+4:
+String userId = (String) session.getAttribute("userId");

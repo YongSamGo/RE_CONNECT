@@ -1,0 +1,54 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+35
+안전한 코드 예시
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+36:
+37:
+def file_upload(request):
+  # 파일 개수 제한
+  if len(request.FILES) == 0 or len(request.FILES) > FILE_COUNT_LIMIT:
+    return render(request, '/error.html', {'error': '파일 개수 초과'})
+  for filename, upload_file in request.FILES.items():
+    # 파일 타입 체크
+    if upload_file.content_type != 'image/jpeg':
+      return render(request, '/error.html', {'error': '파일 타입 오류'})
+    # 파일 크기 제한
+    if upload_file.size > FILE_SIZE_LIMIT:
+      return render(request, '/error.html', {'error': '파일사이즈 오류'})
+      # 파일 확장자 검사
+      file_name, file_ext = os.path.splitext(upload_file.name)
+    if file_ext.lower() not in WHITE_LIST_EXT:
+      return render(request, '/error.html', {'error': '파일 타입 오류'})
+    fs = FileSystemStorage(location='media/screenshot', base_url = 'media/screenshot')
+    for upload_file in request.FILES.values():
+      filename = fs.save(upload_file.name, upload_file)
+      filename_list.append(filename)
+  return render(request, "/success.html", {"filename_list": filename_list})
+라. 참고자료
+① CWE-434: Unrestricted Upload of File with Dangerous Type, MITRE,
+https://cwe.mitre.org/data/definitions/434.html
+② Unrestricted File Upload, OWASP,
+https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload
+③ User-uploaded content, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/security/#user-uploaded-content-security

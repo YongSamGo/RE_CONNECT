@@ -1,0 +1,32 @@
+320
+아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인
+한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.
+안전한 코드의 예 JAVA
+1: private BoardDao boardDao; 
+2: String action = request.getParameter("action"); 
+3: String contentId = request.getParameter("contentId"); 
+// 세션에 저장된 사용자 정보를 얻어온다. 
+4:
+User user= (User)session.getAttribute("user");
+//사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.
+5:
+if (action != null && action.equals("delete") && checkAccessControlList(user,action)) {
+6:
+boardDao.delete(contenId);
+7:
+}
+8: }
+운영자 권한 검사 없이 컨트롤러와 내부의 개별액션에 접근이 가능한 C# 코드이다.
+안전하지 않은 코드의 예 C#
+// 운영자 권한 검사 없이 컨트롤러와 내부의 개별 액션에 접근 가능 
+1: public class AdministrationController : Controller
+2: {
+3:
+…
+4: }
+운영자 권한 검사 후에 개별 액션에 접근해야 한다.
+안전한 코드의 예 C#
+// 운영자 권한 검사 후 개별 액션에 접근 
+1: [Authorize(Roles = "Administrator")]
+2: public class AdministrationController : Controller
+3: {

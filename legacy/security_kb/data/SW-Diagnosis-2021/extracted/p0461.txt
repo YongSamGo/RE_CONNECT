@@ -1,0 +1,18 @@
+461
+제4장구현단계 보안약점 진단
+정탐코드의 예
+10:
+11:int main(void) 
+12:{ 
+13: Foo foo1; // calls default 
+constructor 14:std::cout << foo1.get_a() << 
+std::endl; 15: return 0; 
+16:}
+마. 참고자료
+[1] CWE-457, Use of Uninitialized Variable, MITRE,
+http://cwe.mitre.org/data/definitions/457.html
+[2] Do not read uninitialized memory, CERT,
+http://www.securecoding.cert.org/confluence/display/c/EXP33-C.+Do+not+rea
+d+uninitialized+memory
+[3] Uninitialized Variable, OWASP,
+https://www.owasp.org/index.php/Uninitialized_variable

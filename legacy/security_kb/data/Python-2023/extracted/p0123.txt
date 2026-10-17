@@ -1,0 +1,66 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+117
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+import hashlib
+from django.shortcuts import render
+def login(request):
+  user_id = request.POST.get('user_id', '')
+  user_pw = request.POST.get('user_pw', '')
+  sha = hashlib.sha256()
+  sha.update(user_pw.encode(‘utf-8’))
+  hashed_passwd = get_user_pw(user_id)
+  # 인증 시도에 따른 제한이 없어 반복적인 인증 시도가 가능
+  if sha.hexdigest() == hashed_passwd:
+    return render(request, '/index.html', {'state':'login_success'})
+  else:
+    return render(request, '/login.html', {'state':'login_failed'})
+다음은 사용자 로그인 시도에 대한 횟수를 제한하여 무차별 공격에 대응하는 방법을 보여 준다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+import hashlib
+from django.shortcuts import render
+from .models import LoginFail
+LOGIN_TRY_LIMIT = 5
+def login(request):
+  user_id = request.POST.get('user_id', '')
+  user_pw = request.POST.get('user_pw', '')
+  sha = hashlib.sha256()
+  sha.update(user_pw.encode(‘utf-8’))
+  hashed_passwd = get_user_pw(user_id)
+  if sha.hexdigest() == hashed_passwd:
+    # 로그인 성공 시 실패 횟수 삭제
+    LoginFail.objects.filter(user_id=user_id).delete()
+    return render(request, '/index.html', {'state':'login_success'})

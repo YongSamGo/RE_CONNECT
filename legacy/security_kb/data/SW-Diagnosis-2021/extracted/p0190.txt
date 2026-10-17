@@ -1,0 +1,44 @@
+190
+정탐코드의 예
+6:
+Properties props = new Properties(); 
+7:
+String fileName = “conditions.txt”; 
+8:
+FileInputStream in = new FileInputStream(fileName); 
+9:
+props.load(in);
+10:
+// 외부로부터 입력을 받는다. 
+11:
+String id = props.getProperty(“id”); 
+12:
+// 외부 입력 값이 query의 인자로 사용이 된다. 
+13:
+Query query = em.createNativeQuery(“SELECT OBJECT(i) FROM Item i WHERE 
+i.itemID > “ + id); 
+14:
+List<U9103> items = query.getResultList(); 
+15:
+…
+16:
+return r_type;
+17:
+}
+18: …
+[ SQL 삽입 : mybatis Data Map ]
+외부에서 입력된 값이 쿼리의 인자값으로만 사용되지 않고, 쿼리 명령어에 연결되는 문자열 로 사용 
+되면, 공격자가 의도하지 않았던 문자열을 전달함으로써 쿼리의 의미를 왜곡시키거나, 그 구조를 
+변경하여 임의의 DB 명령어를 수행할 수 있다.
+다음의 예제는 mybatis Data Map에서 사용하는 쿼리 설정파일(XML)이다. 정의된 쿼리 중 
+delStu- dent 명령어 선언에서 쿼리에 삽입되는 인자들 중 $name$으로 전달되는 문자열 값은 
+그대로 연결되어 쿼리가 만들어진다. 따라서 만약 NAME의 값으로 ‘ OR ‘x’=’x 을 전달하면 다음과 
+같은 쿼리가 실행되어 테이블의 모든 원소를 삭제할 수 있으므로 취약하다고 판정한다.
+DELETE STUDENTS WHERE NUM = #num# and NAME = ‘’ OR ‘x’=’x’ 
+정탐코드의 예
+1: <?xml version=”1.0” encoding=”UTF-8”?> 
+2: <!DOCTYPE sqlMap PUBLIC “-//iBATIS.com//DTD SQL Map 2.0//EN”
+“http://www. ibatis.com/dtd/sql-map-2.dtd”>
+3: <sqlMap namespace=”Student”>
+4:
+<resultMap id=”StudentResult” class=”Student”>

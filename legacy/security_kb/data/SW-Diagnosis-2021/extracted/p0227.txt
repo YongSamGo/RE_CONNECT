@@ -1,0 +1,50 @@
+227
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C
+4:
+if (argc < 1 ) {
+5:
+// error
+6:
+}
+7:
+// 외부 입력값으로 커맨드를 직접 수행 
+8:
+cmd_data = argv[1]; 
+9:
+len = strlen(cmd_data); 
+10:
+for (int i = 0; I < len; i++) {
+11:
+if (cmd_data[i] == ‘|’ || cmd_data[i] == ‘&’ ||
+12:
+cmd_data[i] == ‘;’ || cmd_data[i] == ‘:’ || cmd_data[i] == ‘>’) { 
+13:
+// 멀티라인을 지원하는 특수문자나 파일 리다이렉트 특수문자가 존재하여
+14:
+// 안전하지 않음
+15:
+return -1;
+16:
+}
+17:
+}
+18:
+snprintf(cmd, CMD_LENGTH, “cat %s”, cmd_data); 
+19:
+system(cmd);
+20:
+……
+21: }
+라. 진단방법
+운영체제 명령어(exec(), system(), Runtime.getRuntime().exec 등)를 실행할 수 있는 함수가 
+호출되는지 확인하고(①) 외부에서 전달되는 값이 시스템 내부명령어의 일부 또는 전부로 사용되는지 
+확인한다(②). 정해진 후보군에서 선택된 값(White List)이거나 적절하게 검증하면 안전하고 그 외에는 
+취약하다.
+일반적인 진단의 예
+1:
+public void f() throws
+IOException { 2:
+Properties props = new
+Properties(); 3:
+String fileName = “file_list”;

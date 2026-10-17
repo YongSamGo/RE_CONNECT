@@ -1,0 +1,502 @@
+{
+ "lines": [
+  {
+   "text": "354",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "암호화 과정에 사용하는 암호화 키는 외부 공간(파일)에 안전한 방식으로 암호화하여 보관해야 하며, ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.85101318359375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "암호화된 암호화 키는 복호화하여 사용한다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    244.12689208984375,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    170.77108764648438,
+    314.61773681640625,
+    181.7930908203125
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: import javax.crypto.KeyGenerator; ",
+   "bbox": [
+    83.58000183105469,
+    190.17813110351562,
+    234.8135986328125,
+    200.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: import javax.crypto.spec.SecretKeySpec; ",
+   "bbox": [
+    83.58000183105469,
+    204.57815551757812,
+    262.0201416015625,
+    214.4781494140625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: import javax.crypto.Cipher; ",
+   "bbox": [
+    83.58000183105469,
+    218.97817993164062,
+    206.46701049804688,
+    228.878173828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    233.378173828125,
+    91.33041381835938,
+    243.27816772460938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "……",
+   "bbox": [
+    100.06461334228516,
+    233.378173828125,
+    115.93391418457031,
+    243.27816772460938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: public String encriptString(String usr) { ",
+   "bbox": [
+    83.58000183105469,
+    247.77816772460938,
+    256.3078918457031,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다.",
+   "bbox": [
+    95.70015716552734,
+    262.17816162109375,
+    364.4521179199219,
+    272.0781555175781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.57998657226562,
+    276.5781555175781,
+    91.34539031982422,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String key = getPassword(\"./password.ini\");",
+   "bbox": [
+    104.51985168457031,
+    276.5781555175781,
+    281.2930603027344,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.57998657226562,
+    290.9781494140625,
+    91.34539031982422,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "key = decrypt(key);",
+   "bbox": [
+    104.51985168457031,
+    290.9781494140625,
+    183.98715209960938,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.57998657226562,
+    305.3781433105469,
+    91.31629943847656,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (key != null) { ",
+   "bbox": [
+    104.49076080322266,
+    305.3781433105469,
+    173.46607971191406,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.57998657226562,
+    319.77813720703125,
+    91.33833312988281,
+    329.6781311035156
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] bToEncrypt = usr.getBytes(\"UTF-8\"); ",
+   "bbox": [
+    117.71282958984375,
+    319.77813720703125,
+    296.4386291503906,
+    329.6781311035156
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.57998657226562,
+    334.1781311035156,
+    96.26521301269531,
+    344.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SecretKeySpec sKeySpec = new SecretKeySpec(key.getBytes(), \"AES\"); ",
+   "bbox": [
+    118.25939178466797,
+    334.1781311035156,
+    413.55072021484375,
+    344.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "소스코드 내부에 암호화 키를 상수 형태로 하드코딩하여 사용하면 악의적인 공격자에게 암호화 키가 ",
+   "bbox": [
+    76.5,
+    366.6111145019531,
+    464.8431396484375,
+    377.63311767578125
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "노출될 위협이 있다.",
+   "bbox": [
+    76.5,
+    383.59100341796875,
+    153.28836059570312,
+    394.6130065917969
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    423.5511169433594,
+    323.5413513183594,
+    434.5731201171875
+   ],
+   "block": 30,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "//암호화 키를 소스코드 내부에 사용하는 것은 안전하지 않다. ",
+   "bbox": [
+    83.58000183105469,
+    442.95819091796875,
+    298.60638427734375,
+    452.8581848144531
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: byte[] key = new byte[] { 0x43, 0x87, 0x23, 0x72 };",
+   "bbox": [
+    83.58000183105469,
+    457.3581848144531,
+    314.5092468261719,
+    467.2581787109375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: byte[] iv = new byte[] { 0x43, 0x87, 0x23, 0x72 };",
+   "bbox": [
+    83.58000183105469,
+    471.7581787109375,
+    307.1846008300781,
+    481.6581726074219
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);",
+   "bbox": [
+    83.58000183105469,
+    486.1581726074219,
+    372.8047180175781,
+    496.05816650390625
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: CryptoStream cStream = new CryptoStream(fStream,",
+   "bbox": [
+    83.57998657226562,
+    514.9581298828125,
+    314.2182312011719,
+    524.858154296875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "new TripleDESCryptoServiceProvider().CreateEncryptor(key, iv),",
+   "bbox": [
+    95.70014190673828,
+    529.358154296875,
+    350.8309326171875,
+    539.2581787109375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "CryptoStreamMode.Write);",
+   "bbox": [
+    95.70013427734375,
+    543.7581176757812,
+    202.3846893310547,
+    553.6581420898438
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1: import javax.crypto.KeyGenerator; \n2: import javax.crypto.spec.SecretKeySpec; \n3: import javax.crypto.Cipher; \n4:    ……\n5: public String encriptString(String usr) { \n//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다.\n6:      String key = getPassword(\"./password.ini\");\n7:      key = decrypt(key);\n8:      if (key != null) { \n9:           byte[] bToEncrypt = usr.getBytes(\"UTF-8\"); \n10:         SecretKeySpec sKeySpec = new SecretKeySpec(key.getBytes(), \"AES\"); ",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.57998657226562,
+    181.8930908203125,
+    413.55072021484375,
+    345.278125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "//암호화 키를 소스코드 내부에 사용하는 것은 안전하지 않다. \n1: byte[] key = new byte[] { 0x43, 0x87, 0x23, 0x72 };\n2: byte[] iv = new byte[] { 0x43, 0x87, 0x23, 0x72 };\n3: FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);\n4: CryptoStream cStream = new CryptoStream(fStream,\nnew TripleDESCryptoServiceProvider().CreateEncryptor(key, iv),\nCryptoStreamMode.Write);",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.57998657226562,
+    434.6731201171875,
+    372.8047180175781,
+    554.8581420898438
+   ]
+  }
+ ],
+ "native": "354\n암호화 과정에 사용하는 암호화 키는 외부 공간(파일)에 안전한 방식으로 암호화하여 보관해야 하며, \n암호화된 암호화 키는 복호화하여 사용한다.\n안전한 코드의 예 JAVA\n1: import javax.crypto.KeyGenerator; \n2: import javax.crypto.spec.SecretKeySpec; \n3: import javax.crypto.Cipher; \n4:\n……\n5: public String encriptString(String usr) { \n//암호화 키는 외부 파일에서 암호화 된 형태로 저장하고, 사용시 복호화 한다.\n6:\nString key = getPassword(\"./password.ini\");\n7:\nkey = decrypt(key);\n8:\nif (key != null) { \n9:\nbyte[] bToEncrypt = usr.getBytes(\"UTF-8\"); \n10:\nSecretKeySpec sKeySpec = new SecretKeySpec(key.getBytes(), \"AES\"); \n소스코드 내부에 암호화 키를 상수 형태로 하드코딩하여 사용하면 악의적인 공격자에게 암호화 키가 \n노출될 위협이 있다.\n안전하지 않은 코드의 예 C#\n//암호화 키를 소스코드 내부에 사용하는 것은 안전하지 않다. \n1: byte[] key = new byte[] { 0x43, 0x87, 0x23, 0x72 };\n2: byte[] iv = new byte[] { 0x43, 0x87, 0x23, 0x72 };\n3: FileStream fStream = File.Open(fileName, FileMode.OpenOrCreate);\n4: CryptoStream cStream = new CryptoStream(fStream,\nnew TripleDESCryptoServiceProvider().CreateEncryptor(key, iv),\nCryptoStreamMode.Write);\n",
+ "native_sha256": "d59b18388a688670c65313696a43decedcda0633564de34e0b530a765a9aecd9",
+ "chars": 958,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

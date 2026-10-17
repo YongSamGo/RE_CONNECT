@@ -1,0 +1,7 @@
+486
+마. 참고자료
+[1] CWE-495 Private Array-Typed Field Returned From A Public Method, MITRE,
+http://cwe.mitre.org/data/definitions/495.html
+[2] Do not return references to private mutable class members, CERT,
+http://www.securecoding.cert.org/confluence/display/java/OBJ05-J.+Do+not+r
+eturn+references+to+private+mutable+class+members

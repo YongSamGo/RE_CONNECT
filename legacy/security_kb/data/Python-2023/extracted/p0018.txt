@@ -1,0 +1,52 @@
+Python 시큐어코딩 가이드
+12
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+from django.shortcuts import render
+from app.models import Member
+def member_search(request):
+    name = request.POST.get('name', '')
+    
+    # 입력값을 검증 없이 쿼리문 생성에 사용해 안전하지 않다
+    query=“select * from member where name=‘” + name + “’”
+    # 외부 입력값을 검증 없이 사용한 쿼리문을 raw()함수로 실행하면 안전하지 않다
+    data = Member.objects.raw(query)
+    return render(request, '/member_list.html', {'member_list':data})
+다음 코드에서는 Django에서 원시 코드 실행 시에도 인자화된 쿼리와 params 인수를 raw() 함수의 바인딩 
+변수로 사용하는 안전한 예시를 보여 준다. 외부 입력값을 포함하는 쿼리문 생성 자체를 인자화된 쿼리 형식으로 
+생성하고(line 10), raw() 메소드에서 두 번째 인자의 바인딩 변수로 사용했다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from django.shortcuts import render
+from app.models import Member
+def member_search(request):
+  name = request.POST.get('name', '')
+  # 외부 입력값을 raw() 함수 실행 시 바인딩 변수로 사용하여 쿼리 구조가 
+  # 변경되지 않도록 한다.(list 형은 %s, dictionary 형은 %(key)s를 사용)
+  query='select * from member where name=%s'
+  # 인자화된 쿼리문을 사용하여 raw() 함수를 호출해 안전하다
+  data = Member.objects.raw(query, [name])
+    return render(request, '/member_list.html', {'member_list':data})

@@ -1,0 +1,52 @@
+446
+예외상황이 발생하여 함수가 종료될 때, 예외의 발생 여부와 상관없이 항상 실행되는 finally 블록에서 
+할당받은 모든 자원을 반드시 반환하도록 한다.
+안전한 코드의 예 JAVA
+1: InputStream in = null; 
+2: OutputStream out = null; 
+3:
+try { 
+4:
+in = new FileInputStream(inputFile);
+5:
+out = new FileOutputStream(outputFile); 
+6:
+...
+7:
+FileCopyUtils.copy(fis, os); 
+8:
+} catch (IOException e) { 
+9:
+logger.error(e); 
+10: //항상 수행되는 finally 블록에서 할당받은 모든 자원에 대해 각각 null검사를 수행 후 예외처리를 
+하여 자원을 해제하여야 한다.
+11: } finally {
+12:
+if (in != null) {
+13:
+try {
+14:
+in.close();
+15:
+} catch (IOException e) {
+16:
+logger.error(e);
+17:
+}
+18:
+}
+19:
+if (out != null) {
+20:
+try {
+21:
+out.close();
+22:
+} catch (IOException e) {
+23:
+logger.error(e);
+24:
+}
+25:
+}
+26:}

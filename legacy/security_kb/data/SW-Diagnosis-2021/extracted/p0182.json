@@ -1,0 +1,429 @@
+{
+ "lines": [
+  {
+   "text": "182",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "MyBatis Data Map은 외부에서 입력되는 값이 SQL 질의문을 연결하는 문자열로 사용되는 경우에 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.81683349609375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "의도하지 않은 정보가 노출될 수 있는 공격 형태이다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    278.21356201171875,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 MyBatis",
+   "bbox": [
+    200.27999877929688,
+    170.77108764648438,
+    335.43084716796875,
+    181.7930908203125
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?> ",
+   "bbox": [
+    83.58000183105469,
+    190.17813110351562,
+    266.458740234375,
+    200.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“",
+   "bbox": [
+    83.58000183105469,
+    204.57815551757812,
+    377.58441162109375,
+    214.4781494140625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\"> ",
+   "bbox": [
+    95.70015716552734,
+    218.97817993164062,
+    292.7936096191406,
+    228.878173828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ...... ",
+   "bbox": [
+    83.58000183105469,
+    233.378173828125,
+    114.1073989868164,
+    243.27816772460938
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">",
+   "bbox": [
+    83.58000183105469,
+    247.77816772460938,
+    384.0892028808594,
+    257.67816162109375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: //$기호를 사용하는 경우 외부에서 입력된 keyword값을 문자열에 결합한 형태로 쿼리에 반영되므로 ",
+   "bbox": [
+    83.57998657226562,
+    262.17816162109375,
+    446.56256103515625,
+    272.0781555175781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않다.",
+   "bbox": [
+    95.70013427734375,
+    276.5781555175781,
+    146.94874572753906,
+    286.4781494140625
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.5799789428711,
+    290.9781494140625,
+    91.34538269042969,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "select * from tbl_board where title like '%${keyword}%' order by pos asc",
+   "bbox": [
+    108.8992919921875,
+    290.9781494140625,
+    413.60345458984375,
+    300.8781433105469
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: </select>1",
+   "bbox": [
+    83.58085632324219,
+    305.3781433105469,
+    135.78504943847656,
+    315.27813720703125
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부 입력값을 MyBatis 쿼리맵에 바인딩할 경우 $ 기호가 아닌 # 기호를 사용해야 한다. $ 기호를 ",
+   "bbox": [
+    76.5,
+    343.8111877441406,
+    464.72113037109375,
+    354.83319091796875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용하는 경우 입력값을 문자열에 결합하는 형태로 쿼리에 반영하므로 쿼리문이 조작될 수 있다.",
+   "bbox": [
+    76.5,
+    360.79107666015625,
+    442.9792175292969,
+    371.8130798339844
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 MyBatis",
+   "bbox": [
+    214.8000030517578,
+    400.7511901855469,
+    320.8818359375,
+    411.773193359375
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?>",
+   "bbox": [
+    83.58000183105469,
+    420.1581115722656,
+    263.9428405761719,
+    430.05810546875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“",
+   "bbox": [
+    83.58000183105469,
+    434.55810546875,
+    377.58441162109375,
+    444.4580993652344
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">",
+   "bbox": [
+    95.70015716552734,
+    448.9580993652344,
+    290.2583312988281,
+    458.85809326171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ......",
+   "bbox": [
+    83.58000183105469,
+    463.35809326171875,
+    111.55622863769531,
+    473.2580871582031
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">",
+   "bbox": [
+    83.58000183105469,
+    477.7580871582031,
+    384.0892028808594,
+    487.6580810546875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: //$ 대신 #기호를 사용하여 변수가 쿼리맵에 바인딩 될 수 있도록 수정하는 것이 안전하다.",
+   "bbox": [
+    83.57998657226562,
+    492.1580810546875,
+    407.94976806640625,
+    502.0580749511719
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.57998657226562,
+    506.5580749511719,
+    91.34539031982422,
+    516.4580688476562
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "select * from tbl_board where title like '%'||#{keyword}||'%' order by pos asc",
+   "bbox": [
+    108.89929962158203,
+    506.5580749511719,
+    430.315673828125,
+    516.4580688476562
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: </select>",
+   "bbox": [
+    83.57998657226562,
+    520.9580078125,
+    130.8538055419922,
+    530.8580322265625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "text": "1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?> \n2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“\n\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\"> \n3: ...... \n4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">\n5: //$기호를 사용하는 경우 외부에서 입력된 keyword값을 문자열에 결합한 형태로 쿼리에 반영되므로 \n안전하지 않다.\n6:        select * from tbl_board where title like '%${keyword}%' order by pos asc\n7: </select>1",
+   "language": "xml",
+   "label": "안전하지 않은 코드의 예 MyBatis",
+   "bbox": [
+    83.5799789428711,
+    181.8930908203125,
+    446.56256103515625,
+    316.47813720703124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“\n\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n3: ......\n4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">\n5: //$ 대신 #기호를 사용하여 변수가 쿼리맵에 바인딩 될 수 있도록 수정하는 것이 안전하다.\n6:        select * from tbl_board where title like '%'||#{keyword}||'%' order by pos asc\n7: </select>",
+   "language": "xml",
+   "label": "안전한 코드의 예 MyBatis",
+   "bbox": [
+    83.57998657226562,
+    411.873193359375,
+    430.315673828125,
+    532.0580322265625
+   ]
+  }
+ ],
+ "native": "182\nMyBatis Data Map은 외부에서 입력되는 값이 SQL 질의문을 연결하는 문자열로 사용되는 경우에 \n의도하지 않은 정보가 노출될 수 있는 공격 형태이다.\n안전하지 않은 코드의 예 MyBatis\n1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?> \n2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“\n\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\"> \n3: ...... \n4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">\n5: //$기호를 사용하는 경우 외부에서 입력된 keyword값을 문자열에 결합한 형태로 쿼리에 반영되므로 \n안전하지 않다.\n6:\nselect * from tbl_board where title like '%${keyword}%' order by pos asc\n7: </select>1\n외부 입력값을 MyBatis 쿼리맵에 바인딩할 경우 $ 기호가 아닌 # 기호를 사용해야 한다. $ 기호를 \n사용하는 경우 입력값을 문자열에 결합하는 형태로 쿼리에 반영하므로 쿼리문이 조작될 수 있다.\n안전한 코드의 예 MyBatis\n1: <?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n2: <!DOCTYPE mapper PUBLIC \"-//mybatis.org//DTD Mapper 3.0//EN“\n\"http://mybatis.org/dtd/mybatis-3-mapper.dtd\">\n3: ......\n4: <select id=\"boardSearch\" parameterType=\"map\" resultType=\"BoardDto\">\n5: //$ 대신 #기호를 사용하여 변수가 쿼리맵에 바인딩 될 수 있도록 수정하는 것이 안전하다.\n6:\nselect * from tbl_board where title like '%'||#{keyword}||'%' order by pos asc\n7: </select>\n",
+ "native_sha256": "b883ac120b0c78e01afa0a2f8821ae7c5c576ed76dc98b268ac372a5fd5310c5",
+ "chars": 1029,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

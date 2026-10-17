@@ -1,0 +1,49 @@
+Python 시큐어코딩 가이드
+82
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+def update_pass(dbconn, password, user_id):
+  curs = dbconn.cursor()
+  # 암호화되지 않은 패스워드를 DB에 저장
+  curs.execute(
+    'UPDATE USERS SET PASSWORD=%s WHERE USER_ID=%s',
+    password,
+    user_id
+  )
+  dbconn.commit()
+아래는 해시 알고리즘을 이용하여 단방향 암호화 이후에 패스워드를 저장하고 있다. 이 때, 해시함수 또한 
+SHA256과 같이 안정성이 검증된 알고리즘을 사용해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from Crypto.Hash import SHA256
+def update_pass(dbconn, password, user_id, salt):
+  # 단방향 암호화를 이용하여 패스워드를 암호화
+  hash_obj = SHA256.new()
+  hash_obj.update(bytes(password + salt, 'utf-8'))
+  hash_pwd = hash_obj.hexdigest()
+  curs = dbconn.cursor()
+  curs.execute(
+    'UPDATE USERS SET PASSWORD=%s WHERE USER_ID=%s',
+    (hash_pwd, user_id)
+  )
+  dbconn.commit()

@@ -1,0 +1,665 @@
+{
+ "lines": [
+  {
+   "text": "322",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C",
+   "bbox": [
+    229.6199951171875,
+    120.79122924804688,
+    306.0576171875,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    91.34540557861328,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.07960510253906,
+    140.19808959960938,
+    102.81234741210938,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// username 이 로그인 정보와 일치하는지 검사합니다.",
+   "bbox": [
+    92.39971160888672,
+    154.59811401367188,
+    288.0059509277344,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    96.26081848144531,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if ( strcmp(username,getLoginName()) != 0 ) { ",
+   "bbox": [
+    105.0549545288086,
+    168.99813842773438,
+    298.5366516113281,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.57998657226562,
+    183.39816284179688,
+    96.28636932373047,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "printf(\"Login error\"); ",
+   "bbox": [
+    109.46083068847656,
+    183.39816284179688,
+    191.46250915527344,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.57998657226562,
+    197.79818725585938,
+    96.26521301269531,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return(FAIL);",
+   "bbox": [
+    109.43968200683594,
+    197.79818725585938,
+    159.5044403076172,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: }",
+   "bbox": [
+    83.57998657226562,
+    212.19821166992188,
+    103.41265869140625,
+    222.09820556640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: snprintf(filter, sizeof(filter), \"(name=%s)\", username); ",
+   "bbox": [
+    83.57998657226562,
+    226.59820556640625,
+    317.2409973144531,
+    236.49819946289062
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.57998657226562,
+    240.99819946289062,
+    96.26521301269531,
+    250.898193359375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "rc = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter, NULL, 0, NULL, ",
+   "bbox": [
+    105.05935668945312,
+    240.99819946289062,
+    442.24456787109375,
+    250.898193359375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result); ",
+   "bbox": [
+    100.679931640625,
+    255.398193359375,
+    313.4725036621094,
+    265.2981872558594
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.58001708984375,
+    269.7981872558594,
+    96.26522827148438,
+    279.69818115234375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return rc; ",
+   "bbox": [
+    105.05937194824219,
+    269.7981872558594,
+    145.939453125,
+    279.69818115234375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: }",
+   "bbox": [
+    83.58001708984375,
+    284.19818115234375,
+    103.41268920898438,
+    294.0981750488281
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    76.5,
+    336.6351013183594,
+    132.05699157714844,
+    348.7131042480469
+   ],
+   "block": 26,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "해당 취약점은 보안특성 중 외부 시스템(웹서버, DB서버, LADP 등)의 권한 설정과 관련된 취약점으로 ",
+   "bbox": [
+    76.5,
+    365.2911071777344,
+    464.83349609375,
+    376.3131103515625
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정적도구를 사용하여 이를 판단하는 것은 쉽지 않다.",
+   "bbox": [
+    76.5,
+    382.33111572265625,
+    275.40606689453125,
+    393.3531188964844
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "먼저 중요정보를 저장할 수 있는 외부시스템이 존재하는지 식별하고 해당시스템에 접근(열람) 및 ",
+   "bbox": [
+    76.5,
+    409.3310241699219,
+    464.7581481933594,
+    420.35302734375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "변경(생성․ 삭제․ 수정 등)에 대한 권한을 사전에 적절하게 정의하였는지 확인한다. 해당 정보 또는 ",
+   "bbox": [
+    76.5,
+    426.3000793457031,
+    464.7971496582031,
+    437.33319091796875
+   ],
+   "block": 30,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "기능(접근․ 변경)을 호출하는 함수에서, 사전에 정의한 권한 소유여부를 검사하는지 확인(①)한다. 또한 ",
+   "bbox": [
+    76.49990844726562,
+    443.28009033203125,
+    464.76568603515625,
+    454.3132019042969
+   ],
+   "block": 31,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "접근제어를 서버측이 아닌 JavaScript 등과 같이 클라이언트측에서 제어 하여 우회가 가능한지 확인한다.",
+   "bbox": [
+    76.49974060058594,
+    460.3312072753906,
+    455.3349304199219,
+    471.35321044921875
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    496.81109619140625,
+    307.0608215332031,
+    507.8330993652344
+   ],
+   "block": 33,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    521.7380981445312,
+    92.0654067993164,
+    531.6381225585938
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String ",
+   "bbox": [
+    105.2398681640625,
+    521.7380981445312,
+    448.21929931640625,
+    531.6381225585938
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sPwd) { ",
+   "bbox": [
+    105.23985290527344,
+    536.1380615234375,
+    139.41677856445312,
+    546.0380859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.29998779296875,
+    550.5380859375,
+    92.06539154052734,
+    560.4381103515625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    105.23985290527344,
+    550.5380859375,
+    113.17362213134766,
+    560.4381103515625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.29998779296875,
+    564.9380493164062,
+    92.06539154052734,
+    574.8380737304688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);",
+   "bbox": [
+    105.23985290527344,
+    564.9380493164062,
+    430.7677001953125,
+    574.8380737304688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.29998779296875,
+    579.3380737304688,
+    92.06539154052734,
+    589.2380981445312
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.PROVIDER_URL, sServiceProvider); ",
+   "bbox": [
+    105.23985290527344,
+    579.3380737304688,
+    317.03717041015625,
+    589.2380981445312
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.29998779296875,
+    593.738037109375,
+    92.04246520996094,
+    603.6380615234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 익명으로 LDAP 인증을 사용 ",
+   "bbox": [
+    105.21692657470703,
+    593.738037109375,
+    224.68983459472656,
+    603.6380615234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.29998779296875,
+    608.1380615234375,
+    92.06539154052734,
+    618.0380859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.SECURITY_AUTHENTICATION, “none”); ···············································①",
+   "bbox": [
+    105.23985290527344,
+    608.1380615234375,
+    453.361328125,
+    618.0380859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.29998779296875,
+    622.5380249023438,
+    92.06539154052734,
+    632.4380493164062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.SECURITY_PRINCIPAL, sUid);",
+   "bbox": [
+    105.23985290527344,
+    622.5380249023438,
+    291.53619384765625,
+    632.4380493164062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "9:    }\n// username 이 로그인 정보와 일치하는지 검사합니다.\n10:    if ( strcmp(username,getLoginName()) != 0 ) { \n11:      printf(\"Login error\"); \n12:      return(FAIL);\n13: }\n14: snprintf(filter, sizeof(filter), \"(name=%s)\", username); \n15:    rc = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter, NULL, 0, NULL, \nNULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result); \n16:    return rc; \n17: }",
+   "language": "c",
+   "label": "안전한 코드의 예 C",
+   "bbox": [
+    83.57998657226562,
+    131.913232421875,
+    442.24456787109375,
+    295.2981750488281
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41
+   ],
+   "text": "1:      public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String \nsPwd) { \n2:      …\n3:      env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);\n4:      env.put(Context.PROVIDER_URL, sServiceProvider); \n5:      // 익명으로 LDAP 인증을 사용 \n6:      env.put(Context.SECURITY_AUTHENTICATION, “none”); ···············································①\n7:      env.put(Context.SECURITY_PRINCIPAL, sUid);",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.29998779296875,
+    520.5380981445312,
+    453.361328125,
+    633.6380493164063
+   ]
+  }
+ ],
+ "native": "322\n안전한 코드의 예 C\n9:\n}\n// username 이 로그인 정보와 일치하는지 검사합니다.\n10:\nif ( strcmp(username,getLoginName()) != 0 ) { \n11:\nprintf(\"Login error\"); \n12:\nreturn(FAIL);\n13: }\n14: snprintf(filter, sizeof(filter), \"(name=%s)\", username); \n15:\nrc = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter, NULL, 0, NULL, \nNULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result); \n16:\nreturn rc; \n17: }\n라. 진단방법\n해당 취약점은 보안특성 중 외부 시스템(웹서버, DB서버, LADP 등)의 권한 설정과 관련된 취약점으로 \n정적도구를 사용하여 이를 판단하는 것은 쉽지 않다.\n먼저 중요정보를 저장할 수 있는 외부시스템이 존재하는지 식별하고 해당시스템에 접근(열람) 및 \n변경(생성․ 삭제․ 수정 등)에 대한 권한을 사전에 적절하게 정의하였는지 확인한다. 해당 정보 또는 \n기능(접근․ 변경)을 호출하는 함수에서, 사전에 정의한 권한 소유여부를 검사하는지 확인(①)한다. 또한 \n접근제어를 서버측이 아닌 JavaScript 등과 같이 클라이언트측에서 제어 하여 우회가 가능한지 확인한다.\n일반적인 진단의 예\n1:\npublic void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String \nsPwd) { \n2:\n…\n3:\nenv.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);\n4:\nenv.put(Context.PROVIDER_URL, sServiceProvider); \n5:\n// 익명으로 LDAP 인증을 사용 \n6:\nenv.put(Context.SECURITY_AUTHENTICATION, “none”); ···············································①\n7:\nenv.put(Context.SECURITY_PRINCIPAL, sUid);\n",
+ "native_sha256": "099b40477a416d72bb753b91899721a6d26a295ba69dc8b8c162ff2cca8fd3d1",
+ "chars": 1114,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

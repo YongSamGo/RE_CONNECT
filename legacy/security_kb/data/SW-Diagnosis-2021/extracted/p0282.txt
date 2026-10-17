@@ -1,0 +1,61 @@
+282
+오탐코드의 예
+10:public static boolean isPrivateIP(String r){ 
+11:
+//블랙리스트 목록(lookback 주소, IPv4 및 IPv6 주소) 
+12:
+String private_ip[] = {
+13:
+//loopback addresses
+14:
+"127.", "0.", 
+15:
+//IP V4 prefix for private addresses 
+16:
+"10.",
+17:
+"172.16.", "172.17.", "172.18.", "172.19.", "172.20.", "172.21.",
+18:
+"172.22.", "172.23.", "172.24.", "172.25.", "172.26.", "172.27.",
+19:
+"172.28.", "172.29.", "172.30.", "172.31.", "192.168.", "169.254.",
+20:
+//IP V6 prefix for private addresses
+21:
+"fc", "fd", "fe", "ff", "::1"
+22:
+};
+23:
+24:
+for(int i = 0; i<private_ip.length; i++){ 
+25:
+if(r.toLowerCase().trim().startsWith(private_ip[i])){ 
+26:
+return true;
+27: 
+}
+28:
+}
+29:
+return false;
+30:}
+[ 참고 : SSRF 예시]
+* 문자열 인코딩 후 SSRF 예시
+URL
+설명
+/ssrf.php?url=http://425.510.425.510/
+오버플로우 된 형식의 점이 포함된 IP
+/ssrf.php?url=http://2852039166/
+점이 포함되지 않은 10진수 형식
+/ssrf.php?url=http://7147006462/
+점이 포함되지 않은 오버플로된 형식
+/ssrf.php?url=http://0xA9.0xFE.0xA9.0xFE/
+점이 포함된 16진수 형식
+/ssrf.php?url=http://0xA9FEA9FE/
+점이 포함되지 않은 16진수 형식
+/ssrf.php?url=http://0x41414141A9FEA9FE/
+점이 포함되지 않은 16진수의 오버플로된 형식
+/ssrf.php?url=http://0251.0376.0251.0376/
+점이 포함된 8진수 형식
+/ssrf.php?url=http://0251.00376.000251.0000376/
+패딩이 포함된 점 포함 8진수 형식

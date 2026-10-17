@@ -1,0 +1,38 @@
+197
+제4장구현단계 보안약점 진단
+다음 예제에서는 6라인에서 동적코드 실행 함수인 ScriptEngine.eval함수를 사용하고 있으며, 11라인의 
+실행코드 데이터 name은 사용자의 입력 값이므로 취약하다고 판정한다.
+정탐코드의 예
+1: class ACC { 
+2:
+public static void executeScript(final String name) throws ScriptException {
+3:
+ScriptEngineManager manager = new ScriptEngineManager();
+4:
+ScriptEngine engine = manager.getEngineByName("javascript");
+5:
+// eval을 이용해서 변수 name 값을 표시한다. 
+6:
+engine.eval("print('" + name + "')");
+7:
+}
+8: }
+9:
+...
+10: @RequestMapping(value = "/print", method = RequestMethod.POST) 
+11: public void print(@RequestParam("name") String name) throws ScriptException{
+12:
+// 사용자 입력값인 name을 이용해서 eval 을 사용하는 함수를 호출한다.
+13:
+ACC.executeScript(name);
+14:
+...
+15:}
+PHP의 eval() 함수는 PHP 코드를 실행하는 함수이며, 괄호 안의 문자열을 실행한다. 아래 코드는 
+공격자가 2라인의 arg 파라미터에 아래와 같은 명령어를 추가하여 PHP 삽입코드를 실행될 수 있으나 
+이를 사전에 검증하지 않고 3라인에서 코드를 실행하기 때문에 취약한 것으로 판단한다.
+[ 삽임코드의 예]
+/vul.php?arg=1;phpinfo() 
+/vul.php?arg=1;system("uname -a") 
+/vul.php?arg=1;system("cat /etc/passwd") 
+/vul.php?arg=1;system("ps -ef")

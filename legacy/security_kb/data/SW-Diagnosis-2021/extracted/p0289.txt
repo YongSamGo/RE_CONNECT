@@ -1,0 +1,7 @@
+289
+제4장구현단계 보안약점 진단
+마. 참고자료
+[1] CWE-113 HTTP Response Splitting, MITRE,
+http://cwe.mitre.org/data/definitions/113.html
+[2] HTTP Response Splitting, OWASP
+https://www.owasp.org/index.php/HTTP_Response_Splitting

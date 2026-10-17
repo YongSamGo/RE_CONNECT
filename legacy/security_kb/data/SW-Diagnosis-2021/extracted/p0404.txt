@@ -1,0 +1,46 @@
+404
+안전한 코드의 예 C
+13:
+if (isValidUser) {
+14:
+return(SUCCESS);
+15:
+} else {
+16:
+return(FAIL);
+17:
+}
+18:}
+라. 진단방법
+인증을 위한 함수를 호출하는 경우, 이 함수의 호출 횟수를 확인하고 함수의 호출을 제한하는 코드가 
+존재하는지 확인한다. 그렇지 않은 경우는 취약하다고 판단한다.
+다음 예제는 인증을 시도를 할 때, 인증 시도에 대한 제한 없이 반복문 안에서 계속 인증 시도를 하는 
+코드이다. 인증 시도 회수에 대한 검사 루틴이 존재하지 않으므로 보안약점이 존재하는 코드라고 
+진단할 수 있다.
+정탐코드의 예
+1:
+int validateUser(char *host, int port) 
+2:
+{ 
+3:
+int socket = openSocketConnection(host, port); 
+4:
+if (socket < 0) 
+5:
+{
+6:
+printf(“Unable to open socket connection”); 
+7:
+return(FAIL); 
+8:
+}
+9:
+10: int isValidUser = 0; 
+11: char username[USERNAME_SIZE]; 
+12: char password[PASSWORD_SIZE]; 
+13:
+while (isValidUser == 0) 
+14:
+{
+15:
+if (getNextMessage(socket, username, USERNAME_SIZE) > 0)

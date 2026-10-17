@@ -1,0 +1,51 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제4절 에러처리
+127
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+# config/urls.py
+from django.conf.urls import handler400, handler403, handler404, handler500    
+# 사용자 정의 에러 페이지를 지정하고
+# views.py에 사용자 정의 에러 페이지에 대한 코드를 구현하여 사용한다
+handler400 = "blog.views.error400"
+handler403 = "blog.views.error403"  
+handler404 = "blog.views.error404"
+handler500 = "blog.views.error500“
+아래는 traceback을 사용하여 에러 스택을 표준 출력으로 표시해 정보가 노출되는 예제를 보여 준다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+import traceback
+def fetch_url(url, useragent, referer=None, retries=1, dimension=False):
+  ......
+  try:
+    response = requests.get(
+      url,
+      stream=True,
+      timeout=5,
+      headers={ 'User-Agent': useragent, 'Referer': referer },
+    )
+    ......
+  except IOError:
+    # 에러메시지를 통해 스택 정보가 노출.
+    traceback.print_exc()

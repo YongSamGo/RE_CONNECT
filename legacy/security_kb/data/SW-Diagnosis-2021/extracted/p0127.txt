@@ -1,0 +1,22 @@
+127
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①CWE‐521 Weak Password Requirements, MITRE,
+http://cwe.mitre.org/data/definitions/521.html
+②2013 OWASP Top 10‐A2 Broken Authentication and Session Management, OWASP,
+https://www.owasp.org/ index.php/Top_10_2013
+③2016 OWASP Application Security Verification Standard, OWASP, Authentication 
+Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_Project
+④WASC Threat Classification Abuse of Functionality, WASC,
+http://projects.webappsec.org/w/page/13246913/Abuse%20of%20Functionality
+⑤WASC Threat Classification Insufficient Password Recovery, WASC,
+http://projects.webappsec.org/w/page/13246942/Insufficient%20Password%20
+Recovery
+⑥암호이용 안내서, 한국인터넷진흥원,
+http://www.kisa.or.kr/jsp/common/downloadAction.jsp?bno=259&dno=31&fseq=1
+⑦Forgot Password Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Forgot_Password_Cheat_Sheet
+⑧Password Storage Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Password_Storage_Cheat_Sheet

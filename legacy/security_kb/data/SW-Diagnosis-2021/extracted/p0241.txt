@@ -1,0 +1,43 @@
+241
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C#
+1: // 외부 입력값으로 받은 URL 을 검증 없이 연결하고 있습니다.
+2: string url = Request["dest"];
+3: Response.Redirect(url);
+로컬 URL 검증이나 white list 등을 이용하여 검증이 필요하다.
+안전한 코드의 예 C#
+1: public void AttackOpenRedirect() 
+2: {
+3:
+string url = Request["dest"];
+4:
+// 외부 입력값이 로컬 URL인지 확인합니다. MVC 3 이상의 프레임워크를 사용할 경우, 
+System.Web.Mvc 에 정의되어있는 Url.isLocalUrl 을 바로 사용할 수 있습니다.
+5:
+if(isLocalUri(url)) Response.Redirect(url); 
+6: }
+7: private bool IsLocalUrl(string url) 
+8: {
+9:
+if(string.IsNullOrEmpty(url)) 
+10: {
+11:
+return false;
+12: }
+13: Uri absoluteUri;
+14: if(Uri.TryCreate(url, UriKind.Absolute, out absoluteUri)) 
+15: {
+16:
+return String.Equals(this.Request.Url.Host, absoluteUri.Host, 
+StringComparison.OrdinalIgnoreCase);
+17: }
+18: else
+19: {
+20:
+bool isLocal = !url.StartsWith("http:",StringComparison.OrdinalIgnoreCase)
+&& !url.StartsWith("https:", StringComparison.OrdinalIgnoreCase)
+&& Uri.IsWellFormedUriString(url, UriKind.Relative); 
+21:
+return isLocal;
+22: }
+}

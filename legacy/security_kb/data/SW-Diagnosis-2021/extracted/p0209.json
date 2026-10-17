@@ -1,0 +1,526 @@
+{
+ "lines": [
+  {
+   "text": "209",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    117.31112670898438,
+    290.500244140625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:String source = request.getParameter(“source”); ",
+   "bbox": [
+    77.94000244140625,
+    142.23818969726562,
+    289.67547607421875,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:String target = request.getParameter(“target”); ",
+   "bbox": [
+    77.94000244140625,
+    156.63821411132812,
+    283.1591796875,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:if (source != null && source.length() > 0 && target != null && target.length() > 0) {",
+   "bbox": [
+    77.94000244140625,
+    171.03823852539062,
+    437.6129455566406,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:isCompressed = EgovFileCmprs.cmprsFile(source, target); ",
+   "bbox": [
+    77.94000244140625,
+    185.43826293945312,
+    329.4210510253906,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:… ",
+   "bbox": [
+    77.94000244140625,
+    199.83828735351562,
+    101.0933837890625,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:%>",
+   "bbox": [
+    77.94000244140625,
+    214.23831176757812,
+    102.04631805419922,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "< EgovFileCmprs.java >",
+   "bbox": [
+    77.94000244140625,
+    233.61801147460938,
+    171.72332763671875,
+    243.51800537109375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: public static boolean cmprsFile(String source, String target) throwsException {",
+   "bbox": [
+    77.94000244140625,
+    248.01800537109375,
+    412.4110107421875,
+    257.9179992675781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: boolean result = false; ",
+   "bbox": [
+    77.94000244140625,
+    262.4179992675781,
+    185.85691833496094,
+    272.3179931640625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: int cnt = 0; ",
+   "bbox": [
+    77.94000244140625,
+    276.8179931640625,
+    141.06373596191406,
+    286.7179870605469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: FileInputStream finput = null; ",
+   "bbox": [
+    77.94000244140625,
+    291.2179870605469,
+    213.1261444091797,
+    301.11798095703125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: FileOutputStream foutput = null; ",
+   "bbox": [
+    77.94000244140625,
+    305.61798095703125,
+    226.08111572265625,
+    315.5179748535156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: ZipOutputStream zoutput = null; ",
+   "bbox": [
+    77.94000244140625,
+    320.0179748535156,
+    225.02516174316406,
+    329.91796875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: String source1 = source.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’,",
+   "bbox": [
+    77.94000244140625,
+    334.41796875,
+    364.80487060546875,
+    344.3179626464844
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FILE_SEPARA- TOR); ",
+   "bbox": [
+    90.0601806640625,
+    348.8179626464844,
+    180.24688720703125,
+    358.71795654296875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: String target1 = target.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPARATOR);",
+   "bbox": [
+    77.94002532958984,
+    363.21795654296875,
+    440.9161682128906,
+    373.1179504394531
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: File srcFile = new File(source1);",
+   "bbox": [
+    77.94003295898438,
+    377.6179504394531,
+    223.04518127441406,
+    387.5179443359375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 ",
+   "bbox": [
+    70.86000061035156,
+    416.0511169433594,
+    459.1934509277344,
+    427.0731201171875
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약하지 않다고 판정한다.",
+   "bbox": [
+    70.86001586914062,
+    433.031005859375,
+    173.3360137939453,
+    444.0530090332031
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    463.5111083984375,
+    290.500244140625,
+    474.5331115722656
+   ],
+   "block": 44,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: File file = new File(getServletConfig().getServletContext().getRealPath(“/”)+",
+   "bbox": [
+    77.94000244140625,
+    488.4381103515625,
+    395.390380859375,
+    498.3381042480469
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: “/jsp/gis/gcc/cmm/xml/”+(String)tempChartImgList.get(k));",
+   "bbox": [
+    77.93998718261719,
+    502.8381042480469,
+    328.0054626464844,
+    512.7380981445312
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 ",
+   "bbox": [
+    70.86000061035156,
+    541.2710571289062,
+    459.1934509277344,
+    552.2930908203125
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약 하지 않다고 판정한다.",
+   "bbox": [
+    70.86001586914062,
+    558.2509765625,
+    176.2754364013672,
+    569.2730102539062
+   ],
+   "block": 48,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    583.7510375976562,
+    290.500244140625,
+    594.7730712890625
+   ],
+   "block": 49,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: File[] f_list = f.listFiles( new FilenameFilter() { ",
+   "bbox": [
+    77.94000244140625,
+    608.6781005859375,
+    281.4526672363281,
+    618.578125
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public boolean accept(File dir, String name) { ",
+   "bbox": [
+    77.94000244140625,
+    623.0780639648438,
+    279.23992919921875,
+    632.9780883789062
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: String org_code = SystemierConfig.getPropertiesBean().getProperty(“is.OrgCode”);",
+   "bbox": [
+    77.94000244140625,
+    637.4780883789062,
+    423.4142150878906,
+    647.3781127929688
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+   ],
+   "text": "10:String source = request.getParameter(“source”); \n11:String target = request.getParameter(“target”); \n12:if (source != null && source.length() > 0 && target != null && target.length() > 0) {\n13:isCompressed = EgovFileCmprs.cmprsFile(source, target); \n14:… \n15:%>\n< EgovFileCmprs.java >",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    141.03818969726564,
+    437.6129455566406,
+    244.71800537109374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: public static boolean cmprsFile(String source, String target) throwsException {\n2: boolean result = false; \n3: int cnt = 0; \n4: FileInputStream finput = null; \n5: FileOutputStream foutput = null; \n6: ZipOutputStream zoutput = null; \n7: String source1 = source.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’,\nFILE_SEPARA- TOR); \n8: String target1 = target.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPARATOR);\n9: File srcFile = new File(source1);",
+   "language": "text",
+   "label": "< EgovFileCmprs.java >",
+   "bbox": [
+    77.94000244140625,
+    246.81800537109376,
+    440.9161682128906,
+    388.7179443359375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24
+   ],
+   "text": "1: File file = new File(getServletConfig().getServletContext().getRealPath(“/”)+\n2: “/jsp/gis/gcc/cmm/xml/”+(String)tempChartImgList.get(k));",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    77.93998718261719,
+    487.2381103515625,
+    395.390380859375,
+    513.9380981445313
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    28,
+    29,
+    30
+   ],
+   "text": "1: File[] f_list = f.listFiles( new FilenameFilter() { \n2: public boolean accept(File dir, String name) { \n3: String org_code = SystemierConfig.getPropertiesBean().getProperty(“is.OrgCode”);",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    607.4781005859375,
+    423.4142150878906,
+    648.5781127929688
+   ]
+  }
+ ],
+ "native": "209\n제4장구현단계 보안약점 진단\n정탐코드의 예\n10:String source = request.getParameter(“source”); \n11:String target = request.getParameter(“target”); \n12:if (source != null && source.length() > 0 && target != null && target.length() > 0) {\n13:isCompressed = EgovFileCmprs.cmprsFile(source, target); \n14:… \n15:%>\n< EgovFileCmprs.java >\n1: public static boolean cmprsFile(String source, String target) throwsException {\n2: boolean result = false; \n3: int cnt = 0; \n4: FileInputStream finput = null; \n5: FileOutputStream foutput = null; \n6: ZipOutputStream zoutput = null; \n7: String source1 = source.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’,\nFILE_SEPARA- TOR); \n8: String target1 = target.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPARATOR);\n9: File srcFile = new File(source1);\n다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 \n취약하지 않다고 판정한다.\n오탐코드의 예\n1: File file = new File(getServletConfig().getServletContext().getRealPath(“/”)+\n2: “/jsp/gis/gcc/cmm/xml/”+(String)tempChartImgList.get(k));\n다음의 예제에서 사용되는 getRealPath(), getContextPath() 등 내부 함수는 소스가 안전하므로 \n취약 하지 않다고 판정한다.\n오탐코드의 예\n1: File[] f_list = f.listFiles( new FilenameFilter() { \n2: public boolean accept(File dir, String name) { \n3: String org_code = SystemierConfig.getPropertiesBean().getProperty(“is.OrgCode”);\n",
+ "native_sha256": "1220b1c719399af6878d33b01a4c694da4224c5f07fc14126071970a5d964507",
+ "chars": 1278,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

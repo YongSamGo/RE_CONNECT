@@ -1,0 +1,31 @@
+92
+2. 쿠키를 조작하여 중요정보 탈취 및 변조 여부를 점검하는 테스트 계획이 수립되어 있는가?
+진단방법
+관련산출물 검토예시
+2-1 쿠키에 포함된 값을 복호화하거나, 변조된 쿠키를 전달하여 정보 조작이 
+가능 한지를 점검하기 위한 테스트계획이 수립되어 있는지 확인
+단위테스트케이스 검토
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 프로그램명세서, 유즈케이스명세서, 
+클래스설계서, 단위테스트 계획서 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+보안기능 결정에 사용되는 부적절한 입력값
+입력데이터 검증 및 표현
+정수형 오버플로우
+코드오류
+Null Pointer 역참조
+마. 참고자료
+①CWE‐807 Reliance on Untrusted Inputs in a Security Decision, MITRE,
+http://cwe.mitre.org/data/defini- tions/807.html
+②CWE-476 NULL Pointer Dereference, MITRE,
+http://cwe.mitre.org/data/definitions/476.html
+③CWE‐190 Integer Overflow, MITRE,
+http://cwe.mitre.org/data/definitions/190.html
+④Null Pointer Dereference란?, Wisedog,
+http://story.wisedog.net/null-pointerdereference-%EB%9E%80/
+⑤“Understanding ASP.NET View State”, Microsoft,
+http://cwe.mitre.org/data/definitions/807.html
+⑥Hash-based message authentication code, Wikipedia,
+http://en.wikipedia.org/wiki/Hash-based_message_authentication_code#External_links

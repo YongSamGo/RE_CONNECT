@@ -1,0 +1,29 @@
+393
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C
+3: char hashedData[512] = {0}; 
+4: MD5HashAlgorithm( data, hashedData, salt );
+5: ...
+6: }
+라. 진단방법
+getInstance 함수로 안전한 해시 알고리즘을 인자로 하여 MessageDigest 객체를 생성하는지 
+확인 하고(①), 해시 값을 반환(②) 하기 전에 update 함수에 솔트를 사용하여 데이터를 해시하는지 
+확인한다.
+다음의 예제에서는 MessageDigest 객체를 생성하고 솔트 없이 해시 값을 반환하고 있으므로 취약 
+하다고 판정한다.
+일반적인 진단의 예
+1:
+MessageDigest digest = MessageDigest.getInstance(“SHA-512”); ······························①
+2:
+digest.reset();
+3:
+return digest.digest(password.getBytes(“UTF-8”)); ···························································②
+마. 참고자료
+[1] CWE-759, Use of a One-Way Hash without a Salt, MITRE,
+http://cwe.mitre.org/data/definitions/759.html
+[2] Store passwords using a hash function, CERT,
+http://www.securecoding.cert.org/confluence/display/java/MSC62-J.+Store+pa
+sswords+using+a+hash+function
+[3] Use_a_cryptographically_strong_credential-specific_salt, OWASP,
+https://www.owasp.org/index.php/Password_Storage_Cheat_Sheet#Use_a_cry
+ptog raphically_strong_credential-specific_salt

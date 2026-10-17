@@ -1,0 +1,50 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+51
+Django는 기본적으로 CSRF 기능을 강제하고 있지만, 부득이하게 CSRF 기능을 해제해야 하는 경우는 미들
+웨어의 CSRF 기능을 전역적으로 비활성화 하기 보다는 미들웨어의 CSRF 기능은 활성화 하고 필요한 요청에 
+대해서만 csrf_exempt 데코레이터를 사용하여야 하고 이 경우에 크로스사이트 요청 위조의 위협에 노출될 
+수 있으므로 주의를 기울여야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from django.shortcuts import render
+from django.template import RequestContext
+# csrf_exempt 데코레이터를 삭제하거나 주석 처리한다.
+# @csrf_exempt
+def pay_to_point(request):
+  user_id = request.POST.get('user_id', '')
+  pay = request.POST.get('pay', '')
+  product_info = request.POST.get('product_info', '')
+  ret = handle_pay(user_id, pay, product_info)
+  return render(request, '/view_wallet.html', {'wallet':ret})
+⦁Django 템플릿 설정 사례
+미들웨어에서 CSRF 기능을 활성화해도 템플릿 페이지에 CSRF 토큰을 명시하지 않을 경우 CSRF 검증 
+기능을 사용할 수 없다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+<!--html page-->
+<form action="" method="POST">
+<!-- form 태그 내부에 csrf_token 미적용-->
+    <table>
+        {{form.as_table}}
+    </table>
+    <input type="submit"/>
+</form>

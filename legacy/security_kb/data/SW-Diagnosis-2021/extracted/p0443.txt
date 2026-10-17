@@ -1,0 +1,47 @@
+443
+제4장구현단계 보안약점 진단
+다음과 같은 Integer 클래스의 static 함수호출은 Integer가 객체가 아니므로 널(Null)값을 참조하지 
+않는다.
+오탐코드의 예
+1:
+1: Integer.parseInt(stringValue); 
+다음과 같이 Data Flow 상이 아닌 단일 함수에서 파라미터가 널(Null)일 경우는 취약하지 않은 것으로 
+판단한다. 해당 함수를 호출할 때 널(Null) 체크를 하도록 해야 한다.
+오탐코드의 예
+1: …
+2:
+public SmsConnection sendRequsest(SmsConnection smsConn) throws
+Exception
+3:
+// SMS 전송 요청 
+4:
+SmsSender sender = null; 
+5:
+SmsConnection result = null;
+6:
+try {
+7:
+sender = new SmsSender(smeConfigPath);
+8:
+sender.open();
+9:
+result = sendRequsest(smsConn, sender);
+10:
+} finally {
+11:
+if (sender != null) {
+12:
+sender.close();
+13:
+}
+14:
+}
+15:
+}
+16:
+smsConn.setResult(result.getResult());
+17:
+smsConn.setResultMessage(result.getResultMessage());
+18:
+return smsConn;
+19:}

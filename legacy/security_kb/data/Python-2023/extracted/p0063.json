@@ -1,0 +1,796 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "57",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    89.78712463378906,
+    121.90938568115234,
+    97.27186584472656,
+    130.41859436035156
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    89.78712463378906,
+    137.13006591796875,
+    97.27186584472656,
+    145.6392822265625
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    89.78712463378906,
+    152.47061157226562,
+    97.27186584472656,
+    160.97982788085938
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    89.78712463378906,
+    167.69131469726562,
+    97.27186584472656,
+    176.20053100585938
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    89.78712463378906,
+    183.0318603515625,
+    97.27186584472656,
+    191.54107666015625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    89.78712463378906,
+    198.25254821777344,
+    97.27186584472656,
+    206.7617645263672
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    89.78712463378906,
+    213.5930938720703,
+    97.27186584472656,
+    222.10231018066406
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    89.78712463378906,
+    228.8137969970703,
+    97.27186584472656,
+    237.32301330566406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    89.78712463378906,
+    244.15432739257812,
+    97.27186584472656,
+    252.66354370117188
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    85.1119613647461,
+    259.3750305175781,
+    97.27190399169922,
+    267.8842468261719
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    85.1119613647461,
+    274.715576171875,
+    97.27190399169922,
+    283.22479248046875
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    85.1119613647461,
+    289.936279296875,
+    97.27190399169922,
+    298.44549560546875
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    85.1119613647461,
+    305.2768249511719,
+    97.27190399169922,
+    313.7860412597656
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    85.1119613647461,
+    320.49749755859375,
+    97.27190399169922,
+    329.0067138671875
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    85.1119613647461,
+    335.8380432128906,
+    97.27190399169922,
+    344.3472595214844
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    85.1119613647461,
+    351.0587463378906,
+    97.27190399169922,
+    359.5679626464844
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    85.1119613647461,
+    366.3992919921875,
+    97.27190399169922,
+    374.90850830078125
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    85.1119613647461,
+    381.6199951171875,
+    97.27190399169922,
+    390.12921142578125
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    85.1119613647461,
+    396.9605407714844,
+    97.27190399169922,
+    405.4697570800781
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    85.1119613647461,
+    412.18121337890625,
+    97.27190399169922,
+    420.6904296875
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    85.1119613647461,
+    427.5217590332031,
+    97.27190399169922,
+    436.0309753417969
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    85.1119613647461,
+    442.7424621582031,
+    97.27190399169922,
+    451.2516784667969
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    107.28901672363281,
+    121.40768432617188,
+    250.68600463867188,
+    130.41859436035156
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import requests",
+   "bbox": [
+    107.28901672363281,
+    136.6283721923828,
+    169.49578857421875,
+    145.6392822265625
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "# 허용하는 도메인을 화이트리스트에 정의할 경우 DNS rebinding 공격 등에 ",
+   "bbox": [
+    107.28901672363281,
+    167.69131469726562,
+    382.71502685546875,
+    176.20053100585938
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "# 노출될 위험이 있어 신뢰할 수 있는 자원에 대한 IP를 사용해 ",
+   "bbox": [
+    107.28901672363281,
+    183.0318603515625,
+    334.6444091796875,
+    191.54107666015625
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "# 검증하는 것이 조금 더 안전하다",
+   "bbox": [
+    107.28901672363281,
+    198.25254821777344,
+    229.55169677734375,
+    206.7617645263672
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ALLOW_SERVER_LIST = [",
+   "bbox": [
+    107.28901672363281,
+    213.09140014648438,
+    210.38357543945312,
+    222.10231018066406
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'https://127.0.0.1/latest/',",
+   "bbox": [
+    107.28901672363281,
+    228.8137969970703,
+    215.933837890625,
+    237.32301330566406
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'https://192.168.0.1/user_data',",
+   "bbox": [
+    107.28901672363281,
+    244.15432739257812,
+    237.6322784423828,
+    252.66354370117188
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'https://192.168.0.100/v1/public',",
+   "bbox": [
+    107.28901672363281,
+    259.3750305175781,
+    245.42514038085938,
+    267.8842468261719
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "]",
+   "bbox": [
+    107.28901672363281,
+    274.715576171875,
+    109.927490234375,
+    283.22479248046875
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def call_third_party_api(request):",
+   "bbox": [
+    107.28901672363281,
+    304.775146484375,
+    233.09121704101562,
+    313.7860412597656
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  addr = request.POST.get('address', '')",
+   "bbox": [
+    107.28901672363281,
+    319.9958190917969,
+    261.93023681640625,
+    329.0067138671875
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 사용자가 입력한 URL을 화이트리스트로 검증한 후 그 결과를 반환하여",
+   "bbox": [
+    107.28901672363281,
+    350.55706787109375,
+    374.8414611816406,
+    359.5679626464844
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 검증되지 않은 주소로 요청을 보내지 않도록 제한한다",
+   "bbox": [
+    107.28901672363281,
+    365.8976135253906,
+    312.9854431152344,
+    374.90850830078125
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if addr not in ALLOW_SERVER_LIST:",
+   "bbox": [
+    107.28901672363281,
+    381.1183166503906,
+    262.8204650878906,
+    390.12921142578125
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, '/error.html', {‘error’ = '허용되지 않은 서버입니다.'})",
+   "bbox": [
+    107.28901672363281,
+    396.4588623046875,
+    405.54229736328125,
+    405.4697570800781
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        ",
+   "bbox": [
+    107.28901672363281,
+    412.18121337890625,
+    139.36770629882812,
+    420.6904296875
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  result = requests.get(addr).text",
+   "bbox": [
+    107.28901672363281,
+    427.02008056640625,
+    238.21890258789062,
+    436.0309753417969
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return render(request, '/result.html', {'result':result})",
+   "bbox": [
+    107.28901672363281,
+    442.24078369140625,
+    317.5527038574219,
+    451.2516784667969
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    500.5571594238281,
+    119.12395477294922,
+    511.103759765625
+   ],
+   "block": 47,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-918: Server-Side Request Forgery (SSRF), MITRE",
+   "bbox": [
+    65.09266662597656,
+    522.297607421875,
+    306.3647155761719,
+    531.2861938476562
+   ],
+   "block": 48,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/918.html",
+   "bbox": [
+    77.32001495361328,
+    537.6381225585938,
+    267.01031494140625,
+    546.626708984375
+   ],
+   "block": 49,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Server Side Request Forgery, OWASP",
+   "bbox": [
+    65.09266662597656,
+    557.8924560546875,
+    233.958984375,
+    566.8810424804688
+   ],
+   "block": 50,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Server_Side_Request_Forgery",
+   "bbox": [
+    77.32001495361328,
+    573.2329711914062,
+    376.2624816894531,
+    582.2215576171875
+   ],
+   "block": 51,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Server-Side Request Forgery Prevention Cheat Sheet, OWASP",
+   "bbox": [
+    65.09266662597656,
+    593.4873046875,
+    335.49395751953125,
+    602.4758911132812
+   ],
+   "block": 52,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    608.827880859375,
+    498.60870361328125,
+    617.8164672851562
+   ],
+   "block": 53,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+   ],
+   "text": "1: from django.shortcuts import render\n2: import requests\n3:\n4: # 허용하는 도메인을 화이트리스트에 정의할 경우 DNS rebinding 공격 등에 \n5: # 노출될 위험이 있어 신뢰할 수 있는 자원에 대한 IP를 사용해 \n6: # 검증하는 것이 조금 더 안전하다\n7: ALLOW_SERVER_LIST = [\n8:   'https://127.0.0.1/latest/',\n9:   'https://192.168.0.1/user_data',\n10:   'https://192.168.0.100/v1/public',\n11: ]\n12:\n13: def call_third_party_api(request):\n14:   addr = request.POST.get('address', '')\n15:\n16:   # 사용자가 입력한 URL을 화이트리스트로 검증한 후 그 결과를 반환하여\n17:   # 검증되지 않은 주소로 요청을 보내지 않도록 제한한다\n18:   if addr not in ALLOW_SERVER_LIST:\n19:     return render(request, '/error.html', {‘error’ = '허용되지 않은 서버입니다.'})\n20:         \n21:   result = requests.get(addr).text\n22:   return render(request, '/result.html', {'result':result})",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    85.1119613647461,
+    108.3946548461914,
+    405.54229736328125,
+    452.45167846679686
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n57\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\n17:\n18:\n19:\n20:\n21:\n22:\nfrom django.shortcuts import render\nimport requests\n# 허용하는 도메인을 화이트리스트에 정의할 경우 DNS rebinding 공격 등에 \n# 노출될 위험이 있어 신뢰할 수 있는 자원에 대한 IP를 사용해 \n# 검증하는 것이 조금 더 안전하다\nALLOW_SERVER_LIST = [\n  'https://127.0.0.1/latest/',\n  'https://192.168.0.1/user_data',\n  'https://192.168.0.100/v1/public',\n]\ndef call_third_party_api(request):\n  addr = request.POST.get('address', '')\n  # 사용자가 입력한 URL을 화이트리스트로 검증한 후 그 결과를 반환하여\n  # 검증되지 않은 주소로 요청을 보내지 않도록 제한한다\n  if addr not in ALLOW_SERVER_LIST:\n    return render(request, '/error.html', {‘error’ = '허용되지 않은 서버입니다.'})\n        \n  result = requests.get(addr).text\n  return render(request, '/result.html', {'result':result})\n라. 참고자료\n① CWE-918: Server-Side Request Forgery (SSRF), MITRE\nhttps://cwe.mitre.org/data/definitions/918.html\n② Server Side Request Forgery, OWASP\nhttps://owasp.org/www-community/attacks/Server_Side_Request_Forgery\n③ Server-Side Request Forgery Prevention Cheat Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/Server_Side_Request_Forgery_Prevention_Cheat_Sheet.html\n",
+ "native_sha256": "b12356d3de16e44289ebeca797341d6b639568503ab9a9ee95b9cd6250c0ffd2",
+ "chars": 1157,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

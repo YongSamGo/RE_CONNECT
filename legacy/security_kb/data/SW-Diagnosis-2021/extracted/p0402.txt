@@ -1,0 +1,38 @@
+402
+다음 예제는 로그인 정보를 잘못 입력하였을 경우 다시 입력을 시도하는데 있어 제한이 없다. 따라서 
+공격자는 여러 가지 비밀번호로 인증을 재시도하여 올바른 비밀번호를 알아내고 로그인에 성공할 수 
+있다.
+안전하지 않은 코드의 예 C#
+//로그인 실패 시 아무런 제약이 없음
+1: override protected void OnLoginError(EventArgs e)
+2: {
+3:
+//do nothing
+4: }
+로그인 시도에 대한 횟수를 제한한다.
+안전한 코드의 예 C#
+1: override protected void OnLoginError(EventArgs e) 
+2:
+{
+// 연속적인 사용자 인증 시도에 대한 횟수를 제한
+3:
+if(ViewState["LoginErrors"] == null)
+4:
+ViewState["LoginErrors"] = 0; 
+5:
+int ErrorCount = (int)ViewState["LoginErrors"] + 1; 
+6:
+ViewState["LoginErrors"] = ErrorCount; 
+7:
+if((ErrorCount > 3) && Login1.PasswordRecoveryUrl != 
+string.Empty)
+8:
+Response.Redirect(Login1.PasswordRecoveryUrl); 
+9:
+}
+안전하지 않은 코드의 예 C
+1: int validateUser(char *host, int port) { 
+2:
+int socket = openSocketConnection(host, port); 
+3:
+if (socket < 0) {

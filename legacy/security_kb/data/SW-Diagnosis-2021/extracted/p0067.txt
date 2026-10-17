@@ -1,0 +1,42 @@
+67
+제3장분석․ 설계단계 보안항목 진단
+DB에서 읽어온 값에 대한 검증작업을 프레임워크의 컴포넌트로 일괄 필터링하는 것이 쉽지 않다. 
+이 경우 각 개발자들은 출력값에 대해 검증 작업을 수행하도록 시큐어코딩 규칙을 정의한다.
+HTML, URL 등의 문자를 인코딩 및 필터링하여 XSS 취약점을 최소화할 수 있도록 [표 3-8]과 
+같은 라이브러리의 사용을 고려할 수 있다.
+표3‐8
+XSS 방어를 위한 라이브러리 및 클래스
+개발환경
+활용 가능한 프레임워크 또는 라이브러리
+ASP.NET
+MS Anti‐XSS Library: http://wpl.codeplex.com/
+ASP .NET 웹기반 애플리케이션 개발시, XSS공격으로부터 안전할 수 있도록 도와주는 인코딩 
+라이브러리이다.
+MS AntiXSSEncoder 클래스: 
+http://social.msdn.microsoft.com/Search/en-US?query=antixssencoder&pgArea=
+header&emptyWater- mark=true&ac=4
+HTML, XML, CSS, URL 문자열을 인코딩하여 XSS공격의 위협에 대응할 수 있는 클래스이다. 
+HttpEncoder클래스의 HttpUtility, HttpServerUtility, HttpResponseH-eader 메서드를 
+오버라이드하여 사용가능하다.
+HTML Sanitizer 라이브러리: https://github.com/mganss/HtmlSanitizer HTML/CSS문서를 
+파싱하고 조작하여 XSS공격으로 이어질 수 있는 구조를 정리해주는 XSS 방어 라이브러리이다.
+HTML 파서를 기반으로 하기 때문에 HTML태그의 변조도 방 지가능하다. MIT License에 따라 
+사용가능하다.
+Java
+LUCY XSS Filter: http://github.com/naver/lucy-xss-filter 
+웹애플리케이션을 XSS공격으로부터 보호하기 위한 화이트리스트 설정방식의 자바 기반 라이
+브러리이다. Apache Software License v2.0 정책에 따라 자유롭게 사용가능하다.
+OWASPESAPIXSSFilter:https://www.owasp.org/index.php/Catego-ry:OWASP_En
+terprise_Security_API ESAPI(Enterprise Security API)는 웹 애플리케이션 개발 과정에서 
+발생하는 다양한 보안 침해사고를 해결하기 위해 OWASP에서 OWASP TOP10과 함께 해당 
+문제점을 개선하기 위해 제작, 배포되는 보안 라이브러리이다.
+PHP
+HTML Purifier 라이브러리: http://htmlpurifier.org/
+XSS, SQL인젝션 방어를 제공하는 화이트리스트 구현방식의 HTML 필터 라이브러리이다. 
+LGPL v2.1+에 따라 사용가능하다.
+다. 진단 세부사항
+요구사항 ①
+사용자로부터 입력된 값을 동적으로 생성되는 응답페이지에 사용하는 경우 크로스사이트 스크립트
+(XSS) 필터링을 수행한 뒤 사용해야 한다.
+동적으로 생성되는 응답페이지에 외부입력값이 사용되는 경우 사용자 입력값에 스크립트가 포함되어 있
+는지 검증하도록 설계하고 있는지 확인한다.

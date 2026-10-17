@@ -1,0 +1,61 @@
+Python 시큐어코딩 가이드
+70
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+from django.shortcuts import render
+from re import escape
+import hashlib
+def change_password(request):
+  new_pwd = request.POST.get('new_password','')
+  # 로그인한 사용자 정보
+  user = '%s' % escape(request.session['userid'])
+  # 현재 password와 일치 여부를 확인하지 않고 수정함
+  sha = hashlib.sha256(new_pwd.encode())
+  update_password_from_db(user, sha.hexdigest())
+  return render(request, '/success.html')
+DB에 저장된 사용자 패스워드와 변경을 요청한 패스워드의 일치 여부를 확인하고, 변경 요청한 패스워드와 
+재확인 패스워드가 일치하는지 확인 후 DB의 패스워드를 수정해 안전하게 코드를 적용할 수 있다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from re import escape
+import hashlib
+# login_required decorator를 사용해 login된 사용자만 접근하도록 처리
+@login_required
+def change_password(request):
+  new_pwd = request.POST.get('new_password','')
+  crnt_pwd = request.POST.get('current_password','')
+  # 로그인한 사용자 정보를 세션에서 가져온다.
+  user = '%s' % escape(request.session['userid'])
+  crnt_h = hashlib.sha256(crnt_pwd.encode())
+  h_pwd = crnt_h.hexdigest()

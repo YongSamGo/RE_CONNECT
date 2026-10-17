@@ -1,0 +1,698 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "32",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    88.58836364746094,
+    120.35136413574219,
+    96.07310485839844,
+    128.86056518554688
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    88.58836364746094,
+    135.57205200195312,
+    96.07310485839844,
+    144.08126831054688
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    88.58836364746094,
+    150.91259765625,
+    96.07310485839844,
+    159.42181396484375
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    88.58836364746094,
+    166.13328552246094,
+    96.07310485839844,
+    174.6425018310547
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    88.58836364746094,
+    181.4738311767578,
+    96.07310485839844,
+    189.98304748535156
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    88.58836364746094,
+    196.6945343017578,
+    96.07310485839844,
+    205.20375061035156
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    88.58836364746094,
+    212.03506469726562,
+    96.07310485839844,
+    220.54428100585938
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    88.58836364746094,
+    227.25576782226562,
+    96.07310485839844,
+    235.76498413085938
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    88.58836364746094,
+    242.5963134765625,
+    96.07310485839844,
+    251.10552978515625
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.79331970214844,
+    257.8170166015625,
+    96.07327270507812,
+    266.32623291015625
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.79331970214844,
+    273.1575622558594,
+    96.07327270507812,
+    281.6667785644531
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.79331970214844,
+    288.37823486328125,
+    96.07327270507812,
+    296.887451171875
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.79331970214844,
+    303.7187805175781,
+    96.07327270507812,
+    312.2279968261719
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.79331970214844,
+    318.9394836425781,
+    96.07327270507812,
+    327.4486999511719
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.79331970214844,
+    334.280029296875,
+    96.07327270507812,
+    342.78924560546875
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.79331970214844,
+    349.500732421875,
+    96.07327270507812,
+    358.00994873046875
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import subprocess",
+   "bbox": [
+    105.97038269042969,
+    118.89088439941406,
+    178.4864959716797,
+    127.90178680419922
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    105.97038269042969,
+    134.23141479492188,
+    249.36737060546875,
+    143.24232482910156
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def execute_command(request):",
+   "bbox": [
+    105.97038269042969,
+    164.79266357421875,
+    232.0123291015625,
+    173.80357360839844
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    date = request.POST.get('date','')",
+   "bbox": [
+    105.97038269042969,
+    180.0133514404297,
+    251.50103759765625,
+    189.02426147460938
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 명령어를 추가로 실행 또는 또 다른 명령이 실행될 수 있는 키워드에 ",
+   "bbox": [
+    105.97038269042969,
+    210.57460021972656,
+    378.3885803222656,
+    219.58551025390625
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 대한 예외처리",
+   "bbox": [
+    105.97038269042969,
+    225.91513061523438,
+    180.7621612548828,
+    234.92604064941406
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    for word in ['|', ';', '&', ':', '>', '<', '`', '\\\\', '!']:",
+   "bbox": [
+    105.97038269042969,
+    241.6375274658203,
+    295.9068908691406,
+    250.14674377441406
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "       date = date.replace(word, “”)",
+   "bbox": [
+    105.97038269042969,
+    256.9780578613281,
+    250.6627655029297,
+    265.4872741699219
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "       # re.sub 함수를 사용해 특수문자를 제거하는 방법도 있다",
+   "bbox": [
+    105.97038269042969,
+    272.2946472167969,
+    347.80792236328125,
+    281.28326416015625
+   ],
+   "block": 29,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "       # date = re.sub('[|;&:><`\\\\\\!]', '', date)",
+   "bbox": [
+    105.97038269042969,
+    288.47412109375,
+    288.33111572265625,
+    297.4627380371094
+   ],
+   "block": 30,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # shell=True 옵션은 제거 하고 명령과 인자를 배열로 입력",
+   "bbox": [
+    105.97038269042969,
+    319.3965759277344,
+    334.6828918457031,
+    328.407470703125
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    subprocess.run([\"cmd\", \"/c\", \"backuplog.bat\", date])",
+   "bbox": [
+    105.97038269042969,
+    334.6172790527344,
+    322.9471130371094,
+    343.628173828125
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, '/success.html')",
+   "bbox": [
+    105.97038269042969,
+    349.95782470703125,
+    273.3184509277344,
+    358.9687194824219
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    421.337646484375,
+    119.12395477294922,
+    431.8842468261719
+   ],
+   "block": 35,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    444.0368347167969,
+    504.2592468261719,
+    453.02545166015625
+   ],
+   "block": 36,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/78.html",
+   "bbox": [
+    77.32001495361328,
+    459.37738037109375,
+    262.0950622558594,
+    468.3659973144531
+   ],
+   "block": 37,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Command Injection, OWASP",
+   "bbox": [
+    65.09266662597656,
+    479.6316833496094,
+    194.04087829589844,
+    488.62030029296875
+   ],
+   "block": 38,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Command_Injection",
+   "bbox": [
+    77.32001495361328,
+    494.97222900390625,
+    336.3860778808594,
+    503.9608459472656
+   ],
+   "block": 39,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ OS Command Injection Defense Cheat Sheet, OWASP",
+   "bbox": [
+    65.09266662597656,
+    515.2265625,
+    302.2889404296875,
+    524.2151489257812
+   ],
+   "block": 40,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    530.567138671875,
+    480.7460632324219,
+    539.5557250976562
+   ],
+   "block": 41,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Miscellaneous operating system interfaces - os.system(), Python Software Foundation",
+   "bbox": [
+    65.09266662597656,
+    550.8214111328125,
+    432.2904968261719,
+    559.8099975585938
+   ],
+   "block": 42,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3.10/library/os.html?highlight=os%20system#module-os",
+   "bbox": [
+    77.32001495361328,
+    566.1619873046875,
+    400.3782653808594,
+    575.1505737304688
+   ],
+   "block": 43,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ Subprocess management, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    586.416259765625,
+    303.5853271484375,
+    595.4048461914062
+   ],
+   "block": 44,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/ko/3/library/subprocess.html#security-considerations",
+   "bbox": [
+    77.32001495361328,
+    601.7568359375,
+    387.908203125,
+    610.7454223632812
+   ],
+   "block": 45,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑥ Regular expression operations, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    622.0111083984375,
+    323.8437805175781,
+    630.9996948242188
+   ],
+   "block": 46,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/re.html",
+   "bbox": [
+    77.32001495361328,
+    637.3516845703125,
+    239.7981719970703,
+    646.3402709960938
+   ],
+   "block": 47,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: import subprocess\n2: from django.shortcuts import render\n3:\n4: def execute_command(request):\n5:     date = request.POST.get('date','')\n6:\n7:     # 명령어를 추가로 실행 또는 또 다른 명령이 실행될 수 있는 키워드에 \n8:     # 대한 예외처리\n9:     for word in ['|', ';', '&', ':', '>', '<', '`', '\\\\', '!']:\n10:        date = date.replace(word, “”)\n11:        # re.sub 함수를 사용해 특수문자를 제거하는 방법도 있다\n12:        # date = re.sub('[|;&:><`\\\\\\!]', '', date)\n13:\n14:     # shell=True 옵션은 제거 하고 명령과 인자를 배열로 입력\n15:     subprocess.run([\"cmd\", \"/c\", \"backuplog.bat\", date])\n16:     return render(request, '/success.html')",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    83.79331970214844,
+    108.3946548461914,
+    378.3885803222656,
+    359.20994873046874
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n32\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\nimport subprocess\nfrom django.shortcuts import render\ndef execute_command(request):\n    date = request.POST.get('date','')\n    # 명령어를 추가로 실행 또는 또 다른 명령이 실행될 수 있는 키워드에 \n    # 대한 예외처리\n    for word in ['|', ';', '&', ':', '>', '<', '`', '\\\\', '!']:\n       date = date.replace(word, “”)\n       # re.sub 함수를 사용해 특수문자를 제거하는 방법도 있다\n       # date = re.sub('[|;&:><`\\\\\\!]', '', date)\n    # shell=True 옵션은 제거 하고 명령과 인자를 배열로 입력\n    subprocess.run([\"cmd\", \"/c\", \"backuplog.bat\", date])\n    return render(request, '/success.html')\n라. 참고자료\n① CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'), MITRE,\nhttps://cwe.mitre.org/data/definitions/78.html\n② Command Injection, OWASP\nhttps://owasp.org/www-community/attacks/Command_Injection\n③ OS Command Injection Defense Cheat Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html\n④ Miscellaneous operating system interfaces - os.system(), Python Software Foundation\nhttps://docs.python.org/3.10/library/os.html?highlight=os%20system#module-os\n⑤ Subprocess management, Python Software Foundation,\nhttps://docs.python.org/ko/3/library/subprocess.html#security-considerations\n⑥ Regular expression operations, Python Software Foundation,\nhttps://docs.python.org/3/library/re.html\n",
+ "native_sha256": "070a08eaec8dc05ec1f8cbdc4bd6e328be095fd7dcfeea15fd4391a0d8776b78",
+ "chars": 1391,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

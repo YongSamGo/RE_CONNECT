@@ -1,0 +1,512 @@
+{
+ "lines": [
+  {
+   "text": "479",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "J2EE를 제외하고 디버그 코드를 정적도구만으로 판단하기는 쉽지 않다.",
+   "bbox": [
+    70.86000061035156,
+    142.51107788085938,
+    346.0277099609375,
+    153.5330810546875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "개발 중 테스트 목적으로 남아 있는 디버그 코드가 존재하는지 확인한다(①). J2EE 환경(J2EE ",
+   "bbox": [
+    70.86000061035156,
+    169.51095581054688,
+    459.2189025878906,
+    180.532958984375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Standard)에서는 main 메소드 작성을 금하고 있으며, 일반적으로 개발자들은 디버그 코드를 main",
+   "bbox": [
+    70.86000061035156,
+    186.55099487304688,
+    456.3291931152344,
+    197.572998046875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "으로 작성하므로 main 메소드가 사용되는 경우 디버그코드 인지 확인하여야 한다.",
+   "bbox": [
+    70.86000061035156,
+    203.53091430664062,
+    384.8206481933594,
+    214.55291748046875
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    240.0111083984375,
+    301.42083740234375,
+    251.03311157226562
+   ],
+   "block": 29,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public class U489 extends HttpServlet { ",
+   "bbox": [
+    78.66000366210938,
+    264.9381103515625,
+    258.80419921875,
+    274.8381042480469
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    279.3381042480469,
+    86.42540740966797,
+    289.23809814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void doGet(HttpServletRequest request, … ) throws … { … }",
+   "bbox": [
+    95.21954345703125,
+    279.3381042480469,
+    389.7924499511719,
+    289.23809814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    293.73809814453125,
+    86.42540740966797,
+    303.6380920410156
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void doPost(HttpServletRequest request, … ) throws … { … }",
+   "bbox": [
+    95.21954345703125,
+    293.73809814453125,
+    393.2727355957031,
+    303.6380920410156
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    308.1380920410156,
+    86.40248107910156,
+    318.0380859375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.",
+   "bbox": [
+    95.19662475585938,
+    308.1380920410156,
+    354.313720703125,
+    318.0380859375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    322.5380859375,
+    86.42539978027344,
+    332.4380798339844
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public static void main(String args[]) { ···············································································①",
+   "bbox": [
+    95.21954345703125,
+    322.5380859375,
+    447.7123107910156,
+    332.4380798339844
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.65998840332031,
+    336.9380798339844,
+    86.4253921508789,
+    346.83807373046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.err.printf(“Print debug code”);",
+   "bbox": [
+    104.04012298583984,
+    336.9380798339844,
+    257.31793212890625,
+    346.83807373046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.65998840332031,
+    351.33807373046875,
+    86.4253921508789,
+    361.2380676269531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    95.21953582763672,
+    351.33807373046875,
+    97.95227813720703,
+    361.2380676269531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: …",
+   "bbox": [
+    78.65998840332031,
+    365.7380676269531,
+    98.77386474609375,
+    375.6380615234375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "J2EE와 같은 응용프로그램에서 디버깅용으로 사용되는 main() 메소드는 삭제한다.",
+   "bbox": [
+    70.86000061035156,
+    398.1711120605469,
+    390.4122009277344,
+    409.193115234375
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    434.6512145996094,
+    291.27935791015625,
+    445.6732177734375
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public class U489 extends HttpServlet { ",
+   "bbox": [
+    78.66000366210938,
+    459.5780944824219,
+    258.7398376464844,
+    469.47808837890625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: protected void doGet(HttpServletRequest request, …) throws …{ …} ",
+   "bbox": [
+    78.66000366210938,
+    473.97808837890625,
+    374.7350769042969,
+    483.8780822753906
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: protected void doPost(HttpServletRequest request, …) throws …{ …}",
+   "bbox": [
+    78.66000366210938,
+    488.3780822753906,
+    375.6307373046875,
+    498.278076171875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: // 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.",
+   "bbox": [
+    78.66000366210938,
+    502.778076171875,
+    349.8539733886719,
+    512.6781005859375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: public static void main(String args[]) { ",
+   "bbox": [
+    78.66000366210938,
+    517.1780395507812,
+    248.9927978515625,
+    527.0780639648438
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: System.err.printf(“Print debug code”); ",
+   "bbox": [
+    78.66000366210938,
+    531.5780029296875,
+    246.55799865722656,
+    541.47802734375
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: } ",
+   "bbox": [
+    78.66000366210938,
+    545.97802734375,
+    96.09666442871094,
+    555.8780517578125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    78.66000366210938,
+    560.3780517578125,
+    93.51290130615234,
+    570.278076171875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: public class U489 extends HttpServlet { \n2:    protected void doGet(HttpServletRequest request, … ) throws … { … }\n3:    protected void doPost(HttpServletRequest request, … ) throws … { … }\n4:    // 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.\n5:    public static void main(String args[]) { ···············································································①\n6:        System.err.printf(“Print debug code”);\n7:    }\n8: …",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.65998840332031,
+    263.7381103515625,
+    447.7123107910156,
+    376.8380615234375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: public class U489 extends HttpServlet { \n2: protected void doGet(HttpServletRequest request, …) throws …{ …} \n3: protected void doPost(HttpServletRequest request, …) throws …{ …}\n4: // 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.\n5: public static void main(String args[]) { \n6: System.err.printf(“Print debug code”); \n7: } \n8: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    458.3780944824219,
+    375.6307373046875,
+    571.478076171875
+   ]
+  }
+ ],
+ "native": "479\n제4장구현단계 보안약점 진단\n라. 진단방법\nJ2EE를 제외하고 디버그 코드를 정적도구만으로 판단하기는 쉽지 않다.\n개발 중 테스트 목적으로 남아 있는 디버그 코드가 존재하는지 확인한다(①). J2EE 환경(J2EE \nStandard)에서는 main 메소드 작성을 금하고 있으며, 일반적으로 개발자들은 디버그 코드를 main\n으로 작성하므로 main 메소드가 사용되는 경우 디버그코드 인지 확인하여야 한다.\n일반적인 진단의 예\n1: public class U489 extends HttpServlet { \n2:\nprotected void doGet(HttpServletRequest request, … ) throws … { … }\n3:\nprotected void doPost(HttpServletRequest request, … ) throws … { … }\n4:\n// 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.\n5:\npublic static void main(String args[]) { ···············································································①\n6:\nSystem.err.printf(“Print debug code”);\n7:\n}\n8: …\nJ2EE와 같은 응용프로그램에서 디버깅용으로 사용되는 main() 메소드는 삭제한다.\n정탐코드의 예\n1: public class U489 extends HttpServlet { \n2: protected void doGet(HttpServletRequest request, …) throws …{ …} \n3: protected void doPost(HttpServletRequest request, …) throws …{ …}\n4: // 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.\n5: public static void main(String args[]) { \n6: System.err.printf(“Print debug code”); \n7: } \n8: }\n",
+ "native_sha256": "0c7ac072ae851e4064b07ce0e0ab4a19034dc695fd80d8fcccc157343bc661c3",
+ "chars": 1035,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

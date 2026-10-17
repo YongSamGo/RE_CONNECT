@@ -1,0 +1,29 @@
+288
+아래 코드를 살펴보면, 2번째 라인에서 request의 last_login 파라미터에서 가져온 값을 6번 라인에서 
+개행문자를 필터링한 후 7번째 라인에서 lastLogin값을 쿠키에 설정하고 있어 취약하지 않다고 판단
+한다.
+오탐코드의 예
+1: String lastLogin = request.getParameter(“last_login”); 
+2: if (lastLogin == null || “”.equals(lastLogin)) { 
+3:
+return;
+4: }
+5: // 외부 입력값에서 개행문자를 제거한 후 쿠키의 값으로 설정 
+6: lastLogin = lastLogin.replaceAll(“[￦￦r ￦￦n]”,
+“”); 7:Cookie c = new Cookie(“LASTLOGIN”,
+lastLogin); 8: c.setMaxAge(1000); 
+9: c.setSecure(true); 
+10:response.addCookie(c); 
+11:response.setContentType(“text/html”); 
+12:
+......
+아래코드의 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴 하므로 
+HTTP응답 분할이 이루어지지 않는다.
+오탐코드의 예
+1:
+1: response.sendRedirect(request.getContextPath() + “/login.do”);
+Long, Integer 값 등 Numeric 값은 문자열로 치환 했을때 \r\n 등의 문자열이 포함될 수 없으므로 
+취약 하지 않다.
+오탐코드의 예
+1:
+1: 1: response.setHeader(“Content-Length”,Long.toString(file.length()));

@@ -1,0 +1,46 @@
+258
+안전한 코드의 예 JAVA
+5:
+}
+//프로그램의 커맨드 옵션으로 입력되는 외부값 name에서 XPath 구문을 조작할 수
+// 는 문자를 제거하는 검증을 수행하여 안전하다.
+6:
+String name = args[0];
+7:
+if (name != null) {
+8:
+name = name.replaceAll("[()\\-'\\[\\]:,*/]", "");
+9:
+}
+10:
+DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+11:
+Document doc = docBuilder.parse("http://www.w3schools.com/xml/simple.xml");
+12:
+XPath xpath = XPathFactory.newInstance().newXPath(); 
+13:
+NodeList nodes = (NodeList) xpath.evaluate("//food[name='" + name + "']/price", 
+doc, XPathConstants.NODESET);
+14:
+for (int i = 0; i < nodes.getLength(); i++) { 
+15: System.out.println(nodes.item(i).getTextContent()); 
+16:
+}
+17:}
+다음의 예제는 외부입력을 사용하여 XPath 식에 바로 사용합니다. 이는 공격자의 입력에 따라 
+XQuery의 구조를 바꾸어 예기치 않은 공격이 발생할 수 있습니다.
+안전하지 않은 코드의 예 C#
+1:string acctID = Request["acctID"];
+2:string query = null;
+3:if(acctID != null)
+4:{ 
+5:
+StringBuffer sb = new StringBuffer("/accounts/account[acctID='"); 
+6:
+sb.Append(acctID); 
+7:
+sb.Append("']/email/text()"); 
+8:
+query = sb.ToString(); 
+9:}
+10: XPathDocument docNav = new XPathDocument(myXml);

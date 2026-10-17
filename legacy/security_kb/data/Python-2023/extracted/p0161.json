@@ -1,0 +1,783 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제7절 API 오용",
+   "bbox": [
+    312.0372314453125,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "155",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    65.09266662597656,
+    102.7816390991211,
+    119.12395477294922,
+    113.32826232910156
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "다음의 예제는 도메인명을 통해 해당 요청을 신뢰할 수 있는지를 검사하는 예시로, 공격자는 DNS 캐쉬 등을 ",
+   "bbox": [
+    75.04237365722656,
+    123.63520050048828,
+    507.2037353515625,
+    133.58258056640625
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    140.6536102294922,
+    277.2611999511719,
+    150.60098266601562
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    182.24087524414062,
+    335.33807373046875,
+    192.18824768066406
+   ],
+   "block": 5,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    211.19613647460938,
+    94.51471710205078,
+    219.70535278320312
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    224.73895263671875,
+    94.51471710205078,
+    233.2481689453125
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    238.2817840576172,
+    94.51471710205078,
+    246.79100036621094
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    251.82461547851562,
+    94.51471710205078,
+    260.3338317871094
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    265.4872741699219,
+    94.51471710205078,
+    273.9964904785156
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    279.03009033203125,
+    94.51471710205078,
+    287.539306640625
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    292.57293701171875,
+    94.51471710205078,
+    301.0821533203125
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    306.1157531738281,
+    94.51471710205078,
+    314.6249694824219
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def is_trust(host_domain_name):",
+   "bbox": [
+    104.41199493408203,
+    210.69444274902344,
+    231.17320251464844,
+    219.70535278320312
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  trusted = False",
+   "bbox": [
+    104.41199493408203,
+    224.2372589111328,
+    173.56869506835938,
+    233.2481689453125
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  trusted_host = \"trust.example.com\"",
+   "bbox": [
+    104.41199493408203,
+    237.78009033203125,
+    251.22653198242188,
+    246.79100036621094
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 공격자에 의해 실행되는 서버의 DNS가 변경될 수 있으므로 ",
+   "bbox": [
+    104.41199493408203,
+    251.3229217529297,
+    335.83258056640625,
+    260.3338317871094
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 안전하지 않다",
+   "bbox": [
+    104.41199493408203,
+    264.985595703125,
+    170.69325256347656,
+    273.9964904785156
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if trusted_host == host_name:",
+   "bbox": [
+    104.41199493408203,
+    278.5284118652344,
+    232.97132873535156,
+    287.539306640625
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    trusted = True",
+   "bbox": [
+    104.41199493408203,
+    292.0712585449219,
+    179.08299255371094,
+    301.0821533203125
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return trusted",
+   "bbox": [
+    104.41199493408203,
+    305.61407470703125,
+    167.21527099609375,
+    314.6249694824219
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "도메인명을 이용한 비교를 하지 말고 IP 주소를 직접 비교하도록 수정해 코드를 안전하게 만들 수 있다.",
+   "bbox": [
+    75.04237365722656,
+    349.3089599609375,
+    504.06658935546875,
+    359.25634765625
+   ],
+   "block": 25,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    390.8962097167969,
+    319.7541809082031,
+    400.8435974121094
+   ],
+   "block": 26,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    416.2560729980469,
+    94.51471710205078,
+    424.7652893066406
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    429.79888916015625,
+    94.51471710205078,
+    438.30810546875
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    443.3417053222656,
+    94.51471710205078,
+    451.8509216308594
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    456.884521484375,
+    94.51471710205078,
+    465.39373779296875
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    470.5472106933594,
+    94.51471710205078,
+    479.0564270019531
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    484.09002685546875,
+    94.51471710205078,
+    492.5992431640625
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    497.6328430175781,
+    94.51471710205078,
+    506.1420593261719
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    511.1756591796875,
+    94.51471710205078,
+    519.6848754882812
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    524.718505859375,
+    94.51471710205078,
+    533.2277221679688
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    538.2612915039062,
+    94.51488494873047,
+    546.7705078125
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.23493194580078,
+    551.9240112304688,
+    94.51488494873047,
+    560.4332275390625
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import socket",
+   "bbox": [
+    104.41199493408203,
+    416.2560729980469,
+    158.38035583496094,
+    424.7652893066406
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def is_trust(host_domain_name):",
+   "bbox": [
+    104.41199493408203,
+    442.84002685546875,
+    231.17320251464844,
+    451.8509216308594
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  trusted = False",
+   "bbox": [
+    104.41199493408203,
+    456.3828430175781,
+    173.56869506835938,
+    465.39373779296875
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  trusted_ip = \"192.168.10.7“",
+   "bbox": [
+    104.41199493408203,
+    470.0455322265625,
+    221.0645294189453,
+    479.0564270019531
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 실제 서버의 IP 주소를 비교하여 DNS 변조에 대응",
+   "bbox": [
+    104.41199493408203,
+    483.5883483886719,
+    302.1965026855469,
+    492.5992431640625
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  dns_resolved_ip = socket.gethostbyname(host_domain_name)",
+   "bbox": [
+    104.41199493408203,
+    497.13116455078125,
+    353.7552490234375,
+    506.1420593261719
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if trusted_ip == dns_resolved_ip:",
+   "bbox": [
+    104.41199493408203,
+    524.216796875,
+    242.2017822265625,
+    533.2277221679688
+   ],
+   "block": 46,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    trusted = True",
+   "bbox": [
+    104.41199493408203,
+    537.7595825195312,
+    179.08299255371094,
+    546.7705078125
+   ],
+   "block": 47,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return trusted",
+   "bbox": [
+    104.41199493408203,
+    551.4223022460938,
+    167.21527099609375,
+    560.4332275390625
+   ],
+   "block": 48,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    598.2332763671875,
+    119.12395477294922,
+    608.7799072265625
+   ],
+   "block": 50,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-350: Reliance on Reverse DNS Resolution for a Security-Critical Action, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    617.936279296875,
+    432.2126159667969,
+    626.9248657226562
+   ],
+   "block": 51,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/350.html",
+   "bbox": [
+    77.32001495361328,
+    632.3180541992188,
+    267.01031494140625,
+    641.306640625
+   ],
+   "block": 52,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "➁ Socket, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    651.0836181640625,
+    229.26226806640625,
+    660.6021728515625
+   ],
+   "block": 53,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/socket.htm",
+   "bbox": [
+    77.32001495361328,
+    665.995361328125,
+    256.03179931640625,
+    674.9839477539062
+   ],
+   "block": 54,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: def is_trust(host_domain_name):\n2:   trusted = False\n3:   trusted_host = \"trust.example.com\"\n4:   # 공격자에 의해 실행되는 서버의 DNS가 변경될 수 있으므로 \n5:   # 안전하지 않다\n6:   if trusted_host == host_name:\n7:     trusted = True\n8:   return trusted",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    192.28824768066406,
+    335.83258056640625,
+    315.82496948242186
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+   ],
+   "text": "1: import socket\n2:\n3: def is_trust(host_domain_name):\n4:   trusted = False\n5:   trusted_ip = \"192.168.10.7“\n6:   # 실제 서버의 IP 주소를 비교하여 DNS 변조에 대응\n7:   dns_resolved_ip = socket.gethostbyname(host_domain_name)\n8:\n9:   if trusted_ip == dns_resolved_ip:\n10:     trusted = True\n11:   return trusted",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    400.9435974121094,
+    353.7552490234375,
+    561.6332275390625
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제7절 API 오용\n155\n다. 코드예제\n다음의 예제는 도메인명을 통해 해당 요청을 신뢰할 수 있는지를 검사하는 예시로, 공격자는 DNS 캐쉬 등을 \n조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\ndef is_trust(host_domain_name):\n  trusted = False\n  trusted_host = \"trust.example.com\"\n  # 공격자에 의해 실행되는 서버의 DNS가 변경될 수 있으므로 \n  # 안전하지 않다\n  if trusted_host == host_name:\n    trusted = True\n  return trusted\n도메인명을 이용한 비교를 하지 말고 IP 주소를 직접 비교하도록 수정해 코드를 안전하게 만들 수 있다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\nimport socket\ndef is_trust(host_domain_name):\n  trusted = False\n  trusted_ip = \"192.168.10.7“\n  # 실제 서버의 IP 주소를 비교하여 DNS 변조에 대응\n  dns_resolved_ip = socket.gethostbyname(host_domain_name)\n  if trusted_ip == dns_resolved_ip:\n    trusted = True\n  return trusted\n라. 참고자료\n① CWE-350: Reliance on Reverse DNS Resolution for a Security-Critical Action, MITRE,\nhttps://cwe.mitre.org/data/definitions/350.html\n➁ Socket, Python Software Foundation,\nhttps://docs.python.org/3/library/socket.htm\n",
+ "native_sha256": "e913d22cafdc9a481ceb9bc329cd31a7c2989eb88f2c65cac46daf1771762696",
+ "chars": 963,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

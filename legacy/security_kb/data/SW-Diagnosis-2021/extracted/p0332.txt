@@ -1,0 +1,35 @@
+332
+아래 코드처럼 안전하다고 알려진 AES 알고리즘 등을 적용해야 한다.
+안전한 코드의 예 JAVA
+1: import java.security.*; 
+2: import javax.crypto.Cipher; 
+3: import javax.crypto.NoSuchPaddingException; 
+4: public class CryptoUtils { 
+5:
+public byte[] encrypt(byte[] msg, Key k) { 
+6:
+byte[] rslt = null; 
+7:
+try { 
+//키 길이가 길어 강력한 알고리즘인 AES를 사용하여 안전하다.
+8:
+Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
+9:
+c.init(Cipher.ENCRYPT_MODE, k);
+10:
+rslt = c.update(msg);
+11:
+}
+다음 예제는 취약한 DES 알고리즘을 사용하고 있다.
+안전하지 않은 코드의 예 C#
+1: static string Enc(string input) { 
+//키 길이가 짧아 취약함 암호와 알고리즘인 DES를 사용하여 안전하지 않다.
+2:
+var des = new DESCryptoServiceProvider();
+3:
+...
+4: }
+아래 코드처럼 안전하다고 알려진 AES 알고리즘 등을 적용해야 한다.
+안전한 코드의 예 C#
+1: static string Enc(string input) { 
+//키 길이가 길어 강력한 알고리즘인 AES를 사용하여 안전하다.

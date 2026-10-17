@@ -1,0 +1,31 @@
+239
+제4장구현단계 보안약점 진단
+7. 신뢰되지 않는 URL 주소로 자동접속 연결
+가. 개요
+사용자로부터 입력되는 값을 외부사이트의 주소로 사용하여 자동으로 연결하는 서버 프로그램은 
+피싱(Phishing) 공격에 노출되는 취약점을 가질 수 있다.
+일반적으로 클라이언트에서 전송된 URL 주소로 연결하기 때문에 안전하다고 생각할 수 있으나, 
+공격자는 해당 폼의 요청을 변조함으로써 사용자가 위험한 URL로 접속할 수 있도록 공격할 수 있다.
+나. 보안대책
+자동 연결할 외부 사이트의 URL과 도메인은 화이트 리스트로 관리하고, 사용자 입력값을 자동 연결 
+할 사이트 주소로 사용하는 경우에는 입력된 값이 화이트 리스트에 존재하는지 확인해야 한다.
+다. 코드예제
+다음과 같은 코드가 서버에 존재할 경우 공격자는 아래와 같은 링크에 희생자가 접근하도록 함으로써 
+희생자가 피싱 사이트 등으로 접근하도록 할 수 있다.
+<a href=”http://bank.example.com/redirect?url=http://attacker.example.net”>Click</a>
+안전하지 않은 코드의 예 JAVA
+1: String id = (String)session.getValue("id"); 
+2: String bn = request.getParameter("gubun"); 
+3: //외부로부터 입력받은 URL이 검증 없이 다른 사이트로 이동이 가능하여 안전하지 않다.
+4: String rd = request.getParameter("redirect");
+5: if (id.length() > 0) { 
+6:
+String sql = "select level from customer where customer_id = ? ";
+7:
+conn = db.getConnection(); 
+8:
+pstmt = conn.prepareStatement(sql); 
+9:
+pstmt.setString(1, id); 
+10:
+rs = pstmt.executeQuery();

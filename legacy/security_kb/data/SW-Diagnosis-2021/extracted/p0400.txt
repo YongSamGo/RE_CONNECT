@@ -1,0 +1,33 @@
+400
+16. 반복된 인증시도 제한 기능 부재
+가. 개요
+일정 시간 내에 여러 번의 인증을 시도하여도 계정잠금 또는 추가 인증 방법 등의 충분한 조치가 수행
+되지 않는 경우, 공격자는 예상 ID와 비밀번호들을 사전(Dictionary)으로 만들고 무차별 대입(brute 
+force)하여 로그인 성공 및 권한획득이 가능하다.
+나. 보안대책
+인증시도 횟수를 적절한 횟수로 제한하고 설정된 인증실패 횟수를 초과했을 경우 계정을 잠금하거나 
+추가적인 인증과정을 거쳐서 시스템에 접근이 가능하도록 한다.
+다. 코드예제
+다음 예제는 로그인 정보를 잘못 입력하였을 경우 다시 입력을 시도하는데 있어 제한이 없다. 따라서 
+공격자는 여러 가지 비밀번호로 인증을 재시도하여 올바른 비밀번호를 알아내고 로그인에 성공할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: private static final String SERVER_IP = "127.0.0.1"; 
+2: private static final int SERVER_PORT = 8080; 
+3: private static final int FAIL = -1; 
+4: public void login() { 
+5:
+String username = null; 
+6:
+String password = null; 
+7: Socket socket = null; 
+8:
+in t result = FAIL; 
+9:
+try { 
+10:
+socket = new Socket(SERVER_IP, SERVER_PORT); 
+//인증 실패에 대해 제한을 두지 않아 안전하지 않다.
+11:
+while (result == FAIL) {
+12:
+...

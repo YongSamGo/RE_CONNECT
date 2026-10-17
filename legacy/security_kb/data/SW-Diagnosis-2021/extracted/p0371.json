@@ -1,0 +1,458 @@
+{
+ "lines": [
+  {
+   "text": "371",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    120.79122924804688,
+    308.9777526855469,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: Matcher matcher = pattern.matcher(pass);",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    263.29046630859375,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: if (!matcher.matches()) {",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    189.30633544921875,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    168.99813842773438,
+    85.70540618896484,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return \"비밀번호 조합규칙 오류\";",
+   "bbox": [
+    103.26018524169922,
+    168.99813842773438,
+    225.4578094482422,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    92.79290008544922,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: UserVo userVO = new UserVo(id, pass); ",
+   "bbox": [
+    77.94000244140625,
+    197.79818725585938,
+    260.0887756347656,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: ……",
+   "bbox": [
+    77.94000244140625,
+    212.19821166992188,
+    105.91358947753906,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:String result = registerDAO.register(userVO);",
+   "bbox": [
+    77.94000244140625,
+    226.59820556640625,
+    273.93414306640625,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "빈 비밀번호를 허용하는 C# 코드의 예제이다.",
+   "bbox": [
+    70.86000061035156,
+    258.97119140625,
+    245.09860229492188,
+    269.9931945800781
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    207.89999389648438,
+    298.9910888671875,
+    319.3634033203125,
+    310.0130920410156
+   ],
+   "block": 33,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// 빈 비밀번호를 허용",
+   "bbox": [
+    79.37999725341797,
+    318.398193359375,
+    156.19650268554688,
+    328.2981872558594
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: NetworkCredential myCred = new NetworkCredential(UserName, \"\"); ",
+   "bbox": [
+    79.37999725341797,
+    332.7981872558594,
+    374.9155578613281,
+    342.69818115234375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "빈 비밀번호를 허용하지 않도록 한다.",
+   "bbox": [
+    70.86000061035156,
+    365.1711120605469,
+    212.92628479003906,
+    376.193115234375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    405.131103515625,
+    303.40240478515625,
+    416.1531066894531
+   ],
+   "block": 37,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// 빈 비밀번호를 사용하지 않음",
+   "bbox": [
+    77.94000244140625,
+    424.5381164550781,
+    188.0475311279297,
+    434.4381103515625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: NetworkCredential secure_myCred = new NetworkCredential(UserName,",
+   "bbox": [
+    77.94000244140625,
+    438.9381103515625,
+    386.4040832519531,
+    448.8381042480469
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Password);",
+   "bbox": [
+    90.06011962890625,
+    453.3381042480469,
+    134.00791931152344,
+    463.23809814453125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "비밀번호에 대한 검증 없이 사용하는 C코드 예제이다.",
+   "bbox": [
+    70.86000061035156,
+    485.7710876464844,
+    276.2283020019531,
+    496.7930908203125
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    209.4600067138672,
+    525.7310791015625,
+    314.99664306640625,
+    536.7531127929688
+   ],
+   "block": 42,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: bool authentication(char* id, char* pwd)",
+   "bbox": [
+    77.94000244140625,
+    545.1380615234375,
+    253.5214385986328,
+    555.0380859375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: { ",
+   "bbox": [
+    77.94000244140625,
+    559.5380859375,
+    95.31672668457031,
+    569.4381103515625
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: MYSQL *connectInstance; ",
+   "bbox": [
+    77.94000244140625,
+    573.9380493164062,
+    198.6620330810547,
+    583.8380737304688
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: connectInstance = mysql_init(NULL);",
+   "bbox": [
+    77.94000244140625,
+    588.3380737304688,
+    239.75448608398438,
+    598.2380981445312
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "4: Matcher matcher = pattern.matcher(pass);\n5: if (!matcher.matches()) {\n6:        return \"비밀번호 조합규칙 오류\";\n7: }\n8: UserVo userVO = new UserVo(id, pass); \n9: ……\n10:String result = registerDAO.register(userVO);",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    273.93414306640625,
+    237.6981994628906
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    13,
+    14
+   ],
+   "text": "// 빈 비밀번호를 허용\n1: NetworkCredential myCred = new NetworkCredential(UserName, \"\"); ",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    79.37999725341797,
+    310.11309204101565,
+    374.9155578613281,
+    343.89818115234374
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    17,
+    18,
+    19
+   ],
+   "text": "// 빈 비밀번호를 사용하지 않음\n1: NetworkCredential secure_myCred = new NetworkCredential(UserName,\nPassword);",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    416.25310668945315,
+    386.4040832519531,
+    464.43809814453124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "1: bool authentication(char* id, char* pwd)\n2: { \n3: MYSQL *connectInstance; \n4: connectInstance = mysql_init(NULL);",
+   "language": "c",
+   "label": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    77.94000244140625,
+    536.8531127929688,
+    253.5214385986328,
+    599.4380981445313
+   ]
+  }
+ ],
+ "native": "371\n제4장구현단계 보안약점 진단\n안전한 코드의 예 JAVA\n4: Matcher matcher = pattern.matcher(pass);\n5: if (!matcher.matches()) {\n6:\nreturn \"비밀번호 조합규칙 오류\";\n7: }\n8: UserVo userVO = new UserVo(id, pass); \n9: ……\n10:String result = registerDAO.register(userVO);\n빈 비밀번호를 허용하는 C# 코드의 예제이다.\n안전하지 않은 코드의 예 C#\n// 빈 비밀번호를 허용\n1: NetworkCredential myCred = new NetworkCredential(UserName, \"\"); \n빈 비밀번호를 허용하지 않도록 한다.\n안전한 코드의 예 C#\n// 빈 비밀번호를 사용하지 않음\n1: NetworkCredential secure_myCred = new NetworkCredential(UserName,\nPassword);\n비밀번호에 대한 검증 없이 사용하는 C코드 예제이다.\n안전하지 않은 코드의 예 C\n1: bool authentication(char* id, char* pwd)\n2: { \n3: MYSQL *connectInstance; \n4: connectInstance = mysql_init(NULL);\n",
+ "native_sha256": "c656c51373a141e8da4be4875f743581c5ec02c907cbc2ed99792fcd0142d7bf",
+ "chars": 657,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

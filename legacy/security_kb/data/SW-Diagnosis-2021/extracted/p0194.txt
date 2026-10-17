@@ -1,0 +1,36 @@
+194
+2. 코드삽입
+가. 개요
+공격자가 소프트웨어의 의도된 동작을 변경하도록 임의 코드를 삽입하여 소프트웨어가 비정상적으로 
+동작하도록 하는 보안약점을 말한다. 코드 삽입은 프로그래밍 언어 자체의 기능에 의해서만 제한된다는 
+점에서 운영체제 명령어 삽입과 다르다.
+취약한 프로그램에서 사용자의 입력 값에 코드가 포함되는 것을 허용할 경우, 공격자는 개발자가 
+의도하지 않은 코드를 실행하여 권한을 탈취하거나 인증 우회, 시스템 명령어 실행 등을 할 수 있다.
+나. 보안대책
+동적코드를 실행할 수 있는 함수를 사용하지 않는다. 필요 시, 실행 가능한 동적코드를 입력 값으로 
+받지 않도록, 외부 입력 값에 대하여 화이트리스트 방식으로 구현한다. 또는 유효한 문자만 포함하도록 
+동적 코드에 사용되는 사용자 입력 값을 필터링 한다.
+다. 코드예제
+다음 예제의 소스코드는 javax.script.ScriptEngineManager을 사용하여 ScriptEnigneManeger()로 
+사용자의 입력을 실행하여 출력한다. 이 경우, 공격자는 조작된 인수를 입력한 공격코드를 이용하여 
+새로운 파일을 만들거나 덮어씌울 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: public class CodeInjectionController { 
+2: @RequestMapping(value = "/execute", method = RequestMethod.GET) 
+3:
+public String execute(@RequestParam("src") String src)
+4:
+throws ScriptException { 
+5:
+ScriptEngineManager scriptEngineManager = new ScriptEngineManager();
+6:
+ScriptEngine scriptEngine= scriptEngineManager.getEngineByName("javascript");
+7:
+// 외부 입력값인 src를 javascript eval 함수로 실행하고 있어 안전하지 않다.
+8:
+String retValue = (String)scriptEngine.eval(src);
+9:
+return retValue;
+10:
+}
+11: }

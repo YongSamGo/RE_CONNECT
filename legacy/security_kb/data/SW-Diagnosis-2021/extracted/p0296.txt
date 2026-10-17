@@ -1,0 +1,13 @@
+296
+마. 참고자료
+[1] CWE-190 Integer Overflow, MITRE,
+http://cwe.mitre.org/data/definitions/190.html 
+[2] Enforce limits on integer values originating from tainted sources, CERT,
+http://www.securecoding.cert.org/confluence/display/c/INT04-C.+Enforce+limi
+ts+on+integer+values+originating+from+tainted+sources
+[3] Verify that all integer values are in range, CERT,
+http://www.securecoding.cert.org/confluence/display/c/INT08-C.+Verify+that+
+all+integer+values+are+in+range
+[4] Integer overflow, OWASP,
+https://www.owasp.org/index.php/OWASP_Periodic_Table_of_Vulnerabilities_-_
+Integer_Overflow/Underflow

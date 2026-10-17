@@ -1,0 +1,27 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+93
+패스워드나 인증정보 및 보안토큰 생성에 사용하는 경우 안전한 secrets 라이브러리로 생성한 난수를 이용
+해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+import secrets
+import string
+def generate_session_key():
+  RANDOM_STRING_CHARS = string.ascii_letters+string.digits
+  # 보안 기능과 관련된 난수는 secrets 라이브러리를 사용해야 안전하다
+  return “”.join(secrets.choice(RANDOM_STRING_CHARS) for i in range(32))
+라. 참고자료
+① CWE-330: Use of Insufficiently Random Values, MITRE,
+https://cwe.mitre.org/data/definitions/330.html
+② Insecure Randomness, OWASP,
+https://owasp.org/www-community/vulnerabilities/Insecure_Randomness
+③ Generate pseudo-random numbers, Python Software Foundation,
+https://docs.python.org/3/library/random.html
+④ Generate secure random numbers for managing secrets, Python Software Foundation,
+https://docs.python.org/3/library/secrets.html

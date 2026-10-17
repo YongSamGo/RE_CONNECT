@@ -1,0 +1,36 @@
+261
+제4장구현단계 보안약점 진단
+정탐코드의 예
+9: javax.xml.xquery.XQConnection conn = xqds.getConnection(); 
+10:
+11:String es = “doc(‘users.xml’)/userlist/user[uname=’” + name + “’]”; 
+12:// 입력 값이 Xquery의 인자로 사용 
+13:XQPreparedExpression expr = conn.prepareExpression(es); 
+14:XQResultSequence result = expr.executeQuery(); 
+15:while (result.next()) { 
+16:String str = result.getAtomicValue(); 
+17:if (str.indexOf(‘>’) < 0) { 
+18:System.out.println(str); 
+19:}
+20:…
+ㆍXPath 삽입
+XPath 객체로 쿼리 스트링이 컴파일 되는 부분을 확인하고(①), XPath 쿼리스트링에 사용되는 
+변수가 외부 입력값 인지 확인한 후(②) 변수에 대한 필터링 모듈이 존재하는지 확인한다. 필터
+링 모듈이 존재하거나 관련 프레임워크에서 적절하게 조치된 경우엔 안전하다고 판정한다.
+일반적인 진단의 예
+1:
+…
+2:
+String acctID = request.getParameter(“acctID”); ·······························································②
+3:
+String query = null;
+4:
+if(acctID != null) { 
+5:
+StringBuffer sb = new StringBuffer(“/accounts/account[acctID=’”); 
+6:
+sb.append(acctID); ····················································································································②
+7:
+sb.append(“’]/email/text()”); 
+8:
+query = sb.toString();

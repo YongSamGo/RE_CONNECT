@@ -1,0 +1,908 @@
+{
+ "lines": [
+  {
+   "text": "358",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    117.31112670898438,
+    307.0608215332031,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.0654067993164,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…public Connection DBConnect(String url, String usr) { ",
+   "bbox": [
+    100.85955047607422,
+    142.23818969726562,
+    330.0961608886719,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    92.0345458984375,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String password = “68af404b513073584c4b6f22b6c63e6b”; ·······································②",
+   "bbox": [
+    105.2090072631836,
+    156.63821411132812,
+    453.3594665527344,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30001831054688,
+    171.03823852539062,
+    92.05219268798828,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    105.22665405273438,
+    171.03823852539062,
+    125.38900756835938,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30001831054688,
+    185.43826293945312,
+    92.04073333740234,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 비밀번호로 상수를 사용하고있다. ",
+   "bbox": [
+    109.65546417236328,
+    185.43826293945312,
+    243.4030303955078,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30001831054688,
+    199.83828735351562,
+    92.0292739868164,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "con = DriverManager.getConnection(url, usr, password); ···········································①",
+   "bbox": [
+    109.64400482177734,
+    199.83828735351562,
+    453.3576965332031,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30001831054688,
+    214.23831176757812,
+    92.03015899658203,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (SQLException e) {",
+   "bbox": [
+    105.20462036132812,
+    214.23831176757812,
+    215.61624145507812,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30001831054688,
+    228.6383056640625,
+    92.06542205810547,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.err.println(“…”);",
+   "bbox": [
+    109.6801528930664,
+    228.6383056640625,
+    203.9589385986328,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30001831054688,
+    243.03829956054688,
+    92.06542205810547,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.23988342285156,
+    243.03829956054688,
+    107.97262573242188,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30001831054688,
+    257.43829345703125,
+    92.03809356689453,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return con;",
+   "bbox": [
+    105.21255493164062,
+    257.43829345703125,
+    150.40858459472656,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: }",
+   "bbox": [
+    84.30001831054688,
+    271.8382873535156,
+    104.1326904296875,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: …",
+   "bbox": [
+    84.30001831054688,
+    286.23828125,
+    109.3337173461914,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "암호화를 하는데 사용되는 암호화 키를 소스에 하드코딩해서 사용하는 경우 취약하다.",
+   "bbox": [
+    76.5,
+    318.6111145019531,
+    403.1778869628906,
+    329.63311767578125
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    355.1512145996094,
+    296.91937255859375,
+    366.1732177734375
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public class U321 { ",
+   "bbox": [
+    84.30000305175781,
+    380.0780944824219,
+    179.22315979003906,
+    389.97808837890625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    394.47808837890625,
+    92.0416030883789,
+    404.3780822753906
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public void foo(String url, String usr) { ",
+   "bbox": [
+    100.83573913574219,
+    394.47808837890625,
+    261.5015563964844,
+    404.3780822753906
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    408.8780822753906,
+    92.05217742919922,
+    418.778076171875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    105.22663879394531,
+    408.8780822753906,
+    125.38899230957031,
+    418.778076171875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30000305175781,
+    423.278076171875,
+    92.03102111816406,
+    433.1780700683594
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String encryptedPwd = getpassword(); ",
+   "bbox": [
+    109.645751953125,
+    423.278076171875,
+    269.708740234375,
+    433.1780700683594
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    437.6780700683594,
+    92.03631591796875,
+    447.57806396484375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// private key를 상수로 정의 ",
+   "bbox": [
+    109.65104675292969,
+    437.6780700683594,
+    224.30819702148438,
+    447.57806396484375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    452.07806396484375,
+    92.0654067993164,
+    461.9780578613281
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] privateKey = { ‘6’, ‘8’, ‘a’, ‘f’, ‘4’, ‘0’, ‘4’, ‘b’, ‘5’, ‘1’, ‘3’, ‘0’, ‘7’ };",
+   "bbox": [
+    105.2398681640625,
+    452.07806396484375,
+    416.84930419921875,
+    461.9780578613281
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    466.4780578613281,
+    92.0654067993164,
+    476.3780517578125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(“RSA”);",
+   "bbox": [
+    105.2398681640625,
+    466.4780578613281,
+    380.0057067871094,
+    476.3780517578125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30001831054688,
+    480.8780517578125,
+    92.04425811767578,
+    490.7780456542969
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 상수 key를 사용하여 보안키 생성 ",
+   "bbox": [
+    105.21871948242188,
+    480.8780517578125,
+    243.6401824951172,
+    490.7780456542969
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30001831054688,
+    495.2780456542969,
+    92.06541442871094,
+    505.17803955078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.crypto.SecretKey myDesKey = new javax.crypto.spec.SecretKeySpec(privateKey,",
+   "bbox": [
+    105.23987579345703,
+    495.2780456542969,
+    448.9891662597656,
+    505.17803955078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30001831054688,
+    509.6780090332031,
+    97.04694366455078,
+    519.5780029296875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“DES”); ",
+   "bbox": [
+    105.84197235107422,
+    509.6780090332031,
+    137.986083984375,
+    519.5780029296875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30001831054688,
+    524.0780029296875,
+    96.97466278076172,
+    533.97802734375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "cipher.init(javax.crypto.Cipher.DECRYPT_MODE, myDesKey);",
+   "bbox": [
+    105.768798828125,
+    524.0780029296875,
+    349.7393493652344,
+    533.97802734375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30001831054688,
+    538.47802734375,
+    96.98876190185547,
+    548.3780517578125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 암호화된 password를 복호화 ",
+   "bbox": [
+    105.78290557861328,
+    538.47802734375,
+    228.89822387695312,
+    548.3780517578125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30001831054688,
+    552.8779907226562,
+    97.0451889038086,
+    562.7780151367188
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] plainTextPwdBytes = cipher.doFinal(encryptedPwd.getBytes());",
+   "bbox": [
+    105.8393325805664,
+    552.8779907226562,
+    386.0644836425781,
+    562.7780151367188
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30001831054688,
+    567.2779541015625,
+    97.0451889038086,
+    577.177978515625
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.30001831054688,
+    581.677978515625,
+    97.02225494384766,
+    591.5780029296875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// DB 연결 ",
+   "bbox": [
+    105.81639862060547,
+    581.677978515625,
+    152.49783325195312,
+    591.5780029296875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.30001831054688,
+    596.0780029296875,
+    97.04517364501953,
+    605.97802734375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "java.sql.DriverManager.getConnection(url, usr, new String(plainTextPwdBytes));",
+   "bbox": [
+    105.83931732177734,
+    596.0780029296875,
+    426.1168518066406,
+    605.97802734375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    84.30001831054688,
+    610.4779663085938,
+    96.97466278076172,
+    620.3779907226562
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (SQLException e) { ",
+   "bbox": [
+    105.768798828125,
+    610.4779663085938,
+    218.75363159179688,
+    620.3779907226562
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    84.30001831054688,
+    624.8779907226562,
+    97.0451889038086,
+    634.7780151367188
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    105.8393325805664,
+    624.8779907226562,
+    113.77310180664062,
+    634.7780151367188
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1:    …public Connection DBConnect(String url, String usr) { \n2:      String password = “68af404b513073584c4b6f22b6c63e6b”; ·······································②\n3:      try { \n4:        // 비밀번호로 상수를 사용하고있다. \n5:        con = DriverManager.getConnection(url, usr, password); ···········································①\n6:      } catch (SQLException e) {\n7:        System.err.println(“…”);\n8:      }\n9:      return con;\n10: }\n11: …",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    453.3594665527344,
+    297.33827514648436
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57
+   ],
+   "text": "1: public class U321 { \n2:    public void foo(String url, String usr) { \n3:      try { \n4:        String encryptedPwd = getpassword(); \n5:        // private key를 상수로 정의 \n6:      byte[] privateKey = { ‘6’, ‘8’, ‘a’, ‘f’, ‘4’, ‘0’, ‘4’, ‘b’, ‘5’, ‘1’, ‘3’, ‘0’, ‘7’ };\n7:      javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(“RSA”);\n8:      // 상수 key를 사용하여 보안키 생성 \n9:      javax.crypto.SecretKey myDesKey = new javax.crypto.spec.SecretKeySpec(privateKey,\n10:    “DES”); \n11:    cipher.init(javax.crypto.Cipher.DECRYPT_MODE, myDesKey);\n12:    // 암호화된 password를 복호화 \n13:    byte[] plainTextPwdBytes = cipher.doFinal(encryptedPwd.getBytes());\n14:\n15:    // DB 연결 \n16:    java.sql.DriverManager.getConnection(url, usr, new String(plainTextPwdBytes));\n17:    } catch (SQLException e) { \n18:    …",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    378.8780944824219,
+    448.9891662597656,
+    635.9780151367188
+   ]
+  }
+ ],
+ "native": "358\n일반적인 진단의 예\n1:\n…public Connection DBConnect(String url, String usr) { \n2:\nString password = “68af404b513073584c4b6f22b6c63e6b”; ·······································②\n3:\ntry { \n4:\n// 비밀번호로 상수를 사용하고있다. \n5:\ncon = DriverManager.getConnection(url, usr, password); ···········································①\n6:\n} catch (SQLException e) {\n7:\nSystem.err.println(“…”);\n8:\n}\n9:\nreturn con;\n10: }\n11: …\n암호화를 하는데 사용되는 암호화 키를 소스에 하드코딩해서 사용하는 경우 취약하다.\n정탐코드의 예\n1: public class U321 { \n2:\npublic void foo(String url, String usr) { \n3:\ntry { \n4:\nString encryptedPwd = getpassword(); \n5:\n// private key를 상수로 정의 \n6:\nbyte[] privateKey = { ‘6’, ‘8’, ‘a’, ‘f’, ‘4’, ‘0’, ‘4’, ‘b’, ‘5’, ‘1’, ‘3’, ‘0’, ‘7’ };\n7:\njavax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(“RSA”);\n8:\n// 상수 key를 사용하여 보안키 생성 \n9:\njavax.crypto.SecretKey myDesKey = new javax.crypto.spec.SecretKeySpec(privateKey,\n10:\n“DES”); \n11:\ncipher.init(javax.crypto.Cipher.DECRYPT_MODE, myDesKey);\n12:\n// 암호화된 password를 복호화 \n13:\nbyte[] plainTextPwdBytes = cipher.doFinal(encryptedPwd.getBytes());\n14:\n15:\n// DB 연결 \n16:\njava.sql.DriverManager.getConnection(url, usr, new String(plainTextPwdBytes));\n17:\n} catch (SQLException e) { \n18:\n…\n",
+ "native_sha256": "328385e6d96df38487113cf3a3fdb0de00aea6ff75f5e92fa785ec80969f04c2",
+ "chars": 1190,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

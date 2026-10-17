@@ -1,0 +1,38 @@
+276
+12. 서버사이드 요청 위조
+가. 개요
+적절한 검증절차를 거치지 않은 사용자 입력 값을 서버간의 요청에 사용하여 악의적인 행위가 발생할 
+수 있는 보안약점이다.
+외부에 노출된 웹 서버에 취약한 애플리케이션이 존재하는 경우 공격자는 URL 또는 요청문을 위조하여 
+접근통제를 우회하는 방식으로 비정상적인 동작을 유도하거나 신뢰된 네트워크에 있는 데이터를 
+획득할 수 있다.
+나. 보안대책
+식별할 수 있는 범위 내에서 사용자의 입력 값을 다른 시스템의 서비스 호출에 사용하는 경우, 사용자의 
+입력 값을 화이트리스트 방식으로 필터링한다.
+사용자가 지정하는 무작위의 URL을 받아들여야 한다면 내부의 URL을 블랙리스트로 지정하여 필터링 
+한다. 또한 동일한 내부 네트워크에 있더라도 기기 인증, 접근권한을 확인하여 요청이 이루어질 수 
+있도록 한다.
+다. 코드예제
+다음 예제는 사용자로부터 입력받은 값의 검증 없이 웹페이지를 접속하도록 구현되어 있다. 이 때, 
+공격자는 URL을 조작하여 내부 서버에 질의 하게 하여 데이터를 획득할 수 있다.
+[ 참고 : 삽입 코드의 예]
+설명
+삽입 코드의 예
+내부망 중요 정보 획득
+• http://site_example.com/connect?url=http://192.168.0.45/member/list.json
+외부 접근 차단된 
+admin 페이지 접근
+• http://site_example.com/connect?url=http://192.168.0.45/admin 
+도메인 체크를 우회하여 
+중요 정보 획득
+• http://site_example.com/connect?url=http://site_example.com:x@ 
+192.168.0.45/member/list.json
+단축 URL을 이용한 
+Filter 우회
+• http://site_example.com/connect?url=http://bit.ly/sdjk3kjhkl3
+도메인을 사설IP로 
+설정해 중요정보 획득
+• http://site_example.com/connect?url=http://internal.site.com/me 
+mber/list.json
+서버내 파일 열람
+• http://site_example.com/connect?url=http://attack/fileview.html

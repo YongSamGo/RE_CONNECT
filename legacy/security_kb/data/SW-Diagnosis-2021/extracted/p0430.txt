@@ -1,0 +1,37 @@
+430
+발생 가능한 예외를 세분화하고 발생 가능한 순서에 따라 예외를 처리하고 있다.
+안전한 코드의 예 JAVA
+1: try {
+2:
+...
+3:
+reader = new BufferedReader(new InputStreamReader(url.openStream()));
+4:
+String line = reader.readLine(); 
+5:
+SimpleDateFormat format = new SimpleDateFormat("MM/DD/YY");
+6:
+Date date = format.parse(line);
+// 발생할 수 있는 오류의 종류와 순서에 맞춰서 예외 처리 한다.
+7:
+} catch (MalformedURLException e) {
+8:
+System.err.println("MalformedURLException : " + e.getMessage());
+9:
+} catch (IOException e) {
+10:
+System.err.println("IOException : " + e.getMessage());
+11: } catch (ParseException e) {
+12:
+System.err.println("ParseException : " + e.getMessage());
+13: }
+다음 예제는 try 블록에서 다양한 예외가 발생할 수 있음에도 불구하고 예외를 세분화하지 않고 광범
+위한 예외 클래스인 Exception을 사용하여 예외를 처리하고 있다.
+안전하지 않은 코드의 예 C#
+1: try {
+2:
+InvokeMtd(); 
+//예외처리를 세분화 할 수 있음에도 광범위하게 사용하여 예기치 않은 문제가 발생 할 수 있다.
+3:
+} catch (Exception e) {
+4: }

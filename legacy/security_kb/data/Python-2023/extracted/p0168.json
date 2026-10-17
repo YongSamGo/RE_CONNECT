@@ -1,0 +1,85 @@
+{
+ "lines": [
+  {
+   "text": "3",
+   "bbox": [
+    347.041015625,
+    297.3428955078125,
+    406.0949401855469,
+    402.2098693847656
+   ],
+   "block": 0,
+   "size": 104.8792495727539,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "PART 제3장",
+   "bbox": [
+    318.1509094238281,
+    399.980712890625,
+    405.2472839355469,
+    414.0029296875
+   ],
+   "block": 1,
+   "size": 14.023853302001953,
+   "fonts": [
+    "GmarketSansTTFBold"
+   ]
+  },
+  {
+   "text": "부 록",
+   "bbox": [
+    320.30865478515625,
+    423.231201171875,
+    405.28326416015625,
+    455.2306213378906
+   ],
+   "block": 2,
+   "size": 32.00315475463867,
+   "fonts": [
+    "GmarketSansTTFBold"
+   ]
+  },
+  {
+   "text": "제1절 구현단계 보안약점 제거 기준",
+   "bbox": [
+    146.60833740234375,
+    475.26922607421875,
+    405.17431640625,
+    491.2090148925781
+   ],
+   "block": 3,
+   "size": 15.941645622253418,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "제2절 용어정리",
+   "bbox": [
+    147.68722534179688,
+    500.79681396484375,
+    258.56549072265625,
+    516.736572265625
+   ],
+   "block": 4,
+   "size": 15.941645622253418,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "GmarketSansTTFMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "3\nPART 제3장\n부 록\n제1절 구현단계 보안약점 제거 기준\n제2절 용어정리\n",
+ "native_sha256": "d0bf9211ec2721caceadc57d1b703c492a294d9a9aea1b3525ed1aa0c1dec3f3",
+ "chars": 44,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

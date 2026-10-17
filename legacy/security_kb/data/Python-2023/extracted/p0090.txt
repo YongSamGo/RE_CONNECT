@@ -1,0 +1,48 @@
+Python 시큐어코딩 가이드
+84
+안전한 코드 예시
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+36:
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    s.sendall(enc_passowrd.encode('utf-8'))
+    data = s.recv(1024)
+    .......
+class AEScipher:
+  BS = AES.block_size
+  def __init__(self, s_key):
+    self.s_key = hashlib.sha256(s_key.encode("utf-8")).digest()
+  def pad(self, m):
+    return m + bytes([self.BS - len(m) % self.BS] * (self.BS - len(m) % self.BS))
+  def encrypt(self, plain):
+    plain = self.pad(plain.encode())
+    iv = Random.new().read(AES.block_size)
+    cipher = AES.new(self.s_key, AES.MODE_CBC, iv)
+    return base64.b64encode(iv + cipher.encrypt(plain)).decode("utf-8")
+    ......
+라. 참고자료
+① CWE-312: Cleartext Storage of Sensitive Information, MITRE,
+https://cwe.mitre.org/data/definitions/312.html
+② CWE-319: Cleartext Transmission of Sensitive Information, MITRE,
+https://cwe.mitre.org/data/definitions/319.html
+③ Password Plaintext Storage, OWASP,
+https://owasp.org/www-community/vulnerabilities/Password_Plaintext_Storage

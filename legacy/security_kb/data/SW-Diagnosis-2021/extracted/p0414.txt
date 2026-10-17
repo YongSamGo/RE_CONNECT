@@ -1,0 +1,13 @@
+414
+오탐코드의 예
+6:
++ ((fList[i].length() / 1024) > 0 ? (fList[i].length() / 1024) : 1) 
+7:
++ “KB”);
+8: }
+마. 참고자료
+[1] CWE-367 Time-of-check Time-of-use(TOCTOU) Race Condition, MITRE
+http://cwe.mitre.org/data/definitions/367.html
+[2] Avoid TOCTOU race conditions while accessing files, CERT
+http://www.securecoding.cert.org/confluence/display/c/FIO45-C.+Avoid+TOCT
+OU+race+conditions+while+accessing+files

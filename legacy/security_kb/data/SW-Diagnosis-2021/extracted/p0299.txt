@@ -1,0 +1,30 @@
+299
+제4장구현단계 보안약점 진단
+평문으로 사용자의 인증정보를 쿠키에 저장하고 있는 C# 예제코드이다.
+안전하지 않은 코드의 예 C#
+1: HttpCookie cookie = new HttpCookie(“Authentificated”, “1”);
+//평문으로 사용자의 인증정보를 쿠키에 저장한다.
+2: Response.Cookies.Add(cookie);
+중요한 정보를 쿠키에 저장 시에는 암호화해서 사용하고, 되도록이면 해당 정보는 서버의 세션에 저장 
+하도록 한다.
+안전한 코드의 예 C#
+// 사용자의 인증정보를 세션에 저장한다.
+1: Session[“Authentificated”] = “1”;
+아래 C 코드는 외부에서 가져온 서버 정보를 기반으로 연결을 진행한다. 사용자가 환경 변수를 조작 
+하면 의도하지 않은 곳으로 연결을 진행할 수 있다. 예를 들어 온라인으로 제품 라이선스를 검증하는 
+경우, 인증 서버의 주소를 사용자가 변경하여 임의로 라이선스 검증을 통과할 수 있다.
+안전하지 않은 코드의 예 C
+1: void SecurityDecision() { 
+2:
+int sockfd = socket(PF_INET, SOCK_STREAM, 0); 
+3:
+char* server_info = getenv(“server_addr”);
+4:
+// 외부에서 가져온 서버 정보를 그대로 사용한다.
+5:
+if( connect( sockfd, (struct sockaddr *)server_addr, sizeof(struct socketaddr) ) < 0 ) { 
+6: return;
+7:
+}
+/* 라이선스 검증 코드 */ 
+8: }

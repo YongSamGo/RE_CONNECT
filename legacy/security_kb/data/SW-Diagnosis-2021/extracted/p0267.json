@@ -1,0 +1,576 @@
+{
+ "lines": [
+  {
+   "text": "267",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "익명 바인딩을 사용하지 않고 인증을 진행해야 한다.",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    269.76605224609375,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    153.79122924804688,
+    303.40240478515625,
+    164.813232421875
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: static void SearchRecord(string userSN, string userPW) ",
+   "bbox": [
+    77.94000244140625,
+    173.19808959960938,
+    320.127197265625,
+    183.09808349609375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: { ",
+   "bbox": [
+    77.94000244140625,
+    187.59811401367188,
+    95.31672668457031,
+    197.49810791015625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: try { ",
+   "bbox": [
+    77.94000244140625,
+    201.99813842773438,
+    110.20928955078125,
+    211.89813232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    216.39816284179688,
+    85.68071746826172,
+    226.29815673828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DirectoryEntry oDE; ",
+   "bbox": [
+    94.4149169921875,
+    216.39816284179688,
+    177.3395538330078,
+    226.29815673828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    230.79815673828125,
+    85.70540618896484,
+    240.69815063476562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "oDE = new DirectoryEntry(GetStrPath(), userSN, userPW);",
+   "bbox": [
+    94.4395980834961,
+    230.79815673828125,
+    334.0957946777344,
+    240.69815063476562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// userSN과 userPW 로 인증 후에 LDAP 쿼리를 실행 ",
+   "bbox": [
+    86.75970458984375,
+    245.19815063476562,
+    299.41644287109375,
+    255.09814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.93999481201172,
+    259.59814453125,
+    85.67718505859375,
+    269.4981384277344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "foreach(DirectoryEntry objChildDE om oDE.Children) { ",
+   "bbox": [
+    94.41138458251953,
+    259.59814453125,
+    316.57904052734375,
+    269.4981384277344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.94000244140625,
+    273.9981384277344,
+    85.69306182861328,
+    283.89813232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    94.42725372314453,
+    273.9981384277344,
+    102.36983489990234,
+    283.89813232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.94000244140625,
+    288.39813232421875,
+    85.70540618896484,
+    298.2981262207031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    94.43960571289062,
+    288.39813232421875,
+    97.17234802246094,
+    298.2981262207031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: } catch (NamingException e) { ... }",
+   "bbox": [
+    77.94000244140625,
+    302.7981262207031,
+    233.53355407714844,
+    312.6981201171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래 C 코드는 외부에서 불러온 filter를 LDAP 탐색에 그대로 사용하고 있다. LDAP 필터에 OR ",
+   "bbox": [
+    70.86000061035156,
+    335.1711120605469,
+    459.0938415527344,
+    346.193115234375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "연산 등을 사용하여 의도치 않은 동작이 발생할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    352.21112060546875,
+    284.2207946777344,
+    363.2331237792969
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    209.4600067138672,
+    392.1711120605469,
+    314.99664306640625,
+    403.193115234375
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: void LDAPInjection() { ",
+   "bbox": [
+    77.94000244140625,
+    411.5780944824219,
+    181.741943359375,
+    421.47808837890625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94000244140625,
+    425.97808837890625,
+    85.68512725830078,
+    435.8780822753906
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "char *filter = getenv(“Filter”);",
+   "bbox": [
+    94.41932678222656,
+    425.97808837890625,
+    214.09141540527344,
+    435.8780822753906
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    440.3780822753906,
+    85.68160247802734,
+    450.278076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int error_code; ",
+   "bbox": [
+    94.4157943725586,
+    440.3780822753906,
+    156.36618041992188,
+    450.278076171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    454.778076171875,
+    85.70539855957031,
+    464.6780700683594
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "LDAP *ld = NULL; ",
+   "bbox": [
+    94.4395980834961,
+    454.778076171875,
+    173.797607421875,
+    464.6780700683594
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    469.1780700683594,
+    85.70540618896484,
+    479.07806396484375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "LDAPMessage *result; ",
+   "bbox": [
+    94.4395980834961,
+    469.1780700683594,
+    188.45741271972656,
+    479.07806396484375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부에서 불러온 filter를 검증 없이 사용 ",
+   "bbox": [
+    77.94000244140625,
+    483.57806396484375,
+    229.00247192382812,
+    493.4780578613281
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    497.9780578613281,
+    85.70539855957031,
+    507.8780517578125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "error_code = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter,",
+   "bbox": [
+    94.4395980834961,
+    497.9780578613281,
+    393.0041198730469,
+    507.8780517578125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "NULL, 0, NULL, NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result);",
+   "bbox": [
+    90.06015014648438,
+    512.3780517578125,
+    371.27178955078125,
+    522.278076171875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    77.93999481201172,
+    526.7780151367188,
+    92.79290008544922,
+    536.6780395507812
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: static void SearchRecord(string userSN, string userPW) \n2: { \n3: try { \n4:    DirectoryEntry oDE; \n5:    oDE = new DirectoryEntry(GetStrPath(), userSN, userPW);\n// userSN과 userPW 로 인증 후에 LDAP 쿼리를 실행 \n6:    foreach(DirectoryEntry objChildDE om oDE.Children) { \n7:    ...\n8:    }\n9: } catch (NamingException e) { ... }",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.93999481201172,
+    164.913232421875,
+    334.0957946777344,
+    313.8981201171875
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35
+   ],
+   "text": "1: void LDAPInjection() { \n2:    char *filter = getenv(“Filter”);\n3:    int error_code; \n4:    LDAP *ld = NULL; \n5:    LDAPMessage *result; \n// 외부에서 불러온 filter를 검증 없이 사용 \n6:    error_code = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter,\nNULL, 0, NULL, NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result);\n7: }",
+   "language": "c",
+   "label": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    77.93999481201172,
+    403.293115234375,
+    393.0041198730469,
+    537.8780395507813
+   ]
+  }
+ ],
+ "native": "267\n제4장구현단계 보안약점 진단\n익명 바인딩을 사용하지 않고 인증을 진행해야 한다.\n안전한 코드의 예 C#\n1: static void SearchRecord(string userSN, string userPW) \n2: { \n3: try { \n4:\nDirectoryEntry oDE; \n5:\noDE = new DirectoryEntry(GetStrPath(), userSN, userPW);\n// userSN과 userPW 로 인증 후에 LDAP 쿼리를 실행 \n6:\nforeach(DirectoryEntry objChildDE om oDE.Children) { \n7:\n...\n8:\n}\n9: } catch (NamingException e) { ... }\n아래 C 코드는 외부에서 불러온 filter를 LDAP 탐색에 그대로 사용하고 있다. LDAP 필터에 OR \n연산 등을 사용하여 의도치 않은 동작이 발생할 수 있다.\n안전하지 않은 코드의 예 C\n1: void LDAPInjection() { \n2:\nchar *filter = getenv(“Filter”);\n3:\nint error_code; \n4:\nLDAP *ld = NULL; \n5:\nLDAPMessage *result; \n// 외부에서 불러온 filter를 검증 없이 사용 \n6:\nerror_code = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter,\nNULL, 0, NULL, NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result);\n7: }\n",
+ "native_sha256": "7bf1e387ada724c35d0507d3e6b18ae7ef5e4e87afa384dd3abc57649a333a22",
+ "chars": 773,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

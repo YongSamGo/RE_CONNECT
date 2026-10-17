@@ -1,0 +1,41 @@
+Python 시큐어코딩 가이드
+144
+다. 코드예제
+다중 스레드 환경에서 파이썬의 클래스 변수는 스레드 간 서로 공유하게 된다. 클래스 변수에 값을 할당할 
+경우 서로 다른 세션 간에 데이터가 공유되어 의도하지 않은 데이터가 전달될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+from django.shortcuts import render
+class UserDescription:
+  user_name = ''
+  
+  def get_user_profile(self):
+    result = self.get_user_discription(UserDescription.user_name)
+    ......
+    return result
+  def show_user_profile(self, request):
+    # 클래스변수는 다른 세션과 공유되는 값이기 때문에 멀티스레드 
+    # 환경에서 공유되지 않아야 할 자원을 사용하는 경우 
+    # 다른 스레드 세션에 의해 데이터가 노출될 수 있다
+    UserDescription.user_name = request.POST.get(‘name’, ‘’)
+    self.user_profile = self.get_user_profile()
+    
+    return render(request, 'profile.html', {'profile':self.user_profile})
+공유가 금지된 변수는 인스턴스 변수로 선언하여 세션 간에 공유되지 않도록 한다.

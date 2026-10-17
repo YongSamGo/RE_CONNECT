@@ -1,0 +1,603 @@
+{
+ "lines": [
+  {
+   "text": "247",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "PHP에서는 libxml_disable_entity_loader 함수를 이용하여 외부 엔티티 사용을 비활성화 할 수 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1934509277344,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있다.",
+   "bbox": [
+    70.86001586914062,
+    130.81100463867188,
+    91.0118408203125,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    170.77108764648438,
+    308.9777526855469,
+    181.7930908203125
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:value = libxml_disable_entity_loader(true);",
+   "bbox": [
+    77.94000244140625,
+    190.17813110351562,
+    254.98306274414062,
+    200.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:$dom = new DOMDocument();",
+   "bbox": [
+    77.94000244140625,
+    204.57815551757812,
+    213.74501037597656,
+    214.4781494140625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:$dom -> loadXML($xml); ",
+   "bbox": [
+    77.94000244140625,
+    218.97817993164062,
+    190.42501831054688,
+    228.878173828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:libxml_disable_entity_loader($value);",
+   "bbox": [
+    77.94000244140625,
+    233.378173828125,
+    230.3151092529297,
+    243.27816772460938
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    285.8150939941406,
+    126.4169921875,
+    297.8930969238281
+   ],
+   "block": 31,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "XML 파일을 파싱하고 있는지 확인한 후(①) 신뢰할 수 없는 외부 입력 값의 파일에 대한 외부 엔티티를 ",
+   "bbox": [
+    70.86000061035156,
+    314.53118896484375,
+    459.1220397949219,
+    325.5531921386719
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "비활성화하는 코드가 없을 경우 취약하다고 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    331.5110778808594,
+    269.7456359863281,
+    342.5330810546875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    367.9910888671875,
+    301.42083740234375,
+    379.0130920410156
+   ],
+   "block": 34,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:public class G06 extends HttpServlet { ",
+   "bbox": [
+    78.66000366210938,
+    392.9181213378906,
+    249.3012237548828,
+    402.818115234375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    407.318115234375,
+    86.42540740966797,
+    417.2181091308594
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "private ServletFileUpload uploader = null; ",
+   "bbox": [
+    108.4195785522461,
+    407.318115234375,
+    280.16815185546875,
+    417.2181091308594
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    421.7181091308594,
+    86.4130630493164,
+    431.61810302734375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    108.40723419189453,
+    421.7181091308594,
+    116.34981536865234,
+    431.61810302734375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    436.11810302734375,
+    86.42539978027344,
+    446.0180969238281
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void doPost(HttpServletRequest request, HttpServletResponse response)",
+   "bbox": [
+    108.41957092285156,
+    436.11810302734375,
+    448.4716796875,
+    446.0180969238281
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    450.5180969238281,
+    86.42540740966797,
+    460.4180908203125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throws ServletException, IOException { ",
+   "bbox": [
+    108.4195785522461,
+    450.5180969238281,
+    271.2231750488281,
+    460.4180908203125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    464.9180908203125,
+    86.4130630493164,
+    474.8180847167969
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    108.40723419189453,
+    464.9180908203125,
+    116.34981536865234,
+    474.8180847167969
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    479.3180847167969,
+    86.41217803955078,
+    489.21807861328125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    108.40635681152344,
+    479.3180847167969,
+    125.98494720458984,
+    489.21807861328125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    493.71807861328125,
+    86.42539978027344,
+    503.6180725097656
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "List<FileItem> fileItemsList = uploader.parseRequest(request); ",
+   "bbox": [
+    108.4195785522461,
+    493.71807861328125,
+    361.9564208984375,
+    503.6180725097656
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    508.1180725097656,
+    86.41482543945312,
+    518.01806640625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); ",
+   "bbox": [
+    108.40900421142578,
+    508.1180725097656,
+    349.11602783203125,
+    518.01806640625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    522.51806640625,
+    91.39282989501953,
+    532.4180908203125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while (fileItemsIterator.hasNext()) { ",
+   "bbox": [
+    108.94673156738281,
+    522.51806640625,
+    253.36074829101562,
+    532.4180908203125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    78.66000366210938,
+    536.9180297851562,
+    91.40515899658203,
+    546.8180541992188
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileItem fileItem = fileItemsIterator.next(); ",
+   "bbox": [
+    108.95906066894531,
+    536.9180297851562,
+    283.69683837890625,
+    546.8180541992188
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    551.3179931640625,
+    91.40516662597656,
+    561.218017578125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File xmlFile = new File( ",
+   "bbox": [
+    108.95907592773438,
+    551.3179931640625,
+    209.91458129882812,
+    561.218017578125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    565.718017578125,
+    91.40515899658203,
+    575.6180419921875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "request.getServletContext().getAttribute(\"FILES_DIR\") + File.separator+ fileItem.getName());",
+   "bbox": [
+    108.95906829833984,
+    565.718017578125,
+    445.4665832519531,
+    575.6180419921875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "1:value = libxml_disable_entity_loader(true);\n2:$dom = new DOMDocument();\n3:$dom -> loadXML($xml); \n4:libxml_disable_entity_loader($value);",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    181.8930908203125,
+    254.98306274414062,
+    244.47816772460936
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "1:public class G06 extends HttpServlet { \n2:         private ServletFileUpload uploader = null; \n3:         ...\n4:         protected void doPost(HttpServletRequest request, HttpServletResponse response)\n5:         throws ServletException, IOException { \n6:         ...\n7:         try {\n8:         List<FileItem> fileItemsList = uploader.parseRequest(request); \n9:         Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); \n10:        while (fileItemsIterator.hasNext()) { \n11:        FileItem fileItem = fileItemsIterator.next(); \n12:        File xmlFile = new File( \n13:        request.getServletContext().getAttribute(\"FILES_DIR\") + File.separator+ fileItem.getName());",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    391.71812133789064,
+    448.4716796875,
+    576.8180419921875
+   ]
+  }
+ ],
+ "native": "247\n제4장구현단계 보안약점 진단\nPHP에서는 libxml_disable_entity_loader 함수를 이용하여 외부 엔티티 사용을 비활성화 할 수 \n있다.\n안전한 코드의 예 JAVA\n1:value = libxml_disable_entity_loader(true);\n2:$dom = new DOMDocument();\n3:$dom -> loadXML($xml); \n4:libxml_disable_entity_loader($value);\n라. 진단방법\nXML 파일을 파싱하고 있는지 확인한 후(①) 신뢰할 수 없는 외부 입력 값의 파일에 대한 외부 엔티티를 \n비활성화하는 코드가 없을 경우 취약하다고 판정한다.\n일반적인 진단의 예\n1:public class G06 extends HttpServlet { \n2:\nprivate ServletFileUpload uploader = null; \n3:\n...\n4:\nprotected void doPost(HttpServletRequest request, HttpServletResponse response)\n5:\nthrows ServletException, IOException { \n6:\n...\n7:\ntry {\n8:\nList<FileItem> fileItemsList = uploader.parseRequest(request); \n9:\nIterator<FileItem> fileItemsIterator = fileItemsList.iterator(); \n10:\nwhile (fileItemsIterator.hasNext()) { \n11:\nFileItem fileItem = fileItemsIterator.next(); \n12:\nFile xmlFile = new File( \n13:\nrequest.getServletContext().getAttribute(\"FILES_DIR\") + File.separator+ fileItem.getName());\n",
+ "native_sha256": "7c1b8c0e28653b3f22b1e492ed1365536cd8d521cccdb4cf67246787f8938ae2",
+ "chars": 948,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,23 @@
+370
+9. 취약한 비밀번호 허용
+가. 개요
+사용자에게 강한 비밀번호 조합규칙을 요구하지 않으면, 사용자 계정이 취약하게 된다. 안전한 비밀
+번호를 생성하기 위해서는 한국인터넷진흥원 「암호이용안내서」의 비밀번호 설정규칙을 적용해야 한다.
+나. 보안대책
+비밀번호 생성 시 강한 조건 검증을 수행한다. 비밀번호(비밀번호)는 숫자와 영문자, 특수문자 등을 
+혼합하여 사용하고, 주기적으로 변경하여 사용하도록 해야 한다.
+다. 코드예제
+가입자가 입력한 비밀번호에 대한 복잡도 검증 없이 가입 승인 처리를 수행하고 있다.
+안전하지 않은 코드의 예 JAVA
+1: String id = request.getParameter("id"); 
+2: String pass = request.getParameter("pass"); 
+3: UserVo userVO = new UserVo(id, pass); 
+4: …… 
+// 비밀번호의 자릿수, 특수문자 포함 여부 등 복잡도를 체크하지 않고 등록
+5: String result = registerDAO.register(userVO);
+사용자 계정을 보호하기 위해 가입 시, 비밀번호 복잡도 검증 후 가입 승인처리를 수행한다.
+안전한 코드의 예 JAVA
+1: String id = request.getParameter("id"); 
+2: String pass = request.getParameter("pass"); 
+//비밀번호에 자릿수, 특수문자 포함여부등의 복잡도를 체크하고 등록하게 한다.
+3: Pattern pattern = Pattern.compile("((?=.*[a-zA-Z])(?=.*[0-9@#$%]). {9, })");

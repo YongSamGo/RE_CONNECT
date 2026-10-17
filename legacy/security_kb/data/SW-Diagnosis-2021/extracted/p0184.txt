@@ -1,0 +1,36 @@
+184
+안전한 코드의 예 Hibernate
+4: String name = request.getParameter("name");
+5: //1. 파라미터 바인딩을 위해 명명된 파라미터 변수를 사용한다.
+6: Query query = session.createQuery("from Student where studentName = :name ");
+7: //2. 파라미터 바인딩을 사용하여 외부 입력값에 의해 쿼리 구조 변경을 못하게 사용하였다.
+8: query.setParameter("name", name);
+다음 C# 코드는 외부 입력값을 SQL 쿼리에 직접 사용하고 있어, 쿼리의 구조가 변경될 위험이 
+있습니다.
+안전하지 않은 코드의 예 C#
+1: public void ButtonClickBad(object sender, EventArgs e)
+2: { 
+3:
+string connect = "MyConnString"; 
+4:
+string usrinput = Request["ID"];
+5: // 외부로부터 입력받은 값을 SQL 쿼리에 직접 사용하는 것은 안전하지 않다.
+6:
+string query = "Select * From Products Where ProductID = " + usrinput;
+7:
+using (var conn = new SqlConnection(connect)) 
+8:
+{ 
+9:
+using (var cmd = new SqlCommand(query, conn)) 
+10:
+{
+11:
+conn.Open();
+12:
+cmd.ExecuteReader(); /* BUG */ 
+13:
+}
+14:
+}
+15: }

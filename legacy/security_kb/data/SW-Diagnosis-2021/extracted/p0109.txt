@@ -1,0 +1,39 @@
+109
+제3장분석․ 설계단계 보안항목 진단
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+입력데이터 검증 및 표현
+서버사이드 요청 위조
+보안기능
+적절한 인증 없는 중요기능 허용
+보안기능
+부적절한 인증서 유효성 검증
+API 오용
+DNS lookup에 의존한 보안 결정
+마. 참고자료
+①CWE‐306 Missing Authentication for Critical Function, MITRE,
+http://cwe.mitre.org/data/definitions/306.html
+②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,
+https://www.owasp.org/index.php/ Top_10_2013
+③Authentication Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Authentication_Cheat_Sheet
+④2016 OWASP Application Security Verification Standard, OWASP, Authentication 
+Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_Project 
+⑤Digital Authentication - The Basics, Dawn M. Turnet,
+http://www.cryptomathic.com/news-events/blog/digi-tal-authentication-the-basics
+⑥일회용 비밀번호(OTP) 알고리즘 프로파일, 한국정보통신기술협회,
+http://www.tta.or.kr/data/ttas_view.jsp?rn=1&rn1=Y&rn2=&rn3=&pk_num=TTAK
+.KO-12.0193&nowSu=4&standard_no=&kor_standard=otp&-publish_date=&secti
+on_code=&acode1=&acode2=&scode1=&scode2=&order=publish_date&by=desc
+&to-talSu=14
+⑦홍채 등 생채인식 기반 간편 공인인증 가이드라인, 한국인터넷진흥원,
+http://www.kisa.or.kr/notice/press_View.jsp?mode=view&p_No=8&b_No=8&d_
+No=1484
+⑧Spring Security - Authentication, eGovFrame 표준프레임워크 포털,
+http://www.egovframe.go.kr/wiki/doku.
+php?id=egovframework:rte:fdl:server_security:authentication
+⑨ASP.NET Authentication, Microsoft,
+http://msdn.microsoft.com/en-us/library/eeyk640h.aspx

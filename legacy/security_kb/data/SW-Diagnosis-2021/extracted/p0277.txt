@@ -1,0 +1,34 @@
+277
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+1:protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws 
+IOException { 
+2:
+// 사용자 입력값(url)을 검증없이 사용하여 안전하지 않다.
+3:
+URL url = new URL(req.getParameter("url"));
+4:
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+5:}
+다음은 사전에 정의된 URL 목록을 맵(Map) 객체에 정의하고 키 값으로 입력받아 키에 매칭되는 
+URL만 사용할 수 있으므로 URL값을 임의로 조작할 수 없다.
+안전한 코드의 예 JAVA
+1:public class Connect { 
+2:
+// key, value 형식으로 URL의 리스트를 작성한다.
+3:
+private Map<String, URL> urlMap;
+4:
+protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws 
+IOException { 
+5:
+// 사용자에게 urlMap의 key를 입력받아 urlMap에서 URL값을 참조한다.
+6:
+URL url = urlMap.get(req.getParameter("url"));
+7:
+// urlMap에서 참조한 값으로 Connection을 만들어 접속한다.
+8:
+HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+9:
+}
+10: }

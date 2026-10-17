@@ -1,0 +1,758 @@
+{
+ "lines": [
+  {
+   "text": "472",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    120.79122924804688,
+    323.5413513183594,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    96.26521301269531,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Name = ctx.Request.QueryString[\"name\"]",
+   "bbox": [
+    131.45941162109375,
+    140.19808959960938,
+    299.34674072265625,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    96.24405670166016,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}; ",
+   "bbox": [
+    122.61854553222656,
+    154.59811401367188,
+    130.71629333496094,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    96.26522827148438,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.Response.ContentType = \"application/json\";",
+   "bbox": [
+    122.63972473144531,
+    168.99813842773438,
+    314.2422180175781,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.58000183105469,
+    183.39816284179688,
+    96.26522827148438,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.Response.Write(JsonConvert.SerializeObject(json));",
+   "bbox": [
+    122.63972473144531,
+    183.39816284179688,
+    341.4416809082031,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.58000183105469,
+    197.79818725585938,
+    96.26522827148438,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    113.87995910644531,
+    197.79818725585938,
+    116.61270141601562,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.58000183105469,
+    226.59817504882812,
+    96.26522827148438,
+    236.4981689453125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public bool IsReusable",
+   "bbox": [
+    113.87996673583984,
+    226.59817504882812,
+    205.9495391845703,
+    236.4981689453125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.58000183105469,
+    240.9981689453125,
+    96.26522827148438,
+    250.89816284179688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    113.87995910644531,
+    240.9981689453125,
+    116.61270141601562,
+    250.89816284179688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    83.58000183105469,
+    255.39816284179688,
+    96.26522827148438,
+    265.29815673828125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "get { return false; }",
+   "bbox": [
+    122.63972473144531,
+    255.39816284179688,
+    203.91146850585938,
+    265.29815673828125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    83.58000183105469,
+    269.79815673828125,
+    96.26522827148438,
+    279.6981506347656
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    113.87995910644531,
+    269.79815673828125,
+    116.61270141601562,
+    279.6981506347656
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    83.58000183105469,
+    284.1981506347656,
+    96.26522827148438,
+    294.09814453125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.05937194824219,
+    284.1981506347656,
+    107.7921142578125,
+    294.09814453125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "해당 내용을 지역 변수나 세션변수를 이용하여 처리하여야 한다.",
+   "bbox": [
+    76.5,
+    316.57110595703125,
+    320.8194885253906,
+    327.5931091308594
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    226.67999267578125,
+    356.5911865234375,
+    309.04241943359375,
+    367.6131896972656
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: class DataLeakBetweenSessions : IHttpHandler ",
+   "bbox": [
+    83.58000183105469,
+    375.99810791015625,
+    291.9463806152344,
+    385.8981018066406
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    390.3981018066406,
+    91.34540557861328,
+    400.298095703125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    104.51986694335938,
+    390.3981018066406,
+    107.25260925292969,
+    400.298095703125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    404.798095703125,
+    91.34540557861328,
+    414.6980895996094
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public void ProcessRequest(HttpContext ctx) ",
+   "bbox": [
+    113.27963256835938,
+    404.798095703125,
+    298.4238586425781,
+    414.6980895996094
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    419.1980895996094,
+    91.34540557861328,
+    429.09808349609375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    113.27963256835938,
+    419.1980895996094,
+    116.01237487792969,
+    429.09808349609375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//지역 변수나 세션변수를 선언해서 사용해야 합니다.",
+   "bbox": [
+    87.9603271484375,
+    433.59808349609375,
+    272.3551940917969,
+    443.4980773925781
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    447.9980773925781,
+    91.34540557861328,
+    457.8980712890625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.Session[\"id\"] = ctx.Request.QueryString[\"id\"];",
+   "bbox": [
+    170.52001953125,
+    447.9980773925781,
+    365.86090087890625,
+    457.8980712890625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58001708984375,
+    476.7980651855469,
+    91.34541320800781,
+    486.69805908203125
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "var json = new JSONResonse() ",
+   "bbox": [
+    130.91995239257812,
+    476.7980651855469,
+    263.68194580078125,
+    486.69805908203125
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58001708984375,
+    491.19805908203125,
+    91.34542083740234,
+    501.0980529785156
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    130.91995239257812,
+    491.19805908203125,
+    133.65269470214844,
+    501.0980529785156
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58001708984375,
+    505.5980529785156,
+    91.34541320800781,
+    515.498046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Success = ctx.Request.QueryString[\"name\"] != null,",
+   "bbox": [
+    139.67970275878906,
+    505.5980529785156,
+    350.24359130859375,
+    515.498046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58001708984375,
+    519.998046875,
+    91.34541320800781,
+    529.8980712890625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Name = ctx.Request.QueryString[\"name\"]",
+   "bbox": [
+    139.67970275878906,
+    519.998046875,
+    307.547607421875,
+    529.8980712890625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58001708984375,
+    534.3980102539062,
+    96.26524353027344,
+    544.2980346679688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "};",
+   "bbox": [
+    131.45944213867188,
+    534.3980102539062,
+    137.00514221191406,
+    544.2980346679688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58001708984375,
+    563.197998046875,
+    96.26522827148438,
+    573.0980224609375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.Response.ContentType = \"application/json\";",
+   "bbox": [
+    127.07910919189453,
+    563.197998046875,
+    318.595947265625,
+    573.0980224609375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.58001708984375,
+    577.5980224609375,
+    96.25641632080078,
+    587.498046875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.Response.Write(JsonConvert.SerializeObject(json));",
+   "bbox": [
+    127.07029724121094,
+    577.5980224609375,
+    345.9391174316406,
+    587.498046875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "10:               Name = ctx.Request.QueryString[\"name\"]\n11:           }; \n12:           ctx.Response.ContentType = \"application/json\";\n13:           ctx.Response.Write(JsonConvert.SerializeObject(json));\n14:        }\n15:        public bool IsReusable\n16:        {\n17:           get { return false; }\n18:        }\n19:    }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    131.913232421875,
+    341.4416809082031,
+    295.29814453125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+   ],
+   "text": "1: class DataLeakBetweenSessions : IHttpHandler \n2:      {\n3:         public void ProcessRequest(HttpContext ctx) \n4:         {\n//지역 변수나 세션변수를 선언해서 사용해야 합니다.\n5:                                  ctx.Session[\"id\"] = ctx.Request.QueryString[\"id\"];\n6:                 var json = new JSONResonse() \n7:                 {\n8:                     Success = ctx.Request.QueryString[\"name\"] != null,\n9:                     Name = ctx.Request.QueryString[\"name\"]\n10:               };\n11:             ctx.Response.ContentType = \"application/json\";\n12:             ctx.Response.Write(JsonConvert.SerializeObject(json));",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    367.71318969726565,
+    365.86090087890625,
+    588.698046875
+   ]
+  }
+ ],
+ "native": "472\n안전하지 않은 코드의 예 C#\n10:\nName = ctx.Request.QueryString[\"name\"]\n11:\n}; \n12:\nctx.Response.ContentType = \"application/json\";\n13:\nctx.Response.Write(JsonConvert.SerializeObject(json));\n14:\n}\n15:\npublic bool IsReusable\n16:\n{\n17:\nget { return false; }\n18:\n}\n19:\n}\n해당 내용을 지역 변수나 세션변수를 이용하여 처리하여야 한다.\n안전한 코드의 예 C#\n1: class DataLeakBetweenSessions : IHttpHandler \n2:\n{\n3:\npublic void ProcessRequest(HttpContext ctx) \n4:\n{\n//지역 변수나 세션변수를 선언해서 사용해야 합니다.\n5:\nctx.Session[\"id\"] = ctx.Request.QueryString[\"id\"];\n6:\nvar json = new JSONResonse() \n7:\n{\n8:\nSuccess = ctx.Request.QueryString[\"name\"] != null,\n9:\nName = ctx.Request.QueryString[\"name\"]\n10:\n};\n11:\nctx.Response.ContentType = \"application/json\";\n12:\nctx.Response.Write(JsonConvert.SerializeObject(json));\n",
+ "native_sha256": "0f296900734f952295e5cd8326a75d0a84fbb28c38d9f9830910230920146e40",
+ "chars": 749,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

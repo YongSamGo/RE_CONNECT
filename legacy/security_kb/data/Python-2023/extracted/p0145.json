@@ -1,0 +1,263 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제5절 코드오류",
+   "bbox": [
+    315.39373779296875,
+    46.76085662841797,
+    498.9757385253906,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "139",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    119.392578125,
+    94.51471710205078,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    134.7331085205078,
+    94.51471710205078,
+    143.24232482910156
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    149.9538116455078,
+    94.51471710205078,
+    158.46302795410156
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "# with 절을 빠져나갈 때 f를 시스템에 반환",
+   "bbox": [
+    104.41199493408203,
+    118.89088439941406,
+    261.7990417480469,
+    127.90178680419922
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "with open('config.cfg') as f:",
+   "bbox": [
+    104.41199493408203,
+    134.23141479492188,
+    212.59242248535156,
+    143.24232482910156
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  print(f.read())",
+   "bbox": [
+    104.41199493408203,
+    149.9538116455078,
+    162.79371643066406,
+    158.46302795410156
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    205.25167846679688,
+    119.12395477294922,
+    215.79830932617188
+   ],
+   "block": 12,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-404: Improper Resource Shutdown or Release, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    227.11196899414062,
+    328.2801208496094,
+    236.10055541992188
+   ],
+   "block": 13,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/404.html",
+   "bbox": [
+    77.32001495361328,
+    242.4525146484375,
+    267.01031494140625,
+    251.44110107421875
+   ],
+   "block": 14,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Unreleased Resource, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    262.7068176269531,
+    204.56927490234375,
+    271.6954345703125
+   ],
+   "block": 15,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/vulnerabilities/Unreleased_Resource",
+   "bbox": [
+    77.32001495361328,
+    278.0473327636719,
+    369.9519348144531,
+    287.03594970703125
+   ],
+   "block": 16,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "➂ The With statement, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    297.771728515625,
+    284.5250244140625,
+    307.290283203125
+   ],
+   "block": 17,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-with_stmt",
+   "bbox": [
+    77.32001495361328,
+    313.6422119140625,
+    497.6693420410156,
+    322.6308288574219
+   ],
+   "block": 18,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "1: # with 절을 빠져나갈 때 f를 시스템에 반환\n2: with open('config.cfg') as f:\n3:   print(f.read())",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    108.3946548461914,
+    261.7990417480469,
+    159.66302795410155
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제5절 코드오류\n139\n안전한 코드 예시\n1:\n2:\n3:\n# with 절을 빠져나갈 때 f를 시스템에 반환\nwith open('config.cfg') as f:\n  print(f.read())\n라. 참고자료\n① CWE-404: Improper Resource Shutdown or Release, MITRE,\nhttps://cwe.mitre.org/data/definitions/404.html\n② Unreleased Resource, OWASP,\nhttps://owasp.org/www-community/vulnerabilities/Unreleased_Resource\n➂ The With statement, Python Software Foundation,\nhttps://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-with_stmt\n",
+ "native_sha256": "9632cb45c78c0191f04105cc8dc3c5ab21434fda51a3187d614f7d62fe7f9571",
+ "chars": 485,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

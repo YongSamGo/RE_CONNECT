@@ -1,0 +1,55 @@
+412
+일반적인 진단의 예
+12:
+} catch(IOException e) {
+13:
+System.err.println(“IOException occured”);}
+14:
+}
+15: }
+16: 
+17: class FileDeleteThread extends Thread { 
+18:
+public void run() { 
+19:
+File f = new File(“Test_367.txt”); ····················································································①
+20:
+if (f.exists()) { 
+21:
+// 만약 파일이 존재하면 파일을 삭제함 
+22:
+f.delete();
+23:
+}
+24:
+}
+25: }
+26: 
+27: public class U367 { 
+28:
+public static void main(String[] args) { 
+29:
+// 파일의 읽기와 파일을 삭제하는 것을 동시에 수행한다. 
+30:
+FileAccessThread fileAccessThread = new FileAccessThread(); ②
+31:
+FileDeleteThread fileDeleteThread = new FileDeleteThread();
+32:
+fileAccessThread.start();
+33:
+fileDeleteThread.start();
+34:
+}
+35: }
+다음의 예제와 같이 검사시점과 사용시점이 달라 발생하는 경쟁조건을 가정해 볼 수 있다.
+일반적인 진단의 예
+1:
+File f = new File(“toctou.txt”);
+2:
+if (!f.exists()) {
+3:
+FileOutputStream fos = null;
+4:
+try {
+5:
+fos = new FileOutputStream(“toctou.txt”)

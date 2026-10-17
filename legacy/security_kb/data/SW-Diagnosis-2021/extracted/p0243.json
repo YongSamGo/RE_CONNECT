@@ -1,0 +1,404 @@
+{
+ "lines": [
+  {
+   "text": "243",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    117.31112670898438,
+    291.27935791015625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: String action = nvl(request.getAttribute(“action”)); ",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    294.7696533203125,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: logger.debug(“>>> redirectCode - “",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    232.70648193359375,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ code); 6:",
+   "bbox": [
+    90.78015899658203,
+    171.03823852539062,
+    137.17506408691406,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "logger.debug(“>>> redirectAction –",
+   "bbox": [
+    159.10931396484375,
+    171.01014709472656,
+    296.38726806640625,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.939798355102539,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "“ + action); 7: ………",
+   "bbox": [
+    90.77999877929688,
+    185.43807983398438,
+    177.85049438476562,
+    195.33807373046875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.65984344482422,
+    199.83810424804688,
+    86.42524719238281,
+    209.73809814453125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "se.sendRedirect(CP + action + “?redirectCode=” + code); ",
+   "bbox": [
+    121.61944580078125,
+    199.83810424804688,
+    360.0274353027344,
+    209.73809814453125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.65984344482422,
+    214.23812866210938,
+    86.42523956298828,
+    224.13812255859375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return;",
+   "bbox": [
+    130.43914794921875,
+    214.23812866210938,
+    156.9837188720703,
+    224.13812255859375
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.65984344482422,
+    228.63812255859375,
+    91.37150573730469,
+    238.53811645507812
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "%>",
+   "bbox": [
+    122.12544250488281,
+    228.63812255859375,
+    133.57652282714844,
+    238.53811645507812
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴하므로 ",
+   "bbox": [
+    70.86000061035156,
+    261.0111083984375,
+    459.1338195800781,
+    272.0331115722656
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 URL이다.",
+   "bbox": [
+    70.86001586914062,
+    278.0511169433594,
+    138.1157989501953,
+    289.0731201171875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    314.53118896484375,
+    291.27935791015625,
+    325.5531921386719
+   ],
+   "block": 34,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    339.45819091796875,
+    86.42540740966797,
+    349.3581848144531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: response.sendRedirect(request.getContextPath() + “/login.do”);",
+   "bbox": [
+    95.21954345703125,
+    339.45819091796875,
+    362.9058532714844,
+    349.3581848144531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    391.89508056640625,
+    126.4169921875,
+    403.97308349609375
+   ],
+   "block": 36,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-601 URL Redirection to Untrusted Site, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    415.57110595703125,
+    335.8472595214844,
+    426.5931091308594
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/601.html",
+   "bbox": [
+    102.23983001708984,
+    432.5509948730469,
+    308.7279968261719,
+    443.572998046875
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Unvalidated Redirects and Forwards Cheat Sheet, OWASP ",
+   "bbox": [
+    85.86000061035156,
+    454.5709533691406,
+    360.0838928222656,
+    465.59295654296875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat",
+   "bbox": [
+    102.23983001708984,
+    471.55084228515625,
+    456.2706604003906,
+    482.5728454589844
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "_Sheet",
+   "bbox": [
+    102.23983764648438,
+    488.5908508300781,
+    132.6630096435547,
+    499.61285400390625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7
+   ],
+   "text": "4: String action = nvl(request.getAttribute(“action”)); \n5: logger.debug(“>>> redirectCode - “\n+ code); 6:         logger.debug(“>>> redirectAction –\n“ + action); 7: ………",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    296.38726806640625,
+    196.53807373046874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "text": "8:               se.sendRedirect(CP + action + “?redirectCode=” + code); \n9:                   return;\n10:             %>",
+   "language": "text",
+   "label": "“ + action); 7: ………",
+   "bbox": [
+    78.65984344482422,
+    198.6381042480469,
+    360.0274353027344,
+    239.7381164550781
+   ]
+  }
+ ],
+ "native": "243\n제4장구현단계 보안약점 진단\n정탐코드의 예\n4: String action = nvl(request.getAttribute(“action”)); \n5: logger.debug(“>>> redirectCode - “\n+ code); 6:\nlogger.debug(“>>> redirectAction –\n“ + action); 7: ………\n8:\nse.sendRedirect(CP + action + “?redirectCode=” + code); \n9:\nreturn;\n10:\n%>\n다음의 예제에서 HttpRequest.getContextPath() 함수는 내장함수로 context path를 리턴하므로 \n안전한 URL이다.\n오탐코드의 예\n1:\n1: response.sendRedirect(request.getContextPath() + “/login.do”);\n마. 참고자료\n[1] CWE-601 URL Redirection to Untrusted Site, MITRE,\nhttp://cwe.mitre.org/data/definitions/601.html\n[2] Unvalidated Redirects and Forwards Cheat Sheet, OWASP \nhttps://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat\n_Sheet\n",
+ "native_sha256": "ad33bf6346b620241cf325dae3936c549392452ba14270ea92656f956f89a1de",
+ "chars": 673,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

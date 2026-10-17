@@ -1,0 +1,44 @@
+240
+안전하지 않은 코드의 예 JAVA
+11:
+rs.next();
+12:
+if ("0".equals(rs.getString(1)) && "01AD".equals(bn)) { 
+13:
+response.sendRedirect(rd);
+14:
+return;
+15:
+}
+다음의 예제와 같이, 외부로 연결할 URL과 도메인들은 화이트 리스트를 작성한 후, 그 중에서 선택 
+하도록 함으로써 안전하지 않은 사이트로의 접근을 차단할 수 있다.
+안전한 코드의 예 JAVA
+1: //이동 할 수 있는 URL범위를 제한하여 피싱 사이트등으로 이동 못하도록 한다.
+2: String allowedUrl[] = { "/main.do", "/login.jsp", "list.do" };
+3: ......
+4: String rd = request.getParameter("redirect");
+5:
+try { 
+6:
+rd = allowedUrl[Integer.parseInt(rd)]; 
+7:
+} catch(NumberFormatException e) { 
+8:
+return "잘못된 접근입니다.";
+9:
+} catch(ArrayIndexOutOfBoundsException e) {
+10:
+return "잘못된 입력입니다.";
+11:}
+12:if (id.length() > 0) { 
+13:...... 
+14:
+if ("0".equals(rs.getString(1)) && "01AD".equals(bn)) {
+15:
+response.sendRedirect(rd);
+16:
+return;
+17:
+}
+외부 입력 값으로 받은 URL로 검증 없이 연결되는 경우, 공격자의 입력에 따라 피싱사이트 등으로 
+연결될 수 있다.

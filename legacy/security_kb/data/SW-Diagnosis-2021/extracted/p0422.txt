@@ -1,0 +1,30 @@
+422
+오류 메시지로 환경, 사용자, 관련 데이터 등의 내부 정보가 유출될 경우 취약하다.
+정탐코드의 예
+1: <%@ page language=”java” contentType=”text/html; charset=UTF-8” buffer=”-
+2: none”%> 
+3: <%@page import=”egovframework.com.utl.fda.ucc.service.EgovUnitCalcUtil” %>
+4: <%
+5:
+String sCmd = request.getParameter(“cmd”) == null ? “” : (String)
+request.getParam-
+6: eter(“cmd”);
+7:
+double nResult=0.0; 
+8:
+try {
+9:
+if(!sCmd.equals(“”)) {
+10:
+EgovUnitCalcUtil egovUnitCalcUtil= new EgovUnitCalcUtil();
+정탐코드의 예
+11:
+….
+12: }
+13:
+…… 
+14: }
+15:} catch(Exception e) { 
+16: e.printStackTrace(); 
+17:} 
+18:%>

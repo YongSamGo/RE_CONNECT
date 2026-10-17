@@ -1,0 +1,37 @@
+445
+제4장구현단계 보안약점 진단
+2. 부적절한 자원 해제
+가. 개요
+프로그램의 자원, 예를 들면 열린 파일디스크립터(Open File Descriptor), 힙 메모리(Heap 
+Memory), 소켓(Socket) 등은 유한한 자원이다. 이러한 자원을 할당받아 사용한 후, 더 이상 사용하지 
+않는 경우에는 적절히 반환하여야 하는데, 프로그램 오류 또는 에러로 사용이 끝난 자원을 반환하지 
+못하는 경우이다.
+나. 보안대책
+자원을 획득하여 사용한 다음에는 반드시 자원을 해제하여 반환한다.
+다. 코드예제
+try구문 내 처리 중 오류가 발생할 경우, close()메서드가 실행되지 않아 사용한 자원이 반환되지 
+않을 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: InputStream in = null;
+2: OutputStream out = null; 
+3:
+try { 
+4:
+in = new FileInputStream(inputFile);
+5:
+out = new FileOutputStream(outputFile);
+6:
+...
+7:
+FileCopyUtils.copy(fis, os); 
+8:
+//자원반환 실행 전에 오류가 발생할 경우 자원이 반환되지 않으며, 할당된 모든 자원을 반환해야 
+한다.
+9:
+in.close();
+10:
+out.close();
+11:} catch (IOException e) { 
+12:
+logger.error(e); 
+13:}

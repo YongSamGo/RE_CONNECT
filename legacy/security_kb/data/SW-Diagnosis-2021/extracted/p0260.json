@@ -1,0 +1,665 @@
+{
+ "lines": [
+  {
+   "text": "260",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    117.31112670898438,
+    307.0608215332031,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.03102111816406,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.naming.directory.DirContext ctx = new InitialDirContext(env); ",
+   "bbox": [
+    100.82516479492188,
+    142.23818969726562,
+    374.3744812011719,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.29998779296875,
+    156.63821411132812,
+    92.03541564941406,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) ",
+   "bbox": [
+    100.82955932617188,
+    156.63821411132812,
+    398.55474853515625,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.lookup(“x- qj/personnel”); ",
+   "bbox": [
+    100.8594970703125,
+    171.03823852539062,
+    222.96376037597656,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.29995727539062,
+    185.43826293945312,
+    92.06535339355469,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.xml.xquery.XQConnection conn = xqds.getConnection(); ",
+   "bbox": [
+    100.8594970703125,
+    185.43826293945312,
+    353.4188232421875,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.29995727539062,
+    199.83828735351562,
+    97.04512786865234,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: String es = “doc(‘users.xml’)/userlist/user[uname=’” + name + “’]”; ·························②",
+   "bbox": [
+    84.29995727539062,
+    214.23831176757812,
+    453.3656921386719,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: // 입력값이 Xquery의 인자로 사용 ",
+   "bbox": [
+    84.29995727539062,
+    228.6383056640625,
+    233.7449493408203,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: XQPreparedExpression expr = conn.prepareExpression(es); ",
+   "bbox": [
+    84.29995727539062,
+    243.03829956054688,
+    343.2406921386719,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: XQResultSequence result = expr.executeQuery(); ···························································①",
+   "bbox": [
+    84.29995727539062,
+    257.43829345703125,
+    453.3531494140625,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: while (result.next()) { ",
+   "bbox": [
+    84.29994201660156,
+    271.8382873535156,
+    189.56871032714844,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16: String str = result.getAtomicValue(); ",
+   "bbox": [
+    84.29994201660156,
+    286.23828125,
+    251.7042236328125,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: if (str.indexOf(‘>’) < 0) { ",
+   "bbox": [
+    84.29994201660156,
+    300.6382751464844,
+    201.5928497314453,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: System.out.println(str); ",
+   "bbox": [
+    84.29994201660156,
+    315.03826904296875,
+    195.40182495117188,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19: }",
+   "bbox": [
+    84.29994201660156,
+    329.4382629394531,
+    104.13261413574219,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20: …",
+   "bbox": [
+    84.29994201660156,
+    343.8382568359375,
+    109.3336410522461,
+    353.7382507324219
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 코드에서는 외부의 입력(name)값을 executeQuery를 사용한 쿼리생성의 문자열 인자 생성에 ",
+   "bbox": [
+    76.5,
+    376.2110900878906,
+    464.83624267578125,
+    387.23309326171875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용하고 있다. 만일 다음과 something’ or ‘=’1 을 name의 값으로 전달하면 다음과 같은 쿼리 ",
+   "bbox": [
+    76.5,
+    393.2510986328125,
+    464.7640075683594,
+    404.2731018066406
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "문을 수행할 수 있으며, 이로써 파일 내의 모든 값을 출력할 수 있게 되어 취약하다.",
+   "bbox": [
+    76.5,
+    410.2309875488281,
+    392.1618957519531,
+    421.25299072265625
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "(doc(‘users.xml’)/userlist/user[uname=’something’ or ‘=’)",
+   "bbox": [
+    142.85971069335938,
+    437.23089599609375,
+    395.6213073730469,
+    448.2528991699219
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    473.7110900878906,
+    296.91937255859375,
+    484.73309326171875
+   ],
+   "block": 34,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    498.6380920410156,
+    92.0654067993164,
+    508.5380859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    100.85955047607422,
+    498.6380920410156,
+    108.79331970214844,
+    508.5380859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    513.0380859375,
+    92.04512786865234,
+    522.9381103515625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부로부터 입력을 받음 ",
+   "bbox": [
+    100.83927154541016,
+    513.0380859375,
+    201.28695678710938,
+    522.9381103515625
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    527.4380493164062,
+    92.06539916992188,
+    537.3380737304688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String name = props.getProperty(“name”); ",
+   "bbox": [
+    100.85954284667969,
+    527.4380493164062,
+    275.6598205566406,
+    537.3380737304688
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30000305175781,
+    541.8380737304688,
+    92.0662841796875,
+    551.7380981445312
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Hashtable env = new Hashtable(); ",
+   "bbox": [
+    100.8613052368164,
+    541.8380737304688,
+    244.5144805908203,
+    551.7380981445312
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    556.238037109375,
+    92.06539916992188,
+    566.1380615234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);",
+   "bbox": [
+    100.85954284667969,
+    556.238037109375,
+    436.9673767089844,
+    566.1380615234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.29998779296875,
+    570.6380615234375,
+    92.06539154052734,
+    580.5380859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”); ",
+   "bbox": [
+    100.85953521728516,
+    570.6380615234375,
+    374.3762512207031,
+    580.5380859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30001831054688,
+    585.0380249023438,
+    92.03103637695312,
+    594.9380493164062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.naming.directory.DirContext ctx = new InitialDirContext(env); ",
+   "bbox": [
+    100.82518005371094,
+    585.0380249023438,
+    374.37451171875,
+    594.9380493164062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30001831054688,
+    599.4380493164062,
+    92.03544616699219,
+    609.3380737304688
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "javax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) ",
+   "bbox": [
+    100.82958984375,
+    599.4380493164062,
+    398.5548095703125,
+    609.3380737304688
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ctx.lookup(“x- qj/personnel”);",
+   "bbox": [
+    100.85955810546875,
+    613.8380126953125,
+    220.49288940429688,
+    623.738037109375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "7:    javax.naming.directory.DirContext ctx = new InitialDirContext(env); \n8:    javax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) \nctx.lookup(“x- qj/personnel”); \n9:    javax.xml.xquery.XQConnection conn = xqds.getConnection(); \n10:\n11: String es = “doc(‘users.xml’)/userlist/user[uname=’” + name + “’]”; ·························②\n12: // 입력값이 Xquery의 인자로 사용 \n13: XQPreparedExpression expr = conn.prepareExpression(es); \n14: XQResultSequence result = expr.executeQuery(); ···························································①\n15: while (result.next()) { \n16: String str = result.getAtomicValue(); \n17: if (str.indexOf(‘>’) < 0) { \n18: System.out.println(str); \n19: }\n20: …",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.29994201660156,
+    141.03818969726564,
+    453.3656921386719,
+    354.93825073242186
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41
+   ],
+   "text": "1:    …\n2:    // 외부로부터 입력을 받음 \n3:    String name = props.getProperty(“name”); \n4:    Hashtable env = new Hashtable(); \n5:    env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);\n6:    env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”); \n7:    javax.naming.directory.DirContext ctx = new InitialDirContext(env); \n8:    javax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) \nctx.lookup(“x- qj/personnel”);",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    497.43809204101564,
+    436.9673767089844,
+    624.938037109375
+   ]
+  }
+ ],
+ "native": "260\n일반적인 진단의 예\n7:\njavax.naming.directory.DirContext ctx = new InitialDirContext(env); \n8:\njavax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) \nctx.lookup(“x- qj/personnel”); \n9:\njavax.xml.xquery.XQConnection conn = xqds.getConnection(); \n10:\n11: String es = “doc(‘users.xml’)/userlist/user[uname=’” + name + “’]”; ·························②\n12: // 입력값이 Xquery의 인자로 사용 \n13: XQPreparedExpression expr = conn.prepareExpression(es); \n14: XQResultSequence result = expr.executeQuery(); ···························································①\n15: while (result.next()) { \n16: String str = result.getAtomicValue(); \n17: if (str.indexOf(‘>’) < 0) { \n18: System.out.println(str); \n19: }\n20: …\n다음의 코드에서는 외부의 입력(name)값을 executeQuery를 사용한 쿼리생성의 문자열 인자 생성에 \n사용하고 있다. 만일 다음과 something’ or ‘=’1 을 name의 값으로 전달하면 다음과 같은 쿼리 \n문을 수행할 수 있으며, 이로써 파일 내의 모든 값을 출력할 수 있게 되어 취약하다.\n(doc(‘users.xml’)/userlist/user[uname=’something’ or ‘=’)\n정탐코드의 예\n1:\n…\n2:\n// 외부로부터 입력을 받음 \n3:\nString name = props.getProperty(“name”); \n4:\nHashtable env = new Hashtable(); \n5:\nenv.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);\n6:\nenv.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”); \n7:\njavax.naming.directory.DirContext ctx = new InitialDirContext(env); \n8:\njavax.xml.xquery.XQDataSource xqds = (javax.xml.xquery.XQDataSource) \nctx.lookup(“x- qj/personnel”);\n",
+ "native_sha256": "5f46bcc70a26ee920ef4c74619ba7d9cbf9dbda58e76ae481c8c14530ab09564",
+ "chars": 1377,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

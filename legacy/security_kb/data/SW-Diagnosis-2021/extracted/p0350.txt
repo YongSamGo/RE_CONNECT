@@ -1,0 +1,36 @@
+350
+6. 하드코드된 중요정보
+가. 개요
+프로그램 코드 내부에 하드코드된 비밀번호 또는 암호화키를 포함하여 내부 인증에 사용하거나 암호화를 
+수행하면 중요정보(관리자 정보, 암호화된 정보 등)가 유출될 수 있는 보안약점이다.
+나. 보안대책
+비밀번호는 암호화 하여 별도의 파일에 저장하여 사용한다. 또한 중요정보를 암호화하면, 상수가 아닌 
+암호화 키를 사용하도록 하며 소스코드 내부에 상수형태의 암호화 키를 저장해서 사용하지 않도록 한다.
+다. 코드예제
+ㆍ하드코드된 비밀번호
+데이터베이스 연결을 위한 비밀번호를 소스코드 내부에 상수 형태로 하드코딩 하는 경우, 접속 
+정보가 노출될 수 있어 위험하다.
+안전하지 않은 코드의 예 JAVA
+1: public class MemberDAO { 
+2:
+private static final String DRIVER = "oracle.jdbc.driver.OracleDriver";
+3:
+private static final String URL = "jdbc:oracle:thin:@192.168.0.3:1521:ORCL"; 
+4:
+private static final String USER = "SCOTT"; // DB ID; 
+//DB 비밀번호가 소스코드에 평문으로 저장되어 있다. 
+5:
+private static final String PASS = "SCOTT"; // DB PW; 
+6: ……
+7:
+public Connection getConn() {
+8:
+Connection con = null;
+9:
+try {
+10:
+Class.forName(DRIVER);
+11:
+con = DriverManager.getConnection(URL, USER, PASS);
+12:
+……

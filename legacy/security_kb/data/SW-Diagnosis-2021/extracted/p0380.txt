@@ -1,0 +1,41 @@
+380
+아래 예제는 인증서 검증결과 X509_V_OK로 반환되더라도 호스트가 Common Name과 일치하는지 
+확인하지 않으므로 인증서가 허가된 호스트용이라는 것을 확신할 수 없다.
+안전하지 않은 코드의 예 C
+1:cert = SSL_get_peer_certificate(ssl); 
+2:if (cert && (SSL_get_verify_result(ssl)==X509_V_OK)) { 
+3:/* CN 을 확인하지 않았지만 신뢰하고 진행한다. 이럴 경우, 공격자가 Common Name을 
+www.attack.com으로 설정하여 중간자 공격에 사용할 경우 데이터가 중간에서 복호화 되고 있음을 
+탐지하지 못한다. */
+4: }
+아래 예제는 인증서 DN 일치여부와 유효기간 등을 검증한다.
+안전한 코드의 예 JAVA
+1:private boolean verifySignature(X509Certificate toVerify, X509Certificate signingCert) {
+2:
+/* 검증하려는 호스트 인증서(toVerify)와 CA인증서(signing Cert)의 DN(Distinguished 
+Name)이 일치하는지 여부를 확인한다.*/
+3:
+if (!toVerify.getIssuerDN().equals(signingCert.getSubjectDN())) return false;
+4:
+try {
+5:
+// 호스트 인증서가 CA인증서로 서명 되었는지 확인한다.
+6:
+toVerify.verify(signingCert.getPublicKey());
+7:
+// 호스트 인증서가 유효기간이 만료되었는지 확인한다.
+8:
+toVerify.checkValidity();
+9:
+return true;
+10:
+} catch (GeneralSecurityException verifyFailed) { 
+11:
+return false; 
+12:
+}
+13:}
+또한, 유효기간이 남아 있는 인증서의 해지여부를 확인하기 위해서는 CRL(Certificate revocation 
+lists)로 인증서 해지목록 또는 OCSP(Online Certificate Status Protocol)로 실시간 인증서 상
+태확인이 필요하다. CRL 리스트는 해당 인증서를 참조하여 인증기관에서 다운받을 수 있으며, 다운받은 
+CRL으로 해지된 인증서를 확인할 수 있다.

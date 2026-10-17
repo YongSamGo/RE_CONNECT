@@ -1,0 +1,616 @@
+{
+ "lines": [
+  {
+   "text": "276",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "12. 서버사이드 요청 위조",
+   "bbox": [
+    76.5,
+    113.80122375488281,
+    212.42735290527344,
+    128.18832397460938
+   ],
+   "block": 14,
+   "size": 12.85500431060791,
+   "fonts": [
+    "NanumSquareB"
+   ]
+  },
+  {
+   "text": "가. 개요",
+   "bbox": [
+    76.5,
+    149.6751708984375,
+    113.2763442993164,
+    161.753173828125
+   ],
+   "block": 15,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "적절한 검증절차를 거치지 않은 사용자 입력 값을 서버간의 요청에 사용하여 악의적인 행위가 발생할 ",
+   "bbox": [
+    76.5,
+    175.03121948242188,
+    464.7816467285156,
+    186.05322265625
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "수 있는 보안약점이다.",
+   "bbox": [
+    76.5,
+    190.99105834960938,
+    161.81150817871094,
+    202.0130615234375
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부에 노출된 웹 서버에 취약한 애플리케이션이 존재하는 경우 공격자는 URL 또는 요청문을 위조하여 ",
+   "bbox": [
+    76.5,
+    217.03103637695312,
+    464.8304443359375,
+    228.05303955078125
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "접근통제를 우회하는 방식으로 비정상적인 동작을 유도하거나 신뢰된 네트워크에 있는 데이터를 ",
+   "bbox": [
+    76.5,
+    232.99090576171875,
+    464.7581787109375,
+    244.01290893554688
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "획득할 수 있다.",
+   "bbox": [
+    76.5,
+    249.01089477539062,
+    136.4854278564453,
+    260.03289794921875
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "나. 보안대책",
+   "bbox": [
+    76.5,
+    285.03509521484375,
+    132.05699157714844,
+    297.11309814453125
+   ],
+   "block": 21,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "식별할 수 있는 범위 내에서 사용자의 입력 값을 다른 시스템의 서비스 호출에 사용하는 경우, 사용자의 ",
+   "bbox": [
+    76.5,
+    310.39111328125,
+    464.70147705078125,
+    321.4131164550781
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "입력 값을 화이트리스트 방식으로 필터링한다.",
+   "bbox": [
+    76.5,
+    326.4111022949219,
+    252.6470947265625,
+    337.43310546875
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용자가 지정하는 무작위의 URL을 받아들여야 한다면 내부의 URL을 블랙리스트로 지정하여 필터링 ",
+   "bbox": [
+    76.5,
+    352.3909606933594,
+    464.7610168457031,
+    363.4129638671875
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한다. 또한 동일한 내부 네트워크에 있더라도 기기 인증, 접근권한을 확인하여 요청이 이루어질 수 ",
+   "bbox": [
+    76.5,
+    368.41094970703125,
+    464.740478515625,
+    379.4329528808594
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있도록 한다.",
+   "bbox": [
+    76.5,
+    384.4309387207031,
+    125.09517669677734,
+    395.45294189453125
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    76.5,
+    420.455078125,
+    132.05699157714844,
+    432.5330810546875
+   ],
+   "block": 27,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "다음 예제는 사용자로부터 입력받은 값의 검증 없이 웹페이지를 접속하도록 구현되어 있다. 이 때, ",
+   "bbox": [
+    76.5,
+    445.8111877441406,
+    464.7826232910156,
+    456.83319091796875
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공격자는 URL을 조작하여 내부 서버에 질의 하게 하여 데이터를 획득할 수 있다.",
+   "bbox": [
+    76.5,
+    461.8311767578125,
+    385.3049621582031,
+    472.8531799316406
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[ 참고 : 삽입 코드의 예]",
+   "bbox": [
+    222.53961181640625,
+    487.81103515625,
+    316.0556945800781,
+    498.8330383300781
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "설명",
+   "bbox": [
+    115.80000305175781,
+    507.6380920410156,
+    130.92706298828125,
+    517.5380859375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "삽입 코드의 예",
+   "bbox": [
+    289.79998779296875,
+    507.6380920410156,
+    339.6082763671875,
+    517.5380859375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "내부망 중요 정보 획득",
+   "bbox": [
+    86.0999984741211,
+    522.3380737304688,
+    160.62896728515625,
+    532.2380981445312
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://192.168.0.45/member/list.json",
+   "bbox": [
+    176.0399932861328,
+    522.3380737304688,
+    446.25384521484375,
+    532.2380981445312
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "외부 접근 차단된 ",
+   "bbox": [
+    94.73999786376953,
+    536.9780883789062,
+    154.5377197265625,
+    546.8781127929688
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "admin 페이지 접근",
+   "bbox": [
+    90.47956085205078,
+    549.5780639648438,
+    156.24876403808594,
+    559.4780883789062
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://192.168.0.45/admin ",
+   "bbox": [
+    176.0399932861328,
+    543.278076171875,
+    434.22857666015625,
+    553.1781005859375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "도메인 체크를 우회하여 ",
+   "bbox": [
+    83.58000183105469,
+    564.4580688476562,
+    165.69805908203125,
+    574.3580932617188
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "중요 정보 획득",
+   "bbox": [
+    98.4602279663086,
+    577.05810546875,
+    148.26844787597656,
+    586.9581298828125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://site_example.com:x@ ",
+   "bbox": [
+    176.0399932861328,
+    564.2180786132812,
+    455.75323486328125,
+    574.1181030273438
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "192.168.0.45/member/list.json",
+   "bbox": [
+    184.44000244140625,
+    577.2977905273438,
+    302.72552490234375,
+    587.1978149414062
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "단축 URL을 이용한 ",
+   "bbox": [
+    90.23999786376953,
+    591.9381103515625,
+    159.0196075439453,
+    601.838134765625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "Filter 우회",
+   "bbox": [
+    104.94039154052734,
+    604.5380859375,
+    141.7812957763672,
+    614.4381103515625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://bit.ly/sdjk3kjhkl3",
+   "bbox": [
+    176.0399932861328,
+    598.2380981445312,
+    418.22052001953125,
+    608.1381225585938
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "도메인을 사설IP로 ",
+   "bbox": [
+    92.16000366210938,
+    619.4180908203125,
+    157.11819458007812,
+    629.318115234375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "설정해 중요정보 획득",
+   "bbox": [
+    87.30012512207031,
+    632.01806640625,
+    159.42868041992188,
+    641.9180908203125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://internal.site.com/me ",
+   "bbox": [
+    176.0399932861328,
+    619.1781005859375,
+    455.6762390136719,
+    629.078125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "mber/list.json",
+   "bbox": [
+    184.5,
+    632.2578125,
+    236.91397094726562,
+    642.1578369140625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "서버내 파일 열람",
+   "bbox": [
+    94.73999786376953,
+    646.8980712890625,
+    151.9883270263672,
+    656.798095703125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "• http://site_example.com/connect?url=http://attack/fileview.html",
+   "bbox": [
+    176.0399932861328,
+    646.8980712890625,
+    429.4306335449219,
+    656.798095703125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "bbox": [
+    76.31999969482422,
+    504.84800211588544,
+    459.3600158691406,
+    658.7480061848959
+   ],
+   "cells": [
+    [
+     "설명",
+     "삽입 코드의 예"
+    ],
+    [
+     "내부망 중요 정보 획득",
+     "• http://site example.com/connect?url=http://192.168.0.45/member/list.json\n_"
+    ],
+    [
+     "외부 접근 차단된\nadmin 페이지 접근",
+     "• http://site example.com/connect?url=http://192.168.0.45/admin\n_"
+    ],
+    [
+     "도메인 체크를 우회하여\n중요 정보 획득",
+     "• http://site example.com/connect?url=http://site example.com:x@\n_ _\n192.168.0.45/member/list.json"
+    ],
+    [
+     "단축 URL을 이용한\nFilter 우회",
+     "• http://site example.com/connect?url=http://bit.ly/sdjk3kjhkl3\n_"
+    ],
+    [
+     "도메인을 사설IP로\n설정해 중요정보 획득",
+     "• http://site example.com/connect?url=http://internal.site.com/me\n_\nmber/list.json"
+    ],
+    [
+     "서버내 파일 열람",
+     "• http://site example.com/connect?url=http://attack/fileview.html\n_"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "설명\n삽입 코드의 예\n내부망 중요 정보 획득\n• http://site_example.com/connect?url=http://192.168.0.45/member/list.json\n외부 접근 차단된 \nadmin 페이지 접근\n• http://site_example.com/connect?url=http://192.168.0.45/admin \n도메인 체크를 우회하여 \n중요 정보 획득\n• http://site_example.com/connect?url=http://site_example.com:x@ \n192.168.0.45/member/list.json\n단축 URL을 이용한 \nFilter 우회\n• http://site_example.com/connect?url=http://bit.ly/sdjk3kjhkl3\n도메인을 사설IP로 \n설정해 중요정보 획득\n• http://site_example.com/connect?url=http://internal.site.com/me \nmber/list.json\n서버내 파일 열람\n• http://site_example.com/connect?url=http://attack/fileview.html"
+  }
+ ],
+ "native": "276\n12. 서버사이드 요청 위조\n가. 개요\n적절한 검증절차를 거치지 않은 사용자 입력 값을 서버간의 요청에 사용하여 악의적인 행위가 발생할 \n수 있는 보안약점이다.\n외부에 노출된 웹 서버에 취약한 애플리케이션이 존재하는 경우 공격자는 URL 또는 요청문을 위조하여 \n접근통제를 우회하는 방식으로 비정상적인 동작을 유도하거나 신뢰된 네트워크에 있는 데이터를 \n획득할 수 있다.\n나. 보안대책\n식별할 수 있는 범위 내에서 사용자의 입력 값을 다른 시스템의 서비스 호출에 사용하는 경우, 사용자의 \n입력 값을 화이트리스트 방식으로 필터링한다.\n사용자가 지정하는 무작위의 URL을 받아들여야 한다면 내부의 URL을 블랙리스트로 지정하여 필터링 \n한다. 또한 동일한 내부 네트워크에 있더라도 기기 인증, 접근권한을 확인하여 요청이 이루어질 수 \n있도록 한다.\n다. 코드예제\n다음 예제는 사용자로부터 입력받은 값의 검증 없이 웹페이지를 접속하도록 구현되어 있다. 이 때, \n공격자는 URL을 조작하여 내부 서버에 질의 하게 하여 데이터를 획득할 수 있다.\n[ 참고 : 삽입 코드의 예]\n설명\n삽입 코드의 예\n내부망 중요 정보 획득\n• http://site_example.com/connect?url=http://192.168.0.45/member/list.json\n외부 접근 차단된 \nadmin 페이지 접근\n• http://site_example.com/connect?url=http://192.168.0.45/admin \n도메인 체크를 우회하여 \n중요 정보 획득\n• http://site_example.com/connect?url=http://site_example.com:x@ \n192.168.0.45/member/list.json\n단축 URL을 이용한 \nFilter 우회\n• http://site_example.com/connect?url=http://bit.ly/sdjk3kjhkl3\n도메인을 사설IP로 \n설정해 중요정보 획득\n• http://site_example.com/connect?url=http://internal.site.com/me \nmber/list.json\n서버내 파일 열람\n• http://site_example.com/connect?url=http://attack/fileview.html\n",
+ "native_sha256": "eb36f5482c28416c3e56ac86ce43f5ab6ff825f26a35955f20b8759b460577d6",
+ "chars": 1125,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

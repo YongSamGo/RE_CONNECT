@@ -1,0 +1,40 @@
+484
+안전한 코드의 예 C#
+1: private List<Color> colors; 
+2: //메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.
+3: public List<Color> getUserColors() { 
+4:
+//배열을 복사한다. 
+5:
+List< ICloneable> newList = new List< ICloneable>(colors.Count);
+6:
+//Clone()메소드를 이용하여 collection의 원소도 복사한다.
+7:
+colors.ForEach((item) =>
+8:
+{
+9:
+newList.Add((ICloneable)item.Clone());
+10: });
+11: return newList;
+12:}
+라. 진단방법
+private 배열이 선언되어 있는지 확인하고(①), 해당 배열이 public 메소드에서 반환될 경우 취약하다고 
+판단한다(②). 이때 선언된 private 배열의 원소가 일반 객체일 경우 각 원소별로 객체를 생성하고 
+객체 내부의 값을 복사하는지 확인한다.
+일반적인 진단의 예
+1: public class U495 {
+2:
+//Private 인 배열을 public 인 메소드가 return한다.
+3:
+private String[] colors; ··········································································································①
+4:
+5:
+public String[] getColors() {
+6:
+return colors; ···················································································································②
+7:
+}
+8: }
+함수 안에서 멤버필드의 배열을 리턴 하면 해당 배열을 리턴 받아 그 값을 바꿀 수 있다. Private 배열을 
+리턴 받아 그 내용을 수정하게 되면 Private의 의도에 벗어나므로 취약하다.

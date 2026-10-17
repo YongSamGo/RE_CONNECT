@@ -1,0 +1,53 @@
+Python 시큐어코딩 가이드
+30
+다. 코드예제
+다음 예제는 os.system을 이용해 외부로부터 받은 입력값을 통해 프로그램을 실행하며, 외부에서 전달되는 
+인자값은 명령어의 생성에 사용된다. 하지만 해당 프로그램에서 실행할 프로그램을 제한하지 않고 있기 때문에 
+외부의 공격자는 원하는 모든 프로그램을 실행할 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+import os
+from django.shortcuts import render
+def execute_command(request):
+  app_name_string = request.POST.get('app_name','')
+    # 입력 파라미터를 제한하지 않아 외부 입력값으로 전달된 
+  # 모든 프로그램이 실행될 수 있음
+    os.system(app_name_string)
+    return render(request, '/success.html')
+외부에서 입력받은 값이 명령어의 인자로 사용되지 않고 명령어 그 자체로 사용될 경우에는 사전에 화이트 
+리스트 파라미터 배열을 정의한 후 외부의 입력에 따라 적절한 파라미터를 선택하도록 하여 외부의 부적절한 
+입력이 명령어로 사용되는 것을 금지해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+import os
+from django.shortcuts import render
+ALLOW_PROGRAM = ['notepad', 'calc']
+def execute_command(request):
+    app_name_string = request.POST.get('app_name','')
+   
+    # 입력받은 파라미터가 허용된 시스템 명령어 목록에 포함되는지 검사 
+    if app_name_string not in ALLOW_PROGRAM:
+        return render(request, '/error.html', {'error':'허용되지 않은 프로그램입니다.'})
+    os.system(app_name_string)
+    return render(request, '/success.html')

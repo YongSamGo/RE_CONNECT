@@ -1,0 +1,153 @@
+584
+ERD와 테이블 정의서에는 접근통제에 사용할 사용자의 역할과 접근정보를 저장할 테이블과 컬럼을 
+정의하고 있다.
+안전한 보안설계의 예 : ERD
+MEMBER
+ACCESS_LOG
+id: VARCHAR2(10)
+id: NUMBER(8)
+password: VARCHAR2(100)
+user_id: VARCHAR2(10)
+name: VARCHAR2(100)
+access_dt: DATETIME
+email: VARCHAR2(15)
+access_ip: VARCHAR(15)
+phone: VARCHAR2(12)
+role: CHAR(2)
+access_url: VARCHAR(256)
+result_cd: NUMBER(3)
+안전한 보안설계의 예 : 테이블 정의서
+MEMBER
+컬럼명
+(영문)
+컬럼명 
+(한글)
+연관 
+엔티티명
+NN 
+여부 
+데이터 타입 
+길이
+PK 
+정보
+FK
+정보
+제약
+조건
+컬럼설명
+id
+사용자 아이디 
+사용자 정보 
+Y 
+VARCHAR2 
+10 
+Y 
+N 
+사용자 아이디
+password
+사용자 비밀번호 사용자 정보 
+Y 
+VARCHAR2 
+100 
+N 
+N 
+사용자 비밀번호
+name
+이름 
+사용자 정보 
+Y 
+VARCHAR2 
+100 
+N 
+N 
+이름
+email
+이메일 
+사용자 정보 
+Y 
+VARCHAR2 
+15 
+N 
+N 
+이메일
+phone
+전화번호 
+사용자 정보 
+Y 
+VARCHAR2 
+12 
+N 
+N 
+전화번호
+role
+역할 
+사용자 정보 
+Y 
+CHAR 
+2 
+N 
+N
+역할
+- RT: 시스템 관리자
+- AD: 업무 관리자
+- IU: 내부 사용자
+- OU: 외부 사용자
+ACCESS_LOG
+컬럼명
+(영문)
+컬럼명 
+(한글)
+연관 
+엔티티명
+NN 
+여부 
+데이터 타입 
+길이
+PK 
+정보
+FK
+정보
+제약
+조건
+컬럼설명
+id
+로그 아이디 
+접속로그 정보 
+Y 
+NUMBER 
+8 
+Y 
+로그 아이디
+user_id
+사용자 아이디 
+접속로그 정보 
+N
+VARCHAR2 
+10 
+N
+인증하지 않은 사용자 
+인 경우 NULL
+access_dt
+접속 시간 
+접속로그 정보 
+Y 
+DATE 
+N 
+접속 시간
+access_url
+접속 URL 
+접속로그 정보 
+Y 
+VARHCAR 
+256 
+N 
+접속 URL
+result_cd
+접속 코드 
+접속로그 정보 
+Y 
+NUMBER 
+3 
+N
+접속 코드 (Response 
+Result Code)

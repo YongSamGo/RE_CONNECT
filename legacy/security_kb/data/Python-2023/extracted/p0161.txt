@@ -1,0 +1,49 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제7절 API 오용
+155
+다. 코드예제
+다음의 예제는 도메인명을 통해 해당 요청을 신뢰할 수 있는지를 검사하는 예시로, 공격자는 DNS 캐쉬 등을 
+조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+def is_trust(host_domain_name):
+  trusted = False
+  trusted_host = "trust.example.com"
+  # 공격자에 의해 실행되는 서버의 DNS가 변경될 수 있으므로 
+  # 안전하지 않다
+  if trusted_host == host_name:
+    trusted = True
+  return trusted
+도메인명을 이용한 비교를 하지 말고 IP 주소를 직접 비교하도록 수정해 코드를 안전하게 만들 수 있다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+import socket
+def is_trust(host_domain_name):
+  trusted = False
+  trusted_ip = "192.168.10.7“
+  # 실제 서버의 IP 주소를 비교하여 DNS 변조에 대응
+  dns_resolved_ip = socket.gethostbyname(host_domain_name)
+  if trusted_ip == dns_resolved_ip:
+    trusted = True
+  return trusted
+라. 참고자료
+① CWE-350: Reliance on Reverse DNS Resolution for a Security-Critical Action, MITRE,
+https://cwe.mitre.org/data/definitions/350.html
+➁ Socket, Python Software Foundation,
+https://docs.python.org/3/library/socket.htm

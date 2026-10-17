@@ -1,0 +1,365 @@
+{
+ "lines": [
+  {
+   "text": "70",
+   "bbox": [
+    62.7599983215332,
+    696.9080810546875,
+    72.35669708251953,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등",
+   "bbox": [
+    76.5,
+    139.81112670898438,
+    400.5531921386719,
+    150.8331298828125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    76.5,
+    186.8150634765625,
+    226.03147888183594,
+    198.89306640625
+   ],
+   "block": 16,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    164.63999938964844,
+    211.17813110351562,
+    179.7670440673828,
+    221.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    339.8399963378906,
+    211.17813110351562,
+    387.18792724609375,
+    221.078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    132.0007781982422,
+    231.51812744140625,
+    212.4113006591797,
+    241.41812133789062
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "크로스사이트 스크립트",
+   "bbox": [
+    325.74432373046875,
+    231.51812744140625,
+    401.35406494140625,
+    241.41812133789062
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    282.7550964355469,
+    132.05699157714844,
+    294.8330993652344
+   ],
+   "block": 19,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①2013 OWASP Top 10 ‐ A3 Cross‐Site Scripting(XSS), OWASP,",
+   "bbox": [
+    91.5,
+    306.47998046875,
+    372.89324951171875,
+    317.5130920410156
+   ],
+   "block": 20,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Top_10_2013",
+   "bbox": [
+    105.24018859863281,
+    322.4509582519531,
+    316.0262451171875,
+    333.47296142578125
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By ",
+   "bbox": [
+    91.4997787475586,
+    343.45086669921875,
+    464.8283386230469,
+    354.4728698730469
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Robert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf",
+   "bbox": [
+    105.23919677734375,
+    359.4708557128906,
+    408.2210693359375,
+    370.49285888671875
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③2010 OWASP Secure Coding Practices, OWASP, Input Validation,",
+   "bbox": [
+    91.49878692626953,
+    380.47076416015625,
+    390.9303894042969,
+    391.4927673339844
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_R",
+   "bbox": [
+    105.23919677734375,
+    396.4907531738281,
+    461.4080810546875,
+    407.51275634765625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "eference_Guide ",
+   "bbox": [
+    105.23919677734375,
+    412.45062255859375,
+    176.91098022460938,
+    423.4726257324219
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④“CERT” Advisory CA-2000-02 Malicious HTML Tags Embedded in Client Web ",
+   "bbox": [
+    91.49878692626953,
+    433.4505310058594,
+    464.83221435546875,
+    444.4725341796875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Requests” http://www.cert.org/advisories/CA-2000-02.html",
+   "bbox": [
+    105.23919677734375,
+    449.47052001953125,
+    375.0450134277344,
+    460.4925231933594
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤“Cross-site Scripting Explained”, By Amit Klein",
+   "bbox": [
+    91.49878692626953,
+    470.4704284667969,
+    310.39447021484375,
+    481.492431640625
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://crypto.stanford.edu/cs155/papers/CSS.pdf",
+   "bbox": [
+    105.23919677734375,
+    486.4903869628906,
+    324.195556640625,
+    497.51239013671875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥“DOM Based Cross Site Scripting or XSS of the Third Kind” By Amit Klein (WASC ",
+   "bbox": [
+    91.49878692626953,
+    507.4903259277344,
+    464.832275390625,
+    518.5123291015625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "article) http://www.webappsec.org/projects/articles/071105.shtml",
+   "bbox": [
+    105.23919677734375,
+    523.4501342773438,
+    399.3460998535156,
+    534.47216796875
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By ",
+   "bbox": [
+    91.499755859375,
+    544.4500732421875,
+    464.82830810546875,
+    555.4721069335938
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Robert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf",
+   "bbox": [
+    105.23916625976562,
+    560.4700317382812,
+    408.2210388183594,
+    571.4920654296875
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    3,
+    4,
+    5,
+    6
+   ],
+   "bbox": [
+    76.31999969482422,
+    205.50799560546875,
+    459.3600158691406,
+    246.18798828125
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "크로스사이트 스크립트"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n입력데이터 검증 및 표현\n크로스사이트 스크립트"
+  }
+ ],
+ "native": "70\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n입력데이터 검증 및 표현\n크로스사이트 스크립트\n마. 참고자료\n①2013 OWASP Top 10 ‐ A3 Cross‐Site Scripting(XSS), OWASP,\nhttp://www.owasp.org/index.php/Top_10_2013\n②“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By \nRobert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf\n③2010 OWASP Secure Coding Practices, OWASP, Input Validation,\nhttp://www.owasp.org/index.php/OWASP_Secure_Coding_Practices_-_Quick_R\neference_Guide \n④“CERT” Advisory CA-2000-02 Malicious HTML Tags Embedded in Client Web \nRequests” http://www.cert.org/advisories/CA-2000-02.html\n⑤“Cross-site Scripting Explained”, By Amit Klein\nhttp://crypto.stanford.edu/cs155/papers/CSS.pdf\n⑥“DOM Based Cross Site Scripting or XSS of the Third Kind” By Amit Klein (WASC \narticle) http://www.webappsec.org/projects/articles/071105.shtml\n⑦“Feed Injection In Web 2.0: Hacking RSS and Atom Feed Implementations” By \nRobert Auger http://www.cgisecurity.com/papers/HackingFeeds.pdf\n",
+ "native_sha256": "abde6b44f97149b72bba2f2f0fc5df2ded56da5d5341b9a3188fca0064542269",
+ "chars": 1014,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

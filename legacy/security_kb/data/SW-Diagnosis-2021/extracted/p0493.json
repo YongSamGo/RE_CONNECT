@@ -1,0 +1,517 @@
+{
+ "lines": [
+  {
+   "text": "493",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "그러므로, 다음의 예제와 같이 DNS lookup에 의한 호스트 이름 비교를 하지 않고, IP 주소를 직접 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1572570800781,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "비교하도록 수정한다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    153.29660034179688,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    170.77108764648438,
+    308.9777526855469,
+    181.7930908203125
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public void doGet(HttpServletRequest req, HttpServletResponse res) ",
+   "bbox": [
+    77.94000244140625,
+    190.17813110351562,
+    373.23577880859375,
+    200.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throws ServletException, IOException { ",
+   "bbox": [
+    90.05926513671875,
+    204.57815551757812,
+    252.86288452148438,
+    214.4781494140625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.9391098022461,
+    218.97817993164062,
+    85.70450592041016,
+    228.878173828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String ip = req.getRemoteAddr(); ",
+   "bbox": [
+    98.87897491455078,
+    218.97817993164062,
+    236.3993377685547,
+    228.878173828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.9391098022461,
+    233.378173828125,
+    85.70451354980469,
+    243.27816772460938
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (ip == null || \"\".equals(ip)) return ; ",
+   "bbox": [
+    98.87897491455078,
+    233.378173828125,
+    253.57785034179688,
+    243.27816772460938
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: //이용하려는 실제 서버의 IP 주소를 사용하여 DNS변조에 방어한다.",
+   "bbox": [
+    77.9391098022461,
+    247.77816772460938,
+    328.24871826171875,
+    257.67816162109375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.9391098022461,
+    262.17816162109375,
+    85.70451354980469,
+    272.0781555175781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String trustedAddr = \"127.0.0.1\"; ",
+   "bbox": [
+    98.87897491455078,
+    262.17816162109375,
+    235.8485107421875,
+    272.0781555175781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.9391098022461,
+    276.5781555175781,
+    85.70451354980469,
+    286.4781494140625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (ip.equals(trustedAddr)) {",
+   "bbox": [
+    98.87897491455078,
+    276.5781555175781,
+    208.3438262939453,
+    286.4781494140625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.9391098022461,
+    290.9781494140625,
+    85.70451354980469,
+    300.8781433105469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "do_something_for_Trust_System(); ",
+   "bbox": [
+    112.07901000976562,
+    290.9781494140625,
+    252.6813201904297,
+    300.8781433105469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.9391098022461,
+    305.3781433105469,
+    85.70451354980469,
+    315.27813720703125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    98.87897491455078,
+    305.3781433105469,
+    101.6117172241211,
+    315.27813720703125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 도메인명으로 해당 요청을 신뢰할 수 있는지를 검사한다. 그러나 공격자는 DNS 캐",
+   "bbox": [
+    70.86000061035156,
+    337.8111877441406,
+    456.3673400878906,
+    348.83319091796875
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "시 등을 조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    354.79107666015625,
+    295.3149719238281,
+    365.8130798339844
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    207.89999389648438,
+    394.7511901855469,
+    319.3634033203125,
+    405.773193359375
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: bool trusted; ",
+   "bbox": [
+    79.37999725341797,
+    414.1581115722656,
+    145.996337890625,
+    424.05810546875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: string remoteIpAddress = Request.ServerVariables[\"REMOTE_HOST\"];",
+   "bbox": [
+    79.37999725341797,
+    428.55810546875,
+    374.54534912109375,
+    438.4580993652344
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: IPAddress hostIPAddress = IPAddress.Parse(remoteIpAddress);",
+   "bbox": [
+    79.3800048828125,
+    442.9580993652344,
+    349.3458251953125,
+    452.85809326171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: IPHostEntry hostInfo = Dns.GetHostByAddress(hostIPAddress);",
+   "bbox": [
+    79.3800048828125,
+    457.35809326171875,
+    349.0020446777344,
+    467.2580871582031
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: string hostName = hostInfo.HostName; ",
+   "bbox": [
+    79.3800048828125,
+    471.7580871582031,
+    255.42591857910156,
+    481.6580810546875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: if (hostName.EndsWith(\"trust.com\"))",
+   "bbox": [
+    79.3800048828125,
+    500.5580749511719,
+    237.21266174316406,
+    510.45806884765625
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: {",
+   "bbox": [
+    79.3800048828125,
+    514.9580688476562,
+    94.23291015625,
+    524.8580932617188
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: trusted = true; ",
+   "bbox": [
+    79.3800048828125,
+    529.3580322265625,
+    154.8530731201172,
+    539.258056640625
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: }",
+   "bbox": [
+    79.3800048828125,
+    543.758056640625,
+    94.23291015625,
+    553.6580810546875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: public void doGet(HttpServletRequest req, HttpServletResponse res) \nthrows ServletException, IOException { \n2:      String ip = req.getRemoteAddr(); \n3:      if (ip == null || \"\".equals(ip)) return ; \n4: //이용하려는 실제 서버의 IP 주소를 사용하여 DNS변조에 방어한다.\n5:      String trustedAddr = \"127.0.0.1\"; \n6:      if (ip.equals(trustedAddr)) {\n7:           do_something_for_Trust_System(); \n8:      }",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.9391098022461,
+    181.8930908203125,
+    373.23577880859375,
+    316.47813720703124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: bool trusted; \n2: string remoteIpAddress = Request.ServerVariables[\"REMOTE_HOST\"];\n3: IPAddress hostIPAddress = IPAddress.Parse(remoteIpAddress);\n4: IPHostEntry hostInfo = Dns.GetHostByAddress(hostIPAddress);\n5: string hostName = hostInfo.HostName; \n6: if (hostName.EndsWith(\"trust.com\"))\n7: {\n8: trusted = true; \n9: }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    79.37999725341797,
+    405.873193359375,
+    374.54534912109375,
+    554.8580810546875
+   ]
+  }
+ ],
+ "native": "493\n제4장구현단계 보안약점 진단\n그러므로, 다음의 예제와 같이 DNS lookup에 의한 호스트 이름 비교를 하지 않고, IP 주소를 직접 \n비교하도록 수정한다.\n안전한 코드의 예 JAVA\n1: public void doGet(HttpServletRequest req, HttpServletResponse res) \nthrows ServletException, IOException { \n2:\nString ip = req.getRemoteAddr(); \n3:\nif (ip == null || \"\".equals(ip)) return ; \n4: //이용하려는 실제 서버의 IP 주소를 사용하여 DNS변조에 방어한다.\n5:\nString trustedAddr = \"127.0.0.1\"; \n6:\nif (ip.equals(trustedAddr)) {\n7:\ndo_something_for_Trust_System(); \n8:\n}\n다음의 예제는 도메인명으로 해당 요청을 신뢰할 수 있는지를 검사한다. 그러나 공격자는 DNS 캐\n시 등을 조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.\n안전하지 않은 코드의 예 C#\n1: bool trusted; \n2: string remoteIpAddress = Request.ServerVariables[\"REMOTE_HOST\"];\n3: IPAddress hostIPAddress = IPAddress.Parse(remoteIpAddress);\n4: IPHostEntry hostInfo = Dns.GetHostByAddress(hostIPAddress);\n5: string hostName = hostInfo.HostName; \n6: if (hostName.EndsWith(\"trust.com\"))\n7: {\n8: trusted = true; \n9: }\n",
+ "native_sha256": "5b6c3359c5cadbee760a6fd9cecd873ef9d03a34ea63f37bf9c913477dcd7c62",
+ "chars": 885,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

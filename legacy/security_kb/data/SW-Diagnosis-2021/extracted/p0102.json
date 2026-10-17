@@ -1,0 +1,407 @@
+{
+ "lines": [
+  {
+   "text": "102",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐434 Unrestricted Upload of File with Dangerous Type, MITRE,",
+   "bbox": [
+    91.5,
+    137.5200958251953,
+    398.6639709472656,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/807.html",
+   "bbox": [
+    105.23995971679688,
+    153.55117797851562,
+    311.67547607421875,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE‐494 Download of Code Without Integrity Check, MITRE,",
+   "bbox": [
+    91.49954986572266,
+    174.5399932861328,
+    374.3374938964844,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/494.html",
+   "bbox": [
+    105.23995971679688,
+    190.51095581054688,
+    311.67547607421875,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③2010 OWASP Secure Coding Practices, OWASP, File Management,",
+   "bbox": [
+    91.49954986572266,
+    211.51089477539062,
+    399.34783935546875,
+    222.53289794921875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/OWASP_Se-cure_Coding_Practices_-_Quick_",
+   "bbox": [
+    105.23995971679688,
+    227.5308837890625,
+    461.87298583984375,
+    238.55288696289062
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Reference_Guide",
+   "bbox": [
+    105.23995971679688,
+    243.55087280273438,
+    180.39060974121094,
+    254.5728759765625
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④2016 OWASP Application Security Verification Standard, OWASP, Files and ",
+   "bbox": [
+    91.49954986572266,
+    264.55078125,
+    464.8388366699219,
+    275.5727844238281
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Resources Verification Requirements,",
+   "bbox": [
+    105.23895263671875,
+    280.5106506347656,
+    269.6518249511719,
+    291.53265380859375
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    105.23895263671875,
+    296.5306396484375,
+    461.674560546875,
+    307.5526428222656
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project",
+   "bbox": [
+    105.23895263671875,
+    312.5506286621094,
+    204.9983367919922,
+    323.5726318359375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Unrestricted File Upload, OWASP,",
+   "bbox": [
+    91.49854278564453,
+    333.550537109375,
+    254.0244903564453,
+    344.5725402832031
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Unrestricted_File_Upload",
+   "bbox": [
+    105.23895263671875,
+    349.5104064941406,
+    366.9311218261719,
+    360.53240966796875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Improve File Uploaders’ Protections, Sorouch Dalili,",
+   "bbox": [
+    91.49854278564453,
+    370.51031494140625,
+    328.48419189453125,
+    381.5323181152344
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://soroush.secproject.com/downloadable/Improve%20",
+   "bbox": [
+    105.23895263671875,
+    386.5303039550781,
+    362.7215270996094,
+    397.55230712890625
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "File%20Uploaders%E2%80%99%20Protections.pdf",
+   "bbox": [
+    105.23895263671875,
+    402.55029296875,
+    328.9278869628906,
+    413.5722961425781
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦8 Basic Rules to Implement Secure File Uploads, SANS,",
+   "bbox": [
+    91.49854278564453,
+    423.5502014160156,
+    349.0904235839844,
+    434.57220458984375
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://software-security.sans.org/blog/2009/12/28/8-basic-rules-to-implemen",
+   "bbox": [
+    105.23895263671875,
+    439.51007080078125,
+    461.4625549316406,
+    450.5320739746094
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "tsecure-file-uploads",
+   "bbox": [
+    105.23989868164062,
+    455.5300598144531,
+    195.80682373046875,
+    466.55206298828125
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧Top 25 Series-Rank 20-Download of Code Without Integrity Check, SANS,",
+   "bbox": [
+    91.4994888305664,
+    476.52996826171875,
+    432.6477966308594,
+    487.5519714355469
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://software-security.sans.org/blog/2010/04/05/top-25-series-rank-20-do",
+   "bbox": [
+    105.23892211914062,
+    492.5499572753906,
+    461.7860107421875,
+    503.57196044921875
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "wnload-code-integrity-check/",
+   "bbox": [
+    105.23895263671875,
+    508.5097961425781,
+    240.04171752929688,
+    519.5317993164062
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑨“Introduction to Code Signing”, Microsoft,",
+   "bbox": [
+    91.49854278564453,
+    529.5097045898438,
+    287.223876953125,
+    540.53173828125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://msdn.microsoft.com/en-us/library /ms537361(VS.85).aspx",
+   "bbox": [
+    105.23895263671875,
+    545.5296630859375,
+    395.72833251953125,
+    556.5516967773438
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑩Authenticode, Microsoft,",
+   "bbox": [
+    91.49854278564453,
+    566.5296020507812,
+    213.27725219726562,
+    577.5516357421875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://msdn.microsoft.com/en-us/library/ms537359(v=VS.85).aspx",
+   "bbox": [
+    105.23895263671875,
+    582.549560546875,
+    403.6142883300781,
+    593.5715942382812
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "102\n마. 참고자료\n①CWE‐434 Unrestricted Upload of File with Dangerous Type, MITRE,\nhttp://cwe.mitre.org/data/definitions/807.html\n②CWE‐494 Download of Code Without Integrity Check, MITRE,\nhttp://cwe.mitre.org/data/definitions/494.html\n③2010 OWASP Secure Coding Practices, OWASP, File Management,\nhttp://www.owasp.org/index.php/OWASP_Se-cure_Coding_Practices_-_Quick_\nReference_Guide\n④2016 OWASP Application Security Verification Standard, OWASP, Files and \nResources Verification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project\n⑤Unrestricted File Upload, OWASP,\nhttp://www.owasp.org/index.php/Unrestricted_File_Upload\n⑥Improve File Uploaders’ Protections, Sorouch Dalili,\nhttp://soroush.secproject.com/downloadable/Improve%20\nFile%20Uploaders%E2%80%99%20Protections.pdf\n⑦8 Basic Rules to Implement Secure File Uploads, SANS,\nhttp://software-security.sans.org/blog/2009/12/28/8-basic-rules-to-implemen\ntsecure-file-uploads\n⑧Top 25 Series-Rank 20-Download of Code Without Integrity Check, SANS,\nhttp://software-security.sans.org/blog/2010/04/05/top-25-series-rank-20-do\nwnload-code-integrity-check/\n⑨“Introduction to Code Signing”, Microsoft,\nhttp://msdn.microsoft.com/en-us/library /ms537361(VS.85).aspx\n⑩Authenticode, Microsoft,\nhttp://msdn.microsoft.com/en-us/library/ms537359(v=VS.85).aspx\n",
+ "native_sha256": "02b2e741483842cfa75f592919a61d7b9b0b7061dc12e55fba76fc070b7547ec",
+ "chars": 1350,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

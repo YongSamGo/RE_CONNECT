@@ -1,0 +1,443 @@
+{
+ "lines": [
+  {
+   "text": "283",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "• IDNA2003 변환을 이용한 SSRF 예시",
+   "bbox": [
+    70.86000061035156,
+    113.81996154785156,
+    228.48037719726562,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumBold",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "URL",
+   "bbox": [
+    163.13999938964844,
+    134.25808715820312,
+    179.79209899902344,
+    144.1580810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "설명",
+   "bbox": [
+    355.260009765625,
+    134.25808715820312,
+    370.3870849609375,
+    144.1580810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=http://ⓖⓞⓞⓖⓛⓔ.com",
+   "bbox": [
+    76.68000030517578,
+    150.03817749023438,
+    218.928955078125,
+    159.93817138671875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://google.com (원문자는 영문으로 인식됨)",
+   "bbox": [
+    277.9147644042969,
+    150.03817749023438,
+    439.591796875,
+    159.93817138671875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=http://wordpreß.com",
+   "bbox": [
+    76.68000030517578,
+    165.81808471679688,
+    209.79368591308594,
+    175.71807861328125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://wordpress.com (독일어로 ß는 ‘ss’가 됨)",
+   "bbox": [
+    277.89892578125,
+    165.81808471679688,
+    445.292724609375,
+    175.71807861328125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "• Broken Parser를 이용한 SSRF 예시",
+   "bbox": [
+    70.86000061035156,
+    200.22010803222656,
+    224.65170288085938,
+    211.25323486328125
+   ],
+   "block": 28,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumBold",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "URL",
+   "bbox": [
+    163.13999938964844,
+    220.65823364257812,
+    179.79209899902344,
+    230.5582275390625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "설명",
+   "bbox": [
+    355.260009765625,
+    220.65823364257812,
+    370.3870849609375,
+    230.5582275390625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=https://evil-host#expected-host",
+   "bbox": [
+    76.68000030517578,
+    236.4381103515625,
+    253.50169372558594,
+    246.33810424804688
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "#을 추가하여 탐지룰 회피 시도",
+   "bbox": [
+    277.9156799316406,
+    236.4381103515625,
+    380.23846435546875,
+    246.33810424804688
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=https://expected-host@evil-host",
+   "bbox": [
+    76.68000030517578,
+    252.21810913085938,
+    255.90992736816406,
+    262.11810302734375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "@을 추가하여 탐지룰 회피 시도",
+   "bbox": [
+    277.9234924316406,
+    252.21810913085938,
+    382.6951904296875,
+    262.11810302734375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "• SSRF를 이용한 LFI 예시",
+   "bbox": [
+    70.86000061035156,
+    286.6199951171875,
+    177.00051879882812,
+    297.6531066894531
+   ],
+   "block": 32,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumBold",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "URL",
+   "bbox": [
+    163.13999938964844,
+    307.05810546875,
+    179.79209899902344,
+    316.9580993652344
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "설명",
+   "bbox": [
+    355.260009765625,
+    307.05810546875,
+    370.3870849609375,
+    316.9580993652344
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=file:///etc/passwd",
+   "bbox": [
+    76.68000030517578,
+    322.83819580078125,
+    198.990478515625,
+    332.7381896972656
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "로컬 파일을 읽음",
+   "bbox": [
+    277.91650390625,
+    322.83819580078125,
+    334.08587646484375,
+    332.7381896972656
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/ssrf.php?url=ldap://localhost:1337/%0astats%0aquit",
+   "bbox": [
+    76.68000030517578,
+    338.61810302734375,
+    261.9715576171875,
+    348.5180969238281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "로컬 LDAP을 읽음",
+   "bbox": [
+    277.9255065917969,
+    338.61810302734375,
+    340.75384521484375,
+    348.5180969238281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    387.03509521484375,
+    126.4169921875,
+    399.11309814453125
+   ],
+   "block": 36,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-918: Server-Side Request Forgery (SSRF), MITRE,",
+   "bbox": [
+    85.86000061035156,
+    410.7110900878906,
+    347.7124938964844,
+    421.73309326171875
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/918.html",
+   "bbox": [
+    99.60041046142578,
+    426.7310791015625,
+    310.97064208984375,
+    437.7530822753906
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②Server Side Request Forgery, OWASP",
+   "bbox": [
+    85.86000061035156,
+    447.7309875488281,
+    265.621826171875,
+    458.75299072265625
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Server_Side_Request_Forgery",
+   "bbox": [
+    99.60041046142578,
+    463.7509765625,
+    432.66534423828125,
+    474.7729797363281
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    17,
+    18,
+    19,
+    20,
+    21,
+    22
+   ],
+   "bbox": [
+    70.68000030517578,
+    303.6080017089844,
+    453.7200012207031,
+    351.00799560546875
+   ],
+   "cells": [
+    [
+     "URL",
+     "설명"
+    ],
+    [
+     "/ssrf.php?url=file:///etc/passwd",
+     "로컬 파일을 읽음"
+    ],
+    [
+     "/ssrf.php?url=ldap://localhost:1337/%0astats%0aquit",
+     "로컬 LDAP을 읽음"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "URL\n설명\n/ssrf.php?url=file:///etc/passwd\n로컬 파일을 읽음\n/ssrf.php?url=ldap://localhost:1337/%0astats%0aquit\n로컬 LDAP을 읽음"
+  }
+ ],
+ "native": "283\n제4장구현단계 보안약점 진단\n• IDNA2003 변환을 이용한 SSRF 예시\nURL\n설명\n/ssrf.php?url=http://ⓖⓞⓞⓖⓛⓔ.com\nhttp://google.com (원문자는 영문으로 인식됨)\n/ssrf.php?url=http://wordpreß.com\nhttp://wordpress.com (독일어로 ß는 ‘ss’가 됨)\n• Broken Parser를 이용한 SSRF 예시\nURL\n설명\n/ssrf.php?url=https://evil-host#expected-host\n#을 추가하여 탐지룰 회피 시도\n/ssrf.php?url=https://expected-host@evil-host\n@을 추가하여 탐지룰 회피 시도\n• SSRF를 이용한 LFI 예시\nURL\n설명\n/ssrf.php?url=file:///etc/passwd\n로컬 파일을 읽음\n/ssrf.php?url=ldap://localhost:1337/%0astats%0aquit\n로컬 LDAP을 읽음\n마. 참고자료\n①CWE-918: Server-Side Request Forgery (SSRF), MITRE,\nhttps://cwe.mitre.org/data/definitions/918.html\n②Server Side Request Forgery, OWASP\nhttps://owasp.org/www-community/attacks/Server_Side_Request_Forgery\n",
+ "native_sha256": "bf2244dc2d60927879dd9586ca47517cb0c5c6314306e8a4ad062a2418492625",
+ "chars": 703,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

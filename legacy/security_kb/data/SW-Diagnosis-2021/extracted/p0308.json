@@ -1,0 +1,275 @@
+{
+ "lines": [
+  {
+   "text": "308",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "20: ",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    99.57603454589844,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    97.00638580322266,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// return string without trailing whitespace ",
+   "bbox": [
+    110.18084716796875,
+    156.63821411132812,
+    290.0138244628906,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    84.30000305175781,
+    171.03823852539062,
+    96.9781723022461,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "retMessage = message; ",
+   "bbox": [
+    110.15263366699219,
+    171.03823852539062,
+    212.15621948242188,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    84.30000305175781,
+    185.43826293945312,
+    97.04517364501953,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return retMessage; ",
+   "bbox": [
+    110.21963500976562,
+    185.43826293945312,
+    190.32431030273438,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    84.30000305175781,
+    199.83828735351562,
+    97.04517364501953,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.83931732177734,
+    199.83828735351562,
+    108.57205963134766,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    252.27517700195312,
+    132.05699157714844,
+    264.3531799316406
+   ],
+   "block": 20,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-119 Improper Restriction of Operations within the Bounds of a Memory ",
+   "bbox": [
+    91.5,
+    275.95111083984375,
+    464.8343811035156,
+    286.9731140136719
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Buffer, MITRE,",
+   "bbox": [
+    107.87982177734375,
+    291.9710998535156,
+    172.9965057373047,
+    302.99310302734375
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/119.html",
+   "bbox": [
+    107.87982177734375,
+    307.93096923828125,
+    314.3680114746094,
+    318.9529724121094
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Buffer overflow attack, OWASP,",
+   "bbox": [
+    91.49999237060547,
+    328.9308776855469,
+    248.42564392089844,
+    339.952880859375
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Buffer_overflow_attack",
+   "bbox": [
+    107.87982177734375,
+    344.95086669921875,
+    366.3004150390625,
+    355.9728698730469
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "20: \n21:      // return string without trailing whitespace \n22:      retMessage = message; \n23:      return retMessage; \n24:    }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    290.0138244628906,
+    210.93828125
+   ]
+  }
+ ],
+ "native": "308\n정탐코드의 예\n20: \n21:\n// return string without trailing whitespace \n22:\nretMessage = message; \n23:\nreturn retMessage; \n24:\n}\n마. 참고자료\n[1] CWE-119 Improper Restriction of Operations within the Bounds of a Memory \nBuffer, MITRE,\nhttp://cwe.mitre.org/data/definitions/119.html\n[2] Buffer overflow attack, OWASP,\nhttps://www.owasp.org/index.php/Buffer_overflow_attack\n",
+ "native_sha256": "f76d5687bcb0af64bc2f6adf8669085fc9ab4cb215a3c07ff138a9830c3f5ee7",
+ "chars": 362,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

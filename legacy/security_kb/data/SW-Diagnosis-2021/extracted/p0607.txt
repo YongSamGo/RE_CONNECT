@@ -1,0 +1,26 @@
+607
+제5장부록
+| 제4 절| 용어정리
+AES(Advanced Encryption Standard)
+미국 정부 표준으로 지정된 블록 암호 형식으로 이전의 DES를 대체하며, 미국 표준 기술 연구소 
+(NIST)가 5년의 표준화 과정을 거쳐 2001년 11월 26일에 연방 정보처리표준(FIPS 197)으로 
+발표하였다.
+CAPTCHA(Completely Automated Public Turning test to tell Computers and Hu- 
+mans Apart, 완전 자동화된 사람과 컴퓨터 판별)
+HIP(Human Interaction Proof) 기술의 일종으로, 어떠한 사용자가 실제 사람인지 컴퓨터 프로그램
+인지를 구별하기 위해 사용되는 방법이다.
+DES 알고리즘
+DES(Data Encryption Standard)암호는 암호화 키와 복호화키가 같은 대칭키 암호로 64비트의 
+암호화키를 사용한다. 전수공격(Brute Force)공격에 취약하다.
+FIPS
+FIPS(Federal Information Processing Standards)는 미연방 정부 기관 및 정부 계약자를 위한 
+미국 연방 정부에서 개발하여 공개한 컴퓨터시스템 사용 표준이다.
+FIPS 140-2
+연방 정보 처리 표준(FIPS) 간행물 140-2 (FIPS PUB 140-2)는 암호화 모듈을 승인하는데 
+사용되는 미국 정부 컴퓨터 보안 표준으로 제목은 “암호화 모듈에 대한 보안 요구 사항”이다.
+HMAC(Hash-based Message Authentication Code)
+해시 기반 메시지 인증 코드, 메시지 다이제스트 알고리듬 5(MD-5), SHA-1 등 반복적인 암호화 
+해시 기능을 비밀 공용키와 함께 사용하며, 체크섬을 변경하는 것이 불가능하도록 한 키 기반의 
+메시지 인증 알고리즘이다.
+HTTPS(Hypertext Transfer Protocol over Secure Socket Layer)
+WWW(월드 와이드 웹) 통신 프로토콜인 HTTP의 보안이 강화된 버전이다.

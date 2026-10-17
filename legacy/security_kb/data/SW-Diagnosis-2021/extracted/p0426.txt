@@ -1,0 +1,44 @@
+426
+예외를 포착(catch)한 후, 각각의 예외 사항(Exception)에 대하여 적절하게 처리해야 한다.
+안전한 코드의 예 JAVA
+1: protected Element createContent(WebSession s) { 
+2:
+……
+3:
+try {
+4:
+username = s.getParser().getRawParameter(USERNAME);
+5:
+password = s.getParser().getRawParameter(PASSWORD);
+6:
+if (!"webgoat".equals(username) || !password.equals("webgoat")) {
+7:
+s.setMessage("Invalid username and password entered.");
+8:
+return (makeLogin(s));
+9:
+}
+10:
+} catch (NullPointerException e) {
+//예외 사항에 대해 적절한 조치를 수행하여야 한다.
+11:
+s.setMessage(e.getMessage());
+12:
+return (makeLogin(s));
+13:
+}
+다음의 C# 코드도 예외상황에 대한 조치가 없다.
+안전하지 않은 코드의 예 C#
+1: try {
+2:
+InvokeMtd(); 
+3:
+} catch (CustomException e) { 
+4:
+//예외 상황에 대한 대응 부재
+5: }
+각각의 예외 상황에 대해 적절한 조치를 수행해야 한다.
+안전한 코드의 예 C#
+1: try { 
+2:
+InvokeMtd();

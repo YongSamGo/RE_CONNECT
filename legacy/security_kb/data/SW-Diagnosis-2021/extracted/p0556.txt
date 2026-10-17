@@ -1,0 +1,37 @@
+556
+2.1.1 인증 여부 확인
+<mvc:interceptors>
+         <bean class=”kr.co.openeg.lab.common.interceptor.SessionInterceptor” /> 
+</mvc:interceptors> 
+public class SessionInterceptor extends HandlerInterceptorAdapter 
+  { @Override 
+  public boolean preHandle(HttpServletRequest 
+request, HttpServletResponse 
+response, 
+Object handler) throws
+    Exception { if
+(isAuthenticated(request.getSession())) { 
+      return true; 
+    } else { 
+       return false; 
+    }
+  }
+  @Override 
+  public void postHandle(HttpServletRequest request,
+HttpServletResponse response, Object handler,
+ModelAndView modelAndView) throws Exception { 
+  }
+}
+인증 여부 확인 모듈을 Filter 또는 Interceptor와 같은 컴포넌트에 등록하여 유입되는 모든 요청에 대해 자동으로 
+인증 여부를 확인할 수 있도록 한다.
+2.1.1 인증 여부 확인
+사용자가 입력한 아이디와 비밀번호를 POST 방식으로 서버로 전달한다. 요청 파라미터로 전달된 아이디와 비밀
+번호와 일치하는 사용자 정보가 존재하는 경우 “사용자ID.isAuthenticated” 형식의 세션ID를 생성하고, 처리에 
+필요한 정보를 세션에 저장한다.
+인증 처리과정에서 유의할 사항은 다음과 같다.
+- 아이디와 비밀번호는 POST 방식으로 전달한다. 
+- 아이디와 비밀번호는 서버에서 입력값 검증 후 사용한다. 
+- 비밀번호는 서버에서 일방향 해시함수로 변환한다. 
+- 사용자 정보를 조회할 때 SQL 삽입과 같은 취약점이 발생하지 않도록 시큐어코딩 기법에 따른다.
+- 세션에 저장할 내용과 식별자는 분석/설계 단계에 정의하여 관리한다.
+String id = request.getParameter(“id”); 

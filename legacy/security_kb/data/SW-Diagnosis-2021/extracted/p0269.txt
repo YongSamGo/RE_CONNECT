@@ -1,0 +1,60 @@
+269
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+3:
+//retrieve all of the employees who report to a manager 
+4:
+String filter = “(manager=” + managerName + “)”; ························································②
+5:
+NamingEnumeration employees =
+ctx.search(“ou=People,dc=example,dc=com”, filter); ························································①
+6:
+…
+다음의 예제에서는 외부의 입력(name)이 검색을 위한 필터 문자열의 생성에 사용되고 있다. name 
+변수의 값으로 “*”을 전달할 경우, 필터 문자열은 “(name=*)”가 할당되어 항상 참이 되므로, 인증을 
+우회하거나 응용프로그램이 의도하지 않은 동작을 하게 되므로 취약한 것으로 판정한다.
+정탐코드의 예
+1:
+public void f() { 
+2:
+Hashtable env = new Hashtable(); 
+3:
+env.put(Context.INITIAL_CONTEXT_FACTORY, “com.sun.jndi.ldap.LdapCtxFactory”);
+4:
+env.put(Context.PROVIDER_URL, “ldap://localhost:389/o=rootDir”);
+5:
+try { 
+6:
+javax.naming.directory.DirContext ctx = new InitialDirContext(env); 
+7:
+// 프로퍼티를 만들고 외부 파일을 로드한다. 
+8:
+Properties props = new Properties(); 
+9:
+String fileName = “ldap.properties”; 
+10:
+FileInputStream in = new FileInputStream(fileName); 
+11:
+props.load(in); 
+12:
+// LDAP Search를 하기 위해 name을 읽는다 
+13:
+String name = props.getProperty(“name”); 
+4:
+String filter = “(name =” + name + “)”; 
+15:
+// LDAP search가 name값에 대한 여과없이 그대로 통과되어 검색이 되어진다.
+16:
+NamingEnumeration answer = ctx.search(“ou=NewHires”, filter, new SearchCon-
+trols(
+));
+17:
+printSearchEnumeration(answer); 
+18:
+ctx.close(); 
+19:
+}
+20:
+catch (NamingException e) { … }
+21:
+…

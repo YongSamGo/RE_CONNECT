@@ -1,0 +1,753 @@
+{
+ "lines": [
+  {
+   "text": "315",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    200.94000244140625,
+    120.79122924804688,
+    323.49853515625,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    85.66573333740234,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String passwd = request.getParameter(\"oldUserPw\"); ",
+   "bbox": [
+    103.21964263916016,
+    140.19808959960938,
+    320.73529052734375,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: ...",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    97.99039459228516,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//2. 실제 수정하는 사용자와 일치 여부를 확인하지 않고, 회원정보를 수정하여 안전하지 않다.",
+   "bbox": [
+    86.75971221923828,
+    168.99813842773438,
+    411.6633605957031,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.94000244140625,
+    183.39816284179688,
+    85.69393920898438,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (service.modifyMember(memberModel)) { ",
+   "bbox": [
+    103.24784851074219,
+    183.39816284179688,
+    282.2768859863281,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.94088745117188,
+    197.79818725585938,
+    85.68072509765625,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "mav.setViewName(\"redirect:/board/list.do\"); ",
+   "bbox": [
+    116.43466186523438,
+    197.79818725585938,
+    294.3970947265625,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.94088745117188,
+    212.19821166992188,
+    85.67720031738281,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "session.setAttribute(\"userName\", memberModel.getUserName());",
+   "bbox": [
+    116.43113708496094,
+    212.19821166992188,
+    378.7470397949219,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    77.94088745117188,
+    226.59820556640625,
+    90.62611389160156,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return mav;",
+   "bbox": [
+    117.0006103515625,
+    226.59820556640625,
+    164.72486877441406,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94088745117188,
+    240.99819946289062,
+    90.62257385253906,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} else { ",
+   "bbox": [
+    103.79704284667969,
+    240.99819946289062,
+    136.9584503173828,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94088745117188,
+    255.398193359375,
+    90.62611389160156,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "mav.addObject(\"errCode\", 2); ",
+   "bbox": [
+    112.62028503417969,
+    255.398193359375,
+    232.06497192382812,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    77.94088745117188,
+    269.7981872558594,
+    90.61553192138672,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "mav.setViewName(\"/board/member_modify\"); ",
+   "bbox": [
+    112.60971069335938,
+    269.7981872558594,
+    298.48114013671875,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    77.94088745117188,
+    284.19818115234375,
+    90.62611389160156,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return mav;",
+   "bbox": [
+    112.62028503417969,
+    284.19818115234375,
+    160.28460693359375,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    77.94088745117188,
+    298.5981750488281,
+    90.62611389160156,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    103.80057525634766,
+    298.5981750488281,
+    106.53331756591797,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:}",
+   "bbox": [
+    77.94088745117188,
+    312.9981689453125,
+    93.3332748413086,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "로그인한 사용자와 요청한 사용자의 일치 여부를 확인한 후 회원정보를 수정하도록 한다. ",
+   "bbox": [
+    70.86000061035156,
+    345.3712158203125,
+    411.7268371582031,
+    356.3932189941406
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    385.39111328125,
+    308.9777526855469,
+    396.4131164550781
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) ",
+   "bbox": [
+    77.94000244140625,
+    404.7982177734375,
+    395.9087219238281,
+    414.6982116699219
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") ",
+   "bbox": [
+    77.94000244140625,
+    419.1982116699219,
+    414.1475524902344,
+    429.09820556640625
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MemberModel memberModel, BindingResult result, HttpServletRequest request, ",
+   "bbox": [
+    90.06011962890625,
+    433.59820556640625,
+    423.0325012207031,
+    443.4981994628906
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpSession session) { ",
+   "bbox": [
+    90.06011962890625,
+    447.9981994628906,
+    184.9815673828125,
+    457.898193359375
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.9399642944336,
+    462.398193359375,
+    85.70536804199219,
+    472.2981872558594
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ModelAndView mav = new ModelAndView(); ",
+   "bbox": [
+    98.87982940673828,
+    462.398193359375,
+    284.974365234375,
+    472.2981872558594
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//1. 로그인한 사용자를 불러온다.",
+   "bbox": [
+    86.75967407226562,
+    491.1982116699219,
+    204.5532989501953,
+    501.09820556640625
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.9399642944336,
+    505.5981750488281,
+    85.70536804199219,
+    515.4981689453125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String userId = (String) session.getAttribute(\"userId\");",
+   "bbox": [
+    98.87982940673828,
+    505.5981750488281,
+    316.6909484863281,
+    515.4981689453125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.93997192382812,
+    519.9981689453125,
+    85.70537567138672,
+    529.898193359375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String passwd = request.getParameter(\"oldUserPw\");",
+   "bbox": [
+    98.87983703613281,
+    519.9981689453125,
+    313.772216796875,
+    529.898193359375
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//2. 회원정보를 실제 수정하는 사용자와 로그인 사용자와 동일한지 확인한다.",
+   "bbox": [
+    77.93997192382812,
+    548.7981567382812,
+    346.5579833984375,
+    558.6981811523438
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.9399642944336,
+    563.1981201171875,
+    85.70536804199219,
+    573.09814453125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String requestUser = memberModel.getUserId();",
+   "bbox": [
+    98.87982940673828,
+    563.1981201171875,
+    296.82562255859375,
+    573.09814453125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.9399642944336,
+    577.59814453125,
+    85.70536804199219,
+    587.4981689453125
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (userId != null && requestUser != null && !userId.equals(requestUser)) {",
+   "bbox": [
+    98.87982940673828,
+    577.59814453125,
+    407.7731628417969,
+    587.4981689453125
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.93994140625,
+    591.9981689453125,
+    85.69828796386719,
+    601.898193359375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "mav.addObject(\"errCode\", 1);",
+   "bbox": [
+    112.07278442382812,
+    591.9981689453125,
+    229.00335693359375,
+    601.898193359375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "5:        String passwd = request.getParameter(\"oldUserPw\"); \n6: ...\n//2. 실제 수정하는 사용자와 일치 여부를 확인하지 않고, 회원정보를 수정하여 안전하지 않다.\n7:        if (service.modifyMember(memberModel)) { \n8:             mav.setViewName(\"redirect:/board/list.do\"); \n9:             session.setAttribute(\"userName\", memberModel.getUserName());\n10:           return mav;\n11:      } else { \n12:         mav.addObject(\"errCode\", 2); \n13:         mav.setViewName(\"/board/member_modify\"); \n14:         return mav;\n15:      }\n16:}",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    411.6633605957031,
+    324.09816284179686
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) \n2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") \nMemberModel memberModel, BindingResult result, HttpServletRequest request, \nHttpSession session) { ",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    396.51311645507815,
+    423.0325012207031,
+    459.098193359375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    35,
+    36,
+    37,
+    38,
+    39
+   ],
+   "text": "4:      String userId = (String) session.getAttribute(\"userId\");\n5:      String passwd = request.getParameter(\"oldUserPw\");\n//2. 회원정보를 실제 수정하는 사용자와 로그인 사용자와 동일한지 확인한다.",
+   "language": "text",
+   "label": "//1. 로그인한 사용자를 불러온다.",
+   "bbox": [
+    77.9399642944336,
+    504.39817504882814,
+    346.5579833984375,
+    559.8981811523438
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+   ],
+   "text": "6:      String requestUser = memberModel.getUserId();\n7:      if (userId != null && requestUser != null && !userId.equals(requestUser)) {\n8:           mav.addObject(\"errCode\", 1);",
+   "language": "text",
+   "label": "//2. 회원정보를 실제 수정하는 사용자와 로그인 사용자와 동일한지 확인한다.",
+   "bbox": [
+    77.93994140625,
+    561.9981201171875,
+    407.7731628417969,
+    603.098193359375
+   ]
+  }
+ ],
+ "native": "315\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 JAVA\n5:\nString passwd = request.getParameter(\"oldUserPw\"); \n6: ...\n//2. 실제 수정하는 사용자와 일치 여부를 확인하지 않고, 회원정보를 수정하여 안전하지 않다.\n7:\nif (service.modifyMember(memberModel)) { \n8:\nmav.setViewName(\"redirect:/board/list.do\"); \n9:\nsession.setAttribute(\"userName\", memberModel.getUserName());\n10:\nreturn mav;\n11:\n} else { \n12:\nmav.addObject(\"errCode\", 2); \n13:\nmav.setViewName(\"/board/member_modify\"); \n14:\nreturn mav;\n15:\n}\n16:}\n로그인한 사용자와 요청한 사용자의 일치 여부를 확인한 후 회원정보를 수정하도록 한다. \n안전한 코드의 예 JAVA\n1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) \n2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") \nMemberModel memberModel, BindingResult result, HttpServletRequest request, \nHttpSession session) { \n3:\nModelAndView mav = new ModelAndView(); \n//1. 로그인한 사용자를 불러온다.\n4:\nString userId = (String) session.getAttribute(\"userId\");\n5:\nString passwd = request.getParameter(\"oldUserPw\");\n//2. 회원정보를 실제 수정하는 사용자와 로그인 사용자와 동일한지 확인한다.\n6:\nString requestUser = memberModel.getUserId();\n7:\nif (userId != null && requestUser != null && !userId.equals(requestUser)) {\n8:\nmav.addObject(\"errCode\", 1);\n",
+ "native_sha256": "d08c3cc4b4fc25197bbb45095fce3ffaa722fe830cf8a603b996dcb5a6f1e1bc",
+ "chars": 1141,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

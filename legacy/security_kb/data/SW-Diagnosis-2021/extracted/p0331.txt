@@ -1,0 +1,46 @@
+331
+제4장구현단계 보안약점 진단
+분류
+보호함수 목록
+공개키 암호
+RSAES
+- (공개키 길이) 2048, 3072
+- RSA-OAEP에서 사용되는 해시함수 : SHA-224/256 
+전자서명
+RSA-PSS, KCDSA, ECDSA, EC-KCDSA
+키 설정 방식
+DH, ECDH
+보호함수
+보호함수 목록
+시스템
+파라미터
+RSA-PSS 
+(공개키 길이) 2048, 3072
+KCDSA, DH 
+(공개키 길이, 개인키 길이) (2048, 224), (2048, 256)
+ECDSA, EC-
+KCDSA, ECDH 
+(FIPS) B-233, B-283 (FIPS) K-233, K-283 (FIPS) P-224, P-256
+[출처 : 암호알고리즘 검증기준 Ver 2.0(2012.3), 암호모듈시험기관]
+다. 코드예제
+다음 예제는 취약한 DES 알고리즘으로 암호화하고 있다.
+안전하지 않은 코드의 예 JAVA
+1: import java.security.*;
+2: import javax.crypto.Cipher;
+3: import javax.crypto.NoSuchPaddingException;
+4: public class CryptoUtils { 
+5:
+public byte[] encrypt(byte[] msg, Key k) { 
+6:
+byte[] rslt = null; 
+7:
+try {
+//키 길이가 짧아 취약함 암호와 알고리즘인 DES를 사용하여 안전하지 않다.
+8:
+Cipher c = Cipher.getInstance("DES");
+9:
+c.init(Cipher.ENCRYPT_MODE, k);
+10:
+rslt = c.update(msg);
+11:
+}

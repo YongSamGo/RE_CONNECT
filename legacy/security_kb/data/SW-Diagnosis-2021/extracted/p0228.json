@@ -1,0 +1,799 @@
+{
+ "lines": [
+  {
+   "text": "228",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    117.31112670898438,
+    307.0608215332031,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.06539916992188,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileInputStream in = new FileInputStream(fileName); ",
+   "bbox": [
+    105.2398681640625,
+    142.23818969726562,
+    323.26947021484375,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    92.0336685180664,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "props.load(in);",
+   "bbox": [
+    105.2081298828125,
+    156.63821411132812,
+    161.49911499023438,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    171.03823852539062,
+    92.0654067993164,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    185.43826293945312,
+    92.04336547851562,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부에서 전달된 값이 시스템 내부 명령어의 일부로 사용됨. ",
+   "bbox": [
+    105.21782684326172,
+    185.43826293945312,
+    337.8482666015625,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30000305175781,
+    199.83828735351562,
+    92.06539916992188,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String version = props.getProperty(“dir_type”) ································································②",
+   "bbox": [
+    105.2398681640625,
+    199.83828735351562,
+    453.35589599609375,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30001831054688,
+    214.23831176757812,
+    92.06541442871094,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String cmd = new String(“cmd.exe /c rmanDB.bat “);",
+   "bbox": [
+    105.23987579345703,
+    214.23831176757812,
+    326.8176574707031,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: ",
+   "bbox": [
+    84.30001831054688,
+    228.6383056640625,
+    99.5760498046875,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30001831054688,
+    243.03829956054688,
+    96.9975814819336,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 입력값 검증 없이 내부 명령어의 일부로 사용됨. ",
+   "bbox": [
+    105.79171752929688,
+    243.03829956054688,
+    295.5947265625,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30001831054688,
+    257.43829345703125,
+    97.0451889038086,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Runtime.getRuntime().exec(cmd + “c:\\\\prog_cmd\\\\” + version); ·································①",
+   "bbox": [
+    105.8393325805664,
+    257.43829345703125,
+    453.3622131347656,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30001831054688,
+    271.8382873535156,
+    97.0451889038086,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.8393325805664,
+    271.8382873535156,
+    108.57207489013672,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 외부 입력값인 processMon의 값을 파라미터로 getProcessId를 호출하고, 19 ",
+   "bbox": [
+    76.5,
+    304.2110900878906,
+    464.77374267578125,
+    315.23309326171875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라인에서 execStr 문자열을 만들며 그 문자열이 28라인에서 명령어로 쓰이고 있어 취약한 것으로 ",
+   "bbox": [
+    76.5,
+    321.2510986328125,
+    464.8334045410156,
+    332.2731018066406
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "판정한다.",
+   "bbox": [
+    76.5,
+    338.2309875488281,
+    113.69224548339844,
+    349.25299072265625
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    374.7110900878906,
+    296.91937255859375,
+    385.73309326171875
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "< EgovProcessMonController.java > ",
+   "bbox": [
+    84.30000305175781,
+    399.6380920410156,
+    227.9559326171875,
+    409.5380859375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: @RequestMapping(“/utl/sys/prm/selectProcessSttus.do”) ",
+   "bbox": [
+    84.30000305175781,
+    414.0380859375,
+    329.13006591796875,
+    423.9380798339844
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public String selectProcessSttus(@ModelAttribute(“processMonVO”) ProcessMonVO ",
+   "bbox": [
+    84.30000305175781,
+    428.4380798339844,
+    438.14794921875,
+    438.33807373046875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "processMonVO, ModelMap model) throws Exception { ",
+   "bbox": [
+    96.420166015625,
+    442.83807373046875,
+    321.8001403808594,
+    452.7380676269531
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: …",
+   "bbox": [
+    84.30000305175781,
+    457.2380676269531,
+    104.41387939453125,
+    467.1380615234375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: }",
+   "bbox": [
+    84.30000305175781,
+    471.6380615234375,
+    99.21285247802734,
+    481.5380554199219
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "< ProcessMonChecker.java >",
+   "bbox": [
+    84.30000305175781,
+    486.0380554199219,
+    199.96470642089844,
+    495.93804931640625
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:public staticString getProcessId(String processNm) throws Exception {",
+   "bbox": [
+    84.30000305175781,
+    500.43804931640625,
+    385.46942138671875,
+    510.3380432128906
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.29998779296875,
+    514.8380126953125,
+    97.0451431274414,
+    524.738037109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Process p = null; ",
+   "bbox": [
+    119.03932189941406,
+    514.8380126953125,
+    192.9961395263672,
+    524.738037109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.29998779296875,
+    529.238037109375,
+    97.0028305053711,
+    539.1380615234375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String procsSttus = ",
+   "bbox": [
+    118.99700164794922,
+    529.238037109375,
+    201.0586700439453,
+    539.1380615234375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "null; 17:BufferedReader buf =",
+   "bbox": [
+    84.29998779296875,
+    543.6380004882812,
+    207.45140075683594,
+    553.5380249023438
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "null; 18:String result = null;",
+   "bbox": [
+    84.29998779296875,
+    558.0379638671875,
+    198.69174194335938,
+    567.93798828125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    84.29998779296875,
+    572.43798828125,
+    96.99755096435547,
+    582.3380126953125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String execStr = “tasklist /fo table /nh /fi \\”imagename eq “+processNm+”\\””;",
+   "bbox": [
+    118.9917221069336,
+    572.43798828125,
+    446.93060302734375,
+    582.3380126953125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    84.29998779296875,
+    586.8380126953125,
+    97.02928924560547,
+    596.738037109375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int cnt = 0;",
+   "bbox": [
+    119.0234603881836,
+    586.8380126953125,
+    167.4811248779297,
+    596.738037109375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    84.29998779296875,
+    601.2379760742188,
+    97.01165008544922,
+    611.1380004882812
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String str = null;",
+   "bbox": [
+    119.00582885742188,
+    601.2379760742188,
+    187.78277587890625,
+    611.1380004882812
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    84.29998779296875,
+    615.6380004882812,
+    97.02399444580078,
+    625.5380249023438
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    119.01817321777344,
+    615.6380004882812,
+    136.60470581054688,
+    625.5380249023438
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    84.29998779296875,
+    630.0379638671875,
+    96.99755096435547,
+    639.93798828125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (Globals.OS_TYPE == null) {",
+   "bbox": [
+    123.37203979492188,
+    630.0379638671875,
+    247.42530822753906,
+    639.93798828125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    84.29998779296875,
+    644.43798828125,
+    97.0451431274414,
+    654.3380126953125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throw new RuntimeException(“Globals.OS_TYPE property value is needed”);",
+   "bbox": [
+    123.41963958740234,
+    644.43798828125,
+    435.92816162109375,
+    654.3380126953125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "4:      FileInputStream in = new FileInputStream(fileName); \n5:      props.load(in);\n6:\n7:      // 외부에서 전달된 값이 시스템 내부 명령어의 일부로 사용됨. \n8:      String version = props.getProperty(“dir_type”) ································································②\n9:      String cmd = new String(“cmd.exe /c rmanDB.bat “);\n10: \n11:    // 입력값 검증 없이 내부 명령어의 일부로 사용됨. \n12:    Runtime.getRuntime().exec(cmd + “c:\\\\prog_cmd\\\\” + version); ·································①\n13:    }",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    453.3622131347656,
+    282.93828125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "1: @RequestMapping(“/utl/sys/prm/selectProcessSttus.do”) \n2: public String selectProcessSttus(@ModelAttribute(“processMonVO”) ProcessMonVO \nprocessMonVO, ModelMap model) throws Exception { \n4: …\n5: }\n< ProcessMonChecker.java >\n14:public staticString getProcessId(String processNm) throws Exception {\n15:         Process p = null; \n16:         String procsSttus = \nnull; 17:BufferedReader buf =\nnull; 18:String result = null;",
+   "language": "text",
+   "label": "< EgovProcessMonController.java > ",
+   "bbox": [
+    84.29998779296875,
+    412.8380859375,
+    438.14794921875,
+    569.13798828125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+   ],
+   "text": "19:         String execStr = “tasklist /fo table /nh /fi \\”imagename eq “+processNm+”\\””;\n20:         int cnt = 0;\n21:         String str = null;\n22:         try {\n23:           if (Globals.OS_TYPE == null) {\n24:           throw new RuntimeException(“Globals.OS_TYPE property value is needed”);",
+   "language": "text",
+   "label": "null; 18:String result = null;",
+   "bbox": [
+    84.29998779296875,
+    571.23798828125,
+    446.93060302734375,
+    655.5380126953125
+   ]
+  }
+ ],
+ "native": "228\n일반적인 진단의 예\n4:\nFileInputStream in = new FileInputStream(fileName); \n5:\nprops.load(in);\n6:\n7:\n// 외부에서 전달된 값이 시스템 내부 명령어의 일부로 사용됨. \n8:\nString version = props.getProperty(“dir_type”) ································································②\n9:\nString cmd = new String(“cmd.exe /c rmanDB.bat “);\n10: \n11:\n// 입력값 검증 없이 내부 명령어의 일부로 사용됨. \n12:\nRuntime.getRuntime().exec(cmd + “c:\\\\prog_cmd\\\\” + version); ·································①\n13:\n}\n다음의 예제에서 외부 입력값인 processMon의 값을 파라미터로 getProcessId를 호출하고, 19 \n라인에서 execStr 문자열을 만들며 그 문자열이 28라인에서 명령어로 쓰이고 있어 취약한 것으로 \n판정한다.\n정탐코드의 예\n< EgovProcessMonController.java > \n1: @RequestMapping(“/utl/sys/prm/selectProcessSttus.do”) \n2: public String selectProcessSttus(@ModelAttribute(“processMonVO”) ProcessMonVO \nprocessMonVO, ModelMap model) throws Exception { \n4: …\n5: }\n< ProcessMonChecker.java >\n14:public staticString getProcessId(String processNm) throws Exception {\n15:\nProcess p = null; \n16:\nString procsSttus = \nnull; 17:BufferedReader buf =\nnull; 18:String result = null;\n19:\nString execStr = “tasklist /fo table /nh /fi \\”imagename eq “+processNm+”\\””;\n20:\nint cnt = 0;\n21:\nString str = null;\n22:\ntry {\n23:\nif (Globals.OS_TYPE == null) {\n24:\nthrow new RuntimeException(“Globals.OS_TYPE property value is needed”);\n",
+ "native_sha256": "5fd1108ddb98a6e3da06ff2d73e91d37339a3121fa2b88a171ea9b88d5af0b42",
+ "chars": 1269,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

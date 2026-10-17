@@ -1,0 +1,47 @@
+226
+안전한 코드의 예 C#
+3:
+if (Regex.IsMatch(fileName, "properRegexHere"))
+4:
+{
+5:
+ProcessStartInfo proStartInfo = new ProcessStartInfo(); 
+6:
+proStartInfo.FileName = fileName;
+7:
+Process.Start(proStartInfo);
+8:
+}
+공격자의 입력에 따라 의도하지 않은 명령어가 실행될 수 있다.
+안전하지 않은 코드의 예 C
+1:
+int main(int argc, char* argv[]) { 
+2:
+char cmd[CMD_LENGTH]; 
+3:
+if (argc < 1 ) { 
+4:
+// error 
+5:
+}
+6:
+// 외부 입력값으로 커맨드를 직접 수행 
+7:
+cmd_data = argv[1];
+8:
+snprintf(cmd, CMD_LENGTH, “cat %s”, cmd_data); 
+9:
+system(cmd);
+10:
+……
+11: }
+운영체제 명령어 실행 시에는 아래와 같이 외부에서 들어오는 값에 의하여 멀티라인을 지원하는 특수 
+문자(| ; & :)나 파일 리다이렉트 특수문자(> >>)등을 제거하여 원하지 않은 운영체제 명령어가 실행 
+될 수 없도록 필터링을 수행한다.
+안전한 코드의 예 C
+1:
+int main(int argc, char* argv[]) { 
+2:
+char cmd[CMD_LENGTH]; 
+3:
+int len = 0;

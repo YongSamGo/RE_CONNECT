@@ -1,0 +1,45 @@
+Python 시큐어코딩 가이드
+32
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+import subprocess
+from django.shortcuts import render
+def execute_command(request):
+    date = request.POST.get('date','')
+    # 명령어를 추가로 실행 또는 또 다른 명령이 실행될 수 있는 키워드에 
+    # 대한 예외처리
+    for word in ['|', ';', '&', ':', '>', '<', '`', '\\', '!']:
+       date = date.replace(word, “”)
+       # re.sub 함수를 사용해 특수문자를 제거하는 방법도 있다
+       # date = re.sub('[|;&:><`\\\!]', '', date)
+    # shell=True 옵션은 제거 하고 명령과 인자를 배열로 입력
+    subprocess.run(["cmd", "/c", "backuplog.bat", date])
+    return render(request, '/success.html')
+라. 참고자료
+① CWE-78: Improper Neutralization of Special Elements used in an OS Command ('OS Command Injection'), MITRE,
+https://cwe.mitre.org/data/definitions/78.html
+② Command Injection, OWASP
+https://owasp.org/www-community/attacks/Command_Injection
+③ OS Command Injection Defense Cheat Sheet, OWASP
+https://cheatsheetseries.owasp.org/cheatsheets/OS_Command_Injection_Defense_Cheat_Sheet.html
+④ Miscellaneous operating system interfaces - os.system(), Python Software Foundation
+https://docs.python.org/3.10/library/os.html?highlight=os%20system#module-os
+⑤ Subprocess management, Python Software Foundation,
+https://docs.python.org/ko/3/library/subprocess.html#security-considerations
+⑥ Regular expression operations, Python Software Foundation,
+https://docs.python.org/3/library/re.html

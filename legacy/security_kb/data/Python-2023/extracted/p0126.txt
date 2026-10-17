@@ -1,0 +1,52 @@
+Python 시큐어코딩 가이드
+120
+이와 같이 하나의 자원에 대해 동시에 검사시점과 사용시점이 달라 생기는 보안약점으로 인해 동기화 오류뿐만 
+아니라 교착상태 등과 같은 문제점이 발생할 수 있다.
+파이썬에서는 멀티스레드 환경에서 공유 자원에 여러 쓰레드가 접근하는 것을 막기 위해 Lock 객체를 제공
+한다(자원의 상태를 잠금으로 변경하는 acquire() 메서드와 사용 중인 자원을 해제하는 release() 메서드).
+나. 안전한 코딩기법
+변수, 파일과 같은 공유자원을 여러 프로세스가 접근하여 사용할 경우 동기화 구문을 사용하여 한 번에 하나의 
+프로세스만 접근 가능하도록 해야 하며 성능에 미치는 영향을 최소화하기 위해 임계영역(critical section) 주변만 
+동기화 구문을 사용한다. 
+파이썬의 Lock 객체 사용 시 lock.acquire()로 자원을 잠그고 lock.release()로 자원을 해제해야 하며 이 
+부분을 with 문을 사용해 간단하게 표현할 수 있다.
+다. 코드예제
+다음 예제는 공유된 파일을 사용할 때 파일을 불러온 후 실제로 파일을 사용하는 부분이 실행되기 전 짧은 
+시간에도 다른 사용자 또는 프로그램에 의해 파일이 사라져 원하는 기능을 실행할 수 없는 경우를 보여 준다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+import os
+import io
+import datetime
+import threading
+def write_shared_file(filename, content):
+  # 멀티스레드 환경에서는 다른 사용자들의 작업에 따라 파일이 사라질 수
+  # 있기 때문에 공유 자원에 대해서는 검사와 사용을 동시에 해야 한다.
+  if os.path.isfile(filename) is True:
+    f = open(filename, 'w')
+    f.seek(0, io.SEEK_END)
+    f.write(content)
+    f.close()
+def start():
+  filename = ‘./temp.txt’
+  content = f“start time is {datetime.datetime.now()}”
+  my_thread = threading.Thread(target=write_shared_file, args=(filename, content))
+  my_thread.start()

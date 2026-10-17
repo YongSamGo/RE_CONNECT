@@ -1,0 +1,30 @@
+Python 시큐어코딩 가이드
+54
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+<form action="" method="POST">
+   <!-- form 태그 내부에 csrf_token 적용-->
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <table>
+        {{table}}
+    </table>
+    <input type="submit"/>
+</form>
+라. 참고자료
+① CWE-352: Cross-Site Request Forgery (CSRF), MITRE,
+https://cwe.mitre.org/data/definitions/352.html
+② Cross Site Request Forgery (CSRF), OWASP,
+https://owasp.org/www-community/attacks/csrf
+③ Cross-Site Request Forgery Prevention Cheat Sheet, OWASP
+https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html
+④ Cross Site Request Forgery protection, Django Software Foundation
+https://docs.djangoproject.com/en/3.2/ref/csrf/
+⑤ CSRF Protection, WTForms
+https://flask-wtf.readthedocs.io/en/0.15.x/csrf/

@@ -1,0 +1,38 @@
+395
+제4장구현단계 보안약점 진단
+안전한 코드의 예 JAVA
+1: String jarFile = "./download/util.jar"; 
+2: byte[] loadFile = FileManager.getBytes(jarFile); 
+3: loadFile = encrypt(loadFile, privateKey);
+// jarFileName으로 암호화된 파일을 생성한다.
+4: FileManager.createFile(loadFile, jarFileName);
+// 클라이언트에서는 파일을 다운로드 받을 경우 Public Key로 복호화한다.
+5: URL[] classURLs = new URL[] { new URL("http://filesave.com/download/util.jar") };
+6: URLConnection conn = classURLs.openConnection(); 
+7: InputStream is = conn.getInputStream(); 
+// 입력 스트림을 jarFile명으로 파일을 출력한다.
+8: FileOutputStream fos = new FileOutputStream(new File(jarFile));
+9: While (is.read(buf) != -1) {
+10: ......
+11:} 
+12:byte[] loadFile = FileManager.getBytes(jarFile); 
+13:loadFile = decrypt(loadFile, publicKey);
+// 복호화된 파일을 생성한다.
+14:FileManager.createFile(loadFile, jarFile);
+15:URLClassLoader loader = new URLClassLoader(classURLs);
+16:Class loadedClass = Class.forName("MyClass", true, loader);
+파일 무결성 검사를 하지 않고 파일을 다운로드하는 C#코드 예제이다.
+안전하지 않은 코드의 예 C#
+1: public override bool DownloadFile() 
+2:
+{
+3:
+var url = "https://www.somewhere.untrusted.com";
+4:
+var desDir = "D:/DestinationPath"; 
+5:
+string fileName = Path.GetFileName(url); 
+6:
+string descFilePath = Path.Combine(desDir, fileName); 
+7:
+try

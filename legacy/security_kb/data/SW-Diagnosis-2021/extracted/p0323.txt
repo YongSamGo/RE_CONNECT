@@ -1,0 +1,38 @@
+323
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+8:
+env.put(Context.SECURITY_CREDENTIALS, sPwd); 
+9:
+…
+외부의 입력인 name 값이 필터가 아닌 동적인 LDAP 쿼리문 에서 사용자명으로 사용되었으며, 사용자 
+인증을 위한 별도의 접근제어 방법이 사용되지 않고 있다. 이는 anonymous binding을 허용 하는 
+것으로 볼 수 있다. 따라서 임의 사용자의 정보를 외부에서 접근할 수 있게 된다.
+정탐코드의 예
+1: public void f(String sSingleId, int iFlag, String sServiceProvider, String sUid, String 
+sPwd) {
+2: …
+3: env.put(Context.INITIAL_CONTEXT_FACTORY, CommonMySingleConst.INITCTX);
+4: env.put(Context.PROVIDER_URL, sServiceProvider);
+5: // 익명으로 LDAP 인증을 사용
+6: env.put(Context.SECURITY_AUTHENTICATION, “none”);
+7: env.put(Context.SECURITY_PRINCIPAL, sUid);
+8: env.put(Context.SECURITY_CREDENTIALS, sPwd);
+9: …
+10:}
+아래의 코드처럼 세션에 저장된 사용자 정보로 해당 사용자가 삭제작업을 수행할 권한이 있는지 확인
+한 뒤 권한이 있는 경우에만 수행하도록 해야 한다.
+오탐코드의 예
+1: public String doSometing(HttpServletRequest request, HttpServletResponse response, 
+HttpSession session) {
+2:
+String action= request.getParameter(“action”);
+3:
+// 세션에 저장된 사용자 정보를 얻어온다.
+4:
+User user= (User)session.getAttribute(“user”); 
+5:
+6:
+// 사용자정보에서 해당 사용자가 delete작업의 권한이 있는지 확인한 뒤 삭제 작업을 수행한다.
+7:
+if (action != null && action.equals(“delete”) && checkAccessControlList(user,action))

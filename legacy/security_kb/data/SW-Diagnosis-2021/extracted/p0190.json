@@ -1,0 +1,690 @@
+{
+ "lines": [
+  {
+   "text": "190",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.0654067993164,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Properties props = new Properties(); ",
+   "bbox": [
+    109.68013763427734,
+    142.23818969726562,
+    263.0770568847656,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    92.04248046875,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = “conditions.txt”; ",
+   "bbox": [
+    109.65721130371094,
+    156.63821411132812,
+    252.79486083984375,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30000305175781,
+    171.03823852539062,
+    92.06539916992188,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileInputStream in = new FileInputStream(fileName); ",
+   "bbox": [
+    114.0595703125,
+    171.03823852539062,
+    332.1421203613281,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30000305175781,
+    185.43826293945312,
+    92.06539916992188,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "props.load(in);",
+   "bbox": [
+    114.0595703125,
+    185.43826293945312,
+    170.25885009765625,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30000305175781,
+    199.83828735351562,
+    97.00638580322266,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부로부터 입력을 받는다. ",
+   "bbox": [
+    114.56028747558594,
+    199.83828735351562,
+    225.34478759765625,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30000305175781,
+    214.23831176757812,
+    97.04517364501953,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String id = props.getProperty(“id”); ",
+   "bbox": [
+    114.59907531738281,
+    214.23831176757812,
+    259.0694885253906,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30000305175781,
+    228.6383056640625,
+    97.00109100341797,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부 입력 값이 query의 인자로 사용이 된다. ",
+   "bbox": [
+    114.55499267578125,
+    228.6383056640625,
+    295.89544677734375,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30000305175781,
+    243.03829956054688,
+    97.04517364501953,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Query query = em.createNativeQuery(“SELECT OBJECT(i) FROM Item i WHERE ",
+   "bbox": [
+    114.59907531738281,
+    243.03829956054688,
+    448.35430908203125,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "i.itemID > “ + id); ",
+   "bbox": [
+    114.5999755859375,
+    257.43829345703125,
+    190.91665649414062,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.3000259399414,
+    271.8382873535156,
+    97.04519653320312,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "List<U9103> items = query.getResultList(); ",
+   "bbox": [
+    114.5990982055664,
+    271.8382873535156,
+    291.09112548828125,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.3000259399414,
+    286.23828125,
+    97.04519653320312,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    114.59910583496094,
+    286.23828125,
+    122.53287506103516,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.3000259399414,
+    300.6382751464844,
+    97.00816345214844,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return r_type;",
+   "bbox": [
+    114.56207275390625,
+    300.6382751464844,
+    170.2324676513672,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    84.3000259399414,
+    315.03826904296875,
+    97.04519653320312,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.83934020996094,
+    315.03826904296875,
+    108.57208251953125,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: …",
+   "bbox": [
+    84.3000259399414,
+    329.4382629394531,
+    109.33372497558594,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[ SQL 삽입 : mybatis Data Map ]",
+   "bbox": [
+    76.5,
+    366.8511047363281,
+    214.00872802734375,
+    377.87310791015625
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "외부에서 입력된 값이 쿼리의 인자값으로만 사용되지 않고, 쿼리 명령어에 연결되는 문자열 로 사용 ",
+   "bbox": [
+    76.5,
+    388.8109436035156,
+    464.8305358886719,
+    399.83294677734375
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "되면, 공격자가 의도하지 않았던 문자열을 전달함으로써 쿼리의 의미를 왜곡시키거나, 그 구조를 ",
+   "bbox": [
+    76.5,
+    405.8509521484375,
+    464.8206481933594,
+    416.8729553222656
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "변경하여 임의의 DB 명령어를 수행할 수 있다.",
+   "bbox": [
+    76.5,
+    422.8308410644531,
+    254.9894256591797,
+    433.85284423828125
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 mybatis Data Map에서 사용하는 쿼리 설정파일(XML)이다. 정의된 쿼리 중 ",
+   "bbox": [
+    76.5,
+    444.8507995605469,
+    464.8481750488281,
+    455.872802734375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "delStu- dent 명령어 선언에서 쿼리에 삽입되는 인자들 중 $name$으로 전달되는 문자열 값은 ",
+   "bbox": [
+    76.5,
+    461.8306884765625,
+    464.80987548828125,
+    472.8526916503906
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "그대로 연결되어 쿼리가 만들어진다. 따라서 만약 NAME의 값으로 ‘ OR ‘x’=’x 을 전달하면 다음과 ",
+   "bbox": [
+    76.50000762939453,
+    478.8105773925781,
+    464.8128662109375,
+    489.83258056640625
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "같은 쿼리가 실행되어 테이블의 모든 원소를 삭제할 수 있으므로 취약하다고 판정한다.",
+   "bbox": [
+    76.50000762939453,
+    495.8505859375,
+    406.01177978515625,
+    506.8725891113281
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DELETE STUDENTS WHERE NUM = #num# and NAME = ‘’ OR ‘x’=’x’ ",
+   "bbox": [
+    76.50000762939453,
+    517.8103637695312,
+    386.0025634765625,
+    528.8323974609375
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    548.35107421875,
+    296.1402587890625,
+    559.3731079101562
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <?xml version=”1.0” encoding=”UTF-8”?> ",
+   "bbox": [
+    83.58000183105469,
+    573.278076171875,
+    265.3250427246094,
+    583.1781005859375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: <!DOCTYPE sqlMap PUBLIC “-//iBATIS.com//DTD SQL Map 2.0//EN”",
+   "bbox": [
+    83.57999420166016,
+    587.6781005859375,
+    384.8642578125,
+    597.578125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“http://www. ibatis.com/dtd/sql-map-2.dtd”>",
+   "bbox": [
+    95.70014953613281,
+    602.0780639648438,
+    281.6069030761719,
+    611.9780883789062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: <sqlMap namespace=”Student”>",
+   "bbox": [
+    83.57998657226562,
+    616.4780883789062,
+    224.63453674316406,
+    626.3781127929688
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.57998657226562,
+    630.8780517578125,
+    91.30924224853516,
+    640.778076171875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<resultMap id=”StudentResult” class=”Student”>",
+   "bbox": [
+    100.04344177246094,
+    630.8780517578125,
+    294.41375732421875,
+    640.778076171875
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27
+   ],
+   "text": "6:        Properties props = new Properties(); \n7:        String fileName = “conditions.txt”; \n8:         FileInputStream in = new FileInputStream(fileName); \n9:         props.load(in);\n10:        // 외부로부터 입력을 받는다. \n11:        String id = props.getProperty(“id”); \n12:        // 외부 입력 값이 query의 인자로 사용이 된다. \n13:        Query query = em.createNativeQuery(“SELECT OBJECT(i) FROM Item i WHERE \ni.itemID > “ + id); \n14:        List<U9103> items = query.getResultList(); \n15:        …\n16:        return r_type;\n17:    }\n18: …",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    141.03818969726564,
+    448.35430908203125,
+    340.5382568359375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    38,
+    39,
+    40,
+    41,
+    42,
+    43
+   ],
+   "text": "1: <?xml version=”1.0” encoding=”UTF-8”?> \n2: <!DOCTYPE sqlMap PUBLIC “-//iBATIS.com//DTD SQL Map 2.0//EN”\n“http://www. ibatis.com/dtd/sql-map-2.dtd”>\n3: <sqlMap namespace=”Student”>\n4:    <resultMap id=”StudentResult” class=”Student”>",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.57998657226562,
+    572.078076171875,
+    384.8642578125,
+    641.978076171875
+   ]
+  }
+ ],
+ "native": "190\n정탐코드의 예\n6:\nProperties props = new Properties(); \n7:\nString fileName = “conditions.txt”; \n8:\nFileInputStream in = new FileInputStream(fileName); \n9:\nprops.load(in);\n10:\n// 외부로부터 입력을 받는다. \n11:\nString id = props.getProperty(“id”); \n12:\n// 외부 입력 값이 query의 인자로 사용이 된다. \n13:\nQuery query = em.createNativeQuery(“SELECT OBJECT(i) FROM Item i WHERE \ni.itemID > “ + id); \n14:\nList<U9103> items = query.getResultList(); \n15:\n…\n16:\nreturn r_type;\n17:\n}\n18: …\n[ SQL 삽입 : mybatis Data Map ]\n외부에서 입력된 값이 쿼리의 인자값으로만 사용되지 않고, 쿼리 명령어에 연결되는 문자열 로 사용 \n되면, 공격자가 의도하지 않았던 문자열을 전달함으로써 쿼리의 의미를 왜곡시키거나, 그 구조를 \n변경하여 임의의 DB 명령어를 수행할 수 있다.\n다음의 예제는 mybatis Data Map에서 사용하는 쿼리 설정파일(XML)이다. 정의된 쿼리 중 \ndelStu- dent 명령어 선언에서 쿼리에 삽입되는 인자들 중 $name$으로 전달되는 문자열 값은 \n그대로 연결되어 쿼리가 만들어진다. 따라서 만약 NAME의 값으로 ‘ OR ‘x’=’x 을 전달하면 다음과 \n같은 쿼리가 실행되어 테이블의 모든 원소를 삭제할 수 있으므로 취약하다고 판정한다.\nDELETE STUDENTS WHERE NUM = #num# and NAME = ‘’ OR ‘x’=’x’ \n정탐코드의 예\n1: <?xml version=”1.0” encoding=”UTF-8”?> \n2: <!DOCTYPE sqlMap PUBLIC “-//iBATIS.com//DTD SQL Map 2.0//EN”\n“http://www. ibatis.com/dtd/sql-map-2.dtd”>\n3: <sqlMap namespace=”Student”>\n4:\n<resultMap id=”StudentResult” class=”Student”>\n",
+ "native_sha256": "31a11c7f9b3f06215032024bb6bb3fcad67d5b3151878969b3cbfc9fa84b9e8f",
+ "chars": 1142,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,284 @@
+{
+ "lines": [
+  {
+   "text": "475",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "Spring 프레임워크 기반의 eGov 프레임워크는 IoC를 사용하고 있다. 이는 프레임워크에서 인스턴스를 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1462707519531,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "관리하기 때문에 안전하다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    173.2177734375,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    167.29122924804688,
+    291.27935791015625,
+    178.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    192.21823120117188,
+    86.41923522949219,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "@Resource(name = “fileMngService”) ",
+   "bbox": [
+    95.21337890625,
+    192.21823120117188,
+    250.20401000976562,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    206.61825561523438,
+    86.41658782958984,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "private FileMngService fileService; ",
+   "bbox": [
+    95.21073150634766,
+    206.61825561523438,
+    237.6024627685547,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    259.0550842285156,
+    126.4169921875,
+    271.1330871582031
+   ],
+   "block": 29,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-488 Exposure of Data Element to Wrong Session, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    282.7311096191406,
+    381.73370361328125,
+    293.75311279296875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/488.html ",
+   "bbox": [
+    102.23983001708984,
+    298.7510986328125,
+    311.4837951660156,
+    309.7731018066406
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] CWE-543 Use of Singleton Pattern Without Synchronization in a Mulitithreaded ",
+   "bbox": [
+    85.86000061035156,
+    319.7510070800781,
+    459.1935729980469,
+    330.77301025390625
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Context, MITRE,",
+   "bbox": [
+    102.2398681640625,
+    335.77099609375,
+    174.22825622558594,
+    346.7929992675781
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/543.html",
+   "bbox": [
+    102.2398681640625,
+    351.7308654785156,
+    308.7280578613281,
+    362.75286865234375
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Do not let session information leak within a servlet, CERT,",
+   "bbox": [
+    85.86003875732422,
+    372.73077392578125,
+    356.1857604980469,
+    383.7527770996094
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/MSC11-J.+Do+not+l",
+   "bbox": [
+    102.2398681640625,
+    388.7507629394531,
+    456.4621276855469,
+    399.77276611328125
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "et+session+information+leak+within+a+servlet",
+   "bbox": [
+    102.2398681640625,
+    404.770751953125,
+    306.7913513183594,
+    415.7927551269531
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "1:    @Resource(name = “fileMngService”) \n2:    private FileMngService fileService; ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    191.0182312011719,
+    250.20401000976562,
+    217.71824951171874
+   ]
+  }
+ ],
+ "native": "475\n제4장구현단계 보안약점 진단\nSpring 프레임워크 기반의 eGov 프레임워크는 IoC를 사용하고 있다. 이는 프레임워크에서 인스턴스를 \n관리하기 때문에 안전하다.\n오탐코드의 예\n1:\n@Resource(name = “fileMngService”) \n2:\nprivate FileMngService fileService; \n마. 참고자료\n[1] CWE-488 Exposure of Data Element to Wrong Session, MITRE,\nhttp://cwe.mitre.org/data/definitions/488.html \n[2] CWE-543 Use of Singleton Pattern Without Synchronization in a Mulitithreaded \nContext, MITRE,\nhttp://cwe.mitre.org/data/definitions/543.html\n[3] Do not let session information leak within a servlet, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/MSC11-J.+Do+not+l\net+session+information+leak+within+a+servlet\n",
+ "native_sha256": "b497674250845b6a38eacb17f78c51b16562bde59441e3bb0e6ba17c0a9deb72",
+ "chars": 630,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

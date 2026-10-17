@@ -1,0 +1,58 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+83
+⦁중요정보 평문전송
+아래 예제는 인자값으로 전달 받은 패스워드를 검증 없이 네트워크를 통해 전송하는 예시를 포함한다. 전달 
+받은 패스워드가 암호화가 되어 있지 않을 경우 패킷 스니핑을 통하여 패스워드가 노출될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+import socket
+HOST = '127.0.0.1'
+PORT = 65434
+def send_password(password):
+  ......
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.connect((HOST, PORT))
+    # 패스워드를 암호화 하지 않고 전송하여 안전하지 않다.
+    s.sendall(password.encode('utf-8'))
+    data = s.recv(1024)
+    .......
+아래는 네트워크를 통해 전달되는 패스워드가 노출되지 않도록 암호화하여 전송하는 예시를 보여 준다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+import socket
+import os
+from Crypto.Cipher import AES 
+HOST = '127.0.0.1'
+PORT = 65434
+def send_password(password):
+  # 문자열로 저장되어 있는 블록키를 로드
+  block_key = os.environ.get('BLOCK_KEY')
+  aes = AEScipher(block_key) 
+  # 패스워드 등 중요 정보는 암호화하여 전송하는 것이 안전하다
+  enc_passowrd = aes.encrypt(passowrd)

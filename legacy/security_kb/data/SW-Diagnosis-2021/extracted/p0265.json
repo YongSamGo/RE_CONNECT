@@ -1,0 +1,845 @@
+{
+ "lines": [
+  {
+   "text": "265",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    202.32000732421875,
+    120.79122924804688,
+    324.94390869140625,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    79.37999725341797,
+    140.19808959960938,
+    87.10749053955078,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sc.setSearchScope(SearchControls.SUBTREE_SCOPE); ",
+   "bbox": [
+    109.10166931152344,
+    140.19808959960938,
+    329.3475341796875,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    79.37999725341797,
+    154.59811401367188,
+    92.05111694335938,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String base = \"dc=example,dc=com\"; ",
+   "bbox": [
+    109.60501861572266,
+    154.59811401367188,
+    263.201904296875,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//userSN과 userPassword 값에 LDAP필터를 조작할 수 있는 공격 문자열에 대한 검증이 없어 안전하지 ",
+   "bbox": [
+    79.37999725341797,
+    168.99813842773438,
+    449.67547607421875,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "않다.",
+   "bbox": [
+    96.53982543945312,
+    183.39816284179688,
+    114.544189453125,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    79.37995910644531,
+    197.79818725585938,
+    92.065185546875,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String filter = \"(&(sn=\" + userSN + \")(userPassword=\" + userPassword + \"))\";",
+   "bbox": [
+    114.06022644042969,
+    197.79818725585938,
+    431.9065246582031,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    79.37991333007812,
+    212.19821166992188,
+    92.05631256103516,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "NamingEnumeration<?> results = dctx.search(base, filter, sc);",
+   "bbox": [
+    109.61022186279297,
+    212.19821166992188,
+    360.6849670410156,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    79.37991333007812,
+    226.59820556640625,
+    92.06160736083984,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while (results.hasMore()) { ",
+   "bbox": [
+    109.61550903320312,
+    226.59820556640625,
+    219.20822143554688,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    79.37991333007812,
+    240.99819946289062,
+    92.08453369140625,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SearchResult sr = (SearchResult) results.next(); ",
+   "bbox": [
+    118.45903015136719,
+    240.99819946289062,
+    315.8257141113281,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    79.37991333007812,
+    255.398193359375,
+    92.06336212158203,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Attributes attrs = sr.getAttributes(); ",
+   "bbox": [
+    118.43785858154297,
+    255.398193359375,
+    266.47674560546875,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    79.37991333007812,
+    269.7981872558594,
+    92.0739517211914,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Attribute attr = attrs.get(\"cn\"); ",
+   "bbox": [
+    118.44844055175781,
+    269.7981872558594,
+    243.9845733642578,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    79.37991333007812,
+    284.19818115234375,
+    92.07747650146484,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    118.45196533203125,
+    284.19818115234375,
+    134.28424072265625,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    79.37991333007812,
+    298.5981750488281,
+    92.06513977050781,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    109.61904907226562,
+    298.5981750488281,
+    112.35179138183594,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    79.37991333007812,
+    312.9981689453125,
+    92.06513214111328,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "dctx.close(); ",
+   "bbox": [
+    109.6190414428711,
+    312.9981689453125,
+    160.55296325683594,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    79.37991333007812,
+    327.3981628417969,
+    92.0422134399414,
+    337.29815673828125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (NamingException e) { … } ",
+   "bbox": [
+    100.83635711669922,
+    327.3981628417969,
+    246.7974395751953,
+    337.29815673828125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:}",
+   "bbox": [
+    79.37991333007812,
+    341.79815673828125,
+    94.7723159790039,
+    351.6981506347656
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "검색을 위한 필터 문자열로 사용되는 외부의 입력에서 위험한 문자열을 제거하여 위험성을 부분적으로 ",
+   "bbox": [
+    70.86000061035156,
+    374.1711120605469,
+    459.1875305175781,
+    385.193115234375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "감소시킬 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    391.21112060546875,
+    139.13404846191406,
+    402.2331237792969
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    216.89999389648438,
+    431.1711120605469,
+    310.3565673828125,
+    442.193115234375
+   ],
+   "block": 42,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private void searchRecord(String userSN, String userPassword) throws NamingException {",
+   "bbox": [
+    79.37999725341797,
+    450.5780944824219,
+    447.8065185546875,
+    460.47808837890625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    79.3800048828125,
+    464.97808837890625,
+    87.11808013916016,
+    474.8780822753906
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Hashtable<String, String> env = new Hashtable<String, String>(); ",
+   "bbox": [
+    100.29254150390625,
+    464.97808837890625,
+    365.49639892578125,
+    474.8780822753906
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    79.3800048828125,
+    479.3780822753906,
+    87.08546447753906,
+    489.278076171875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "env.put(Context.INITIAL_CONTEXT_FACTORY, \"com.sun.jndi.ldap.LdapCtxFactory\");",
+   "bbox": [
+    100.25992584228516,
+    479.3780822753906,
+    434.792724609375,
+    489.278076171875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    79.3800048828125,
+    493.778076171875,
+    87.10838317871094,
+    503.6780700683594
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    100.28284454345703,
+    493.778076171875,
+    117.8499755859375,
+    503.6780700683594
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    79.3800048828125,
+    508.1780700683594,
+    87.09956359863281,
+    518.0780639648438
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DirContext dctx = new InitialDirContext(env); ",
+   "bbox": [
+    109.09373474121094,
+    508.1780700683594,
+    296.00811767578125,
+    518.0780639648438
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    79.3800048828125,
+    522.5780029296875,
+    87.11102294921875,
+    532.47802734375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SearchControls sc = new SearchControls(); ",
+   "bbox": [
+    109.10519409179688,
+    522.5780029296875,
+    288.16864013671875,
+    532.47802734375
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    79.3800048828125,
+    536.97802734375,
+    87.1136703491211,
+    546.8780517578125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String[] attributeFilter = {\"cn\", \"mail\" }; ",
+   "bbox": [
+    109.10783386230469,
+    536.97802734375,
+    268.2998352050781,
+    546.8780517578125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    79.3800048828125,
+    551.3780517578125,
+    87.1136703491211,
+    561.278076171875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sc.setReturningAttributes(attributeFilter); ",
+   "bbox": [
+    109.10871887207031,
+    551.3780517578125,
+    274.4087219238281,
+    561.278076171875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    79.3800048828125,
+    565.7780151367188,
+    87.10749816894531,
+    575.6780395507812
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sc.setSearchScope(SearchControls.SUBTREE_SCOPE); ",
+   "bbox": [
+    109.10166931152344,
+    565.7780151367188,
+    329.3475341796875,
+    575.6780395507812
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    79.3800048828125,
+    580.177978515625,
+    92.05817413330078,
+    590.0780029296875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String base = \"dc=example,dc=com\"; ",
+   "bbox": [
+    114.0523452758789,
+    580.177978515625,
+    267.6474609375,
+    590.0780029296875
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// userSN과 userPassword 값에서 LDAP 필터를 조작할 수 있는 문자열을 제거하고 사용",
+   "bbox": [
+    79.3800048828125,
+    594.5780029296875,
+    398.5301513671875,
+    604.47802734375
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "9:         sc.setSearchScope(SearchControls.SUBTREE_SCOPE); \n10:        String base = \"dc=example,dc=com\"; \n//userSN과 userPassword 값에 LDAP필터를 조작할 수 있는 공격 문자열에 대한 검증이 없어 안전하지 \n않다.",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    79.37999725341797,
+    131.913232421875,
+    449.67547607421875,
+    194.49815673828124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "11:         String filter = \"(&(sn=\" + userSN + \")(userPassword=\" + userPassword + \"))\";\n12:        NamingEnumeration<?> results = dctx.search(base, filter, sc);\n13:        while (results.hasMore()) { \n14:           SearchResult sr = (SearchResult) results.next(); \n15:           Attributes attrs = sr.getAttributes(); \n16:           Attribute attr = attrs.get(\"cn\"); \n17:           ......\n18:        }\n19:        dctx.close(); \n20:    } catch (NamingException e) { … } \n21:}",
+   "language": "text",
+   "label": "않다.",
+   "bbox": [
+    79.37991333007812,
+    196.5981872558594,
+    431.9065246582031,
+    352.8981506347656
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+   ],
+   "text": "1: private void searchRecord(String userSN, String userPassword) throws NamingException {\n2:      Hashtable<String, String> env = new Hashtable<String, String>(); \n3:      env.put(Context.INITIAL_CONTEXT_FACTORY, \"com.sun.jndi.ldap.LdapCtxFactory\");\n4:      try {\n5:         DirContext dctx = new InitialDirContext(env); \n6:         SearchControls sc = new SearchControls(); \n7:         String[] attributeFilter = {\"cn\", \"mail\" }; \n8:         sc.setReturningAttributes(attributeFilter); \n9:         sc.setSearchScope(SearchControls.SUBTREE_SCOPE); \n10:         String base = \"dc=example,dc=com\"; \n// userSN과 userPassword 값에서 LDAP 필터를 조작할 수 있는 문자열을 제거하고 사용",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    79.37999725341797,
+    442.293115234375,
+    447.8065185546875,
+    605.67802734375
+   ]
+  }
+ ],
+ "native": "265\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 JAVA\n9:\nsc.setSearchScope(SearchControls.SUBTREE_SCOPE); \n10:\nString base = \"dc=example,dc=com\"; \n//userSN과 userPassword 값에 LDAP필터를 조작할 수 있는 공격 문자열에 대한 검증이 없어 안전하지 \n않다.\n11:\nString filter = \"(&(sn=\" + userSN + \")(userPassword=\" + userPassword + \"))\";\n12:\nNamingEnumeration<?> results = dctx.search(base, filter, sc);\n13:\nwhile (results.hasMore()) { \n14:\nSearchResult sr = (SearchResult) results.next(); \n15:\nAttributes attrs = sr.getAttributes(); \n16:\nAttribute attr = attrs.get(\"cn\"); \n17:\n......\n18:\n}\n19:\ndctx.close(); \n20:\n} catch (NamingException e) { … } \n21:}\n검색을 위한 필터 문자열로 사용되는 외부의 입력에서 위험한 문자열을 제거하여 위험성을 부분적으로 \n감소시킬 수 있다.\n안전한 코드의 예 JAVA\n1: private void searchRecord(String userSN, String userPassword) throws NamingException {\n2:\nHashtable<String, String> env = new Hashtable<String, String>(); \n3:\nenv.put(Context.INITIAL_CONTEXT_FACTORY, \"com.sun.jndi.ldap.LdapCtxFactory\");\n4:\ntry {\n5:\nDirContext dctx = new InitialDirContext(env); \n6:\nSearchControls sc = new SearchControls(); \n7:\nString[] attributeFilter = {\"cn\", \"mail\" }; \n8:\nsc.setReturningAttributes(attributeFilter); \n9:\nsc.setSearchScope(SearchControls.SUBTREE_SCOPE); \n10:\nString base = \"dc=example,dc=com\"; \n// userSN과 userPassword 값에서 LDAP 필터를 조작할 수 있는 문자열을 제거하고 사용\n",
+ "native_sha256": "aa259d284a4f9daf0a8ae4f0860353dfe63223ee763a2a4679e0456e1076da20",
+ "chars": 1274,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

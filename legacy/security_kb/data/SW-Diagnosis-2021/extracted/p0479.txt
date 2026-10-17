@@ -1,0 +1,32 @@
+479
+제4장구현단계 보안약점 진단
+라. 진단방법
+J2EE를 제외하고 디버그 코드를 정적도구만으로 판단하기는 쉽지 않다.
+개발 중 테스트 목적으로 남아 있는 디버그 코드가 존재하는지 확인한다(①). J2EE 환경(J2EE 
+Standard)에서는 main 메소드 작성을 금하고 있으며, 일반적으로 개발자들은 디버그 코드를 main
+으로 작성하므로 main 메소드가 사용되는 경우 디버그코드 인지 확인하여야 한다.
+일반적인 진단의 예
+1: public class U489 extends HttpServlet { 
+2:
+protected void doGet(HttpServletRequest request, … ) throws … { … }
+3:
+protected void doPost(HttpServletRequest request, … ) throws … { … }
+4:
+// 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.
+5:
+public static void main(String args[]) { ···············································································①
+6:
+System.err.printf(“Print debug code”);
+7:
+}
+8: …
+J2EE와 같은 응용프로그램에서 디버깅용으로 사용되는 main() 메소드는 삭제한다.
+정탐코드의 예
+1: public class U489 extends HttpServlet { 
+2: protected void doGet(HttpServletRequest request, …) throws …{ …} 
+3: protected void doPost(HttpServletRequest request, …) throws …{ …}
+4: // 테스트를 위한 main()함수나 디버깅용 로그 출력문 등이 남아 있다.
+5: public static void main(String args[]) { 
+6: System.err.printf(“Print debug code”); 
+7: } 
+8: }

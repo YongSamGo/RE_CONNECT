@@ -1,0 +1,32 @@
+520
+아키텍처 설계서의 아키텍처 요구사항 및 구현방안에서 XML 문서에 대한 조회 기능을 파라미터화된 
+쿼리를 지원하는 XQuery 표현식을 사용하고, 외부 바인딩 함수를 이용하여 외부 입력값을 필터링하여 
+적용하도록 명시하고 있다.
+안전한 보안설계의 예 : 아키텍처 설계서
+2. 아키텍처 요구사항 및 구형방안
+요구사항ID
+SR-010201
+요구사항 내용
+XML 문서 조회 기능 구현 시 XML 쿼리에 사용되는 파라미터는 반드시 XML 쿼리를 조작할 수 없도록 필터링
+해서 사용하거나, 미리 작성된 쿼리문에 입력값을 자료형에 따라 바인딩해서 사용해야 한다.
+구현방안
+XML 문서에 대한 조회 기능은 XQuery 표현식을 이용하여 파라미터화된 쿼리를 만들고, 바인딩 함수를 
+이용하여 입력 값을 안전한 문자열로 필터링하여 적용, 실행될 수 있도록 한다.
+개발가이드에는 안전한 XML 조회 및 결과 검증에 필요한 XQuery 표현식의 사용 방법과 필터링 
+방법 등을 제시하고 있다.
+안전한 보안설계의 예 : 개발가이드
+1.2.1. XML 쿼리
+XML 문서에 대한 조회 기능은 XQuery 표현식을 이용하여 파라미터화된 쿼리를 만들고, 바인딩 함수를 이용하여 
+입력 값을 안전한 문자열로 필터링하여 적용, 실행될 수 있도록 한다.
+String es = 
+“doc(‘users.xml’)/userlist/user[uname=’$xname’]”;
+XQPreparedExpression expr = conn.prepareExpression(es);
+expr.bindString(new QName(“xname”), name, null);
+XQResultSequence result = expr.executeQuery(); 
+while (result.next()) { 
+ String str =
+ result.getAtomicValue(); if
+ (str.indexOf(‘>’) < 0) { 
+ System.out.println(str); 
+ } 
+}

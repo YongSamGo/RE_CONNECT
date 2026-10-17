@@ -1,0 +1,294 @@
+{
+ "lines": [
+  {
+   "text": "53",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①“XML Path Language (XPath) Version 1.0” W3C Recommendation, 16 Nov 1999",
+   "bbox": [
+    85.86000061035156,
+    137.53121948242188,
+    447.7004699707031,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.w3.org/TR/xpath ",
+   "bbox": [
+    99.59939575195312,
+    153.55117797851562,
+    233.10740661621094,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②XQuery Injection, Common Attack Pattern Enumeration and Classification (CAPEC)",
+   "bbox": [
+    85.8589859008789,
+    174.55111694335938,
+    450.0360412597656,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://capec.mitre.org/data/definitions/84.html",
+   "bbox": [
+    99.59841918945312,
+    190.51095581054688,
+    308.111328125,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③“Blind XPath Injection”, Amit Klein",
+   "bbox": [
+    85.8580093383789,
+    211.51089477539062,
+    248.5901641845703,
+    222.53289794921875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_2004",
+   "bbox": [
+    99.5974349975586,
+    227.5308837890625,
+    456.2666931152344,
+    238.55288696289062
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "0518.pdf",
+   "bbox": [
+    99.59744262695312,
+    243.55087280273438,
+    138.6883544921875,
+    254.5728759765625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Failure to Sanitize Data within XPath Expressions(‘XPath injection’)",
+   "bbox": [
+    85.8570327758789,
+    264.55078125,
+    389.7076110839844,
+    275.5727844238281
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/643.html",
+   "bbox": [
+    99.596435546875,
+    280.5106506347656,
+    306.03192138671875,
+    291.53265380859375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤CWE-652 XQuery Injection, MITRE,",
+   "bbox": [
+    85.85602569580078,
+    301.51055908203125,
+    256.8562927246094,
+    312.5325622558594
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/652.html",
+   "bbox": [
+    99.596435546875,
+    317.5305480957031,
+    306.03192138671875,
+    328.55255126953125
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥CWE-643 XPath Injection, MITRE,",
+   "bbox": [
+    85.85602569580078,
+    338.53045654296875,
+    250.05789184570312,
+    349.5524597167969
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/643.html",
+   "bbox": [
+    99.596435546875,
+    354.5504455566406,
+    306.03192138671875,
+    365.57244873046875
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦2016 OWASP Application Security Verification Standard, OWASP, Malicious Input ",
+   "bbox": [
+    85.85602569580078,
+    375.55035400390625,
+    459.1797180175781,
+    386.5723571777344
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Handling Verification Requirements,",
+   "bbox": [
+    99.59646606445312,
+    391.5102233886719,
+    256.5474548339844,
+    402.5322265625
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    99.59646606445312,
+    407.53021240234375,
+    456.03204345703125,
+    418.5522155761719
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project",
+   "bbox": [
+    99.596435546875,
+    423.5502014160156,
+    199.35581970214844,
+    434.57220458984375
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "53\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①“XML Path Language (XPath) Version 1.0” W3C Recommendation, 16 Nov 1999\nhttp://www.w3.org/TR/xpath \n②XQuery Injection, Common Attack Pattern Enumeration and Classification (CAPEC)\nhttp://capec.mitre.org/data/definitions/84.html\n③“Blind XPath Injection”, Amit Klein\nhttp://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_2004\n0518.pdf\n④Failure to Sanitize Data within XPath Expressions(‘XPath injection’)\nhttp://cwe.mitre.org/data/definitions/643.html\n⑤CWE-652 XQuery Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/652.html\n⑥CWE-643 XPath Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/643.html\n⑦2016 OWASP Application Security Verification Standard, OWASP, Malicious Input \nHandling Verification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project\n",
+ "native_sha256": "04fdb883f9a0a8dc1c80aec05250a7d28ec4cdbb1512fc05f808600d0daa02a3",
+ "chars": 874,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

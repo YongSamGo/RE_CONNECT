@@ -1,0 +1,20 @@
+318
+다음의 예제에서는 클라이언트 측에서 인증을 수행 하고 있어 우회가 가능하므로 취약하다고 판정 한다.
+정탐코드의 예
+1:
+<script type=’text/javascript’> 
+2:
+if (${command.allowedIp} == false) { 
+3:
+document.write(“”Check Administrator IP …””); 
+4:
+alert(“”권한이 없습니다.””) 
+5:
+history.back(-1); 
+6:
+}
+마. 참고자료
+[1] CWE-306 Missing Authentication for Critical Function, MITRE,
+http://cwe.mitre.org/data/definitions/306.html 
+[2] Access Control, OWASP,
+https://www.owasp.org/index.php/Access_Control_Cheat_Sheet

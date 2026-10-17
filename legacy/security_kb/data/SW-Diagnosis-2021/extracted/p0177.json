@@ -1,0 +1,479 @@
+{
+ "lines": [
+  {
+   "text": "177",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등",
+   "bbox": [
+    70.86000061035156,
+    138.79122924804688,
+    394.9131774902344,
+    149.813232421875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    70.86000061035156,
+    184.835205078125,
+    220.3914794921875,
+    196.9132080078125
+   ],
+   "block": 26,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    159.0,
+    206.67813110351562,
+    174.12704467773438,
+    216.578125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    334.20001220703125,
+    206.67813110351562,
+    381.5479431152344,
+    216.578125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "캡슐화",
+   "bbox": [
+    155.40016174316406,
+    224.13815307617188,
+    177.6676025390625,
+    234.03814697265625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "잘못된 세션에 의한 데이터 정보 노출",
+   "bbox": [
+    297.0602722167969,
+    224.13815307617188,
+    418.6929931640625,
+    234.03814697265625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    272.4350891113281,
+    126.4169921875,
+    284.5130920410156
+   ],
+   "block": 29,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐488 Exposure of Data Element to Wrong Session, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    294.9600830078125,
+    375.9979553222656,
+    305.9931945800781
+   ],
+   "block": 30,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/488. html",
+   "bbox": [
+    99.59996032714844,
+    309.97113037109375,
+    308.880126953125,
+    320.9931335449219
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10 – A6 Sensitive Data Exposure, OWASP,",
+   "bbox": [
+    85.85955047607422,
+    330.0,
+    366.5030517578125,
+    341.03314208984375
+   ],
+   "block": 32,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Top_10_2013",
+   "bbox": [
+    99.6004409790039,
+    345.01104736328125,
+    315.3408508300781,
+    356.0330505371094
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③WASC Threat Classification Credential and Session Prediction, WASC, ",
+   "bbox": [
+    85.86003112792969,
+    364.9909362792969,
+    407.5328369140625,
+    376.012939453125
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246918/Credential%20and%20Sessio",
+   "bbox": [
+    99.60043334960938,
+    379.9908752441406,
+    455.9627990722656,
+    391.01287841796875
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "n%20Prediction",
+   "bbox": [
+    99.60043334960938,
+    394.9908142089844,
+    168.0884552001953,
+    406.0128173828125
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④2016 OWASP Application Security Verification Standard, OWASP, Session ",
+   "bbox": [
+    85.86002349853516,
+    414.970703125,
+    459.13970947265625,
+    425.9927062988281
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Management Verification Re-quirements,",
+   "bbox": [
+    99.5994873046875,
+    429.97064208984375,
+    281.61279296875,
+    440.9926452636719
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    99.5994873046875,
+    444.9705810546875,
+    456.03509521484375,
+    455.9925842285156
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Stan- dard_Project",
+   "bbox": [
+    99.5994873046875,
+    459.97052001953125,
+    207.74815368652344,
+    470.9925231933594
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Session Management Cheat Sheet, OWASP,",
+   "bbox": [
+    85.85907745361328,
+    480.0105285644531,
+    295.2095642089844,
+    491.03253173828125
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Session_Management_ Cheat_Sheet",
+   "bbox": [
+    99.5994873046875,
+    495.0104675292969,
+    412.9015808105469,
+    506.032470703125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥“HTTP State Management Mechanism”, RFC 6265, IETF,",
+   "bbox": [
+    85.85907745361328,
+    514.9902954101562,
+    348.36431884765625,
+    526.0123291015625
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://tools.ietf.org/html/rfc6265",
+   "bbox": [
+    99.59947204589844,
+    529.9902954101562,
+    246.06993103027344,
+    541.0123291015625
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦Unauthenticated Session Fixation Attacks, Christian Schneider,",
+   "bbox": [
+    85.85906219482422,
+    549.9701538085938,
+    374.935302734375,
+    560.9921875
+   ],
+   "block": 45,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.christian-schneider.net/UnauthenticatedSessionFixationAttacks.html#main",
+   "bbox": [
+    99.59947204589844,
+    564.9700927734375,
+    451.4715881347656,
+    575.9921264648438
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧Session Fixation Attacks and Protections in Web Applications, Raul Siles, ",
+   "bbox": [
+    85.85906982421875,
+    585.0100708007812,
+    459.1925354003906,
+    596.0321044921875
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_",
+   "bbox": [
+    99.59945678710938,
+    600.0100708007812,
+    455.9120178222656,
+    611.0321044921875
+   ],
+   "block": 48,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Session-WP.pdf",
+   "bbox": [
+    99.59945678710938,
+    615.0099487304688,
+    172.2347412109375,
+    626.031982421875
+   ],
+   "block": 49,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑨Insufficient Session-ID Length, OWASP,",
+   "bbox": [
+    85.85904693603516,
+    634.9898681640625,
+    277.9844055175781,
+    646.0119018554688
+   ],
+   "block": 50,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Insufficient_Session-ID_Length",
+   "bbox": [
+    99.59945678710938,
+    649.9898071289062,
+    390.85980224609375,
+    661.0118408203125
+   ],
+   "block": 51,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    4,
+    5,
+    6,
+    7
+   ],
+   "bbox": [
+    70.68000030517578,
+    202.38800048828125,
+    453.7200012207031,
+    237.42800903320312
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "캡슐화",
+     "잘못된 세션에 의한 데이터 정보 노출"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n캡슐화\n잘못된 세션에 의한 데이터 정보 노출"
+  }
+ ],
+ "native": "177\n제3장분석․ 설계단계 보안항목 진단\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 단위테스트계획서 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n캡슐화\n잘못된 세션에 의한 데이터 정보 노출\n마. 참고자료\n①CWE‐488 Exposure of Data Element to Wrong Session, MITRE,\nhttp://cwe.mitre.org/data/definitions/488. html\n②2013 OWASP Top 10 – A6 Sensitive Data Exposure, OWASP,\nhttps://www.owasp.org/index.php/Top_10_2013\n③WASC Threat Classification Credential and Session Prediction, WASC, \nhttp://projects.webappsec.org/w/page/13246918/Credential%20and%20Sessio\nn%20Prediction\n④2016 OWASP Application Security Verification Standard, OWASP, Session \nManagement Verification Re-quirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Stan- dard_Project\n⑤Session Management Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Session_Management_ Cheat_Sheet\n⑥“HTTP State Management Mechanism”, RFC 6265, IETF,\nhttp://tools.ietf.org/html/rfc6265\n⑦Unauthenticated Session Fixation Attacks, Christian Schneider,\nhttp://www.christian-schneider.net/UnauthenticatedSessionFixationAttacks.html#main\n⑧Session Fixation Attacks and Protections in Web Applications, Raul Siles, \nhttp://media.blackhat.com/bh-eu-11/Raul_Siles/BlackHat_EU_2011_Siles_SAP_\nSession-WP.pdf\n⑨Insufficient Session-ID Length, OWASP,\nhttp://www.owasp.org/index.php/Insufficient_Session-ID_Length\n",
+ "native_sha256": "ad8456161aa14798e469e403645562a08bb10b15ede9125cb54860660a295e11",
+ "chars": 1312,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

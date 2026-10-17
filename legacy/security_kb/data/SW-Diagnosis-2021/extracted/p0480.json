@@ -1,0 +1,111 @@
+{
+ "lines": [
+  {
+   "text": "480",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-489 Leftover Debug Code, MITRE,",
+   "bbox": [
+    91.5,
+    137.53121948242188,
+    286.0947265625,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/489.html",
+   "bbox": [
+    107.87982940673828,
+    153.55117797851562,
+    314.3680114746094,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Production code must not contain debugging entry points, CERT,",
+   "bbox": [
+    91.5,
+    174.55111694335938,
+    391.73004150390625,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/ENV06-J.+Productio",
+   "bbox": [
+    107.87982177734375,
+    190.51095581054688,
+    461.91351318359375,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "n+code+must+not+contain+debugging+entry+points",
+   "bbox": [
+    107.87982177734375,
+    206.53091430664062,
+    338.365234375,
+    217.55291748046875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "480\n마. 참고자료\n[1] CWE-489 Leftover Debug Code, MITRE,\nhttp://cwe.mitre.org/data/definitions/489.html\n[2] Production code must not contain debugging entry points, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/ENV06-J.+Productio\nn+code+must+not+contain+debugging+entry+points\n",
+ "native_sha256": "316a94d60e0507ebfd1b998b332172a8f5116179bbee1c782755348326fd92e4",
+ "chars": 289,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

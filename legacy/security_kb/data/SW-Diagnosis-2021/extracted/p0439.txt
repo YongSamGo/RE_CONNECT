@@ -1,0 +1,35 @@
+439
+제4장구현단계 보안약점 진단
+정탐코드의 예
+28:
+try {
+29:
+con.close();
+30:
+} catch (SQLException e) {
+31:
+e.printStackTrace();
+32:
+}
+33:
+}
+34: }
+35:}
+enter2br()에서 data가 널(Null)일 경우 널(Null)을 리턴하기 때문에 strContent가 널(Null) 값을 
+가질 가능성이 존재한다. 따라서 5번 라인에서 널(Null) Pointer 역참조가 발생할 수 있기 때문에 
+취약하다고 판정한다.
+정탐코드의 예
+1: [program_view.jsp] 
+2: …
+3: String strContent = UTIL.enter2br((String)hsROW.get(“content”)); 
+4: String linkPage= “”; 
+5: if (!strContent.equals(“”)) { 
+6: linkPage = strContent.replaceAll(“상세보기”, “<img src=’ 
+7: …
+1: [Util.java]
+2: public static String enter2br(String data) { 
+3: if(data == null) 
+4: return null; 
+5: StringTokenizer st = new StringTokenizer(data, “\n”); 
+6: … 
+7: }

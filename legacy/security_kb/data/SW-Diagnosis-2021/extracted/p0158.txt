@@ -1,0 +1,14 @@
+158
+마. 참고자료
+①CWE‐312, Cleartext Storage of Sensitive Information, MITRE,
+http://cwe.mitre.org/data/definitions/312.html
+②CWE‐539 Information Exposure Through Persistent Cookies, MITRE,
+http://cwe.mitre.org/data/definitions/539.html 
+③2016 OWASP Application Security Verification Standard, OWASP, Data Protection 
+Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_Project
+④Sensitive Data, Microsoft Patterns & Practices, MSDN,
+http://msdn.microsoft.com/en-us/library/ff650867.aspx
+⑤Password in the Clear, W3C,
+http://www.w3.org/2001/tag/doc/passwordsInTheClear-52

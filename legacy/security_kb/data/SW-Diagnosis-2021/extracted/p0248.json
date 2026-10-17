@@ -1,0 +1,552 @@
+{
+ "lines": [
+  {
+   "text": "248",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    117.31112670898438,
+    307.0608215332031,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    97.02930450439453,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fileItem.write(xmlFile);",
+   "bbox": [
+    114.58320617675781,
+    142.23818969726562,
+    203.9351043701172,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    97.04515838623047,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();",
+   "bbox": [
+    114.59906768798828,
+    156.63821411132812,
+    402.9237060546875,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.29998779296875,
+    171.03823852539062,
+    97.04515838623047,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DocumentBuilder db = dbf.newDocumentBuilder(); ",
+   "bbox": [
+    114.59906005859375,
+    171.03823852539062,
+    323.6689453125,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    84.29998779296875,
+    185.43826293945312,
+    97.0451431274414,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Document document = db.parse(xmlFile); ···································································①",
+   "bbox": [
+    114.59905242919922,
+    185.43826293945312,
+    453.3576965332031,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    84.29998779296875,
+    199.83828735351562,
+    97.04515838623047,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "changeConfiguration(document); ",
+   "bbox": [
+    114.59906005859375,
+    199.83828735351562,
+    246.44334411621094,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    84.29998779296875,
+    214.23831176757812,
+    97.02399444580078,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    145.41822814941406,
+    214.23831176757812,
+    153.3643341064453,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:}",
+   "bbox": [
+    84.29998779296875,
+    228.6383056640625,
+    99.75232696533203,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 SAXParserFactory 사용하는 예제에서는 사용자 입력 값인 XML file을 사용하고 있으나, ",
+   "bbox": [
+    76.5,
+    261.0111083984375,
+    464.83331298828125,
+    272.0331115722656
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부 엔티티 사용을 비활성화하지 않으므로 취약하다고 판정한다.",
+   "bbox": [
+    76.5,
+    278.0511169433594,
+    326.68463134765625,
+    289.0731201171875
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    314.53118896484375,
+    296.91937255859375,
+    325.5531921386719
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:@RequestMapping(value = \"/xmlupload\", method = RequestMethod.POST) ",
+   "bbox": [
+    84.30000305175781,
+    339.45819091796875,
+    398.8545837402344,
+    349.3581848144531
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:public Student xmlUpload(@RequestParam(\"file\") MultipartFile multipartFile)",
+   "bbox": [
+    84.30001831054688,
+    353.8581848144531,
+    397.9379577636719,
+    363.7581787109375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:File xmlFile = new File(multipartFile.getOriginalFilename());",
+   "bbox": [
+    84.30001831054688,
+    368.2581787109375,
+    331.9667663574219,
+    378.1581726074219
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:multipartFile.transferTo(xmlFile);",
+   "bbox": [
+    84.30001831054688,
+    382.6581726074219,
+    220.64007568359375,
+    392.55816650390625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:SAXParserFactory factory = SAXParserFactory.newInstance();",
+   "bbox": [
+    84.30001831054688,
+    397.05816650390625,
+    340.07958984375,
+    406.9581604003906
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:SAXParser saxParser = factory.newSAXParser();",
+   "bbox": [
+    84.30001831054688,
+    411.4581604003906,
+    287.0263671875,
+    421.358154296875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:SAXParseraxParser.parse(new FileInputStream(xmlFile), new DefaultHandler());",
+   "bbox": [
+    84.30001831054688,
+    425.858154296875,
+    410.6891174316406,
+    435.7581481933594
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 ",
+   "bbox": [
+    76.5,
+    458.2311096191406,
+    464.8169860839844,
+    469.25311279296875
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있다.",
+   "bbox": [
+    76.5,
+    475.2711181640625,
+    96.4720230102539,
+    486.2931213378906
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    511.7510681152344,
+    296.91937255859375,
+    522.7730712890625
+   ],
+   "block": 34,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1 String xml = \"xxe.xml\"; ",
+   "bbox": [
+    84.30000305175781,
+    536.6781005859375,
+    191.2384033203125,
+    546.578125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2 DocumentBuilderFactory df = DocumentBuilderFactory.newInstance(); ",
+   "bbox": [
+    84.30000305175781,
+    551.0780639648438,
+    379.5931701660156,
+    560.9780883789062
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");",
+   "bbox": [
+    84.30001831054688,
+    565.47802734375,
+    335.81109619140625,
+    575.3780517578125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "bbox": [
+    84.30001831054688,
+    579.8780517578125,
+    354.6124267578125,
+    589.778076171875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5 DocumentBuilder builder = df.newDocumentBuilder(); ",
+   "bbox": [
+    84.30001831054688,
+    594.278076171875,
+    314.721435546875,
+    604.1781005859375
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6 Document document = builder.parse(new InputSource(xml)); ",
+   "bbox": [
+    84.30001831054688,
+    608.6780395507812,
+    343.60040283203125,
+    618.5780639648438
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7 DOMSource domSource = new DOMSource(document); ",
+   "bbox": [
+    84.30001831054688,
+    623.0780639648438,
+    324.96478271484375,
+    632.9780883789062
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "14:        fileItem.write(xmlFile);\n15:        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n16:        DocumentBuilder db = dbf.newDocumentBuilder(); \n17:        Document document = db.parse(xmlFile); ···································································①\n18:        changeConfiguration(document); \n19:                     ...\n20:}",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.29998779296875,
+    141.03818969726564,
+    453.3576965332031,
+    239.73829956054686
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24
+   ],
+   "text": "1:@RequestMapping(value = \"/xmlupload\", method = RequestMethod.POST) \n2:public Student xmlUpload(@RequestParam(\"file\") MultipartFile multipartFile)\n3:File xmlFile = new File(multipartFile.getOriginalFilename());\n4:multipartFile.transferTo(xmlFile);\n5:SAXParserFactory factory = SAXParserFactory.newInstance();\n6:SAXParser saxParser = factory.newSAXParser();\n7:SAXParseraxParser.parse(new FileInputStream(xmlFile), new DefaultHandler());",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    338.25819091796876,
+    410.6891174316406,
+    436.95814819335936
+   ]
+  }
+ ],
+ "native": "248\n일반적인 진단의 예\n14:\nfileItem.write(xmlFile);\n15:\nDocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n16:\nDocumentBuilder db = dbf.newDocumentBuilder(); \n17:\nDocument document = db.parse(xmlFile); ···································································①\n18:\nchangeConfiguration(document); \n19:\n...\n20:}\n다음의 SAXParserFactory 사용하는 예제에서는 사용자 입력 값인 XML file을 사용하고 있으나, \n외부 엔티티 사용을 비활성화하지 않으므로 취약하다고 판정한다.\n정탐코드의 예\n1:@RequestMapping(value = \"/xmlupload\", method = RequestMethod.POST) \n2:public Student xmlUpload(@RequestParam(\"file\") MultipartFile multipartFile)\n3:File xmlFile = new File(multipartFile.getOriginalFilename());\n4:multipartFile.transferTo(xmlFile);\n5:SAXParserFactory factory = SAXParserFactory.newInstance();\n6:SAXParser saxParser = factory.newSAXParser();\n7:SAXParseraxParser.parse(new FileInputStream(xmlFile), new DefaultHandler());\n다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 \n있다.\n오탐코드의 예\n1 String xml = \"xxe.xml\"; \n2 DocumentBuilderFactory df = DocumentBuilderFactory.newInstance(); \n3 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n4 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n5 DocumentBuilder builder = df.newDocumentBuilder(); \n6 Document document = builder.parse(new InputSource(xml)); \n7 DOMSource domSource = new DOMSource(document); \n",
+ "native_sha256": "0a06a5a78aca72c2f15f88df8c02e7833474e7f6ab77c1f4f3fccbdea2c422ce",
+ "chars": 1323,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

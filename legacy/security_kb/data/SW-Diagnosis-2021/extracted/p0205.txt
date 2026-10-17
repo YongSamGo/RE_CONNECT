@@ -1,0 +1,46 @@
+205
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+9:
+else
+10:
+{
+11:
+File.Delete(file);
+12:
+}
+13: }
+아래 C 코드는 외부 입력 값을 파일 경로로 바로 사용하고 있다. 이는 공격자가 환경 변수 reportfile을 
+조작하여 디렉토리 경로를 조작할 수 있다.
+안전하지 않은 코드의 예 C
+1:
+char* filename = getenv(“reportfile”);
+2:
+FILE *fin = NULL; 
+3:
+// 외부 설정 값에서 받은 파일 이름을 그대로 사용한다.
+4:
+fin = fopen(filename, “r”);
+5:
+while (fgets(buf, BUF_LEN, fin)) { 
+6:
+// 파일 내용 출력
+7: }
+아래 C 코드는 외부에서 불러온 파일 이름을 그대로 사용하지 않고 경로 조작 가능성이 있는 문자열을 
+검증하고 사용한다.
+안전한 코드의 예 C
+1: FILE *fin = NULL;
+2:
+regex_t regex; 
+3:
+Int ret; 
+4:
+char* filename = getenv(“reportfile”); 
+5:
+ret = regcomp(&regex, “.*\\.\\..*”, 0); 
+6:
+// 경로 조작 가능성 있는 문자열 탐지
+7:
+ret = regexec(&regex, filename, 0, NULL, 0);
+8:
+If (!ret) {

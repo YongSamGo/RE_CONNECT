@@ -1,0 +1,40 @@
+447
+제4장구현단계 보안약점 진단
+파일스트림이 해제되지 않는 C# 코드 예제이다.
+안전하지 않은 코드의 예 C#
+1: public void FileStreamTest() 
+2: { 
+3: // fsSource에 자원이 할당되었으나 해제되지 않습니다.
+4:
+FileStream fsSource = new FileStream(pathSource, FileMode.Open, FileAccess.Read);
+5:
+byte[] bytes = new byte[fsSource.Length]; 
+6:
+int numBytesToRead = (int)fsSource.Length; 
+7:
+int numBytesRead = 0; 
+8:
+while(numBytesToRead > 0) 
+9:
+{
+10:
+int n = fsSource.Read(bytes, numBytesRead, numBytesToRead);
+11:
+if(n==0) break;
+12:
+numBytesToRead += n;
+13:
+numBytesToRead -= n;
+14: }
+15:
+using(FileStream fsNew = new FileStream(pathNew, FileMode.Create, 
+FileAccess.Write)) { /* OK */ 
+16:
+fsNew.Write(bytes, 0, numBytesToRead);
+17:
+}
+18:}
+using 구문을 이용하여 쉽게 자원을 해제할 수 있다.
+안전한 코드의 예 C#
+1: public void FileStreamTest()
+2: {

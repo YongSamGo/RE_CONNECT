@@ -1,0 +1,15 @@
+114
+마. 참고자료
+①CWE‐307, Improper Restriction of Excessive Authentication Attempts, MITRE,
+http://cwe.mitre.org/data/ definitions/307.html 
+②2013 OWASP Top 10 ‐ A2 Broken Authentication and Session Management, 
+OWASP, https://www.owasp. org/index.php/Top_10_2013
+③2016 OWASP Application Security Verification Standard, OWASP, Authentication 
+Verification Require-ments,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_ Project
+④Authentication Cheat Sheet Prevent Brute Force Attacks, OWASP,
+http://www.owasp.org/index.php/Au-thentication_Cheat_Sheet#Prevent_Brute-
+Force_Attacks
+⑤WASC Insufficient Anti-automation, WASC,
+http://projects.webappsec.org/w/page/13246938/Insuffi-cient%20Anti-automation

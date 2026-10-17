@@ -1,0 +1,589 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "28",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "동적 웹 페이지 생성에 사용하는 데이터를 HTML 엔티티 코드 (Entity Code)로 치환하여 안전하게 표현해야 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    507.2037353515625,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "한다. html.escape 메소드는 문자열의 &, < 및 > 특수문자를 HTML에서 안전한 값으로 변환한다. quote ",
+   "bbox": [
+    65.09266662597656,
+    113.92750549316406,
+    506.9643859863281,
+    123.87489318847656
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "옵션 값이 True이면 문자 (“)와 (‘)도 변환된다. <a href=”…“>에서처럼 따옴표로 구분된 HTML 속성",
+   "bbox": [
+    65.09266662597656,
+    133.82228088378906,
+    504.00360107421875,
+    143.7696533203125
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "(attribute) 값이 들어간 문자열을 포함할 경우에도 사용할 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    153.83689880371094,
+    343.7923889160156,
+    163.78427124023438
+   ],
+   "block": 5,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    200.21807861328125,
+    319.7541809082031,
+    210.1654510498047
+   ],
+   "block": 6,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    88.58836364746094,
+    221.26336669921875,
+    96.07310485839844,
+    229.7725830078125
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    88.58836364746094,
+    236.60391235351562,
+    96.07310485839844,
+    245.11312866210938
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    88.58836364746094,
+    251.82461547851562,
+    96.07310485839844,
+    260.3338317871094
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    88.58836364746094,
+    267.1651611328125,
+    96.07310485839844,
+    275.67437744140625
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    88.58836364746094,
+    282.3858337402344,
+    96.07310485839844,
+    290.8950500488281
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    88.58836364746094,
+    297.72637939453125,
+    96.07310485839844,
+    306.235595703125
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    88.58836364746094,
+    312.94708251953125,
+    96.07310485839844,
+    321.456298828125
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    88.58836364746094,
+    328.2876281738281,
+    96.07310485839844,
+    336.7968444824219
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    88.58836364746094,
+    343.5083312988281,
+    96.07310485839844,
+    352.0175476074219
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.79331970214844,
+    358.848876953125,
+    96.07327270507812,
+    367.35809326171875
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.79331970214844,
+    374.0695495605469,
+    96.07327270507812,
+    382.5787658691406
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import html",
+   "bbox": [
+    105.97038269042969,
+    220.7616729736328,
+    151.93946838378906,
+    229.7725830078125
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from flask import Flask, request, render_template",
+   "bbox": [
+    105.97038269042969,
+    236.1022186279297,
+    303.8739013671875,
+    245.11312866210938
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "@app.route('/search', methods=['POST'])",
+   "bbox": [
+    105.97038269042969,
+    266.6634826660156,
+    262.05010986328125,
+    275.67437744140625
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def search():",
+   "bbox": [
+    105.97038269042969,
+    281.8841552734375,
+    155.7711944580078,
+    290.8950500488281
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  search_keyword = request.form.get('search_keyword')",
+   "bbox": [
+    105.97038269042969,
+    297.2247009277344,
+    324.1458740234375,
+    306.235595703125
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 동적 웹페이지 생성에 사용되는 데이터는",
+   "bbox": [
+    105.97038269042969,
+    327.78594970703125,
+    274.7449951171875,
+    336.7968444824219
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # HTML 엔티티코드로 치환하여 표현해야 한다",
+   "bbox": [
+    105.97038269042969,
+    343.00665283203125,
+    290.32879638671875,
+    352.0175476074219
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    escape_keyword = html.escape(search_keyword)",
+   "bbox": [
+    105.97038269042969,
+    358.3471984863281,
+    313.718017578125,
+    367.35809326171875
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render_template('search.html', search_keyword=escape_keyword)",
+   "bbox": [
+    105.97038269042969,
+    373.56787109375,
+    403.1441650390625,
+    382.5787658691406
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    432.12396240234375,
+    119.12395477294922,
+    442.6705627441406
+   ],
+   "block": 30,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    453.8643493652344,
+    501.9816589355469,
+    462.85296630859375
+   ],
+   "block": 31,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/79.html",
+   "bbox": [
+    77.32001495361328,
+    469.20489501953125,
+    262.0950622558594,
+    478.1935119628906
+   ],
+   "block": 32,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Cross Site Scripting (XSS), OWASP,",
+   "bbox": [
+    65.09266662597656,
+    489.459228515625,
+    224.7078399658203,
+    498.4478454589844
+   ],
+   "block": 33,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/xss/",
+   "bbox": [
+    77.32001495361328,
+    504.7997741699219,
+    275.7645568847656,
+    513.7883911132812
+   ],
+   "block": 34,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ html - HyperText Markup Language support, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    525.0540771484375,
+    383.6618957519531,
+    534.0426635742188
+   ],
+   "block": 35,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/html.html",
+   "bbox": [
+    77.32001495361328,
+    540.3946533203125,
+    249.50814819335938,
+    549.3832397460938
+   ],
+   "block": 36,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Flask Security Considerations Cross-Site Scripting (XSS), Flask docs,",
+   "bbox": [
+    65.09266662597656,
+    560.6489868164062,
+    359.9270935058594,
+    569.6375732421875
+   ],
+   "block": 37,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://flask-docs-kr.readthedocs.io/ko/latest/security.html",
+   "bbox": [
+    77.32001495361328,
+    575.989501953125,
+    316.6326599121094,
+    584.9780883789062
+   ],
+   "block": 38,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ Django Security in Django Cross site scripting (XSS) protection, Django Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    596.2438354492188,
+    460.5024108886719,
+    605.232421875
+   ],
+   "block": 39,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/topics/security/",
+   "bbox": [
+    77.32001495361328,
+    611.5843505859375,
+    297.9436950683594,
+    620.5729370117188
+   ],
+   "block": 40,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+   ],
+   "text": "1: import html\n2: from flask import Flask, request, render_template\n3:\n4: @app.route('/search', methods=['POST'])\n5: def search():\n6:   search_keyword = request.form.get('search_keyword')\n7:\n8:     # 동적 웹페이지 생성에 사용되는 데이터는\n9:     # HTML 엔티티코드로 치환하여 표현해야 한다\n10:     escape_keyword = html.escape(search_keyword)\n11:     return render_template('search.html', search_keyword=escape_keyword)",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    83.79331970214844,
+    210.26545104980468,
+    403.1441650390625,
+    383.7787658691406
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n28\n동적 웹 페이지 생성에 사용하는 데이터를 HTML 엔티티 코드 (Entity Code)로 치환하여 안전하게 표현해야 \n한다. html.escape 메소드는 문자열의 &, < 및 > 특수문자를 HTML에서 안전한 값으로 변환한다. quote \n옵션 값이 True이면 문자 (“)와 (‘)도 변환된다. <a href=”…“>에서처럼 따옴표로 구분된 HTML 속성\n(attribute) 값이 들어간 문자열을 포함할 경우에도 사용할 수 있다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\nimport html\nfrom flask import Flask, request, render_template\n@app.route('/search', methods=['POST'])\ndef search():\n  search_keyword = request.form.get('search_keyword')\n    # 동적 웹페이지 생성에 사용되는 데이터는\n    # HTML 엔티티코드로 치환하여 표현해야 한다\n    escape_keyword = html.escape(search_keyword)\n    return render_template('search.html', search_keyword=escape_keyword)\n라. 참고자료\n① CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting'), MITRE,\nhttps://cwe.mitre.org/data/definitions/79.html\n② Cross Site Scripting (XSS), OWASP,\nhttps://owasp.org/www-community/attacks/xss/\n③ html - HyperText Markup Language support, Python Software Foundation,\nhttps://docs.python.org/3/library/html.html\n④ Flask Security Considerations Cross-Site Scripting (XSS), Flask docs,\nhttps://flask-docs-kr.readthedocs.io/ko/latest/security.html\n⑤ Django Security in Django Cross site scripting (XSS) protection, Django Software Foundation,\nhttps://docs.djangoproject.com/en/3.2/topics/security/\n",
+ "native_sha256": "105b03b1b70589cf299d6eae041659f153159728ef1347b3ae39adf9cd5bb40a",
+ "chars": 1299,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

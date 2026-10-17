@@ -1,0 +1,40 @@
+401
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+13:
+result = verifyUser(username, password);
+14:
+}
+15: }
+다음 예제는 사용자 인증시도 횟수를 기록하는 MAX_ATTEMPTS 변수를 정의하고, 이를 인증시도 
+횟수를 제한하는 카운터로 사용함으로써 무차별 공격에 대응하는 코드이다.
+안전한 코드의 예 JAVA
+1: private static final String SERVER_IP = "127.0.0.1"; 
+2: private static final int SERVER_PORT = 8080; 
+3: private static final int FAIL = -1; 
+4: private static final int MAX_ATTEMPTS = 5;
+5: public void login() {
+6:
+String username = null; 
+7:
+String password = null; 
+8:
+Socket socket = null; 
+9:
+int result = FAIL; 
+10: int count = 0;
+11: try {
+12:
+socket = new Socket(SERVER_IP, SERVER_PORT); 
+//인증 실패 및 시도 횟수에 제한을 두어 안전하다.
+13:
+while (result == FAIL && count < MAX_ATTEMPTS) {
+14:
+...
+15:
+result = verifyUser(username, password);
+16:
+count++;
+17:
+}
+18: }

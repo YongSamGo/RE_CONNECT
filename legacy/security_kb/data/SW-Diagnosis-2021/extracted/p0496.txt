@@ -1,0 +1,16 @@
+496
+일반적인 진단의 예
+12:
+…
+13:
+} else { 
+14:
+…
+15:
+}
+16:
+}
+17:}
+마. 참고자료
+[1] CWE-247 Reliance on DNS Lookups in a Security Decision, MITRE,
+http://cwe.mitre.org/data/definitions/247.html

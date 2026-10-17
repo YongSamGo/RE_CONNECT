@@ -1,0 +1,33 @@
+557
+제5장부록
+2.1.1 인증 여부 확인
+String pw = request.getParameter(“pw”); 
+if (!CommonUtils.isValid(“ID”, id) || !CommonUtils.isValid(“PW”, pw)) { 
+   // 입력값 검증에 
+   실패 return false; 
+}
+pw = CommonUtils.getHash(pw); 
+if (!CommonUtils.isValidUser(id, pw)) { 
+// 인증 
+실패 
+return
+false; 
+} 
+// 세션 생성 
+String sessionId = id + “.isAuthenticated”;
+session.setAttribute(sessionId, “true”); 
+2.1.3 2단계 인증
+단계 인증이 필요한 중요 기능을 도출하여 각 기능에 적용할 추가 인증 기법을 정의한다.
+2단계 인증 기법은 기능의 중요성과 적용 가능성 등을 고려하여 아래의 방법들 중 하나를 선택한다.
+구분
+인증기법
+예
+TYPE1
+지식기반인증
+비밀번호, PIN
+TYPE2
+소유기반인증
+토큰, 스마트카드
+TYPE3
+생체기반인증
+지문, 홍채

@@ -1,0 +1,34 @@
+544
+1.9.2. 입력값을 이용한 기능 구현
+보안기능과 같은 중요 기능을 구현할 때, 사용자 화면에서 전달되는 쿠키, 환경변수, 히든필드의 값에 의존하지 않아야 
+하며, 해당 입력에 의존해야 하는 경우에는 충분한 검증 과정을 함께 구현해야 한다.
+사용자의 권한, 역할 등은 서버의 세션에 저장하고 세션 정보를 활용하여 구현하도록 한다.
+// 올바르지 않은 방법
+// userRole = request.getParameter(“USER_ROLE”);
+// 올바른 방법 
+userRole = (String)session.getAttribute(“USER_ROLE”);
+사용자 화면에서 전달되는 모든 입력에 의존해서 요청을 처리하지 말고, 사용자 입력 필요 여부를 확인하고 가능한 
+서버가 보유하고 있는 정보를 활용할 수 있도록 한다.
+아래의 코드에서 품목과 단가는 서버가 보유하고 있는 정보이므로, 수량만 사용자 화면에서 전달된 값을 사용하고 
+품목과 단가는 서버가 보유하고 있는 정보를 활용하는 것이 올바른 방법이다.
+// 올바르지 않은 방법
+// String item = request.getParameter(“item”); // 품목 
+// String price = request.getParameter(“unit_price”); // 단가 
+// String quantity = request.getParameter(“quantity”); // 수량 
+// int total = Integer.parseInt(price) * Integer.parseInt(quantity); 
+// 올바른 방법
+ItemModel item = service.getOneItem(id); // 품목 정보 추출 
+String item = item.getItem(); // 품목 
+int price = item.getUnitPrice(); // 단가 
+String quantity = request.getParameter(“quantity”); // 
+수량 int total = price * quantity;
+1.9.3. 쿠키 사용 규칙
+중요 상태 정보 또는 인증, 권한 결정에 사용되는 정보는 쿠키로 전송되지 않도록 하며, 불가피하게 쿠키를 사용해야 
+하는 경우에는 해당 정보를 암호화해서 전송되도록 한다.
+①1.9.1에서 정의한 세션에 저장되는 정보들은 쿠키에 포함되지 않도록 한다.
+②개인정보, 금융정보, 인증정보와 같은 중요 정보는 쿠키에 포함되지 않도록 한다.
+중요 정보를 쿠키로 전송할 경우에는 아래의 규칙들을 적용할 수 있도록 한다.
+①쿠키의 내용을 안전한 암호화 방식으로 암호화한다.
+②Secure 속성을 활성화하여 HTTPS 통신으로써만 쿠키가 전달될 수 있도록 한다.
+③HttpOnly 속성을 활성화하여 브라우저에서 쿠키 조작이 어렵도록 한다.
+④쿠키의 지속시간(Expired)을 최소화하여 XSS와 같은 공격으로 쿠키가 유출되는 것을 완화시키도록 한다.

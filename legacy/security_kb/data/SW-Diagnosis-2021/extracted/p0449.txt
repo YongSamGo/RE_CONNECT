@@ -1,0 +1,37 @@
+449
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C
+4:
+if(!checkSomething()) { 
+5:
+printf(“Something is wrong”); 
+6:
+return; 
+7:
+}
+8: // checkSomething에서 false를 반환하는 경우, 파일 핸들러를 종료할 수
+없습니다.
+9:
+fclose(f);
+10:}
+오류가 발생한 상황에서도 정상적으로 파일 핸들러를 종료하도록 수정한다.
+안전한 코드의 예 C#
+1: void ImproperResourceRelease(char* filename) { 
+2:
+char buf[BUF_SIZE]; 
+3:
+FILE *f = fopen(filename, “r”); 
+4:
+if(!checkSomething()) { 
+5:
+printf(“Something is wrong”); 
+6:
+// checkSomthing에서 false를 반환해도 파일 핸들러를 종료하도록 수정
+7:
+fclose(f);
+8:
+return;
+9:
+}
+10: fclose(f); 
+11:}

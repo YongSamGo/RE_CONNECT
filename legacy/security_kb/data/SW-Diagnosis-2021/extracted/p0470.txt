@@ -1,0 +1,39 @@
+470
+안전하지 않은 코드의 예 JAVA
+4:
+// JSP에서 String 필드들이 멤버 변수로 선언됨
+5:
+String username = "/";
+6:
+String imagePath = commonPath + "img/";
+7:
+String imagePath_gis = imagePath + "gis/cmm/btn/";
+8:
+……
+9: %>
+JSP의 서블릿(<% 소스코드 %>)에 정의한 변수는 _jspService 메소드의 지역변수로 선언되므로 
+공유가 발생하지 않아 안전하다.
+안전한 코드의 예 JAVA
+1: <%@page import="javax.xml.namespace.*"%>
+2: <%@page import="gov.mogaha.ntis.web.frs.gis.cmm.util.*" %> 
+3: <%
+4:
+// JSP에서 String 필드들이 로컬 변수로 선언됨
+5:
+String commonPath = "/";
+6:
+String imagePath = commonPath + "img/";
+7:
+String imagePath_gis = imagePath + "gis/cmm/btn/"; 
+8: ……
+9: %>
+Controller에 멤버 변수를 사용하면 공유가 발생하여 동기화 오류가 발생할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: @Controller
+2: public class TrendForecastController { 
+3:
+// Controller에서 int 필드가 멤버 변수로 선언되어 스레드간에 공유됨 
+4:
+private int currentPage = 1;
+5:
+public void doSomething(HttpServletRequest request) {

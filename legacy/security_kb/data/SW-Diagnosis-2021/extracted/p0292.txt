@@ -1,0 +1,45 @@
+292
+checked 구문을 이용하여 오버플로우 발생 확인 및 처리를 해야 한다.
+안전한 코드의 예 C#
+1: public static void Main(string[] args) 
+2: {
+3:
+// checked 구문을 사용하여 오버플로우의 발생 여부 및 크기 확인
+4:
+try{
+5:
+int usrNum = checked(Int32.Parse(args[0]));
+6:
+string[] array = {"one", "two", "three", "four"}; 
+7:
+if(usrNum < 3)string num = array[usrNum]; 
+8:
+}
+9:
+catch (System.OverflowException e) { … } 
+10: }
+안전하지 않은 코드의 예 C
+1: void main(int argc, char* argv[]) 
+2: {
+// 외부 입력값을 사용할 때, 입력 값의 크기가 너무 클 경우 오버플로우 발생
+3:
+int usr_num = 0;
+4:
+char* num_array[] = {“one”, “two”, “three”, “four”};
+5:
+char* num = NULL;
+6:
+usr_num = atoi(argv[1]);
+7:
+num = num_array[usr_num];
+8: }
+안전한 코드의 예 C
+1: void main(int argc, char* argv[]) 
+2: {
+// 외부 입력값을 사용할 때, 입력 값의 크기가 너무 클 경우 오버플로우 발생
+3:
+int usr_num = 0;
+4:
+char* num_array[] = {“one”, “two”, “three”, “four”};
+5:
+char* num = NULL;

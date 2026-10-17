@@ -1,0 +1,63 @@
+Python 시큐어코딩 가이드
+108
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+from django.http import HttpResponse
+from django.conf.global_settings import (
+    SESSION_COOKIE_AGE,
+    SESSION_COOKIE_HTTPONLY,
+    SESSION_COOKIE_HTTPONLY,
+)
+"""
+# settings.py
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 14
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = True
+"""
+def remind_user_state(request):
+    res = HttpResponse()
+    # 서버 세팅(setting.py)에서 default로 쿠키 옵션을 설정한 상태
+    res.set_cookie(
+        "rememerme",
+        1,
+        max_age=SESSION_COOKIE_AGE,
+        secure=SESSION_COOKIE_HTTPONLY,
+        httponly=SESSION_COOKIE_HTTPONLY,
+    )
+    return res
+라. 참고자료
+① CWE-539: Use of Persistent Cookies Containing Sensitive Information, MITRE,
+https://cwe.mitre.org/data/definitions/539.html
+② Expire and Max-Age Attributes, OWASP,
+https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html 
+#expire-and-max-age-attributes
+③ HTTP state management, Python Software Foundation,
+https://docs.python.org/ko/3/library/http.cookies.html
+④ Django set_cookie, Django Software Foundation,
+https://docs.djangoproject.com/en/dev/ref/request-response/#django.http.HttpResponse.set_cookie
+⑤ Django Settings, Django Software Foundation,
+https://docs.djangoproject.com/en/4.0/ref/settings/#sessions

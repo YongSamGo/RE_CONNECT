@@ -1,0 +1,817 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "142",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    78.60518646240234,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    119.392578125,
+    94.51471710205078,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    134.7331085205078,
+    94.51471710205078,
+    143.24232482910156
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    149.9538116455078,
+    94.51471710205078,
+    158.46302795410156
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    165.2943572998047,
+    94.51471710205078,
+    173.80357360839844
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    180.51504516601562,
+    94.51471710205078,
+    189.02426147460938
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    195.8555908203125,
+    94.51471710205078,
+    204.36480712890625
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    211.0762939453125,
+    94.51471710205078,
+    219.58551025390625
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    226.4168243408203,
+    94.51471710205078,
+    234.92604064941406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    241.6375274658203,
+    94.51471710205078,
+    250.14674377441406
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    256.9780578613281,
+    94.51488494873047,
+    265.4872741699219
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.23493194580078,
+    272.1987609863281,
+    94.51488494873047,
+    280.7079772949219
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    82.23493194580078,
+    287.539306640625,
+    94.51488494873047,
+    296.04852294921875
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    82.23493194580078,
+    302.760009765625,
+    94.51488494873047,
+    311.26922607421875
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    82.23493194580078,
+    318.1005554199219,
+    94.51488494873047,
+    326.6097717285156
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    82.23493194580078,
+    333.3212585449219,
+    94.51488494873047,
+    341.8304748535156
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    82.23493194580078,
+    348.66180419921875,
+    94.51488494873047,
+    357.1710205078125
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    82.23493194580078,
+    363.8824768066406,
+    94.51488494873047,
+    372.3916931152344
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    82.23493194580078,
+    379.2230224609375,
+    94.51488494873047,
+    387.73223876953125
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    82.23493194580078,
+    394.4437255859375,
+    94.51488494873047,
+    402.95294189453125
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    82.23493194580078,
+    409.7842712402344,
+    94.51488494873047,
+    418.2934875488281
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    82.23493194580078,
+    425.0049743652344,
+    94.51488494873047,
+    433.5141906738281
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    82.23493194580078,
+    440.34552001953125,
+    94.51488494873047,
+    448.854736328125
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    82.23493194580078,
+    455.5661926269531,
+    94.51488494873047,
+    464.0754089355469
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    82.23493194580078,
+    470.90673828125,
+    94.51488494873047,
+    479.41595458984375
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import hmac",
+   "bbox": [
+    104.41199493408203,
+    118.89088439941406,
+    154.15167236328125,
+    127.90178680419922
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import hashlib",
+   "bbox": [
+    104.41199493408203,
+    134.7331085205078,
+    160.02386474609375,
+    143.24232482910156
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import pickle",
+   "bbox": [
+    104.41199493408203,
+    149.45211791992188,
+    155.22767639160156,
+    158.46302795410156
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.41199493408203,
+    164.79266357421875,
+    247.80897521972656,
+    173.80357360839844
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def load_user_object(request):",
+   "bbox": [
+    104.41199493408203,
+    195.35389709472656,
+    221.9427490234375,
+    204.36480712890625
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 데이터 변조를 확인하기 위한 해시값",
+   "bbox": [
+    104.41199493408203,
+    211.0762939453125,
+    249.9309539794922,
+    219.58551025390625
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  hashed_pickle = request.POST.get(\"hashed_pickle\", \"\")",
+   "bbox": [
+    104.41199493408203,
+    226.4168243408203,
+    324.6253662109375,
+    234.92604064941406
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 사용자로부터 입력받은 데이터를 직렬화(pickle)",
+   "bbox": [
+    104.41199493408203,
+    256.9780578613281,
+    287.7051086425781,
+    265.4872741699219
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  pickled_userinfo = pickle.dumps(request.POST.get(\"userinfo\", \"\"))",
+   "bbox": [
+    104.41199493408203,
+    272.1987609863281,
+    365.7431640625,
+    280.7079772949219
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # HMAC 검증을 위한 비밀키는 생성",
+   "bbox": [
+    104.41199493408203,
+    302.760009765625,
+    245.13552856445312,
+    311.26922607421875
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  m = hmac.new(key=\"secret_key\".encode(\"utf-8\"), digestmod=hashlib.sha512)",
+   "bbox": [
+    104.41199493408203,
+    318.1005554199219,
+    414.1728820800781,
+    326.6097717285156
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 직렬화된 사용자 입력값을 해싱",
+   "bbox": [
+    104.41199493408203,
+    348.66180419921875,
+    230.99017333984375,
+    357.1710205078125
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  m.update(pickled_userinfo)",
+   "bbox": [
+    104.41199493408203,
+    363.8824768066406,
+    216.2584686279297,
+    372.3916931152344
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 전달받은 해시값(hashed_pickle)과 직렬화 데이터(userinfo)의 해시값을 비교하여 검증",
+   "bbox": [
+    104.41199493408203,
+    394.4437255859375,
+    427.4676513671875,
+    402.95294189453125
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if hmac.compare_digest(str(m.digest()), hashed_pickle):",
+   "bbox": [
+    104.41199493408203,
+    409.7842712402344,
+    328.5132751464844,
+    418.2934875488281
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    user_obj = pickle.loads(pickled_userinfo)",
+   "bbox": [
+    104.41199493408203,
+    425.0049743652344,
+    278.476318359375,
+    433.5141906738281
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, \"/load_user_obj.html\", {\"obj\": user_obj})",
+   "bbox": [
+    104.41199493408203,
+    440.34552001953125,
+    363.2264099121094,
+    448.854736328125
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  else:",
+   "bbox": [
+    104.41199493408203,
+    455.5661926269531,
+    131.3175811767578,
+    464.0754089355469
+   ],
+   "block": 46,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, \"/error.html\", {\"error\": \"신뢰할 수 없는 데이터입니다.\"}",
+   "bbox": [
+    104.41199493408203,
+    470.90673828125,
+    410.4571838378906,
+    479.41595458984375
+   ],
+   "block": 47,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    520.8114624023438,
+    119.12395477294922,
+    531.3580932617188
+   ],
+   "block": 49,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-502: Deserialization of Untrusted Data, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    542.6717529296875,
+    294.47509765625,
+    551.6603393554688
+   ],
+   "block": 50,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/502.html",
+   "bbox": [
+    77.32001495361328,
+    558.0123291015625,
+    267.01031494140625,
+    567.0009155273438
+   ],
+   "block": 51,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Deserialization Cheat Sheet, OWASP, ",
+   "bbox": [
+    65.09266662597656,
+    578.2666015625,
+    232.65052795410156,
+    587.2551879882812
+   ],
+   "block": 52,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    593.607177734375,
+    406.1825866699219,
+    602.5957641601562
+   ],
+   "block": 53,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Python object serialization, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    613.8614501953125,
+    307.3008728027344,
+    622.8500366210938
+   ],
+   "block": 54,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/pickle.html",
+   "bbox": [
+    77.32001495361328,
+    629.2020263671875,
+    254.54293823242188,
+    638.1906127929688
+   ],
+   "block": 55,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45
+   ],
+   "text": "1: import hmac\n2: import hashlib\n3: import pickle\n4: from django.shortcuts import render\n5:\n6: def load_user_object(request):\n7:   # 데이터 변조를 확인하기 위한 해시값\n8:   hashed_pickle = request.POST.get(\"hashed_pickle\", \"\")\n9:\n10:   # 사용자로부터 입력받은 데이터를 직렬화(pickle)\n11:   pickled_userinfo = pickle.dumps(request.POST.get(\"userinfo\", \"\"))\n12:\n13:   # HMAC 검증을 위한 비밀키는 생성\n14:   m = hmac.new(key=\"secret_key\".encode(\"utf-8\"), digestmod=hashlib.sha512)\n15:\n16:   # 직렬화된 사용자 입력값을 해싱\n17:   m.update(pickled_userinfo)\n18:\n19:   # 전달받은 해시값(hashed_pickle)과 직렬화 데이터(userinfo)의 해시값을 비교하여 검증\n20:   if hmac.compare_digest(str(m.digest()), hashed_pickle):\n21:     user_obj = pickle.loads(pickled_userinfo)\n22:     return render(request, \"/load_user_obj.html\", {\"obj\": user_obj})\n23:   else:\n24:     return render(request, \"/error.html\", {\"error\": \"신뢰할 수 없는 데이터입니다.\"}",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    108.3946548461914,
+    427.4676513671875,
+    480.61595458984374
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n142\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\n17:\n18:\n19:\n20:\n21:\n22:\n23:\n24:\nimport hmac\nimport hashlib\nimport pickle\nfrom django.shortcuts import render\ndef load_user_object(request):\n  # 데이터 변조를 확인하기 위한 해시값\n  hashed_pickle = request.POST.get(\"hashed_pickle\", \"\")\n  # 사용자로부터 입력받은 데이터를 직렬화(pickle)\n  pickled_userinfo = pickle.dumps(request.POST.get(\"userinfo\", \"\"))\n  # HMAC 검증을 위한 비밀키는 생성\n  m = hmac.new(key=\"secret_key\".encode(\"utf-8\"), digestmod=hashlib.sha512)\n  # 직렬화된 사용자 입력값을 해싱\n  m.update(pickled_userinfo)\n  # 전달받은 해시값(hashed_pickle)과 직렬화 데이터(userinfo)의 해시값을 비교하여 검증\n  if hmac.compare_digest(str(m.digest()), hashed_pickle):\n    user_obj = pickle.loads(pickled_userinfo)\n    return render(request, \"/load_user_obj.html\", {\"obj\": user_obj})\n  else:\n    return render(request, \"/error.html\", {\"error\": \"신뢰할 수 없는 데이터입니다.\"}\n라. 참고자료\n① CWE-502: Deserialization of Untrusted Data, MITRE,\nhttps://cwe.mitre.org/data/definitions/502.html\n② Deserialization Cheat Sheet, OWASP, \nhttps://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html\n③ Python object serialization, Python Software Foundation,\nhttps://docs.python.org/3/library/pickle.html\n",
+ "native_sha256": "e11d7204681358c125c66c882cdf5c989b83807a6f57199d7323c39ac6cc221c",
+ "chars": 1203,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

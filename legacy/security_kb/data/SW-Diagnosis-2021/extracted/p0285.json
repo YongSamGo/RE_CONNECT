@@ -1,0 +1,471 @@
+{
+ "lines": [
+  {
+   "text": "285",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "외부에서 입력되는 값에 대하여 null 여부를 체크하고, 응답이 여러 개로 나눠지는 것을 방지하기 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.185546875,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "위해 개행문자를 제거하고 응답헤더의 값으로 사용한다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    284.2110290527344,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    170.77108764648438,
+    308.9777526855469,
+    181.7930908203125
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: String lastLogin = request.getParameter(\"last_login\");",
+   "bbox": [
+    77.94000244140625,
+    190.17813110351562,
+    304.3672180175781,
+    200.078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: if (lastLogin == null || \"\".equals(lastLogin)) {",
+   "bbox": [
+    77.93998718261719,
+    204.57815551757812,
+    271.1563720703125,
+    214.4781494140625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.93998718261719,
+    218.97817993164062,
+    85.67717742919922,
+    228.878173828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return;",
+   "bbox": [
+    103.23108673095703,
+    218.97817993164062,
+    129.82862854003906,
+    228.878173828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    77.93998718261719,
+    233.378173828125,
+    92.79289245605469,
+    243.27816772460938
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부 입력값에서 개행문자(\\r\\n)를 제거한 후 쿠키의 값으로 설정 ",
+   "bbox": [
+    77.93998718261719,
+    247.77816772460938,
+    314.01995849609375,
+    257.67816162109375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5: lastLogin = lastLogin.replaceAll(\"[\\\\r\\\\n]\", \"\");",
+   "bbox": [
+    77.93997955322266,
+    262.17816162109375,
+    271.8139953613281,
+    272.0781555175781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: Cookie c = new Cookie(\"LASTLOGIN\", lastLogin);",
+   "bbox": [
+    77.93997955322266,
+    276.5781555175781,
+    291.86700439453125,
+    286.4781494140625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: c.setMaxAge(1000); ",
+   "bbox": [
+    77.93997955322266,
+    290.9781494140625,
+    172.30953979492188,
+    300.8781433105469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: c.setSecure(true); ",
+   "bbox": [
+    77.93997955322266,
+    305.3781433105469,
+    163.57884216308594,
+    315.27813720703125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: response.addCookie(c); ",
+   "bbox": [
+    77.93997955322266,
+    319.77813720703125,
+    185.483154296875,
+    329.6781311035156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부 입력값으로 반환되는 쿠키값을 설정하는 C#코드이다. 이는 응답이 분리되어 전달될 수 있으며 ",
+   "bbox": [
+    70.86000061035156,
+    352.2110900878906,
+    459.2041931152344,
+    363.23309326171875
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "분리된 응답 본문의 내용을 공격자가 마음대로 수정할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    369.19097900390625,
+    309.5244140625,
+    380.2129821777344
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    409.1512145996094,
+    317.9013671875,
+    420.1732177734375
+   ],
+   "block": 39,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "//외부 입력값을 검증 없이 사용하는 것은 안전하지 않다.",
+   "bbox": [
+    77.94000244140625,
+    428.55810546875,
+    275.0457458496094,
+    438.4580993652344
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: string usrInput = Request.QueryString[\"ID\"];",
+   "bbox": [
+    77.94000244140625,
+    442.9580993652344,
+    268.6908264160156,
+    452.85809326171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: Response.AddHeader(\"foo\", \"bar\" + usrInput);",
+   "bbox": [
+    77.94000244140625,
+    457.35809326171875,
+    274.2849426269531,
+    467.2580871582031
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "개행문자를 모두 제거한 이후에 사용해야 한다.",
+   "bbox": [
+    70.86000061035156,
+    489.7911071777344,
+    249.88687133789062,
+    500.8131103515625
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    529.7510375976562,
+    303.40240478515625,
+    540.7730712890625
+   ],
+   "block": 44,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:string usrInput = Request.QueryString[\"ID\"];",
+   "bbox": [
+    77.94000244140625,
+    549.1580810546875,
+    264.23809814453125,
+    559.05810546875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//개행문자를 제거 한 이후에 사용해야 합니다.",
+   "bbox": [
+    77.94000244140625,
+    563.55810546875,
+    239.28651428222656,
+    573.4581298828125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2:string validatedInput = usrInput.Replace(\"\\n\", \"\").Replace(\"\\r\",\"\");",
+   "bbox": [
+    77.94000244140625,
+    577.9580688476562,
+    344.2361145019531,
+    587.8580932617188
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:Response.AddHeader(\"foo\", \"bar\" + validatedInput);",
+   "bbox": [
+    77.93911743164062,
+    592.3580322265625,
+    292.5318908691406,
+    602.258056640625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "text": "1: String lastLogin = request.getParameter(\"last_login\");\n2: if (lastLogin == null || \"\".equals(lastLogin)) {\n3:        return;\n4: }\n// 외부 입력값에서 개행문자(\\r\\n)를 제거한 후 쿠키의 값으로 설정 \n5: lastLogin = lastLogin.replaceAll(\"[\\\\r\\\\n]\", \"\");\n6: Cookie c = new Cookie(\"LASTLOGIN\", lastLogin);\n7: c.setMaxAge(1000); \n8: c.setSecure(true); \n9: response.addCookie(c); ",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.93997955322266,
+    181.8930908203125,
+    314.01995849609375,
+    330.8781311035156
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    19,
+    20,
+    21
+   ],
+   "text": "//외부 입력값을 검증 없이 사용하는 것은 안전하지 않다.\n1: string usrInput = Request.QueryString[\"ID\"];\n2: Response.AddHeader(\"foo\", \"bar\" + usrInput);",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    420.2732177734375,
+    275.0457458496094,
+    468.4580871582031
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26,
+    27
+   ],
+   "text": "1:string usrInput = Request.QueryString[\"ID\"];\n//개행문자를 제거 한 이후에 사용해야 합니다.\n2:string validatedInput = usrInput.Replace(\"\\n\", \"\").Replace(\"\\r\",\"\");\n3:Response.AddHeader(\"foo\", \"bar\" + validatedInput);",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.93911743164062,
+    540.8730712890625,
+    344.2361145019531,
+    603.458056640625
+   ]
+  }
+ ],
+ "native": "285\n제4장구현단계 보안약점 진단\n외부에서 입력되는 값에 대하여 null 여부를 체크하고, 응답이 여러 개로 나눠지는 것을 방지하기 \n위해 개행문자를 제거하고 응답헤더의 값으로 사용한다.\n안전한 코드의 예 JAVA\n1: String lastLogin = request.getParameter(\"last_login\");\n2: if (lastLogin == null || \"\".equals(lastLogin)) {\n3:\nreturn;\n4: }\n// 외부 입력값에서 개행문자(\\r\\n)를 제거한 후 쿠키의 값으로 설정 \n5: lastLogin = lastLogin.replaceAll(\"[\\\\r\\\\n]\", \"\");\n6: Cookie c = new Cookie(\"LASTLOGIN\", lastLogin);\n7: c.setMaxAge(1000); \n8: c.setSecure(true); \n9: response.addCookie(c); \n외부 입력값으로 반환되는 쿠키값을 설정하는 C#코드이다. 이는 응답이 분리되어 전달될 수 있으며 \n분리된 응답 본문의 내용을 공격자가 마음대로 수정할 수 있다.\n안전하지 않은 코드의 예 C#\n//외부 입력값을 검증 없이 사용하는 것은 안전하지 않다.\n1: string usrInput = Request.QueryString[\"ID\"];\n2: Response.AddHeader(\"foo\", \"bar\" + usrInput);\n개행문자를 모두 제거한 이후에 사용해야 한다.\n안전한 코드의 예 C#\n1:string usrInput = Request.QueryString[\"ID\"];\n//개행문자를 제거 한 이후에 사용해야 합니다.\n2:string validatedInput = usrInput.Replace(\"\\n\", \"\").Replace(\"\\r\",\"\");\n3:Response.AddHeader(\"foo\", \"bar\" + validatedInput);\n",
+ "native_sha256": "bc51ad9672eeb554b23d57ff77979aebb194157139f985588e858ec1e6e07e3a",
+ "chars": 938,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

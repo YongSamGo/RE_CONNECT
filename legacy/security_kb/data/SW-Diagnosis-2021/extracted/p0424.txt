@@ -1,0 +1,10 @@
+424
+마. 참고자료
+[1] CWE-209 Information Exposure Through an Error Message, MITRE,
+http://cwe.mitre.org/data/definitions/209.html
+[2] Do not allow exceptions to expose sensitive information, CERT,
+http://www.securecoding.cert.org/confluence/display/java/ERR01-J.+Do+not+
+allow+exceptions+to+expose+sensitive+information?focusedCommentId 
+=61702253#comment-61702253
+[3] Error Handling, OWASP
+https://www.owasp.org/index.php/Error_Handling

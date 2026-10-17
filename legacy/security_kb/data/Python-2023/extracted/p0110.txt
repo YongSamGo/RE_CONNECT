@@ -1,0 +1,65 @@
+Python 시큐어코딩 가이드
+104
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+import os
+import socket
+import ssl
+CURRENT_PATH = os.getcwd()
+HOST_NAME = "test-server"
+HOST, PORT = "127.0.0.1", 7917
+SERVER_CA_PEM = f"{CURRENT_PATH}/rsa_server/CA.pem"  # 서버로부터 전달받은 CA 인증서
+def connect_with_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+        # PROTOCOL_TLS_CLIENT 프로토콜을 추가하여 인증서 유효성 검사와 호스트 이름 확인을 위한
+        # context를 구성. verify_mode가 CERT_REQUIRED로 설정됨
+        # check_hostname이 True로 설정됨
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        # 서버로부터 전달받은 CA 인증서를 context에 로드
+        # CERT_REQUIRED로 인해 필수
+        context.load_verify_locations(SERVER_CA_PEM)
+        # 호스트 이름(HOST_NAME)이 일치하지 않으면 통신 불가
+        # 생성된 소켓과 context wrapping 시 server_hostname이 실제 서버에서
+        # 등록(server.csr)한 호스트 명과 일치해야 함
+        with context.wrap_socket(sock, server_hostname=HOST_NAME) as ssock:
+            try:
+                ssock.connect((HOST, PORT))
+                ssock.send("Hello I'm a patched client :)".encode("utf-8"))
+                data = ssock.recv(1024).decode("utf-8")
+                print(f">> server from ({HOST}, {PORT}): {data}\n")
+            finally:
+                ssock.close()

@@ -1,0 +1,40 @@
+254
+안전한 코드의 예 C#
+15:
+XQueryEvaluator eval = exp.Load();
+16:
+eval.ContextItem = indoc; 
+17:
+Serializer qout = new Serializer(); 
+18:
+qout.SetOutputProperty(Serializer.METHOD, "xml"); 
+19:
+qout.SetOutputProperty(Serializer.DOCTYPE_PUBLIC, "-//W3C//DTD XHTML
+1.0 Strict//EN");
+20:
+qout.SetOutputProperty(Serializer.DOCTYPE_SYSTEM,
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"); 
+21:
+qout.SetOutputProperty(Serializer.INDENT, "yes"); 
+22:
+qout.SetOutputProperty(Serializer.OMIT_XML_DECLARATION, "no");
+23:
+qout.SetOutputWriter(Response.Output); 
+24:
+eval.Run(qout);
+25:}
+ㆍXPath 삽입
+아래 예제에서는 nm과 pw에 대한 입력값 검증을 수행하지 않으므로 nm의 값으로 “tester”, 
+pw의 값으로 “x’ or ‘x’=‘x”을 전달하면 아래와 같은 질의문이 생성되어 인증과정을 거치지 않고 
+로그인할 수 있다.
+“//users/user[login/text()=‘tester’ and password/text()=‘x’ or //‘x’=‘x’]/home_dir/text()”
+안전하지 않은 코드의 예 JAVA
+// 프로퍼티로부터 외부 입력값 name과 password를 읽어와 각각 nm, pw변수에 저장
+1:String nm = props.getProperty("name");
+2:String pw = props.getProperty("password");
+3:......
+4:XPathFactory factory = XPathFactory.newInstance(); 
+5:XPath xpath = factory.newXPath(); 
+6:...... 
+// 검증되지 않은 입력값 외부 입력값 nm, pw를 사용하여 안전하지 않은 질의문이 작성되어 expr 변수에 
+저장된다.

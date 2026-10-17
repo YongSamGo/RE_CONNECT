@@ -1,0 +1,57 @@
+Python 시큐어코딩 가이드
+68
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+from django.shortcuts import render
+AUTHENTICATE_KEY = 'Passw0rd'
+def make_user_message(request):
+  user_info = get_user_info(request.POST.get('user_id', ''))
+    
+  format_string = request.POST.get('msg_format', '')
+  # 내부의 민감한 정보가 외부로 노출될 수 있다.
+  # 사용자가 입력한 문자열을 포맷 문자열로 사용하고 있어 안전하지 않다
+  message = format_string.format(user=user_info)
+    
+  return render(request, '/user_page.html', {'message':message})
+외부에서 입력 받은 문자열은 반드시 포맷 지정자를 이용해 바인딩 후 사용해야 하며 직접적으로 포맷문자열로 
+사용해서는 안 된다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+from django.shortcuts import render
+AUTHENTICATE_KEY = 'Passw0rd'
+def make_user_message(request):
+  user_info = get_user_info(request.POST.get('user_id', ''))
+    
+  # 사용자가 입력한 문자열을 포맷 문자열로 사용하지 않아 안전하다
+  message = 'user name is {}'.format(user_info.name)
+    
+    return render(request, '/user_page.html', {'message':message})
+라. 참고자료
+① CWE-134: Use of Externally-Controlled Format String, MITRE,
+https://cwe.mitre.org/data/definitions/134.html
+② Format string attack, OWASP,
+https://owasp.org/www-community/attacks/Format_string_attack
+③ 파이썬 format, Python Software Foundation,
+https://docs.python.org/3/library/functions.html#format
+④ Format String Syntax, Python Software Foundation,
+https://docs.python.org/3/library/string.html#format-string-syntax

@@ -1,0 +1,41 @@
+471
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+6:
+currentPage = Integer.parseInt(request.getParameter("page")); 
+7:
+}
+8: ……
+Controller에 멤버 변수를 사용하지 않고 지역 변수로 사용한다.
+안전한 코드의 예 JAVA
+1: @Controller
+2: public class TrendForecastController { 
+3:
+public void doSomething(HttpServletRequest request) { 
+4:
+// 지역변수로 사용하여 스레드간 공유되지 못하도록 한다.
+5:
+int currentPage = Integer.parseInt(request.getParameter("page"));
+6:
+}
+7: ……
+다중 스레드 환경에서 IHttpHandler 클래스에 정보를 저장하는 필드가 포함되서는 안된다.
+안전하지 않은 코드의 예 C#
+1: class DataLeakBetweenSessions : IHttpHandler 
+2:
+{
+3:
+//다중 스레드 환경에서 IHttpHandler 를 구현하는 클래스에 정보를 저장하는 필드가 
+포함되어서는 안됩니다.
+4:
+private String id;
+5:
+public void ProcessRequest(HttpContext ctx)
+6:
+{
+7:
+var json = new JSONResonse()
+8:
+{
+9:
+Success = ctx.Request.QueryString["name"] != null,

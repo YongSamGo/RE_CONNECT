@@ -1,0 +1,36 @@
+232
+6. 위험한 형식 파일 업로드
+가. 개요
+서버 측에서 실행될 수 있는 스크립트 파일(asp, jsp, php 파일 등)이 업로드 가능하고, 이 파일을 
+공격자가 웹으로 직접 실행시킬 수 있는 경우, 시스템 내부명령어를 실행하거나 외부와 연결하여 시
+스템을 제어할 수 있는 보안약점이다.
+나. 보안대책
+화이트 리스트 방식으로 허용된 확장자만 업로드를 허용한다. 업로드 되는 파일을 저장할 때에는 
+파일명과 확장자를 외부사용자가 추측할 수 없는 문자열로 변경하여 저장하며, 저장 경로는 ‘web 
+document root’ 밖에 위치시켜서 공격자의 웹으로 직접 접근을 차단한다. 또한 파일 실행여부를 설
+정할 수 있는 경우, 실행 속성을 제거한다.
+다. 코드예제
+업로드할 파일에 대한 유효성을 검사하지 않으면, 위험한 유형의 파일을 공격자가 업로드하거나 전송 
+할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1:
+MultipartRequest multi
+= new MultipartRequest(request,savePath,sizeLimit,"euc-kr",new DefaultFileRenamePolicy());
+2:
+......
+3: //업로드 되는 파일명을 검증 없이 사용하고 있어 안전하지 않다.
+4:
+String fileName = multi.getFilesystemName("filename");
+5:
+......
+6:
+sql = " INSERT INTO board(email,r_num,w_date,pwd,content,re_step,re_num,filename)
+"+ " values ( ?, 0, sysdate(), ?, ?, ?, ?, ? ) ";
+7:
+PreparedStatement pstmt = con.prepareStatement(sql);
+8:
+pstmt.setString(1, stemail);
+9:
+pstmt.setString(2, stpwd);
+10:
+pstmt.setString(3, stcontent);

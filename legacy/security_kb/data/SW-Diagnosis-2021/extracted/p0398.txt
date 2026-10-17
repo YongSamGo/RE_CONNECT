@@ -1,0 +1,36 @@
+398
+리턴값을 이용하여 무결성 검사를 하지 않은 C코드의 예제이다.
+안전하지 않은 코드의 예 C
+1: void foo(){ 
+2: /* ... */ 
+3:
+hFile = CreateFile((LPCWSTR)data,GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 
+FILE_ATTRIBUTE_NORMAL, NULL); 
+4:
+InternetQueryDataAvailable(m_hURL, &dwSize,0,0); 
+5:
+InternetReadFile(m_hURL, lpBuffer, dwSize, &dwRead);
+6:
+WriteFile(hFile, lpBuffer, dwRead, &dwWritten, NULL);
+7:
+/* ... */
+리턴 값을 이용하여 무결성을 확인한 후 사용해야 한다.
+안전한 코드의 예 C
+1: void foo(){
+2:
+/* ... */
+3:
+hFile = CreateFile((LPCWSTR)data,GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, 
+FILE_ATTRIBUTE_NORMAL, NULL); 
+4:
+InternetQueryDataAvailable(m_hURL, &dwSize,0,0); 
+5:
+bool result = InternetReadFile(m_hURL, lpBuffer, dwSize, &dwRead);
+6:
+if( result == true){
+7: WriteFile(hFile, lpBuffer, dwRead, &dwWritten, NULL); 
+8:
+} 
+9:
+/* ... */ 
+10:}

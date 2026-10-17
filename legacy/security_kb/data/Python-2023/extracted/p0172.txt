@@ -1,0 +1,32 @@
+Python 시큐어코딩 가이드
+166
+제2절 용어정리
+●Developer Economics State of the Developer Nation, 20th Edition
+developernation.net에서 매년 165개국 30,000명 이상의 개발자들을 대상으로 설문조사를 하여 제공하고 있다. 웹, 모바일, 
+데스크톱, 클라우드, 산업용 IoT, 소비자 전자 제품, 임베디드소프트웨어, AR 및 VR등 다양한 분야의 설문을 실시하고 있다.
+●AES(Advanced Encryption Standard)
+미국 정부 표준으로 지정된 블록 암호 형식으로 이전의 DES를 대체하며, 미국 표준 기술 연구소 (NIST)가 5년의 표준화 
+과정을 거쳐 2001년 11월 26일에 연방 정보처리표준(FIPS 197)으로 발표하였다.
+●DES 알고리즘
+DES(Data Encryption Standard)암호는 암호화 키와 복호화키가 같은 대칭키 암호로 64비트의 암호화키를 사용한다. 
+전수공격(Brute Force)공격에 취약하다.
+●HMAC(Hash-based Message Authentication Code)
+해시 기반 메시지 인증 코드, MD5, SHA-1 등 반복적인 암호화 해시 기능을 비밀 공용키와 함께 사용하며, 체크섬을 
+변경하는 것이 불가능하도록 한 키 기반의 메시지 인증 알고리즘이다.
+●HTTPS(Hypertext Transfer Protocol over Secure Socket Layer)
+WWW(월드 와이드 웹) 통신 프로토콜인 HTTP의 보안이 강화된 버전이다.
+●LDAP(Lightweight Directory Access Protocol)
+TCP/IP 위에서 디렉토리 서비스를 조회하고 수정하는 응용 프로토콜이다.
+●SHA(Secure Hash Algorithm)
+해시알고리즘의 일종으로 MD5의 취약성을 대신하여 사용한다. SHA, SHA‐1, SHA‐2(SHA‐224, SHA‐256, SHA‐384, 
+SHA‐512) 등의 다양한 버전이 있으며, 암호 프로토콜인 TLS, SSL, PGP, SSH, IPSec 등에 사용된다.
+●umask
+파일 또는 디렉토리의 권한을 설정하기 위한 명령어이다.
+●개인키(Private Key)
+공개키 기반구조에서 개인키란 암·복호화를 위해 비밀 메시지를 교환하는 당사자만이 알고 있는 키이다.
+●공개키(Public Key)
+공개키는 지정된 인증기관에 의해 제공되는 키값으로서, 이 공개키로부터 생성된 개인키와 함께 결합되어, 메시지 및 전자
+서명의 암·복호화에 효과적으로 사용될 수 있다. 공개키를 사용하는 시스템을 공개키 기반구조(Public Key Infrastructure, 
+PKI)라 한다.
+●경로순회(directory traversal)
+상대경로 참조 방식(“./”,“../”등)을 이용해 다른 디렉토리의 중요파일에 접근하는 공격방법으로 경로 추적이라고도 한다.

@@ -1,0 +1,376 @@
+{
+ "lines": [
+  {
+   "text": "200",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음의 예제코드는 동적 실행함수를 사용하였으나 외부 입력값을 실행하지 않아 취약하지 않다고 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.78363037109375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "판정한다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    113.69224548339844,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    167.29122924804688,
+    296.91937255859375,
+    178.313232421875
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <script>",
+   "bbox": [
+    84.30000305175781,
+    192.21823120117188,
+    125.81214141845703,
+    202.11822509765625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    206.61825561523438,
+    92.04689025878906,
+    216.51824951171875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "var obj = {};",
+   "bbox": [
+    118.42138671875,
+    206.61825561523438,
+    168.8148956298828,
+    216.51824951171875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    221.01828002929688,
+    92.04601287841797,
+    230.91827392578125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for(var i = 0; i < 5; i++){",
+   "bbox": [
+    118.4205093383789,
+    221.01828002929688,
+    221.0243682861328,
+    230.91827392578125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30000305175781,
+    235.41827392578125,
+    92.03807830810547,
+    245.31826782226562
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "eval(\"obj.test\" + i + \"=\" + i);",
+   "bbox": [
+    118.4125747680664,
+    235.41827392578125,
+    234.8229522705078,
+    245.31826782226562
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    249.81826782226562,
+    92.0654067993164,
+    259.71826171875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    118.43990325927734,
+    249.81826782226562,
+    121.17264556884766,
+    259.71826171875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    264.21826171875,
+    92.0662841796875,
+    274.1182556152344
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "console.log(obj);",
+   "bbox": [
+    118.44078063964844,
+    264.21826171875,
+    183.39976501464844,
+    274.1182556152344
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: </script>",
+   "bbox": [
+    84.30000305175781,
+    278.6182556152344,
+    129.70498657226562,
+    288.51824951171875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    331.0552062988281,
+    132.05699157714844,
+    343.1332092285156
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-94: Improper Control of Generation of Code ('Code Injection') , MITRE,",
+   "bbox": [
+    91.5,
+    354.7311096191406,
+    438.4647216796875,
+    365.75311279296875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/94.html ",
+   "bbox": [
+    105.24041748046875,
+    370.7510986328125,
+    309.02392578125,
+    381.7731018066406
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code ",
+   "bbox": [
+    91.50000762939453,
+    391.7510070800781,
+    464.8207702636719,
+    402.77301025390625
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "('Eval Injection'), MITRE,",
+   "bbox": [
+    105.23941040039062,
+    407.77099609375,
+    210.66761779785156,
+    418.7929992675781
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/95.html ",
+   "bbox": [
+    105.23941040039062,
+    423.7308654785156,
+    309.0229187011719,
+    434.75286865234375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③Code Injection Software Attack, OWASP,",
+   "bbox": [
+    91.4990005493164,
+    444.73077392578125,
+    284.5244445800781,
+    455.7527770996094
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/Code_Injection",
+   "bbox": [
+    105.23941040039062,
+    460.7507629394531,
+    371.95733642578125,
+    471.77276611328125
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "text": "1: <script>\n2:           var obj = {};\n3:           for(var i = 0; i < 5; i++){\n4:           eval(\"obj.test\" + i + \"=\" + i);\n5:           }\n6:           console.log(obj);\n7: </script>",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    191.0182312011719,
+    234.8229522705078,
+    289.71824951171874
+   ]
+  }
+ ],
+ "native": "200\n다음의 예제코드는 동적 실행함수를 사용하였으나 외부 입력값을 실행하지 않아 취약하지 않다고 \n판정한다.\n오탐코드의 예\n1: <script>\n2:\nvar obj = {};\n3:\nfor(var i = 0; i < 5; i++){\n4:\neval(\"obj.test\" + i + \"=\" + i);\n5:\n}\n6:\nconsole.log(obj);\n7: </script>\n마. 참고자료\n①CWE-94: Improper Control of Generation of Code ('Code Injection') , MITRE,\nhttp://cwe.mitre.org/data/definitions/94.html \n②CWE-95: Improper Neutralization of Directives in Dynamically Evaluated Code \n('Eval Injection'), MITRE,\nhttp://cwe.mitre.org/data/definitions/95.html \n③Code Injection Software Attack, OWASP,\nhttps://owasp.org/www-community/attacks/Code_Injection\n",
+ "native_sha256": "10f343d7963e141b0bbf44b9c98e699672a11a215ca02fe369af1c2bc6f44f82",
+ "chars": 582,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

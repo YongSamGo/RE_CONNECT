@@ -1,0 +1,35 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제4절 에러처리
+133
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+def get_content():
+  try:
+    f = open('myfile.txt')
+    s = f.readline()
+    i = int(s.strip())
+  # 발생할 수 있는 오류의 종류와 순서에 맞춰서 예외 처리 한다.
+  except FileNotFoundError:
+    print("file is not found")
+  except OSError:
+    print("cannot open file")
+  except ValueError:
+    print("Could not convert data to an integer.")
+라. 참고자료
+① CWE-754: Improper Check for Unusual or Exceptional Conditions, MITRE,
+https://cwe.mitre.org/data/definitions/754.html
+② Errors and Exceptions, Python Software Foundation,
+https://docs.python.org/3/tutorial/errors.html
+➂ Built-in Exceptions, Python Software Foundation,
+https://docs.python.org/3/library/exceptions.html

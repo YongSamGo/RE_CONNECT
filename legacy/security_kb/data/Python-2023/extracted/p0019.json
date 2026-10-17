@@ -1,0 +1,253 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "13",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    93.79303741455078,
+    119.12395477294922,
+    104.33966064453125
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'), MITRE, ",
+   "bbox": [
+    65.09266662597656,
+    115.6533203125,
+    506.6858215332031,
+    124.64192199707031
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/89.html",
+   "bbox": [
+    76.48088836669922,
+    130.99386596679688,
+    261.3764343261719,
+    139.98245239257812
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② SQL Injection Prevention Cheat Sheet, OWASP",
+   "bbox": [
+    65.09266662597656,
+    151.2481689453125,
+    271.36029052734375,
+    160.2367706298828
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    166.58871459960938,
+    449.9367370605469,
+    175.5773162841797
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Sqlite3 DB-API, Python, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    186.843017578125,
+    297.7122802734375,
+    195.8316192626953
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/ko/3/library/sqlite3.html",
+   "bbox": [
+    77.32001495361328,
+    202.18356323242188,
+    271.0858154296875,
+    211.1721649169922
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ MySQL, Python Coding Examples, Oracle Corporation",
+   "bbox": [
+    65.09266662597656,
+    222.43789672851562,
+    296.4709777832031,
+    231.42648315429688
+   ],
+   "block": 9,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://dev.mysql.com/doc/connector-python/en/connector-python-examples.html",
+   "bbox": [
+    77.32001495361328,
+    237.7784423828125,
+    411.9393310546875,
+    246.76702880859375
+   ],
+   "block": 10,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑤ Django QuerySet API reference, Django Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    258.0327453613281,
+    330.0779113769531,
+    267.0213623046875
+   ],
+   "block": 11,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/ref/models/querysets/",
+   "bbox": [
+    77.32001495361328,
+    273.373291015625,
+    325.63592529296875,
+    282.3619079589844
+   ],
+   "block": 12,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑥ Django Performing raw SQL queries, Django Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    293.6275939941406,
+    349.73846435546875,
+    302.6162109375
+   ],
+   "block": 13,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/topics/db/sql/",
+   "bbox": [
+    77.32001495361328,
+    308.9681396484375,
+    291.831787109375,
+    317.9567565917969
+   ],
+   "block": 14,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⑦ SQL Expression Language Tutorial, SQLAlchemy,",
+   "bbox": [
+    65.09266662597656,
+    329.2224426269531,
+    277.5728454589844,
+    338.2110595703125
+   ],
+   "block": 15,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql",
+   "bbox": [
+    77.32001495361328,
+    344.56298828125,
+    362.1911315917969,
+    353.5516052246094
+   ],
+   "block": 16,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n13\n라. 참고자료\n① CWE-89: Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection'), MITRE, \nhttps://cwe.mitre.org/data/definitions/89.html\n② SQL Injection Prevention Cheat Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html\n③ Sqlite3 DB-API, Python, Python Software Foundation,\nhttps://docs.python.org/ko/3/library/sqlite3.html\n④ MySQL, Python Coding Examples, Oracle Corporation\nhttps://dev.mysql.com/doc/connector-python/en/connector-python-examples.html\n⑤ Django QuerySet API reference, Django Software Foundation,\nhttps://docs.djangoproject.com/en/3.2/ref/models/querysets/\n⑥ Django Performing raw SQL queries, Django Software Foundation,\nhttps://docs.djangoproject.com/en/3.2/topics/db/sql/\n⑦ SQL Expression Language Tutorial, SQLAlchemy,\nhttps://docs.sqlalchemy.org/en/14/core/tutorial.html#using-textual-sql\n",
+ "native_sha256": "2bd55528e15a18fa0f4a7d9b60dc96d3d4ba3bbdc7531e6e87c17245fe2b2598",
+ "chars": 927,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

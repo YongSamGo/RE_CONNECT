@@ -1,0 +1,38 @@
+Python 시큐어코딩 가이드
+66
+중요 기능 수행을 위한 데이터는 위변조 가능성이 높은 쿠키보다 세션에 저장하도록 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from django.shortcuts import render
+def init_password(request):
+  # 세션에서 권한 정보를 가져옴
+  role = request.session['role']
+  request_id = request.POST.get('user_id', '')
+  request_mail = request.POST.get('user_email','')
+  # 세션에서 가져온 권한이 관리자인지 비교
+  if role == ‘admin’:
+    # 사용자의 패스워드 초기화 및 메일 발송 처리
+    password_init_and_sendmail(request_id, request_mail)
+    return render(request, '/sucess.html')
+  else:
+    return render(request, '/failed.html')
+라. 참고자료
+① CWE-807: Reliance on Untrusted Inputs in a Security Decision, MITRE,
+https://cwe.mitre.org/data/definitions/807.html
+② How to use sessions, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/http/sessions/
+③ Flask Sessions, 
+https://flask-session.readthedocs.io/en/latest/

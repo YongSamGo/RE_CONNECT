@@ -1,0 +1,24 @@
+144
+마. 참고자료
+①CWE‐615 Information Exposure Through Comments, MITRE,
+http://cwe.mitre.org/data/definitions/615.html
+②CWE‐321 Use of Hard‐coded Cryptographic Key, MITRE,
+http://cwe.mitre.org/data/definitions/321.html
+③암호키 관리 안내서, 한국인터넷진흥원,
+http://www.kisa.or.kr/public/laws/laws3_View.jsp?cPage=1&-mode=view&p_No=
+259&b_No=259&d_No=83&ST=total&SV=
+④Key Management Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Key_Management_Cheat_Sheet
+⑤2016 OWASP Application Security Verification Standard, OWASP, Cryptography 
+at Rest Verification Re- quirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+atio n_Stan- dard_Project
+⑥Recommendation for Key Management, NIST SP 800-57 Part1 Revesion4,
+http://nvlpubs.nist.gov/nistpubs/ SpecialPublications/NIST.SP.800-57pt1r4.pdf
+⑦Use of hard-coded cryptographic key, OWASP,
+http://www.owasp.org/index.php/Use_of_hard-cod- ed_cryptographic_key
+⑧Cryptographic Storage Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Cryptographic_Storage_ Cheat_Sheet
+⑨A basic encryption strategy for storing sensitive data, ITworld,
+http://www.itworld.com/article/2693828/data-protection/a-basic-encryption-st
+rategy -for-storing-sensitive-data.html

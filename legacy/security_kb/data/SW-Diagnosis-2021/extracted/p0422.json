@@ -1,0 +1,488 @@
+{
+ "lines": [
+  {
+   "text": "422",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "오류 메시지로 환경, 사용자, 관련 데이터 등의 내부 정보가 유출될 경우 취약하다.",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    389.16192626953125,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    150.31112670898438,
+    296.91937255859375,
+    161.3331298828125
+   ],
+   "block": 15,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: <%@ page language=”java” contentType=”text/html; charset=UTF-8” buffer=”-",
+   "bbox": [
+    84.30000305175781,
+    175.23818969726562,
+    419.5000915527344,
+    185.13818359375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: none”%> ",
+   "bbox": [
+    84.29998779296875,
+    189.63821411132812,
+    133.59339904785156,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: <%@page import=”egovframework.com.utl.fda.ucc.service.EgovUnitCalcUtil” %>",
+   "bbox": [
+    84.29998779296875,
+    204.03823852539062,
+    417.99530029296875,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: <%",
+   "bbox": [
+    84.29998779296875,
+    218.43826293945312,
+    107.9038314819336,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.29998779296875,
+    232.8382568359375,
+    92.06538391113281,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String sCmd = request.getParameter(“cmd”) == null ? “” : (String)",
+   "bbox": [
+    100.85952758789062,
+    232.8382568359375,
+    375.3838806152344,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "request.getParam-",
+   "bbox": [
+    100.86041259765625,
+    247.23825073242188,
+    176.48158264160156,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: eter(“cmd”);",
+   "bbox": [
+    84.30087280273438,
+    261.63824462890625,
+    144.9175262451172,
+    271.5382385253906
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30087280273438,
+    276.0382385253906,
+    92.06627655029297,
+    285.938232421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "double nResult=0.0; ",
+   "bbox": [
+    100.86041259765625,
+    276.0382385253906,
+    184.9434051513672,
+    285.938232421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30087280273438,
+    290.438232421875,
+    92.05304718017578,
+    300.3382263183594
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    100.8471908569336,
+    290.438232421875,
+    118.42578125,
+    300.3382263183594
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30087280273438,
+    304.8382263183594,
+    92.06627655029297,
+    314.73822021484375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if(!sCmd.equals(“”)) {",
+   "bbox": [
+    105.24073791503906,
+    304.8382263183594,
+    189.511474609375,
+    314.73822021484375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30087280273438,
+    319.23822021484375,
+    96.9931411743164,
+    329.1382141113281
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "EgovUnitCalcUtil egovUnitCalcUtil= new EgovUnitCalcUtil();",
+   "bbox": [
+    110.16761016845703,
+    319.23822021484375,
+    351.2810363769531,
+    329.1382141113281
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    345.131103515625,
+    296.1402587890625,
+    356.1531066894531
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58000183105469,
+    370.05810546875,
+    96.26522827148438,
+    379.9580993652344
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "….",
+   "bbox": [
+    105.05937194824219,
+    370.05810546875,
+    115.62362670898438,
+    379.9580993652344
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: }",
+   "bbox": [
+    83.58000183105469,
+    384.4580993652344,
+    103.41267395019531,
+    394.35809326171875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.58000183105469,
+    398.85809326171875,
+    96.2634506225586,
+    408.7580871582031
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…… ",
+   "bbox": [
+    105.0575942993164,
+    398.85809326171875,
+    123.45335388183594,
+    408.7580871582031
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: }",
+   "bbox": [
+    83.58000183105469,
+    413.2580871582031,
+    103.41267395019531,
+    423.1580810546875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:} catch(Exception e) { ",
+   "bbox": [
+    83.58000183105469,
+    427.6580810546875,
+    187.93292236328125,
+    437.5580749511719
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16: e.printStackTrace(); ",
+   "bbox": [
+    83.58000183105469,
+    442.0580749511719,
+    180.1427764892578,
+    451.95806884765625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:} ",
+   "bbox": [
+    83.58000183105469,
+    456.45806884765625,
+    101.56410217285156,
+    466.3580627441406
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:%>",
+   "bbox": [
+    83.58000183105469,
+    470.8580627441406,
+    107.68631744384766,
+    480.758056640625
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: <%@ page language=”java” contentType=”text/html; charset=UTF-8” buffer=”-\n2: none”%> \n3: <%@page import=”egovframework.com.utl.fda.ucc.service.EgovUnitCalcUtil” %>\n4: <%\n5:    String sCmd = request.getParameter(“cmd”) == null ? “” : (String)\nrequest.getParam-\n6: eter(“cmd”);\n7:    double nResult=0.0; \n8:    try {\n9:      if(!sCmd.equals(“”)) {\n10:      EgovUnitCalcUtil egovUnitCalcUtil= new EgovUnitCalcUtil();",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    174.03818969726564,
+    419.5000915527344,
+    330.3382141113281
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "11:    ….\n12: }\n13:    …… \n14: }\n15:} catch(Exception e) { \n16: e.printStackTrace(); \n17:} \n18:%>",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    368.85810546875,
+    187.93292236328125,
+    481.958056640625
+   ]
+  }
+ ],
+ "native": "422\n오류 메시지로 환경, 사용자, 관련 데이터 등의 내부 정보가 유출될 경우 취약하다.\n정탐코드의 예\n1: <%@ page language=”java” contentType=”text/html; charset=UTF-8” buffer=”-\n2: none”%> \n3: <%@page import=”egovframework.com.utl.fda.ucc.service.EgovUnitCalcUtil” %>\n4: <%\n5:\nString sCmd = request.getParameter(“cmd”) == null ? “” : (String)\nrequest.getParam-\n6: eter(“cmd”);\n7:\ndouble nResult=0.0; \n8:\ntry {\n9:\nif(!sCmd.equals(“”)) {\n10:\nEgovUnitCalcUtil egovUnitCalcUtil= new EgovUnitCalcUtil();\n정탐코드의 예\n11:\n….\n12: }\n13:\n…… \n14: }\n15:} catch(Exception e) { \n16: e.printStackTrace(); \n17:} \n18:%>\n",
+ "native_sha256": "90dda6ccd2302ec3b4d88674b23538007c6decf4e3b5130babcd13096156dead",
+ "chars": 557,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

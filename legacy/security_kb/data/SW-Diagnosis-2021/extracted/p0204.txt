@@ -1,0 +1,44 @@
+204
+안전한 코드의 예 JAVA
+4:
+public static void main(String[] args) throws IOException { 
+5:
+String helpFile = args[0];
+6:
+if (helpFile != null) {
+7:
+helpFile = helpFile.replaceAll("\\.{2,}[/\\\\]", ""); 
+8:
+}
+9:
+try (BufferedReader br = new BufferedReader(new FileReader(safeDir + helpFile))) {
+10:
+...
+다음 C# 코드는 외부 입력값을 파일명에 바로 사용하고 있다. 이는 의도치 않은 파일의 손상을 가져올 
+수 있다.
+안전하지 않은 코드의 예 C#
+1: //외부 입력 값이 검증 없이 파일처리에 사용 되었다.
+2: string file = Request.QueryString["path"];
+3:
+if (file != null)
+4:
+{
+5:
+File.Delete(file);
+6:
+}
+외부 입력값에 경로 조작 문자열을 제거하여 조작 위험을 없앨 수 있다.
+안전한 코드의 예 C#
+1: string file = Request.QueryString["path"];
+2:
+if (file != null) 
+3: {
+4: //경로조작 문자열이 있는지 확인하고 파일 처리를 하도록 한다.
+5:
+if (file.IndexOf('\\') > -1 || file.IndexOf('/') > -1)
+6:
+{
+7:
+Response.Write("Path Traversal Attack");
+8:
+}

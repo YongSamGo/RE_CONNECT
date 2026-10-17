@@ -1,0 +1,489 @@
+{
+ "lines": [
+  {
+   "text": "545",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제5장부록",
+   "bbox": [
+    421.8599853515625,
+    72.36726379394531,
+    458.2915954589844,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "1.9.3. 쿠키 사용 규칙",
+   "bbox": [
+    73.31999969482422,
+    118.09121704101562,
+    160.3617401123047,
+    129.11322021484375
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "Secure 속성 및 HttpOnly 속성 설정",
+   "bbox": [
+    73.86000061035156,
+    136.59823608398438,
+    196.8096923828125,
+    146.49822998046875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 올바르지 않은 방법",
+   "bbox": [
+    79.50003051757812,
+    158.13790893554688,
+    162.0041961669922,
+    168.03790283203125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// Cookie c = new Cookie(“name”, “value”);",
+   "bbox": [
+    79.50003051757812,
+    172.53793334960938,
+    262.2367858886719,
+    182.43792724609375
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// c.setMaxAge(60*60*24*365);",
+   "bbox": [
+    79.50003051757812,
+    186.93795776367188,
+    207.98475646972656,
+    196.83795166015625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// c.setSecure(false);",
+   "bbox": [
+    79.50003051757812,
+    201.33798217773438,
+    165.7410125732422,
+    211.23797607421875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// response.addCookie(c);",
+   "bbox": [
+    79.50003051757812,
+    215.73800659179688,
+    184.6383514404297,
+    225.63800048828125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 올바른 방법",
+   "bbox": [
+    79.50003051757812,
+    244.53799438476562,
+    134.58155822753906,
+    254.43798828125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Cookie c = new Cookie(“name”, “value”);",
+   "bbox": [
+    79.50003051757812,
+    258.93798828125,
+    250.0231170654297,
+    268.8379821777344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "c.setMaxAge(-1); ",
+   "bbox": [
+    79.50003051757812,
+    273.3379821777344,
+    151.89126586914062,
+    283.23797607421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "c.setSecure(true);",
+   "bbox": [
+    79.50003051757812,
+    287.73797607421875,
+    150.48255920410156,
+    297.6379699707031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.addCookie(c);",
+   "bbox": [
+    79.50003051757812,
+    302.1379699707031,
+    172.39041137695312,
+    312.0379638671875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpOnly 속성 설정",
+   "bbox": [
+    73.86000061035156,
+    323.61810302734375,
+    141.72637939453125,
+    333.5180969238281
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "①Tomcat",
+   "bbox": [
+    73.86000061035156,
+    336.69781494140625,
+    113.89469146728516,
+    346.5978088378906
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- Tomcat 5.5.28, Tomcat 6.0.19부터 지원",
+   "bbox": [
+    87.06002807617188,
+    349.7181091308594,
+    241.57363891601562,
+    359.61810302734375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- /conf/context.xml에 설정",
+   "bbox": [
+    87.06002807617188,
+    362.7384033203125,
+    188.76559448242188,
+    372.6383972167969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " <?xml version=”1.0” encoding=”UTF-8”?> ",
+   "bbox": [
+    79.50003051757812,
+    384.2781066894531,
+    253.48321533203125,
+    394.1781005859375
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <Context path=”/myWebApplicationPath” useHttpOnly=”true”> : ",
+   "bbox": [
+    79.50003051757812,
+    398.6781005859375,
+    352.9921569824219,
+    408.5780944824219
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②JEUS",
+   "bbox": [
+    73.86000061035156,
+    420.2181091308594,
+    106.33731842041016,
+    430.11810302734375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- JEUS 6.0 fix9부터 지원 (default가 true) ",
+   "bbox": [
+    87.06002807617188,
+    433.2384033203125,
+    239.2465362548828,
+    443.1383972167969
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "- WEBMain.xml 또는 jeus-web-dd.xml에 설정",
+   "bbox": [
+    87.06002807617188,
+    446.318115234375,
+    259.8091125488281,
+    456.2181091308594
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<session-config>",
+   "bbox": [
+    78.95964813232422,
+    460.7784118652344,
+    145.6376953125,
+    470.67840576171875
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " <session-cookie> ",
+   "bbox": [
+    78.95964813232422,
+    475.17840576171875,
+    153.92764282226562,
+    485.0783996582031
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <jsessionid-name>JSESSIONID</jsessionid-name>",
+   "bbox": [
+    78.95964813232422,
+    489.5783996582031,
+    293.10791015625,
+    499.4783935546875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <version>0</version> ",
+   "bbox": [
+    78.95964813232422,
+    503.9783935546875,
+    175.6564483642578,
+    513.87841796875
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <domain>.tmax.co.kr</domain> ",
+   "bbox": [
+    78.95964813232422,
+    518.3783569335938,
+    215.87542724609375,
+    528.2783813476562
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <path>/</path> ",
+   "bbox": [
+    78.95964813232422,
+    532.7783203125,
+    151.98562622070312,
+    542.6783447265625
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <max-age>-1</max-age> ",
+   "bbox": [
+    78.95964813232422,
+    547.1783447265625,
+    195.43624877929688,
+    557.078369140625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <secure>false</secure> ",
+   "bbox": [
+    78.95964813232422,
+    561.578369140625,
+    185.61424255371094,
+    571.4783935546875
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "   <http-only>true</http-only> ",
+   "bbox": [
+    78.95964813232422,
+    575.9783325195312,
+    203.50132751464844,
+    585.8783569335938
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": " </session-cookie> ",
+   "bbox": [
+    78.95964813232422,
+    590.3782958984375,
+    157.8222198486328,
+    600.2783203125
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "</session-config>",
+   "bbox": [
+    78.95964813232422,
+    604.7783203125,
+    149.53317260742188,
+    614.6783447265625
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "545\n제5장부록\n1.9.3. 쿠키 사용 규칙\nSecure 속성 및 HttpOnly 속성 설정\n// 올바르지 않은 방법\n// Cookie c = new Cookie(“name”, “value”);\n// c.setMaxAge(60*60*24*365);\n// c.setSecure(false);\n// response.addCookie(c);\n// 올바른 방법\nCookie c = new Cookie(“name”, “value”);\nc.setMaxAge(-1); \nc.setSecure(true);\nresponse.addCookie(c);\nHttpOnly 속성 설정\n①Tomcat\n- Tomcat 5.5.28, Tomcat 6.0.19부터 지원\n- /conf/context.xml에 설정\n <?xml version=”1.0” encoding=”UTF-8”?> \n   <Context path=”/myWebApplicationPath” useHttpOnly=”true”> : \n②JEUS\n- JEUS 6.0 fix9부터 지원 (default가 true) \n- WEBMain.xml 또는 jeus-web-dd.xml에 설정\n<session-config>\n <session-cookie> \n   <jsessionid-name>JSESSIONID</jsessionid-name>\n   <version>0</version> \n   <domain>.tmax.co.kr</domain> \n   <path>/</path> \n   <max-age>-1</max-age> \n   <secure>false</secure> \n   <http-only>true</http-only> \n </session-cookie> \n</session-config>\n",
+ "native_sha256": "cb3fa3546005525da51a76409ad3481d82bf87395a9f68544735d3b2099d4198",
+ "chars": 853,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

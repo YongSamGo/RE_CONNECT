@@ -1,0 +1,933 @@
+{
+ "lines": [
+  {
+   "text": "186",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "Statement statement13) 객체로 쿼리가 실행되는 부분을 확인하고(①), Statement 객체가 ",
+   "bbox": [
+    76.5,
+    142.51107788085938,
+    464.85577392578125,
+    153.5330810546875
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Pre-paredStatement 객체인지 확인한다(②). PreparedStatement 객체를 사용하고 setString ",
+   "bbox": [
+    76.49986267089844,
+    159.55111694335938,
+    464.8538513183594,
+    170.5731201171875
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "등의 메소 드로 외부 입력값을 설정하는 경우에는 기본적으로 안전하다고 판정하지만, 쿼리에 사용되는 ",
+   "bbox": [
+    76.49984741210938,
+    176.53103637695312,
+    464.8264465332031,
+    187.55303955078125
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "변수가 외부 입력값인 경우엔 적절한 필터링 모듈이 존재하는지 추가로 확인해야 한다(③). 즉, 쿼리 ",
+   "bbox": [
+    76.49984741210938,
+    193.51095581054688,
+    464.8050231933594,
+    204.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "생성과 관련된 외부 입력값에 대한 필터링 모듈이 반드시 존재해야 하며, 그 외에도 관련 프레임워크",
+   "bbox": [
+    76.49984741210938,
+    210.55099487304688,
+    461.95050048828125,
+    221.572998046875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "에서 적절한 조치가 이루어질 경우에 안전하다고 판정한다.",
+   "bbox": [
+    76.49984741210938,
+    227.5308837890625,
+    300.9430847167969,
+    238.55288696289062
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    231.47999572753906,
+    258.0111083984375,
+    307.0608215332031,
+    269.0331115722656
+   ],
+   "block": 21,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    84.30000305175781,
+    282.9381103515625,
+    92.03102111816406,
+    292.8381042480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "class Login { ",
+   "bbox": [
+    100.82516479492188,
+    282.9381103515625,
+    156.33245849609375,
+    292.8381042480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    84.30000305175781,
+    295.41839599609375,
+    92.0654067993164,
+    305.3183898925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public Connection getConnection() throws SQLException { ",
+   "bbox": [
+    105.2398681640625,
+    295.41839599609375,
+    346.38507080078125,
+    305.3183898925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    84.30000305175781,
+    307.8384094238281,
+    92.0654067993164,
+    317.7384033203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());",
+   "bbox": [
+    109.68013763427734,
+    307.8384094238281,
+    442.8473205566406,
+    317.7384033203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    84.30087280273438,
+    320.2584228515625,
+    92.06626892089844,
+    330.1584167480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String dbConnection = PropertyManager.getProperty(“db.connection”);",
+   "bbox": [
+    109.68099975585938,
+    320.2584228515625,
+    393.7214050292969,
+    330.1584167480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30087280273438,
+    332.73870849609375,
+    92.06627655029297,
+    342.6387023925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return DriverManager.getConnection(dbConnection); ",
+   "bbox": [
+    105.24073791503906,
+    332.73870849609375,
+    316.83355712890625,
+    342.6387023925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30087280273438,
+    345.1587219238281,
+    92.06627655029297,
+    355.0587158203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.24073791503906,
+    345.1587219238281,
+    107.97348022460938,
+    355.0587158203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30087280273438,
+    357.5787353515625,
+    92.03630065917969,
+    367.4787292480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부입력 값(username, password)을 제공받음 ",
+   "bbox": [
+    105.21076965332031,
+    357.5787353515625,
+    295.6450500488281,
+    367.4787292480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30087280273438,
+    370.05902099609375,
+    92.06626892089844,
+    379.9590148925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public void doPrivilegedAction(String username, char[] password) throws SQLException {",
+   "bbox": [
+    105.24073791503906,
+    370.05902099609375,
+    451.4297790527344,
+    379.9590148925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30087280273438,
+    382.4790344238281,
+    92.06626892089844,
+    392.3790283203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Connection connection = getConnection();",
+   "bbox": [
+    105.24073791503906,
+    382.4790344238281,
+    277.34283447265625,
+    392.3790283203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30087280273438,
+    394.8990478515625,
+    97.0460433959961,
+    404.7990417480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (connection == null) { ",
+   "bbox": [
+    105.8401870727539,
+    394.8990478515625,
+    206.7657012939453,
+    404.7990417480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30087280273438,
+    407.37933349609375,
+    97.0460433959961,
+    417.2793273925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// handle error ",
+   "bbox": [
+    114.59994506835938,
+    407.37933349609375,
+    178.7374267578125,
+    417.2793273925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30087280273438,
+    419.7993469238281,
+    97.0460433959961,
+    429.6993408203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    114.59994506835938,
+    419.7993469238281,
+    117.33268737792969,
+    429.6993408203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30087280273438,
+    432.2193603515625,
+    97.0248794555664,
+    442.1193542480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    114.57878875732422,
+    432.2193603515625,
+    132.2252655029297,
+    442.1193542480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30087280273438,
+    444.69964599609375,
+    96.97551727294922,
+    454.5996398925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String pwd = HashUtil.hashPassword(password); ",
+   "bbox": [
+    114.5294189453125,
+    444.69964599609375,
+    315.24761962890625,
+    454.5996398925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.30087280273438,
+    457.1196594238281,
+    97.0460433959961,
+    467.0196533203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String sqlString = “SELECT * FROM db_user WHERE username = ‘”+ username ",
+   "bbox": [
+    114.59994506835938,
+    457.1196594238281,
+    451.05352783203125,
+    467.0196533203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ “’ AND password = ‘” + pwd + “’”; ··········································································③",
+   "bbox": [
+    114.600830078125,
+    469.5396728515625,
+    453.3110656738281,
+    479.4396667480469
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.30172729492188,
+    482.01995849609375,
+    97.04688262939453,
+    491.9199523925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Statement stmt = connection.createStatement(); ························································②",
+   "bbox": [
+    114.60079193115234,
+    482.01995849609375,
+    453.3593444824219,
+    491.9199523925781
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    84.30172729492188,
+    494.4399719238281,
+    97.04688262939453,
+    504.3399658203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ResultSet rs = stmt.executeQuery(sqlString); ·······························································①",
+   "bbox": [
+    114.60079193115234,
+    494.4399719238281,
+    453.3585510253906,
+    504.3399658203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    84.30172729492188,
+    506.8599548339844,
+    97.02043914794922,
+    516.7599487304688
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (!rs.next()) { ",
+   "bbox": [
+    114.57434844970703,
+    506.8599548339844,
+    174.6655731201172,
+    516.7599487304688
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    84.30172729492188,
+    519.3402099609375,
+    97.0468978881836,
+    529.240234375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throw new SecurityException(“User name or password incorrect”);",
+   "bbox": [
+    114.6008071899414,
+    519.3402099609375,
+    388.3476257324219,
+    529.240234375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    84.30172729492188,
+    531.76025390625,
+    97.0468978881836,
+    541.6602783203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    114.60079956054688,
+    531.76025390625,
+    117.33354187011719,
+    541.6602783203125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    84.30172729492188,
+    544.1802368164062,
+    97.0468978881836,
+    554.0802612304688
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// Authenticated; proceed",
+   "bbox": [
+    114.6008071899414,
+    544.1802368164062,
+    221.24041748046875,
+    554.0802612304688
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    84.30172729492188,
+    556.6605224609375,
+    97.02750396728516,
+    566.560546875
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} finally {",
+   "bbox": [
+    114.58140563964844,
+    556.6605224609375,
+    151.79078674316406,
+    566.560546875
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    84.30172729492188,
+    569.0805053710938,
+    97.05570220947266,
+    578.9805297851562
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// …",
+   "bbox": [
+    114.60961151123047,
+    569.0805053710938,
+    134.7763671875,
+    578.9805297851562
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    84.30172729492188,
+    581.50048828125,
+    97.0468978881836,
+    591.4005126953125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    110.22135925292969,
+    581.50048828125,
+    112.9541015625,
+    591.4005126953125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25: }",
+   "bbox": [
+    84.30172729492188,
+    593.9808349609375,
+    104.1343994140625,
+    603.880859375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26: }",
+   "bbox": [
+    84.30172729492188,
+    606.4008178710938,
+    104.1343994140625,
+    616.3008422851562
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13) statement : 자바에서 사용하는 객체 중 하나",
+   "bbox": [
+    76.5,
+    652.9850463867188,
+    231.9029998779297,
+    661.7630615234375
+   ],
+   "block": 23,
+   "size": 7.9190673828125,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59
+   ],
+   "text": "1:    class Login { \n2:      public Connection getConnection() throws SQLException { \n3:        DriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());\n4:        String dbConnection = PropertyManager.getProperty(“db.connection”);\n5:      return DriverManager.getConnection(dbConnection); \n6:      }\n7:      // 외부입력 값(username, password)을 제공받음 \n8:      public void doPrivilegedAction(String username, char[] password) throws SQLException {\n9:      Connection connection = getConnection();\n10:    if (connection == null) { \n11:        // handle error \n12:        }\n13:        try {\n14:        String pwd = HashUtil.hashPassword(password); \n15:        String sqlString = “SELECT * FROM db_user WHERE username = ‘”+ username \n+ “’ AND password = ‘” + pwd + “’”; ··········································································③\n16:        Statement stmt = connection.createStatement(); ························································②\n17:        ResultSet rs = stmt.executeQuery(sqlString); ·······························································①\n18:        if (!rs.next()) { \n19:        throw new SecurityException(“User name or password incorrect”);\n20:        }\n21:        // Authenticated; proceed\n22:        } finally {\n23:        // …\n24:      }\n25: }\n26: }",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    84.30000305175781,
+    281.7381103515625,
+    453.3593444824219,
+    617.5008422851563
+   ]
+  }
+ ],
+ "native": "186\n라. 진단방법\nStatement statement13) 객체로 쿼리가 실행되는 부분을 확인하고(①), Statement 객체가 \nPre-paredStatement 객체인지 확인한다(②). PreparedStatement 객체를 사용하고 setString \n등의 메소 드로 외부 입력값을 설정하는 경우에는 기본적으로 안전하다고 판정하지만, 쿼리에 사용되는 \n변수가 외부 입력값인 경우엔 적절한 필터링 모듈이 존재하는지 추가로 확인해야 한다(③). 즉, 쿼리 \n생성과 관련된 외부 입력값에 대한 필터링 모듈이 반드시 존재해야 하며, 그 외에도 관련 프레임워크\n에서 적절한 조치가 이루어질 경우에 안전하다고 판정한다.\n일반적인 진단의 예\n1:\nclass Login { \n2:\npublic Connection getConnection() throws SQLException { \n3:\nDriverManager.registerDriver(new com.microsoft.sqlserver.jdbc.SQLServerDriver());\n4:\nString dbConnection = PropertyManager.getProperty(“db.connection”);\n5:\nreturn DriverManager.getConnection(dbConnection); \n6:\n}\n7:\n// 외부입력 값(username, password)을 제공받음 \n8:\npublic void doPrivilegedAction(String username, char[] password) throws SQLException {\n9:\nConnection connection = getConnection();\n10:\nif (connection == null) { \n11:\n// handle error \n12:\n}\n13:\ntry {\n14:\nString pwd = HashUtil.hashPassword(password); \n15:\nString sqlString = “SELECT * FROM db_user WHERE username = ‘”+ username \n+ “’ AND password = ‘” + pwd + “’”; ··········································································③\n16:\nStatement stmt = connection.createStatement(); ························································②\n17:\nResultSet rs = stmt.executeQuery(sqlString); ·······························································①\n18:\nif (!rs.next()) { \n19:\nthrow new SecurityException(“User name or password incorrect”);\n20:\n}\n21:\n// Authenticated; proceed\n22:\n} finally {\n23:\n// …\n24:\n}\n25: }\n26: }\n13) statement : 자바에서 사용하는 객체 중 하나\n",
+ "native_sha256": "e93f73dabe55974e72b8989d682b47915e77440aa2fe877a5d48ee148b601016",
+ "chars": 1560,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

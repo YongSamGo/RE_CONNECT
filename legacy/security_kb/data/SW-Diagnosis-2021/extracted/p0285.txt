@@ -1,0 +1,28 @@
+285
+제4장구현단계 보안약점 진단
+외부에서 입력되는 값에 대하여 null 여부를 체크하고, 응답이 여러 개로 나눠지는 것을 방지하기 
+위해 개행문자를 제거하고 응답헤더의 값으로 사용한다.
+안전한 코드의 예 JAVA
+1: String lastLogin = request.getParameter("last_login");
+2: if (lastLogin == null || "".equals(lastLogin)) {
+3:
+return;
+4: }
+// 외부 입력값에서 개행문자(\r\n)를 제거한 후 쿠키의 값으로 설정 
+5: lastLogin = lastLogin.replaceAll("[\\r\\n]", "");
+6: Cookie c = new Cookie("LASTLOGIN", lastLogin);
+7: c.setMaxAge(1000); 
+8: c.setSecure(true); 
+9: response.addCookie(c); 
+외부 입력값으로 반환되는 쿠키값을 설정하는 C#코드이다. 이는 응답이 분리되어 전달될 수 있으며 
+분리된 응답 본문의 내용을 공격자가 마음대로 수정할 수 있다.
+안전하지 않은 코드의 예 C#
+//외부 입력값을 검증 없이 사용하는 것은 안전하지 않다.
+1: string usrInput = Request.QueryString["ID"];
+2: Response.AddHeader("foo", "bar" + usrInput);
+개행문자를 모두 제거한 이후에 사용해야 한다.
+안전한 코드의 예 C#
+1:string usrInput = Request.QueryString["ID"];
+//개행문자를 제거 한 이후에 사용해야 합니다.
+2:string validatedInput = usrInput.Replace("\n", "").Replace("\r","");
+3:Response.AddHeader("foo", "bar" + validatedInput);

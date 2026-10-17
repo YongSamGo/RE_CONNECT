@@ -1,0 +1,523 @@
+{
+ "lines": [
+  {
+   "text": "181",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "다음은 안전하지 않은 코드의 예로, 외부로부터 입력받은 gubun의 값을 아무런 검증과정을 거치지 ",
+   "bbox": [
+    70.86000061035156,
+    142.51107788085938,
+    459.224609375,
+    153.5330810546875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "않고 SQL 쿼리를 생성하는데 사용하고 있다. 이 경우 gubun의 값으로 a' or 'a' = 'a 를 입력하면 ",
+   "bbox": [
+    70.86000061035156,
+    159.55111694335938,
+    459.0732116699219,
+    170.5731201171875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "조건절이 b_gubun = 'a' or 'a' = 'a' 로 바뀌어 쿼리의 구조가 변경되어 board 테이블의 모든 내용이 ",
+   "bbox": [
+    70.8599853515625,
+    176.53103637695312,
+    459.1338195800781,
+    187.55303955078125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "조회된다.",
+   "bbox": [
+    70.8599853515625,
+    193.51095581054688,
+    107.87242889404297,
+    204.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JDBC API",
+   "bbox": [
+    192.24000549316406,
+    233.53118896484375,
+    334.988037109375,
+    244.55319213867188
+   ],
+   "block": 29,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.",
+   "bbox": [
+    79.37999725341797,
+    252.9381103515625,
+    321.7805480957031,
+    262.8381042480469
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String gubun = request.getParameter(\"gubun\");",
+   "bbox": [
+    79.37998962402344,
+    267.3381042480469,
+    282.5734558105469,
+    277.23809814453125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: ......",
+   "bbox": [
+    79.37998962402344,
+    281.73809814453125,
+    107.32625579833984,
+    291.6380920410156
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: String sql = \"SELECT * FROM board WHERE b_gubun = '\" + gubun + \"'\";",
+   "bbox": [
+    79.37998962402344,
+    296.1380920410156,
+    398.30523681640625,
+    306.0380859375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Connection con = db.getConnection();",
+   "bbox": [
+    79.3800048828125,
+    310.5380859375,
+    247.00650024414062,
+    320.4380798339844
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: Statement stmt = con.createStatement();",
+   "bbox": [
+    79.3800048828125,
+    324.9380798339844,
+    260.5952453613281,
+    334.83807373046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: //외부로부터 입력받은 값이 검증 또는 처리 없이 쿼리로 수행되어 안전하지 않다.",
+   "bbox": [
+    79.3800048828125,
+    339.33807373046875,
+    372.9134826660156,
+    349.2380676269531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: ResultSet rs = stmt.executeQuery(sql);",
+   "bbox": [
+    79.38002014160156,
+    353.7380676269531,
+    251.75619506835938,
+    363.6380615234375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "이를 안전한 코드로 변환하면 다음과 같다. 파라미터(Parameter)를 받는 PreparedStatement ",
+   "bbox": [
+    70.86000061035156,
+    386.1111145019531,
+    459.17462158203125,
+    397.13311767578125
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString, setParameter등의 메소드로 설정",
+   "bbox": [
+    70.86000061035156,
+    403.09100341796875,
+    456.3321838378906,
+    414.1130065917969
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하여, 외부의 입력이 쿼리문의 구조를 바꾸는 것을 방지해야 한다.",
+   "bbox": [
+    70.86000061035156,
+    420.1310119628906,
+    320.9449768066406,
+    431.15301513671875
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JDBC API",
+   "bbox": [
+    206.75999450683594,
+    460.0911865234375,
+    320.4560241699219,
+    471.1131896972656
+   ],
+   "block": 41,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: String gubun = request.getParameter(\"gubun\");",
+   "bbox": [
+    79.37999725341797,
+    479.49810791015625,
+    282.5734558105469,
+    489.3981018066406
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: ......",
+   "bbox": [
+    79.37999725341797,
+    493.8981018066406,
+    107.32626342773438,
+    503.798095703125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: //1. 사용자에 의해 외부로부터 입력받은 값은 안전하지 않을 수 있으므로, PreparedStatement ",
+   "bbox": [
+    79.37999725341797,
+    508.2981262207031,
+    429.1542663574219,
+    518.1981201171875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용을 위해 ?문자로 바인딩 변수를 사용한다.",
+   "bbox": [
+    91.50013732910156,
+    522.6980590820312,
+    249.2587890625,
+    532.5980834960938
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: String sql = \"SELECT * FROM board WHERE b_gubun = ?\";",
+   "bbox": [
+    79.3799819946289,
+    537.0980224609375,
+    341.21826171875,
+    546.998046875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: Connection con = db.getConnection();",
+   "bbox": [
+    79.3799819946289,
+    551.498046875,
+    247.0064697265625,
+    561.3980712890625
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: //2. PreparedStatement 사용한다.",
+   "bbox": [
+    79.3799819946289,
+    565.8980712890625,
+    222.1420135498047,
+    575.798095703125
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: PreparedStatement pstmt = con.prepareStatement(sql);",
+   "bbox": [
+    79.3799819946289,
+    580.2980346679688,
+    317.8153076171875,
+    590.1980590820312
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: //3.PreparedStatement 객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString등의 메소드로 ",
+   "bbox": [
+    79.3799819946289,
+    594.697998046875,
+    445.0562744140625,
+    604.5980224609375
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "설정하여 안전하다.",
+   "bbox": [
+    91.50015258789062,
+    609.0980224609375,
+    156.785400390625,
+    618.998046875
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9: pstmt.setString(1, gubun);",
+   "bbox": [
+    79.37999725341797,
+    623.498046875,
+    197.6759796142578,
+    633.3980712890625
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: ResultSet rs = pstmt.executeQuery();",
+   "bbox": [
+    79.37999725341797,
+    637.8980102539062,
+    250.3191680908203,
+    647.7980346679688
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "text": "1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.\n2: String gubun = request.getParameter(\"gubun\");\n3: ......\n4: String sql = \"SELECT * FROM board WHERE b_gubun = '\" + gubun + \"'\";\n5: Connection con = db.getConnection();\n6: Statement stmt = con.createStatement();\n7: //외부로부터 입력받은 값이 검증 또는 처리 없이 쿼리로 수행되어 안전하지 않다.\n8: ResultSet rs = stmt.executeQuery(sql);",
+   "language": "text",
+   "label": "안전하지 않은 코드의 예 JDBC API",
+   "bbox": [
+    79.37998962402344,
+    244.65319213867187,
+    398.30523681640625,
+    364.8380615234375
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: String gubun = request.getParameter(\"gubun\");\n2: ......\n3: //1. 사용자에 의해 외부로부터 입력받은 값은 안전하지 않을 수 있으므로, PreparedStatement \n사용을 위해 ?문자로 바인딩 변수를 사용한다.\n4: String sql = \"SELECT * FROM board WHERE b_gubun = ?\";\n5: Connection con = db.getConnection();\n6: //2. PreparedStatement 사용한다.\n7: PreparedStatement pstmt = con.prepareStatement(sql);\n8: //3.PreparedStatement 객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString등의 메소드로 \n설정하여 안전하다.\n9: pstmt.setString(1, gubun);\n10: ResultSet rs = pstmt.executeQuery();",
+   "language": "text",
+   "label": "안전한 코드의 예 JDBC API",
+   "bbox": [
+    79.3799819946289,
+    471.21318969726565,
+    445.0562744140625,
+    648.9980346679688
+   ]
+  }
+ ],
+ "native": "181\n제4장구현단계 보안약점 진단\n다. 코드예제\n다음은 안전하지 않은 코드의 예로, 외부로부터 입력받은 gubun의 값을 아무런 검증과정을 거치지 \n않고 SQL 쿼리를 생성하는데 사용하고 있다. 이 경우 gubun의 값으로 a' or 'a' = 'a 를 입력하면 \n조건절이 b_gubun = 'a' or 'a' = 'a' 로 바뀌어 쿼리의 구조가 변경되어 board 테이블의 모든 내용이 \n조회된다.\n안전하지 않은 코드의 예 JDBC API\n1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.\n2: String gubun = request.getParameter(\"gubun\");\n3: ......\n4: String sql = \"SELECT * FROM board WHERE b_gubun = '\" + gubun + \"'\";\n5: Connection con = db.getConnection();\n6: Statement stmt = con.createStatement();\n7: //외부로부터 입력받은 값이 검증 또는 처리 없이 쿼리로 수행되어 안전하지 않다.\n8: ResultSet rs = stmt.executeQuery(sql);\n이를 안전한 코드로 변환하면 다음과 같다. 파라미터(Parameter)를 받는 PreparedStatement \n객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString, setParameter등의 메소드로 설정\n하여, 외부의 입력이 쿼리문의 구조를 바꾸는 것을 방지해야 한다.\n안전한 코드의 예 JDBC API\n1: String gubun = request.getParameter(\"gubun\");\n2: ......\n3: //1. 사용자에 의해 외부로부터 입력받은 값은 안전하지 않을 수 있으므로, PreparedStatement \n사용을 위해 ?문자로 바인딩 변수를 사용한다.\n4: String sql = \"SELECT * FROM board WHERE b_gubun = ?\";\n5: Connection con = db.getConnection();\n6: //2. PreparedStatement 사용한다.\n7: PreparedStatement pstmt = con.prepareStatement(sql);\n8: //3.PreparedStatement 객체를 상수 스트링으로 생성하고, 파라미터 부분을 setString등의 메소드로 \n설정하여 안전하다.\n9: pstmt.setString(1, gubun);\n10: ResultSet rs = pstmt.executeQuery();\n",
+ "native_sha256": "a98d937c138652a49c6f0587aa121842e7941030a5e1d6669b81b4b3057df30f",
+ "chars": 1262,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}
