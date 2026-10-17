@@ -2,7 +2,7 @@
 
 > 기준일: 2026-10-17 · 담당: C(백엔드·보안), 협력 A(기획·프론트엔드) · 관련 이슈: #7 → 후속 #72(W10-01 카카오 인증 왕복 검증)
 >
-> 근거: [카카오 로그인 REST API](https://developers.kakao.com/docs/ko/kakaologin/rest-api) (2026-10-17 확인), [API 계약](README.md#26-로그인-저장-흐름)의 `/auth/kakao/start`·`/auth/kakao/callback`
+> 근거: [카카오 로그인 REST API](https://developers.kakao.com/docs/ko/kakaologin/rest-api)·[설정하기](https://developers.kakao.com/docs/ko/kakaologin/prerequisite)·[OIDC discovery](https://kauth.kakao.com/.well-known/openid-configuration) (2026-10-17 확인), [API 계약](README.md#26-로그인-저장-흐름)의 `/auth/kakao/start`·`/auth/kakao/callback`
 
 카카오 디벨로퍼스 콘솔에 둘 설정과 그 이유를 적는다. 키·시크릿 값과 시험 계정 정보는 여기에 적지 않는다(7절).
 
@@ -12,24 +12,27 @@
 |---|---|---|---|
 | K1 | 앱 구성 | 개발용 앱과 운영용 앱을 따로 만든다. 소유자는 C, A는 개발용 앱 팀원으로 초대한다 | 개발 키를 팀원 PC에 나눠도 운영 시크릿은 운영 서버 밖으로 나가지 않는다. 회원번호는 앱마다 달라 개발·운영 계정이 섞이지 않는다 |
 | K2 | 동의 항목 | 개인정보 동의 항목을 켜지 않는다. 회원번호(`id`)만 쓴다 | 내부 User는 카카오 식별 연결만 가진다([02 Data Design](../../Plan/02_Data_Design.md#1-핵심-엔터티)). 닉네임·이메일·프로필 사진은 기능에 필요 없다 |
-| K3 | 신원 확인 | OpenID Connect를 켜지 않는다. 토큰 교환 후 `GET /v2/user/me`의 `id`만 읽고 액세스 토큰은 저장하지 않는다 | 회원번호 하나만 필요하다. ID 토큰 서명 검증·nonce 관리를 더하지 않는다 |
+| K3 | 신원 확인 | OpenID Connect를 켠다. `login`·`save`는 토큰 교환 후 `GET /v2/user/me`의 `id`만 읽는다. `reauth`만 `scope=openid`와 `nonce`를 보내 ID 토큰을 받고 K9대로 검사한다. 액세스 토큰은 K8의 예외 말고는 저장하지 않는다 | 회원번호 하나만 필요하다. 재인증이 실제로 일어났는지는 ID 토큰의 `auth_time`으로만 알 수 있다 |
 | K4 | Client Secret | 사용(ON)한다 | REST API 키만으로 토큰을 받을 수 없게 한다. ON이면 토큰 요청에 필수다 |
-| K5 | PKCE | 쓰지 않는다 | 카카오 인가·토큰 요청에 `code_challenge`·`code_verifier`가 없다. 이 PR에서 계약의 "가능하면 PKCE" 문구를 뺐다. 세션 결합 1회용 state와 Client Secret으로 막는다 |
+| K5 | PKCE | `S256`으로 쓴다. `code_verifier`는 state와 함께 세션에 저장한다. #72에서 왕복이 되는지 시험하고, 안 되면 결과를 여기에 적고 state·Client Secret만 쓴다 | discovery가 `code_challenge_methods_supported: ["S256"]`을 알린다(REST API 문서의 요청 파라미터 표에는 없다). 인가 코드가 새도 교환을 막는 층이 하나 더 생긴다 |
 | K6 | Redirect URI | 서버 설정값 `KAKAO_REDIRECT_URI` 하나로 고정한다. 요청의 Host 헤더로 만들지 않는다 | 등록 목록과 다른 주소로 코드가 가지 않게 한다 |
 | K7 | 로그아웃 | 서비스 세션만 끝낸다. 카카오계정 함께 로그아웃은 쓰지 않아 로그아웃 Redirect URI를 등록하지 않는다 | 공용 PC에서도 서비스 세션 회수로 충분하고, 등록 주소를 줄인다 |
-| K8 | 탈퇴 연결 끊기 | 어드민 키를 발급·보관하지 않는다. 연결 끊기 방식은 #78(W10-07)에서 정한다 | 어드민 키는 앱의 모든 사용자를 다룰 수 있어 노출 피해가 크다. 액세스 토큰으로도 `POST /v1/user/unlink`를 부를 수 있다 |
-| K9 | 재인증 | `purpose=reauth`는 인가 요청에 `prompt=login`을 붙인다 | 이미 로그인된 카카오계정으로 자동 통과하지 않게 한다. 카카오톡 인앱 브라우저는 지원하지 않으므로 W10-01에서 그 경우를 시험한다 |
+| K8 | 탈퇴 연결 끊기 | 어드민 키를 발급·보관하지 않는다. #78(W10-07)에서 다음 중 하나로 정한다: ① `reauth` 콜백의 액세스 토큰을 서버 쪽 세션에만 5분(D21) 보관했다가 `DELETE /me`에서 쓰고 지운다 ② 콜백에서 바로 연결을 끊는다 | 어드민 키는 앱의 모든 사용자를 다룰 수 있어 노출 피해가 크다. 액세스 토큰으로도 `POST /v1/user/unlink`를 부를 수 있지만, `DELETE /me`는 콜백보다 최대 5분 늦게 오므로 토큰을 버리면 부를 수 없다 |
+| K9 | 재인증 | `purpose=reauth`는 인가 요청에 `prompt=login`·`scope=openid`·`nonce`를 붙인다. 콜백은 ID 토큰의 서명(JWKS)·`iss`·`aud`·`exp`·`nonce`를 확인하고, `auth_time`이 이번 state 발급 시각 이후이며 `sub`가 현재 회원의 회원번호와 같을 때만 재인증으로 인정한다 | 인가 URL은 브라우저를 거치므로 사용자가 `prompt=login`을 지울 수 있다. 공용 PC에 남은 카카오 세션으로 남의 계정을 탈퇴시키지 못하게 서버가 `auth_time`으로 확인한다. 카카오톡 인앱 브라우저는 `prompt=login`을 지원하지 않으므로 W10-01에서 그 경우를 시험한다 |
 
 ## 2. 콘솔 설정 (두 앱 공통)
 
+메뉴 경로는 [설정하기](https://developers.kakao.com/docs/ko/kakaologin/prerequisite) 문서(2026-10-17) 기준이다. 콘솔에서 이름이 다르면 앱을 만들 때 실제 메뉴명으로 이 목록을 고친다.
+
 1. 앱 만들기 → 앱 이름 `다시잇다(개발)` / `다시잇다`
-2. 제품 설정 → 카카오 로그인 → 활성화 ON
-3. 제품 설정 → 카카오 로그인 → 동의항목: 모두 사용 안 함 (K2). 콘솔이 하나 이상을 요구하면 설정하지 말고 이 문서와 #7에 기록한 뒤 다시 정한다
-4. 제품 설정 → 카카오 로그인 → OpenID Connect: OFF (K3)
-5. 제품 설정 → 카카오 로그인 → 보안 → Client Secret: 코드 생성, 활성화 ON (K4)
-6. 제품 설정 → 카카오 로그인 → Redirect URI: 3절 목록만 등록
-7. 앱 설정 → 플랫폼 → Web 사이트 도메인: 3절의 출처만 등록
-8. 로그아웃 Redirect URI·연결 끊기 알림 콜백: 등록하지 않음 (K7, K8)
+2. [카카오 로그인] > [사용 설정] → 상태 ON
+3. [카카오 로그인] > [동의항목]: 모두 사용 안 함 (K2). 콘솔이 하나 이상을 요구하면 설정하지 말고 이 문서와 #7에 기록한 뒤 다시 정한다
+4. [카카오 로그인] > [OpenID Connect] → 상태 ON (K3)
+5. [앱] > [플랫폼 키] > [REST API 키] > [클라이언트 시크릿]: REST API 키는 시크릿이 켜진 채로 만들어진다. ON인지 확인만 한다 (K4)
+6. 리다이렉트 URI: 3절 목록만 등록한다. 위치는 문서가 [앱] 문서의 리다이렉트 URI 항목으로 안내하므로 콘솔에서 확인해 여기에 적는다
+7. 웹 플랫폼 사이트 도메인을 요구하면 3절의 출처만 등록한다
+8. [카카오 로그인] > [고급] > [로그아웃 리다이렉트 URI]: 등록하지 않음 (K7)
+9. 연결 끊기 알림 콜백: 지금은 등록하지 않는다. 사용자가 카카오 쪽에서 연결을 끊으면 서비스가 알 수 없어 저장 자료·동의 기록이 남고, 같은 회원번호로 다시 로그인하면 다시 이어진다. 콜백 등록 또는 그 경우의 보관 기간·안내를 #78(W10-07) 범위에서 정한다
 
 ## 3. Redirect URI 목록
 
@@ -37,7 +40,7 @@
 
 | 앱 | Redirect URI | 쓰임 |
 |---|---|---|
-| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(`uvicorn`, 기본 포트 8000)으로 W10-01 왕복 시험 |
+| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(`uvicorn`, 기본 포트 8000)으로 W10-01 왕복 시험. 콜백이 보내는 `/auth/result`는 화면 경로라 8000에서는 404로 끝나므로 결과는 주소창의 `status`로 확인한다. 화면까지 볼 때는 아래 5173 경로로 시험한다 |
 | 개발 | `http://localhost:5173/api/v1/auth/kakao/callback` | 프론트엔드 개발 서버가 `/api`를 백엔드로 넘길 때(#13). 포트가 바뀌면 함께 고친다 |
 | 운영 | `https://<운영 도메인>/api/v1/auth/kakao/callback` | 도메인 확보(#6 W01-03) 뒤 등록한다. 그 전까지 운영 앱은 만들기만 한다 |
 
@@ -62,7 +65,7 @@
 | 이름 | 값 | 위치 |
 |---|---|---|
 | `KAKAO_REST_API_KEY` | 앱 키 → REST API 키 | `.env` (개발 앱), 운영 서버 비밀값 저장소 (운영 앱) |
-| `KAKAO_CLIENT_SECRET` | 2절 5번의 코드 | 위와 같음 |
+| `KAKAO_CLIENT_SECRET` | 2절 5번의 클라이언트 시크릿 | 위와 같음 |
 | `KAKAO_REDIRECT_URI` | 3절 목록 중 그 환경의 주소 | 위와 같음 |
 
 코드에서 읽기 시작하는 것은 #72(W10-01)다. 이름은 [.env.example](../../.env.example)에 있다.
