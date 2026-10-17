@@ -8,9 +8,13 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 다음 작업의 맥락은 [짧은 인계 요약](HANDOFF.md), 이슈별 현재 증거·남은 조건·검증 게이트·시간 기록은 [이슈 진행표](ISSUE_STATUS.md)에서 확인한다. GitHub 상태는 작업 착수 때 다시 조회한다.
 
+공통 UI의 자동 접근성 회귀 검사와 실제 기기 검증의 구분은 [접근성 검증 기록](ACCESSIBILITY.md)을 따른다.
+
 실제 지역 라우터의 응답을 OpenAPI와 프론트 파서에 대조하는 `npm run test:backend-contract`는 [계약 대조 안내](contract-tests/README.md)를 따른다. Python 3.12·backend 의존성이 필요하며 기존 CI에서도 실행한다.
 
 로컬 Vite는 `127.0.0.1`에서만 열고 `/api/v1`을 `http://127.0.0.1:8000`의 backend로 전달한다. 화면 경로는 SPA로 유지한다. backend를 실행하지 않으면 API 연결 오류가 나며 예시 성공 응답으로 대체하지 않는다. 운영 proxy·HTTPS·인증 검증은 별도다.
+
+공고별 공식 준비 안내와 임시 서류 체크의 부분 구현 범위·실제 API 연동 대기는 [준비 안내 구현 기록](src/features/preparation/OFFICIAL.md)을 따른다.
 
 ## 버전과 패키지 매니저
 
