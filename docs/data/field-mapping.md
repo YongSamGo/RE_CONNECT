@@ -21,7 +21,7 @@
 
 - 목적지는 이 표의 두 호스트로 고정하고, 공고 원문에 든 URL을 따라 수집하지 않는다(#45, SSRF).
 - 공식 상세 URL은 위 형식에 **식별자만 끼워 넣어** 만든다. 식별자는 노인 구인정보 `^[A-Z0-9]{1,30}$`, 1365 `^[0-9]{1,12}$`에 맞지 않으면 후보를 만들지 않는다. 원문 필드의 URL을 `application_url`로 쓰지 않는다.
-- 서울50플러스는 인증키 승인 대기라 이 문서에 넣지 않았다. 승인되거나 CSV 수동 경로로 정해지면 같은 형식으로 더한다.
+- 서울50플러스는 공고 ID·공식 URL·지역이 응답에 없어 위 두 출처와 같은 자동 매핑이 안 된다. 따로 §7에 정리했다.
 
 ## 2. 필드 매핑
 
@@ -54,7 +54,7 @@
 | `source_checked_at` | 수집 시각 | 수집 시각 | |
 | `id`·`version`·`reviewed_at`·`change_pending` | 서버 | 서버 | 수집기가 정하지 않는다 |
 
-옮기지 않는 필드: 담당자 이름·연락처(`clerk`, `clerkContt`, `repr`, `telno`, `email`, `fxnum`, `nanmmbyNmAdmn`), 상세주소·좌표, 신청인원(`appTotal`), 내부 코드(`stmId`, `lnkStmId`, `updrId`). 화면에서는 공식 링크로 안내한다(sources.md §4). 저장 여부의 최종 기준은 #46에서 정한다.
+옮기지 않는 필드: 담당자 이름·연락처(`clerk`, `clerkContt`, `repr`, `telno`, `email`, `fxnum`, `nanmmbyNmAdmn`), 상세주소·좌표, 신청인원(`appTotal`), 내부 코드(`stmId`, `lnkStmId`, `updrId`). 화면에서는 공식 링크로 안내한다(sources.md §5). 저장 여부의 최종 기준은 #46에서 정한다.
 
 ## 3. 조건(`Requirement`) 후보
 
@@ -78,7 +78,7 @@
 | 1365 `sidoCd` | `6110000` 서울 · `6410000` 경기 · `6280000` 인천 → `province` | 서울·경기는 샘플 확인. **인천 `6280000`은 행정표준코드 기준값이고 샘플 미확인** |
 | 1365 `gugunCd` | 행정 코드 → 지역 목록 ID (W02-04) | 코드표를 지역 목록과 같이 만든다 |
 | 노인 구인정보 `workPlcNm` | 첫 토큰 `서울`·`서울특별시`/`경기`·`경기도`/`인천`·`인천광역시` → `province`, 둘째 토큰 → 시·군·구 | 명시적인 다른 시·도만 정상 제외한다. `전남광주`처럼 해석이 불확실한 표기는 매핑 미확인으로 별도 집계·검수한다. 셋째 토큰(구)은 `location_text`에만 남긴다 |
-| 노인 구인정보 `emplymShp`·`acptMthdCd` | 코드표 필요 | **미확보** (sources.md §5). 코드를 화면에 그대로 쓰지 않는다 |
+| 노인 구인정보 `emplymShp`·`acptMthdCd` | 코드표 필요 | **미확보** (sources.md §6). 코드를 화면에 그대로 쓰지 않는다 |
 | 1365 `srvcClCode` | 이름이 그대로 온다(예: `교육`, `환경ㆍ생태계보호`) | 역할 후보 제안에만 쓴다 |
 
 ## 5. 모집 상태
@@ -110,12 +110,36 @@
 
 거절은 조용히 버리지 않고 출처·식별자·사유 코드만 남긴다. 원문 내용은 로그에 남기지 않는다.
 
-## 7. 남은 확인 사항
+## 7. 서울50플러스 (반자동 출처)
+
+> 2026-10-17 실제 응답(2025·2026년, 데이터셋별 약 200건) 기준. 출처 사실은 [sources.md §4](sources.md#4-서울50플러스-openapi50plusorkropenapiservice)
+
+API로 **사업이 있다는 것과 기간·인원·활동비**는 알 수 있지만, 계약 필수값인 공식 URL과 지역을 응답만으로 만들 수 없다. 그래서 수집기는 공개 후보가 아니라 **운영자 검수 대기 항목**을 만들고, 운영자가 공식 안내 페이지 URL과 지역을 확인해 넣은 뒤 공개한다(MVP의 "검수한 공고부터 등록" 원칙, README §1).
+
+| 계약 필드 | 가치동행 일자리 (`job1`) | 일자리 (`job2`) | 비고 |
+|---|---|---|---|
+| `title` | 직접: `bizNm` | 직접: `bizNm` | |
+| `organization_name` | 직접: `orgNm` | 직접: `orgNm` | 캠퍼스·센터 이름 |
+| `activity_type` | **검수**: 사회공헌 활동이고 활동비(시급)를 받는다 | 고정 `employment` | 가치동행 일자리를 `employment`로 볼지 팀 결정 필요 |
+| `paid` / `compensation_text` | `actamtHamt` > 0이면 `true`, `"활동비 시급 10,030원"` | 같음. `0`이면 `null`(무급인지 미기재인지 모름) | 금액을 화면 문구로만 옮긴다 |
+| `activity_region` | **검수**: `orgNm` → 자치구 대응표 | 같음 | 대응표는 sources.md §6. 표에 없으면 `null` |
+| `schedule_text` | 변환: 활동기간 `actperStartDe`~`actperEndDe` | 같음. `-`면 `null` | |
+| `deadline_date` | 변환: `appdurngEndDe` | 같음 | `YYYY-MM-DD` 형식 검증 |
+| `recruitment_status` | 변환: 오늘이 신청기간 안이면 `open`, 지났으면 `closed`, 시작 전 `unknown` | `annRcrtStatNm`이 `신청·접수중`이고 신청기간 안이면 `open`, `마감`이거나 지났으면 `closed` | 가치동행 `annApprvStatView`(`승인완료`)는 모집 상태가 아니다 |
+| `source_url` / `application_url` | **검수**: 운영자가 공식 안내 페이지를 확인해 입력 | 같음 | 응답에 URL이 없다. 추정해 만들지 않는다 |
+| `requirements` | 검수 | 검수 | 응답에 조건 필드가 없다 |
+| 나머지(`description_text`, `hours_per_week`, `required_documents` 등) | 없음 → `null` | 없음 → `null` | |
+
+- **중복 판정 키**: 공고 ID가 없으므로 `(데이터셋, bizYear, orgNm, bizNm, appdurngStartDe, appdurngEndDe)`를 정규화해 만든다. 같은 사업이 신청기간만 바꿔 다시 올라오면 새 항목으로 본다.
+- **교육(`education`)**: 계약 `activity_type`에 맞는 값이 없어 공고 후보로 만들지 않는다. 교육을 MVP 공고로 넣으려면 계약 변경이 먼저다. `lctCtt`(담당자 연락처가 섞임)와 `rpstLctr`(강사 이름)는 옮기지 않는다.
+- **이용 조건**: 회원 약관의 제3자 제공 금지와 데이터 페이지의 이용허락 표기가 충돌한다(sources.md §6). 확인 전에는 운영 공개에 쓰지 않는다.
+
+## 8. 남은 확인 사항
 
 - [ ] `actWkdy` 자리 순서를 주말 공고로 한 번 더 대조 (§4)
 - [ ] 1365 화면의 "모집기관"이 `mnnstNm`인지 (§2)
 - [ ] 노인 구인정보 `age`의 의미, 임금 필드 유무 — 상세 응답을 더 받아 확인 (§2, §3)
-- [ ] `emplymShp`·`acptMthdCd` 코드표 (sources.md §5와 같음)
+- [ ] `emplymShp`·`acptMthdCd` 코드표 (sources.md §6과 같음)
 - [ ] 인천 `sidoCd`를 실제 응답으로 확인 (§4)
 - [ ] 워크넷 외 원 시스템의 공식 링크 형식
 - [ ] 지역 목록 ID(W02-04)가 정해지면 §4의 지역 변환표를 코드로 만든다
