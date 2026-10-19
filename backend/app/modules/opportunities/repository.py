@@ -1,12 +1,14 @@
 """SQL 바인딩·명시적 공개 포인터·응답 허용 목록. 원문을 SQL 구문으로 조립하지 않는다."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 from contextlib import AbstractContextManager
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from pydantic import ValidationError
-from sqlalchemy import Date, case, cast, exists, func, or_, select
+from sqlalchemy import Date, and_, case, cast, exists, func, or_, select
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -25,7 +27,15 @@ class SqlPublicOpportunityRepository:
     @staticmethod
     def _base():
         pending = V.__table__.alias("pending")
-        change_pending = exists(select(1).select_from(pending).where(pending.c.opportunity_id == V.opportunity_id, pending.c.version > V.version, pending.c.review_status == "pending"))
+        material = ("activity_type", "requirements", "activity_province", "activity_district", "remote_allowed",
+                    "schedule_text", "hours_per_week", "deadline_date", "deadline_at", "application_method",
+                    "application_url", "application_instructions", "required_documents", "paid", "source_url")
+        changed = [pending.c[name].is_distinct_from(getattr(V, name)) for name in material]
+        changed.append(and_(pending.c.recruitment_status != V.recruitment_status,
+                            pending.c.recruitment_status.in_(("open", "unknown"))))
+        # 닫힘 방향의 미검수 변화도 추천에서는 즉시 보류한다.
+        changed.append(pending.c.recruitment_status == "closed")
+        change_pending = exists(select(1).select_from(pending).where(pending.c.opportunity_id == V.opportunity_id, pending.c.version > V.version, pending.c.review_status == "pending", or_(*changed)))
         return select(V.__table__, change_pending.label("change_pending")).join(P, (P.opportunity_id == V.opportunity_id) & (P.version == V.version)).where(P.review_status == "approved", V.review_status == "approved")
 
     @staticmethod
@@ -81,5 +91,19 @@ class SqlPublicOpportunityRepository:
             with self.connect() as db:
                 row = db.execute(self._base().where(V.opportunity_id == opportunity_id)).mappings().one_or_none()
                 return None if row is None else self._public(row, now)
+        except (SQLAlchemyError, ValidationError):
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]:
+        try:
+            with self.connect() as db:
+                statement = self._search(self._base(), OpportunitySearch(), now, db.dialect.name).where(
+                    V.recruitment_status == "open", V.source_checked_at <= now,
+                    V.source_checked_at >= now - timedelta(hours=48),
+                )
+                rows = db.execute(statement.order_by(V.opportunity_id).limit(5001)).mappings().all()
+                if len(rows) > 5000:
+                    raise AppError("SERVICE_UNAVAILABLE")
+                return [self._public(row, now) for row in rows]
         except (SQLAlchemyError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None
