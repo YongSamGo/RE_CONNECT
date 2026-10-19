@@ -63,6 +63,8 @@ GPU 종류·VRAM·동시 처리량은 이 문서에서 추정하지 않는다(Pl
 - STT·TTS를 한 이미지에서 실행하기 전에 의존성 해석, torch·CTranslate2의 CUDA/cuDNN 공존과 onnxruntime 설치 조합을 시험한다. 함께 실행할 수 없으면 서비스를 분리한다.
 
 - [x] 1단계: 후보·라이선스 확인 (이 문서 §1·§4)
-- [ ] 2단계: 공식 가중치·revision/digest 준비 — 고정값은 §2. 준비 스크립트(받기 → digest 확인)와 Compose 볼륨 위치는 #29·#31·#32와 함께
+- [ ] 2단계: 공식 가중치·revision/digest 준비 — STT/TTS 15개 파일은 고정 명세로 실제 준비 후 오프라인 재검증 완료([도구](../../speech/MODEL_PREPARATION.md)). Ollama 준비와 Compose 볼륨 연결은 남아 있다
 - [ ] 3단계: 런타임·드라이버·컨테이너 조합 기록 — EC2 사양(#6) 확정 후
 - [ ] Ollama `qwen3:4b`의 양자화 형식과 thinking 지원 여부 (`/api/show`)
+
+2026-10-18 로컬 CPU에서 faster-whisper1.2.1/CTranslate2 4.8.2/PyAV16.1.0 조합의 실제 오프라인 적재와 합성 한국어3문장 전사를 확인했다([측정 범위](../../speech/STT_RUNTIME.md)). 이는 GPU/EC2 조합 확정이나 실제 사용자 음성 품질 평가를 대신하지 않는다.

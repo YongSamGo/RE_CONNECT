@@ -55,7 +55,7 @@ jobs:
         name: 존재하는 프로젝트 찾기
         run: |
           projects=""
-          for dir in backend worker; do
+          for dir in backend worker speech; do
             if [ -f "$dir/requirements.txt" ]; then
               projects="${projects:+$projects,}\"$dir\""
             fi

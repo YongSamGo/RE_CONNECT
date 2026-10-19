@@ -30,6 +30,17 @@ updates:
     commit-message:
       prefix: "sec"
 
+  - package-ecosystem: pip
+    directory: /speech
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"
+
   - package-ecosystem: npm
     directory: /frontend
     schedule:
