@@ -10,7 +10,7 @@ from redis.exceptions import RedisError
 
 from app.contracts.journey import Journey, Message, ConfirmedVersion, ProfileDraftView, ProfileConfirmResult, ProfileRef
 from app.contracts.profile import ProfileContent, empty_profile_content
-from app.contracts.roles import RoleExclusions
+from app.contracts.roles import RoleExclusionUpdate, RoleExclusions
 from app.core.business_errors import AppError
 from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, MissingProfileFields, ResolvedJourneyProfile, RoleState
 from app.modules.requests.service import CompletionGuard, RESOURCE_MAX_MS, RETENTION_MS
@@ -149,6 +149,18 @@ if state[8] == '' then return {'PROFILE_NOT_CONFIRMED'} end
 return {'ok', state[7], state[8], redis.call('HGET', KEYS[3], 'role_exclusions') or '[]'}
 """
 
+_SET_ROLE_EXCLUSIONS = _SESSION_LIFETIME + _VIEW + """
+local state = view(KEYS[2], KEYS[3], false)
+if state[1] ~= 'ok' then return state end
+if state[8] == '' then return {'PROFILE_NOT_CONFIRMED'} end
+if state[7] ~= ARGV[7] then return {'VERSION_CONFLICT'} end
+local revision = tonumber(state[7]) + 1
+redis.call('HSET', KEYS[3], 'role_exclusions', ARGV[8])
+redis.call('SET', KEYS[2], 'g:' .. tostring(revision), 'XX', 'KEEPTTL')
+view(KEYS[2], KEYS[3], true)
+return {'ok', tostring(revision), ARGV[8]}
+"""
+
 
 class RedisJourneyStore:
     def __init__(self, client, *, session_key, resource_key, control_key: str, epoch: UUID,
@@ -160,6 +172,7 @@ class RedisJourneyStore:
         self._confirm_profile = client.register_script(_CONFIRM_PROFILE)
         self._resolve_profile = client.register_script(_RESOLVE_PROFILE)
         self._role_state = client.register_script(_ROLE_STATE)
+        self._set_role_exclusions = client.register_script(_SET_ROLE_EXCLUSIONS)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -298,5 +311,18 @@ class RedisJourneyStore:
                 raise ValueError
             exclusions = RoleExclusions(role_ids=json.loads(encoded), revision=int(revision))
             return RoleState(exclusions.revision, int(version), tuple(exclusions.role_ids))
+        except (ValueError, TypeError, ValidationError):
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+    async def set_role_exclusions(self, session, journey_id, role_ids, base_revision):
+        try:
+            validated = RoleExclusionUpdate(role_ids=role_ids, base_revision=base_revision)
+        except ValidationError:
+            raise AppError("VALIDATION_FAILED") from None
+        values = await self._version_call(self._set_role_exclusions, session, journey_id,
+                                          (validated.base_revision, json.dumps(validated.role_ids, ensure_ascii=True, separators=(",", ":"))))
+        try:
+            _, revision, encoded = values
+            return RoleExclusions(role_ids=json.loads(encoded), revision=int(revision))
         except (ValueError, TypeError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None

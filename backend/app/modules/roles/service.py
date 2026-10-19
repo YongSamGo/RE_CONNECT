@@ -6,7 +6,7 @@ from uuid import UUID
 
 from app.contracts.journey import ProfileRef
 from app.contracts.profile import ProfileContent
-from app.contracts.roles import CatalogRole, RoleCandidate, RoleCandidates, RoleEvidence, normalize_tag
+from app.contracts.roles import CatalogRole, RoleCandidate, RoleCandidates, RoleEvidence, RoleExclusionUpdate, RoleExclusions, normalize_tag
 from app.core.business_errors import AppError
 from app.modules.journeys.service import JourneyService
 from app.modules.sessions.service import Session
@@ -14,6 +14,12 @@ from app.modules.sessions.service import Session
 
 class RoleCatalog(Protocol):
     def list(self) -> list[CatalogRole]: ...
+
+
+class UnknownRoleIds(Exception):
+    def __init__(self, indices):
+        self.indices = tuple(indices)
+        super().__init__("역할 사전에 없는 선택")
 
 
 def match_roles(profile: ProfileContent, catalog: list[CatalogRole], excluded: tuple[str, ...]) -> list[RoleCandidate]:
@@ -62,3 +68,16 @@ class RoleService:
         if current.revision != state.revision:
             raise AppError("VERSION_CONFLICT")
         return RoleCandidates(profile_version=version, revision=current.revision, items=items)
+
+    async def set_exclusions(self, session: Session, journey_id: UUID, body: RoleExclusionUpdate) -> RoleExclusions:
+        state = await self.journeys.role_state(session, journey_id)
+        if body.base_revision != state.revision:
+            raise AppError("VERSION_CONFLICT")
+        known = {role.id for role in await asyncio.to_thread(self.catalog.list)} if body.role_ids else set()
+        invalid = [index for index, value in enumerate(body.role_ids) if value not in known]
+        if invalid:
+            raise UnknownRoleIds(invalid)
+        return await self.journeys.set_role_exclusions(session, journey_id, body.role_ids, body.base_revision)
+
+    async def excluded_role_ids(self, session: Session, journey_id: UUID) -> frozenset[str]:
+        return frozenset((await self.journeys.role_state(session, journey_id)).role_ids)
