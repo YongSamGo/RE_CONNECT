@@ -1759,6 +1759,33 @@ paths:
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
 
   /journeys/{journey_id}/drafts/{draft_id}:
+    get:
+      tags: [체험]
+      operationId: getJourneyDraft
+      summary: 소유 체험 지원서와 현재 재검토 사유 조회
+      description: |
+        유효한 자기 체험 안의 특정 지원서만 조회한다. 목록·이전 세션·대화 복원 API가 아니다.
+        원래 profile_version/opportunity/본문/approved_at/revision은 보존하고 현재 근거 변화만 review_reasons/warnings로 알린다.
+        조회는 체험 유휴 수명을 연장하지 않는다. AI 동의나 모델 호출이 필요하지 않다.
+      security:
+        - sessionCookie: []
+      parameters:
+        - $ref: '#/components/parameters/JourneyId'
+        - $ref: '#/components/parameters/DraftId'
+      responses:
+        '200':
+          description: 원래 지원서와 현재 재검토 안내
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/JourneyDraft' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
     patch:
       tags: [체험]
       operationId: updateJourneyDraft
