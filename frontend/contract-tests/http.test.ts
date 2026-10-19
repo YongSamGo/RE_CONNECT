@@ -67,15 +67,16 @@ it('existing API client reads the real region catalog through the frontend origi
   expect(catalog.provinces.find(item => item.id === 'seoul')?.districts.some(item => item.id === 'seongdong')).toBe(true)
 })
 
-it('an unimplemented public API returns the real normalized error rather than SPA HTML', async () => {
+it('an absent public opportunity returns the real normalized error rather than SPA HTML', async () => {
+  const id = '00000000-0000-0000-0000-000000000004'
   try {
-    await createApiClient().GET('/opportunities')
+    await createApiClient().GET('/opportunities/{opportunity_id}', { params: { path: { opportunity_id: id } } })
     expect.fail('Missing endpoint must not become a fake success')
   } catch (error) {
     expect(error).toBeInstanceOf(ApiError)
     expect(error).toMatchObject({ code: 'NOT_FOUND', status: 404 })
   }
-  const response = await fetch(`${origin}/api/v1/opportunities`)
+  const response = await fetch(`${origin}/api/v1/opportunities/${id}`)
   expect(response.status).toBe(404)
   expect(response.headers.get('content-type')).toContain('application/json')
   expect(await response.json()).toMatchObject({ code: 'NOT_FOUND', request_id: expect.stringMatching(/^req_/) })
