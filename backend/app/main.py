@@ -48,6 +48,8 @@ from app.modules.eligibility.service import EligibilityService
 from app.modules.roles import router as roles
 from app.modules.roles.repository import SQLRoleCatalog, UnavailableRoleCatalog
 from app.modules.roles.service import RoleService
+from app.modules.recommendations import router as recommendations
+from app.modules.recommendations.service import RecommendationService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -128,6 +130,7 @@ def create_app(
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
     app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())
+    app.state.recommendation_service = RecommendationService(app.state.journey_service, app.state.opportunity_service, app.state.role_service)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -154,6 +157,7 @@ def create_app(
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)
     app.include_router(roles.router, prefix=API_PREFIX)
+    app.include_router(recommendations.router, prefix=API_PREFIX)
 
     return app
 

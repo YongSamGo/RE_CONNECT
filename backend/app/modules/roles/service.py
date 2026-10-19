@@ -54,6 +54,9 @@ class RoleService:
     def __init__(self, journeys: JourneyService, catalog: RoleCatalog):
         self.journeys, self.catalog = journeys, catalog
 
+    async def catalog_entries(self) -> list[CatalogRole]:
+        return await asyncio.to_thread(self.catalog.list)
+
     async def candidates(self, session: Session, journey_id: UUID, profile_version: int | None = None) -> RoleCandidates:
         state = await self.journeys.role_state(session, journey_id)
         version = state.profile_version if profile_version is None else profile_version
