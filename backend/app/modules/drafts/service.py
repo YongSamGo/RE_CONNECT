@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import ValidationError
 
 from app.adapters.llm import LLMInvalidOutputError, LLMTimeoutError, LLMUnavailableError
-from app.contracts.drafts import DraftCreate, JourneyDraft
+from app.contracts.drafts import DraftCreate, DraftUpdate, JourneyDraft
 from app.contracts.journey import ProfileRef
 from app.contracts.time import utc_now
 from app.core.business_errors import AppError
@@ -21,6 +21,26 @@ DRAFT_TIMEOUT_SECONDS = 60
 class DraftService:
     def __init__(self, store, journeys, opportunities, llm):
         self.store, self.journeys, self.opportunities, self.llm = store, journeys, opportunities, llm
+
+    async def update(self, session, journey_id: UUID, draft_id: UUID, body: DraftUpdate) -> JourneyDraft:
+        previous = await self.store.read(session, journey_id, draft_id)
+        if previous.revision != body.base_revision:
+            raise AppError('VERSION_CONFLICT')
+        updated = JourneyDraft.model_validate({**previous.model_dump(), 'revision': previous.revision + 1,
+            'self_introduction': body.self_introduction, 'motivation': body.motivation, 'approved_at': None})
+        return await self.store.mutate(session, journey_id, previous, updated)
+
+    async def approve(self, session, journey_id: UUID, draft_id: UUID, base_revision: int) -> JourneyDraft:
+        previous = await self.store.read(session, journey_id, draft_id)
+        if previous.revision != base_revision:
+            raise AppError('VERSION_CONFLICT')
+        reference = ProfileRef(kind='journey', id=journey_id, version=previous.profile_version)
+        await self.journeys.resolve_profile(session, reference, require_current=True)
+        view = await self.journeys.profile(session, journey_id)
+        await self._opportunity(previous.opportunity)
+        updated = JourneyDraft.model_validate({**previous.model_dump(), 'revision': previous.revision + 1,
+            'approved_at': utc_now(), 'review_reasons': []})
+        return await self.store.mutate(session, journey_id, previous, updated, journey_revision=view.revision)
 
     async def _opportunity(self, reference):
         try:
