@@ -108,4 +108,6 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 
 ## 설정
 
+카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. 실제 회원/세션 연결(#73)·저장 대기(#74) 전에는 로그인 성공을 반환하지 않는다.
+
 설정값은 루트 `.env`에서 환경변수로 읽는다 ([.env.example](../.env.example)). 코드·테스트·로그에 비밀값을 적지 않는다.

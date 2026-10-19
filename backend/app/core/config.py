@@ -46,6 +46,9 @@ def canonical_origin(value: str) -> str:
 
 
 class Settings(BaseSettings):
+    kakao_rest_api_key: SecretStr | None = None
+    kakao_client_secret: SecretStr | None = None
+    kakao_app_id: int | None = Field(default=None, gt=0)
     model_config = SettingsConfigDict(
         env_file=_ROOT_ENV_FILE,
         env_file_encoding="utf-8",

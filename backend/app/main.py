@@ -11,6 +11,7 @@ import asyncio
 from fastapi import FastAPI
 
 from app.adapters.ollama import OllamaLLMAdapter
+from app.adapters.kakao import KakaoAdapter
 from app.adapters.redis import RedisProbe, build_redis
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
@@ -26,6 +27,9 @@ from app.modules.operations.readiness import (
 )
 from app.modules.regions import router as regions
 from app.modules.sessions import router as sessions
+from app.modules.auth import router as auth
+from app.modules.auth.service import OAuthService, UnavailableFlowStore
+from app.modules.auth.repository import RedisFlowStore
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
@@ -89,6 +93,13 @@ def create_app(
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     app.state.session_service = SessionService(RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore())
+    kakao = None
+    if (settings.public_origin is not None and settings.kakao_rest_api_key is not None
+            and settings.kakao_client_secret is not None and settings.kakao_app_id is not None
+            and settings.kakao_rest_api_key.get_secret_value().strip() and settings.kakao_client_secret.get_secret_value().strip()):
+        kakao = KakaoAdapter(settings.kakao_rest_api_key, settings.kakao_client_secret, settings.kakao_app_id,
+                             settings.public_origin + API_PREFIX + "/auth/kakao/callback")
+    app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -110,6 +121,7 @@ def create_app(
     # 공개 API 라우터는 API_PREFIX 아래에 더한다.
     app.include_router(regions.router, prefix=API_PREFIX)
     app.include_router(sessions.router, prefix=API_PREFIX)
+    app.include_router(auth.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
 
     return app
