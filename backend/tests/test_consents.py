@@ -25,7 +25,7 @@ from app.modules.consents.service import (
 )
 from app.modules.sessions.service import SessionService
 from app.persistence import Base, Consent, User
-from tests.test_sessions import FakeStore, with_redis
+from tests.test_sessions import FakeStore, HttpAdmissionStub, with_redis
 
 AI_VERSION = "ai-test-v1"
 STORAGE_VERSION = "storage-test-v1"
@@ -149,6 +149,7 @@ def http_app():
     app = create_app(Settings(_env_file=None, app_env="test", public_origin="https://testserver",
                               ai_notice_version=AI_VERSION, storage_notice_version=STORAGE_VERSION))
     app.state.session_service = SessionService(FakeStore())
+    app.state.admission_service = HttpAdmissionStub()
     store = MemoryConsentStore()
     app.state.consent_service = service(store)
     return app, store
