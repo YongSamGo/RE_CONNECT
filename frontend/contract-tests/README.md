@@ -1,5 +1,9 @@
 # W02-08.b / #19 · 실제 지역 라우터 계약 대조
 
+2026-10-18 로컬 통합: 준비 안내 #66을 실제 SQL 저장소·API·HTTP·Vite 프록시·기존 프론트 클라이언트/파서에 연결했다. `npm run test:backend-contract`의 현재 결과는 11개 통과다. 시험 서버는 메모리 SQLite에 가상 공개 공고 3개와 비공개 공고 1개를 넣는다. 운영 `.env`·DB·Redis·LLM을 사용하지 않는다. 준비 응답의 3가지 접수 방법과 null/빈/명시 서류를 저장소 OpenAPI `Preparation`에 대조하며, 공개하지 않은 공고는 실제 JSON 404로 거절한다. 아래의 미구현 공고 API 설명은 이전 단계의 기록이다.
+
+가상 공고 생성에는 백엔드 시험의 공통 DB fixture를 재사용한다. Python 환경에는 `backend/requirements.txt`와 `backend/requirements-dev.txt`를 모두 해시 검증으로 설치한다. CI 프론트 계약 잡도 두 파일을 사용한다. 실제 제품 서버가 시험 fixture를 적재하는 경로는 없다.
+
 기준: `docs/api/openapi.yaml`, backend `app/modules/regions/router.py`·`app/contracts/regions.py`, frontend `src/features/regions/catalog.ts`.
 
 기존 API 타입 생성·클라이언트를 재작성하지 않고 이미 구현된 공개 지역 API와 미구현 API의 공통 오류를 대조한다. 정적 예시나 복사한 지역 JSON을 실제 서버 응답처럼 사용하지 않는다. `regions.test.ts`는 Python `TestClient`가 실제 지역 라우터를 독립 FastAPI 앱에 마운트해 ASGI 응답을 얻는다. 이 검사는 서비스 설정·`.env`·DB·Redis·모델·네트워크 수신 포트를 사용하지 않는다. 아래 W02-08.c HTTP 검사는 별도로 전체 앱과 프록시를 검증한다.
