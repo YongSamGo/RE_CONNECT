@@ -46,3 +46,10 @@ class JourneyDraft(BaseModel):
     approved_at: UtcDatetime | None
     review_reasons: list[ReviewReason]
     warnings: Annotated[list[text(300)], Field(max_length=10)]
+
+
+class DraftUpdate(BaseModel):
+    model_config = CONTRACT_CONFIG
+    self_introduction: DraftText
+    motivation: DraftText
+    base_revision: Annotated[StrictInt, Field(ge=1, lt=2**31 - 1)]

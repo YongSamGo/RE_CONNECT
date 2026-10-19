@@ -77,18 +77,34 @@ if redis.call('HGET', KEYS[3], field .. 'state') == 'pending' and redis.call('HG
 end
 return {'ok'}
 """
+_READ = _BASE + """
+local draft = redis.call('HGET', KEYS[3], 'draft:' .. ARGV[7])
+if not draft then return {'NOT_FOUND'} end
+return {'ok', draft}
+"""
+_MUTATE = _BASE + """
+local field = 'draft:' .. ARGV[7]
+local raw = redis.call('HGET', KEYS[3], field)
+if not raw then return {'NOT_FOUND'} end
+if raw ~= ARGV[8] then return {'VERSION_CONFLICT'} end
+if ARGV[10] ~= '' and (state[7] ~= ARGV[10] or redis.call('HGET', KEYS[3], 'confirmed_version') ~= ARGV[11]) then return {'VERSION_CONFLICT'} end
+redis.call('HSET', KEYS[3], field, ARGV[9])
+view(KEYS[2], KEYS[3], true)
+return {'ok', ARGV[9]}
+"""
 
 
 class UnavailableDraftStore:
     async def reserve(self, *args, **kwargs):
         raise AppError('SERVICE_UNAVAILABLE')
-    complete = cancel = reserve
+    complete = cancel = read = mutate = reserve
 
 
 class RedisDraftStore:
     def __init__(self, client, *, session_key, resource_key):
         self.session_key, self.resource_key = session_key, resource_key
         self._reserve, self._complete, self._cancel = [client.register_script(script) for script in (_RESERVE, _COMPLETE, _CANCEL)]
+        self._read, self._mutate = [client.register_script(script) for script in (_READ, _MUTATE)]
 
     async def _call(self, script, session, journey_id, notice, extra):
         resource = self.resource_key(session.subject_id, journey_id)
@@ -138,3 +154,23 @@ class RedisDraftStore:
 
     async def cancel(self, session, journey_id, permit):
         await self._call(self._cancel, session, journey_id, permit.notice_version, [str(permit.key), permit.token])
+
+    async def read(self, session, journey_id, draft_id):
+        values = await self._call(self._read, session, journey_id, '', [str(draft_id)])
+        if len(values) != 2 or values[0] != 'ok':
+            raise AppError('SERVICE_UNAVAILABLE')
+        result = self._draft(values[1])
+        if result.draft_id != draft_id:
+            raise AppError('SERVICE_UNAVAILABLE')
+        return result
+
+    async def mutate(self, session, journey_id, previous, updated, *, journey_revision=None):
+        if (updated.draft_id != previous.draft_id or updated.revision != previous.revision + 1
+            or updated.mode != previous.mode or updated.profile_version != previous.profile_version or updated.opportunity != previous.opportunity
+            or (updated.approved_at is not None and (journey_revision is None or updated.self_introduction != previous.self_introduction or updated.motivation != previous.motivation))):
+            raise AppError('VALIDATION_FAILED')
+        values = await self._call(self._mutate, session, journey_id, '', [str(previous.draft_id), previous.model_dump_json(),
+            updated.model_dump_json(), journey_revision if journey_revision is not None else '', previous.profile_version])
+        if len(values) != 2 or values[0] != 'ok':
+            raise AppError('SERVICE_UNAVAILABLE')
+        return self._draft(values[1])

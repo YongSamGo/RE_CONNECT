@@ -557,6 +557,8 @@ export interface paths {
         /**
          * 지원서 초안 수정
          * @description 본문 전체를 바꾼다. 수정하면 승인이 풀리고(`approved_at=null`) 다시 승인해야 저장할 수 있다.
+         *     지원서 자체의 base_revision으로 CAS하며 프로필/체험 리비전과 구분한다.
+         *     근거가 변경되거나 공고가 닫혀도 직접 작성한 편집은 유지할 수 있으나 새 승인은 유효성 검사 뒤에만 가능하다.
          */
         patch: operations["updateJourneyDraft"];
         trace?: never;
@@ -573,6 +575,9 @@ export interface paths {
         /**
          * 지원서 초안 사용자 승인
          * @description 승인한 리비전만 복사·저장·저장 대기에 쓸 수 있다. 외부 신청은 하지 않는다.
+         *     현재 지원서 리비전과 원래 확정 프로필/공고 버전의 유효성을 다시 검사한다.
+         *     과거 편집/승인 요청, 재확정된 프로필, 바뀐 공개 공고 버전은 409이며 본문을 자동 갱신하지 않는다.
+         *     승인은 회원 저장을 수행하지 않는다. 저장 API 연결 시에도 승인 리비전과 근거를 다시 검사해야 한다.
          */
         post: operations["approveJourneyDraft"];
         delete?: never;
