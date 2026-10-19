@@ -2,7 +2,8 @@
 
 from fastapi import APIRouter, Request
 
-from app.contracts.journey import Journey, JourneyCreate
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate
+from uuid import UUID
 from app.modules.admission.service import InferenceIdentity
 from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
@@ -17,3 +18,17 @@ async def create_journey(request: Request, body: JourneyCreate):
     await request.app.state.admission_service.check_http(peer, session.subject_id)
     return await request.app.state.journey_service.create(session, InferenceIdentity(session.subject_id, peer),
                                                            idempotency_key(request), body)
+
+
+@router.get("/journeys/{journey_id}/profile", response_model=ProfileDraftView, operation_id="getJourneyProfile")
+async def get_profile(journey_id: UUID, request: Request):
+    session = await require_session(request)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
+    return await request.app.state.journey_service.profile(session, journey_id)
+
+
+@router.patch("/journeys/{journey_id}/profile", response_model=ProfileDraftView, operation_id="updateJourneyProfile")
+async def update_profile(journey_id: UUID, request: Request, body: ProfileUpdate):
+    session = await require_session(request, user_activity=True)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
+    return await request.app.state.journey_service.update_profile(session, journey_id, body)
