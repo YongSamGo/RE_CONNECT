@@ -25,6 +25,9 @@ from app.modules.operations.readiness import (
     ReadinessService,
 )
 from app.modules.regions import router as regions
+from app.modules.consents import router as consents
+from app.modules.consents.repository import RedisConsentStore, SQLConsentStore, RoutedConsentStore
+from app.modules.consents.service import ConsentService, UnavailableConsentStore
 from app.modules.sessions import router as sessions
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
@@ -97,7 +100,14 @@ def create_app(
 
     app.state.db_engine = engine
     app.state.redis = redis_client
-    app.state.session_service = SessionService(RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore())
+    session_store = RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore()
+    app.state.session_service = SessionService(session_store)
+    anonymous_consents = RedisConsentStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableConsentStore()
+    member_consents = SQLConsentStore(engine) if engine is not None else UnavailableConsentStore()
+    app.state.consent_service = ConsentService(
+        RoutedConsentStore(anonymous_consents, member_consents),
+        ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,
+    )
     app.state.request_service = RequestService(RedisRequestStore(redis_client) if redis_client is not None else UnavailableRequestStore())
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
@@ -121,6 +131,7 @@ def create_app(
     # 공개 API 라우터는 API_PREFIX 아래에 더한다.
     app.include_router(regions.router, prefix=API_PREFIX)
     app.include_router(sessions.router, prefix=API_PREFIX)
+    app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
 
     return app
