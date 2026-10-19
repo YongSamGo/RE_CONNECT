@@ -1,6 +1,6 @@
 """JourneyCreate/Journey/Message 공개 계약. 승인·소유자는 요청에서 받지 않는다."""
 
-from typing import Annotated
+from typing import Annotated, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, StrictInt
@@ -67,3 +67,22 @@ class ProfileUpdate(BaseModel):
     model_config = CONTRACT_CONFIG
     draft: ProfileContentInput
     base_revision: Annotated[StrictInt, Field(ge=1, lt=2**31 - 1)]
+
+
+class BaseRevision(BaseModel):
+    model_config = CONTRACT_CONFIG
+    base_revision: Annotated[StrictInt, Field(ge=1, lt=2**31 - 1)]
+
+
+class ProfileRef(BaseModel):
+    model_config = CONTRACT_CONFIG
+    kind: Literal["journey", "saved"]
+    id: UUID
+    version: Annotated[StrictInt, Field(ge=1)]
+
+
+class ProfileConfirmResult(BaseModel):
+    model_config = CONTRACT_CONFIG
+    profile: ProfileRef
+    confirmed_at: UtcDatetime
+    revision: Annotated[StrictInt, Field(ge=1)]

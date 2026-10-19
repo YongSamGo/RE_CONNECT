@@ -2,7 +2,9 @@
 
 from fastapi import APIRouter, Request
 
-from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, BaseRevision, ProfileConfirmResult
+from app.core.errors import FieldError, error_response
+from app.modules.journeys.service import MissingProfileFields
 from uuid import UUID
 from app.modules.admission.service import InferenceIdentity
 from app.modules.requests.http import idempotency_key
@@ -32,3 +34,15 @@ async def update_profile(journey_id: UUID, request: Request, body: ProfileUpdate
     session = await require_session(request, user_activity=True)
     await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
     return await request.app.state.journey_service.update_profile(session, journey_id, body)
+
+
+@router.post("/journeys/{journey_id}/profile/confirm", response_model=ProfileConfirmResult, operation_id="confirmJourneyProfile")
+async def confirm_profile(journey_id: UUID, request: Request, body: BaseRevision):
+    session = await require_session(request, user_activity=True)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
+    try:
+        return await request.app.state.journey_service.confirm_profile(session, journey_id, body.base_revision)
+    except MissingProfileFields as error:
+        return error_response(request, 422, "VALIDATION_FAILED", fields=[
+            FieldError(path=f"draft.{name}", reason="required") for name in error.fields
+        ])

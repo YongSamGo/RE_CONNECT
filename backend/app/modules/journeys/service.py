@@ -1,10 +1,11 @@
 """생성·조회·활동 수명. 모델 호출·자동 승인·저장 프로필 사칭을 허용하지 않는다."""
 
 from dataclasses import dataclass, field
+from datetime import datetime
 from typing import Protocol
 from uuid import UUID, uuid4
 
-from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, ProfileRef, ProfileConfirmResult
 from app.contracts.profile import ProfileContent
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity
@@ -21,19 +22,34 @@ class JourneyRecord:
     guard: CompletionGuard = field(repr=False)
 
 
+class MissingProfileFields(Exception):
+    def __init__(self, fields):
+        self.fields = tuple(fields)
+        super().__init__("확정에 필요한 항목이 없습니다")
+
+
+@dataclass(frozen=True)
+class ResolvedJourneyProfile:
+    reference: ProfileRef
+    content: ProfileContent = field(repr=False)
+    confirmed_at: datetime
+
+
 class JourneyStore(Protocol):
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
                      budget: str, key_id_digest: str) -> JourneyRecord: ...
     async def load(self, session: Session, journey_id: UUID, notice_version: str, *, user_activity: bool) -> JourneyRecord: ...
     async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView: ...
     async def update_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileDraftView: ...
+    async def confirm_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileConfirmResult: ...
+    async def resolve_profile(self, session: Session, reference: ProfileRef, *, require_current: bool) -> ResolvedJourneyProfile: ...
 
 
 class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    load = profile = update_profile = create
+    load = profile = update_profile = confirm_profile = resolve_profile = create
 
 
 class JourneyService:
@@ -83,3 +99,18 @@ class JourneyService:
         if len(draft.model_dump_json().encode("utf-8")) > 65536:
             raise AppError("PAYLOAD_TOO_LARGE")
         return await self.store.update_profile(session, journey_id, draft, body.base_revision)
+
+    async def confirm_profile(self, session: Session, journey_id: UUID, base_revision: int) -> ProfileConfirmResult:
+        current = await self.profile(session, journey_id)
+        if current.revision != base_revision:
+            raise AppError("VERSION_CONFLICT")
+        missing = current.draft.missing_for_recommendation()
+        if missing:
+            raise MissingProfileFields(missing)
+        return await self.store.confirm_profile(session, journey_id, current.draft, base_revision)
+
+    async def resolve_profile(self, session: Session, reference: ProfileRef, *, require_current: bool = False) -> ResolvedJourneyProfile:
+        if reference.kind != "journey":
+            # 실제 회원 저장본 resolver는 인증·저장 구현(#42/#75)에 연결해야 한다.
+            raise AppError("UNAUTHENTICATED")
+        return await self.store.resolve_profile(session, reference, require_current=require_current)
