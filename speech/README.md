@@ -4,7 +4,7 @@
 
 faster-whisper(STT)와 Qwen3-TTS를 실행하는 별도 컨테이너다. FastAPI의 Speech Adapter만 Compose 내부 네트워크로 호출한다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)).
 
-백엔드의 고정 내부 전송·readiness·STT/TTS 공통 슬롯과 아직 구현 전인 모델 서버의 경계는 [내부 음성 계약](PROTOCOL.md)을 따른다. 현재 모델 가중치/서버를 실행했다는 의미는 아니다.
+백엔드의 고정 내부 전송·readiness·STT/TTS 공통 슬롯 경계는 [내부 음성 계약](PROTOCOL.md)을 따른다. [로컬 STT 런타임](STT_RUNTIME.md)은 고정 Whisper의 실제 CPU 적재·합성 한국어 전사를 확인했다. TTS 실행·운영 컨테이너·전체 준비 검증은 남아 있다.
 
 공식 고정 revision의 파일 준비·크기/SHA-256 검사는 [모델 준비 도구](MODEL_PREPARATION.md)를 따른다. 모델 실행 의존성을 설치하지 않고 준비 또는 오프라인 검증할 수 있다.
 
@@ -19,4 +19,4 @@ faster-whisper(STT)와 Qwen3-TTS를 실행하는 별도 컨테이너다. FastAPI
 
 ## 의존성
 
-Python 3.12와 [backend](../backend/README.md#의존성-고정)와 같은 pip-tools 고정 방식을 쓴다. `requirements.txt`를 처음 추가할 때 CI [`detect`](../.github/workflows/ci.yml) 잡의 폴더 목록과 [dependabot.yml](../.github/dependabot.yml)에 `speech`를 함께 추가한다. 지금 CI는 `backend`·`worker`만 찾는다.
+Python 3.12와 [backend](../backend/README.md#의존성-고정)와 같은 해시 고정 방식을 쓴다. STT/내부 HTTP 런타임의 `requirements.in/txt`와 개발 의존성을 추가했고 CI detect와 Dependabot에도 speech를 연결했다. Qwen3-TTS·CUDA와의 공존 및 별도 의존성 잠금은 후속 검증이다.
