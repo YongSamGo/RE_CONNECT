@@ -83,6 +83,27 @@ class IngestionReview(Base):
     unmapped_fields: Mapped[list] = mapped_column(JSON_VALUE)
 
 
+class ManualEvidence(Base):
+    """공식 자료의 최소 필드 근거. 해시는 무결성 식별용이며 출처 진위나 승인 증명이 아니다."""
+
+    __tablename__ = "manual_evidence"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        UniqueConstraint("opportunity_id", "version", "evidence_hash"),
+        CheckConstraint("length(evidence_hash) = 64", name="hash"),
+        CheckConstraint("observed_at <= recorded_at", name="chronology"),
+        CheckConstraint("evidence_url LIKE 'https://%'", name="https"),
+    )
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    evidence_url: Mapped[str] = mapped_column(String(2000))
+    observed_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    recorded_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    quotes: Mapped[dict] = mapped_column(JSON_VALUE)
+    evidence_hash: Mapped[str] = mapped_column(String(64))
+
+
 class RoleDefinition(Base):
     __tablename__ = "role_definitions"
     __table_args__ = (

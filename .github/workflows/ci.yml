@@ -224,7 +224,7 @@ jobs:
         run: python -m pytest tests/test_public_opportunities.py -q
       - name: 실제 PostgreSQL 수집 버전과 동시 수집 시험
         working-directory: backend
-        run: python -m pytest tests/test_ingestion_versions.py tests/test_ingestion_runs.py -q
+        run: python -m pytest tests/test_ingestion_versions.py tests/test_ingestion_runs.py tests/test_manual_intake.py -q
       - name: 개발 컨테이너 종료
         if: always()
         run: docker compose --env-file .env.example -f infra/compose.dev.yaml down
