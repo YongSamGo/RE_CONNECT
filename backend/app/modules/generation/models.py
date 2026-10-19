@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, StrictInt
 
 from app.contracts.fields import CONTRACT_CONFIG, Unique, text
 from app.contracts.profile import ExperienceInput, ProfileContent, RecommendationField
+from app.contracts.preparation import OpportunityRef
 
 
 class Quote(BaseModel):
@@ -70,3 +71,11 @@ class ApplicationPreview(BaseModel):
     profile_version: Annotated[StrictInt, Field(ge=1)]
     paragraphs: Annotated[list[text(2000, multiline=True)], Field(max_length=30)]
     requires_confirmation: Literal[True] = True
+
+
+class ApplicationContext(BaseModel):
+    """공개·버전 검사를 마친 공고. 확정 개인 사실로 승격하지 않는다."""
+    model_config = CONTRACT_CONFIG
+    opportunity: OpportunityRef
+    title: text(200)
+    description: text(5000, multiline=True) | None
