@@ -55,9 +55,28 @@ class Replay:
     result: ResultReference
 
 
+@dataclass(frozen=True)
+class CompletionGuard:
+    """AI 결과 완료에 결합할 서버 세션·체험 세대·안내문. HTTP 입력에 쓰지 않는다."""
+
+    session_digest: str = field(repr=False)
+    resource_generation: UUID
+    ai_notice_version: str
+
+    def __post_init__(self):
+        if (
+            not isinstance(self.session_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", self.session_digest)
+            or not isinstance(self.resource_generation, UUID)
+            or not isinstance(self.ai_notice_version, str) or not re.fullmatch(r"[a-z0-9._-]{1,32}", self.ai_notice_version)
+        ):
+            raise ValueError("결과 완료 검증 정보 형식 오류")
+
+
 class RequestStore(Protocol):
     async def begin(self, permit: Permit) -> Permit | Replay: ...
-    async def complete(self, permit: Permit, result: ResultReference | None) -> None: ...
+    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None) -> None: ...
+    async def create_guarded_resource(self, subject_id: UUID, resource_id: UUID, guard: CompletionGuard) -> bool: ...
+    async def cancel(self, permit: Permit) -> None: ...
     async def create_resource(self, subject_id: UUID, resource_id: UUID, ttl_ms: int) -> bool: ...
     async def delete_resource(self, subject_id: UUID, resource_id: UUID) -> None: ...
 
@@ -66,7 +85,7 @@ class UnavailableRequestStore:
     async def begin(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    complete = create_resource = delete_resource = begin
+    complete = create_resource = delete_resource = create_guarded_resource = cancel = begin
 
 
 def input_fingerprint(validated_input: dict) -> str:
@@ -107,8 +126,22 @@ class RequestService:
         digest = input_fingerprint({"input": validated_input, "base_revision": base_revision})
         return await self.store.begin(Permit(scope, key_id, digest, secrets.token_hex(32), base_revision))
 
-    async def complete(self, permit: Permit, result: ResultReference | None) -> None:
-        await self.store.complete(permit, result)
+    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None) -> None:
+        if guard is None:
+            await self.store.complete(permit, result)
+        else:
+            if permit.scope.resource_id is None or permit.base_revision is None:
+                raise AppError("VALIDATION_FAILED")
+            await self.store.complete(permit, result, guard=guard)
+
+    async def create_guarded_resource(self, subject_id: UUID, resource_id: UUID, guard: CompletionGuard) -> bool:
+        if not isinstance(subject_id, UUID) or not isinstance(resource_id, UUID) or not isinstance(guard, CompletionGuard):
+            raise ValueError("체험 주체와 서버 생성 식별자가 필요합니다")
+        return await self.store.create_guarded_resource(subject_id, resource_id, guard)
+
+    async def cancel(self, permit: Permit) -> None:
+        # HTTP 연결 취소는 GPU 종료를 증명하지 않는다. 결과 반영 권한만 취소한다.
+        await self.store.cancel(permit)
 
     async def create_resource(self, subject_id: UUID, resource_id: UUID, *, ttl_ms: int) -> bool:
         if not isinstance(subject_id, UUID) or not isinstance(resource_id, UUID) or type(ttl_ms) is not int or not 1 <= ttl_ms <= RESOURCE_MAX_MS:
