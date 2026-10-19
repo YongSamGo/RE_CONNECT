@@ -45,6 +45,9 @@ from app.modules.journeys.repository import RedisJourneyStore
 from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
 from app.modules.eligibility import router as eligibility
 from app.modules.eligibility.service import EligibilityService
+from app.modules.roles import router as roles
+from app.modules.roles.repository import SQLRoleCatalog, UnavailableRoleCatalog
+from app.modules.roles.service import RoleService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -124,6 +127,7 @@ def create_app(
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
+    app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -149,6 +153,7 @@ def create_app(
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)
+    app.include_router(roles.router, prefix=API_PREFIX)
 
     return app
 
