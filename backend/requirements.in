@@ -4,3 +4,7 @@ uvicorn
 pydantic-settings
 # 내부 Ollama 호출 (app/adapters/ollama.py)
 httpx
+# 공공 API의 검증한 IP로 직접 연결하고 원래 호스트의 TLS를 검증
+httpcore[asyncio]
+# 외부 XML의 DTD·엔티티·외부 참조 차단
+defusedxml
