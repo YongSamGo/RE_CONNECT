@@ -24,7 +24,8 @@ class TextRejected(Exception):
 
 def validate_text(text):
     if (type(text) is not str or not 1 <= len(text) <= 2000 or not text.strip()
-        or any(unicodedata.category(char).startswith('C') for char in text)
+        or any(unicodedata.category(char) in {'Cc', 'Cf', 'Co', 'Cs', 'Zl', 'Zp'}
+            and char not in '\n\t' for char in text)
         or '<|' in text or '|>' in text):
         # 모델의 대화 경계 토큰을 일반 표시 문장으로 해석하지 않는다.
         raise TextRejected()

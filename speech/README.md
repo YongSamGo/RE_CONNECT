@@ -4,11 +4,11 @@
 
 faster-whisper(STT)와 Qwen3-TTS를 실행하는 별도 컨테이너다. FastAPI의 Speech Adapter만 Compose 내부 네트워크로 호출한다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)).
 
-백엔드의 고정 내부 전송·readiness·STT/TTS 공통 슬롯 경계는 [내부 음성 계약](PROTOCOL.md)을 따른다. [로컬 STT 런타임](STT_RUNTIME.md)과 [TTS 로더](TTS_RUNTIME.md)의 실제 CPU 실행 및 같은 프로세스 공존을 확인했다. TTS HTTP·운영 컨테이너·전체 준비 검증과 숫자 문장 청취 평가가 남아 있다.
+백엔드의 고정 내부 전송·readiness·STT/TTS 공통 슬롯 경계는 [내부 음성 계약](PROTOCOL.md)을 따른다. [로컬 STT 런타임](STT_RUNTIME.md)과 [TTS 로더](TTS_RUNTIME.md)를 연결한 [별도 프로세스 HTTP 서비스](PROCESS_RUNTIME.md)의 실제 CPU ASGI/TCP 전사·합성과 Redis 공유 슬롯을 확인했다. [CPU 컨테이너](CONTAINER_RUNTIME.md)의 내부 DNS·실제 백엔드 호출·커널 자원 제한과 외부 통신 차단도 확인했다. OS 취약점 조치·운영 환경·문장 청취 평가는 남아 있다.
 
 공식 고정 revision의 파일 준비·크기/SHA-256 검사는 [모델 준비 도구](MODEL_PREPARATION.md)를 따른다. 모델 실행 의존성을 설치하지 않고 준비 또는 오프라인 검증할 수 있다.
 
-TTS의 새 의존성 조합과 제한된12Hz source 준비는 [호환 빌드](tts_compat/README.md)를 따른다. 현재 STT HTTP 서비스의 TTS 적재/응답에는 아직 연결하지 않았으며 전체 readiness는 계속 실패한다.
+TTS의 새 의존성 조합과 제한된12Hz source 준비는 [호환 빌드](tts_compat/README.md)를 따른다. 두 모델이 실제 적재되고 프로세스가 살아 있을 때만 readiness200이며 한쪽 실패/프로세스 정지 때는503이다. 운영 동의 정보 미정에 따른 실제 시작 비활성은 유지한다.
 
 ## 규칙
 

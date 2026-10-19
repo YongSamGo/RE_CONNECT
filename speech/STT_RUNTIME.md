@@ -5,10 +5,11 @@
 ```sh
 python -m pip install --require-hashes -r requirements.txt -r requirements-dev.txt
 python -m pytest -q
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --workers 1 --no-access-log
 ```
 
 이 명령은 로컬 검증용이다. 운영 컨테이너/Compose 내부 네트워크·tmpfs·프로세스/메모리 제한은 아직 연결하지 않았다. 호스트 공개 포트나 외부 AI 연결을 추가하지 않는다. 의존성은 uv 0.10.0으로 Linux/Python 3.12 대상, 2026-10-11 이전 릴리스만 사용해 해시와 함께 고정했다. Windows 전용 colorama도 명시해 같은 잠금을 설치할 수 있다.
+
+현재 HTTP 서비스는 STT·TTS를 함께 별도 프로세스에 적재한다. 전체 설치·준비·실행 명령은 [프로세스 서비스](PROCESS_RUNTIME.md)를 따른다.
 
 ## 실제 처리
 
@@ -22,9 +23,9 @@ python -m uvicorn app.main:app --host 127.0.0.1 --port 8001 --workers 1 --no-acc
 
 ## 종료와 취소
 
-한 native 작업만 수행한다. HTTP 요청이 취소되거나55초 제한을 넘겨도 worker를 종료했다고 가정하지 않는다. native thread가 실제 끝날 때까지 내부 lock을 유지하고, 그 뒤에만 다음 작업을 받는다. 연결이 남아 있는 정상/입력 오류/모델 오류 응답은 실제 worker 종료 후 현재 request ID와 Completed:1을 보낸다. 시간 초과 응답에는 종료 헤더를 보내지 않는다. 서버 종료도 진행 중인 worker를 기다린다.
+한 native 작업만 수행한다. 현재 HTTP는 [별도 프로세스와 종료 ACK](PROCESS_RUNTIME.md)를 사용한다. 시간 초과/요청 취소 시 실제 프로세스 사망과 IPC 배출을 확인한 뒤 잠금을 해제한다. 실제 종료 확인에 실패하면 완료 헤더를 보내지 않고 잠금을 유지한다. 이전 thread 방식의 취소 후 계속 실행 한계를 대체했다.
 
-TTS 적재가 아직 없으므로 `/health/ready`는 STT 적재 성공 시에도503·tts:false다. `/internal/speech`도 명시적 미준비 오류를 반환한다. 이는 실제 TTS 구현이나 전체 서비스 준비 성공을 의미하지 않는다.
+`/health/ready`는 살아 있는 프로세스 안에서 두 모델이 모두 적재된 경우에만200이다. 한쪽 실패나 프로세스 정지 뒤에는503이다. 전체 운영 배치/발화 품질 판정과 구분한다.
 
 ## 확인한 증거와 남은 범위
 
@@ -33,4 +34,4 @@ TTS 적재가 아직 없으므로 `/health/ready`는 STT 적재 성공 시에도
 - Ubuntu24.04/WSL의 Python3.12.3 격리 환경에도 같은 해시 잠금을 설치해27개 시험을 통과했다. 같은 고정 모델의 실제 오프라인 CPU 적재5.137초, 첫 합성 음성4.07초의 실제 ASGI 전사1.597초·문장 전체 일치를 확인했다. Windows와 같은 호스트의 단일 표본이며 EC2 비교나 성능 보장으로 해석하지 않는다.
 - 의존성 pip-audit 알려진 취약점0, Bandit 지적0을 확인했다. 처음 감사는 Windows tqdm의 colorama 잠금 누락으로 실패했고 명시해 다시 통과했다.
 
-실제 사용자/대상 기기 마이크·환경 소음·방언·인식 실패·EC2/GPU 지연/메모리·컨테이너 격리와 실제 TTS 공존은 계속 검증해야 한다. 운영 동의 정보 미정으로 실제 시작 화면도 비활성이다. #31 전체 통과나 배포 완료로 처리하지 않는다.
+후속 CPU 시험에서 실제 TTS 공존과 별도 프로세스의 ASGI 전사/합성도 확인했다([범위](PROCESS_RUNTIME.md)). 실제 사용자/대상 기기 마이크·환경 소음·방언·인식 실패·EC2/GPU 지연/메모리·컨테이너 격리는 계속 검증해야 한다. 운영 동의 정보 미정으로 실제 시작 화면도 비활성이다. #31 전체 통과나 배포 완료로 처리하지 않는다.
