@@ -16,6 +16,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 공고별 공식 준비 안내와 임시 서류 체크의 부분 구현 범위·실제 API 연동 대기는 [준비 안내 구현 기록](src/features/preparation/OFFICIAL.md)을 따른다.
 
+서버 체험 ID의 프로필 편집·확정·역할 제외/복원 화면과 시작 진입점·실제 기기 검증의 남은 범위는 [프로필 서버 연결 기록](src/features/profile/SERVER.md)을 따른다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.

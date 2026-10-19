@@ -16,6 +16,7 @@ import { SavedMaterials } from './features/account/SavedMaterials'
 import { AdminPage } from './features/admin/AdminPage'
 import { VoicePreview } from './features/voice/VoicePreview'
 import { ProfilePreview } from './features/profile/ProfilePreview'
+import { JourneyProfileRoute } from './features/profile/JourneyProfile'
 import { emptyPreferences } from './features/profile/model'
 import type { ProfilePreferences } from './features/profile/model'
 import './App.css'
@@ -103,6 +104,7 @@ export default function App() {
       ?? (location.pathname.startsWith('/opportunities/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/opportunities/') ? screens[6] : undefined)
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/profile') ? screens[4] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
     if (previousPath.current !== location.pathname) {
@@ -135,6 +137,7 @@ export default function App() {
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/transcription" element={requirePreview(<VoicePreview onUseText={(experience) => { setPreview((previous) => ({ ...previous, experience, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } })); navigate('/conversation') }} />)} />
       <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />
+      <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
       <Route path="/opportunities/:id/preparation" element={<OfficialPreparation />} />

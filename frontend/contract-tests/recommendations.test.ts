@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { Ajv2020 } from 'ajv/dist/2020'
 import { JSON_SCHEMA, load } from 'js-yaml'
 import { expect, it } from 'vitest'
+import { parseExclusions, parseProfileView, parseRoles } from '../src/features/profile/server-model'
 
 const root = new URL('../', import.meta.url)
 const python = process.env.CONTRACT_PYTHON || fileURLToPath(new URL(process.platform === 'win32' ? '../backend/.venv/Scripts/python.exe' : '../backend/.venv/bin/python', root))
@@ -17,11 +18,15 @@ const validate = ajv.compile({ $ref: '#/components/schemas/RecommendationList', 
 it('validates the actual private recommendation HTTP body against the original OpenAPI contract', () => {
   const actual = JSON.parse(execFileSync(python, ['-I', fileURLToPath(new URL('contract-tests/export_recommendation.py', root))], {
     encoding: 'utf8', timeout: 20000, maxBuffer: 1024 * 1024, windowsHide: true,
-  })) as { status: number; body: { items: Record<string, unknown>[] } }
+  })) as { status: number; body: { items: Record<string, unknown>[] }; profile: unknown; roles: unknown; exclusions: unknown }
   expect(actual.status).toBe(200)
   expect(actual.body.items).toHaveLength(1)
   expect(validate(actual.body), JSON.stringify(validate.errors)).toBe(true)
   const forged = structuredClone(actual.body)
   forged.items[0].score = 1
   expect(validate(forged)).toBe(false)
+  const profile = parseProfileView(actual.profile)
+  const roles = parseRoles(actual.roles, profile)
+  expect(roles.items[0].evidence[0].experience_id).toBe(profile.draft.experiences[0].id)
+  expect(parseExclusions(actual.exclusions, profile)).toEqual([])
 })
