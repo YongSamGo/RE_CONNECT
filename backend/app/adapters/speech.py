@@ -17,6 +17,10 @@ class SpeechUnavailableError(SpeechError):
     pass
 
 
+class SpeechTransientUnavailableError(SpeechUnavailableError):
+    """연결 미성립 또는 현재 연산 종료가 확인된 명시적 일시 오류."""
+
+
 class SpeechTimeoutError(SpeechError):
     pass
 
