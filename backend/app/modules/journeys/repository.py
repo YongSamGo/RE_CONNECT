@@ -87,6 +87,16 @@ return view(KEYS[3], KEYS[4], false)
 
 _LOAD = _SESSION + _VIEW + "return view(KEYS[2], KEYS[3], ARGV[7] == '1')"
 
+_MESSAGE_DATA = _SESSION + _VIEW + """
+local state = view(KEYS[2], KEYS[3], false)
+if state[1] ~= 'ok' then return state end
+local value = redis.call('HGET', KEYS[3], ARGV[7])
+if not value then
+    if ARGV[7] == 'conversation' then value = '[]' else return {'NOT_FOUND'} end
+end
+return {'ok', value}
+"""
+
 _END = _SESSION_LIFETIME + """
 local m = redis.call('HMGET', KEYS[3], 'owner', 'digest')
 if m[1] and (m[1] ~= ARGV[1] or m[2] ~= ARGV[5]) then return {'ok'} end
@@ -184,6 +194,7 @@ class RedisJourneyStore:
         self._role_state = client.register_script(_ROLE_STATE)
         self._set_role_exclusions = client.register_script(_SET_ROLE_EXCLUSIONS)
         self._end = client.register_script(_END)
+        self._message_data = client.register_script(_MESSAGE_DATA)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -258,6 +269,29 @@ class RedisJourneyStore:
 
     async def profile(self, session, journey_id):
         return await self._profile_call(self._profile, session, journey_id)
+
+    async def message_data(self, session, journey_id, notice_version, field):
+        if field != 'conversation':
+            try:
+                if field != f'message_result:{UUID(field.removeprefix("message_result:"))}':
+                    raise ValueError
+            except (ValueError, TypeError, AttributeError):
+                raise AppError('SERVICE_UNAVAILABLE') from None
+        resource = self.resource_key(session.subject_id, journey_id)
+        values = await self._call_data(session, resource, notice_version, field)
+        return values
+
+    async def _call_data(self, session, resource, notice_version, field):
+        try:
+            values = await self._message_data(keys=[self.session_key(session.digest), resource, resource + ':lifecycle'],
+                args=[*self._args(session, notice_version), field])
+            if values and values[0] in {'NOT_FOUND', 'CONSENT_REQUIRED', 'SERVICE_UNAVAILABLE'}:
+                raise AppError(values[0])
+            if not isinstance(values, list) or len(values) != 2 or values[0] != 'ok' or len(values[1].encode('utf-8')) > 131072:
+                raise ValueError
+            return values[1]
+        except (RedisError, ValueError, TypeError, AttributeError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
 
     async def end(self, session, journey_id):
         values = await self._version_call(self._end, session, journey_id, (MAX_RESOURCE_REQUESTS,))

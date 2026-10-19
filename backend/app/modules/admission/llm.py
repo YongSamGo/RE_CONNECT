@@ -22,6 +22,11 @@ class ControlledLLMAdapter:
     async def is_ready(self) -> bool:
         return await self._admission.is_ready() and await self._runtime.is_ready()
 
+    def for_identity(self, identity: InferenceIdentity) -> 'IdentityBoundLLM':
+        if not isinstance(identity, InferenceIdentity):
+            raise ValueError('서버가 확인한 추론 주체가 필요합니다')
+        return IdentityBoundLLM(self, identity)
+
     async def generate_structured(self, *, instructions: str, untrusted_turns: Sequence[UntrustedTurn], output_model: type[OutputT], identity: InferenceIdentity | None = None) -> OutputT:
         if identity is None:
             raise AppError("SERVICE_UNAVAILABLE")
@@ -30,3 +35,16 @@ class ControlledLLMAdapter:
             instructions=instructions, untrusted_turns=untrusted_turns, output_model=output_model,
             on_runtime_ended=completion.confirm_ended,
         ))
+
+
+class IdentityBoundLLM:
+    """업무 호출 하나의 서버 주체를 고정한다. HTTP 입력에서 만들지 않는다."""
+    def __init__(self, controlled: ControlledLLMAdapter, identity: InferenceIdentity):
+        self._controlled, self._identity = controlled, identity
+
+    async def is_ready(self) -> bool:
+        return await self._controlled.is_ready()
+
+    async def generate_structured(self, *, instructions: str, untrusted_turns: Sequence[UntrustedTurn], output_model: type[OutputT]) -> OutputT:
+        return await self._controlled.generate_structured(instructions=instructions, untrusted_turns=untrusted_turns,
+            output_model=output_model, identity=self._identity)

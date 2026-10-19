@@ -1,17 +1,19 @@
 """생성·조회·활동 수명. 모델 호출·자동 승인·저장 프로필 사칭을 허용하지 않는다."""
 
 from dataclasses import dataclass, field
+import json
 from datetime import datetime
 from typing import Literal, Protocol
 from uuid import UUID, uuid4
+from pydantic import TypeAdapter, ValidationError
 
-from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, ProfileRef, ProfileConfirmResult
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, ProfileRef, ProfileConfirmResult, ConversationTurn, MessageResult
 from app.contracts.profile import ProfileContent
 from app.contracts.roles import RoleExclusions
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity
 from app.modules.consents.service import ConsentActor, ConsentService
-from app.modules.requests.service import CompletionGuard, input_fingerprint
+from app.modules.requests.service import CompletionGuard, ResultReference, input_fingerprint
 from app.modules.sessions.service import Session
 
 FIRST_QUESTION = "지금까지 해 오신 일 가운데 기억에 남는 일을 한 가지 들려주세요."
@@ -54,6 +56,7 @@ class ProfileDependency:
 
 
 class JourneyStore(Protocol):
+    async def message_data(self, session: Session, journey_id: UUID, notice_version: str, field: str) -> str: ...
     async def end(self, session: Session, journey_id: UUID) -> None: ...
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
                      budget: str, key_id_digest: str) -> JourneyRecord: ...
@@ -70,7 +73,7 @@ class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    end = load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
+    message_data = end = load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
 
 
 class JourneyService:
@@ -106,6 +109,30 @@ class JourneyService:
     async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView:
         # 직접 읽기/편집은 모델 호출이 없어 AI 동의를 요구하지 않는다. 저장소가 주체/수명을 재검사한다.
         return await self.store.profile(session, journey_id)
+
+    async def conversation(self, session: Session, journey_id: UUID, notice_version: str) -> list[ConversationTurn]:
+        try:
+            raw = await self.store.message_data(session, journey_id, notice_version, 'conversation')
+            turns = TypeAdapter(list[ConversationTurn]).validate_python(json.loads(raw))
+            if len(turns) > 64 or sum(len(turn.text.encode('utf-8')) for turn in turns) > 12000:
+                raise ValueError
+            if len({turn.message_id for turn in turns}) != len(turns):
+                raise ValueError
+            return turns
+        except (ValueError, TypeError, ValidationError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
+
+    async def message_result(self, session: Session, journey_id: UUID, notice_version: str, reference: ResultReference) -> MessageResult:
+        if reference.kind != 'message':
+            raise AppError('SERVICE_UNAVAILABLE')
+        raw = await self.store.message_data(session, journey_id, notice_version, f'message_result:{reference.id}')
+        try:
+            response = MessageResult.model_validate_json(raw)
+            if response.user_message_id != reference.id or response.revision != reference.version:
+                raise ValueError
+            return response
+        except (ValueError, TypeError, ValidationError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
 
     async def update_profile(self, session: Session, journey_id: UUID, body: ProfileUpdate) -> ProfileDraftView:
         current = await self.profile(session, journey_id)

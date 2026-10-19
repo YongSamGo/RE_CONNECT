@@ -7,8 +7,10 @@ import re
 import secrets
 from typing import Literal, Protocol
 from uuid import UUID
+from pydantic import ValidationError
 
 from app.core.business_errors import AppError
+from app.contracts.journey import MessageCommit
 
 RETENTION_MS = 24 * 60 * 60 * 1000
 RESOURCE_MAX_MS = 2 * 60 * 60 * 1000
@@ -73,9 +75,30 @@ class CompletionGuard:
             raise ValueError("결과 완료 검증 정보 형식 오류")
 
 
+def validate_message_commit(permit: Permit, result: ResultReference | None, guard: CompletionGuard | None, message: MessageCommit) -> MessageCommit:
+    try:
+        message = MessageCommit.model_validate(message.model_dump())
+    except (ValidationError, AttributeError, TypeError):
+        raise AppError('VALIDATION_FAILED') from None
+    response = message.response
+    if (guard is None or permit.scope.api != 'messages' or permit.scope.resource_id is None
+        or permit.base_revision is None or result is None or result.kind != 'message'
+        or response.revision != permit.base_revision + 1 or response.profile.revision != response.revision
+        or result.id != response.user_message_id or result.version != response.revision
+        or message.turns[-1].message_id != response.user_message_id
+        or len({turn.message_id for turn in message.turns}) != len(message.turns)
+        or sum(len(turn.text.encode('utf-8')) for turn in message.turns) > 12000
+        or len(response.model_dump_json().encode('utf-8')) > 65536
+        or response.profile.missing_for_recommendation != response.profile.draft.missing_for_recommendation()
+        or response.profile.has_unconfirmed_changes != (response.profile.confirmed is not None)
+        or (response.assistant_message is None) != (response.next_step == 'review_profile')):
+        raise AppError('VALIDATION_FAILED')
+    return message
+
+
 class RequestStore(Protocol):
     async def begin(self, permit: Permit) -> Permit | Replay: ...
-    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None) -> None: ...
+    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None, message: MessageCommit | None = None) -> None: ...
     async def create_guarded_resource(self, subject_id: UUID, resource_id: UUID, guard: CompletionGuard) -> bool: ...
     async def cancel(self, permit: Permit) -> None: ...
     async def create_resource(self, subject_id: UUID, resource_id: UUID, ttl_ms: int) -> bool: ...
@@ -127,7 +150,11 @@ class RequestService:
         digest = input_fingerprint({"input": validated_input, "base_revision": base_revision})
         return await self.store.begin(Permit(scope, key_id, digest, secrets.token_hex(32), base_revision))
 
-    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None) -> None:
+    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None, message: MessageCommit | None = None) -> None:
+        if message is not None:
+            message = validate_message_commit(permit, result, guard, message)
+            await self.store.complete(permit, result, guard=guard, message=message)
+            return
         if guard is None:
             await self.store.complete(permit, result)
         else:
