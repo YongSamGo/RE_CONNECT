@@ -11,6 +11,7 @@ import asyncio
 from fastapi import FastAPI
 
 from app.adapters.ollama import OllamaLLMAdapter
+from app.adapters.internal_speech import InternalSpeechAdapter
 from app.adapters.redis import RedisProbe, build_redis
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
@@ -35,6 +36,7 @@ from app.modules.sessions.middleware import RequestSecurityMiddleware
 from app.modules.requests.repository import RedisRequestStore
 from app.modules.requests.service import RequestService, UnavailableRequestStore
 from app.modules.admission.llm import ControlledLLMAdapter
+from app.modules.admission.speech import ControlledSpeechAdapter
 from app.modules.admission.repository import RedisAdmissionStore
 from app.modules.admission.service import AdmissionService, UnavailableAdmissionService
 from app.modules.opportunities import router as opportunities
@@ -113,6 +115,8 @@ def create_app(
     app.state.admission_service = admission
     llm_adapter = ControlledLLMAdapter(build_llm_adapter(settings), admission)
     app.state.llm_adapter = llm_adapter
+    speech_adapter = ControlledSpeechAdapter(InternalSpeechAdapter(), admission)
+    app.state.speech_adapter = speech_adapter
 
     app.state.db_engine = engine
     app.state.redis = redis_client
@@ -144,6 +148,7 @@ def create_app(
     if redis_client is not None:
         probes["redis"] = RedisProbe(redis_client)
     probes["llm"] = llm_adapter
+    probes['speech'] = speech_adapter
     probes.update(readiness_probes or {})
     app.state.settings = settings
     app.state.readiness_service = ReadinessService(probes, settings.health_check_timeout_seconds)
