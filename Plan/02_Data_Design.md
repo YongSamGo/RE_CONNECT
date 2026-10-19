@@ -134,6 +134,8 @@ erDiagram
 
 ## 4. 조건·추천·지원서 계약
 
+역할 사전은 `skill_tags`의 정식 태그, `aliases`의 `{alias, skill_tag}` 매핑, `experience_rules`의 `{operator: all|any, skill_tags: [...]}`로 연결 기준을 표현한다. 태그/별칭은 한 확정 경험 안에서만 대조하며 없는 경험 ID나 확인되지 않은 동의어를 만들어 연결하지 않는다. 초기 사전은 OpenAPI 예시 두 역할부터 시작한다([구현·검증](../docs/data/roles.md)).
+
 자격 대조 응답의 `user_value`는 실제 확정 프로필 값을 사용한다. `null`은 미확인, 빈 배열은 없음 확인이며 `residence_region`은 단일 Region 객체다. 조건의 비교 피연산자 `RequirementValue`와 분리한 `EligibilityUserValue` 계약을 사용해 두 의미를 섞지 않는다. 조건 피연산자의 배열은 기존처럼 한 개 이상이어야 한다.
 
 ### Requirement

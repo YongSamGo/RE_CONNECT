@@ -10,8 +10,9 @@ from redis.exceptions import RedisError
 
 from app.contracts.journey import Journey, Message, ConfirmedVersion, ProfileDraftView, ProfileConfirmResult, ProfileRef
 from app.contracts.profile import ProfileContent, empty_profile_content
+from app.contracts.roles import RoleExclusions
 from app.core.business_errors import AppError
-from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, MissingProfileFields, ResolvedJourneyProfile
+from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, MissingProfileFields, ResolvedJourneyProfile, RoleState
 from app.modules.requests.service import CompletionGuard, RESOURCE_MAX_MS, RETENTION_MS
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 
@@ -76,7 +77,7 @@ if redis.call('EXISTS', KEYS[3]) == 1 or redis.call('EXISTS', KEYS[4]) == 1 then
 redis.call('SET', KEYS[3], 'g:1', 'PX', ARGV[3])
 redis.call('HSET', KEYS[4], 'journey_id', ARGV[8], 'first_message_id', ARGV[9], 'generation', ARGV[10],
     'created_ms', now, 'last_ms', now, 'digest', ARGV[5], 'notice_version', ARGV[2], 'owner', ARGV[1])
-redis.call('HSET', KEYS[4], 'profile_draft', ARGV[15], 'profile_evidence', '[]', 'profile_changed', '0')
+redis.call('HSET', KEYS[4], 'profile_draft', ARGV[15], 'profile_evidence', '[]', 'profile_changed', '0', 'role_exclusions', '[]')
 redis.call('PEXPIRE', KEYS[4], ARGV[3])
 redis.call('HSET', KEYS[2], 'input', ARGV[7], 'resource', KEYS[3], 'meta', KEYS[4])
 redis.call('PEXPIRE', KEYS[2], ARGV[14])
@@ -141,6 +142,13 @@ if not content or not at then return {'VERSION_CONFLICT'} end
 return {'ok', content, at}
 """
 
+_ROLE_STATE = _SESSION_LIFETIME + _VIEW + """
+local state = view(KEYS[2], KEYS[3], false)
+if state[1] ~= 'ok' then return state end
+if state[8] == '' then return {'PROFILE_NOT_CONFIRMED'} end
+return {'ok', state[7], state[8], redis.call('HGET', KEYS[3], 'role_exclusions') or '[]'}
+"""
+
 
 class RedisJourneyStore:
     def __init__(self, client, *, session_key, resource_key, control_key: str, epoch: UUID,
@@ -151,6 +159,7 @@ class RedisJourneyStore:
         self._update_profile = client.register_script(_UPDATE_PROFILE)
         self._confirm_profile = client.register_script(_CONFIRM_PROFILE)
         self._resolve_profile = client.register_script(_RESOLVE_PROFILE)
+        self._role_state = client.register_script(_ROLE_STATE)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -279,4 +288,15 @@ class RedisJourneyStore:
             confirmation = self._confirmation(reference.version, at)
             return ResolvedJourneyProfile(reference, profile, confirmation.confirmed_at)
         except (ValueError, TypeError, OverflowError, OSError, ValidationError):
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+    async def role_state(self, session, journey_id):
+        values = await self._version_call(self._role_state, session, journey_id, ())
+        try:
+            _, revision, version, encoded = values
+            if len(encoded.encode("utf-8")) > 65536 or not 1 <= int(version) <= MAX_CONFIRMED_VERSIONS:
+                raise ValueError
+            exclusions = RoleExclusions(role_ids=json.loads(encoded), revision=int(revision))
+            return RoleState(exclusions.revision, int(version), tuple(exclusions.role_ids))
+        except (ValueError, TypeError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None
