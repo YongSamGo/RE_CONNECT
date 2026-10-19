@@ -13,7 +13,7 @@ backend/
 │   ├── core/             # 설정·요청 추적 ID·공통 오류 처리
 │   ├── adapters/         # LLM·Speech Adapter 인터페이스(Protocol). 구현은 각 작업에서 더한다
 │   ├── contracts/        # 공통 데이터 타입(프로필·공고·조건)·지역 목록·시각 처리 (W02-04)
-│   └── modules/          # 기능 모듈 (Plan/03 §2). 지금은 operations(상태 확인)·regions(지역 목록)가 있다
+│   └── modules/          # operations(상태 확인)·regions(지역 목록)·generation(내부 근거 검증)
 ├── tests/                # 이 패키지의 단위·통합 테스트 (pytest)
 ├── pyproject.toml        # pytest 설정만 둔다
 ├── requirements.in       # 직접 쓰는 운영 의존성
@@ -47,6 +47,10 @@ backend/
 - 지역은 [regions.py](app/contracts/regions.py)의 목록으로 검증한다. 시·군·구는 영문 slug이고, 경기도는 시·군 단위, 인천은 2026-07-01 행정체제 개편 뒤 기준이다. 목록을 바꾸면 `REGION_CATALOG_VERSION`을 올린다. 외부 출처의 지역코드 매핑은 수집기가 출처별로 맡는다.
 - 자격조건은 [requirement.py](app/contracts/requirement.py)의 field·operator 허용표에 있는 조합만 받는다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`로 남긴다.
 - 시각은 시간대가 있어야 하고 UTC로 바꿔 다룬다. 한국 날짜는 [time.py](app/contracts/time.py)의 `kst_date`·`kst_today`로만 계산한다. 한국은 서머타임이 없어 고정 오프셋 +09:00을 쓴다.
+
+## 근거를 제한하는 LLM 처리
+
+LLM의 경험 추출·질문·지원서 내부 근거 검증은 [W04-03 안내](../docs/ai/generation.md)에 있다. 현재는 사용자 확인용 미승인 결과만 만들며 실제 업무 API 연결과 모델 품질 검증은 남아 있다.
 
 ## 의존성 고정
 
