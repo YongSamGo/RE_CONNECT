@@ -231,6 +231,7 @@ jobs:
       - name: Compose 구성 확인과 실제 개발 DB Redis 실행
         run: |
           docker compose --env-file .env.example -f infra/compose.dev.yaml config --quiet
+          docker compose -f infra/compose.speech-cpu.yaml config --quiet
           docker compose --env-file .env.example -f infra/compose.dev.yaml up -d --wait --wait-timeout 90
           python infra/check_dev_services.py
       - name: 빈 DB 마이그레이션과 정상 조회
