@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -10,11 +10,12 @@ import { JourneyRoute } from '../journeys/JourneyRoute'
 import { parseProfileView } from '../profile/server-model'
 import { parseMessageResult, profileQuestion } from './model'
 import type { MessageInput, MessageResult, ProfileView } from './model'
+import { JourneyTranscription } from '../voice/JourneyTranscription'
 
 type Attempt = { key: string; body: MessageInput }
 type Conversation = { view: ProfileView | null; text: string; question: string | null; notices: string[];
-  attempt: Attempt | null; conflict: boolean; ended: boolean; ending: boolean }
-const empty = (): Conversation => ({ view: null, text: '', question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false })
+  attempt: Attempt | null; conflict: boolean; ended: boolean; ending: boolean; voice: boolean; transcriptionId: string | null }
+const empty = (): Conversation => ({ view: null, text: '', question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false, voice: false, transcriptionId: null })
 // These responses cannot establish whether the server committed. Retain the exact key and body.
 const ambiguous = new Set(['NETWORK_ERROR', 'TIMEOUT', 'INVALID_RESPONSE', 'HTTP_ERROR', 'INTERNAL_ERROR', 'SERVICE_UNAVAILABLE', 'REQUEST_IN_PROGRESS', 'CANCELLED'])
 const inaccessible = new Set(['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'CONSENT_REQUIRED'])
@@ -28,6 +29,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   const read = useRequest<ProfileView>()
   const send = useRequest<MessageResult>()
   const end = useRequest<boolean>()
+  const accessFailure = useMemoryScope<ApiError | null>(() => null)
   const navigate = useNavigate()
   const questionRef = useRef<HTMLHeadingElement>(null)
   const submitLock = useRef<symbol | null>(null)
@@ -35,9 +37,15 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   const sending = send.state.status === 'pending'
   const pending = sending || read.state.status === 'pending' || end.state.status === 'pending'
   const clear = scope.clear
+  const clearRead = read.clear, clearSend = send.clear, clearEnd = end.clear, setAccessFailure = accessFailure.setValue
+  const accessLost = useCallback((error: ApiError) => {
+    clear(); clearRead(); clearSend(); clearEnd(); submitLock.current = null; setAccessFailure(error)
+  }, [clear, clearRead, clearSend, clearEnd, setAccessFailure])
   useEffect(() => {
-    if ([send.state, read.state, end.state].some(state => state.status === 'error' && inaccessible.has(state.error.code))) clear()
-  }, [send.state, read.state, end.state, clear])
+    const failure = [send.state, read.state, end.state].find(state => state.status === 'error' && inaccessible.has(state.error.code))
+    if (failure?.status === 'error') accessLost(failure.error)
+  }, [send.state, read.state, end.state, accessLost])
+  useEffect(() => { if (!state.voice) document.getElementById('conversation-message-input')?.focus() }, [state.voice])
   useEffect(() => {
     const resetLock = () => { submitLock.current = null }
     window.addEventListener('pagehide', resetLock)
@@ -46,6 +54,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
 
   function load() {
     if (pending || state.attempt) return
+    accessFailure.clear()
     send.clear()
     void read.run(async (api, signal) => {
       await api.GET('/me', { signal })
@@ -53,10 +62,10 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     }, view => scope.setValue(previous => ({ ...previous, view, question: profileQuestion(view), notices: [], conflict: false, ended: false })))
   }
   function submit() {
-    if (!state.view || pending || submitLock.current || state.conflict || state.ending || state.ended || !state.text.trim()) return
+    if (!state.view || pending || submitLock.current || state.conflict || state.ending || state.ended || state.voice || !state.text.trim()) return
     const token = Symbol()
     submitLock.current = token
-    const attempt = state.attempt ?? { key: crypto.randomUUID(), body: { text: state.text, transcription_id: null, base_revision: state.view.revision } }
+    const attempt = state.attempt ?? { key: crypto.randomUUID(), body: { text: state.text, transcription_id: state.transcriptionId, base_revision: state.view.revision } }
     scope.setValue(previous => ({ ...previous, attempt }))
     void send.run(async (api, signal) => {
       try {
@@ -72,7 +81,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     }, result => {
       scope.setValue(previous => {
         if (!previous.view || result.revision <= previous.view.revision) return { ...previous, attempt: null, conflict: true }
-        return { ...previous, view: result.profile, text: '', attempt: null, conflict: false,
+        return { ...previous, view: result.profile, text: '', transcriptionId: null, voice: false, attempt: null, conflict: false,
           question: result.assistant_message?.text ?? null, notices: result.notices, ended: result.next_step === 'review_profile' }
       })
       questionRef.current?.focus()
@@ -90,6 +99,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     <p><Link className="button secondary" to={`/journeys/${journeyId}/profile`}>언제든 프로필 확인하기</Link></p>
     <p>희망 지역·활동 유형과 다른 조건은 프로필 화면에서 직접 선택해 주세요. 프로필로 이동하면 아직 보내지 않은 입력은 지워집니다. 대화 기록은 이 화면에서 복원하지 않습니다.</p>
     <Button disabled={pending || !!state.attempt} onClick={load}>{state.view ? '최신 프로필 상태 확인' : '체험 대화 준비하기'}</Button>
+    {accessFailure.value && <RequestError error={accessFailure.value} />}
     {read.state.status === 'error' && <RequestError error={read.state.error} />}
     {send.state.status === 'error' && <RequestError error={send.state.error} />}
     {end.state.status === 'error' && <RequestError error={end.state.error} />}
@@ -101,14 +111,21 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}
         {!state.ended && <form onSubmit={event => { event.preventDefault(); submit() }}>
-          <TextAreaField label="내가 해온 일" value={state.text} rows={6} maxLength={2000} disabled={pending || !!state.attempt || state.ending}
+          <TextAreaField id="conversation-message-input" label="내가 해온 일" value={state.text} rows={6} maxLength={2000} disabled={pending || !!state.attempt || state.ending || state.voice}
             onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} hint="연락처·주민등록번호·상세 병력은 적지 마세요. 보내기 전에 내용을 확인해 주세요." />
-          <Button type="submit" pending={sending} disabled={pending || state.conflict || state.ending || !state.text.trim()}>{state.attempt ? '같은 요청의 처리 결과 다시 확인' : '확인한 내용 보내기'}</Button>
+          <Button type="submit" pending={sending} disabled={pending || state.conflict || state.ending || state.voice || !state.text.trim()}>{state.attempt ? '같은 요청의 처리 결과 다시 확인' : '확인한 내용 보내기'}</Button>
         </form>}
         {sending && <Button variant="secondary" onClick={() => { send.clear(); submitLock.current = null }}>응답 기다리기 중지</Button>}
         <p>응답 기다리기를 중지해도 서버 처리가 끝났을 수 있습니다. 초안은 자동 확정되지 않습니다.</p>
       </section>
-      <Button variant="secondary" disabled={end.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, ending: true }))}>종료하고 삭제</Button>
+      {!state.ended && <>
+        {!state.voice && <Button variant="secondary" disabled={pending || !!state.attempt || state.ending} onClick={() => scope.setValue(previous => ({ ...previous, voice: true }))}>말로 입력하고 전사 확인</Button>}
+        {state.transcriptionId && !state.voice && <p>음성에서 확인한 문장입니다. 입력칸에서 더 고친 내용만 보냅니다.</p>}
+        {state.voice && <JourneyTranscription journeyId={journeyId} onAccessLost={accessLost}
+          onClose={() => scope.setValue(previous => ({ ...previous, voice: false }))}
+          onUseText={(text, transcriptionId) => scope.setValue(previous => ({ ...previous, text, transcriptionId, voice: false }))} />}
+      </>}
+      <Button variant="secondary" disabled={end.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, voice: false, ending: true }))}>종료하고 삭제</Button>
     </>}
     {state.ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험 임시 자료를 삭제할까요?</h2><p>이 체험의 대화·초안·확정본·역할 선택과 진행 결과를 삭제합니다.</p>
       <Button pending={end.state.status === 'pending'} onClick={deleteJourney}>체험 임시 자료 삭제 확인</Button>
