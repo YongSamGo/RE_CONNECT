@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Request, Response
 
-from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, BaseRevision, ProfileConfirmResult
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, BaseRevision, ProfileConfirmResult, MessageCreate, MessageResult
 from app.core.errors import FieldError, error_response
 from app.modules.journeys.service import MissingProfileFields
 from uuid import UUID
@@ -11,6 +11,15 @@ from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
 
 router = APIRouter(tags=["체험"])
+
+
+@router.post('/journeys/{journey_id}/messages', response_model=MessageResult, operation_id='createMessage')
+async def create_message(journey_id: UUID, request: Request, body: MessageCreate):
+    session = await require_session(request, user_activity=True)
+    peer = request.client.host if request.client else ''
+    await request.app.state.admission_service.check_http(peer, session.subject_id)
+    return await request.app.state.journey_message_service.send(session, InferenceIdentity(session.subject_id, peer),
+        journey_id, idempotency_key(request), body)
 
 
 @router.delete("/journeys/{journey_id}", status_code=204, operation_id="deleteJourney")

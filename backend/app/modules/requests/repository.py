@@ -9,7 +9,8 @@ from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
 from app.core.business_errors import AppError
-from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, Permit, Replay, RequestScope, ResultReference, RETENTION_MS, RESOURCE_MAX_MS
+from app.contracts.journey import MessageCommit
+from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, Permit, Replay, RequestScope, ResultReference, RETENTION_MS, RESOURCE_MAX_MS, validate_message_commit
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 
 _BEGIN = """
@@ -52,6 +53,7 @@ return {'permit'}
 """
 
 _COMPLETE = """
+if ARGV[12] ~= '' and (ARGV[5] == '' or ARGV[4] == '' or ARGV[17] == '') then return {'SERVICE_UNAVAILABLE'} end
 if ARGV[5] ~= '' then
     local t = redis.call('TIME')
     local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
@@ -90,7 +92,21 @@ if ARGV[4] ~= '' then
         redis.call('HSET', KEYS[1], 'state', 'conflict')
         return {'VERSION_CONFLICT'}
     end
-    -- 증분과 완료 기록은 같은 스크립트에서 확정한다. 응답 유실 재시도는 다시 증분하지 않는다.
+    -- 본문/초안과 증분/완료 기록은 같은 원자 경계다. 실패 검사는 쓰기 전에 끝낸다.
+    if ARGV[12] ~= '' then
+        local t = redis.call('TIME')
+        local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
+        local created = tonumber(redis.call('HGET', KEYS[4], 'created_ms'))
+        local ttl = math.min(tonumber(ARGV[8]), created + tonumber(ARGV[11]) - now)
+        if ttl <= 0 then return {'NOT_FOUND'} end
+        redis.call('HSET', KEYS[4], 'message_result:' .. ARGV[17], ARGV[12], 'profile_draft', ARGV[13],
+            'profile_evidence', ARGV[14], 'conversation', ARGV[15], 'profile_changed', ARGV[16], 'last_ms', now)
+        redis.call('PEXPIRE', KEYS[4], ttl)
+        redis.call('PEXPIRE', KEYS[2], ttl)
+        local index = KEYS[2] .. ':requests'
+        if redis.call('EXISTS', index) == 1 then redis.call('PEXPIRE', index, ttl) end
+    end
+    -- 응답 유실 재시도는 다시 증분하지 않는다.
     if guarded then
         redis.call('SET', KEYS[2], 'g:' .. tostring(tonumber(revision) + 1), 'XX', 'KEEPTTL')
     else
@@ -197,8 +213,10 @@ class RedisRequestStore:
                 raise AppError("SERVICE_UNAVAILABLE") from None
         raise AppError("SERVICE_UNAVAILABLE")
 
-    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None) -> None:
+    async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None, message: MessageCommit | None = None) -> None:
         self._check_permit(permit)
+        if message is not None:
+            message = validate_message_commit(permit, result, guard, message)
         encoded = "" if result is None else json.dumps([result.kind, str(result.id), result.version], separators=(",", ":"))
         keys = self.keys(permit.scope, permit.key_id)[:2]
         if guard is not None and self._session_key is None:
@@ -208,6 +226,12 @@ class RedisRequestStore:
             permit.input_hash, permit.execution_id, encoded, "" if permit.base_revision is None else str(permit.base_revision),
             str(guard.resource_generation) if guard is not None else "", guard.ai_notice_version if guard is not None else "",
             str(permit.scope.subject_id), IDLE_MS, ABSOLUTE_MS, guard.session_digest if guard is not None else "", RESOURCE_MAX_MS,
+            message.response.model_dump_json() if message is not None else '',
+            message.response.profile.draft.model_dump_json() if message is not None else '',
+            json.dumps([item.model_dump(mode='json') for item in message.response.profile.evidence], ensure_ascii=True) if message is not None else '',
+            json.dumps([item.model_dump(mode='json') for item in message.turns], ensure_ascii=True) if message is not None else '',
+            ('1' if message.response.profile.has_unconfirmed_changes else '0') if message is not None else '',
+            str(message.response.user_message_id) if message is not None else '',
         ])
         if self._outcome(values) != "ok" or len(values) != 1:
             raise AppError("SERVICE_UNAVAILABLE")
