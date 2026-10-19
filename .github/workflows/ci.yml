@@ -233,7 +233,7 @@ jobs:
         run: |
           # 선행 PR에 아직 없는 시험은 요구하지 않고 구현된 시험은 모두 실행한다.
           tests=()
-          for file in tests/test_consents.py tests/test_result_lifecycle.py tests/test_journeys.py tests/test_journey_messages.py tests/test_journey_end.py tests/test_manual_profile.py tests/test_profile_confirmation.py tests/test_reconfirmed_results.py tests/test_preparation.py tests/test_eligibility_api.py tests/test_roles.py tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py; do
+          for file in tests/test_consents.py tests/test_result_lifecycle.py tests/test_journeys.py tests/test_journey_messages.py tests/test_journey_drafts.py tests/test_journey_end.py tests/test_manual_profile.py tests/test_profile_confirmation.py tests/test_reconfirmed_results.py tests/test_preparation.py tests/test_eligibility_api.py tests/test_roles.py tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py; do
             if [ -f "$file" ]; then
               tests+=("$file")
             fi

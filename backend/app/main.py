@@ -51,6 +51,9 @@ from app.modules.roles.repository import SQLRoleCatalog, UnavailableRoleCatalog
 from app.modules.roles.service import RoleService
 from app.modules.recommendations import router as recommendations
 from app.modules.recommendations.service import RecommendationService
+from app.modules.drafts import router as drafts
+from app.modules.drafts.repository import RedisDraftStore, UnavailableDraftStore
+from app.modules.drafts.service import DraftService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -133,6 +136,8 @@ def create_app(
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
     app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())
     app.state.recommendation_service = RecommendationService(app.state.journey_service, app.state.opportunity_service, app.state.role_service)
+    draft_store = RedisDraftStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableDraftStore()
+    app.state.draft_service = DraftService(draft_store, app.state.journey_service, app.state.opportunity_service, llm_adapter)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -160,6 +165,7 @@ def create_app(
     app.include_router(eligibility.router, prefix=API_PREFIX)
     app.include_router(roles.router, prefix=API_PREFIX)
     app.include_router(recommendations.router, prefix=API_PREFIX)
+    app.include_router(drafts.router, prefix=API_PREFIX)
 
     return app
 

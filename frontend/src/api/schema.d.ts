@@ -526,12 +526,13 @@ export interface paths {
         put?: never;
         /**
          * 지원서 초안 만들기 (AI 생성·직접 작성·저장 문서 가져오기)
-         * @description - `generate`: 로컬 Qwen3가 확정 사실만으로 자기소개·지원동기를 쓴다. AI 처리 동의가 필요하고, 근거 없는 문장은 빼고 `warnings`로 알린다.
+         * @description - `generate`: 로컬 모델이 선택한 확정 사실을 서버가 자기소개 초안으로 조립한다. AI 처리 동의가 필요하다. 지원동기는 추정하지 않고 빈칸으로 두며 직접 작성 안내를 `warnings`로 알린다.
          *     - `manual`: 빈 초안. AI를 호출하지 않는다.
-         *     - `from_saved`: 회원이 자기 저장 문서를 가져온다. `saved_document`가 필수다.
+         *     - `from_saved`: 회원이 자기 저장 문서를 가져오는 계약이며 `saved_document`가 필수다. 실제 회원 인증·저장본 소유권 연결 전에는 401로 거절한다.
          *
          *     종료·비공개·재검수 중인 공고는 409 `OPPORTUNITY_NOT_AVAILABLE`, 확정본이 없으면 409 `PROFILE_NOT_CONFIRMED`.
-         *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다.
+         *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다. 최대 32개 초안·128회 생성 예약을 허용한다.
+         *     생성 실패·취소된 키는 새 키로 재시도한다. 같은 키의 완료 재생은 추론이나 체험 수명 연장을 반복하지 않는다.
          */
         post: operations["createJourneyDraft"];
         delete?: never;
