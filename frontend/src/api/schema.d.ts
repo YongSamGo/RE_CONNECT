@@ -548,7 +548,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 소유 체험 지원서와 현재 재검토 사유 조회
+         * @description 유효한 자기 체험 안의 특정 지원서만 조회한다. 목록·이전 세션·대화 복원 API가 아니다.
+         *     원래 profile_version/opportunity/본문/approved_at/revision은 보존하고 현재 근거 변화만 review_reasons/warnings로 알린다.
+         *     조회는 체험 유휴 수명을 연장하지 않는다. AI 동의나 모델 호출이 필요하지 않다.
+         */
+        get: operations["getJourneyDraft"];
         put?: never;
         post?: never;
         delete?: never;
@@ -3180,6 +3186,38 @@ export interface operations {
             };
             413: components["responses"]["PayloadTooLarge"];
             422: components["responses"]["ValidationFailed"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getJourneyDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 체험 안의 임시 지원서 ID */
+                draft_id: components["parameters"]["DraftId"];
+                /** @description 사적 자원 참조. 인증 수단이 아니며 서버가 세션 소유권을 함께 확인한다 */
+                journey_id: components["parameters"]["JourneyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 원래 지원서와 현재 재검토 안내 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    "X-Request-ID": components["headers"]["XRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JourneyDraft"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
             429: components["responses"]["TooManyRequests"];
             503: components["responses"]["ServiceUnavailable"];
         };

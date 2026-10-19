@@ -22,13 +22,49 @@ class DraftService:
     def __init__(self, store, journeys, opportunities, llm):
         self.store, self.journeys, self.opportunities, self.llm = store, journeys, opportunities, llm
 
+    async def _display(self, session, journey_id: UUID, draft: JourneyDraft) -> JourneyDraft:
+        dependency = await self.journeys.profile_dependency(session, ProfileRef(kind='journey', id=journey_id, version=draft.profile_version))
+        reasons, warnings = list(dependency.review_reasons), []
+        if dependency.based_on_previous_confirmed:
+            warnings.append('프로필을 수정 중입니다. 이 지원서는 원래 확정 프로필 기준이며 본문은 자동으로 바뀌지 않습니다.')
+        try:
+            opportunity = await asyncio.to_thread(self.opportunities.get, draft.opportunity.id)
+        except AppError as error:
+            if error.code != 'NOT_FOUND':
+                raise
+            reasons.append('opportunity_closed')
+        else:
+            if opportunity.recruitment_status == 'closed':
+                reasons.append('opportunity_closed')
+            if opportunity.version != draft.opportunity.version or opportunity.change_pending:
+                reasons.append('opportunity_changed')
+            if not assess_lifecycle(opportunity, source_checked_at=opportunity.source_checked_at, now=utc_now()).recommendation_allowed:
+                warnings.append('공고의 현재 모집 상태·마감·확인 시각을 다시 확인해 주세요. 새 생성·승인이 제한될 수 있습니다.')
+        if reasons:
+            warnings.append('근거가 변경되었습니다. 기존 본문은 보존되며 새 근거로 만들고 확인·승인해야 합니다.')
+        return draft.model_copy(update={'review_reasons': list(dict.fromkeys(reasons)),
+            'warnings': list(dict.fromkeys([*warnings, *draft.warnings]))[:10]})
+
+    async def get(self, session, journey_id: UUID, draft_id: UUID) -> JourneyDraft:
+        original = await self.store.read(session, journey_id, draft_id)
+        displayed = await self._display(session, journey_id, original)
+        # SQL 조회 도중 종료/편집된 지원서를 이전 본문으로 돌려주지 않는다.
+        if await self.store.read(session, journey_id, draft_id) != original:
+            raise AppError('VERSION_CONFLICT')
+        dependency = await self.journeys.profile_dependency(session, ProfileRef(kind='journey', id=journey_id, version=original.profile_version))
+        if bool(dependency.review_reasons) != ('profile_changed' in displayed.review_reasons):
+            raise AppError('VERSION_CONFLICT')
+        return displayed
+
     async def update(self, session, journey_id: UUID, draft_id: UUID, body: DraftUpdate) -> JourneyDraft:
         previous = await self.store.read(session, journey_id, draft_id)
         if previous.revision != body.base_revision:
             raise AppError('VERSION_CONFLICT')
         updated = JourneyDraft.model_validate({**previous.model_dump(), 'revision': previous.revision + 1,
             'self_introduction': body.self_introduction, 'motivation': body.motivation, 'approved_at': None})
-        return await self.store.mutate(session, journey_id, previous, updated)
+        displayed = await self._display(session, journey_id, updated)
+        await self.store.mutate(session, journey_id, previous, updated)
+        return displayed
 
     async def approve(self, session, journey_id: UUID, draft_id: UUID, base_revision: int) -> JourneyDraft:
         previous = await self.store.read(session, journey_id, draft_id)
