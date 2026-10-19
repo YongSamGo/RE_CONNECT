@@ -1,61 +1,73 @@
-"""공개본·수명·프로필·전체 자격을 먼저 검사한다. 점수로 필수조건을 완화하지 않는다."""
+"""소유한 최신 확정본과 공개 공고를 재검사하는 비저장 추천 서비스."""
 
-from dataclasses import dataclass
-from datetime import datetime
+import asyncio
+from typing import Annotated
 
-from app.contracts.profile import ProfileContent
-from app.contracts.recommendation import RecommendationFilters
-from app.contracts.regions import Region
+from pydantic import BaseModel, Field
+
+from app.contracts.fields import CONTRACT_CONFIG
+from app.contracts.journey import ProfileRef
+from app.contracts.recommendation import EligibilitySummary, RecommendationMatch, RecommendationRequest
+from app.contracts.time import UtcDatetime, utc_now
 from app.core.business_errors import AppError
-from app.modules.eligibility.evaluator import Evaluation, evaluate
-from app.modules.opportunities.lifecycle import assess_lifecycle
-from app.modules.opportunities.service import PublicOpportunity
+from app.modules.journeys.service import JourneyService
+from app.modules.opportunities.service import OpportunitySummary, PublicOpportunityService
+from app.modules.recommendations.filters import filter_candidates
+from app.modules.recommendations.ranking import rank_candidates
+from app.modules.roles.service import RoleService
+from app.modules.sessions.service import Session
 
 
-@dataclass(frozen=True)
-class Candidate:
-    opportunity: PublicOpportunity
-    eligibility: Evaluation
+class Recommendation(BaseModel):
+    model_config = CONTRACT_CONFIG
+    rank: int = Field(ge=1)
+    opportunity: OpportunitySummary
+    matched: RecommendationMatch
+    eligibility: EligibilitySummary
 
 
-def region_matches(region: Region | None, choices: list[Region]) -> bool:
-    return region is not None and any(
-        choice.province == region.province and (choice.district is None or choice.district == region.district)
-        for choice in choices
-    )
+class RecommendationList(BaseModel):
+    model_config = CONTRACT_CONFIG
+    profile: ProfileRef
+    generated_at: UtcDatetime
+    based_on_previous_confirmed: bool
+    items: Annotated[list[Recommendation], Field(max_length=20)]
 
 
-def filter_candidates(profile: ProfileContent, opportunities: list[PublicOpportunity], filters: RecommendationFilters,
-                      excluded: frozenset[str], now: datetime) -> list[Candidate]:
-    if profile.missing_for_recommendation():
-        raise AppError("PROFILE_NOT_CONFIRMED")
-    candidates = []
-    for opportunity in opportunities:
-        if opportunity.change_pending or not assess_lifecycle(opportunity, source_checked_at=opportunity.source_checked_at,
-                                                             now=now).recommendation_allowed:
-            continue
-        if opportunity.activity_type not in profile.activity_types:
-            continue
-        if filters.activity_types is not None and opportunity.activity_type not in filters.activity_types:
-            continue
-        if opportunity.remote_allowed is not True:
-            if not region_matches(opportunity.activity_region, profile.preferred_regions):
-                continue
-            if filters.regions is not None and not region_matches(opportunity.activity_region, filters.regions):
-                continue
-        if profile.paid_preference in ("paid", "unpaid") and opportunity.paid is not (profile.paid_preference == "paid"):
-            continue
-        if filters.paid is not None and opportunity.paid is not filters.paid:
-            continue
-        # 복합 역할도 제외한 역할 하나와 겹치면 공고 전체를 제외한다.
-        if excluded.intersection(opportunity.role_tags):
-            continue
+class RecommendationService:
+    def __init__(self, journeys: JourneyService, opportunities: PublicOpportunityService, roles: RoleService):
+        self.journeys, self.opportunities, self.roles = journeys, opportunities, roles
+
+    async def create(self, session: Session, body: RecommendationRequest) -> RecommendationList:
+        snapshot = await self.journeys.resolve_profile(session, body.profile, require_current=True)
+        state = await self.journeys.role_state(session, body.profile.id)
+        view = await self.journeys.profile(session, body.profile.id)
+        if state.profile_version != snapshot.reference.version or state.revision != view.revision:
+            raise AppError("VERSION_CONFLICT")
+        now = utc_now()
+        opportunities = await asyncio.to_thread(self.opportunities.recommendation_candidates, now)
+        catalog = await self.roles.catalog_entries()
         try:
-            eligibility = evaluate(profile, opportunity.requirements)
+            candidates = filter_candidates(snapshot.content, opportunities, body.filters, frozenset(state.role_ids), now)
+            ranked = await asyncio.to_thread(rank_candidates, snapshot.content, candidates, catalog)
         except ValueError:
             raise AppError("SERVICE_UNAVAILABLE") from None
-        if eligibility.structural_issues:
-            raise AppError("SERVICE_UNAVAILABLE")
-        if eligibility.overall != "not_satisfied":
-            candidates.append(Candidate(opportunity, eligibility))
-    return candidates
+        # DB/Redis의 분산 트랜잭션은 아니다. 반환 직전 현재 소유권·수명·버전·제외 선택을 다시 읽는다.
+        for item in ranked:
+            latest = await asyncio.to_thread(self.opportunities.get, item.candidate.opportunity.id)
+            if latest != item.candidate.opportunity:
+                raise AppError("VERSION_CONFLICT")
+            if not filter_candidates(snapshot.content, [latest], body.filters, frozenset(state.role_ids), utc_now()):
+                raise AppError("VERSION_CONFLICT")
+        await self.journeys.resolve_profile(session, body.profile, require_current=True)
+        if (await self.journeys.role_state(session, body.profile.id)).revision != state.revision:
+            raise AppError("VERSION_CONFLICT")
+        fields = set(OpportunitySummary.model_fields)
+        return RecommendationList(profile=snapshot.reference, generated_at=utc_now(),
+            based_on_previous_confirmed=view.has_unconfirmed_changes,
+            items=[Recommendation(rank=index, opportunity=OpportunitySummary.model_validate(
+                item.candidate.opportunity.model_dump(include=fields)), matched=item.matched,
+                eligibility=EligibilitySummary(overall=item.candidate.eligibility.overall,
+                    no_requirements=item.candidate.eligibility.no_requirements,
+                    needs_review_count=sum(c.status == "unknown" for c in item.candidate.eligibility.conditions)))
+                for index, item in enumerate(ranked, 1)])
