@@ -35,6 +35,13 @@ class ResolvedJourneyProfile:
     confirmed_at: datetime
 
 
+@dataclass(frozen=True)
+class RoleState:
+    revision: int
+    profile_version: int
+    role_ids: tuple[str, ...]
+
+
 class JourneyStore(Protocol):
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
                      budget: str, key_id_digest: str) -> JourneyRecord: ...
@@ -43,13 +50,14 @@ class JourneyStore(Protocol):
     async def update_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileDraftView: ...
     async def confirm_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileConfirmResult: ...
     async def resolve_profile(self, session: Session, reference: ProfileRef, *, require_current: bool) -> ResolvedJourneyProfile: ...
+    async def role_state(self, session: Session, journey_id: UUID) -> RoleState: ...
 
 
 class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    load = profile = update_profile = confirm_profile = resolve_profile = create
+    load = profile = update_profile = confirm_profile = resolve_profile = role_state = create
 
 
 class JourneyService:
@@ -114,3 +122,6 @@ class JourneyService:
             # 실제 회원 저장본 resolver는 인증·저장 구현(#42/#75)에 연결해야 한다.
             raise AppError("UNAUTHENTICATED")
         return await self.store.resolve_profile(session, reference, require_current=require_current)
+
+    async def role_state(self, session: Session, journey_id: UUID) -> RoleState:
+        return await self.store.role_state(session, journey_id)
