@@ -14,7 +14,7 @@ function Reference({ url, label }: { url: string; label: string }) {
   const link = officialLink(url)
   return link ? <a className="button secondary" href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">{label} · {link.host} (새 창)</a> : <p>{label}: 확인된 공식 주소가 없어 링크를 제공하지 않습니다.</p>
 }
-function Content({ item }: { item: Preparation }) {
+export function OfficialPreparationContent({ item, showDraftNotice = true }: { item: Preparation; showDraftNotice?: boolean }) {
   const checks = useMemoryScope<number[]>(() => [])
   const available = item.recruitment_status === 'open' && !item.change_pending
   return <>
@@ -30,7 +30,7 @@ function Content({ item }: { item: Preparation }) {
       <div className="actions"><Reference url={item.source_url} label="공식 원문 확인" />{available && <Reference url={item.application_url} label="공식 신청 안내 확인" />}</div>
       <p className="quiet">새 창으로 이동해도 신청 완료로 기록하지 않으며, 서류·개인정보를 대신 제출하지 않습니다.</p>
     </section>
-    <StatusNotice title="공고에 연결된 지원서는 준비 중이에요">확정 프로필에 근거한 생성·직접 작성·서버 승인과 별도 저장은 아직 연결되지 않았습니다. 현재 문장 작성 미리보기는 이 공고의 지원서로 처리하지 않습니다.</StatusNotice>
+    {showDraftNotice && <StatusNotice title="지원서는 체험 준비 화면에서 작성해 주세요">확정 프로필을 사용하는 체험 준비 화면에서 생성·직접 작성·서버 승인을 진행합니다. 실제 체험 시작과 회원 저장은 연결 준비 중입니다. 가상 작성 미리보기는 이 공고의 지원서로 처리하지 않습니다.</StatusNotice>}
   </>
 }
 function Request({ id }: { id: string }) {
@@ -43,7 +43,7 @@ function Request({ id }: { id: string }) {
     {state.status === 'idle' && <StatusNotice title="공식 준비 안내를 불러와 주세요" actions={<Button onClick={() => void load()}>공식 준비 안내 불러오기</Button>}>로그인·AI 동의 없이 공개 안내를 조회합니다. 서버 응답이 없으면 오류를 안내하며 서류나 절차를 만들어 채우지 않습니다.</StatusNotice>}
     {state.status === 'pending' && <StatusNotice kind="loading" title="공식 준비 안내를 확인하고 있어요" actions={<Button variant="secondary" onClick={request.clear}>조회 취소하기</Button>}>최신 공고 버전의 서류와 접수 절차를 조회합니다.</StatusNotice>}
     {state.status === 'error' && <RequestError error={state.error} actions={<Button onClick={() => void load()}>준비 안내 다시 조회</Button>} />}
-    {state.status === 'success' && <><Content item={state.data} /><Button variant="secondary" onClick={() => void load()}>최신 준비 안내 다시 조회</Button></>}
+    {state.status === 'success' && <><OfficialPreparationContent item={state.data} /><Button variant="secondary" onClick={() => void load()}>최신 준비 안내 다시 조회</Button></>}
   </section>
 }
 export function OfficialPreparation() {
