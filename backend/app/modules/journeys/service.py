@@ -7,6 +7,7 @@ from uuid import UUID, uuid4
 
 from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, ProfileRef, ProfileConfirmResult
 from app.contracts.profile import ProfileContent
+from app.contracts.roles import RoleExclusions
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity
 from app.modules.consents.service import ConsentActor, ConsentService
@@ -51,13 +52,14 @@ class JourneyStore(Protocol):
     async def confirm_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileConfirmResult: ...
     async def resolve_profile(self, session: Session, reference: ProfileRef, *, require_current: bool) -> ResolvedJourneyProfile: ...
     async def role_state(self, session: Session, journey_id: UUID) -> RoleState: ...
+    async def set_role_exclusions(self, session: Session, journey_id: UUID, role_ids: list[str], base_revision: int) -> RoleExclusions: ...
 
 
 class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    load = profile = update_profile = confirm_profile = resolve_profile = role_state = create
+    load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
 
 
 class JourneyService:
@@ -125,3 +127,6 @@ class JourneyService:
 
     async def role_state(self, session: Session, journey_id: UUID) -> RoleState:
         return await self.store.role_state(session, journey_id)
+
+    async def set_role_exclusions(self, session: Session, journey_id: UUID, role_ids: list[str], base_revision: int) -> RoleExclusions:
+        return await self.store.set_role_exclusions(session, journey_id, role_ids, base_revision)
