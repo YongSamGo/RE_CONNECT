@@ -84,3 +84,7 @@ class RoleService:
 
     async def excluded_role_ids(self, session: Session, journey_id: UUID) -> frozenset[str]:
         return frozenset((await self.journeys.role_state(session, journey_id)).role_ids)
+
+    async def exclusions(self, session: Session, journey_id: UUID) -> RoleExclusions:
+        state = await self.journeys.role_state(session, journey_id)
+        return RoleExclusions(role_ids=list(state.role_ids), revision=state.revision)

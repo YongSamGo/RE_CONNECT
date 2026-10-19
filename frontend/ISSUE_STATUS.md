@@ -1,5 +1,9 @@
 # 프론트 이슈 진행·검증 기록 — W01-08 / #11
 
+## 2026-10-18 로컬 후속 — #84
+
+서버 체험 ID 전용 `/journeys/:journeyId/profile`에 초안 전체 편집·확정/재확정·이전 확정 기준 표시·같은 화면 역할 근거·제외/전체 복원을 연결했다. 전체 제외 목록 GET을 추가해 후보 밖 선택을 보존한다. 범위와 남은 조건은 [SERVER.md](src/features/profile/SERVER.md)에 기록했다. 로컬 프론트 357개·계약 15개, lint·타입/빌드 및 실제 Redis/PostgreSQL 백엔드 861개 통과다. #81 실제 시작 진입점·브라우저 전체/실제 기기·배포 검증은 남아 **진행**이다. PR·push·GitHub 이슈 상태 변경은 하지 않았다. 아래 기존 표는 당시 시점의 기록이다.
+
 기준 시점: **2026-10-16 22:11 KST**, 저장소 `YongSamGo/RE_CONNECT`, 코드 기준 `4513c77`. 이는 로컬 증거를 정리한 시점의 스냅샷이며 실시간 대시보드가 아니다.
 
 근거: [#11](https://github.com/YongSamGo/RE_CONNECT/issues/11), [구현 계획 §3 게이트·§8 인계 형식](../Plan/Implementation_Plan.md), [프론트 진행 기록](PROGRESS.md), [중복 정리](CONSOLIDATION.md), [PR #118](https://github.com/YongSamGo/RE_CONNECT/pull/118).

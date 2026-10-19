@@ -24,6 +24,8 @@
 
 ## 검증
 
+`GET /journeys/{id}/role-exclusions`는 확정한 소유 체험의 전체 제외 목록과 현재 리비전을 반환한다. 최대 20개 후보 밖의 선택까지 보존해 전체 교체 PUT을 구성하기 위한 조회다. 사전 SQL을 요구하지 않으며 GET으로 수명을 연장하지 않는다. 서버 검사는 후보 조회와 같고 응답은 no-store다. [프로필 화면 연결 범위](../../frontend/src/features/profile/SERVER.md)를 따른다.
+
 `test_roles.py`는 실재 경험 근거·전역 역량만으로 후보 생성 금지·명시 별칭·원래 태그 보존·같은 경험의 복합 규칙·정렬/상한·잘못된 별칭/연산·미확정/타인/없는 버전을 검사한다. SQLite와 PostgreSQL에서 초기 사전 마이그레이션·기존 운영 행 보존·구조 오류 거절을 검증한다. 실제 Redis 확정본과 SQL 사전을 함께 쓰는 HTTP 시험도 포함한다.
 
 `test_role_exclusions.py`는 제외/복원·프로필 불변·입력 검증을 검사하고 실제 Redis에서 동시 갱신의 단일 성공, SQLite/PostgreSQL 사전을 연결한 HTTP에서 CSRF·소유권·리비전·알 수 없는 역할 거절을 확인한다.

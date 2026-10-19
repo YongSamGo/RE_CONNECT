@@ -89,6 +89,7 @@ def test_real_http_exclude_restore_unknown_stale_and_other_owner(backend):
                 candidates = f"/api/v1/journeys/{journey.journey_id}/roles"
                 body = {"role_ids": ["reading_companion"], "base_revision": 1}
                 assert (await client.put(path, json=body, headers=csrf(client))).json()["code"] == "PROFILE_NOT_CONFIRMED"
+                assert (await client.get(path)).json()["code"] == "PROFILE_NOT_CONFIRMED"
                 await journeys.update_profile(issued.session, journey.journey_id, ready_edit())
                 confirmed = await journeys.confirm_profile(issued.session, journey.journey_id, 2)
                 before = (await journeys.resolve_profile(issued.session, confirmed.profile)).content
@@ -96,6 +97,9 @@ def test_real_http_exclude_restore_unknown_stale_and_other_owner(backend):
                 assert (await client.put(path, json=body)).status_code == 403
                 selected = await client.put(path, json=body, headers=csrf(client))
                 assert selected.status_code == 200 and selected.json()["revision"] == 4
+                all_excluded = await client.get(path)
+                assert all_excluded.json() == {"role_ids": ["reading_companion"], "revision": 4}
+                assert all_excluded.headers["cache-control"] == "no-store"
                 assert (await client.get(candidates)).json()["items"][0]["excluded"] is True
                 assert (await client.put(path, json=body, headers=csrf(client))).status_code == 409
                 invalid = await client.put(path, json={"role_ids": ["missing_role"], "base_revision": 4}, headers=csrf(client))
@@ -110,6 +114,7 @@ def test_real_http_exclude_restore_unknown_stale_and_other_owner(backend):
                 client.cookies.set("__Host-rc_session", stranger.token)
                 await client.get("/api/v1/me")
                 assert (await client.put(path, json={"role_ids": [], "base_revision": 5}, headers=csrf(client))).status_code == 404
+                assert (await client.get(path)).status_code == 404
     with_redis(scenario)
 
 
