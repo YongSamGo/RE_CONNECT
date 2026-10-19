@@ -14,6 +14,7 @@ from app.contracts.profile import Experience, ExperienceInput, RecommendationFie
 from app.modules.generation import prompts
 from app.modules.generation.models import (
     ApplicationPlan,
+    ApplicationContext,
     ApplicationPreview,
     ConfirmedProfileSnapshot,
     ExperiencePreview,
@@ -119,7 +120,7 @@ class GroundedGenerationService:
             raise _invalid()
         return _QUESTIONS[plan.field]
 
-    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot) -> ApplicationPreview:
+    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
         # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.
         profile = snapshot.content
         ids = [item.id for item in profile.experiences]
@@ -141,7 +142,10 @@ class GroundedGenerationService:
                     facts[f"{kind}:{index}"] = f"{label}: {value}"
         if not facts:
             raise GenerationInputError("확정한 경험을 확인해 주세요")
-        plan = await self._generate(prompts.APPLICATION, {"facts": facts}, ApplicationPlan)
+        data = {"facts": facts}
+        if context is not None:
+            data['opportunity_context'] = context.model_dump(mode='json')
+        plan = await self._generate(prompts.APPLICATION, data, ApplicationPlan)
         if any(key not in facts for key in plan.fact_ids):
             raise _invalid()
         return ApplicationPreview(
