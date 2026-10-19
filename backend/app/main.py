@@ -108,7 +108,7 @@ def create_app(
         RoutedConsentStore(anonymous_consents, member_consents),
         ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,
     )
-    app.state.request_service = RequestService(RedisRequestStore(redis_client) if redis_client is not None else UnavailableRequestStore())
+    app.state.request_service = RequestService(RedisRequestStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableRequestStore())
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
