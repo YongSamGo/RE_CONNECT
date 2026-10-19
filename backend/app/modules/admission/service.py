@@ -63,7 +63,7 @@ class UnavailableAdmissionStore:
 
 
 class RuntimeCompletion:
-    """현재 호출의 최종 응답/종료 확인 전용. HTTP 취소 처리기에서 호출하면 안 된다."""
+    """현재 호출의 종료 또는 연결 미성립 확인. HTTP 취소 처리기에서 호출하면 안 된다."""
 
     def __init__(self):
         self.ended = False

@@ -3,9 +3,10 @@
 from collections.abc import Callable, Sequence
 from typing import Protocol
 
-from app.adapters.llm import OutputT, UntrustedTurn
+from app.adapters.llm import LLMTransientUnavailableError, OutputT, UntrustedTurn
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity, UnavailableAdmissionService
+from app.modules.admission.retry import retry_once
 
 
 class TerminalLLM(Protocol):
@@ -31,10 +32,10 @@ class ControlledLLMAdapter:
         if identity is None:
             raise AppError("SERVICE_UNAVAILABLE")
         self._runtime.validate_request(instructions=instructions, untrusted_turns=untrusted_turns, output_model=output_model)
-        return await self._admission.run(identity, "llm", lambda completion: self._runtime.generate_structured(
+        return await self._admission.run(identity, "llm", lambda completion: retry_once(completion, lambda attempt: self._runtime.generate_structured(
             instructions=instructions, untrusted_turns=untrusted_turns, output_model=output_model,
-            on_runtime_ended=completion.confirm_ended,
-        ))
+            on_runtime_ended=attempt.confirm_ended,
+        ), LLMTransientUnavailableError))
 
 
 class IdentityBoundLLM:
