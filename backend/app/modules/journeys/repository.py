@@ -1,19 +1,21 @@
 """단일 Redis: 생성 멱등·주체 한도·체험 상태를 한 스크립트로 확정한다."""
 
 import hashlib
+import json
 from datetime import UTC, datetime
 from uuid import UUID, uuid4
 
 from pydantic import ValidationError
 from redis.exceptions import RedisError
 
-from app.contracts.journey import Journey, Message
+from app.contracts.journey import Journey, Message, ConfirmedVersion, ProfileDraftView
+from app.contracts.profile import ProfileContent, empty_profile_content
 from app.core.business_errors import AppError
 from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord
 from app.modules.requests.service import CompletionGuard, RESOURCE_MAX_MS, RETENTION_MS
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 
-_SESSION = """
+_SESSION_LIFETIME = """
 local t = redis.call('TIME')
 local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
 local s = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'ai_notice_version', 'ai_granted_ms')
@@ -21,13 +23,13 @@ if not s[1] or s[1] ~= ARGV[1] or redis.call('PTTL', KEYS[1]) <= 0 then return {
 local sc, sl, granted = tonumber(s[2]), tonumber(s[3]), tonumber(s[5])
 if not sc or not sl or sl < sc or now < sl then return {'SERVICE_UNAVAILABLE'} end
 if now >= sc + tonumber(ARGV[4]) or now >= sl + tonumber(ARGV[3]) then return {'NOT_FOUND'} end
-if s[4] ~= ARGV[2] or not granted or granted < sc or granted > now then return {'CONSENT_REQUIRED'} end
 """
+_SESSION = _SESSION_LIFETIME + "if s[4] ~= ARGV[2] or not granted or granted < sc or granted > now then return {'CONSENT_REQUIRED'} end\n"
 
 _VIEW = """
 local function view(resource, meta, touch)
     local r = redis.call('HMGET', meta, 'journey_id', 'first_message_id', 'generation', 'created_ms', 'last_ms', 'digest', 'notice_version', 'owner')
-    if not r[1] or r[6] ~= ARGV[5] or r[7] ~= ARGV[2] or r[8] ~= ARGV[1] then return {'NOT_FOUND'} end
+    if not r[1] or not r[2] or not r[3] or not r[7] or r[6] ~= ARGV[5] or (ARGV[2] ~= '' and r[7] ~= ARGV[2]) or r[8] ~= ARGV[1] then return {'NOT_FOUND'} end
     local created, last = tonumber(r[4]), tonumber(r[5])
     if not created or not last or last < created or now < last then return {'SERVICE_UNAVAILABLE'} end
     if now >= created + tonumber(ARGV[6]) or now >= last + tonumber(ARGV[3]) then return {'NOT_FOUND'} end
@@ -71,6 +73,7 @@ if redis.call('EXISTS', KEYS[3]) == 1 or redis.call('EXISTS', KEYS[4]) == 1 then
 redis.call('SET', KEYS[3], 'g:1', 'PX', ARGV[3])
 redis.call('HSET', KEYS[4], 'journey_id', ARGV[8], 'first_message_id', ARGV[9], 'generation', ARGV[10],
     'created_ms', now, 'last_ms', now, 'digest', ARGV[5], 'notice_version', ARGV[2], 'owner', ARGV[1])
+redis.call('HSET', KEYS[4], 'profile_draft', ARGV[15], 'profile_evidence', '[]', 'profile_changed', '0')
 redis.call('PEXPIRE', KEYS[4], ARGV[3])
 redis.call('HSET', KEYS[2], 'input', ARGV[7], 'resource', KEYS[3], 'meta', KEYS[4])
 redis.call('PEXPIRE', KEYS[2], ARGV[14])
@@ -80,12 +83,37 @@ return view(KEYS[3], KEYS[4], false)
 
 _LOAD = _SESSION + _VIEW + "return view(KEYS[2], KEYS[3], ARGV[7] == '1')"
 
+_PROFILE_RESULT = """
+local function profile_result(revision)
+    local p = redis.call('HMGET', KEYS[3], 'profile_draft', 'profile_evidence', 'confirmed_version', 'confirmed_at_ms', 'profile_changed')
+    if not p[1] or not p[2] or (p[5] ~= '0' and p[5] ~= '1') then return {'SERVICE_UNAVAILABLE'} end
+    if (p[3] and not p[4]) or (p[4] and not p[3]) then return {'SERVICE_UNAVAILABLE'} end
+    return {'ok', revision, p[1], p[2], p[3] or '', p[4] or '', p[5]}
+end
+local state = view(KEYS[2], KEYS[3], false)
+if state[1] ~= 'ok' then return state end
+"""
+_PROFILE = _SESSION_LIFETIME + _VIEW + _PROFILE_RESULT + "return profile_result(state[7])"
+_UPDATE_PROFILE = _SESSION_LIFETIME + _VIEW + _PROFILE_RESULT + """
+if state[7] ~= ARGV[7] then return {'VERSION_CONFLICT'} end
+local previous = profile_result(state[7])
+if previous[1] ~= 'ok' then return previous end
+local changed = previous[5] ~= '' and '1' or '0'
+local revision = tonumber(state[7]) + 1
+redis.call('HSET', KEYS[3], 'profile_draft', ARGV[8], 'profile_evidence', '[]', 'profile_changed', changed)
+redis.call('SET', KEYS[2], 'g:' .. tostring(revision), 'XX', 'KEEPTTL')
+view(KEYS[2], KEYS[3], true)
+return profile_result(tostring(revision))
+"""
+
 
 class RedisJourneyStore:
     def __init__(self, client, *, session_key, resource_key, control_key: str, epoch: UUID,
                  prefix: str = "rc:journey:v1:"):
         self._create = client.register_script(_CREATE)
         self._load = client.register_script(_LOAD)
+        self._profile = client.register_script(_PROFILE)
+        self._update_profile = client.register_script(_UPDATE_PROFILE)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -124,9 +152,42 @@ class RedisJourneyStore:
         return await self._call(self._create,
             [self.session_key(session.digest), journal, resource, resource + ":lifecycle", self.control_key],
             [*self._args(session, notice_version), fingerprint, str(journey), str(message), str(generation),
-             str(self.epoch), key_id_digest, budget, RETENTION_MS], session, notice_version)
+             str(self.epoch), key_id_digest, budget, RETENTION_MS, empty_profile_content().model_dump_json()], session, notice_version)
 
     async def load(self, session, journey_id, notice_version, *, user_activity=False):
         resource = self.resource_key(session.subject_id, journey_id)
         return await self._call(self._load, [self.session_key(session.digest), resource, resource + ":lifecycle"],
                                 [*self._args(session, notice_version), "1" if user_activity else "0"], session, notice_version)
+
+    async def _profile_call(self, script, session, journey_id, extra=()):
+        resource = self.resource_key(session.subject_id, journey_id)
+        try:
+            values = await script(keys=[self.session_key(session.digest), resource, resource + ":lifecycle"],
+                                  args=[*self._args(session, ""), *extra])
+            if not isinstance(values, list) or not values:
+                raise ValueError
+            if values[0] in {"NOT_FOUND", "SERVICE_UNAVAILABLE", "VERSION_CONFLICT"}:
+                raise AppError(values[0])
+            status, revision, draft_json, evidence_json, confirmed_version, confirmed_at, changed = values
+            if status != "ok" or changed not in ("0", "1"):
+                raise ValueError
+            if len(draft_json.encode("utf-8")) > 65536 or len(evidence_json.encode("utf-8")) > 65536:
+                raise ValueError
+            draft = ProfileContent.model_validate_json(draft_json)
+            if len({item.id for item in draft.experiences}) != len(draft.experiences):
+                raise ValueError
+            confirmed = None if not confirmed_version else ConfirmedVersion(
+                version=int(confirmed_version), confirmed_at=datetime.fromtimestamp(int(confirmed_at) / 1000, UTC))
+            return ProfileDraftView.model_validate({
+                "revision": int(revision), "draft": draft,
+                "evidence": json.loads(evidence_json), "confirmed": confirmed,
+                "has_unconfirmed_changes": changed == "1", "missing_for_recommendation": draft.missing_for_recommendation(),
+            })
+        except (RedisError, ValueError, TypeError, OverflowError, OSError, ValidationError):
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+    async def profile(self, session, journey_id):
+        return await self._profile_call(self._profile, session, journey_id)
+
+    async def update_profile(self, session, journey_id, draft, base_revision):
+        return await self._profile_call(self._update_profile, session, journey_id, (base_revision, draft.model_dump_json()))
