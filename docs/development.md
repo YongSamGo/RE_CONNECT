@@ -59,6 +59,7 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 | 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
 | 공고 샘플 수집 | `python worker/tools/fetch_source_samples.py <source> --operation <op>` | 사용 가능 |
+| 제한 공고 수집 실행 | `cd backend` 후 `python -m app.collect --source <출처-UUID> --max-requests 25 --due` | 사용 가능. DB/활성 출처/키·선행 마이그레이션 필요: [실행 안내](data/ingestion-runs.md) |
 
 가상환경 활성화는 macOS·Linux에서 `source .venv/bin/activate`, PowerShell에서 `.venv\Scripts\Activate.ps1`이다.
 

@@ -40,7 +40,8 @@ class IngestionRun(Base):
         CheckConstraint("status IN ('running', 'succeeded', 'failed')", name="status"),
         CheckConstraint("fetched_count >= 0 AND created_count >= 0 AND changed_count >= 0 AND rejected_count >= 0", name="counts"),
         CheckConstraint("(status = 'running' AND finished_at IS NULL) OR (status <> 'running' AND finished_at IS NOT NULL AND finished_at >= started_at)", name="completion"),
-        CheckConstraint("failure_code IS NULL OR failure_code IN ('network', 'parse', 'response_limit', 'source_unavailable', 'cancelled', 'invalid_payload')", name="failure_code"),
+        CheckConstraint("failure_code IS NULL OR failure_code IN ('network', 'parse', 'response_limit', 'source_unavailable', 'cancelled', 'invalid_payload', 'budget_exhausted', 'incomplete', 'configuration')", name="failure_code"),
+        CheckConstraint("request_count >= 0", name="request_count"),
         Index("ix_ingestion_runs_source_started", "source_id", "started_at"),
     )
 
@@ -54,6 +55,32 @@ class IngestionRun(Base):
     created_count: Mapped[int] = mapped_column(Integer, default=0)
     changed_count: Mapped[int] = mapped_column(Integer, default=0)
     rejected_count: Mapped[int] = mapped_column(Integer, default=0)
+    request_count: Mapped[int] = mapped_column(Integer, default=0)
+    rejection_counts: Mapped[dict] = mapped_column(JSON_VALUE, default=dict)
+
+
+class IngestionState(Base):
+    __tablename__ = "ingestion_states"
+    __table_args__ = (
+        CheckConstraint("request_count >= 0", name="request_count"),
+        CheckConstraint("next_page >= 1", name="next_page"),
+    )
+    source_id: Mapped[UUID] = mapped_column(ForeignKey("sources.id", ondelete="CASCADE"), primary_key=True)
+    quota_date: Mapped[date] = mapped_column(Date)
+    request_count: Mapped[int] = mapped_column(Integer, default=0)
+    next_page: Mapped[int] = mapped_column(Integer, default=1)
+    next_run_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+
+
+class IngestionReview(Base):
+    __tablename__ = "ingestion_reviews"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+    )
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    version: Mapped[int] = mapped_column(Integer, primary_key=True)
+    review_reasons: Mapped[list] = mapped_column(JSON_VALUE)
+    unmapped_fields: Mapped[list] = mapped_column(JSON_VALUE)
 
 
 class RoleDefinition(Base):

@@ -46,6 +46,7 @@ def canonical_origin(value: str) -> str:
 
 
 class Settings(BaseSettings):
+    data_go_kr_service_key: SecretStr | None = None
     model_config = SettingsConfigDict(
         env_file=_ROOT_ENV_FILE,
         env_file_encoding="utf-8",
