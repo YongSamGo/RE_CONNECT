@@ -177,6 +177,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
         {state.loaded.roles?.items.length === 0 && <p>연결할 경험 근거가 있는 역할이 아직 없습니다. <Link to="/opportunities">일반 공개 공고 살펴보기</Link></p>}
       </section>}
     </>}
+    {state?.loaded.view.confirmed && <p><Link to={`/journeys/${journeyId}/recommendations`}>확정 경험으로 추천 확인하기</Link></p>}
     <p><Link to={`/journeys/${journeyId}/conversation`}>경험 이야기로 이동</Link></p>
     <p><Link to="/opportunities">공개 공고 살펴보기</Link></p>
   </div>
