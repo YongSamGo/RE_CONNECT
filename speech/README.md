@@ -4,6 +4,8 @@
 
 faster-whisper(STT)와 Qwen3-TTS를 실행하는 별도 컨테이너다. FastAPI의 Speech Adapter만 Compose 내부 네트워크로 호출한다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)).
 
+백엔드의 고정 내부 전송·readiness·STT/TTS 공통 슬롯과 아직 구현 전인 모델 서버의 경계는 [내부 음성 계약](PROTOCOL.md)을 따른다. 현재 모델 가중치/서버를 실행했다는 의미는 아니다.
+
 ## 규칙
 
 - 호스트 포트를 공개하지 않고 Nginx로 프록시하지 않는다. 브라우저는 이 서비스에 직접 접근하지 않는다.
