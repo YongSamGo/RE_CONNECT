@@ -16,6 +16,7 @@ import { parsePreparation } from './official'
 import type { Preparation } from './official'
 import { parseDraft, parseExistingDraft, reviewLabels } from './drafts'
 import type { DraftCreate, JourneyDraft } from './drafts'
+import { DraftReadAloud } from '../voice/DraftReadAloud'
 
 type Context = { profile: ProfileView; preparation: Preparation }
 type Editor = { remote: JourneyDraft; introduction: string; motivation: string; dirty: boolean; reviewed: boolean }
@@ -180,6 +181,7 @@ export function JourneyPreparation({ journeyId, opportunityId }: { journeyId: st
       {editor.remote.warnings.map((warning, index) => <p className="user-text" key={index}>{warning}</p>)}
       <TextAreaField label="자기소개" value={editor.introduction} rows={6} maxLength={2000} disabled={pending || !!state.attempt || state.ending} onChange={event => edit('introduction', event.target.value)} hint="직접 확인한 경험만 적고 연락처·주민등록번호·상세 병력은 적지 마세요." />
       <TextAreaField label="지원동기" value={editor.motivation} rows={6} maxLength={2000} disabled={pending || !!state.attempt || state.ending} onChange={event => edit('motivation', event.target.value)} />
+      {!editor.dirty && !pending && !state.attempt && !state.ending && <DraftReadAloud key={`${editor.remote.draft_id}:${editor.remote.revision}`} journeyId={journeyId} draft={editor.remote} />}
       <Button disabled={pending || !editor.dirty || !!state.attempt || state.ending} onClick={save}>현재 편집을 초안에 반영</Button>
       <Button variant="secondary" disabled={pending || !!state.attempt} onClick={reloadDraft}>{editor.dirty ? '화면 편집 버리고 서버 본문 불러오기' : '서버 본문과 재검토 사유 다시 확인'}</Button>
       <CheckboxField label="두 항목을 읽고 내 경험과 뜻에 맞는지 확인했어요." checked={editor.reviewed} disabled={pending || editor.dirty || !!state.attempt} onChange={event => scope.setValue(previous => ({ ...previous, editor: { ...editor, reviewed: event.target.checked } }))} />

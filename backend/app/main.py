@@ -58,6 +58,8 @@ from app.modules.drafts.repository import RedisDraftStore, UnavailableDraftStore
 from app.modules.drafts.service import DraftService
 from app.modules.transcriptions.repository import RedisTranscriptionStore, UnavailableTranscriptionStore
 from app.modules.transcriptions.service import TranscriptionService
+from app.modules.speech import router as speech
+from app.modules.speech.service import SpeechService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -146,6 +148,8 @@ def create_app(
     app.state.recommendation_service = RecommendationService(app.state.journey_service, app.state.opportunity_service, app.state.role_service)
     draft_store = RedisDraftStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableDraftStore()
     app.state.draft_service = DraftService(draft_store, app.state.journey_service, app.state.opportunity_service, llm_adapter)
+    app.state.speech_service = SpeechService(app.state.journey_service, app.state.draft_service, app.state.opportunity_service,
+        app.state.consent_service, app.state.request_service, speech_adapter)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -175,6 +179,7 @@ def create_app(
     app.include_router(roles.router, prefix=API_PREFIX)
     app.include_router(recommendations.router, prefix=API_PREFIX)
     app.include_router(drafts.router, prefix=API_PREFIX)
+    app.include_router(speech.router, prefix=API_PREFIX)
 
     return app
 

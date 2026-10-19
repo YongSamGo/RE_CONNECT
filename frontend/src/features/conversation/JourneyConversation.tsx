@@ -11,11 +11,12 @@ import { parseProfileView } from '../profile/server-model'
 import { parseMessageResult, profileQuestion } from './model'
 import type { MessageInput, MessageResult, ProfileView } from './model'
 import { JourneyTranscription } from '../voice/JourneyTranscription'
+import { ReadAloud } from '../voice/ReadAloud'
 
 type Attempt = { key: string; body: MessageInput }
 type Conversation = { view: ProfileView | null; text: string; question: string | null; notices: string[];
-  attempt: Attempt | null; conflict: boolean; ended: boolean; ending: boolean; voice: boolean; transcriptionId: string | null }
-const empty = (): Conversation => ({ view: null, text: '', question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false, voice: false, transcriptionId: null })
+  attempt: Attempt | null; conflict: boolean; ended: boolean; ending: boolean; voice: boolean; transcriptionId: string | null; questionId: string | null }
+const empty = (): Conversation => ({ view: null, text: '', question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false, voice: false, transcriptionId: null, questionId: null })
 // These responses cannot establish whether the server committed. Retain the exact key and body.
 const ambiguous = new Set(['NETWORK_ERROR', 'TIMEOUT', 'INVALID_RESPONSE', 'HTTP_ERROR', 'INTERNAL_ERROR', 'SERVICE_UNAVAILABLE', 'REQUEST_IN_PROGRESS', 'CANCELLED'])
 const inaccessible = new Set(['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'CONSENT_REQUIRED'])
@@ -59,7 +60,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     void read.run(async (api, signal) => {
       await api.GET('/me', { signal })
       return parseProfileView(required((await api.GET('/journeys/{journey_id}/profile', { params: { path: { journey_id: journeyId } }, signal })).data))
-    }, view => scope.setValue(previous => ({ ...previous, view, question: profileQuestion(view), notices: [], conflict: false, ended: false })))
+    }, view => scope.setValue(previous => ({ ...previous, view, question: profileQuestion(view), questionId: null, notices: [], conflict: false, ended: false })))
   }
   function submit() {
     if (!state.view || pending || submitLock.current || state.conflict || state.ending || state.ended || state.voice || !state.text.trim()) return
@@ -82,7 +83,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       scope.setValue(previous => {
         if (!previous.view || result.revision <= previous.view.revision) return { ...previous, attempt: null, conflict: true }
         return { ...previous, view: result.profile, text: '', transcriptionId: null, voice: false, attempt: null, conflict: false,
-          question: result.assistant_message?.text ?? null, notices: result.notices, ended: result.next_step === 'review_profile' }
+          question: result.assistant_message?.text ?? null, questionId: result.assistant_message?.message_id ?? null, notices: result.notices, ended: result.next_step === 'review_profile' }
       })
       questionRef.current?.focus()
     }).finally(() => { if (submitLock.current === token) submitLock.current = null })
@@ -107,6 +108,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     {state.view && <>
       {state.view.confirmed && <p>수정한 초안은 아직 확정하지 않았습니다. 재확정 전 추천·자격은 이전 확정 프로필 기준입니다.</p>}
       <section className="panel"><h2 ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
+        {state.questionId && !pending && !state.voice && !state.ending && <ReadAloud key={state.questionId} target={{ kind: 'journey_message', journey_id: journeyId, message_id: state.questionId }} label="이 질문 읽어주기" />}
         <p role="status">{state.ended ? '초안에 반영했습니다. 프로필에서 내용을 확인하고 직접 확정해 주세요.' : sending ? '경험을 정리하고 있어요. 프로필 화면으로 이동할 수 있습니다.' : ''}</p>
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}

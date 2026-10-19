@@ -22,6 +22,9 @@ class DraftService:
     def __init__(self, store, journeys, opportunities, llm):
         self.store, self.journeys, self.opportunities, self.llm = store, journeys, opportunities, llm
 
+    async def read_source(self, session, journey_id: UUID, draft_id: UUID) -> JourneyDraft:
+        return await self.store.read(session, journey_id, draft_id)
+
     async def _display(self, session, journey_id: UUID, draft: JourneyDraft) -> JourneyDraft:
         dependency = await self.journeys.profile_dependency(session, ProfileRef(kind='journey', id=journey_id, version=draft.profile_version))
         reasons, warnings = list(dependency.review_reasons), []
