@@ -54,6 +54,7 @@ class ProfileDependency:
 
 
 class JourneyStore(Protocol):
+    async def end(self, session: Session, journey_id: UUID) -> None: ...
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
                      budget: str, key_id_digest: str) -> JourneyRecord: ...
     async def load(self, session: Session, journey_id: UUID, notice_version: str, *, user_activity: bool) -> JourneyRecord: ...
@@ -69,12 +70,15 @@ class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
+    end = load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
 
 
 class JourneyService:
     def __init__(self, store: JourneyStore, consents: ConsentService, admission: AdmissionService):
         self.store, self.consents, self.admission = store, consents, admission
+
+    async def end(self, session: Session, journey_id: UUID) -> None:
+        await self.store.end(session, journey_id)
 
     async def create(self, session: Session, identity: InferenceIdentity, key: str, body: JourneyCreate) -> Journey:
         if body.saved_profile is not None:

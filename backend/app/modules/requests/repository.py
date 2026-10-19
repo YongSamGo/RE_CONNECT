@@ -9,10 +9,8 @@ from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
 from app.core.business_errors import AppError
-from app.modules.requests.service import CompletionGuard, Permit, Replay, RequestScope, ResultReference, RETENTION_MS, RESOURCE_MAX_MS
+from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, Permit, Replay, RequestScope, ResultReference, RETENTION_MS, RESOURCE_MAX_MS
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
-
-MAX_RESOURCE_REQUESTS = 256
 
 _BEGIN = """
 local ttl = tonumber(ARGV[4])
