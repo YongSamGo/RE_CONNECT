@@ -11,6 +11,7 @@ from redis.exceptions import RedisError
 from app.core.business_errors import AppError
 from app.contracts.journey import MessageCommit
 from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, Permit, Replay, RequestScope, ResultReference, RETENTION_MS, RESOURCE_MAX_MS, validate_message_commit
+from app.modules.requests.service import validate_read_completion
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 
 _BEGIN = """
@@ -124,6 +125,41 @@ redis.call('DEL', KEYS[1], KEYS[2], KEYS[3])
 return 1
 """
 
+_COMPLETE_READ = """
+local t = redis.call('TIME')
+local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
+local s = redis.call('HMGET', KEYS[3], 'subject_id', 'created_ms', 'last_ms', 'ai_notice_version', 'ai_granted_ms')
+if not s[1] or s[1] ~= ARGV[3] or redis.call('PTTL', KEYS[3]) <= 0 then return {'NOT_FOUND'} end
+local created, last, granted = tonumber(s[2]), tonumber(s[3]), tonumber(s[5])
+if not created or not last or last < created or now < last then return {'SERVICE_UNAVAILABLE'} end
+if now >= created + tonumber(ARGV[7]) or now >= last + tonumber(ARGV[6]) then return {'NOT_FOUND'} end
+if s[4] ~= ARGV[5] or not granted or granted < created or granted > now or granted ~= tonumber(ARGV[13]) then return {'CONSENT_REQUIRED'} end
+if ARGV[9] ~= '' then
+    local r = redis.call('HMGET', KEYS[4], 'generation', 'created_ms', 'last_ms', 'digest', 'notice_version', 'owner')
+    if r[1] ~= ARGV[9] or r[4] ~= ARGV[4] or r[5] ~= ARGV[5] or r[6] ~= ARGV[3] then return {'NOT_FOUND'} end
+    local rc, rl = tonumber(r[2]), tonumber(r[3])
+    if not rc or not rl or rl < rc or now < rl then return {'SERVICE_UNAVAILABLE'} end
+    if redis.call('PTTL', KEYS[4]) <= 0 or redis.call('PTTL', KEYS[2]) <= 0 or now >= rc + tonumber(ARGV[8]) or now >= rl + tonumber(ARGV[6]) then return {'NOT_FOUND'} end
+    if redis.call('GET', KEYS[2]) ~= 'g:' .. ARGV[10] then return {'VERSION_CONFLICT'} end
+    if ARGV[11] ~= '' then
+        local source = redis.call('HGET', KEYS[4], ARGV[11])
+        if not source then return {'NOT_FOUND'} end
+        if source ~= ARGV[12] then return {'VERSION_CONFLICT'} end
+    end
+end
+local v = redis.call('HMGET', KEYS[1], 'input', 'execution', 'state', 'result', 'guarded')
+if not v[1] or redis.call('PTTL', KEYS[1]) <= 0 then return {'NOT_FOUND'} end
+if v[1] ~= ARGV[1] or v[2] ~= ARGV[2] then return {'IDEMPOTENCY_KEY_REUSED'} end
+if v[5] == '1' and ARGV[9] == '' then return {'SERVICE_UNAVAILABLE'} end
+if v[3] == 'cancelled' then return {'NOT_FOUND'} end
+if v[3] == 'conflict' then return {'VERSION_CONFLICT'} end
+if v[3] == 'done' and v[4] == '' then return {'ok'} end
+if v[3] ~= 'pending' then return {'INVALID_STATE_TRANSITION'} end
+-- 오디오/본문/체험 리비전/유휴 시각은 쓰지 않는다. 실행 저널만 완료한다.
+redis.call('HSET', KEYS[1], 'state', 'done', 'result', '')
+return {'ok'}
+"""
+
 _CREATE_GUARDED = """
 local t = redis.call('TIME')
 local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
@@ -157,6 +193,7 @@ class RedisRequestStore:
         self.prefix = prefix
         self._begin = client.register_script(_BEGIN)
         self._complete = client.register_script(_COMPLETE)
+        self._complete_readonly = client.register_script(_COMPLETE_READ)
         self._delete = client.register_script(_DELETE)
         self._create_guarded = client.register_script(_CREATE_GUARDED)
         self._cancel = client.register_script(_CANCEL)
@@ -235,6 +272,19 @@ class RedisRequestStore:
         ])
         if self._outcome(values) != "ok" or len(values) != 1:
             raise AppError("SERVICE_UNAVAILABLE")
+
+    async def complete_readonly(self, permit, *, session, resource=None, source=None):
+        self._check_permit(permit)
+        validate_read_completion(permit, session, resource, source)
+        if self._session_key is None:
+            raise AppError('SERVICE_UNAVAILABLE')
+        keys = self.keys(permit.scope, permit.key_id)[:2]
+        values = await self._call(self._complete_readonly, keys=[*keys, self._session_key(session.session_digest), keys[1] + ':lifecycle'], args=[
+            permit.input_hash, permit.execution_id, str(permit.scope.subject_id), session.session_digest, session.ai_notice_version,
+            IDLE_MS, ABSOLUTE_MS, RESOURCE_MAX_MS, str(resource.resource_generation) if resource else '',
+            str(permit.base_revision) if resource else '', source.field if source else '', source.value if source else '', session.granted_ms])
+        if self._outcome(values) != 'ok' or len(values) != 1:
+            raise AppError('SERVICE_UNAVAILABLE')
 
     async def create_resource(self, subject_id: UUID, resource_id: UUID, ttl_ms: int) -> bool:
         try:

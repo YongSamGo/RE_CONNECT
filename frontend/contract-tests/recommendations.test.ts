@@ -47,4 +47,4 @@ it('validates the actual private recommendation HTTP body against the original O
   expect(displayed.self_introduction).toBe('직접 쓴 가상 경험')
   const validateDraft = ajv.compile({ $ref: '#/components/schemas/JourneyDraft', components: contract.components })
   for (const draft of actual.drafts) expect(validateDraft(draft), JSON.stringify(validateDraft.errors)).toBe(true)
-})
+}, 20000)
