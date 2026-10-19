@@ -1,6 +1,8 @@
 """STT·TTS도 LLM과 같은 전역 슬롯·일일 예산을 먼저 요구한다."""
 
 from app.core.business_errors import AppError
+from app.adapters.speech import SpeechTransientUnavailableError
+from app.modules.admission.retry import retry_once
 
 
 class ControlledSpeechAdapter:
@@ -17,12 +19,13 @@ class ControlledSpeechAdapter:
         if identity is None:
             raise AppError('SERVICE_UNAVAILABLE')
         self._runtime.validate_transcription(audio, content_type=content_type)
-        return await self._admission.run(identity, 'stt', lambda completion: self._runtime.transcribe(audio,
-            content_type=content_type, on_runtime_ended=completion.confirm_ended))
+        return await self._admission.run(identity, 'stt', lambda completion: retry_once(completion,
+            lambda attempt: self._runtime.transcribe(audio, content_type=content_type, on_runtime_ended=attempt.confirm_ended),
+            SpeechTransientUnavailableError))
 
     async def synthesize(self, text, *, identity=None):
         if identity is None:
             raise AppError('SERVICE_UNAVAILABLE')
         self._runtime.validate_synthesis(text)
-        return await self._admission.run(identity, 'tts', lambda completion: self._runtime.synthesize(text,
-            on_runtime_ended=completion.confirm_ended))
+        return await self._admission.run(identity, 'tts', lambda completion: retry_once(completion,
+            lambda attempt: self._runtime.synthesize(text, on_runtime_ended=attempt.confirm_ended), SpeechTransientUnavailableError))

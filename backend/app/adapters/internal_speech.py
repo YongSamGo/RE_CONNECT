@@ -11,7 +11,7 @@ import wave
 import httpx
 from pydantic import TypeAdapter, ValidationError
 
-from app.adapters.speech import SpeechAudioTooLongError, SpeechInvalidInputError, SpeechInvalidOutputError, SpeechTimeoutError, SpeechTranscript, SpeechUnavailableError
+from app.adapters.speech import SpeechAudioTooLongError, SpeechInvalidInputError, SpeechInvalidOutputError, SpeechTimeoutError, SpeechTranscript, SpeechUnavailableError, SpeechTransientUnavailableError
 from app.contracts.fields import text as contract_text
 
 SPEECH_ORIGIN = 'http://speech:8001'
@@ -103,6 +103,13 @@ class InternalSpeechAdapter:
                     if terminal and on_runtime_ended is not None:
                         on_runtime_ended()
                     if response.status_code != 200:
+                        if response.status_code == 503 and terminal and response.headers.get('Content-Type', '').split(';', 1)[0].strip().lower() == 'application/json':
+                            try:
+                                transient = json.loads(body) == {'code': 'RUNTIME_TEMPORARILY_UNAVAILABLE'}
+                            except (ValueError, TypeError):
+                                transient = False
+                            if transient:
+                                raise SpeechTransientUnavailableError('내부 음성 서비스가 일시적으로 준비되지 않았습니다')
                         if response.status_code == 422 and terminal:
                             try:
                                 error = json.loads(body)
@@ -116,6 +123,11 @@ class InternalSpeechAdapter:
                     if method != 'GET' and not terminal:
                         raise SpeechInvalidOutputError('현재 음성 연산의 종료를 확인하지 못했습니다')
                     return bytes(body), response.headers.get('Content-Type', '').split(';', 1)[0].strip().lower()
+        except (httpx.ConnectError, httpx.ConnectTimeout):
+            # 연결이 성립되지 않아 이 시도의 요청/추론은 시작하지 않았다.
+            if on_runtime_ended is not None:
+                on_runtime_ended()
+            raise SpeechTransientUnavailableError('내부 음성 서비스에 연결하지 못했습니다') from None
         except (TimeoutError, httpx.TimeoutException):
             raise SpeechTimeoutError('음성 응답 시간이 초과되었습니다') from None
         except httpx.RequestError:
