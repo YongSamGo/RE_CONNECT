@@ -83,6 +83,15 @@ class AdmissionService:
     def digest(self, category: str, value: str) -> str:
         return hmac.new(self._identity_key, f"{category}:{value}".encode("ascii"), hashlib.sha256).hexdigest()
 
+    @property
+    def identity_key_id(self) -> str:
+        return self._identity_key_id
+
+    def generation_budget(self, identity: InferenceIdentity) -> str:
+        if identity.account_id is not None:
+            return self.digest("generation-account", str(identity.account_id))
+        return self.digest("generation-ip", identity.ip)
+
     async def check_http(self, ip: str, subject_id: UUID | None = None) -> None:
         identities = [self.digest("ip", normalize_ip(ip))]
         if subject_id is not None:
@@ -96,10 +105,8 @@ class AdmissionService:
             raise ValueError("추론 실행 종류/시간 범위 오류")
         if kind == "tts":
             budgets = [self.digest("tts-subject", str(identity.subject_id)), self.digest("tts-ip", identity.ip)]
-        elif identity.account_id:
-            budgets = [self.digest("generation-account", str(identity.account_id))]
         else:
-            budgets = [self.digest("generation-ip", identity.ip)]
+            budgets = [self.generation_budget(identity)]
         lease = await self.store.acquire(budgets, secrets.token_hex(32), kind, self._identity_key_id)
         completion = RuntimeCompletion()
         try:
@@ -120,6 +127,13 @@ class UnavailableAdmissionService:
         raise AppError("SERVICE_UNAVAILABLE")
 
     run = check_http
+
+    @property
+    def identity_key_id(self):
+        raise AppError("SERVICE_UNAVAILABLE")
+
+    def generation_budget(self, identity):
+        raise AppError("SERVICE_UNAVAILABLE")
 
     async def is_ready(self):
         return False

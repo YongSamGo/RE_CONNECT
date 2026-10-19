@@ -40,6 +40,9 @@ from app.modules.admission.service import AdmissionService, UnavailableAdmission
 from app.modules.opportunities import router as opportunities
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.service import PublicOpportunityService, UnavailableOpportunityRepository
+from app.modules.journeys import router as journeys
+from app.modules.journeys.repository import RedisJourneyStore
+from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -88,9 +91,11 @@ def create_app(
     )
 
     admission = UnavailableAdmissionService()
+    admission_store = None
     if redis_client is not None and settings.request_limit_key is not None and settings.inference_control_epoch is not None:
         try:
-            admission = AdmissionService(RedisAdmissionStore(redis_client, epoch=settings.inference_control_epoch), identity_key=bytes.fromhex(settings.request_limit_key.get_secret_value()))
+            admission_store = RedisAdmissionStore(redis_client, epoch=settings.inference_control_epoch)
+            admission = AdmissionService(admission_store, identity_key=bytes.fromhex(settings.request_limit_key.get_secret_value()))
         except ValueError:
             # 설정 원문·비밀키를 예외/로그로 내보내지 않고 기능만 중단한다.
             admission = UnavailableAdmissionService()
@@ -108,7 +113,13 @@ def create_app(
         RoutedConsentStore(anonymous_consents, member_consents),
         ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,
     )
-    app.state.request_service = RequestService(RedisRequestStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableRequestStore())
+    request_store = RedisRequestStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableRequestStore()
+    app.state.request_service = RequestService(request_store)
+    journey_store = UnavailableJourneyStore()
+    if redis_client is not None and admission_store is not None and isinstance(admission, AdmissionService):
+        journey_store = RedisJourneyStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key,
+                                         control_key=admission_store.control_key, epoch=settings.inference_control_epoch)
+    app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
@@ -133,6 +144,7 @@ def create_app(
     app.include_router(sessions.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
+    app.include_router(journeys.router, prefix=API_PREFIX)
 
     return app
 
