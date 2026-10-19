@@ -172,7 +172,7 @@ jobs:
       - name: 고정 TTS 코드 준비와 STT 의존성 공존 확인
         if: matrix.project == 'speech/tts_compat'
         run: |
-          python -m pip install --require-hashes -r ../requirements.txt
+          python -m pip install --require-hashes -r ../requirements.txt -r ../requirements-dev.txt
           python -I ../prepare_tts_code.py
           python -I ../prepare_tts_code.py --verify-only
           python -m pytest -q -c ../pyproject.toml ../tests
