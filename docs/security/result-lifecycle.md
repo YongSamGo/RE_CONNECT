@@ -42,6 +42,6 @@
 
 `backend`에서 `python -m pytest tests/test_result_lifecycle.py tests/test_request_coordination.py tests/test_admission.py -q`로 실행한다. 순수 검증은 로컬에서, Redis 원자성·경합은 `PERSISTENCE_TEST_REDIS_URL`이 있는 실제 Redis에서 실행한다. 테스트에는 삭제/만료/철회/세대 변경 후 늦은 완료, 보호 정보 유실 우회, 취소·완료 경합, 응답 유실 재완료와 TTL 유지를 포함한다.
 
-2026-10-18 로컬에는 실행 가능한 Docker·Redis 서버가 없어 실제 Redis 항목은 건너뛴 상태다. 스크립트를 추가한 것만으로 원자성 시험 통과·#27 전체 완료로 표시하지 않는다. 실제 업무 본문 쓰기, PostgreSQL 계정 삭제 세대, 복구 증거와 EC2 런타임 확인도 남아 있다.
+2026-10-18 후속으로 격리된 WSL 시험 환경의 Redis 7.0.15·PostgreSQL 16.15에 전체 백엔드를 연결해 633개 시험이 모두 통과했다(건너뜀 없음). 이 결과에는 실제 Redis의 원자 완료·취소/삭제 경합·수명/동의 재검사와 슬롯 시험이 포함된다. 시험 데이터는 가상 자료만 사용했고 PostgreSQL은 tmpfs, Redis는 비영속 모드로 실행한 뒤 모두 종료했다. Docker 이미지의 정확한 빌드·EC2 런타임 검증으로 대신하지 않는다. 실제 AI 업무 본문 쓰기, 회원 SQL 계정 삭제 세대, 외부 삭제 이력 복구 증거는 남아 있으므로 #27 전체 완료로 표시하지 않는다.
 
 관련 KISA 보안약점은 경쟁조건: 검사시점과 사용시점(TOCTOU, TIM-01), 부적절한 인가(SEC-02), 오류 메시지 정보노출(ERR-01)이다.
