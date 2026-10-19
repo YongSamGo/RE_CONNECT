@@ -56,6 +56,8 @@ from app.modules.recommendations.service import RecommendationService
 from app.modules.drafts import router as drafts
 from app.modules.drafts.repository import RedisDraftStore, UnavailableDraftStore
 from app.modules.drafts.service import DraftService
+from app.modules.transcriptions.repository import RedisTranscriptionStore, UnavailableTranscriptionStore
+from app.modules.transcriptions.service import TranscriptionService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -135,7 +137,9 @@ def create_app(
         journey_store = RedisJourneyStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key,
                                          control_key=admission_store.control_key, epoch=settings.inference_control_epoch)
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
-    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter)
+    transcription_store = RedisTranscriptionStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableTranscriptionStore()
+    app.state.transcription_service = TranscriptionService(transcription_store, app.state.journey_service, speech_adapter)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
     app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())

@@ -22,16 +22,19 @@ MESSAGE_TIMEOUT_SECONDS = 60
 
 
 class JourneyMessageService:
-    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter):
+    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter, transcriptions=None):
         self.journeys, self.requests, self.llm = journeys, requests, llm
+        self.transcriptions = transcriptions
 
     async def send(self, session: Session, identity: InferenceIdentity, journey_id: UUID, key: str, body: MessageCreate) -> MessageResult:
         if identity.subject_id != session.subject_id or identity.account_id is not None:
             raise AppError('NOT_FOUND')
         record = await self.journeys.load(session, journey_id)
         if body.transcription_id is not None:
-            # #38의 실제 전사 소유권/체험 연결 전에는 임의 ID를 증거로 받지 않는다.
-            raise AppError('NOT_FOUND')
+            if self.transcriptions is None:
+                raise AppError('NOT_FOUND')
+            # 원문을 자동 추출하지 않는다. 전사 ID 소유권만 확인하고 body.text만 사용한다.
+            await self.transcriptions.require(session, journey_id, body.transcription_id)
         if safe_text(body.text) is None:
             raise AppError('VALIDATION_FAILED')
         permit = await self.requests.begin(RequestScope(session.subject_id, 'messages', journey_id), key,

@@ -10,6 +10,9 @@ class ControlledSpeechAdapter:
     async def is_ready(self) -> bool:
         return await self._admission.is_ready() and await self._runtime.is_ready()
 
+    def validate_transcription(self, audio, *, content_type):
+        self._runtime.validate_transcription(audio, content_type=content_type)
+
     async def transcribe(self, audio, *, content_type, identity=None):
         if identity is None:
             raise AppError('SERVICE_UNAVAILABLE')

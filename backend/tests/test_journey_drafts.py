@@ -292,3 +292,26 @@ def test_generation_timeout_leaves_manual_available_without_falsely_releasing_th
                 await service.create(issued.session, identity, journey.journey_id, str(uuid4()), body('generate'))
             assert runtime.calls == 1
     with_redis(scenario)
+
+
+def test_corrupt_draft_counters_do_not_allow_partial_lua_writes():
+    async def scenario(admission, admission_store, redis):
+        with open_test_database('sqlite') as db:
+            issued, _, journeys, journey, identity, runtime, service = await setup(admission, admission_store, redis, db)
+            meta = journeys.store.resource_key(identity.subject_id, journey.journey_id) + ':lifecycle'
+            for field in ['draft_attempts', 'draft_count']:
+                for value in ['01', '1.5', '-1']:
+                    await redis.hset(meta, field, value)
+                    key = str(uuid4())
+                    with pytest.raises(AppError, match='SERVICE_UNAVAILABLE'):
+                        await service.create(issued.session, identity, journey.journey_id, key, body())
+                    assert not any(name.startswith(f'draft-create:{key}:') for name in await redis.hkeys(meta))
+                await redis.hdel(meta, field)
+            permit = await service.store.reserve(issued.session, journey.journey_id, uuid4(), 'a' * 64, 3, 1)
+            await redis.hset(meta, 'draft_count', '01')
+            with pytest.raises(AppError, match='SERVICE_UNAVAILABLE'):
+                await service.store.complete(issued.session, journey.journey_id, permit,
+                    JourneyDraft(draft_id=permit.draft_id, revision=1, mode='manual', profile_version=1,
+                        opportunity=body().opportunity, self_introduction='', motivation='', approved_at=None, review_reasons=[], warnings=[]))
+            assert not await redis.hget(meta, f'draft:{permit.draft_id}') and runtime.calls == 0
+    with_redis(scenario)
