@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react'
-import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import type { createApiClient } from '../../api/client'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -9,7 +9,8 @@ import { CheckboxField, TextAreaField } from '../../ui/Fields'
 import { FormErrorSummary } from '../../ui/FormErrorSummary'
 import type { FieldError } from '../../ui/FormErrorSummary'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
-import { isOpportunityId, provinces } from '../public-opportunities/catalog'
+import { provinces } from '../public-opportunities/catalog'
+import { JourneyRoute } from '../journeys/JourneyRoute'
 import { parseRegionCatalog } from '../regions/catalog'
 import type { Region, RegionCatalog } from '../regions/catalog'
 import { minimumErrors, parseExclusions, parseProfileView, parseRoles } from './server-model'
@@ -47,21 +48,7 @@ function RegionPicker({ label, value, onChange, catalog, max }: { label: string;
 }
 
 export function JourneyProfileRoute() {
-  const { journeyId } = useParams()
-  const navigate = useNavigate()
-  const [reentry] = useState(() => {
-    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
-    return !!navigation && (navigation.type === 'reload' || navigation.type === 'back_forward')
-      && new URL(navigation.name).pathname === `/journeys/${journeyId}/profile`
-  })
-  useEffect(() => {
-    const restore = (event: PageTransitionEvent) => { if (event.persisted) navigate('/', { replace: true }) }
-    window.addEventListener('pageshow', restore)
-    return () => window.removeEventListener('pageshow', restore)
-  }, [navigate])
-  if (reentry) return <Navigate to="/" replace />
-  return journeyId && isOpportunityId(journeyId) ? <JourneyProfile key={journeyId} journeyId={journeyId} />
-    : <StatusNotice title="체험 주소를 확인해 주세요">올바른 체험 화면에서 다시 이동해 주세요.</StatusNotice>
+  return <JourneyRoute page="profile">{id => <JourneyProfile key={id} journeyId={id} />}</JourneyRoute>
 }
 
 export function JourneyProfile({ journeyId }: { journeyId: string }) {
@@ -190,6 +177,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
         {state.loaded.roles?.items.length === 0 && <p>연결할 경험 근거가 있는 역할이 아직 없습니다. <Link to="/opportunities">일반 공개 공고 살펴보기</Link></p>}
       </section>}
     </>}
+    <p><Link to={`/journeys/${journeyId}/conversation`}>경험 이야기로 이동</Link></p>
     <p><Link to="/opportunities">공개 공고 살펴보기</Link></p>
   </div>
 }
