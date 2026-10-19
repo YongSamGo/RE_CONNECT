@@ -1,5 +1,5 @@
 import { useEffect, useId, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import type { createApiClient } from '../../api/client'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -48,6 +48,18 @@ function RegionPicker({ label, value, onChange, catalog, max }: { label: string;
 
 export function JourneyProfileRoute() {
   const { journeyId } = useParams()
+  const navigate = useNavigate()
+  const [reentry] = useState(() => {
+    const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined
+    return !!navigation && (navigation.type === 'reload' || navigation.type === 'back_forward')
+      && new URL(navigation.name).pathname === `/journeys/${journeyId}/profile`
+  })
+  useEffect(() => {
+    const restore = (event: PageTransitionEvent) => { if (event.persisted) navigate('/', { replace: true }) }
+    window.addEventListener('pageshow', restore)
+    return () => window.removeEventListener('pageshow', restore)
+  }, [navigate])
+  if (reentry) return <Navigate to="/" replace />
   return journeyId && isOpportunityId(journeyId) ? <JourneyProfile key={journeyId} journeyId={journeyId} />
     : <StatusNotice title="체험 주소를 확인해 주세요">올바른 체험 화면에서 다시 이동해 주세요.</StatusNotice>
 }
@@ -56,15 +68,18 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
   const scope = useMemoryScope<Editor>(() => null)
   const request = useRequest<Loaded>()
   const regions = useRequest<RegionCatalog>()
+  const endRequest = useRequest<boolean>()
+  const { value: ending, setValue: setEnding } = useMemoryScope(() => false)
+  const navigate = useNavigate()
   const [errors, setErrors] = useState<FieldError[]>([])
   const [currentYear] = useState(() => new Date().getFullYear())
   const state = scope.value
-  const pending = request.state.status === 'pending'
+  const pending = request.state.status === 'pending' || endRequest.state.status === 'pending'
   const catalog = regions.state.status === 'success' ? regions.state.data : null
   const clearEditor = scope.clear
   useEffect(() => {
-    if (request.state.status === 'error' && ['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED'].includes(request.state.error.code)) clearEditor()
-  }, [request.state, clearEditor])
+    if ([request.state, endRequest.state].some(state => state.status === 'error' && ['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED'].includes(state.error.code))) clearEditor()
+  }, [request.state, endRequest.state, clearEditor])
   async function read(api: Api, signal: AbortSignal, message = ''): Promise<Loaded> {
     const view = parseProfileView(required((await api.GET('/journeys/{journey_id}/profile', { params: { path: { journey_id: journeyId } }, signal })).data))
     let roles: Roles | null = null, roleError: ApiError | null = null, excludedIds: string[] = []
@@ -119,9 +134,21 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
       return read(api, signal, '역할 제외 선택을 반영했습니다. 프로필 내용은 바꾸지 않았습니다.')
     }, apply)
   }
+  function endJourney() {
+    request.clear(); regions.clear()
+    void endRequest.run(async (api, signal) => {
+      const response = await api.DELETE('/journeys/{journey_id}', { params: { path: { journey_id: journeyId } }, signal })
+      if (response.response.status !== 204) throw new ApiError('INVALID_RESPONSE')
+      return true
+    }, () => { clearEditor(); setErrors([]); setEnding(false); navigate('/', { replace: true }) })
+  }
   return <div className="reading-width"><header className="page-heading"><p className="eyebrow">05 · 체험 프로필</p><h1>경험을 확인하고 확정해 주세요</h1><p>초안 반영·프로필 확정·회원 저장은 서로 다른 단계입니다. 이 화면은 임시 체험의 프로필을 편집합니다.</p></header>
     <Button pending={pending} onClick={load}>{state ? '서버 최신 내용 다시 불러오기' : '체험 프로필 불러오기'}</Button>
     {state && <Button variant="secondary" onClick={() => { request.clear(); regions.clear(); clearEditor(); setErrors([]) }}>이 화면의 입력 닫기</Button>}
+    {state && <Button variant="secondary" disabled={pending} onClick={() => setEnding(true)}>종료하고 삭제</Button>}
+    {ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험을 종료하고 임시 자료를 삭제할까요?</h2><p>이 체험의 초안·확정본·역할 선택과 진행 결과가 삭제됩니다. 아직 반영하지 않은 화면 입력도 사라집니다.</p>
+      <Button pending={endRequest.state.status === 'pending'} onClick={endJourney}>체험 임시 자료 삭제 확인</Button><Button variant="secondary" disabled={endRequest.state.status === 'pending'} onClick={() => setEnding(false)}>계속 작성하기</Button></section>}
+    {endRequest.state.status === 'error' && <RequestError error={endRequest.state.error} />}
     {state?.dirty && <p>아직 반영하지 않은 편집 내용이 있습니다. 다시 불러오면 이 편집 내용을 버리고 서버 초안을 표시합니다.</p>}
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
     <FormErrorSummary errors={errors} />

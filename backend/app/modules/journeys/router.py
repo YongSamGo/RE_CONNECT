@@ -1,6 +1,6 @@
 """실제 익명 체험 생성. 세션/CSRF/현재 동의/분당 한도 뒤에 하루 한도를 확정한다."""
 
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, Response
 
 from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, BaseRevision, ProfileConfirmResult
 from app.core.errors import FieldError, error_response
@@ -11,6 +11,14 @@ from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
 
 router = APIRouter(tags=["체험"])
+
+
+@router.delete("/journeys/{journey_id}", status_code=204, operation_id="deleteJourney")
+async def end_journey(journey_id: UUID, request: Request):
+    session = await require_session(request, user_activity=True)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
+    await request.app.state.journey_service.end(session, journey_id)
+    return Response(status_code=204)
 
 
 @router.post("/journeys", response_model=Journey, status_code=201, operation_id="createJourney")

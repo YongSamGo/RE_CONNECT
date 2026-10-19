@@ -13,6 +13,7 @@ from app.core.business_errors import AppError
 RETENTION_MS = 24 * 60 * 60 * 1000
 RESOURCE_MAX_MS = 2 * 60 * 60 * 1000
 MAX_REVISION = 2**31 - 1
+MAX_RESOURCE_REQUESTS = 256
 
 
 @dataclass(frozen=True)
