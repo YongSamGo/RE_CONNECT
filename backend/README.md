@@ -36,6 +36,10 @@ backend/
 - `/health/live`·`/health/ready`는 `/api/v1` 밖의 내부 전용 경로다. DB·Redis 실패는 503 `unavailable`, LLM·음성만 실패하면 200 `degraded`다. 연결 구현이 없는 구성 요소는 `fail`로 답한다.
 - `APP_ENV`가 `development`일 때만 `/docs`·`/openapi.json`을 연다. 값이 없으면 `production`으로 본다.
 
+## 공공 API 수집
+
+공공 API의 고정 대상·DNS/IP·TLS·XML 수집 경계는 [modules/ingestion](app/modules/ingestion/README.md)에 있다. 원문 저장·정규화·스케줄 실행은 후속 작업이며 서버 시작 시 수집하지 않는다.
+
 ## 공통 데이터 계약
 
 [app/contracts/](app/contracts/)는 API·수집기·평가 도구가 함께 쓰는 Pydantic 타입이다. 필드 정의의 원본은 [openapi.yaml](../docs/api/openapi.yaml)과 [Plan/02](../Plan/02_Data_Design.md)이고, 바꿀 때는 세 곳을 함께 고친다.
