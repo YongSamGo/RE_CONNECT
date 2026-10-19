@@ -22,6 +22,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 확정 프로필 추천·범위 필터·공고별 자격 대조와 실제 표본 평가/기기 검증의 남은 범위는 [추천 서버 연결 기록](src/features/recommendations/SERVER.md)을 따른다.
 
+체험 공고의 생성/직접 작성·편집/서버 승인·현재 승인본 복사와 남은 범위는 [신청 준비 연결 기록](src/features/preparation/JOURNEY.md)을 따른다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.

@@ -5,7 +5,7 @@ import { StatusNotice } from '../../ui/StatusNotice'
 import { isOpportunityId } from '../public-opportunities/catalog'
 
 /** Reentry UX applies to both journey pages; ownership always stays on the server. */
-export function JourneyRoute({ page, children }: { page: 'profile' | 'conversation' | 'recommendations'; children: (id: string) => ReactNode }) {
+export function JourneyRoute({ page, children }: { page: string; children: (id: string) => ReactNode }) {
   const { journeyId } = useParams()
   const navigate = useNavigate()
   const [reentry] = useState(() => {
