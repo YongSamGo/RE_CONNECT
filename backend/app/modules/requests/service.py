@@ -75,6 +75,43 @@ class CompletionGuard:
             raise ValueError("결과 완료 검증 정보 형식 오류")
 
 
+@dataclass(frozen=True)
+class SessionCompletionGuard:
+    session_digest: str = field(repr=False)
+    ai_notice_version: str
+    granted_ms: int
+
+    def __post_init__(self):
+        if (not isinstance(self.session_digest, str) or not re.fullmatch(r'[0-9a-f]{64}', self.session_digest)
+            or not isinstance(self.ai_notice_version, str) or not re.fullmatch(r'[a-z0-9._-]{1,32}', self.ai_notice_version)
+            or type(self.granted_ms) is not int or not 0 <= self.granted_ms < 2**53):
+            raise ValueError('읽기 완료의 서버 세션 정보가 필요합니다')
+
+
+@dataclass(frozen=True)
+class ResourceReadCheck:
+    field: str
+    value: str = field(repr=False)
+
+    def __post_init__(self):
+        try:
+            if self.field != f'draft:{UUID(self.field.removeprefix("draft:"))}' or not isinstance(self.value, str) or len(self.value.encode('utf-8')) > 65536:
+                raise ValueError
+        except (ValueError, TypeError, AttributeError):
+            raise ValueError('서버 지원서 읽기 검증 정보가 필요합니다') from None
+
+
+def validate_read_completion(permit, session, resource, source):
+    if (permit.scope.api != 'speech' or not isinstance(session, SessionCompletionGuard)
+        or resource is not None and not isinstance(resource, CompletionGuard)
+        or (permit.scope.resource_id is not None) != isinstance(resource, CompletionGuard)
+        or resource is not None and (resource.session_digest != session.session_digest or resource.ai_notice_version != session.ai_notice_version)
+        or resource is not None and (type(permit.base_revision) is not int or permit.base_revision < 1)
+        or resource is None and permit.base_revision is not None
+        or source is not None and (resource is None or not isinstance(source, ResourceReadCheck))):
+        raise AppError('VALIDATION_FAILED')
+
+
 def validate_message_commit(permit: Permit, result: ResultReference | None, guard: CompletionGuard | None, message: MessageCommit) -> MessageCommit:
     try:
         message = MessageCommit.model_validate(message.model_dump())
@@ -97,6 +134,7 @@ def validate_message_commit(permit: Permit, result: ResultReference | None, guar
 
 
 class RequestStore(Protocol):
+    async def complete_readonly(self, permit: Permit, *, session: SessionCompletionGuard, resource: CompletionGuard | None = None, source: ResourceReadCheck | None = None) -> None: ...
     async def begin(self, permit: Permit) -> Permit | Replay: ...
     async def complete(self, permit: Permit, result: ResultReference | None, *, guard: CompletionGuard | None = None, message: MessageCommit | None = None) -> None: ...
     async def create_guarded_resource(self, subject_id: UUID, resource_id: UUID, guard: CompletionGuard) -> bool: ...
@@ -109,7 +147,7 @@ class UnavailableRequestStore:
     async def begin(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    complete = create_resource = delete_resource = create_guarded_resource = cancel = begin
+    complete = complete_readonly = create_resource = delete_resource = create_guarded_resource = cancel = begin
 
 
 def input_fingerprint(validated_input: dict) -> str:
@@ -132,6 +170,10 @@ def input_fingerprint(validated_input: dict) -> str:
 class RequestService:
     def __init__(self, store: RequestStore):
         self.store = store
+
+    async def complete_readonly(self, permit, *, session, resource=None, source=None):
+        validate_read_completion(permit, session, resource, source)
+        await self.store.complete_readonly(permit, session=session, resource=resource, source=source)
 
     async def begin(self, scope: RequestScope, key: str, validated_input: dict, *, base_revision: int | None = None) -> Permit | Replay:
         try:
