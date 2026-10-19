@@ -1,5 +1,7 @@
 """공개 조회 계약. 읽기는 세션·AI·Redis와 무관하게 DB 공개 포인터를 따른다."""
 
+from __future__ import annotations
+
 from datetime import date, datetime, UTC
 from typing import Annotated, Protocol
 from uuid import UUID
@@ -77,6 +79,7 @@ class OpportunityPage(BaseModel):
 class PublicOpportunityRepository(Protocol):
     def list(self, search: OpportunitySearch, now: datetime) -> OpportunityPage: ...
     def get(self, opportunity_id: UUID, now: datetime) -> PublicOpportunity | None: ...
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]: ...
 
 
 class PublicOpportunityService:
@@ -85,6 +88,9 @@ class PublicOpportunityService:
 
     def list(self, search: OpportunitySearch) -> OpportunityPage:
         return self.repository.list(search, datetime.now(UTC))
+
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]:
+        return self.repository.recommendation_candidates(now)
 
     def get(self, opportunity_id: UUID) -> PublicOpportunity:
         result = self.repository.get(opportunity_id, datetime.now(UTC))
@@ -109,4 +115,4 @@ class UnavailableOpportunityRepository:
     def list(self, *args):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    get = list
+    get = recommendation_candidates = list
