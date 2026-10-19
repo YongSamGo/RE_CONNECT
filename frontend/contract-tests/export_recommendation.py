@@ -23,6 +23,7 @@ from app.modules.journeys.service import JourneyService  # noqa: E402
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository  # noqa: E402
 from app.modules.opportunities.service import PublicOpportunityService  # noqa: E402
 from app.modules.recommendations.service import RecommendationService  # noqa: E402
+from app.modules.eligibility.service import EligibilityService  # noqa: E402
 from app.modules.roles.repository import SQLRoleCatalog  # noqa: E402
 from app.modules.roles.service import RoleService  # noqa: E402
 from app.persistence.operations import RoleDefinition  # noqa: E402
@@ -47,6 +48,7 @@ async def main():
         opportunities = PublicOpportunityService(SqlPublicOpportunityRepository(lambda: nullcontext(db)))
         roles = RoleService(journeys, SQLRoleCatalog(lambda: nullcontext(db)))
         app.state.recommendation_service = RecommendationService(journeys, opportunities, roles)
+        app.state.eligibility_service = EligibilityService(journeys, opportunities)
         app.state.journey_service, app.state.role_service = journeys, roles
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app), base_url="https://testserver") as client:
             client.cookies.set("__Host-rc_session", issued.token)
@@ -55,8 +57,10 @@ async def main():
             profile = await client.get(f"/api/v1/journeys/{id}/profile")
             role_candidates = await client.get(f"/api/v1/journeys/{id}/roles")
             exclusions = await client.get(f"/api/v1/journeys/{id}/role-exclusions")
+            eligibility = await client.post('/api/v1/opportunities/00000000-0000-0000-0000-000000000001/eligibility',
+                json={"profile": confirmation.profile.model_dump(mode="json"), "opportunity_version": 1}, headers=csrf(client))
             print(json.dumps({"status": response.status_code, "body": response.json(),
-                "profile": profile.json(), "roles": role_candidates.json(), "exclusions": exclusions.json()}, ensure_ascii=True))
+                "profile": profile.json(), "roles": role_candidates.json(), "exclusions": exclusions.json(), "eligibility_status": eligibility.status_code, "eligibility": eligibility.json()}, ensure_ascii=True))
 
 
 asyncio.run(main())

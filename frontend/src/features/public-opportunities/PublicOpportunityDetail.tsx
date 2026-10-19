@@ -54,7 +54,7 @@ function DetailContent({ item }: { item: PublicDetail }) {
     </article>
     <OpportunityReport key={`${item.id}:${item.version}`} id={item.id} version={item.version} />
     <Link className="button secondary" to={`/opportunities/${item.id}/preparation`}>공식 서류·접수 준비 안내 보기</Link>
-    <StatusNotice title="개인 자격 대조·지원서 생성은 연결 준비 중이에요">프로필 확인·맞춤 추천·공고에 연결된 지원서 생성은 서버 연동 후 제공합니다. 오류 신고는 실제 서버의 접수 응답을 받은 뒤에만 접수 완료로 표시합니다.</StatusNotice>
+    <StatusNotice title="개인 자격은 확정 프로필로 대조해 주세요">체험 추천 화면에서 확정 프로필과 공고 조건을 대조할 수 있습니다. 실제 체험 시작 안내와 공고에 연결된 지원서 생성은 연결 준비 중입니다. 오류 신고는 실제 서버의 접수 응답을 받은 뒤에만 접수 완료로 표시합니다.</StatusNotice>
   </>
 }
 
