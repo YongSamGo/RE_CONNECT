@@ -10,7 +10,7 @@
 import asyncio
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Any
 
 import httpx
@@ -118,17 +118,22 @@ class OllamaLLMAdapter:
             payload["think"] = self._think
         return payload
 
+    def validate_request(self, *, instructions, untrusted_turns, output_model) -> None:
+        if not untrusted_turns:
+            raise ValueError("대화 턴이 비어 있습니다")
+        if output_model.model_config.get("extra") != "forbid":
+            raise ValueError("출력 모델은 정의하지 않은 필드를 거절해야 합니다")
+        self._payload(instructions, untrusted_turns, output_model)
+
     async def generate_structured(
         self,
         *,
         instructions: str,
         untrusted_turns: Sequence[UntrustedTurn],
         output_model: type[OutputT],
+        on_runtime_ended: Callable[[], None] | None = None,
     ) -> OutputT:
-        if not untrusted_turns:
-            raise ValueError("대화 턴이 비어 있습니다")
-        if output_model.model_config.get("extra") != "forbid":
-            raise ValueError("출력 모델은 정의하지 않은 필드를 거절해야 합니다")
+        self.validate_request(instructions=instructions, untrusted_turns=untrusted_turns, output_model=output_model)
         payload = self._payload(instructions, untrusted_turns, output_model)
         try:
             async with self._client(self._timeout_seconds) as client:
@@ -142,6 +147,9 @@ class OllamaLLMAdapter:
             # json.JSONDecodeError도 ValueError다. 원문을 체인으로 남기지 않는다.
             raise LLMInvalidOutputError("모델 응답 형식이 올바르지 않습니다") from None
 
+        # 입력/출력 검증 오류와 실제 연산 종료는 다르다. 정상 최종 응답에서만 슬롯 반환을 허용한다.
+        if data.get("done") is True and data.get("done_reason") in ("stop", "length") and on_runtime_ended is not None:
+            on_runtime_ended()
         message = data.get("message")
         content = message.get("content") if isinstance(message, dict) else None
         if data.get("done") is not True or data.get("done_reason") != "stop" or not isinstance(content, str):

@@ -21,6 +21,7 @@
 | 워크플로 보안 점검 | zizmor | CI 자체의 권한 과다, 스크립트 삽입, 고정 안 된 액션 | — (공급망 보안) | 항상 |
 | 숨은 문자·지시문 점검 | `check_hidden_text.py` (회귀 시험 `test_check_hidden_text.py` 먼저 실행) | **실패**: 저장소 텍스트 파일·경로의 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자·단독 CR 등 제어 문자), UTF-8이 아닌 텍스트 파일(UTF-16·잘못된 바이트로 검사를 피하는 것 방지), 심볼릭 링크이거나 `.gitattributes`로 PR 화면에서 내용이 숨겨지는 에이전트 지시 파일. **경고**: 에이전트 지시 파일(`.claude/`, `CLAUDE.md`, `AGENTS.md` 등)에 새로 추가된 "지시 무시"류 문구 | — (OWASP LLM, [AGT-01·03](../../.claude/skills/kisa-secure-coding-python/references/llm-security.md)) | 항상 (경고는 PR에서만) |
 | Python 점검 | pytest | 기능 오류, 약점별 공격 시나리오 | 약점별 테스트 전체 | `backend/` 또는 `worker/`에 `requirements.txt`가 있을 때 |
+| PostgreSQL Redis 통합 | 실제 개발 Compose·Alembic·pytest | 빈 DB 재현·SQL 불변 버전·소유권/공개 FK·삭제·Redis 비영속화 | 부적절한 인가 등 모델 기록 참조 | 항상. 최종 `CI 통과`에 포함 |
 | | bandit | SQL 삽입, 명령어 삽입, 취약한 해시·난수, 하드코드 비밀값 등 | SQL 삽입, 운영체제 명령어 삽입, 취약한 암호화 알고리즘 사용 등 | 〃 |
 | | pip-audit | 알려진 취약점(CVE)이 있는 라이브러리 | 취약한 API 사용 | 〃 |
 | 프론트엔드 점검 | npm audit signatures | 서명·출처가 검증되지 않은 패키지 | — (공급망 보안) | `frontend/package-lock.json`이 있을 때 |
