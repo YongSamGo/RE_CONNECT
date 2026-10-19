@@ -47,9 +47,10 @@ if previous then
     return {'replay', result}
 end
 if state[7] ~= ARGV[9] or redis.call('HGET', KEYS[3], 'confirmed_version') ~= ARGV[10] then return {'VERSION_CONFLICT'} end
-local attempts = tonumber(redis.call('HGET', KEYS[3], 'draft_attempts') or '0')
-local count = tonumber(redis.call('HGET', KEYS[3], 'draft_count') or '0')
-if not attempts or not count then return {'SERVICE_UNAVAILABLE'} end
+local attempts_raw = redis.call('HGET', KEYS[3], 'draft_attempts') or '0'
+local count_raw = redis.call('HGET', KEYS[3], 'draft_count') or '0'
+local attempts, count = tonumber(attempts_raw), tonumber(count_raw)
+if not attempts or not count or not string.match(attempts_raw, '^%d+$') or not string.match(count_raw, '^%d+$') or tostring(attempts) ~= attempts_raw or tostring(count) ~= count_raw then return {'SERVICE_UNAVAILABLE'} end
 if attempts >= tonumber(ARGV[13]) or count >= tonumber(ARGV[14]) then return {'RATE_LIMITED'} end
 redis.call('HSET', KEYS[3], field .. 'input', ARGV[8], field .. 'state', 'pending', field .. 'token', ARGV[11], field .. 'id', ARGV[12])
 redis.call('HINCRBY', KEYS[3], 'draft_attempts', 1)
@@ -60,8 +61,9 @@ local field = 'draft-create:' .. ARGV[7] .. ':'
 local journal = redis.call('HMGET', KEYS[3], field .. 'state', field .. 'token', field .. 'id')
 if journal[1] ~= 'pending' or journal[2] ~= ARGV[8] or journal[3] ~= ARGV[9] then return {'INVALID_STATE_TRANSITION'} end
 if state[7] ~= ARGV[10] or state[4] ~= ARGV[12] or redis.call('HGET', KEYS[3], 'confirmed_version') ~= ARGV[11] then return {'VERSION_CONFLICT'} end
-local count = tonumber(redis.call('HGET', KEYS[3], 'draft_count') or '0')
-if not count then return {'SERVICE_UNAVAILABLE'} end
+local count_raw = redis.call('HGET', KEYS[3], 'draft_count') or '0'
+local count = tonumber(count_raw)
+if not count or not string.match(count_raw, '^%d+$') or tostring(count) ~= count_raw then return {'SERVICE_UNAVAILABLE'} end
 if count >= tonumber(ARGV[14]) then return {'RATE_LIMITED'} end
 local draft = 'draft:' .. ARGV[9]
 if redis.call('HEXISTS', KEYS[3], draft) == 1 then return {'SERVICE_UNAVAILABLE'} end

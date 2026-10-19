@@ -11,7 +11,7 @@ import wave
 import httpx
 from pydantic import TypeAdapter, ValidationError
 
-from app.adapters.speech import SpeechInvalidInputError, SpeechInvalidOutputError, SpeechTimeoutError, SpeechTranscript, SpeechUnavailableError
+from app.adapters.speech import SpeechAudioTooLongError, SpeechInvalidInputError, SpeechInvalidOutputError, SpeechTimeoutError, SpeechTranscript, SpeechUnavailableError
 from app.contracts.fields import text as contract_text
 
 SPEECH_ORIGIN = 'http://speech:8001'
@@ -30,7 +30,9 @@ def _wav(audio: bytes, *, recording: bool) -> bytes:
             rate, frames = source.getframerate(), source.getnframes()
             if source.getnchannels() != 1 or source.getsampwidth() != 2 or source.getcomptype() != 'NONE' or not 8000 <= rate <= 48000:
                 raise ValueError
-            if frames < 1 or frames > MAX_WAV_BYTES // 2 or recording and (rate != 16000 or frames > 90 * rate):
+            if recording and rate == 16000 and frames > 90 * rate:
+                raise SpeechAudioTooLongError('녹음 길이가 90초를 초과했습니다')
+            if frames < 1 or frames > MAX_WAV_BYTES // 2 or recording and rate != 16000:
                 raise ValueError
             pcm = source.readframes(frames)
             if len(pcm) != frames * 2:
@@ -101,6 +103,15 @@ class InternalSpeechAdapter:
                     if terminal and on_runtime_ended is not None:
                         on_runtime_ended()
                     if response.status_code != 200:
+                        if response.status_code == 422 and terminal:
+                            try:
+                                error = json.loads(body)
+                            except (ValueError, TypeError):
+                                error = None
+                            if error == {'code': 'AUDIO_TOO_LONG'}:
+                                raise SpeechAudioTooLongError('녹음 길이가 90초를 초과했습니다')
+                            if error == {'code': 'AUDIO_INVALID'}:
+                                raise SpeechInvalidInputError('녹음 형식을 확인해 주세요')
                         raise SpeechUnavailableError('내부 음성 서비스가 요청을 처리하지 못했습니다')
                     if method != 'GET' and not terminal:
                         raise SpeechInvalidOutputError('현재 음성 연산의 종료를 확인하지 못했습니다')
