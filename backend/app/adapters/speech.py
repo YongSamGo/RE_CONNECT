@@ -29,6 +29,10 @@ class SpeechInvalidInputError(SpeechError):
     pass
 
 
+class SpeechAudioTooLongError(SpeechInvalidInputError):
+    pass
+
+
 class SpeechTranscript(BaseModel):
     model_config = CONTRACT_CONFIG
     text: text(2000, multiline=True)
