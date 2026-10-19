@@ -9,6 +9,7 @@ from pydantic_core import PydanticCustomError
 
 from app.contracts.fields import CONTRACT_CONFIG, ActivityType, text
 from app.contracts.opportunity import OpportunityContent, RecruitmentStatus
+from app.contracts.preparation import Preparation, OpportunityRef
 from app.contracts.regions import Province, Region, is_known_district
 from app.contracts.time import UtcDatetime
 from app.core.business_errors import AppError
@@ -90,6 +91,18 @@ class PublicOpportunityService:
         if result is None:
             raise AppError("NOT_FOUND")
         return result
+
+    def preparation(self, opportunity_id: UUID) -> Preparation:
+        # 상세와 같은 공개 포인터/상태를 한 번만 조회한다. 원문 파싱·LLM 추정·외부 요청은 없다.
+        opportunity = self.get(opportunity_id)
+        fields = set(Preparation.model_fields) - {"opportunity"}
+        try:
+            return Preparation(
+                opportunity=OpportunityRef(id=opportunity.id, version=opportunity.version),
+                **opportunity.model_dump(include=fields),
+            )
+        except ValidationError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
 
 
 class UnavailableOpportunityRepository:
