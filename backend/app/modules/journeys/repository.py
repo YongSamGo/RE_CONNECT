@@ -13,7 +13,7 @@ from app.contracts.profile import ProfileContent, empty_profile_content
 from app.contracts.roles import RoleExclusionUpdate, RoleExclusions
 from app.core.business_errors import AppError
 from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, MissingProfileFields, ResolvedJourneyProfile, RoleState
-from app.modules.requests.service import CompletionGuard, RESOURCE_MAX_MS, RETENTION_MS
+from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, RESOURCE_MAX_MS, RETENTION_MS
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 
 MAX_CONFIRMED_VERSIONS = 64
@@ -86,6 +86,16 @@ return view(KEYS[3], KEYS[4], false)
 """
 
 _LOAD = _SESSION + _VIEW + "return view(KEYS[2], KEYS[3], ARGV[7] == '1')"
+
+_END = _SESSION_LIFETIME + """
+local m = redis.call('HMGET', KEYS[3], 'owner', 'digest')
+if m[1] and (m[1] ~= ARGV[1] or m[2] ~= ARGV[5]) then return {'ok'} end
+local index = KEYS[2] .. ':requests'
+if redis.call('SCARD', index) > tonumber(ARGV[7]) then return {'SERVICE_UNAVAILABLE'} end
+for _, key in ipairs(redis.call('SMEMBERS', index)) do redis.call('DEL', key) end
+redis.call('DEL', KEYS[2], KEYS[3], index)
+return {'ok'}
+"""
 
 _PROFILE_RESULT = """
 local function profile_result(revision)
@@ -173,6 +183,7 @@ class RedisJourneyStore:
         self._resolve_profile = client.register_script(_RESOLVE_PROFILE)
         self._role_state = client.register_script(_ROLE_STATE)
         self._set_role_exclusions = client.register_script(_SET_ROLE_EXCLUSIONS)
+        self._end = client.register_script(_END)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -247,6 +258,11 @@ class RedisJourneyStore:
 
     async def profile(self, session, journey_id):
         return await self._profile_call(self._profile, session, journey_id)
+
+    async def end(self, session, journey_id):
+        values = await self._version_call(self._end, session, journey_id, (MAX_RESOURCE_REQUESTS,))
+        if values != ['ok']:
+            raise AppError('SERVICE_UNAVAILABLE')
 
     async def update_profile(self, session, journey_id, draft, base_revision):
         return await self._profile_call(self._update_profile, session, journey_id, (base_revision, draft.model_dump_json()))

@@ -1,9 +1,9 @@
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
 import axe from 'axe-core'
-import { JourneyProfile } from './JourneyProfile'
+import { JourneyProfile, JourneyProfileRoute } from './JourneyProfile'
 import { parseProfileView, parseRoles } from './server-model'
 import type { ProfileView } from './server-model'
 
@@ -121,6 +121,62 @@ it('keeps input on conflict, blocks duplicate save, and does not apply a late re
 it('validates evidence/version boundaries and does not render malformed role candidates', () => {
   expect(() => parseRoles({ ...roles(), profile_version: 999 }, view(true))).toThrow()
   expect(() => parseProfileView({ ...view(), draft: { ...view().draft, experiences: [{ ...view().draft.experiences[0], id: 'forged' }] } })).toThrow()
+})
+
+it('asks before ending, keeps the editor on delete failure, and clears memory only after actual 204', async () => {
+  let deletes = 0
+  const fetch = vi.fn(async (request: Request) => request.method === 'DELETE'
+    ? ++deletes === 1 ? json({ code: 'SERVICE_UNAVAILABLE' }, 503) : new Response(null, { status: 204 })
+    : json(request.url.endsWith('/me') ? {} : view()))
+  vi.stubGlobal('fetch', fetch)
+  const user = mount()
+  await user.click(screen.getByRole('button', { name: '체험 프로필 불러오기' }))
+  await user.type(await screen.findByLabelText('경험 1 내용'), ' 편집 중')
+  await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
+  expect(deletes).toBe(0)
+  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
+  expect(await screen.findByRole('alert')).toBeVisible()
+  expect(screen.getByLabelText('경험 1 내용')).toHaveValue('가상 도서관 경험 편집 중')
+  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
+  expect(await screen.findByRole('button', { name: '체험 프로필 불러오기' })).toBeVisible()
+  expect(screen.queryByLabelText('경험 1 내용')).not.toBeInTheDocument()
+  expect(fetch.mock.calls.filter(([req]) => req.method === 'DELETE')).toHaveLength(2)
+})
+
+it.each(['reload', 'back_forward'])('starts over on %s instead of restoring the old journey from its URL', async type => {
+  vi.spyOn(performance, 'getEntriesByType').mockReturnValue([{ type, name: `https://reconnect.test/journeys/${id}/profile` } as PerformanceNavigationTiming])
+  const fetch = vi.fn(); vi.stubGlobal('fetch', fetch)
+  render(<MemoryRouter initialEntries={[`/journeys/${id}/profile`]}><Routes>
+    <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
+    <Route path="/" element={<h1>새로 시작</h1>} />
+  </Routes></MemoryRouter>)
+  expect(await screen.findByRole('heading', { name: '새로 시작' })).toBeVisible()
+  expect(fetch).not.toHaveBeenCalled()
+})
+
+it('allows a newly started journey after the start page itself was reloaded', () => {
+  vi.spyOn(performance, 'getEntriesByType').mockReturnValue([{ type: 'reload', name: 'https://reconnect.test/' } as PerformanceNavigationTiming])
+  render(<MemoryRouter initialEntries={[`/journeys/${id}/profile`]}><Routes>
+    <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
+    <Route path="/" element={<h1>새로 시작</h1>} />
+  </Routes></MemoryRouter>)
+  expect(screen.getByRole('button', { name: '체험 프로필 불러오기' })).toBeVisible()
+})
+
+it('returns to start after a back-forward cache restoration and discards old deletion confirmation', async () => {
+  vi.spyOn(performance, 'getEntriesByType').mockReturnValue([{ type: 'navigate' } as PerformanceNavigationTiming])
+  vi.stubGlobal('fetch', vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view())))
+  document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+  render(<MemoryRouter initialEntries={[`/journeys/${id}/profile`]}><Routes>
+    <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
+    <Route path="/" element={<h1>새로 시작</h1>} />
+  </Routes></MemoryRouter>)
+  const user = userEvent.setup()
+  await user.click(screen.getByRole('button', { name: '체험 프로필 불러오기' }))
+  await user.click(await screen.findByRole('button', { name: '종료하고 삭제' }))
+  act(() => { const event = new Event('pageshow'); Object.defineProperty(event, 'persisted', { value: true }); window.dispatchEvent(event) })
+  expect(await screen.findByRole('heading', { name: '새로 시작' })).toBeVisible()
+  expect(screen.queryByRole('button', { name: '체험 임시 자료 삭제 확인' })).not.toBeInTheDocument()
 })
 
 it('keeps the loaded editor and role controls labelled for keyboard and assistive technology', async () => {
