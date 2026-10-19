@@ -64,6 +64,10 @@ class Settings(BaseSettings):
     # 운영자가 런타임 정지·배출을 확인한 Redis 제어 레코드의 세대. 자동 생성하지 않는다.
     inference_control_epoch: UUID | None = None
 
+    # 실제 운영 안내문(#9)을 확정한 뒤 설정한다. 예제 버전을 기본값으로 승인하지 않는다.
+    ai_notice_version: str | None = Field(default=None, pattern=r"^[a-z0-9._-]{1,32}$", max_length=32)
+    storage_notice_version: str | None = Field(default=None, pattern=r"^[a-z0-9._-]{1,32}$", max_length=32)
+
     # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
     health_check_timeout_seconds: float = 2.0
 

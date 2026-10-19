@@ -18,6 +18,7 @@ def main() -> None:
     if not 1 <= port <= 65535:
         raise ValueError("Invalid test port")
     settings = Settings(_env_file=None, app_env="test", database_url=None, redis_url=None,
+                        ai_notice_version=None, storage_notice_version=None,
                         request_limit_key=None, inference_control_epoch=None)
     # main.py also constructs its module-level app during import. Use the same
     # explicit settings there; never load a developer's .env for a test server.

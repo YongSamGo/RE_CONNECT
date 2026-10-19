@@ -5,6 +5,7 @@ from starlette.responses import JSONResponse
 
 from app.modules.sessions.http import cookie_names, read_cookie, write_csrf_cookie, write_session_cookie
 from app.modules.sessions.service import csrf_token, valid_csrf_cookie
+from app.modules.consents.service import ConsentActor
 
 router = APIRouter()
 
@@ -20,9 +21,10 @@ async def get_me(request: Request):
     if session is None:
         issued = await service.issue()
         session = issued.session
-    # 계정 인증/저장 대기는 #73/#74, 동의는 #21에서 연결한다. 이 경로는 익명 상태만 발급한다.
+    consents = await request.app.state.consent_service.current(ConsentActor(session.subject_id, session_digest=session.digest))
+    # 계정 인증/저장 대기는 #73/#74에서 연결한다. 이 경로는 익명 상태만 발급한다.
     response = JSONResponse(
-        {"authenticated": False, "user": None, "consents": [], "pending_save_intent": None},
+        {"authenticated": False, "user": None, "consents": [item.model_dump(mode="json") for item in consents], "pending_save_intent": None},
         headers={"Cache-Control": "no-store"},
     )
     if issued is not None:
