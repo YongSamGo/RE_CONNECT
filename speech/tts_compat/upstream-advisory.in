@@ -1,0 +1,2 @@
+# Audit only. Do not install; source is prepared from the fixed wheel and recipe.
+qwen-tts==0.1.1

@@ -68,3 +68,5 @@ GPU 종류·VRAM·동시 처리량은 이 문서에서 추정하지 않는다(Pl
 - [ ] Ollama `qwen3:4b`의 양자화 형식과 thinking 지원 여부 (`/api/show`)
 
 2026-10-18 로컬 CPU에서 faster-whisper1.2.1/CTranslate2 4.8.2/PyAV16.1.0 조합의 실제 오프라인 적재와 합성 한국어3문장 전사를 확인했다([측정 범위](../../speech/STT_RUNTIME.md)). 이는 GPU/EC2 조합 확정이나 실제 사용자 음성 품질 평가를 대신하지 않는다.
+
+같은 날 제한된12Hz 호환 source와 Torch2.14.1+cpu/Transformers5.19.0 조합으로 실제 Sohee 합성 및 같은 프로세스의 Whisper 교차 확인도 수행했다([TTS 범위와 불일치](../../speech/TTS_RUNTIME.md)). 숫자 문장의 재전사 불일치가 있어 품질 통과로 처리하지 않는다. 원본 qwen-tts의 오래된 dependency pins를 설치한 결과가 아니다.

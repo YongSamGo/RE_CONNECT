@@ -55,7 +55,7 @@ jobs:
         name: 존재하는 프로젝트 찾기
         run: |
           projects=""
-          for dir in backend worker speech; do
+          for dir in backend worker speech speech/tts_compat; do
             if [ -f "$dir/requirements.txt" ]; then
               projects="${projects:+$projects,}\"$dir\""
             fi
@@ -149,6 +149,8 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJSON(needs.detect.outputs.python_projects) }}
+    env:
+      PYTHON_PROJECT: ${{ matrix.project }}
     defaults:
       run:
         working-directory: ${{ matrix.project }}
@@ -161,20 +163,46 @@ jobs:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: 의존성·점검 도구 설치
         run: |
-          python -m pip install -r requirements.txt -r requirements-dev.txt
+          if [ "$PYTHON_PROJECT" = speech/tts_compat ]; then
+            python -m pip install --require-hashes -r requirements.txt -r requirements-dev.txt
+          else
+            python -m pip install -r requirements.txt -r requirements-dev.txt
+          fi
           python -m pip install "bandit==${BANDIT_VERSION}" "pip-audit==${PIP_AUDIT_VERSION}"
+      - name: 고정 TTS 코드 준비와 STT 의존성 공존 확인
+        if: matrix.project == 'speech/tts_compat'
+        run: |
+          python -m pip install --require-hashes -r ../requirements.txt
+          python -I ../prepare_tts_code.py
+          python -I ../prepare_tts_code.py --verify-only
+          python -m pytest -q -c ../pyproject.toml ../tests
       - name: 테스트 (pytest — 정상 입력 + 공격 시나리오)
         run: python -m pytest
       - name: 코드 보안약점 점검 (bandit)
         # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
         # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.
         run: |
-          bandit -r . \
-            --exclude ./tests,./.venv \
-            --severity-level low \
-            --confidence-level medium
+          if [ "$PYTHON_PROJECT" = speech ]; then
+            # 호환 helper는 별도 tts_compat 매트릭스로 검사한다.
+            # 외부 생성 코드는 원본/수정 후 SHA 검사 대상으로 분리한다.
+            bandit -r app prepare_models.py prepare_tts_code.py \
+              --severity-level low --confidence-level medium
+          else
+            bandit -r . --exclude ./tests,./.venv \
+              --severity-level low --confidence-level medium
+          fi
       - name: 의존성 취약점 점검 (pip-audit)
-        run: pip-audit -r requirements.txt --strict --progress-spinner off
+        run: |
+          if [ "$PYTHON_PROJECT" = speech/tts_compat ]; then
+            # 완전히 해석한 해시 잠금의 모든 전이 패키지를 OSV로 검사한다.
+            # +cpu 빌드는 PyPI 기본 wheel 재해석 대신 고정 목록 그대로 감사한다.
+            pip-audit -r requirements.txt --no-deps --disable-pip --strict \
+              --vulnerability-service osv --progress-spinner off
+            pip-audit -r upstream-advisory.in --no-deps --disable-pip --strict \
+              --vulnerability-service osv --progress-spinner off
+          else
+            pip-audit -r requirements.txt --strict --progress-spinner off
+          fi
 
   persistence:
     name: PostgreSQL Redis 통합
