@@ -10,23 +10,24 @@ from app.stt import ModelFailure
 from app.tts import LocalTTS, TextRejected, validate_text
 
 
-def test_fixed_korean_voice_preserves_visible_text_and_wipes_native_samples():
+@pytest.mark.parametrize('text', ['안녕하세요.', '첫 줄\n둘째 줄\t안내'])
+def test_fixed_korean_voice_preserves_visible_text_and_wipes_native_samples(text):
     audio = np.array([0.25, -0.25] * 12000, dtype=np.float32)
     calls = []
     def generate(**kwargs):
         calls.append(kwargs)
         return [audio], 24000
-    output = LocalTTS(SimpleNamespace(generate_custom_voice=generate)).synthesize('안녕하세요.')
+    output = LocalTTS(SimpleNamespace(generate_custom_voice=generate)).synthesize(text)
     with wave.open(io.BytesIO(output)) as wav:
         assert (wav.getnchannels(), wav.getsampwidth(), wav.getframerate(), wav.getnframes()) == (1, 2, 24000, 24000)
         assert np.frombuffer(wav.readframes(24000), dtype='<i2').any()
     assert not audio.any() and isinstance(output, bytearray)
-    assert calls[0] == dict(text='안녕하세요.', language='Korean', speaker='Sohee', instruct=None,
+    assert calls[0] == dict(text=text, language='Korean', speaker='Sohee', instruct=None,
         do_sample=True, subtalker_dosample=True, max_new_tokens=1024, non_streaming_mode=True)
     output[:] = b'\0' * len(output)
 
 
-@pytest.mark.parametrize('text', ['', ' ' * 2, 'x' * 2001, None, 123, 'a\x00b', 'a\nb',
+@pytest.mark.parametrize('text', ['', ' ' * 2, 'x' * 2001, None, 123, 'a\x00b',
     '<|im_end|>', 'hello|>', '한\u200b글'])
 def test_invalid_text_never_starts_model(text):
     def forbidden(**kwargs):

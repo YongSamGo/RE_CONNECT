@@ -1,6 +1,6 @@
 # 내부 음성 전송 계약 (#33의 백엔드 경계)
 
-이 문서는 백엔드 InternalSpeechAdapter와 별도 모델 서비스 사이의 계약이다. [로컬 STT 런타임](STT_RUNTIME.md)은 실제 디코딩·Whisper CPU 적재와 합성 한국어 전사를 확인했다. 운영 컨테이너와 실제 TTS·대상 기기/사용자 음성 검증은 남아 있으며, 전송 대역 시험을 실제 STT/TTS 성공으로 계산하지 않는다. 백엔드의 speech readiness는 두 모델이 준비되기 전까지 실패한다. 공개 /speech·전사 API는 연결됐다.
+이 문서는 백엔드 InternalSpeechAdapter와 별도 모델 서비스 사이의 계약이다. [프로세스 서비스](PROCESS_RUNTIME.md)에서 실제 CPU STT/TTS 적재·ASGI/TCP 전사/합성·Redis 슬롯·연결 해제와 종료를 확인했다. Compose 연결·운영 컨테이너·대상 기기/사용자 음성·발화 품질 검증은 남아 있으며, 전송 대역 시험을 실제 STT/TTS 성공으로 계산하지 않는다. readiness는 살아 있는 프로세스에서 두 모델이 준비된 경우에만 성공한다. 공개 /speech·전사 API는 연결됐다.
 
 주소는 코드의 `http://speech:8001`로 고정한다. 사용자 URL·모델·화자·파일 경로를 받지 않는다. 프록시 환경변수와 리다이렉트는 사용하지 않고 재시도·외부 모델 대체·파일 저장을 하지 않는다. 후속 서비스는 내부 네트워크에만 두고 호스트 포트/Nginx 공개 없이 tmpfs·읽기 전용 모델·메모리/프로세스 제한을 적용해야 한다. 서비스 배치가 아직 없으므로 현재 전송 구현만으로 컨테이너 격리를 검증했다고 주장하지 않는다.
 
@@ -20,4 +20,4 @@ ControlledSpeechAdapter는 주체 없는 호출을 거절하고 LLM과 같은 Ad
 
 일시 오류를 반환하려면 실제 종료 헤더와 503 application/json의 정확한 `{code:"RUNTIME_TEMPORARILY_UNAVAILABLE"}`를 함께 보내야 한다. 추가 필드·다른 코드·다른 media type·현재 ID가 아닌 종료는 자동 재시도 근거가 아니다. 이 응답도 내부 작업/버퍼가 정리된 뒤에만 보낼 수 있다. ControlledSpeechAdapter가 동일 예산/lease의 전체 60초 안에서 한 번 재시도한다. 직접 전송 어댑터는 재시도하지 않는다. 연결 미성립(HTTPX ConnectError/ConnectTimeout)도 요청이 시작되지 않은 경우로 분류한다. 응답 읽기/쓰기 실패·전체 시간 초과·임의 503/429는 이 분류에 포함하지 않는다. 상세는 [재시도 경계](../docs/ai/retry-boundaries.md)를 따른다.
 
-추가34건 포함 실제 PostgreSQL/Redis 전체978건/0skip 통과. 고정 목적지/텍스트와 binary payload·현재 요청 종료 신호·WAV 메타데이터 제거·readiness·크기/시간 경계·형태/길이/숨은 문자·출력 실패·프록시/redirect/압축 응답 거절·timeout/cancel·실제 Redis STT/TTS/LLM 교차 혼잡과 종료 신호가 있는/없는 슬롯 처리를 검증했다. 음성 서비스 HTTP와 모델은 대역이다. 큰 가상 오디오를 pytest ID에 넣어 Windows 준비 오류가 난 첫 실행은 짧은 ID로 수정 후 다시 통과했다. 실제 한국어 모델 품질/EC2/GPU·서비스 컨테이너/tmpfs·압축 디코더/무음은 아직 미검증이다.
+백엔드 전송 경계 도입 당시 추가34건 포함 실제 PostgreSQL/Redis 전체978건/0skip을 통과했다. 이때 음성 서비스와 모델은 대역이었다. 고정 목적지/현재 요청 종료 신호·WAV 메타데이터 제거·readiness·크기/시간·형태/숨은 문자·출력 실패·프록시/redirect/압축 응답 거절·timeout/cancel·공유 슬롯을 검증했다. 큰 가상 오디오를 pytest ID에 넣어 Windows 준비 오류가 난 첫 실행은 짧은 ID로 수정 후 다시 통과했다. 이후 실제 decoder·모델·TCP·Redis 연결은 [STT](STT_RUNTIME.md)와 [프로세스 서비스](PROCESS_RUNTIME.md)의 별도 증거를 따른다. 이들 결과로 EC2/GPU·컨테이너/tmpfs·기기나 발화 품질 통과를 주장하지 않는다.

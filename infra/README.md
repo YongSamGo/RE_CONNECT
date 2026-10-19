@@ -26,6 +26,8 @@ docker compose --env-file .env -f infra/compose.dev.yaml up -d
 
 ## 규칙
 
+로컬 CPU 음성 서비스는 별도 `compose.speech-cpu.yaml`과 [검증 안내](../speech/CONTAINER_RUNTIME.md)를 따른다. 모델 준비 후 실행하며 `python infra/check_speech_service.py`로 실제 커널 제한과 외부 통신 차단을 확인한다. 이 구성은 운영 Compose가 아니며 이미지의 미수정 OS 취약점도 안내문에 기록했다.
+
 - 인터넷에는 Nginx의 HTTPS만 공개한다. Redis·Ollama·음성 서비스는 내부 네트워크에만 둔다.
 - Redis는 RDB·AOF 영속화를 끄고, 개인정보를 영구 볼륨에 남기지 않는다.
 - 운영 PostgreSQL은 Compose 컨테이너가 아니라 비공개 RDS다. 로컬 개발·시험에서만 Compose PostgreSQL을 쓴다.
