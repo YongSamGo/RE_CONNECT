@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import Protocol
+from typing import Literal, Protocol
 from uuid import UUID, uuid4
 
 from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate, ProfileRef, ProfileConfirmResult
@@ -41,6 +41,16 @@ class RoleState:
     revision: int
     profile_version: int
     role_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ProfileDependency:
+    """지원서 조회용 표시 정보. 원래 근거 참조·본문·승인을 갱신하지 않는다."""
+
+    reference: ProfileRef
+    current_profile: ProfileRef
+    review_reasons: tuple[Literal["profile_changed"], ...]
+    based_on_previous_confirmed: bool
 
 
 class JourneyStore(Protocol):
@@ -127,6 +137,17 @@ class JourneyService:
 
     async def role_state(self, session: Session, journey_id: UUID) -> RoleState:
         return await self.store.role_state(session, journey_id)
+
+    async def profile_dependency(self, session: Session, reference: ProfileRef) -> ProfileDependency:
+        # 참조한 옛 버전의 실재성과 소유권부터 확인한다. 클라이언트의 버전 비교만 믿지 않는다.
+        snapshot = await self.resolve_profile(session, reference, require_current=False)
+        current = await self.profile(session, reference.id)
+        if current.confirmed is None:
+            raise AppError("PROFILE_NOT_CONFIRMED")
+        latest = ProfileRef(kind=reference.kind, id=reference.id, version=current.confirmed.version)
+        return ProfileDependency(snapshot.reference, latest,
+            ("profile_changed",) if snapshot.reference.version != latest.version else (),
+            current.has_unconfirmed_changes)
 
     async def set_role_exclusions(self, session: Session, journey_id: UUID, role_ids: list[str], base_revision: int) -> RoleExclusions:
         return await self.store.set_role_exclusions(session, journey_id, role_ids, base_revision)
