@@ -24,6 +24,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 체험 공고의 생성/직접 작성·편집/서버 승인·현재 승인본 복사와 남은 범위는 [신청 준비 연결 기록](src/features/preparation/JOURNEY.md)을 따른다.
 
+실제 대화 화면의 녹음/전사 수정 패널과 오디오 정리·수정 텍스트 전달 경계는 [음성 연결 기록](src/features/voice/TRANSCRIPTION.md)을 따른다.
+
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.
