@@ -28,6 +28,13 @@ async def update_draft(journey_id: UUID, draft_id: UUID, request: Request, body:
     return await request.app.state.draft_service.update(session, journey_id, draft_id, body)
 
 
+@router.get('/journeys/{journey_id}/drafts/{draft_id}', response_model=JourneyDraft, operation_id='getJourneyDraft')
+async def get_draft(journey_id: UUID, draft_id: UUID, request: Request):
+    session = await require_session(request)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else '', session.subject_id)
+    return await request.app.state.draft_service.get(session, journey_id, draft_id)
+
+
 @router.post('/journeys/{journey_id}/drafts/{draft_id}/approve', response_model=JourneyDraft, operation_id='approveJourneyDraft')
 async def approve_draft(journey_id: UUID, draft_id: UUID, request: Request, body: BaseRevision):
     session = await require_session(request, user_activity=True)
