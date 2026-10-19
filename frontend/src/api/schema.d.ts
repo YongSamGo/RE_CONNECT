@@ -1160,7 +1160,7 @@ export interface components {
                 review_reason: "missing_profile_value" | "unclear_requirement" | "age_boundary" | "reference_date_missing" | "unsupported_group" | null;
                 source_evidence: string;
                 /** @description 비교한 사용자 값. 프로필에 없으면 null */
-                user_value: components["schemas"]["RequirementValue"];
+                user_value: components["schemas"]["EligibilityUserValue"];
             }[];
             /** Format: date-time */
             evaluated_at: string;
@@ -1187,6 +1187,8 @@ export interface components {
             no_requirements: boolean;
             overall: components["schemas"]["EligibilityStatus"];
         };
+        /** @description 비교한 확정 프로필 값. null은 미확인, 빈 배열은 없음 확인이며 거주지는 단일 Region이다 */
+        EligibilityUserValue: null | number | components["schemas"]["Region"] | number[] | string[];
         /** @description 모든 오류의 공통 본문. 원본 입력·SQL·토큰·파일 경로·예외 추적을 넣지 않는다 */
         Error: {
             code: components["schemas"]["ErrorCode"];

@@ -134,6 +134,8 @@ erDiagram
 
 ## 4. 조건·추천·지원서 계약
 
+자격 대조 응답의 `user_value`는 실제 확정 프로필 값을 사용한다. `null`은 미확인, 빈 배열은 없음 확인이며 `residence_region`은 단일 Region 객체다. 조건의 비교 피연산자 `RequirementValue`와 분리한 `EligibilityUserValue` 계약을 사용해 두 의미를 섞지 않는다. 조건 피연산자의 배열은 기존처럼 한 개 이상이어야 한다.
+
 ### Requirement
 
 | 필드 | 타입 | 의미 |
