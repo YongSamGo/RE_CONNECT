@@ -43,6 +43,7 @@ from app.modules.opportunities.service import PublicOpportunityService, Unavaila
 from app.modules.journeys import router as journeys
 from app.modules.journeys.repository import RedisJourneyStore
 from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
+from app.modules.journeys.messages import JourneyMessageService
 from app.modules.eligibility import router as eligibility
 from app.modules.eligibility.service import EligibilityService
 from app.modules.roles import router as roles
@@ -127,6 +128,7 @@ def create_app(
         journey_store = RedisJourneyStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key,
                                          control_key=admission_store.control_key, epoch=settings.inference_control_epoch)
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
     app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())

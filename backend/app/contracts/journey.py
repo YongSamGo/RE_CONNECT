@@ -86,3 +86,34 @@ class ProfileConfirmResult(BaseModel):
     profile: ProfileRef
     confirmed_at: UtcDatetime
     revision: Annotated[StrictInt, Field(ge=1)]
+
+
+class MessageCreate(BaseModel):
+    model_config = CONTRACT_CONFIG
+    text: text(2000, multiline=True)
+    transcription_id: UUID | None
+    base_revision: Annotated[StrictInt, Field(ge=1, lt=2**31 - 1)]
+
+
+class MessageResult(BaseModel):
+    model_config = CONTRACT_CONFIG
+    revision: Annotated[StrictInt, Field(ge=1)]
+    user_message_id: UUID
+    assistant_message: Message | None
+    profile: ProfileDraftView
+    notices: Annotated[list[text(300)], Field(max_length=10)]
+    next_step: Literal['continue', 'review_profile']
+
+
+class ConversationTurn(BaseModel):
+    """소유 체험의 내부 문맥. 공개 대화 복원 API로 노출하지 않는다."""
+    model_config = CONTRACT_CONFIG
+    message_id: UUID
+    text: text(2000, multiline=True)
+
+
+class MessageCommit(BaseModel):
+    """완료 스크립트에서 본문/초안/멱등 응답을 함께 쓰는 내부 자료."""
+    model_config = CONTRACT_CONFIG
+    response: MessageResult
+    turns: Annotated[list[ConversationTurn], Field(min_length=1, max_length=64)]
