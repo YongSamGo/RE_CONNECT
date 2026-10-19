@@ -32,7 +32,7 @@ backend/
 
 - 모든 응답에 서버가 만든 `X-Request-ID`(`req_` + 32자 hex)를 붙인다. 클라이언트가 보낸 값은 쓰지 않는다.
 - 오류는 `{code, message, request_id}`로 돌려준다(422만 `fields` 추가). 입력값·식별자 형식이 아닌 필드 이름·예외 메시지·추적 정보는 넣지 않는다. 405는 계약에 코드가 없어 404 `NOT_FOUND`로, 계약 코드가 없는 400·415 등은 422 `VALIDATION_FAILED`로 답한다.
-- 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. 서버 로그에는 예외 종류와 `request_id`만 남는다.
+- 처리하지 못한 예외는 `UnhandledErrorMiddleware`가 500으로 바꾸고 다시 던지지 않는다. `python -m app`의 JSON 로그에는 허용한 메타데이터와 `request_id`만 남는다 ([오류·로그 정책](../docs/security/errors-and-logging.md)).
 - `/health/live`·`/health/ready`는 `/api/v1` 밖의 내부 전용 경로다. DB·Redis 실패는 503 `unavailable`, LLM·음성만 실패하면 200 `degraded`다. 연결 구현이 없는 구성 요소는 `fail`로 답한다.
 - `APP_ENV`가 `development`일 때만 `/docs`·`/openapi.json`을 연다. 값이 없으면 `production`으로 본다.
 
@@ -76,6 +76,38 @@ MSYS_NO_PATHCONV=1 docker run --rm -v "$PWD:/src" -w /src python:3.12-slim@sha25
 
 `requirements.txt`가 있으므로 CI의 Python 점검(pytest·Bandit·pip-audit)이 이 폴더에서 돈다. [dependabot.yml](../.github/dependabot.yml)의 `pip` 항목이 매주 업데이트 PR을 만든다.
 
+### Docker가 없는 환경의 Linux 대상 잠금
+
+도구 잠금 생성에 이미 사용한 uv를 운영/개발 잠금에도 쓸 수 있다. 호스트 OS 기본값으로
+해석하지 않고 Python 3.12·Linux 대상을 반드시 지정한다. 이 방식은 Linux에서 코드를
+실행한 증거가 아니므로 PR의 Linux CI 설치·테스트·취약점 검사도 확인한다.
+기존 버전은 출력 파일에서 유지하며 새 패키지에는 7일 대기 기준을 적용한다.
+
+`backend/`에서 (아래 날짜는 이번 변경의 기준이며 갱신할 때 7일 전 날짜로 바꾼다):
+
+```powershell
+python -m pip install --require-hashes -r requirements-uv.txt
+uv pip compile requirements.in --python-version 3.12 --python-platform linux --exclude-newer 2026-10-10 --generate-hashes --no-header -o requirements.txt
+uv pip compile requirements-dev.in --python-version 3.12 --python-platform linux --exclude-newer 2026-10-10 --generate-hashes --no-header -o requirements-dev.txt
+```
+
+uv 자체를 갱신할 때는 `requirements-uv.in`과 `requirements-uv.txt`를 함께 고친다.
+이번 도구 잠금 생성 명령은 위 명령에서 입력/출력 파일만 `requirements-uv.in`/`requirements-uv.txt`로 바꾼 것이다.
+[uv 공식 문서](https://docs.astral.sh/uv/pip/compile/)와 CLI의 대상 옵션을 기준으로 한다.
+
+## 영구 저장 모델
+
+`app/persistence/`에 SQLAlchemy 메타데이터·회원/동의·승인 저장본을 둔다.
+프로필/지원서 본문은 암호문 칸만 있고, 대화·전사·체험·편집 초안·OAuth 토큰·키 원문은
+저장하지 않는다. API 소유권 검사·암호화·실제 DB 마이그레이션과는 별도다.
+[모델의 관계·제약·검증 범위](../docs/data/persistence.md)를 따른다.
+
+마이그레이션은 `python -m alembic upgrade head`와 `python -m alembic check`를 사용한다.
+DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화를 검사한다.
+[개발 Compose·연결·마이그레이션](../docs/data/development-db.md)에 초기화와 검증 범위를 기록했다.
+
 ## 설정
+
+카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. 실제 회원/세션 연결(#73)·저장 대기(#74) 전에는 로그인 성공을 반환하지 않는다.
 
 설정값은 루트 `.env`에서 환경변수로 읽는다 ([.env.example](../.env.example)). 코드·테스트·로그에 비밀값을 적지 않는다.
