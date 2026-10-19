@@ -654,7 +654,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 현재 체험의 전체 역할 제외 목록 조회
+         * @description 후보 목록에 표시되지 않는 역할도 포함한다. 전체 교체 PUT에서 기존 선택을 보존하기 위해 사용한다. 확정 프로필이 없으면 409이며 조회로 체험 수명을 연장하지 않는다.
+         */
+        get: operations["getRoleExclusions"];
         /**
          * 현재 체험의 추천에서 제외할 역할 지정
          * @description 제외 목록 전체를 바꾼다. 빈 배열이면 모두 복원한다. 프로필 사실은 바뀌지 않고 저장되지도 않는다.
@@ -3392,6 +3396,37 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getRoleExclusions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 사적 자원 참조. 인증 수단이 아니며 서버가 세션 소유권을 함께 확인한다 */
+                journey_id: components["parameters"]["JourneyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 전체 제외 목록과 리비전 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    "X-Request-ID": components["headers"]["XRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleExclusions"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationFailed"];
             429: components["responses"]["TooManyRequests"];
             503: components["responses"]["ServiceUnavailable"];
         };

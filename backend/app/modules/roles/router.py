@@ -13,6 +13,13 @@ from app.modules.sessions.http import require_session
 router = APIRouter(tags=["역할"])
 
 
+@router.get("/journeys/{journey_id}/role-exclusions", response_model=RoleExclusions, operation_id="getRoleExclusions")
+async def get_exclusions(journey_id: UUID, request: Request):
+    session = await require_session(request)
+    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
+    return await request.app.state.role_service.exclusions(session, journey_id)
+
+
 @router.get("/journeys/{journey_id}/roles", response_model=RoleCandidates, operation_id="getRoleCandidates")
 async def get_roles(journey_id: UUID, request: Request, profile_version: Annotated[int | None, Query(ge=1)] = None):
     session = await require_session(request)

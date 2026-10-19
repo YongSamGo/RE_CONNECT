@@ -47,11 +47,16 @@ async def main():
         opportunities = PublicOpportunityService(SqlPublicOpportunityRepository(lambda: nullcontext(db)))
         roles = RoleService(journeys, SQLRoleCatalog(lambda: nullcontext(db)))
         app.state.recommendation_service = RecommendationService(journeys, opportunities, roles)
+        app.state.journey_service, app.state.role_service = journeys, roles
         async with httpx.AsyncClient(transport=httpx.ASGITransport(app), base_url="https://testserver") as client:
             client.cookies.set("__Host-rc_session", issued.token)
             await client.get("/api/v1/me")
             response = await client.post("/api/v1/recommendations", json={"profile": confirmation.profile.model_dump(mode="json"), "filters": {}}, headers=csrf(client))
-            print(json.dumps({"status": response.status_code, "body": response.json()}, ensure_ascii=True))
+            profile = await client.get(f"/api/v1/journeys/{id}/profile")
+            role_candidates = await client.get(f"/api/v1/journeys/{id}/roles")
+            exclusions = await client.get(f"/api/v1/journeys/{id}/role-exclusions")
+            print(json.dumps({"status": response.status_code, "body": response.json(),
+                "profile": profile.json(), "roles": role_candidates.json(), "exclusions": exclusions.json()}, ensure_ascii=True))
 
 
 asyncio.run(main())
