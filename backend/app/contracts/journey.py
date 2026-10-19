@@ -7,6 +7,7 @@ from pydantic import BaseModel, Field, StrictInt
 
 from app.contracts.fields import CONTRACT_CONFIG, text
 from app.contracts.time import UtcDatetime
+from app.contracts.profile import ProfileContent, ProfileContentInput, RecommendationField
 
 NoticeVersion = Annotated[str, Field(strict=True, pattern=r"^[a-z0-9._-]{1,32}$", max_length=32)]
 
@@ -32,8 +33,8 @@ class Message(BaseModel):
 
 class ConfirmedVersion(BaseModel):
     model_config = CONTRACT_CONFIG
-    id: UUID
     version: Annotated[StrictInt, Field(ge=1)]
+    confirmed_at: UtcDatetime
 
 
 class Journey(BaseModel):
@@ -44,3 +45,25 @@ class Journey(BaseModel):
     idle_expires_at: UtcDatetime
     first_message: Message
     confirmed: ConfirmedVersion | None
+
+
+class ProfileEvidence(BaseModel):
+    model_config = CONTRACT_CONFIG
+    path: text(200)
+    message_ids: Annotated[list[UUID], Field(min_length=1)]
+
+
+class ProfileDraftView(BaseModel):
+    model_config = CONTRACT_CONFIG
+    revision: Annotated[StrictInt, Field(ge=1)]
+    draft: ProfileContent
+    evidence: list[ProfileEvidence]
+    confirmed: ConfirmedVersion | None
+    has_unconfirmed_changes: Annotated[bool, Field(strict=True)]
+    missing_for_recommendation: list[RecommendationField]
+
+
+class ProfileUpdate(BaseModel):
+    model_config = CONTRACT_CONFIG
+    draft: ProfileContentInput
+    base_revision: Annotated[StrictInt, Field(ge=1, lt=2**31 - 1)]

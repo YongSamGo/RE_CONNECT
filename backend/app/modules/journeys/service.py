@@ -2,9 +2,10 @@
 
 from dataclasses import dataclass, field
 from typing import Protocol
-from uuid import UUID
+from uuid import UUID, uuid4
 
-from app.contracts.journey import Journey, JourneyCreate
+from app.contracts.journey import Journey, JourneyCreate, ProfileDraftView, ProfileUpdate
+from app.contracts.profile import ProfileContent
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity
 from app.modules.consents.service import ConsentActor, ConsentService
@@ -24,13 +25,15 @@ class JourneyStore(Protocol):
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
                      budget: str, key_id_digest: str) -> JourneyRecord: ...
     async def load(self, session: Session, journey_id: UUID, notice_version: str, *, user_activity: bool) -> JourneyRecord: ...
+    async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView: ...
+    async def update_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileDraftView: ...
 
 
 class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    load = create
+    load = profile = update_profile = create
 
 
 class JourneyService:
@@ -59,3 +62,24 @@ class JourneyService:
     async def load(self, session: Session, journey_id: UUID, *, user_activity: bool = False) -> JourneyRecord:
         consent = await self.consents.require(ConsentActor(session.subject_id, session_digest=session.digest), "ai_processing")
         return await self.store.load(session, journey_id, consent.notice_version, user_activity=user_activity)
+
+    async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView:
+        # 직접 읽기/편집은 모델 호출이 없어 AI 동의를 요구하지 않는다. 저장소가 주체/수명을 재검사한다.
+        return await self.store.profile(session, journey_id)
+
+    async def update_profile(self, session: Session, journey_id: UUID, body: ProfileUpdate) -> ProfileDraftView:
+        current = await self.profile(session, journey_id)
+        if body.base_revision != current.revision:
+            raise AppError("VERSION_CONFLICT")
+        existing = {item.id for item in current.draft.experiences}
+        supplied = [item.id for item in body.draft.experiences if item.id is not None]
+        if len(supplied) != len(set(supplied)) or not set(supplied) <= existing:
+            raise AppError("VALIDATION_FAILED")
+        values = body.draft.model_dump()
+        for item in values["experiences"]:
+            if item["id"] is None:
+                item["id"] = uuid4()
+        draft = ProfileContent.model_validate(values)
+        if len(draft.model_dump_json().encode("utf-8")) > 65536:
+            raise AppError("PAYLOAD_TOO_LARGE")
+        return await self.store.update_profile(session, journey_id, draft, body.base_revision)
