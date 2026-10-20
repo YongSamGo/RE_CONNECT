@@ -2,7 +2,7 @@
 
 모든 오류는 `{code, message, request_id}`(422만 `fields` 추가)로 돌려준다 (docs/api/README.md §2.5).
 원본 입력·예외 메시지·경로·추적 정보는 응답에 넣지 않는다.
-여기서는 프레임워크가 내는 HTTP 오류·422·처리하지 못한 예외만 맞춘다. 업무 오류 코드와 로그 정리는 #26(W03-07)에서 더한다.
+프레임워크 오류·422·처리하지 못한 예외·고정 업무 오류를 같은 계약으로 맞춘다.
 """
 
 import logging
@@ -18,6 +18,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
+from app.core.business_errors import ERRORS, AppError
 from app.core.request_id import REQUEST_ID_HEADER, get_request_id
 
 logger = logging.getLogger(__name__)
@@ -62,15 +63,7 @@ _REASON_BY_PYDANTIC_TYPE: dict[str, FieldReason] = {
 }
 _INVALID_TYPE_SUFFIXES = ("_type", "_parsing")
 
-MESSAGES = {
-    "UNAUTHENTICATED": "로그인이 필요합니다.",
-    "FORBIDDEN": "이 작업을 할 권한이 없습니다.",
-    "NOT_FOUND": "찾을 수 없거나 이용 시간이 지났습니다.",
-    "PAYLOAD_TOO_LARGE": "보낸 내용이 너무 큽니다.",
-    "RATE_LIMITED": "요청이 많습니다. 잠시 후 다시 시도해 주세요.",
-    "VALIDATION_FAILED": "입력 내용을 확인해 주세요.",
-    "INTERNAL_ERROR": "일시적인 문제가 생겼습니다. 잠시 뒤 다시 시도해 주세요.",
-}
+MESSAGES = {code: spec.message for code, spec in ERRORS.items()}
 
 
 class FieldError(BaseModel):
@@ -96,7 +89,7 @@ def _error_json(
     return JSONResponse(
         status_code=status_code,
         content=body.model_dump(exclude_none=True),
-        headers={**(headers or {}), REQUEST_ID_HEADER: request_id},
+        headers={**(headers or {}), "Cache-Control": "no-store", REQUEST_ID_HEADER: request_id},
     )
 
 
@@ -170,7 +163,11 @@ async def _http_exception_handler(request: Request, exc: StarletteHTTPException)
     if status_code in _CODE_BY_STATUS:
         headers = None
         retry_after = (exc.headers or {}).get("Retry-After")
-        if status_code == 429 and retry_after is not None:
+        if (
+            status_code == 429 and isinstance(retry_after, str)
+            and re.fullmatch(r"[0-9]{1,5}", retry_after)
+            and 1 <= int(retry_after) <= 86400
+        ):
             headers = {"Retry-After": retry_after}
         return error_response(request, status_code, _CODE_BY_STATUS[status_code], headers=headers)
     if 400 <= status_code < 500:
@@ -181,6 +178,16 @@ async def _http_exception_handler(request: Request, exc: StarletteHTTPException)
 
 async def _validation_exception_handler(request: Request, exc: RequestValidationError) -> JSONResponse:
     return error_response(request, 422, "VALIDATION_FAILED", fields=to_field_errors(exc.errors()))
+
+
+async def _app_exception_handler(request: Request, exc: AppError) -> JSONResponse:
+    spec = ERRORS[exc.code]
+    headers = {"Retry-After": str(exc.retry_after)} if exc.retry_after is not None else None
+    return error_response(
+        request, spec.status, exc.code,
+        fields=_BODY_FIELD_ERROR if spec.status == 422 else None,
+        headers=headers,
+    )
 
 
 class UnhandledErrorMiddleware:
@@ -211,7 +218,7 @@ class UnhandledErrorMiddleware:
             await self.app(scope, receive, send_tracking_start)
         except Exception as exc:
             request_id = get_request_id(Request(scope))
-            # 예외 메시지에 입력·경로가 섞일 수 있어 종류만 남긴다. 추적 정보를 남기는 방식은 #26에서 정한다.
+            # 예외 원문은 남기지 않는다. 운영 JSON formatter는 아래 메시지·인자도 출력하지 않는다.
             logger.error("처리하지 못한 예외: type=%s request_id=%s", type(exc).__name__, request_id)
             if response_started:
                 # 이미 보낸 응답은 바꿀 수 없다. 서버가 연결을 닫게 두고 원문은 넘기지 않는다.
@@ -223,3 +230,4 @@ def register_error_handlers(app: FastAPI) -> None:
     """HTTP 오류·422 처리기를 등록한다. 처리하지 못한 예외는 UnhandledErrorMiddleware가 맡는다."""
     app.add_exception_handler(StarletteHTTPException, _http_exception_handler)
     app.add_exception_handler(RequestValidationError, _validation_exception_handler)
+    app.add_exception_handler(AppError, _app_exception_handler)
