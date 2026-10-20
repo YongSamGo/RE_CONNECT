@@ -26,7 +26,7 @@ Redis Lua는 세션과 state를 같은 원자 연산에서 검사한다. 세션�
 
 ## 회원 연결의 완료 처리기
 
-현재 기본 CompletionHandler는 성공을 만들지 않는다. save는 저장 대기 연결 전 expired, reauth는 회원 연결 전 failed다. login은 제공자 코드 교환·신원 확인 뒤에도 #73의 실제 완료 처리기가 연결되기 전에는 failed다. 테스트의 완료 처리기는 대역이며 운영 로그인이 됐다는 증거가 아니다. `/me`는 기존 익명 응답이다.
+연결되지 않은 CompletionHandler의 기본 대체 구현은 성공을 만들지 않는다. 현재 main은 #73의 실제 MemberService를 연결한다([회원 세션](member-sessions.md)). login은 실제 User·새 세션을 연결하고 reauth는 같은 계정만 재인증한다. save는 #74 저장 대기 연결 전 expired다. 제공자 대역만 쓰는 단위 시험과 실제 DB/Redis 결합 검증을 구분한다.
 
 CompletionHandler.eligible은 save 대기/회원 reauth 가능 여부를 시작 전에 검사한다. complete는 최소 Identity.subject와 시작 Session/목적을 받는다. 외부 대기 중 회수가 가능하므로 #73/#74에서는 세션/계정 상태를 다시 확인하고 원자적으로 처리해야 한다.
 

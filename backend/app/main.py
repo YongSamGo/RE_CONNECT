@@ -30,6 +30,11 @@ from app.modules.sessions import router as sessions
 from app.modules.auth import router as auth
 from app.modules.auth.service import OAuthService, UnavailableFlowStore
 from app.modules.auth.repository import RedisFlowStore
+from app.modules.auth.accounts import SqlAccountRepository, UnavailableAccountRepository
+from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberStore
+from app.modules.auth.members import MemberService
+from app.core.business_errors import AppError
+from sqlalchemy.orm import sessionmaker
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
@@ -99,7 +104,20 @@ def create_app(
             and settings.kakao_rest_api_key.get_secret_value().strip() and settings.kakao_client_secret.get_secret_value().strip()):
         kakao = KakaoAdapter(settings.kakao_rest_api_key, settings.kakao_client_secret, settings.kakao_app_id,
                              settings.public_origin + API_PREFIX + "/auth/kakao/callback")
-    app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao)
+    async def transition(session):
+        hook = getattr(app.state, "session_transition_hook", None)
+        if hook is not None:
+            await hook(session)
+        elif getattr(app.state, "journey_service", None) is not None or getattr(app.state, "save_intent_service", None) is not None:
+            # 체험/저장 대기 모듈을 합친 뒤 실제 정리 연결 없이 이전 원문을 남기지 않는다.
+            raise AppError("SERVICE_UNAVAILABLE")
+
+    app.state.member_service = MemberService(
+        SqlAccountRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAccountRepository(),
+        RedisMemberStore(redis_client) if redis_client is not None else UnavailableMemberStore(),
+        app.state.session_service, transition=transition)
+    app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao,
+                                          app.state.member_service)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)

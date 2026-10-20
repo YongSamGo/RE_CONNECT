@@ -24,6 +24,12 @@ class SqlAccountRepository:
         self.transaction = transaction
 
     @staticmethod
+    def _limits(db):
+        if db.get_bind().dialect.name == "postgresql":
+            db.execute(text("SET LOCAL statement_timeout = 5000"))
+            db.execute(text("SET LOCAL lock_timeout = 1000"))
+
+    @staticmethod
     def _account(row):
         if row is None or row["status"] != "active":
             return None
@@ -37,9 +43,7 @@ class SqlAccountRepository:
         try:
             with self.transaction() as db:
                 dialect = db.get_bind().dialect.name
-                if dialect == "postgresql":
-                    db.execute(text("SET LOCAL statement_timeout = 5000"))
-                    db.execute(text("SET LOCAL lock_timeout = 1000"))
+                self._limits(db)
                 insert = {"postgresql": pg_insert, "sqlite": sqlite_insert}.get(dialect)
                 if insert is None:
                     raise AppError("SERVICE_UNAVAILABLE")
@@ -57,7 +61,26 @@ class SqlAccountRepository:
     def get(self, account_id: UUID) -> Account | None:
         try:
             with self.transaction() as db:
+                self._limits(db)
                 row = db.execute(select(User.__table__).where(User.id == account_id)).mappings().one_or_none()
                 return self._account(row)
         except SQLAlchemyError:
             raise AppError("SERVICE_UNAVAILABLE") from None
+
+    def find(self, identity: Identity) -> Account | None:
+        identity = Identity(identity.subject)
+        try:
+            with self.transaction() as db:
+                self._limits(db)
+                row = db.execute(select(User.__table__).where(User.kakao_subject == identity.subject)).mappings().one_or_none()
+                return self._account(row)
+        except SQLAlchemyError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+
+class UnavailableAccountRepository:
+    def get(self, *args):
+        raise AppError("SERVICE_UNAVAILABLE")
+
+    link = get
+    find = get

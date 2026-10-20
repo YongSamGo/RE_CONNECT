@@ -1,5 +1,7 @@
 # 익명 세션·소유권 경계 (W03-01)
 
+회원 연결은 [W10-02](member-sessions.md)를 따른다. 아래는 익명 bootstrap의 경계다. 현재 `/me`는 실제 서버 회원 결합이 있는 경우 회원 뷰를 반환하며, 회원 로그인은 익명 rotate와 별도의 원자 전환을 쓴다.
+
 관련 #20. `/api/v1/me`가 익명 세션과 서명된 CSRF 쿠키를 발급한다. 회원 로그인·MFA·
 동의·저장 대기는 #73/#52/#21/#74에서 연결하며 여기서는 authenticated=false, user=null,
 consents=[], pending_save_intent=null이다. Redis가 없거나 실패하면 503이며 메모리 세션으로 대체하지 않는다.

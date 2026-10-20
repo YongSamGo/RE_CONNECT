@@ -6,7 +6,7 @@ from uuid import UUID
 from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
-from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS, Session, StoreUnavailable
+from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS, StoreUnavailable, parse_session
 
 _CREATE = """
 if redis.call('EXISTS', KEYS[1]) == 1 then return {} end
@@ -17,7 +17,7 @@ redis.call('PEXPIRE', KEYS[1], tonumber(ARGV[3]))
 return {ARGV[1], tostring(now), tostring(now), ARGV[2], tostring(now)}
 """
 _LOAD = """
-local v = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'csrf_secret')
+local v = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'csrf_secret', 'user_id')
 if not v[1] then return {} end
 local t = redis.call('TIME')
 local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
@@ -31,9 +31,10 @@ if ARGV[3] == '1' then
     redis.call('HSET', KEYS[1], 'last_ms', now)
     redis.call('PEXPIRE', KEYS[1], math.min(tonumber(ARGV[1]), created + tonumber(ARGV[2]) - now))
 end
-return {v[1], v[2], v[3], v[4], tostring(now)}
+return {v[1], v[2], v[3], v[4], tostring(now), v[5] or ''}
 """
 _ROTATE = """
+if redis.call('HGET', KEYS[1], 'user_id') then return redis.error_reply('Authenticated transition required') end
 local v = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'csrf_secret')
 if not v[1] or redis.call('EXISTS', KEYS[2]) == 1 then return {} end
 local t = redis.call('TIME')
@@ -64,16 +65,7 @@ class RedisSessionStore:
 
     @staticmethod
     def _parse(values, digest):
-        if not values:
-            return None
-        try:
-            subject, created, last, secret, now = values
-            created, last, now = int(created), int(last), int(now)
-            if not 0 <= created <= last <= now or not re.fullmatch(r"[0-9a-f]{64}", secret):
-                raise ValueError
-            return Session(UUID(subject), created, last, now, secret, digest)
-        except (ValueError, TypeError):
-            raise StoreUnavailable from None
+        return parse_session(values, digest)
 
     async def create(self, digest, subject_id, csrf_secret):
         try:

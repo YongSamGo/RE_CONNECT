@@ -28,6 +28,7 @@ class Session:
     now_ms: int
     csrf_secret: str = field(repr=False)
     digest: str = field(repr=False)
+    user_id: UUID | None = None
 
 
 @dataclass(frozen=True)
@@ -38,6 +39,23 @@ class IssuedSession:
 
 class StoreUnavailable(Exception):
     pass
+
+
+def parse_session(values, digest):
+    if not values:
+        return None
+    try:
+        if len(values) == 6:
+            subject, created, last, secret, now, user = values
+        else:
+            subject, created, last, secret, now = values
+            user = ""
+        created, last, now = int(created), int(last), int(now)
+        if not 0 <= created <= last <= now or not re.fullmatch(r"[0-9a-f]{64}", secret):
+            raise ValueError
+        return Session(UUID(subject), created, last, now, secret, digest, UUID(user) if user else None)
+    except (ValueError, TypeError):
+        raise StoreUnavailable from None
 
 
 class SessionStore(Protocol):
