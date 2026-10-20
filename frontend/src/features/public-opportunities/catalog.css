@@ -1,0 +1,29 @@
+.catalog-form { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.catalog-keyword { grid-column: 1 / -1; }
+.catalog-form .error-summary { grid-column: 1 / -1; }
+.catalog-form .actions { margin-top: 0; }
+.catalog-form input, .catalog-form select { width: 100%; min-width: 0; min-height: 52px; border: 1px solid #7f8b7d; border-radius: 8px; padding: 12px; font: inherit; color: var(--ink); background: #fff; }
+.catalog-form .field-hint { margin: 8px 0 0; }
+.catalog-results h2 { font-size: 26px; }
+.applied-search { color: var(--muted); }
+.opportunity-list { list-style: none; padding: 0; margin: 28px 0; display: grid; gap: 20px; }
+.opportunity-card { background: #fff; padding: 28px; border: 1px solid var(--line); border-radius: 16px; }
+.opportunity-card h3 { font-size: 24px; margin-bottom: 8px; }
+.opportunity-card .organization { color: var(--muted); }
+.opportunity-labels { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+.opportunity-labels span { background: var(--surface); border-radius: 6px; padding: 4px 10px; font-size: 16px; }
+.opportunity-card dl { margin: 20px 0 0; }
+.opportunity-card dl > div { display: grid; grid-template-columns: 90px 1fr; gap: 16px; margin-top: 8px; }
+.opportunity-card dt { color: var(--muted); }
+.opportunity-card dd { margin: 0; }
+.catalog-note { font-size: 16px; color: var(--muted); }
+.opportunity-card .catalog-note { margin-bottom: 0; }
+.catalog-pagination { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+@media (max-width: 500px) { .catalog-form { grid-template-columns: 1fr; gap: 20px; } .opportunity-card { padding: 20px; } .opportunity-card dl > div { grid-template-columns: 1fr; gap: 0; margin-top: 16px; } }
+.public-detail > .text-link { display: inline-block; margin: 28px 0; }
+.opportunity-detail { margin-bottom: 24px; overflow-wrap: anywhere; }
+.opportunity-detail h2 { font-size: 28px; }
+.opportunity-detail h3 { margin-top: 32px; }
+.detail-facts { display: grid; gap: 16px; }
+.detail-facts dt { font-weight: 700; }
+.detail-facts dd { margin: 4px 0 0; }
