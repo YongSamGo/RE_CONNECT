@@ -30,10 +30,17 @@ class FakeStore:
         return self.records.get(digest)
 
 
+class HttpAdmissionStub:
+    """세션/CSRF HTTP 시험만 격리한다. 한도 판정은 실제 Redis 전용 시험에서 한다."""
+    async def check_http(self, *args):
+        return None
+
+
 def app_and_store(env="test"):
     app = create_app(Settings(_env_file=None, app_env=env))
     store = FakeStore()
     app.state.session_service = SessionService(store)
+    app.state.admission_service = HttpAdmissionStub()
     resources = {}
 
     @app.get("/private/{resource_id}")

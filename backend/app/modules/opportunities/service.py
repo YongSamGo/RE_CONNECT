@@ -1,5 +1,7 @@
 """공개 조회 계약. 읽기는 세션·AI·Redis와 무관하게 DB 공개 포인터를 따른다."""
 
+from __future__ import annotations
+
 from datetime import date, datetime, UTC
 from typing import Annotated, Protocol
 from uuid import UUID
@@ -9,6 +11,7 @@ from pydantic_core import PydanticCustomError
 
 from app.contracts.fields import CONTRACT_CONFIG, ActivityType, text
 from app.contracts.opportunity import OpportunityContent, RecruitmentStatus
+from app.contracts.preparation import Preparation, OpportunityRef
 from app.contracts.regions import Province, Region, is_known_district
 from app.contracts.time import UtcDatetime
 from app.core.business_errors import AppError
@@ -76,6 +79,7 @@ class OpportunityPage(BaseModel):
 class PublicOpportunityRepository(Protocol):
     def list(self, search: OpportunitySearch, now: datetime) -> OpportunityPage: ...
     def get(self, opportunity_id: UUID, now: datetime) -> PublicOpportunity | None: ...
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]: ...
 
 
 class PublicOpportunityService:
@@ -85,15 +89,30 @@ class PublicOpportunityService:
     def list(self, search: OpportunitySearch) -> OpportunityPage:
         return self.repository.list(search, datetime.now(UTC))
 
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]:
+        return self.repository.recommendation_candidates(now)
+
     def get(self, opportunity_id: UUID) -> PublicOpportunity:
         result = self.repository.get(opportunity_id, datetime.now(UTC))
         if result is None:
             raise AppError("NOT_FOUND")
         return result
 
+    def preparation(self, opportunity_id: UUID) -> Preparation:
+        # 상세와 같은 공개 포인터/상태를 한 번만 조회한다. 원문 파싱·LLM 추정·외부 요청은 없다.
+        opportunity = self.get(opportunity_id)
+        fields = set(Preparation.model_fields) - {"opportunity"}
+        try:
+            return Preparation(
+                opportunity=OpportunityRef(id=opportunity.id, version=opportunity.version),
+                **opportunity.model_dump(include=fields),
+            )
+        except ValidationError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
 
 class UnavailableOpportunityRepository:
     def list(self, *args):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    get = list
+    get = recommendation_candidates = list

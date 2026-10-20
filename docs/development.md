@@ -55,9 +55,9 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 | 백엔드 의존성 설치 | `cd backend` 후 `pip install -r requirements.txt -r requirements-dev.txt` | 사용 가능 |
 | 백엔드 테스트 | `cd backend` 후 `python -m pytest` | 사용 가능 |
 | 백엔드 개발 서버 | `cd backend` 후 `python -m app` (안전한 JSON 로그, API 문서는 `APP_ENV=development`일 때만 `/docs`, 2절) | 사용 가능. DB·Redis 연결은 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
-| 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
-| 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
-| 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
+| 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
+| 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
+| 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
 | 공고 샘플 수집 | `python worker/tools/fetch_source_samples.py <source> --operation <op>` | 사용 가능 |
 
 가상환경 활성화는 macOS·Linux에서 `source .venv/bin/activate`, PowerShell에서 `.venv\Scripts\Activate.ps1`이다.

@@ -13,7 +13,7 @@ backend/
 │   ├── core/             # 설정·요청 추적 ID·공통 오류 처리
 │   ├── adapters/         # LLM·Speech Adapter 인터페이스(Protocol). 구현은 각 작업에서 더한다
 │   ├── contracts/        # 공통 데이터 타입(프로필·공고·조건)·지역 목록·시각 처리 (W02-04)
-│   └── modules/          # 기능 모듈 (Plan/03 §2). 지금은 operations(상태 확인)·regions(지역 목록)가 있다
+│   └── modules/          # operations(상태 확인)·regions(지역 목록)·generation(내부 근거 검증)
 ├── tests/                # 이 패키지의 단위·통합 테스트 (pytest)
 ├── pyproject.toml        # pytest 설정만 둔다
 ├── requirements.in       # 직접 쓰는 운영 의존성
@@ -47,6 +47,10 @@ backend/
 - 지역은 [regions.py](app/contracts/regions.py)의 목록으로 검증한다. 시·군·구는 영문 slug이고, 경기도는 시·군 단위, 인천은 2026-07-01 행정체제 개편 뒤 기준이다. 목록을 바꾸면 `REGION_CATALOG_VERSION`을 올린다. 외부 출처의 지역코드 매핑은 수집기가 출처별로 맡는다.
 - 자격조건은 [requirement.py](app/contracts/requirement.py)의 field·operator 허용표에 있는 조합만 받는다. 해석하지 못한 조건은 `field=other`, `clarity=needs_review`로 남긴다.
 - 시각은 시간대가 있어야 하고 UTC로 바꿔 다룬다. 한국 날짜는 [time.py](app/contracts/time.py)의 `kst_date`·`kst_today`로만 계산한다. 한국은 서머타임이 없어 고정 오프셋 +09:00을 쓴다.
+
+## 근거를 제한하는 LLM 처리
+
+LLM의 경험 추출·질문·지원서 내부 근거 검증은 [W04-03 안내](../docs/ai/generation.md)에 있다. 확인 텍스트의 경험 추출·질문은 [메시지 API](../docs/data/journey-messages.md)에 연결했으며 결과는 미승인 초안이다. 실제 모델 품질·전사·지원서 업무 연결은 별도다.
 
 ## 의존성 고정
 
@@ -109,5 +113,13 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 ## 설정
 
 카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. [회원 세션](../docs/security/member-sessions.md)은 실제 User 연결·세션 교체·현재 역할 조회·로그아웃/재인증을 연결한다. 저장 대기(#74)·실제 MFA(#52)·카카오 정상 승인은 후속이다.
+프로필 명시적 확정·불변 버전·현재/과거 확정 참조 조회와 재확정 후 파생 결과의 버전 검사는 [확정 프로필 안내](../docs/data/profile-confirmation.md)를 따른다. 지원서 근거 변경의 표시용 내부 인터페이스는 실제 지원서 조회에 후속 연결해야 한다.
+
+동의 후 익명 체험 생성·유휴/절대 수명·생성 멱등성은 [체험 수명 안내](../docs/data/journeys.md)를 따른다. 회원 저장본 가져오기와 실제 대화·본문 저장은 후속 API에 연결해야 한다.
+
+삭제·만료·취소 후 늦은 결과 참조 완료를 막는 내부 경계는 [결과 수명 안내](../docs/security/result-lifecycle.md)를 따른다. 실제 결과 본문과 회원 영구 저장은 같은 원자 연산/트랜잭션으로 후속 연결해야 한다.
+
+목적별 동의 수락과 현재 버전 검사는 [동의 검사 안내](../docs/security/consents.md)를 따른다. 실제 안내문 확정 전에는 `AI_NOTICE_VERSION`·`STORAGE_NOTICE_VERSION`을 설정하지 않는다. 회원용 저장 동의 HTTP 연결은 회원 인증 구현 후 진행한다.
+공개 공고의 공식 서류·접수 방법·절차 조회는 [신청 준비 안내](../docs/data/application-preparation.md)를 따른다. 공고에 없는 서류를 추정하지 않고 명시되지 않은 목록은 `null`로 유지한다.
 
 설정값은 루트 `.env`에서 환경변수로 읽는다 ([.env.example](../.env.example)). 코드·테스트·로그에 비밀값을 적지 않는다.

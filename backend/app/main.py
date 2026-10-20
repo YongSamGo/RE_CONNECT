@@ -26,6 +26,9 @@ from app.modules.operations.readiness import (
     ReadinessService,
 )
 from app.modules.regions import router as regions
+from app.modules.consents import router as consents
+from app.modules.consents.repository import RedisConsentStore, SQLConsentStore, RoutedConsentStore
+from app.modules.consents.service import ConsentService, UnavailableConsentStore
 from app.modules.sessions import router as sessions
 from app.modules.auth import router as auth
 from app.modules.auth.service import OAuthService, UnavailableFlowStore
@@ -38,11 +41,30 @@ from sqlalchemy.orm import sessionmaker
 from app.modules.sessions.repository import RedisSessionStore
 from app.modules.sessions.service import SessionService, UnavailableSessionStore
 from app.modules.sessions.middleware import RequestSecurityMiddleware
+from app.modules.requests.repository import RedisRequestStore
+from app.modules.requests.service import RequestService, UnavailableRequestStore
+from app.modules.admission.llm import ControlledLLMAdapter
+from app.modules.admission.repository import RedisAdmissionStore
+from app.modules.admission.service import AdmissionService, UnavailableAdmissionService
 from app.modules.opportunities import router as opportunities
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.service import PublicOpportunityService, UnavailableOpportunityRepository
 from app.modules.opportunities.ingestion import IngestionService, UnavailableIngestionRepository
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository
+from app.modules.journeys import router as journeys
+from app.modules.journeys.repository import RedisJourneyStore
+from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
+from app.modules.journeys.messages import JourneyMessageService
+from app.modules.eligibility import router as eligibility
+from app.modules.eligibility.service import EligibilityService
+from app.modules.roles import router as roles
+from app.modules.roles.repository import SQLRoleCatalog, UnavailableRoleCatalog
+from app.modules.roles.service import RoleService
+from app.modules.recommendations import router as recommendations
+from app.modules.recommendations.service import RecommendationService
+from app.modules.drafts import router as drafts
+from app.modules.drafts.repository import RedisDraftStore, UnavailableDraftStore
+from app.modules.drafts.service import DraftService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -90,14 +112,39 @@ def create_app(
         openapi_url="/openapi.json" if docs_enabled else None,
     )
 
-    llm_adapter = build_llm_adapter(settings)
+    admission = UnavailableAdmissionService()
+    admission_store = None
+    if redis_client is not None and settings.request_limit_key is not None and settings.inference_control_epoch is not None:
+        try:
+            admission_store = RedisAdmissionStore(redis_client, epoch=settings.inference_control_epoch)
+            admission = AdmissionService(admission_store, identity_key=bytes.fromhex(settings.request_limit_key.get_secret_value()))
+        except ValueError:
+            # 설정 원문·비밀키를 예외/로그로 내보내지 않고 기능만 중단한다.
+            admission = UnavailableAdmissionService()
+    app.state.admission_service = admission
+    llm_adapter = ControlledLLMAdapter(build_llm_adapter(settings), admission)
     app.state.llm_adapter = llm_adapter
 
     app.state.db_engine = engine
     app.state.redis = redis_client
+    session_store = RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore()
+    app.state.session_service = SessionService(session_store)
+    anonymous_consents = RedisConsentStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableConsentStore()
+    member_consents = SQLConsentStore(engine) if engine is not None else UnavailableConsentStore()
+    app.state.consent_service = ConsentService(
+        RoutedConsentStore(anonymous_consents, member_consents),
+        ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,
+    )
+    request_store = RedisRequestStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableRequestStore()
+    app.state.request_service = RequestService(request_store)
+    journey_store = UnavailableJourneyStore()
+    if redis_client is not None and admission_store is not None and isinstance(admission, AdmissionService):
+        journey_store = RedisJourneyStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key,
+                                         control_key=admission_store.control_key, epoch=settings.inference_control_epoch)
+    app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
-    app.state.session_service = SessionService(RedisSessionStore(redis_client) if redis_client is not None else UnavailableSessionStore())
     kakao = None
     if (settings.public_origin is not None and settings.kakao_rest_api_key is not None
             and settings.kakao_client_secret is not None and settings.kakao_app_id is not None
@@ -118,6 +165,11 @@ def create_app(
         app.state.session_service, transition=transition)
     app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao,
                                           app.state.member_service)
+    app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
+    app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect) if engine is not None else UnavailableRoleCatalog())
+    app.state.recommendation_service = RecommendationService(app.state.journey_service, app.state.opportunity_service, app.state.role_service)
+    draft_store = RedisDraftStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableDraftStore()
+    app.state.draft_service = DraftService(draft_store, app.state.journey_service, app.state.opportunity_service, llm_adapter)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -140,7 +192,13 @@ def create_app(
     app.include_router(regions.router, prefix=API_PREFIX)
     app.include_router(sessions.router, prefix=API_PREFIX)
     app.include_router(auth.router, prefix=API_PREFIX)
+    app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
+    app.include_router(journeys.router, prefix=API_PREFIX)
+    app.include_router(eligibility.router, prefix=API_PREFIX)
+    app.include_router(roles.router, prefix=API_PREFIX)
+    app.include_router(recommendations.router, prefix=API_PREFIX)
+    app.include_router(drafts.router, prefix=API_PREFIX)
 
     return app
 

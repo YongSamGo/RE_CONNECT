@@ -6,8 +6,15 @@ from uuid import UUID
 from fastapi import APIRouter, Query, Request, Response
 
 from app.modules.opportunities.service import OpportunityPage, OpportunitySearch, PublicOpportunity
+from app.contracts.preparation import Preparation
 
 router = APIRouter(tags=["공고"])
+
+
+@router.get("/opportunities/{opportunity_id}/preparation", response_model=Preparation, operation_id="getPreparation")
+def get_preparation(opportunity_id: UUID, request: Request, response: Response):
+    response.headers["Cache-Control"] = "no-store"
+    return request.app.state.opportunity_service.preparation(opportunity_id)
 
 
 @router.get("/opportunities", response_model=OpportunityPage, operation_id="listOpportunities")
