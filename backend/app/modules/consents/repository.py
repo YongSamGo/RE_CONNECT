@@ -153,3 +153,12 @@ class RoutedConsentStore:
 
     async def current(self, actor, purpose):
         return await self._store(actor).current(actor, purpose)
+
+    async def bind_session(self, actor, notice_version):
+        if actor.member_id is None:
+            raise ConsentSubjectExpired
+        state = await self.member.current(actor, 'ai_processing')
+        if state is None or state.notice_version != notice_version:
+            raise ConsentSubjectExpired
+        anonymous = ConsentActor(actor.subject_id, session_digest=actor.session_digest)
+        await self.anonymous.grant(anonymous, ConsentCreate(purpose='ai_processing', notice_version=notice_version))

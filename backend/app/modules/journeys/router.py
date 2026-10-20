@@ -9,6 +9,7 @@ from uuid import UUID
 from app.modules.admission.service import InferenceIdentity
 from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
+from app.modules.auth.http import require_member
 
 router = APIRouter(tags=["체험"])
 
@@ -17,8 +18,9 @@ router = APIRouter(tags=["체험"])
 async def create_message(journey_id: UUID, request: Request, body: MessageCreate):
     session = await require_session(request, user_activity=True)
     peer = request.client.host if request.client else ''
+    account = await require_member(request) if session.user_id is not None else None
     await request.app.state.admission_service.check_http(peer, session.subject_id)
-    return await request.app.state.journey_message_service.send(session, InferenceIdentity(session.subject_id, peer),
+    return await request.app.state.journey_message_service.send(session, InferenceIdentity(session.subject_id, peer, account.id if account else None),
         journey_id, idempotency_key(request), body)
 
 
@@ -27,6 +29,8 @@ async def end_journey(journey_id: UUID, request: Request):
     session = await require_session(request, user_activity=True)
     await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
     await request.app.state.journey_service.end(session, journey_id)
+    if session.user_id is not None:
+        await request.app.state.save_intent_service.drain(session)
     return Response(status_code=204)
 
 
@@ -34,8 +38,9 @@ async def end_journey(journey_id: UUID, request: Request):
 async def create_journey(request: Request, body: JourneyCreate):
     session = await require_session(request, user_activity=True)
     peer = request.client.host if request.client else ""
+    account = await require_member(request) if session.user_id is not None else None
     await request.app.state.admission_service.check_http(peer, session.subject_id)
-    return await request.app.state.journey_service.create(session, InferenceIdentity(session.subject_id, peer),
+    return await request.app.state.journey_service.create(session, InferenceIdentity(session.subject_id, peer, account.id if account else None),
                                                            idempotency_key(request), body)
 
 

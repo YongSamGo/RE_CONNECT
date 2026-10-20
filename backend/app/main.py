@@ -36,6 +36,10 @@ from app.modules.auth.repository import RedisFlowStore
 from app.modules.auth.accounts import SqlAccountRepository, UnavailableAccountRepository
 from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberStore
 from app.modules.auth.members import MemberService
+from app.core.encryption import ContentCipher, EncryptionKeyRing, EncryptionUnavailable
+from app.modules.saved_profiles import router as saved_profiles
+from app.modules.saved_profiles.repository import SqlProfileRepository
+from app.modules.saved_profiles.service import SavedProfileService
 from app.modules.save_intents import router as save_intents
 from app.modules.save_intents.repository import RedisSaveIntentStore, UnavailableSaveIntentStore
 from app.modules.save_intents.service import SaveIntentService
@@ -175,6 +179,12 @@ def create_app(
         app.state.member_service, app.state.consent_service,
         SqlSaveIntentPolicy(sessionmaker(engine).begin) if engine is not None else UnavailableSaveIntentPolicy())
     app.state.member_service.save_intents = app.state.save_intent_service
+    try:
+        cipher = ContentCipher(EncryptionKeyRing.from_settings(settings))
+    except EncryptionUnavailable:
+        cipher = None
+    app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
+        app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
     app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao,
                                           app.state.member_service)
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
@@ -205,6 +215,7 @@ def create_app(
     app.include_router(sessions.router, prefix=API_PREFIX)
     app.include_router(auth.router, prefix=API_PREFIX)
     app.include_router(save_intents.router, prefix=API_PREFIX)
+    app.include_router(saved_profiles.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)

@@ -102,3 +102,13 @@ class ConsentService:
             if state.purpose == purpose:
                 return state
         raise AppError("CONSENT_REQUIRED")
+
+    async def bind_session(self, actor: ConsentActor, notice_version: str):
+        if actor.member_id is None:
+            return
+        await self.require(actor, 'ai_processing', notice_version=notice_version)
+        try:
+            await self.store.bind_session(actor, notice_version)
+        except (ConsentStoreUnavailable, ConsentSubjectExpired):
+            raise AppError('SERVICE_UNAVAILABLE') from None
+        await self.require(actor, 'ai_processing', notice_version=notice_version)

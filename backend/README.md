@@ -112,7 +112,7 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 
 ## 설정
 
-카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. [회원 세션](../docs/security/member-sessions.md)은 실제 User 연결·세션 교체·현재 역할 조회·로그아웃/재인증을 연결한다. [승인 자료의 일회 전달](../docs/data/save-intents.md)은 정확한 대기/state 결합·새 회원 세션 이전·명시 동의/교체 기준 뒤의 소비를 연결한다. 실제 영구 저장 API(#75/#76)·MFA(#52)·카카오 정상 승인은 후속이다.
+카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. [회원 세션](../docs/security/member-sessions.md)은 실제 User 연결·세션 교체·현재 역할 조회·로그아웃/재인증을 연결한다. [승인 자료의 일회 전달](../docs/data/save-intents.md)은 정확한 대기/state 결합·새 회원 세션 이전·명시 동의/교체 기준 뒤의 소비를 연결한다. [프로필 암호화 저장](../docs/data/saved-profiles.md)은 현재 회원·동의·교체 기준과 SQL 응답 재전송을 연결한다. 지원서 결합 저장(#76)·MFA(#52)·카카오 정상 승인은 후속이다.
 프로필 명시적 확정·불변 버전·현재/과거 확정 참조 조회와 재확정 후 파생 결과의 버전 검사는 [확정 프로필 안내](../docs/data/profile-confirmation.md)를 따른다. 지원서 근거 변경의 표시용 내부 인터페이스는 실제 지원서 조회에 후속 연결해야 한다.
 
 동의 후 익명 체험 생성·유휴/절대 수명·생성 멱등성은 [체험 수명 안내](../docs/data/journeys.md)를 따른다. 회원 저장본 가져오기와 실제 대화·본문 저장은 후속 API에 연결해야 한다.

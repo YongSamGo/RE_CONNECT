@@ -93,10 +93,12 @@ class JourneyService:
         if body.saved_profile is not None:
             # #42/#73의 실제 회원·저장본 소유권 확인 전에는 헤더/본문의 회원 사칭을 받지 않는다.
             raise AppError("UNAUTHENTICATED")
-        if identity.subject_id != session.subject_id or identity.account_id is not None:
+        if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError("NOT_FOUND")
-        await self.consents.require(ConsentActor(session.subject_id, session_digest=session.digest), "ai_processing",
+        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest)
+        await self.consents.require(actor, "ai_processing",
                                     notice_version=body.ai_notice_version)
+        await self.consents.bind_session(actor, body.ai_notice_version)
         try:
             key_id = UUID(key)
             if str(key_id) != key.lower():
@@ -109,7 +111,9 @@ class JourneyService:
         return record.view
 
     async def load(self, session: Session, journey_id: UUID, *, user_activity: bool = False) -> JourneyRecord:
-        consent = await self.consents.require(ConsentActor(session.subject_id, session_digest=session.digest), "ai_processing")
+        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest)
+        consent = await self.consents.require(actor, "ai_processing")
+        await self.consents.bind_session(actor, consent.notice_version)
         return await self.store.load(session, journey_id, consent.notice_version, user_activity=user_activity)
 
     async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView:

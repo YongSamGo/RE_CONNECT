@@ -26,7 +26,7 @@ class JourneyMessageService:
         self.journeys, self.requests, self.llm = journeys, requests, llm
 
     async def send(self, session: Session, identity: InferenceIdentity, journey_id: UUID, key: str, body: MessageCreate) -> MessageResult:
-        if identity.subject_id != session.subject_id or identity.account_id is not None:
+        if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError('NOT_FOUND')
         record = await self.journeys.load(session, journey_id)
         if body.transcription_id is not None:

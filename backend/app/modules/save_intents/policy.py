@@ -15,7 +15,7 @@ class SqlSaveIntentPolicy:
         self.transaction = transaction
 
     @staticmethod
-    def _check(db, user_id, notice=None, base=None):
+    def _check(db, user_id, notice=None, base=None, check_base=True):
         if db.bind.dialect.name == 'postgresql':
             db.execute(text("SET LOCAL statement_timeout = '5s'"))
             db.execute(text("SET LOCAL lock_timeout = '1s'"))
@@ -28,7 +28,7 @@ class SqlSaveIntentPolicy:
                 .order_by(Consent.accepted_at.desc(), Consent.id.desc()).limit(1))
             if consent is None or consent.withdrawn_at is not None or consent.notice_version != notice:
                 raise AppError('CONSENT_REQUIRED')
-            if version != base:
+            if check_base and version != base:
                 raise AppError('VERSION_CONFLICT')
         return version
 
@@ -56,13 +56,13 @@ class SqlSaveIntentPolicy:
             raise AppError('SERVICE_UNAVAILABLE') from None
 
     @asynccontextmanager
-    async def authorize(self, user_id, notice, base):
+    async def authorize(self, user_id, notice, base, *, check_base=True):
         # 동의 철회·회원 삭제도 동일 User 행을 잠가야 한다. 저장 소비자는 이 db를 재사용한다.
         def opened():
             manager = self.transaction()
             db = manager.__enter__()
             try:
-                self._check(db, user_id, notice, base)
+                self._check(db, user_id, notice, base, check_base)
             except BaseException as error:
                 manager.__exit__(type(error), error, error.__traceback__)
                 raise

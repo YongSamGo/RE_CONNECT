@@ -8,6 +8,7 @@ from app.contracts.journey import BaseRevision
 from app.modules.admission.service import InferenceIdentity
 from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
+from app.modules.auth.http import require_member
 
 router = APIRouter(tags=['체험'])
 
@@ -16,8 +17,9 @@ router = APIRouter(tags=['체험'])
 async def create_draft(journey_id: UUID, request: Request, body: DraftCreate):
     session = await require_session(request, user_activity=True)
     peer = request.client.host if request.client else ''
+    account = await require_member(request) if session.user_id is not None else None
     await request.app.state.admission_service.check_http(peer, session.subject_id)
-    return await request.app.state.draft_service.create(session, InferenceIdentity(session.subject_id, peer),
+    return await request.app.state.draft_service.create(session, InferenceIdentity(session.subject_id, peer, account.id if account else None),
         journey_id, idempotency_key(request), body)
 
 

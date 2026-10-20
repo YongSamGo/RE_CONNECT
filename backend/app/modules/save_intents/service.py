@@ -57,6 +57,24 @@ class SaveIntentService:
         if session.user_id is not None:
             await self.policy.barrier(session.user_id)
 
+    async def take_approved(self, session, account, identity, *, allow_draft=True):
+        if not allow_draft:
+            pending = await self.store.pending(session, account.id, expected=identity)
+            if pending is None:
+                raise AppError('SAVE_INTENT_NOT_FOUND')
+            if pending.targets.draft:
+                raise AppError('INVALID_STATE_TRANSITION')
+        raw = await self.store.take(session, account.id, identity)
+        try:
+            profile = ProfileContent.model_validate_json(raw['profile'])
+            draft = JourneyDraft.model_validate_json(raw['draft']) if raw['draft'] else None
+            approved = ApprovedTransfer(profile, datetime.fromtimestamp(int(raw['confirmed_ms']) / 1000, UTC), draft)
+            if draft is not None and (draft.approved_at is None or draft.review_reasons or not allow_draft):
+                raise ValueError
+            return approved
+        except (ValidationError, ValueError, TypeError, KeyError, OverflowError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
+
     async def consume(self, session, identity, *, storage_notice_version, base_saved_version, write):
         """#75/#76 소비자는 이 경계 안의 SQL 트랜잭션으로만 실제 저장한다.
 
@@ -70,15 +88,7 @@ class SaveIntentService:
         if current is None or storage_notice_version != current:
             raise AppError('CONSENT_REQUIRED')
         async with self.policy.authorize(account.id, current, base_saved_version) as db:
-            raw = await self.store.take(session, account.id, identity)
-            try:
-                profile = ProfileContent.model_validate_json(raw['profile'])
-                draft = JourneyDraft.model_validate_json(raw['draft']) if raw['draft'] else None
-                approved = ApprovedTransfer(profile, datetime.fromtimestamp(int(raw['confirmed_ms']) / 1000, UTC), draft)
-                if draft is not None and (draft.approved_at is None or draft.review_reasons):
-                    raise ValueError
-            except (ValidationError, ValueError, TypeError, KeyError, OverflowError):
-                raise AppError('SERVICE_UNAVAILABLE') from None
+            approved = await self.take_approved(session, account, identity)
             # 대기/SQL 잠금 중 회수를 다시 검사한다. 실제 writer도 현재 버전·소유권을 검사한다.
             await self.members.require(session)
             result = await write(db, account, approved)

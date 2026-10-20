@@ -56,7 +56,7 @@ class DraftService:
         return opportunity
 
     async def create(self, session, identity, journey_id: UUID, key: str, body: DraftCreate) -> JourneyDraft:
-        if identity.subject_id != session.subject_id or identity.account_id is not None:
+        if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError('NOT_FOUND')
         if body.mode == 'from_saved':
             # 실제 회원 인증/암호화 저장본 소유권 연결 전에는 문서 ID를 신뢰하지 않는다.
