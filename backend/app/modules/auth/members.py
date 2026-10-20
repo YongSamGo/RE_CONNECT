@@ -67,8 +67,8 @@ class MemberService:
                 return "failed"
         return None
 
-    async def _switch(self, session, user_id=None):
-        if self.transition is not None:
+    async def _switch(self, session, user_id=None, *, perform_cleanup=True):
+        if perform_cleanup and self.transition is not None:
             await self.transition(session)
         token, secret, subject = secrets.token_urlsafe(32), secrets.token_hex(32), uuid4()
         try:
@@ -113,12 +113,18 @@ class MemberService:
             raise OAuthFailure from None
 
     async def logout(self, session):
-        # 정지 계정도 자신의 세션을 폐기할 수 있다. 정리 실패 시에도 이전 인증은 회수한다.
+        # 정리 대기/실패와 무관하게 이전 인증을 먼저 원자 회수한다.
+        issued = None
         try:
-            return await self._switch(session)
-        except AppError:
+            issued = await self._switch(session, perform_cleanup=False)
+            if self.transition is not None:
+                await self.transition(session)
+            return issued
+        except Exception:
             try:
                 await self.sessions.store.revoke(session.digest)
+                if issued is not None:
+                    await self.sessions.revoke(issued.token)
             except StoreUnavailable:
                 raise AppError("SERVICE_UNAVAILABLE") from None
-            raise
+            raise AppError("SERVICE_UNAVAILABLE") from None

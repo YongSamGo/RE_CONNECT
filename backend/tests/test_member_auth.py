@@ -234,3 +234,25 @@ def test_database_failure_after_redis_switch_does_not_leave_authenticated_orphan
         assert keys == []
         assert (await browser.get("/api/v1/me")).json()["authenticated"] is False
     run("sqlite", tmp_path, scenario)
+
+
+def test_logout_revokes_before_slow_cleanup_and_unexpected_hook_failure(tmp_path):
+    async def scenario(ctx, browser):
+        await login(browser)
+        old = browser.cookies.get("__Host-rc_session")
+        began, release = asyncio.Event(), asyncio.Event()
+        async def failed_hook(_session):
+            began.set();await release.wait();raise RuntimeError("가상 정리 실패")
+        ctx["app"].state.session_transition_hook = failed_hook
+        pending = asyncio.create_task(browser.post("/api/v1/auth/logout", headers=headers(browser)))
+        try:
+            await asyncio.wait_for(began.wait(), 5)
+            assert await ctx["sessions"].resolve(old) is None
+            assert (await browser.post("/api/v1/test/member", headers=headers(browser))).status_code == 403
+        finally:release.set()
+        response = await pending
+        assert response.status_code == 503 and "set-cookie" not in response.headers
+        assert "가상 정리 실패" not in response.text
+        keys = [key async for key in ctx["redis"].scan_iter(match=ctx["store"].prefix + "*")]
+        assert keys == []
+    run("sqlite", tmp_path, scenario)
