@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Index, Integer, String, Uuid, event
+from sqlalchemy import Boolean, CheckConstraint, ForeignKey, Index, Integer, String, UniqueConstraint, Uuid, event
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.persistence.base import Base, UTCDateTime
@@ -13,6 +13,8 @@ class ProfileWriteReceipt(Base):
     __tablename__ = 'profile_write_receipts'
     __table_args__ = (
         CheckConstraint('length(input_hash) = 64', name='input_hash'),
+        CheckConstraint('intent_hash IS NULL OR length(intent_hash) = 64', name='intent_hash'),
+        UniqueConstraint('owner_id', 'intent_hash', name='uq_profile_receipts_intent'),
         CheckConstraint('version > 0 AND (replaced_version IS NULL OR replaced_version > 0)', name='versions'),
         CheckConstraint('expires_at > recorded_at', name='expiry'),
         Index('ix_profile_receipts_owner_expiry', 'owner_id', 'expires_at'),
@@ -21,6 +23,7 @@ class ProfileWriteReceipt(Base):
     owner_id: Mapped[UUID] = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), primary_key=True)
     key_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     input_hash: Mapped[str] = mapped_column(String(64))
+    intent_hash: Mapped[str | None] = mapped_column(String(64))
     # 프로필 삭제 후에도 재전송 기록을 남겨 같은 키로 되살리는 것을 막는다.
     profile_id: Mapped[UUID] = mapped_column(Uuid)
     version: Mapped[int] = mapped_column(Integer)

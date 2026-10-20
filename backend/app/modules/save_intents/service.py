@@ -57,14 +57,21 @@ class SaveIntentService:
         if session.user_id is not None:
             await self.policy.barrier(session.user_id)
 
-    async def take_approved(self, session, account, identity, *, allow_draft=True):
+    async def profile_approved(self, session, account, identity):
+        pending = await self.store.pending(session, account.id, expected=identity)
+        if pending is None:
+            raise AppError('SAVE_INTENT_NOT_FOUND')
+        # 프로필 먼저 저장하라는 명시적 요청이다. 지원서 본문/대기는 다음 단계까지 보존한다.
+        return await self.take_approved(session, account, identity, consume=not pending.targets.draft)
+
+    async def take_approved(self, session, account, identity, *, allow_draft=True, consume=True):
         if not allow_draft:
             pending = await self.store.pending(session, account.id, expected=identity)
             if pending is None:
                 raise AppError('SAVE_INTENT_NOT_FOUND')
             if pending.targets.draft:
                 raise AppError('INVALID_STATE_TRANSITION')
-        raw = await self.store.take(session, account.id, identity)
+        raw = await self.store.take(session, account.id, identity, consume=consume)
         try:
             profile = ProfileContent.model_validate_json(raw['profile'])
             draft = JourneyDraft.model_validate_json(raw['draft']) if raw['draft'] else None

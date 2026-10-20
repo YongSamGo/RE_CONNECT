@@ -42,11 +42,14 @@ class SqlProfileRepository:
         return SavedProfile(profile_id=row.profile_id, version=row.version, confirmed_at=row.confirmed_at,
                             saved_at=row.saved_at, content=self.content(row))
 
-    def replay(self, db, owner_id, key, fingerprint):
+    def replay(self, db, owner_id, key, fingerprint, intent_hash=None):
         now = utc_now()
         db.execute(delete(ProfileWriteReceipt).where(ProfileWriteReceipt.owner_id == owner_id, ProfileWriteReceipt.expires_at <= now))
         receipt = db.get(ProfileWriteReceipt, (owner_id, key))
         if receipt is None:
+            if intent_hash is not None and db.scalar(select(ProfileWriteReceipt.key_id).where(
+                ProfileWriteReceipt.owner_id == owner_id, ProfileWriteReceipt.intent_hash == intent_hash)) is not None:
+                raise AppError('REQUEST_ALREADY_COMPLETED')
             return None
         if receipt.input_hash != fingerprint:
             raise AppError('IDEMPOTENCY_KEY_REUSED')
@@ -63,7 +66,7 @@ class SqlProfileRepository:
         if (current.version if current else None) != base:
             raise AppError('VERSION_CONFLICT')
 
-    def write(self, db, account, approved, key, fingerprint):
+    def write(self, db, account, approved, key, fingerprint, intent_hash=None):
         self.require_cipher()
         current = self.current(db, account.id)
         same = current is not None and self.content(current) == approved.profile
@@ -88,7 +91,7 @@ class SqlProfileRepository:
             db.add(row);db.flush()
         result = ProfileSaveResult(version=row.version, saved_at=row.saved_at, created=not same,
                                    replaced_version=current.version if current and not same else None)
-        db.add(ProfileWriteReceipt(owner_id=account.id, key_id=key, input_hash=fingerprint, profile_id=row.profile_id,
+        db.add(ProfileWriteReceipt(owner_id=account.id, key_id=key, input_hash=fingerprint, intent_hash=intent_hash, profile_id=row.profile_id,
             version=result.version, saved_at=result.saved_at, created=result.created, replaced_version=result.replaced_version,
             recorded_at=now, expires_at=now + timedelta(hours=24)))
         db.flush()

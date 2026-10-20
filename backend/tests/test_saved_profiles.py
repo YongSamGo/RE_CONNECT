@@ -17,7 +17,7 @@ from app.core.encryption import ContentCipher
 from app.modules.auth.service import Identity
 from app.modules.saved_profiles.repository import SqlProfileRepository
 from app.modules.saved_profiles.service import SavedProfileService
-from app.persistence import Consent, ProfileDocument, ProfileVersion, ProfileWriteReceipt, User
+from app.persistence import ApplicationDraft, Consent, ProfileDocument, ProfileVersion, ProfileWriteReceipt, User
 from tests.test_consents import AI_VERSION
 from tests.test_encryption import ring
 from tests.test_member_auth import headers, login
@@ -72,7 +72,7 @@ def test_http_encrypted_save_replays_consumed_intent_and_rejects_other_owner(tmp
             assert '가상 도서관 경험'.encode() not in row.ciphertext and len(row.nonce) == 12 and row.algorithm == 'AES-256-GCM'
             assert db.scalar(select(func.count()).select_from(ProfileVersion)) == 1
             assert db.scalar(select(func.count()).select_from(ProfileWriteReceipt)) == 1
-            assert set(ProfileWriteReceipt.__table__.columns.keys()) == {'owner_id', 'key_id', 'input_hash', 'profile_id', 'version', 'saved_at', 'created', 'replaced_version', 'recorded_at', 'expires_at'}
+            assert set(ProfileWriteReceipt.__table__.columns.keys()) == {'owner_id', 'key_id', 'input_hash', 'intent_hash', 'profile_id', 'version', 'saved_at', 'created', 'replaced_version', 'recorded_at', 'expires_at'}
         assert (await post(browser, request_body(intent['save_intent_id'], 1), key)).json()['code'] == 'IDEMPOTENCY_KEY_REUSED'
         from app.contracts.time import utc_now
         with ctx['engine'].begin() as db:db.execute(update(Consent).values(withdrawn_at=utc_now()))
@@ -161,7 +161,18 @@ def test_missing_key_bundle_consent_failure_and_tampered_envelope_fail_closed(tm
                 original(*args);raise AppError('SERVICE_UNAVAILABLE')
             repo.write = fail
         response = await post(browser, request_body(intent['save_intent_id']))
-        if mode == 'tamper':
+        if mode == 'bundle':
+            assert response.status_code == 201
+            session = await ctx['sessions'].resolve(browser.cookies.get('__Host-rc_session'))
+            pending = await ctx['intents'].pending(session, await ctx['members'].require(session))
+            assert str(pending.save_intent_id) == intent['save_intent_id'] and pending.targets.draft
+            assert pending.expires_at.isoformat().replace('+00:00', 'Z') == intent['expires_at']
+            with ctx['engine'].connect() as db:
+                assert db.scalar(select(func.count()).select_from(ProfileVersion)) == 1
+                assert db.scalar(select(func.count()).select_from(ApplicationDraft)) == 0
+            reused = await post(browser, request_body(intent['save_intent_id'], 1))
+            assert reused.status_code == 409 and reused.json()['code'] == 'REQUEST_ALREADY_COMPLETED'
+        elif mode == 'tamper':
             assert response.status_code == 201
             with sessionmaker(ctx['engine']).begin() as db:
                 row = db.scalars(select(ProfileVersion)).one()

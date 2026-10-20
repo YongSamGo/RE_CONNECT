@@ -68,10 +68,10 @@ if values[3] ~= ARGV[1] or values[4] ~= ARGV[7] then return {} end
 if (redis.call('HGET', KEYS[1], 'user_id') or '') ~= ARGV[7] then return {} end
 if ARGV[8] ~= '' and ARGV[8] ~= values[1] then return {} end
 if ARGV[9] == 'discard' then redis.call('DEL', KEYS[2]); return {} end
-if ARGV[9] == 'take' then
+if ARGV[9] == 'take' or ARGV[9] == 'peek' then
     local payload = redis.call('HGET', KEYS[2], 'payload')
     if not payload then return {'SERVICE_UNAVAILABLE'} end
-    redis.call('DEL', KEYS[2])
+    if ARGV[9] == 'take' then redis.call('DEL', KEYS[2]) end
     return {'payload', payload}
 end
 return {'ok', values[1], values[2], values[5]}
@@ -141,9 +141,9 @@ class RedisSaveIntentStore:
         except (ValueError, TypeError, OverflowError, ValidationError):
             raise AppError('SERVICE_UNAVAILABLE') from None
 
-    async def take(self, session, user_id, identity):
+    async def take(self, session, user_id, identity, *, consume=True):
         values = await self._run(self._pending, [self.session_key(session.digest), self.key(session.digest)],
-            [*self.args(session), str(user_id), str(identity), 'take'])
+            [*self.args(session), str(user_id), str(identity), 'take' if consume else 'peek'])
         if not values:
             raise AppError('SAVE_INTENT_NOT_FOUND')
         if len(values) != 2 or values[0] != 'payload':
