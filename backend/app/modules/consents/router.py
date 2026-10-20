@@ -14,11 +14,13 @@ router = APIRouter()
 @router.post("/consents")
 async def create_consent(request: Request, body: ConsentCreate):
     session = await require_session(request, user_activity=True)
-    # #73의 회원 인증 전까지 헤더/본문/쿼리의 회원 ID를 신뢰하지 않는다.
-    actor = ConsentActor(session.subject_id, session_digest=session.digest)
+    account = await request.app.state.member_service.require(session) if session.user_id is not None else None
+    actor = ConsentActor(session.subject_id, member_id=account.id if account else None, session_digest=session.digest)
     try:
         state, created = await request.app.state.consent_service.grant(actor, body)
     except ConsentVersionError:
         return error_response(request, 422, "VALIDATION_FAILED", fields=[FieldError(path="notice_version", reason="invalid_value")])
+    if account is not None:
+        await request.app.state.member_service.require(session)
     return JSONResponse(state.model_dump(mode="json"), status_code=201 if created else 200,
                         headers={"Cache-Control": "no-store"})

@@ -59,7 +59,7 @@ class MemberService:
 
     async def eligible(self, session, purpose):
         if purpose == "save":
-            return "expired"  # #74에서 실제 저장 대기 검사·이동을 연결한다.
+            return None if await self.save_reference(session) is not None else 'expired'
         if purpose == "reauth":
             try:
                 return None if await self._read(session) is not None else "failed"
@@ -67,19 +67,44 @@ class MemberService:
                 return "failed"
         return None
 
-    async def _switch(self, session, user_id=None, *, perform_cleanup=True):
+    async def save_reference(self, session):
+        service = getattr(self, 'save_intents', None)
+        return await service.reference(session) if service is not None else None
+
+    async def discard_save(self, session, identity):
+        service = getattr(self, 'save_intents', None)
+        if service is not None:
+            await service.store.discard(session, identity)
+
+    async def pending_save(self, session):
+        service = getattr(self, 'save_intents', None)
+        if service is None:
+            return None
+        account = await self.require(session)
+        return await service.pending(session, account)
+
+    async def _switch(self, session, user_id=None, *, perform_cleanup=True, save_intent_id=None):
         if perform_cleanup and self.transition is not None:
             await self.transition(session)
         token, secret, subject = secrets.token_urlsafe(32), secrets.token_hex(32), uuid4()
         try:
-            replacement = await self.store.switch(session.digest, token_digest(token), subject, secret, user_id)
+            options = {'save_intent_id': save_intent_id} if save_intent_id is not None else {}
+            replacement = await self.store.switch(session.digest, token_digest(token), subject, secret, user_id, **options)
         except StoreUnavailable:
             raise AppError("SERVICE_UNAVAILABLE") from None
         if replacement is None:
             raise AppError("SESSION_EXPIRED")
+        service = getattr(self, 'save_intents', None)
+        if session.user_id is not None and service is not None:
+            try:
+                # 인증 회수 뒤 진행 중 SQL 저장과 직렬화한 후에만 전환 성공을 반환한다.
+                await service.drain(session)
+            except BaseException:
+                await self.sessions.revoke(token)
+                raise
         return IssuedSession(replacement, token)
 
-    async def complete(self, session, identity, purpose):
+    async def complete(self, session, identity, purpose, *, save_intent_id=None):
         issued = None
         try:
             # 외부 인증 성공만으로 이전 주체·사용자 ID를 재사용하지 않는다.
@@ -95,10 +120,12 @@ class MemberService:
                 if binding is None:
                     raise OAuthFailure
                 return Completion("success")
-            if purpose != "login":
+            if purpose == 'save' and (save_intent_id is None or await self.save_reference(current) != save_intent_id):
+                return Completion('expired')
+            if purpose not in {"login", 'save'}:
                 return Completion("expired")
             account = await asyncio.to_thread(self.accounts.link, identity)
-            issued = await self._switch(current, account.id)
+            issued = await self._switch(current, account.id, save_intent_id=save_intent_id)
             # 저장소 사이의 정지·삭제는 최종 확인과 중요 요청마다의 DB 조회로 차단한다.
             if await asyncio.to_thread(self.accounts.get, account.id) is None:
                 await self.sessions.revoke(issued.token)

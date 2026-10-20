@@ -42,3 +42,7 @@ CompletionHandler.eligible은 save 대기/회원 reauth 가능 여부를 시작 
 서버는 `python -m app`으로 실행한다. 기존 SafeJsonFormatter와 비활성 access log가 URL/쿼리/헤더/본문/예외 문자열을 버린다. 다른 ASGI 실행기·프록시·APM도 callback 쿼리를 기록하면 안 된다. 운영 Nginx/APM 설정 전체를 이 구현에서 검증한 것은 아니다.
 
 가상 코드/토큰의 HTTP 전송 대역, 실제 Redis 원자성/수명, 실제 Redis+ASGI HTTP 경로 결합 시험으로 확인한다. 실제 카카오 앱·사용자 승인·정상 인가 코드는 아직 검증하지 않았고 사용자 로그인 동의를 대신하지 않았다. 등록 도메인/콘솔/동의 화면/회원 연결/운영 배포는 별도 확인한다.
+
+## 일회 저장 전달 연결
+
+#74의 [승인 저장 대기](../data/save-intents.md)가 실제로 연결되어 purpose=save는 해당 state의 살아 있는 대기만 새 회원 세션으로 옮긴다. 로그인은 저장을 대신하지 않으며 취소·만료·교체된 대기는 소비할 수 없다. 영구 저장 API는 #75/#76 후속이다.

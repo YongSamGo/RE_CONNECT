@@ -1,8 +1,10 @@
 """SQL 바인딩·명시적 공개 포인터·응답 허용 목록. 원문을 SQL 구문으로 조립하지 않는다."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 from contextlib import AbstractContextManager
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import UUID
 
 from pydantic import ValidationError
@@ -24,12 +26,14 @@ class SqlPublicOpportunityRepository:
         self.connect = connect
 
     @staticmethod
-    def _base():
+    def _base(*, include_closed=False):
         pending = V.__table__.alias("pending")
         columns = set(IMPORTANT_FIELDS) - {"activity_region"}
         columns |= {"activity_province", "activity_district"}
         significant = [pending.c[name].is_distinct_from(V.__table__.c[name]) for name in sorted(columns)]
         significant += [(V.recruitment_status == before) & (pending.c.recruitment_status == after) for before, after in sorted(IMPORTANT_STATUS_TRANSITIONS)]
+        if include_closed:
+            significant.append(pending.c.recruitment_status == 'closed')
         change_pending = exists(select(1).select_from(pending).where(pending.c.opportunity_id == V.opportunity_id, pending.c.version > V.version, pending.c.review_status == "pending", or_(*significant)))
         return select(V.__table__, change_pending.label("change_pending")).join(P, (P.opportunity_id == V.opportunity_id) & (P.version == V.version)).where(P.review_status == "approved", V.review_status == "approved")
 
@@ -86,5 +90,19 @@ class SqlPublicOpportunityRepository:
             with self.connect() as db:
                 row = db.execute(self._base().where(V.opportunity_id == opportunity_id)).mappings().one_or_none()
                 return None if row is None else self._public(row, now)
+        except (SQLAlchemyError, ValidationError):
+            raise AppError("SERVICE_UNAVAILABLE") from None
+
+    def recommendation_candidates(self, now: datetime) -> list[PublicOpportunity]:
+        try:
+            with self.connect() as db:
+                statement = self._search(self._base(include_closed=True), OpportunitySearch(), now, db.dialect.name).where(
+                    V.recruitment_status == "open", V.source_checked_at <= now,
+                    V.source_checked_at >= now - timedelta(hours=48),
+                )
+                rows = db.execute(statement.order_by(V.opportunity_id).limit(5001)).mappings().all()
+                if len(rows) > 5000:
+                    raise AppError("SERVICE_UNAVAILABLE")
+                return [self._public(row, now) for row in rows]
         except (SQLAlchemyError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None

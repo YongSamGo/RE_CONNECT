@@ -70,6 +70,8 @@ class JourneyStore(Protocol):
 
 
 class UnavailableJourneyStore:
+    session_transition_managed = True  # 실제 자료를 생성/보관하지 않는 실패 닫기 저장소.
+
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
@@ -77,6 +79,10 @@ class UnavailableJourneyStore:
 
 
 class JourneyService:
+    @property
+    def session_transition_managed(self):
+        return getattr(self.store, 'session_transition_managed', False)
+
     def __init__(self, store: JourneyStore, consents: ConsentService, admission: AdmissionService):
         self.store, self.consents, self.admission = store, consents, admission
 

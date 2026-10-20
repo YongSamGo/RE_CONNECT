@@ -20,6 +20,7 @@ _TOKEN = re.compile(r"[A-Za-z0-9_-]{43}")
 class Flow:
     purpose: Purpose
     verifier: str = field(repr=False)
+    save_intent_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -80,7 +81,10 @@ class OAuthService:
         state, verifier = secrets.token_urlsafe(32), secrets.token_urlsafe(32)
         challenge = base64.urlsafe_b64encode(hashlib.sha256(verifier.encode("ascii")).digest()).decode("ascii").rstrip("=")
         try:
-            if not await self.store.create(session.digest, state_digest(state), Flow(purpose, verifier)):
+            reference = await self.completion.save_reference(session) if purpose == 'save' and hasattr(self.completion, 'save_reference') else None
+            if purpose == 'save' and hasattr(self.completion, 'save_reference') and reference is None:
+                return result_location(purpose, 'expired')
+            if not await self.store.create(session.digest, state_digest(state), Flow(purpose, verifier, reference)):
                 raise AppError("SERVICE_UNAVAILABLE")
         except StoreUnavailable:
             raise AppError("SERVICE_UNAVAILABLE") from None
@@ -88,6 +92,15 @@ class OAuthService:
 
     async def callback(self, session, query):
         purpose = "login"
+        flow = None
+
+        async def failed(status='failed'):
+            if flow is not None and flow.save_intent_id is not None and hasattr(self.completion, 'discard_save'):
+                try:
+                    await self.completion.discard_save(session, flow.save_intent_id)
+                except (AppError, StoreUnavailable):
+                    status = 'failed'
+            return purpose, Completion(status)
         digest = state_digest(query.get("state"))
         if session is None or digest is None:
             return purpose, Completion("failed")
@@ -102,17 +115,23 @@ class OAuthService:
             valid = valid and all(isinstance(value, str) and value.isascii() and value.isprintable() and len(value) <= limit
                 for key, limit in (("code", 512), ("error", 64), ("error_description", 512)) if (value := query.get(key)) is not None)
             if not valid or query.get("code") and query.get("error"):
-                return purpose, Completion("failed")
+                return await failed()
             error = query.get("error")
             if error is not None:
-                return purpose, Completion("cancelled" if error == "access_denied" else "failed")
+                return await failed("cancelled" if error == "access_denied" else "failed")
             if not query.get("code") or self.adapter is None:
-                return purpose, Completion("failed")
+                return await failed()
             identity = Identity(await self.adapter.exchange(query["code"], flow.verifier))
             # 외부 I/O 중 세션 회수가 가능하다. 완료 처리기는 재검사 후 원자 전환한다.
-            return purpose, await self.completion.complete(session, identity, purpose)
+            result = await self.completion.complete(session, identity, purpose, save_intent_id=flow.save_intent_id) if flow.save_intent_id is not None else await self.completion.complete(session, identity, purpose)
+            if result.status != 'success':
+                return await failed(result.status)
+            return purpose, result
         except (StoreUnavailable, OAuthFailure):
-            return purpose, Completion("failed")
+            try:
+                return await failed()
+            except (StoreUnavailable, AppError):
+                return purpose, Completion('failed')
 
 
 def result_location(purpose, status):

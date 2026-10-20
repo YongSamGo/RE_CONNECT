@@ -2,6 +2,7 @@
 
 import json
 import re
+from uuid import UUID
 
 from redis.exceptions import RedisError
 
@@ -57,7 +58,8 @@ class RedisFlowStore:
             raise StoreUnavailable from None
 
     async def create(self, session_digest, digest, flow):
-        return await self._run(session_digest, digest, "create", json.dumps({"purpose": flow.purpose, "verifier": flow.verifier})) == "created"
+        return await self._run(session_digest, digest, "create", json.dumps({"purpose": flow.purpose, "verifier": flow.verifier,
+            **({'save_intent_id': flow.save_intent_id} if flow.save_intent_id is not None else {})})) == "created"
 
     async def consume(self, session_digest, digest):
         raw = await self._run(session_digest, digest, "consume")
@@ -65,7 +67,10 @@ class RedisFlowStore:
             return None
         try:
             value = json.loads(raw)
-            if set(value) != {"purpose", "verifier"} or value["purpose"] not in {"login", "save", "reauth"} or re.fullmatch(r"[A-Za-z0-9_-]{43}", value["verifier"]) is None:
+            if set(value) not in ({"purpose", "verifier"}, {"purpose", "verifier", "save_intent_id"}) or value["purpose"] not in {"login", "save", "reauth"} or re.fullmatch(r"[A-Za-z0-9_-]{43}", value["verifier"]) is None:
+                raise ValueError
+            reference = value.get('save_intent_id')
+            if reference is not None and (not isinstance(reference, str) or value['purpose'] != 'save' or str(UUID(reference)) != reference):
                 raise ValueError
             return Flow(**value)
         except (ValueError, TypeError):

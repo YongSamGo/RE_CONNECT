@@ -36,6 +36,10 @@ from app.modules.auth.repository import RedisFlowStore
 from app.modules.auth.accounts import SqlAccountRepository, UnavailableAccountRepository
 from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberStore
 from app.modules.auth.members import MemberService
+from app.modules.save_intents import router as save_intents
+from app.modules.save_intents.repository import RedisSaveIntentStore, UnavailableSaveIntentStore
+from app.modules.save_intents.service import SaveIntentService
+from app.modules.save_intents.policy import SqlSaveIntentPolicy, UnavailableSaveIntentPolicy
 from app.core.business_errors import AppError
 from sqlalchemy.orm import sessionmaker
 from app.modules.sessions.repository import RedisSessionStore
@@ -155,14 +159,22 @@ def create_app(
         hook = getattr(app.state, "session_transition_hook", None)
         if hook is not None:
             await hook(session)
-        elif getattr(app.state, "journey_service", None) is not None or getattr(app.state, "save_intent_service", None) is not None:
-            # 체험/저장 대기 모듈을 합친 뒤 실제 정리 연결 없이 이전 원문을 남기지 않는다.
-            raise AppError("SERVICE_UNAVAILABLE")
+        else:
+            for name in ('journey_service', 'save_intent_service'):
+                service = getattr(app.state, name, None)
+                if service is not None and not getattr(service, 'session_transition_managed', False):
+                    raise AppError("SERVICE_UNAVAILABLE")
 
     app.state.member_service = MemberService(
         SqlAccountRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAccountRepository(),
         RedisMemberStore(redis_client) if redis_client is not None else UnavailableMemberStore(),
         app.state.session_service, transition=transition)
+    app.state.save_intent_service = SaveIntentService(
+        RedisSaveIntentStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key)
+            if redis_client is not None else UnavailableSaveIntentStore(),
+        app.state.member_service, app.state.consent_service,
+        SqlSaveIntentPolicy(sessionmaker(engine).begin) if engine is not None else UnavailableSaveIntentPolicy())
+    app.state.member_service.save_intents = app.state.save_intent_service
     app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao,
                                           app.state.member_service)
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)
@@ -192,6 +204,7 @@ def create_app(
     app.include_router(regions.router, prefix=API_PREFIX)
     app.include_router(sessions.router, prefix=API_PREFIX)
     app.include_router(auth.router, prefix=API_PREFIX)
+    app.include_router(save_intents.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)

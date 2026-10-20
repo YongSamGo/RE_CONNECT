@@ -5,6 +5,7 @@ import re
 from uuid import UUID
 
 from redis.exceptions import RedisError
+from app.adapters.session_transition import _CLEANUP_PLAN, _CLEANUP_COMMIT
 
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS, StoreUnavailable, parse_session
 
@@ -35,14 +36,31 @@ if not until_ms or until_ms < 0 or until_ms > now + 300000 then return redis.err
 return {b[1], tostring(now), tostring(until_ms)}
 """
 
-_SWITCH = _LIFETIME + """
+_SWITCH = _LIFETIME + _CLEANUP_PLAN + """
 if redis.call('EXISTS', KEYS[2]) == 1 then return {} end
+local pending = nil
+if ARGV[6] ~= '' then
+    pending = redis.call('HGETALL', KEYS[4])
+    local expires = tonumber(redis.call('HGET', KEYS[4], 'expires_ms'))
+    if redis.call('HGET', KEYS[1], 'user_id') or ARGV[5] == '' then return {} end
+    if redis.call('HGET', KEYS[4], 'id') ~= ARGV[6] or not expires or expires <= now
+        or redis.call('PTTL', KEYS[4]) <= 0 or redis.call('HGET', KEYS[4], 'subject_id') ~= s[1]
+        or redis.call('HGET', KEYS[4], 'user_id') ~= '' then return {} end
+    if redis.call('EXISTS', KEYS[5]) == 1 then return {} end
+end
 -- 새 주체·CSRF·수명을 만들고 같은 원자 처리로 이전 세션을 폐기한다.
 redis.call('HSET', KEYS[2], 'subject_id', ARGV[3], 'created_ms', now, 'last_ms', now, 'csrf_secret', ARGV[4])
 redis.call('PEXPIRE', KEYS[2], tonumber(ARGV[2]))
 if ARGV[5] ~= '' then
     redis.call('HSET', KEYS[2], 'user_id', ARGV[5], 'reauth_until_ms', 0)
 end
+if pending then
+    for i=1,#pending,2 do redis.call('HSET', KEYS[5], pending[i], pending[i+1]) end
+    redis.call('HSET', KEYS[5], 'subject_id', ARGV[3], 'user_id', ARGV[5])
+    redis.call('PEXPIREAT', KEYS[5], redis.call('HGET', KEYS[4], 'expires_ms'))
+end
+redis.call('DEL', KEYS[4])
+""" + _CLEANUP_COMMIT + """
 redis.call('DEL', KEYS[1], KEYS[3])
 return {ARGV[3], tostring(now), tostring(now), ARGV[4], tostring(now), ARGV[5]}
 """
@@ -86,11 +104,13 @@ class RedisMemberStore:
         except RedisError:
             raise StoreUnavailable from None
 
-    async def switch(self, old_digest, new_digest, subject_id, csrf_secret, user_id=None):
+    async def switch(self, old_digest, new_digest, subject_id, csrf_secret, user_id=None, *, save_intent_id=None):
         try:
             keys = [self.key(old_digest), self.key(new_digest), self.flow_prefix + self._digest(old_digest)]
+            keys += [self.key(old_digest) + ':save-intent', self.key(new_digest) + ':save-intent', self.key(old_digest) + ':journeys']
             values = await self._switch(keys=keys, args=[ABSOLUTE_MS, IDLE_MS, str(subject_id), csrf_secret,
-                                                       str(user_id) if user_id is not None else ""])
+                                                       str(user_id) if user_id is not None else "",
+                                                       str(save_intent_id) if save_intent_id else '', old_digest])
             return parse_session(values, new_digest)
         except RedisError:
             raise StoreUnavailable from None

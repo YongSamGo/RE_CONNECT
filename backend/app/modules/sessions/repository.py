@@ -90,6 +90,6 @@ class RedisSessionStore:
 
     async def revoke(self, digest):
         try:
-            await self.client.delete(self.key(digest))
+            await self.client.delete(self.key(digest), self.key(digest) + ':save-intent')
         except RedisError:
             raise StoreUnavailable from None

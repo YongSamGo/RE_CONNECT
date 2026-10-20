@@ -45,6 +45,9 @@ local count = redis.call('HGET', KEYS[5], 'limit:' .. ARGV[13])
 if count and not string.match(count, '^%d+$') then return {'SERVICE_UNAVAILABLE'} end
 if count and tonumber(count) >= 60 then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
 if redis.call('EXISTS', KEYS[3]) == 1 or redis.call('EXISTS', KEYS[4]) == 1 then return {'SERVICE_UNAVAILABLE'} end
+if redis.call('SCARD', KEYS[6]) >= 60 then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
+redis.call('SADD', KEYS[6], KEYS[3])
+redis.call('PEXPIREAT', KEYS[6], sc + tonumber(ARGV[4]))
 redis.call('SET', KEYS[3], 'g:1', 'PX', ARGV[3])
 redis.call('HSET', KEYS[4], 'journey_id', ARGV[8], 'first_message_id', ARGV[9], 'generation', ARGV[10],
     'created_ms', now, 'last_ms', now, 'digest', ARGV[5], 'notice_version', ARGV[2], 'owner', ARGV[1])
@@ -154,6 +157,8 @@ return {'ok', tostring(revision), ARGV[8]}
 
 
 class RedisJourneyStore:
+    session_transition_managed = True
+
     def __init__(self, client, *, session_key, resource_key, control_key: str, epoch: UUID,
                  prefix: str = "rc:journey:v1:"):
         self._create = client.register_script(_CREATE)
@@ -203,7 +208,8 @@ class RedisJourneyStore:
         resource = self.resource_key(session.subject_id, journey)
         journal = self.prefix + hashlib.sha256(f"{session.subject_id}:{key_id}".encode("ascii")).hexdigest()
         return await self._call(self._create,
-            [self.session_key(session.digest), journal, resource, resource + ":lifecycle", self.control_key],
+            [self.session_key(session.digest), journal, resource, resource + ":lifecycle", self.control_key,
+             self.session_key(session.digest) + ':journeys'],
             [*self._args(session, notice_version), fingerprint, str(journey), str(message), str(generation),
              str(self.epoch), key_id_digest, budget, RETENTION_MS, empty_profile_content().model_dump_json()], session, notice_version)
 

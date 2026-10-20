@@ -26,6 +26,7 @@ from app.persistence import User
 from tests.ingestion_helpers import ingestion_database
 from tests.test_kakao_auth import adapter, responses
 from tests.test_sessions import with_redis
+from tests.test_sessions import HttpAdmissionStub
 
 
 def run(backend, tmp_path, scenario):
@@ -35,6 +36,7 @@ def run(backend, tmp_path, scenario):
         async def redis_scenario(sessions, store, client):
             accounts = SqlAccountRepository(sessionmaker(engine).begin)
             app = create_app(Settings(_env_file=None, app_env="test", public_origin="https://testserver"))
+            app.state.admission_service = HttpAdmissionStub()
             member_store = RedisMemberStore(client, session_prefix=store.prefix, flow_prefix=store.prefix + "oauth:")
             members = MemberService(accounts, member_store, sessions, transition=app.state.member_service.transition)
             context = {"app": app, "accounts": accounts, "subject": 456, "requests": [], "pause": None,
