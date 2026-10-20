@@ -40,6 +40,9 @@ from app.core.encryption import ContentCipher, EncryptionKeyRing, EncryptionUnav
 from app.modules.saved_profiles import router as saved_profiles
 from app.modules.saved_profiles.repository import SqlProfileRepository
 from app.modules.saved_profiles.service import SavedProfileService
+from app.modules.saved_drafts import router as saved_drafts
+from app.modules.saved_drafts.repository import SqlDraftRepository
+from app.modules.saved_drafts.service import SavedDraftService
 from app.modules.save_intents import router as save_intents
 from app.modules.save_intents.repository import RedisSaveIntentStore, UnavailableSaveIntentStore
 from app.modules.save_intents.service import SaveIntentService
@@ -192,6 +195,8 @@ def create_app(
     app.state.recommendation_service = RecommendationService(app.state.journey_service, app.state.opportunity_service, app.state.role_service)
     draft_store = RedisDraftStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableDraftStore()
     app.state.draft_service = DraftService(draft_store, app.state.journey_service, app.state.opportunity_service, llm_adapter)
+    app.state.saved_draft_service = SavedDraftService(SqlDraftRepository(app.state.saved_profile_service.repository),
+        app.state.member_service, app.state.consent_service, app.state.save_intent_service, app.state.journey_service, app.state.draft_service)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -216,6 +221,7 @@ def create_app(
     app.include_router(auth.router, prefix=API_PREFIX)
     app.include_router(save_intents.router, prefix=API_PREFIX)
     app.include_router(saved_profiles.router, prefix=API_PREFIX)
+    app.include_router(saved_drafts.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
