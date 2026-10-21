@@ -176,6 +176,80 @@ jobs:
       - name: 의존성 취약점 점검 (pip-audit)
         run: pip-audit -r requirements.txt --strict --progress-spinner off
 
+  persistence:
+    name: PostgreSQL Redis 통합
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      # 이 잡에서만 쓰고 폐기하는 가상 개발 자격증명이다. 운영에 재사용하지 않는다.
+      POSTGRES_DB: reconnect_ci
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      REDIS_PASSWORD: "00000000000000000000000000000000"
+      PERSISTENCE_TEST_DATABASE_URL: postgresql+psycopg://test:test@127.0.0.1:5432/reconnect_ci
+      PERSISTENCE_TEST_REDIS_URL: redis://:00000000000000000000000000000000@127.0.0.1:6379/0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: 해시 고정 의존성 설치
+        working-directory: backend
+        run: python -m pip install --require-hashes -r requirements.txt -r requirements-dev.txt
+      - name: Compose 구성 확인과 실제 개발 DB Redis 실행
+        run: |
+          docker compose --env-file .env.example -f infra/compose.dev.yaml config --quiet
+          docker compose --env-file .env.example -f infra/compose.dev.yaml up -d --wait --wait-timeout 90
+          python infra/check_dev_services.py
+      - name: 빈 DB 마이그레이션과 정상 조회
+        working-directory: backend
+        env:
+          APP_ENV: test
+          DATABASE_URL: postgresql+psycopg://test:test@127.0.0.1:5432/reconnect_ci
+        run: |
+          python -m alembic upgrade head
+          python -m alembic check
+      - name: PostgreSQL 실제 제약과 마이그레이션 Redis 비영속화 시험
+        working-directory: backend
+        run: python -m pytest tests/test_member_models.py tests/test_operational_models.py tests/test_migrations.py tests/test_persistence_connections.py tests/test_encryption.py -q
+      - name: 실제 Redis 세션 수명과 원자 교체 시험
+        working-directory: backend
+        run: python -m pytest tests/test_sessions.py tests/test_kakao_state.py tests/test_auth_accounts.py tests/test_member_auth.py tests/test_save_intents.py tests/test_saved_profiles.py tests/test_saved_drafts.py tests/test_saved_journey_import.py -q
+      - name: 실제 Redis 중복 요청과 리비전 경합 시험
+        working-directory: backend
+        run: python -m pytest tests/test_request_coordination.py -q
+      - name: 실제 Redis 호출 한도와 공유 슬롯 시험
+        working-directory: backend
+        run: python -m pytest tests/test_admission.py -q
+      - name: 실제 PostgreSQL 공개 공고 검색 시험
+        working-directory: backend
+        run: python -m pytest tests/test_public_opportunities.py -q
+      - name: 실제 PostgreSQL 수집 버전과 동시 수집 시험
+        working-directory: backend
+        run: python -m pytest tests/test_ingestion_versions.py -q
+      - name: 실제 서비스의 동의와 늦은 결과 및 신청 준비 경계 시험
+        working-directory: backend
+        run: |
+          # 선행 PR에 아직 없는 시험은 요구하지 않고 구현된 시험은 모두 실행한다.
+          tests=()
+          for file in tests/test_consents.py tests/test_result_lifecycle.py tests/test_journeys.py tests/test_journey_messages.py tests/test_journey_drafts.py tests/test_draft_approval.py tests/test_draft_review.py tests/test_journey_end.py tests/test_manual_profile.py tests/test_profile_confirmation.py tests/test_reconfirmed_results.py tests/test_preparation.py tests/test_eligibility_api.py tests/test_roles.py tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py; do
+            if [ -f "$file" ]; then
+              tests+=("$file")
+            fi
+          done
+          if [ "${#tests[@]}" -gt 0 ]; then
+            python -m pytest "${tests[@]}" -q
+          else
+            echo "This prerequisite branch has not added these issue tests yet."
+          fi
+      - name: 개발 컨테이너 종료
+        if: always()
+        run: docker compose --env-file .env.example -f infra/compose.dev.yaml down
+
   frontend:
     name: 프론트엔드 점검
     needs: detect
@@ -200,12 +274,21 @@ jobs:
         run: npm ci --ignore-scripts
       - name: 패키지 서명·출처 검증
         run: npm audit signatures
-      - name: 의존성 취약점 점검 (운영 의존성, 높음 이상)
-        run: npm audit --omit=dev --audit-level=high
+      - name: 의존성 취약점 점검 (개발 포함, 중간 이상)
+        run: npm audit --audit-level=moderate
       - name: 린트
         run: npm run lint
       - name: 테스트
         run: npm test --if-present
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: '3.12'
+      - name: 실제 API 계약 대조용 백엔드와 시험 의존성 설치
+        run: python -m pip install --require-hashes -r ../backend/requirements.txt -r ../backend/requirements-dev.txt
+      - name: 실제 지역과 신청 준비 라우터·OpenAPI·프론트 파서 대조
+        env:
+          CONTRACT_PYTHON: python
+        run: npm run test:backend-contract
       - name: 빌드 (타입 검사 포함)
         run: npm run build
 
@@ -247,7 +330,7 @@ jobs:
   ci-ok:
     name: CI 통과
     if: always()
-    needs: [detect, secrets, workflow-audit, hidden-text, python, frontend, dependency-review]
+    needs: [detect, secrets, workflow-audit, hidden-text, python, persistence, frontend, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}
