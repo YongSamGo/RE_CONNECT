@@ -198,6 +198,7 @@ def create_app(
     app.state.draft_service = DraftService(draft_store, app.state.journey_service, app.state.opportunity_service, llm_adapter)
     app.state.saved_draft_service = SavedDraftService(SqlDraftRepository(app.state.saved_profile_service.repository),
         app.state.member_service, app.state.consent_service, app.state.save_intent_service, app.state.journey_service, app.state.draft_service)
+    app.state.draft_service.stored_drafts = app.state.saved_draft_service
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)

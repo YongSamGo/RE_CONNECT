@@ -42,7 +42,7 @@ class SavedDraftService:
     async def listing(self, session, page, page_size):
         return await self._read(session, self.repository.listing, page, page_size)
 
-    async def edit_source(self, session, reference):
+    async def edit_source(self, session, reference, *, create=None):
         account = await self.members.require(session)
         notice = self.consents.versions['ai_processing']
         if notice is None:
@@ -50,6 +50,9 @@ class SavedDraftService:
         async with self.intents.policy.authorize(account.id, notice, None, check_base=False, purpose='ai_processing') as db:
             result = await run_query(self.repository.edit_reference, db, account.id, reference)
             await self.members.require(session)
+            if create is not None:
+                result = await create(result)
+                await self.members.require(session)
             return result
 
     async def source(self, session, account, source):

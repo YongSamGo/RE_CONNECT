@@ -1,5 +1,6 @@
 import { useEffect, useId, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { SavedProfileSave } from '../account/SavedProfileSave'
 import { ApiError } from '../../api/errors'
 import type { createApiClient } from '../../api/client'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -15,6 +16,21 @@ import { parseRegionCatalog } from '../regions/catalog'
 import type { Region, RegionCatalog } from '../regions/catalog'
 import { minimumErrors, parseExclusions, parseProfileView, parseRoles } from './server-model'
 import type { DraftInput, ProfileView, Roles } from './server-model'
+
+function profileCopy(draft: DraftInput, catalog: RegionCatalog | null): string {
+  const items = (value: string[] | null) => value === null ? '미확인' : value.join(', ') || '없음'
+  const region = (value: Region) => `${provinces[value.province]} ${value.district === null ? '전체' : catalog?.provinces.find(item => item.id === value.province)?.districts.find(item => item.id === value.district)?.name ?? value.district}`
+  return [
+    '경험', ...draft.experiences.map(item => `${item.description}\n기간: ${item.duration_note ?? '미확인'}\n기술: ${items(item.skill_tags)}`),
+    `기술: ${items(draft.skills)}`, `희망 지역: ${draft.preferred_regions.map(region).join(', ')}`,
+    `희망 활동: ${draft.activity_types.map(item => item === 'employment' ? '취업·공공일자리' : '봉사').join(', ')}`,
+    `보수 선호: ${draft.paid_preference === null ? '미확인' : { paid: '유급', unpaid: '무급', any: '무관' }[draft.paid_preference]}`,
+    `가능 요일: ${draft.available_weekdays === null ? '미확인' : draft.available_weekdays.map(day => ['월', '화', '수', '목', '금', '토', '일'][day - 1]).join(', ') || '없음'}`,
+    `주당 시간: ${draft.hours_per_week ?? '미확인'}`, `이동 메모: ${draft.mobility_note ?? '미확인'}`,
+    `거주 지역: ${draft.residence_region === null ? '미확인' : region(draft.residence_region)}`, `출생 연도: ${draft.birth_year ?? '미확인'}`,
+    `자격증: ${items(draft.certifications)}`, `수료 교육: ${items(draft.completed_courses)}`, `활동 수행 조건: ${items(draft.activity_constraints)}`,
+  ].join('\n\n')
+}
 
 type Loaded = { view: ProfileView; roles: Roles | null; excludedIds: string[]; roleError: ApiError | null; message: string }
 type Editor = { loaded: Loaded; draft: DraftInput; experienceKeys: string[]; dirty: boolean } | null
@@ -52,6 +68,8 @@ export function JourneyProfileRoute() {
 }
 
 export function JourneyProfile({ journeyId }: { journeyId: string }) {
+  const location = useLocation()
+  const savedBase: unknown = location.state?.savedProfileBaseVersion
   const scope = useMemoryScope<Editor>(() => null)
   const request = useRequest<Loaded>()
   const regions = useRequest<RegionCatalog>()
@@ -167,7 +185,11 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
         <OptionalList label="활동 수행 조건" value={state.draft.activity_constraints} max={10} length={200} onChange={activity_constraints => update({ ...state.draft, activity_constraints })} />
       </fieldset>
       <div className="actions"><Button pending={pending} disabled={!state.dirty} onClick={save}>변경 내용을 초안에 반영</Button><Button pending={pending} disabled={state.dirty} onClick={confirm}>{state.loaded.view.confirmed ? '수정한 프로필 재확정' : '이 프로필 확정'}</Button></div>
-      <p>초안 반영 후 내용을 확인하고 확정해 주세요. 회원 저장은 로그인·저장 동의 연결 후 제공됩니다.</p>
+      <p>초안 반영 후 내용을 확인하고 확정해 주세요.</p>
+      {typeof savedBase === 'number' && Number.isSafeInteger(savedBase) && savedBase >= 1 && state.loaded.view.confirmed && <SavedProfileSave
+        journeyId={journeyId} version={state.loaded.view.confirmed.version} baseVersion={savedBase}
+        disabled={pending || state.dirty || state.loaded.view.has_unconfirmed_changes}
+        copyText={profileCopy(state.draft, catalog)} onUnavailable={clearEditor} />}
       {state.loaded.view.confirmed && <section className="panel"><h2>확정 경험에서 찾은 역할</h2><p>확정 프로필 {state.loaded.view.confirmed.version}번의 실제 경험 근거입니다. 역할은 활동 자격이나 선발을 보장하지 않습니다.</p>
         <p>현재 제외한 역할: {state.loaded.excludedIds.length}개. 표시된 후보에 없는 역할도 포함합니다.</p>
         <Button variant="secondary" disabled={pending || state.dirty || state.loaded.excludedIds.length === 0 || !!state.loaded.roleError} onClick={() => setExclusions([])}>역할 제외 모두 복원</Button>

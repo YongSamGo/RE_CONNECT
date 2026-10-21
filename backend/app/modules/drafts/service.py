@@ -21,6 +21,7 @@ DRAFT_TIMEOUT_SECONDS = 60
 class DraftService:
     def __init__(self, store, journeys, opportunities, llm):
         self.store, self.journeys, self.opportunities, self.llm = store, journeys, opportunities, llm
+        self.stored_drafts = None
 
     async def _display(self, session, journey_id: UUID, draft: JourneyDraft) -> JourneyDraft:
         dependency = await self.journeys.profile_dependency(session, ProfileRef(kind='journey', id=journey_id, version=draft.profile_version))
@@ -95,8 +96,17 @@ class DraftService:
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError('NOT_FOUND')
         if body.mode == 'from_saved':
-            # 실제 회원 인증/암호화 저장본 소유권 연결 전에는 문서 ID를 신뢰하지 않는다.
-            raise AppError('UNAUTHENTICATED')
+            if session.user_id is None:
+                raise AppError('UNAUTHENTICATED')
+            if self.stored_drafts is None:
+                raise AppError('SERVICE_UNAVAILABLE')
+            async def copy(source):
+                return await self._create(session, identity, journey_id, key, body, source=source)
+            # 삭제·철회도 사용하는 User 잠금 안에서 읽기부터 Redis 생성까지 유지한다.
+            return await self.stored_drafts.edit_source(session, body.saved_document, create=copy)
+        return await self._create(session, identity, journey_id, key, body)
+
+    async def _create(self, session, identity, journey_id, key, body, *, source=None):
         try:
             key_id = UUID(key)
             if str(key_id) != key.lower():
@@ -107,13 +117,21 @@ class DraftService:
         snapshot = await self.journeys.resolve_profile(session, reference, require_current=True)
         view = await self.journeys.profile(session, journey_id)
         opportunity = await self._opportunity(body.opportunity)
+        if source is not None and source.opportunity.id != body.opportunity.id:
+            raise AppError('VERSION_CONFLICT')
         notice = (await self.journeys.load(session, journey_id)).guard.ai_notice_version if body.mode == 'generate' else ''
         permit = await self.store.reserve(session, journey_id, key_id, input_fingerprint(body.model_dump(mode='json')),
             view.revision, body.profile_version, notice)
         if isinstance(permit, JourneyDraft):
             return permit
         try:
-            paragraphs, warnings = [], []
+            paragraphs, warnings, motivation = [], [], ''
+            if source is not None:
+                paragraphs = [source.content.self_introduction]
+                motivation = source.content.motivation
+                warnings.append('저장본을 새 임시 편집본으로 가져왔습니다. 현재 프로필과 공고에 맞는지 다시 확인하고 승인해 주세요. 기존 저장본은 바뀌지 않았습니다.')
+                if source.profile != snapshot.content or source.opportunity != body.opportunity:
+                    warnings.append('저장 당시의 근거와 현재 확정 프로필 또는 공고가 다릅니다. 본문은 자동으로 수정하지 않았습니다.')
             if body.mode == 'generate':
                 async with asyncio.timeout(DRAFT_TIMEOUT_SECONDS):
                     preview = await GroundedGenerationService(self.llm.for_identity(identity)).application_preview(
@@ -126,7 +144,7 @@ class DraftService:
                         warnings = ['일부 확정 사실은 본문 길이 제한으로 포함하지 않았습니다.']
                 warnings.append('지원동기는 추정하지 않았습니다. 공고를 확인하고 직접 작성해 주세요.')
             draft = JourneyDraft(draft_id=permit.draft_id, revision=1, mode=body.mode, profile_version=body.profile_version,
-                opportunity=body.opportunity, self_introduction='\n'.join(paragraphs), motivation='', approved_at=None,
+                opportunity=body.opportunity, self_introduction='\n'.join(paragraphs), motivation=motivation, approved_at=None,
                 review_reasons=[], warnings=warnings)
             await self.journeys.resolve_profile(session, reference, require_current=True)
             latest = await self._opportunity(body.opportunity)
