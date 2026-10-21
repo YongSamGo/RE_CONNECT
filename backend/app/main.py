@@ -188,6 +188,7 @@ def create_app(
         cipher = None
     app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
         app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
+    app.state.journey_service.stored_profiles = app.state.saved_profile_service
     app.state.oauth_service = OAuthService(RedisFlowStore(redis_client) if redis_client is not None else UnavailableFlowStore(), kakao,
                                           app.state.member_service)
     app.state.eligibility_service = EligibilityService(app.state.journey_service, app.state.opportunity_service)

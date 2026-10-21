@@ -59,7 +59,8 @@ class JourneyStore(Protocol):
     async def message_data(self, session: Session, journey_id: UUID, notice_version: str, field: str) -> str: ...
     async def end(self, session: Session, journey_id: UUID) -> None: ...
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
-                     budget: str, key_id_digest: str) -> JourneyRecord: ...
+                     budget: str, key_id_digest: str, *, initial_profile: ProfileContent | None = None,
+                     confirmed_at: datetime | None = None) -> JourneyRecord: ...
     async def load(self, session: Session, journey_id: UUID, notice_version: str, *, user_activity: bool) -> JourneyRecord: ...
     async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView: ...
     async def update_profile(self, session: Session, journey_id: UUID, draft: ProfileContent, base_revision: int) -> ProfileDraftView: ...
@@ -85,13 +86,13 @@ class JourneyService:
 
     def __init__(self, store: JourneyStore, consents: ConsentService, admission: AdmissionService):
         self.store, self.consents, self.admission = store, consents, admission
+        self.stored_profiles = None
 
     async def end(self, session: Session, journey_id: UUID) -> None:
         await self.store.end(session, journey_id)
 
     async def create(self, session: Session, identity: InferenceIdentity, key: str, body: JourneyCreate) -> Journey:
-        if body.saved_profile is not None:
-            # #42/#73의 실제 회원·저장본 소유권 확인 전에는 헤더/본문의 회원 사칭을 받지 않는다.
+        if body.saved_profile is not None and (session.user_id is None or self.stored_profiles is None):
             raise AppError("UNAUTHENTICATED")
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError("NOT_FOUND")
@@ -106,6 +107,13 @@ class JourneyService:
         except (ValueError, TypeError, AttributeError):
             raise AppError("VALIDATION_FAILED") from None
         budget = self.admission.generation_budget(identity)
+        if body.saved_profile is not None:
+            async def create(source):
+                return await self.store.create(session, key_id, input_fingerprint(body.model_dump(mode='json')),
+                    body.ai_notice_version, budget, self.admission.identity_key_id,
+                    initial_profile=source.content, confirmed_at=source.confirmed_at)
+            record = await self.stored_profiles.start_journey(session, body.saved_profile, body.ai_notice_version, create)
+            return record.view
         record = await self.store.create(session, key_id, input_fingerprint(body.model_dump(mode="json")),
                                          body.ai_notice_version, budget, self.admission.identity_key_id)
         return record.view

@@ -17,7 +17,7 @@ ReviewReason = Literal['profile_changed', 'opportunity_changed', 'opportunity_cl
 class SavedDocumentRef(BaseModel):
     model_config = CONTRACT_CONFIG
     document_id: UUID
-    version: Annotated[StrictInt, Field(ge=1)]
+    version: Annotated[StrictInt, Field(ge=1, lt=2**31)]
 
 
 class DraftCreate(BaseModel):

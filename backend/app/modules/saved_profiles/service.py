@@ -21,6 +21,18 @@ class SavedProfileService:
             await self.members.require(session)
             return SavedProfileResponse(saved=view)
 
+    async def start_journey(self, session, reference, notice_version, create):
+        account = await self.members.require(session)
+        current = self.consents.versions['ai_processing']
+        if current is None or current != notice_version:
+            raise AppError('CONSENT_REQUIRED')
+        # 소유권·현재 AI 동의와 복호화 조회부터 새 Redis 체험 생성까지 같은 User 잠금이다.
+        async with self.intents.policy.authorize(account.id, current, None, check_base=False, purpose='ai_processing') as db:
+            source = await run_query(self.repository.reference, db, account.id, reference)
+            result = await create(source)
+            await self.members.require(session)
+            return result
+
     async def save(self, session, key, body):
         account = await self.members.require(session)
         self.repository.require_cipher()

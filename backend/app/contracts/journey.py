@@ -15,7 +15,7 @@ NoticeVersion = Annotated[str, Field(strict=True, pattern=r"^[a-z0-9._-]{1,32}$"
 class SavedProfileRef(BaseModel):
     model_config = CONTRACT_CONFIG
     profile_id: UUID
-    version: Annotated[StrictInt, Field(ge=1)]
+    version: Annotated[StrictInt, Field(ge=1, lt=2**31)]
 
 
 class JourneyCreate(BaseModel):

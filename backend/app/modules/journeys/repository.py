@@ -45,6 +45,8 @@ local count = redis.call('HGET', KEYS[5], 'limit:' .. ARGV[13])
 if count and not string.match(count, '^%d+$') then return {'SERVICE_UNAVAILABLE'} end
 if count and tonumber(count) >= 60 then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
 if redis.call('EXISTS', KEYS[3]) == 1 or redis.call('EXISTS', KEYS[4]) == 1 then return {'SERVICE_UNAVAILABLE'} end
+local imported_at = ARGV[16] == '1' and tonumber(ARGV[17]) or nil
+if ARGV[16] == '1' and (not imported_at or imported_at <= 0 or imported_at > now) then return {'SERVICE_UNAVAILABLE'} end
 if redis.call('SCARD', KEYS[6]) >= 60 then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
 redis.call('SADD', KEYS[6], KEYS[3])
 redis.call('PEXPIREAT', KEYS[6], sc + tonumber(ARGV[4]))
@@ -52,6 +54,10 @@ redis.call('SET', KEYS[3], 'g:1', 'PX', ARGV[3])
 redis.call('HSET', KEYS[4], 'journey_id', ARGV[8], 'first_message_id', ARGV[9], 'generation', ARGV[10],
     'created_ms', now, 'last_ms', now, 'digest', ARGV[5], 'notice_version', ARGV[2], 'owner', ARGV[1])
 redis.call('HSET', KEYS[4], 'profile_draft', ARGV[15], 'profile_evidence', '[]', 'profile_changed', '0', 'role_exclusions', '[]')
+if imported_at then
+    redis.call('HSET', KEYS[4], 'confirmed_version', 1, 'confirmed_at_ms', imported_at,
+        'confirmed:1:content', ARGV[15], 'confirmed:1:at', imported_at)
+end
 redis.call('PEXPIRE', KEYS[4], ARGV[3])
 redis.call('HSET', KEYS[2], 'input', ARGV[7], 'resource', KEYS[3], 'meta', KEYS[4])
 redis.call('PEXPIRE', KEYS[2], ARGV[14])
@@ -203,7 +209,9 @@ class RedisJourneyStore:
         except (RedisError, ValueError, TypeError, IndexError, OverflowError, OSError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None
 
-    async def create(self, session, key_id, fingerprint, notice_version, budget, key_id_digest):
+    async def create(self, session, key_id, fingerprint, notice_version, budget, key_id_digest, *, initial_profile=None, confirmed_at=None):
+        if (initial_profile is None) != (confirmed_at is None):
+            raise AppError('SERVICE_UNAVAILABLE')
         journey, message, generation = uuid4(), uuid4(), uuid4()
         resource = self.resource_key(session.subject_id, journey)
         journal = self.prefix + hashlib.sha256(f"{session.subject_id}:{key_id}".encode("ascii")).hexdigest()
@@ -211,7 +219,10 @@ class RedisJourneyStore:
             [self.session_key(session.digest), journal, resource, resource + ":lifecycle", self.control_key,
              self.session_key(session.digest) + ':journeys'],
             [*self._args(session, notice_version), fingerprint, str(journey), str(message), str(generation),
-             str(self.epoch), key_id_digest, budget, RETENTION_MS, empty_profile_content().model_dump_json()], session, notice_version)
+             str(self.epoch), key_id_digest, budget, RETENTION_MS,
+             (initial_profile if initial_profile is not None else empty_profile_content()).model_dump_json(),
+             '1' if initial_profile is not None else '0',
+             int(confirmed_at.timestamp()) * 1000 + confirmed_at.microsecond // 1000 if confirmed_at else ''], session, notice_version)
 
     async def load(self, session, journey_id, notice_version, *, user_activity=False):
         resource = self.resource_key(session.subject_id, journey_id)

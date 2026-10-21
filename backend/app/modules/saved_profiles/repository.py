@@ -42,6 +42,14 @@ class SqlProfileRepository:
         return SavedProfile(profile_id=row.profile_id, version=row.version, confirmed_at=row.confirmed_at,
                             saved_at=row.saved_at, content=self.content(row))
 
+    def reference(self, db, owner_id, reference):
+        row = db.scalar(select(ProfileVersion).where(ProfileVersion.owner_id == owner_id,
+            ProfileVersion.profile_id == reference.profile_id, ProfileVersion.version == reference.version))
+        if row is None:
+            raise AppError('NOT_FOUND')
+        return SavedProfile(profile_id=row.profile_id, version=row.version, confirmed_at=row.confirmed_at,
+                            saved_at=row.saved_at, content=self.content(row))
+
     def replay(self, db, owner_id, key, fingerprint, intent_hash=None):
         now = utc_now()
         db.execute(delete(ProfileWriteReceipt).where(ProfileWriteReceipt.owner_id == owner_id, ProfileWriteReceipt.expires_at <= now))

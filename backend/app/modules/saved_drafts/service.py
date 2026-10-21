@@ -1,12 +1,27 @@
 """승인·근거 소유권·현재 공고 뒤에만 암호화 저장하고 일회 대기를 소비한다."""
 
 from uuid import UUID
+from dataclasses import dataclass, field
 
 from app.adapters.database import run_query
 from app.contracts.journey import ProfileRef
+from app.contracts.journey import SavedProfileRef
+from app.contracts.profile import ProfileContent
+from app.contracts.preparation import OpportunityRef
+from app.contracts.saved_drafts import SavedDraftBody
 from app.core.business_errors import AppError
 from app.modules.requests.service import input_fingerprint
 from app.modules.save_intents.service import ApprovedTransfer
+
+
+@dataclass(frozen=True)
+class StoredDraftEditSource:
+    document_id: UUID
+    version: int
+    profile_reference: SavedProfileRef
+    opportunity: OpportunityRef
+    profile: ProfileContent = field(repr=False)
+    content: SavedDraftBody = field(repr=False)
 
 
 class SavedDraftService:
@@ -26,6 +41,16 @@ class SavedDraftService:
 
     async def listing(self, session, page, page_size):
         return await self._read(session, self.repository.listing, page, page_size)
+
+    async def edit_source(self, session, reference):
+        account = await self.members.require(session)
+        notice = self.consents.versions['ai_processing']
+        if notice is None:
+            raise AppError('CONSENT_REQUIRED')
+        async with self.intents.policy.authorize(account.id, notice, None, check_base=False, purpose='ai_processing') as db:
+            result = await run_query(self.repository.edit_reference, db, account.id, reference)
+            await self.members.require(session)
+            return result
 
     async def source(self, session, account, source):
         if source.type == 'save_intent':

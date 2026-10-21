@@ -8,11 +8,14 @@ from sqlalchemy import delete, exists, func, or_, select
 
 from app.contracts.saved_drafts import DraftSaveResult, SavedDraft, SavedDraftBody, SavedDraftList, SavedDraftSummary
 from app.contracts.time import utc_now
+from app.contracts.journey import SavedProfileRef
+from app.contracts.preparation import OpportunityRef
 from app.core.business_errors import AppError
 from app.core.encryption import ContentTarget, EncryptedEnvelope, EncryptionUnavailable, ProtectedContentError
 from app.modules.opportunities.lifecycle import assess_lifecycle
 from app.modules.opportunities.versions import IMPORTANT_FIELDS, IMPORTANT_STATUS_TRANSITIONS, snapshot_from_row
-from app.persistence import ApplicationDocument, ApplicationDraft, ApplicationWriteReceipt
+from app.persistence import ApplicationDocument, ApplicationDraft, ApplicationWriteReceipt, ProfileVersion
+from app.modules.saved_drafts.service import StoredDraftEditSource
 from app.persistence.operations import OpportunityPublication as P, OpportunityVersion as V
 
 
@@ -150,6 +153,26 @@ class SqlDraftRepository:
         if row is None:
             raise AppError('NOT_FOUND')
         return self.view(db, row, detail=True)
+
+    def edit_reference(self, db, owner_id, reference):
+        row = db.scalar(select(ApplicationDraft).where(ApplicationDraft.owner_id == owner_id,
+            ApplicationDraft.document_id == reference.document_id, ApplicationDraft.version == reference.version))
+        if row is None:
+            raise AppError('NOT_FOUND')
+        profile = db.scalar(select(ProfileVersion).where(ProfileVersion.owner_id == owner_id,
+            ProfileVersion.profile_id == row.profile_id, ProfileVersion.version == row.profile_version))
+        if profile is None:
+            raise AppError('NOT_FOUND')
+        try:
+            self.profiles.require_cipher()
+            envelope = EncryptedEnvelope(row.ciphertext, row.nonce, row.key_id, row.algorithm, row.schema_version)
+            raw = self.profiles.cipher.decrypt(envelope, ContentTarget(owner_id, 'application', row.document_id, row.version, row.schema_version))
+            content = SavedDraftBody.model_validate_json(raw)
+            return StoredDraftEditSource(row.document_id, row.version,
+                SavedProfileRef(profile_id=row.profile_id, version=row.profile_version),
+                OpportunityRef(id=row.opportunity_id, version=row.opportunity_version), self.profiles.content(profile), content)
+        except (ValidationError, EncryptionUnavailable, ProtectedContentError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
 
     def listing(self, db, owner_id, page, page_size):
         latest = select(ApplicationDraft.document_id, func.max(ApplicationDraft.version).label('version')).where(
