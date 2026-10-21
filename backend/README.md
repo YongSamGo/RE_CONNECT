@@ -127,3 +127,5 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 - 저장 자료 새 임시 편집·재승인·명시 저장과 실패 복사/재시도: [설명](../docs/data/saved-material-editing.md)
 
 - 자기 자료 전 버전 삭제·목적별 철회·재인증 탈퇴와 외부 최소 이력/관리 재시도: [설명](../docs/data/member-deletion.md)
+
+- 두 회원·익명·운영자 및 저장·삭제 경합 검증: [행렬](../docs/security/member-save-matrix.md)
