@@ -29,6 +29,7 @@ from app.modules.regions import router as regions
 from app.modules.consents import router as consents
 from app.modules.consents.repository import RedisConsentStore, SQLConsentStore, RoutedConsentStore
 from app.modules.consents.service import ConsentService, UnavailableConsentStore
+from app.modules.consents.notices import published_catalog
 from app.modules.sessions import router as sessions
 from app.modules.auth import router as auth
 from app.modules.auth.service import OAuthService, UnavailableFlowStore
@@ -105,6 +106,7 @@ def create_app(
 ) -> FastAPI:
     settings = settings or get_settings()
     docs_enabled = settings.docs_enabled
+    notice_catalog = published_catalog(settings)
 
     engine = build_engine(settings) if settings.database_url is not None else None
     redis_client = build_redis(settings) if settings.redis_url is not None else None
@@ -147,6 +149,7 @@ def create_app(
     app.state.session_service = SessionService(session_store)
     anonymous_consents = RedisConsentStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableConsentStore()
     member_consents = SQLConsentStore(engine) if engine is not None else UnavailableConsentStore()
+    app.state.notice_catalog = notice_catalog
     app.state.consent_service = ConsentService(
         RoutedConsentStore(anonymous_consents, member_consents),
         ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,

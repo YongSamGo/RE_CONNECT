@@ -11,6 +11,8 @@
 
 03 §3의 경로 46개가 모두 들어 있다. 여기에 지역 목록(`GET /regions`), 운영자 공고 상세(`GET /admin/opportunities/{id}`), 내부 health 2개가 더 있다.
 
+#87 회원 화면 연결에서는 `GET /consents/notices`(명시적으로 게시한 현재 안내문)와 `DELETE /auth/save-intents/{save_intent_id}`(현재 세션의 정확한 저장 대기 폐기)를 보완했다. 안내문 조회는 동의가 아니며, 취소는 이미 저장한 자료·동의·로그인을 되돌리지 않는다. 회원 취소는 저장과 같은 소유자 잠금으로 직렬화한다.
+
 로컬 검사:
 
 ```bash

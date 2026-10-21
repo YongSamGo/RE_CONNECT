@@ -37,7 +37,7 @@
 | [#84 W11-05](https://github.com/YongSamGo/RE_CONNECT/issues/84) 프로필·역할 | 진행 | ProfilePreview、공개 지역 목록·선택 | #80/#40/#41/#61/#62, 서버 확정·역할 근거·제외 |
 | [#85 W11-06](https://github.com/YongSamGo/RE_CONNECT/issues/85) 공고·신고 | 진행 | 공개 목록/상세·지역 검색·신고 요청 UI | #80/#50/#65/#56, 실제 검수 공고·추천·자격 결과 |
 | [#86 W11-07](https://github.com/YongSamGo/RE_CONNECT/issues/86) 신청 준비 | 진행 | 직접 작성·확인·복사·오류 대체 | #80/#69/#70/#71, 공고별 공식 준비·서버 초안/승인·근거 변경 |
-| [#87 W11-08](https://github.com/YongSamGo/RE_CONNECT/issues/87) 회원·내 정보 | 진행 | AccountPage、SavedMaterials API 요청 UI | #80/#79, 실제 카카오·저장 동의·저장 대기·교체/수정·탈퇴 |
+| [#87 W11-08](https://github.com/YongSamGo/RE_CONNECT/issues/87) 회원·내 정보 | 진행 | 로그인 복귀/게시 안내문/명시 동의/저장 대기·기준 교체·취소·단계별 재확인, 직접 회원 저장, UX09 조회·삭제·재인증 탈퇴의 가상 제공자 브라우저 왕복·실제 SQL/Redis 검증. [연결 기록](src/features/account/SERVER.md) | 실제 운영 안내문·카카오·#86 승인 화면 진입 연결·배포/실기기 검증은 남음. 전체 통과나 이슈 종료 아님 |
 | [#88 W11-09](https://github.com/YongSamGo/RE_CONNECT/issues/88) 운영자 | 진행 | MFA·등록/편집/검수·신고·감사 UI | #80/#57/#55, 실제 역할·MFA·버전 충돌·인가 검증 |
 | [#89 W11-10](https://github.com/YongSamGo/RE_CONNECT/issues/89) 읽기·종료 | 진행 | ReadAloud、미디어 정리·메모리 수명 | #82/#83/#86/#32/#43, 서버 동의·STT/TTS·삭제/만료 |
 | [#98 W13-01](https://github.com/YongSamGo/RE_CONNECT/issues/98) 최초 전체 여정 | 미착수 | 부분 화면만 존재 | 아래 G2의 실제 전체 흐름 증거 필요 |

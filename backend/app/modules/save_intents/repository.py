@@ -82,7 +82,7 @@ class UnavailableSaveIntentStore:
     async def create(self, *args, **kwargs):
         raise AppError('SERVICE_UNAVAILABLE')
 
-    pending = take = create
+    pending = take = discard = create
 
 
 class RedisSaveIntentStore:

@@ -57,6 +57,19 @@ class SaveIntentService:
         if session.user_id is not None:
             await self.policy.barrier(session.user_id)
 
+    async def cancel(self, session, identity):
+        # A cancellation removes only this session's exact pending reference.
+        # Serialize with member writes so a profile/app save cannot consume a
+        # payload concurrently after cancellation has completed.
+        if session.user_id is None:
+            await self.store.discard(session, identity)
+            return
+        account = await self.members.require(session)
+        async with self.policy.authorize(account.id, None, None, check_base=False):
+            await self.members.require(session)
+            await self.store.discard(session, identity)
+            await self.members.require(session)
+
     async def profile_approved(self, session, account, identity):
         pending = await self.store.pending(session, account.id, expected=identity)
         if pending is None:

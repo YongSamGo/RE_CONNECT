@@ -70,6 +70,8 @@ class Settings(BaseSettings):
     # 실제 운영 안내문(#9)을 확정한 뒤 설정한다. 예제 버전을 기본값으로 승인하지 않는다.
     ai_notice_version: str | None = Field(default=None, pattern=r"^[a-z0-9._-]{1,32}$", max_length=32)
     storage_notice_version: str | None = Field(default=None, pattern=r"^[a-z0-9._-]{1,32}$", max_length=32)
+    # 확정 안내문의 공개 텍스트. 기본 미설정; 안내문 버전만으로 실제 화면을 활성화하지 않는다.
+    consent_notices_json: str | None = Field(default=None, max_length=65536, repr=False)
     # DB·소스·DB 백업 밖에서 제공하는 키 버전 → base64 32바이트 master key의 JSON.
     data_encryption_keys: SecretStr | None = None
     data_encryption_active_key_id: str | None = None

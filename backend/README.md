@@ -129,3 +129,5 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 - 자기 자료 전 버전 삭제·목적별 철회·재인증 탈퇴와 외부 최소 이력/관리 재시도: [설명](../docs/data/member-deletion.md)
 
 - 두 회원·익명·운영자 및 저장·삭제 경합 검증: [행렬](../docs/security/member-save-matrix.md)
+
+- 확정 안내문 게시·로그인 복귀·명시적 묶음 저장·현재 세션의 저장 대기 취소: [회원 화면 연결](../frontend/src/features/account/SERVER.md). 실제 안내문과 제공자 설정은 기본 비활성이다.

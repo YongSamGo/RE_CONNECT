@@ -63,13 +63,14 @@ function Result({ search }: { search: string }) {
             <h3>저장 대기 자료가 있어요</h3>
             <p>{pending.targets.draft ? '프로필과 지원서를 함께 저장하는 요청입니다. 프로필도 저장 대상에 포함됩니다.' : '확정 프로필을 저장하는 요청입니다.'}</p>
             {pending.existing_saved_profile_version !== null && <p>기존 저장 프로필이 있습니다. 교체 여부를 직접 확인해야 합니다.</p>}
-            <p>로그인만으로 자료를 저장하지 않았습니다. 운영 안내문과 저장 동의 화면 준비 후 저장 여부를 직접 선택합니다.</p>
+            <p>로그인만으로 자료를 저장하지 않았습니다. 저장 대기 화면에서 안내문·동의·저장 대상을 직접 확인해 주세요.</p>
+            <Link className="button secondary" to="/me/save">저장 대기 자료 확인</Link>
           </> : <p>계속할 수 있는 저장 대기 요청이 없습니다. 저장된 자료는 내 정보에서 따로 조회해 주세요.</p>}
           <p>대화는 새로 시작합니다. 이전 대화나 저장하지 않은 입력을 복원하지 않습니다.</p>
         </> : <p>현재 로그인하지 않은 상태입니다. 로그인이나 저장 완료를 확인할 수 없습니다.</p>}</div>}
       </section>
     </>}
-    <StatusNotice title="운영 안내문 준비 중이에요">운영 주체·문의처·보관 정책 확정 전에는 새 로그인·동의·저장을 제공하지 않습니다.</StatusNotice>
+    <StatusNotice title="운영 안내문 게시를 확인해 주세요">운영 주체·문의처·보관 및 삭제 정책을 확정 게시하기 전에는 새 로그인·동의를 제공하지 않습니다.</StatusNotice>
     <div className="actions"><Link className="button primary" to="/me">내 정보로 이동</Link><Link className="text-link" to="/">시작 화면으로</Link></div>
   </div>
 }

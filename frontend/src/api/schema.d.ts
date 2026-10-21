@@ -337,6 +337,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/save-intents/{save_intent_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 현재 세션의 저장 대기 취소
+         * @description 비회원 또는 회원의 현재 세션에 결합된 정확한 대기만 폐기한다.
+         *     이미 취소·소비·만료됐거나 다른 세션의 ID여도 204이며 타인의 대기에는 영향이 없다.
+         *     회원 저장과 같은 소유자 잠금으로 직렬화한다. 먼저 끝난 저장본은 되돌리지 않는다.
+         *     저장 동의를 철회하거나 로그인·체험·이미 저장한 자료를 삭제하지 않는다.
+         *     쿼리와 본문은 허용하지 않는다.
+         */
+        delete: operations["cancelSaveIntent"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/consents": {
         parameters: {
             query?: never;
@@ -352,6 +376,28 @@ export interface paths {
          *     `notice_version`이 현재 안내문 버전이 아니면 422(`notice_version`, `invalid_value`). 이미 같은 동의가 있으면 그대로 200.
          */
         post: operations["createConsent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/consents/notices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 서버가 확정 게시한 현재 목적별 안내문
+         * @description 공개 텍스트만 제공한다. 게시되지 않은 목적은 null이며 버전만 설정된 경우에도 안내문을 만들지 않는다.
+         *     login_available은 저장/계정 안내문 게시와 제공자 구성이 모두 있을 때만 true다.
+         *     안내문 조회는 동의 수락이 아니며 수락 시 서버가 현재 버전을 다시 검사한다.
+         */
+        get: operations["getConsentNotices"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1384,6 +1430,11 @@ export interface components {
         MfaVerify: {
             otp: string;
         };
+        NoticeCatalog: {
+            ai_processing: components["schemas"]["PublishedNotice"] | null;
+            login_available: boolean;
+            storage: components["schemas"]["PublishedNotice"] | null;
+        };
         Operations: {
             /** Format: date-time */
             checked_at: string;
@@ -1752,6 +1803,16 @@ export interface components {
         };
         /** @enum {string} */
         Province: "seoul" | "gyeonggi" | "incheon";
+        PublishedNotice: {
+            aws_region: string;
+            body: string;
+            contact: string;
+            controller: string;
+            deletion: string;
+            retention: string;
+            title: string;
+            version: string;
+        };
         Readiness: {
             checks: {
                 /** @enum {string} */
@@ -2817,6 +2878,32 @@ export interface operations {
             503: components["responses"]["ServiceUnavailable"];
         };
     };
+    cancelSaveIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                save_intent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 세션의 일치하는 대기 폐기 또는 이미 없음 */
+            204: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
     createConsent: {
         parameters: {
             query?: never;
@@ -2855,6 +2942,28 @@ export interface operations {
             413: components["responses"]["PayloadTooLarge"];
             422: components["responses"]["ValidationFailed"];
             429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getConsentNotices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 게시 상태 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoticeCatalog"];
+                };
+            };
             503: components["responses"]["ServiceUnavailable"];
         };
     };

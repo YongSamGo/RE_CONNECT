@@ -5,10 +5,21 @@ from starlette.responses import JSONResponse
 
 from app.core.errors import FieldError, error_response
 from app.modules.consents.models import ConsentCreate
+from app.modules.consents.notices import NoticeCatalog
 from app.modules.consents.service import ConsentActor, ConsentVersionError
 from app.modules.sessions.http import require_session
 
 router = APIRouter()
+
+
+@router.get('/consents/notices', response_model=NoticeCatalog, operation_id='getConsentNotices')
+async def notices(request: Request):
+    catalog = request.app.state.notice_catalog
+    # Reauthentication remains a separate member operation; this flag is only
+    # for the new-login entry point after a published identity/storage notice.
+    available = catalog.storage is not None and request.app.state.oauth_service.adapter is not None
+    result = catalog.model_copy(update={'login_available': available})
+    return JSONResponse(result.model_dump(mode='json'), headers={'Cache-Control': 'no-store'})
 
 
 @router.post("/consents")

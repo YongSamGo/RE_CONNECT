@@ -186,6 +186,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
       </fieldset>
       <div className="actions"><Button pending={pending} disabled={!state.dirty} onClick={save}>변경 내용을 초안에 반영</Button><Button pending={pending} disabled={state.dirty} onClick={confirm}>{state.loaded.view.confirmed ? '수정한 프로필 재확정' : '이 프로필 확정'}</Button></div>
       <p>초안 반영 후 내용을 확인하고 확정해 주세요.</p>
+      {state.loaded.view.confirmed && !state.dirty && !state.loaded.view.has_unconfirmed_changes && <Link className="button secondary" to={`/journeys/${journeyId}/save`}>확정 자료의 회원 저장 선택</Link>}
       {typeof savedBase === 'number' && Number.isSafeInteger(savedBase) && savedBase >= 1 && state.loaded.view.confirmed && <SavedProfileSave
         journeyId={journeyId} version={state.loaded.view.confirmed.version} baseVersion={savedBase}
         disabled={pending || state.dirty || state.loaded.view.has_unconfirmed_changes}
