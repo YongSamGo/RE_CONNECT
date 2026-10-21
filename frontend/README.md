@@ -18,6 +18,8 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 
 서버 체험 ID의 프로필 편집·확정·역할 제외/복원 화면과 시작 진입점·실제 기기 검증의 남은 범위는 [프로필 서버 연결 기록](src/features/profile/SERVER.md)을 따른다.
 
+로그인 복귀·현재 회원 상태 확인과 운영 안내 미정에 따른 저장 동의 연결 대기는 [로그인·내 정보 연결 기록](src/features/account/SERVER.md)을 따른다.
+
 서버 메시지 API에 연결한 한 질문 대화 화면과 입력 유지·멱등 재확인·프로필 이동 경계는 [대화 서버 연결 기록](src/features/conversation/SERVER.md)을 따른다. 실제 동의·체험 시작은 운영 안내 확정 전까지 연결하지 않는다.
 
 확정 프로필 추천·범위 필터·공고별 자격 대조와 실제 표본 평가/기기 검증의 남은 범위는 [추천 서버 연결 기록](src/features/recommendations/SERVER.md)을 따른다.

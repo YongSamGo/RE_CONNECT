@@ -12,6 +12,7 @@ import { OfficialPreparation } from './features/preparation/OfficialPreparation'
 import { emptyManualDraft } from './features/preparation/model'
 import type { ManualDraft } from './features/preparation/model'
 import { AccountPage } from './features/account/AccountPage'
+import { AuthResult } from './features/account/AuthResult'
 import { SavedMaterials } from './features/account/SavedMaterials'
 import { AdminPage } from './features/admin/AdminPage'
 import { VoicePreview } from './features/voice/VoicePreview'
@@ -110,6 +111,7 @@ export default function App() {
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/recommendations') ? screens[5] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/profile') ? screens[4] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
+      ?? (location.pathname === '/auth/result' ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
     if (previousPath.current !== location.pathname) {
       previousPath.current = location.pathname
@@ -149,6 +151,7 @@ export default function App() {
       <Route path="/opportunities/:id/preparation" element={<OfficialPreparation />} />
       <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
       <Route path="/me" element={<AccountPage onSessionReset={clearPreview} onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
+      <Route path="/auth/result" element={<AuthResult />} />
       <Route path="/me/saved" element={<SavedMaterials onSessionReset={clearPreview} />} />
       <Route path="/my" element={<Navigate to="/me" replace />} />
       <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
