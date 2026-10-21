@@ -32,7 +32,7 @@ async def get_me(request: Request):
         session = issued.session
         view = await request.app.state.member_service.me(session)
     actor = ConsentActor(session.subject_id, member_id=UUID(view['user']['id']) if view['authenticated'] else None,
-                         session_digest=session.digest)
+                         session_digest=session.digest, member_generation=session.user_generation)
     states = await request.app.state.consent_service.current(actor)
     view['consents'] = [item.model_dump(mode='json') for item in states]
     if view['authenticated']:
@@ -51,7 +51,7 @@ async def get_me(request: Request):
 
 @router.post("/auth/logout", status_code=204)
 async def logout(request: Request):
-    session = await require_session(request)
+    session = await require_session(request, validate_member=False)
     issued = await request.app.state.member_service.logout(session)
     response = Response(status_code=204, headers={"Cache-Control": "no-store"})
     write_session_cookie(request, response, issued)

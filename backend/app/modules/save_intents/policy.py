@@ -3,11 +3,11 @@
 import asyncio
 from contextlib import asynccontextmanager
 
-from sqlalchemy import func, select, text
+from sqlalchemy import exists, func, select, text
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.core.business_errors import AppError
-from app.persistence import Consent, ProfileVersion, User
+from app.persistence import Consent, DeletionRecord, ProfileVersion, User
 
 
 class SqlSaveIntentPolicy:
@@ -23,6 +23,8 @@ class SqlSaveIntentPolicy:
             db.execute(text("SET LOCAL lock_timeout = '1s'"))
         owner = db.scalar(select(User).where(User.id == user_id).with_for_update())
         if owner is None or owner.status != 'active':
+            raise AppError('SESSION_EXPIRED')
+        if db.scalar(select(exists().where(DeletionRecord.owner_id == user_id, DeletionRecord.status.in_(['pending', 'failed'])))):
             raise AppError('SESSION_EXPIRED')
         version = db.scalar(select(func.max(ProfileVersion.version)).where(ProfileVersion.owner_id == user_id))
         if notice is not None:

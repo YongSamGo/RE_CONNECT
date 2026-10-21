@@ -73,6 +73,8 @@ class Settings(BaseSettings):
     # DB·소스·DB 백업 밖에서 제공하는 키 버전 → base64 32바이트 master key의 JSON.
     data_encryption_keys: SecretStr | None = None
     data_encryption_active_key_id: str | None = None
+    # POSIX 개발 시험용. 운영 보관 위치/권한/백업 분리가 확정된 어댑터는 별도 연결한다.
+    deletion_journal_directory: Path | None = None
 
     # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
     health_check_timeout_seconds: float = 2.0

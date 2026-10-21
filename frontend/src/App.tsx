@@ -148,8 +148,8 @@ export default function App() {
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
       <Route path="/opportunities/:id/preparation" element={<OfficialPreparation />} />
       <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
-      <Route path="/me" element={<AccountPage onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
-      <Route path="/me/saved" element={<SavedMaterials />} />
+      <Route path="/me" element={<AccountPage onSessionReset={clearPreview} onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
+      <Route path="/me/saved" element={<SavedMaterials onSessionReset={clearPreview} />} />
       <Route path="/my" element={<Navigate to="/me" replace />} />
       <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
       <Route path="/preparation/:legacyId" element={<div className="reading-width"><Heading step="이전 미리보기 주소" title="예시별 작성 화면을 정리했어요">가상 공고별 작성 화면은 기존 프론트의 직접 작성 연습 화면으로 통합했습니다. 이 주소를 실제 공고의 신청 준비로 사용하지 않습니다.</Heading><div className="actions"><Link className="button primary" to="/preparation">직접 작성 연습으로 이동</Link><Link className="text-link" to="/opportunities">공개 공고 살펴보기</Link></div></div>} />

@@ -22,6 +22,7 @@ class ConsentActor:
     # None은 익명. 인증 완료 후 서버가 조회한 회원 ID만 넘긴다.
     member_id: UUID | None = None
     session_digest: str | None = None
+    member_generation: int | None = None
 
 
 class ConsentStoreUnavailable(Exception):

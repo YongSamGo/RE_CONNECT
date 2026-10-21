@@ -96,7 +96,7 @@ class JourneyService:
             raise AppError("UNAUTHENTICATED")
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
             raise AppError("NOT_FOUND")
-        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest)
+        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest, member_generation=session.user_generation)
         await self.consents.require(actor, "ai_processing",
                                     notice_version=body.ai_notice_version)
         await self.consents.bind_session(actor, body.ai_notice_version)
@@ -119,7 +119,7 @@ class JourneyService:
         return record.view
 
     async def load(self, session: Session, journey_id: UUID, *, user_activity: bool = False) -> JourneyRecord:
-        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest)
+        actor = ConsentActor(session.subject_id, member_id=session.user_id, session_digest=session.digest, member_generation=session.user_generation)
         consent = await self.consents.require(actor, "ai_processing")
         await self.consents.bind_session(actor, consent.notice_version)
         return await self.store.load(session, journey_id, consent.notice_version, user_activity=user_activity)

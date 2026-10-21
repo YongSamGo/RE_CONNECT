@@ -17,7 +17,7 @@ redis.call('PEXPIRE', KEYS[1], tonumber(ARGV[3]))
 return {ARGV[1], tostring(now), tostring(now), ARGV[2], tostring(now)}
 """
 _LOAD = """
-local v = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'csrf_secret', 'user_id')
+local v = redis.call('HMGET', KEYS[1], 'subject_id', 'created_ms', 'last_ms', 'csrf_secret', 'user_id', 'user_generation')
 if not v[1] then return {} end
 local t = redis.call('TIME')
 local now = tonumber(t[1]) * 1000 + math.floor(tonumber(t[2]) / 1000)
@@ -31,7 +31,7 @@ if ARGV[3] == '1' then
     redis.call('HSET', KEYS[1], 'last_ms', now)
     redis.call('PEXPIRE', KEYS[1], math.min(tonumber(ARGV[1]), created + tonumber(ARGV[2]) - now))
 end
-return {v[1], v[2], v[3], v[4], tostring(now), v[5] or ''}
+return {v[1], v[2], v[3], v[4], tostring(now), v[5] or '', v[6] or ''}
 """
 _ROTATE = """
 if redis.call('HGET', KEYS[1], 'user_id') then return redis.error_reply('Authenticated transition required') end

@@ -29,6 +29,7 @@ class Session:
     csrf_secret: str = field(repr=False)
     digest: str = field(repr=False)
     user_id: UUID | None = None
+    user_generation: int | None = None
 
 
 @dataclass(frozen=True)
@@ -45,7 +46,11 @@ def parse_session(values, digest):
     if not values:
         return None
     try:
-        if len(values) == 6:
+        generation = None
+        if len(values) == 7:
+            subject, created, last, secret, now, user, generation = values
+            generation = int(generation) if generation != '' else None
+        elif len(values) == 6:
             subject, created, last, secret, now, user = values
         else:
             subject, created, last, secret, now = values
@@ -53,7 +58,8 @@ def parse_session(values, digest):
         created, last, now = int(created), int(last), int(now)
         if not 0 <= created <= last <= now or not re.fullmatch(r"[0-9a-f]{64}", secret):
             raise ValueError
-        return Session(UUID(subject), created, last, now, secret, digest, UUID(user) if user else None)
+        if generation is not None and (not user or not 0 <= generation < 2147483647): raise ValueError
+        return Session(UUID(subject), created, last, now, secret, digest, UUID(user) if user else None, generation)
     except (ValueError, TypeError):
         raise StoreUnavailable from None
 

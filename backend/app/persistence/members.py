@@ -20,12 +20,14 @@ class User(Base):
         CheckConstraint("role IN ('user', 'admin')", name="role"),
         CheckConstraint("status IN ('active', 'suspended')", name="status"),
         CheckConstraint("length(kakao_subject) BETWEEN 1 AND 128", name="subject_length"),
+        CheckConstraint('session_generation >= 0 AND session_generation < 2147483647', name='session_generation'),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
     kakao_subject: Mapped[str] = mapped_column(String(128), unique=True)
     role: Mapped[str] = mapped_column(String(16), default="user", server_default="user")
     status: Mapped[str] = mapped_column(String(16), default="active", server_default="active")
+    session_generation: Mapped[int] = mapped_column(Integer, default=0, server_default='0')
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
 
 

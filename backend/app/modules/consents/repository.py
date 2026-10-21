@@ -6,7 +6,7 @@ from datetime import UTC, datetime
 
 from pydantic import ValidationError
 from redis.exceptions import RedisError
-from sqlalchemy import select
+from sqlalchemy import exists, select, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session as DatabaseSession
 
@@ -15,6 +15,7 @@ from app.modules.consents.models import ConsentCreate, ConsentPurpose, ConsentSt
 from app.modules.consents.service import ConsentActor, ConsentStoreUnavailable, ConsentSubjectExpired
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 from app.persistence.members import Consent, User
+from app.persistence.operations import DeletionRecord
 
 # 동의는 세션 해시에 둬서 세션 삭제/만료 후 별도의 동의 키가 남지 않는다.
 # 만료 확인과 쓰기를 한 스크립트로 묶으며 읽기·동의 자체로 TTL을 연장하지 않는다.
@@ -94,8 +95,15 @@ class SQLConsentStore:
     def _owner(db, actor):
         if actor.member_id is None:
             raise ConsentSubjectExpired
+        if db.bind.dialect.name == 'postgresql':
+            db.execute(text("SET LOCAL statement_timeout = '5s'"))
+            db.execute(text("SET LOCAL lock_timeout = '1s'"))
         owner = db.scalar(select(User).where(User.id == actor.member_id).with_for_update())
         if owner is None or owner.status != "active":
+            raise ConsentSubjectExpired
+        if actor.member_generation is not None and owner.session_generation != actor.member_generation:
+            raise ConsentSubjectExpired
+        if db.scalar(select(exists().where(DeletionRecord.owner_id == owner.id, DeletionRecord.status.in_(['pending', 'failed'])))):
             raise ConsentSubjectExpired
         return owner
 

@@ -15,7 +15,8 @@ router = APIRouter()
 async def create_consent(request: Request, body: ConsentCreate):
     session = await require_session(request, user_activity=True)
     account = await request.app.state.member_service.require(session) if session.user_id is not None else None
-    actor = ConsentActor(session.subject_id, member_id=account.id if account else None, session_digest=session.digest)
+    actor = ConsentActor(session.subject_id, member_id=account.id if account else None, session_digest=session.digest,
+                         member_generation=account.generation if account else None)
     try:
         state, created = await request.app.state.consent_service.grant(actor, body)
     except ConsentVersionError:

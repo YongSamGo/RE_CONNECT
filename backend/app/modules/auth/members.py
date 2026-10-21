@@ -24,14 +24,16 @@ class MemberService:
             raise AppError("SERVICE_UNAVAILABLE") from None
         if binding is None or binding.user_id != session.user_id:
             raise AppError("SESSION_EXPIRED")
+        if session.user_generation is not None and binding.generation != session.user_generation:
+            raise AppError('SESSION_EXPIRED')
         account = await asyncio.to_thread(self.accounts.get, binding.user_id)
-        if account is None:
+        if account is None or account.generation != binding.generation:
             raise AppError("SESSION_EXPIRED")
         try:
             latest = await self.store.read(session.digest)
         except StoreUnavailable:
             raise AppError("SERVICE_UNAVAILABLE") from None
-        if latest is None or latest.user_id != binding.user_id:
+        if latest is None or latest.user_id != binding.user_id or latest.generation != account.generation:
             raise AppError("SESSION_EXPIRED")
         return account, latest
 
@@ -83,12 +85,13 @@ class MemberService:
         account = await self.require(session)
         return await service.pending(session, account)
 
-    async def _switch(self, session, user_id=None, *, perform_cleanup=True, save_intent_id=None):
+    async def _switch(self, session, user_id=None, *, perform_cleanup=True, save_intent_id=None, generation=0):
         if perform_cleanup and self.transition is not None:
             await self.transition(session)
         token, secret, subject = secrets.token_urlsafe(32), secrets.token_hex(32), uuid4()
         try:
             options = {'save_intent_id': save_intent_id} if save_intent_id is not None else {}
+            options.update(generation=generation, old_user_id=session.user_id)
             replacement = await self.store.switch(session.digest, token_digest(token), subject, secret, user_id, **options)
         except StoreUnavailable:
             raise AppError("SERVICE_UNAVAILABLE") from None
@@ -125,17 +128,18 @@ class MemberService:
             if purpose not in {"login", 'save'}:
                 return Completion("expired")
             account = await asyncio.to_thread(self.accounts.link, identity)
-            issued = await self._switch(current, account.id, save_intent_id=save_intent_id)
+            issued = await self._switch(current, account.id, save_intent_id=save_intent_id, generation=account.generation)
             # 저장소 사이의 정지·삭제는 최종 확인과 중요 요청마다의 DB 조회로 차단한다.
-            if await asyncio.to_thread(self.accounts.get, account.id) is None:
+            latest = await asyncio.to_thread(self.accounts.get, account.id)
+            if latest is None or latest.generation != account.generation:
                 await self.sessions.revoke(issued.token)
                 raise OAuthFailure
             return Completion("success", issued)
         except (AppError, StoreUnavailable):
             if issued is not None:
                 try:
-                    await self.sessions.revoke(issued.token)
-                except AppError:
+                    await self.store.discard(issued.session)
+                except (AppError, StoreUnavailable):
                     pass  # 쿠키를 반환하지 않는다. Redis 장애 시에도 인증 성공으로 응답하지 않는다.
             raise OAuthFailure from None
 

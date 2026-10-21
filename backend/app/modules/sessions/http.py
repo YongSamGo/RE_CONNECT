@@ -43,9 +43,11 @@ def write_csrf_cookie(request: Request, response: Response, token: str, session:
     )
 
 
-async def require_session(request: Request, *, user_activity: bool = False) -> Session:
+async def require_session(request: Request, *, user_activity: bool = False, validate_member: bool = True) -> Session:
     session_name, _ = cookie_names(request)
     session = await request.app.state.session_service.resolve(read_cookie(request, session_name), touch=user_activity)
     if session is None:
         raise AppError("NOT_FOUND")
+    if validate_member and session.user_id is not None:
+        await request.app.state.member_service.require(session)
     return session

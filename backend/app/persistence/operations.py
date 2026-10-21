@@ -211,8 +211,11 @@ class DeletionRecord(Base):
         CheckConstraint("scope IN ('account', 'profile', 'application')", name="scope"),
         CheckConstraint("status IN ('pending', 'completed', 'failed')", name="status"),
         CheckConstraint("expires_at > deleted_at", name="expiry"),
+        CheckConstraint("action IN ('legacy', 'profile_delete', 'application_delete', 'storage_withdraw', 'ai_withdraw', 'account_delete')", name='action'),
+        CheckConstraint('generation >= 0 AND generation < 2147483647', name='generation'),
         Index("ix_deletion_records_expiry", "expires_at"),
         Index("ix_deletion_records_target", "scope", "target_id"),
+        Index('ix_deletion_records_owner_status', 'owner_id', 'status'),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
@@ -221,5 +224,7 @@ class DeletionRecord(Base):
     scope: Mapped[str] = mapped_column(String(16))
     target_id: Mapped[UUID] = mapped_column(Uuid)
     status: Mapped[str] = mapped_column(String(16))
+    action: Mapped[str] = mapped_column(String(24), default='legacy', server_default='legacy')
+    generation: Mapped[int] = mapped_column(Integer, default=0, server_default='0')
     deleted_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
     expires_at: Mapped[datetime] = mapped_column(UTCDateTime())

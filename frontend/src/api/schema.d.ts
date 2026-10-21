@@ -373,6 +373,7 @@ export interface paths {
          *     - `storage` 철회: 저장 프로필 전 버전과 지원서를 지운다(회원만).
          *
          *     동의가 없던 목적을 철회해도 200이며 삭제 수는 0이다.
+         *     유효한 회원 철회는 다른 기기를 포함한 이전 세션·임시 체험도 정리하고 호출자를 새 회원 세션으로 전환한다. 익명 AI 철회는 새 익명 세션으로 전환한다. 저장 이력·실패 관리 재시도는 회원 삭제와 같은 경계를 사용한다. 이미 철회한 목적은 다른 목적의 자료·활성 체험을 지우지 않는다.
          */
         post: operations["withdrawConsent"];
         delete?: never;
@@ -424,7 +425,7 @@ export interface paths {
         post?: never;
         /**
          * 저장 지원서 삭제
-         * @description 그 문서의 모든 버전을 지운다. 없는 문서·다른 사람 문서는 404다.
+         * @description 그 문서의 모든 버전을 지운다. 없는 문서·다른 사람 문서는 404다. 다른 저장 문서·프로필은 유지하며 이전 회원 세션·임시 체험은 종료해 늦은 저장을 차단한다. 호출자는 새 회원 세션으로 전환한다. 삭제 이력·실패 재시도는 프로필 삭제와 같은 경계를 사용한다.
          */
         delete: operations["deleteSavedDraft"];
         options?: never;
@@ -755,6 +756,7 @@ export interface paths {
          * 회원 탈퇴
          * @description `GET /auth/kakao/start?purpose=reauth`로 5분 안에 재인증한 세션만 가능하다(아니면 403 `REAUTH_REQUIRED`).
          *     세션·체험·계정 연결·동의·저장 프로필·지원서를 지우고 세션을 폐기한다. 최소 삭제 이력만 30일 남는다.
+         *     삭제 요청을 영속화해 이전 인증을 차단한 뒤 DB 밖 최소 이력 저장·Redis 정리·SQL 삭제를 완료한다. 실패는 pending/failed 관리 재시도 대상이며 완료로 응답하지 않는다. 운영 이력 어댑터 미설정 시 실제 삭제 전에 503이다.
          */
         delete: operations["deleteAccount"];
         options?: never;
@@ -858,7 +860,7 @@ export interface paths {
         post?: never;
         /**
          * 저장 프로필 전체 삭제
-         * @description 모든 저장 버전과 그 프로필에서 나온 지원서를 함께 지운다. 저장본이 없어도 204다.
+         * @description 모든 저장 버전과 그 프로필에서 나온 지원서를 함께 지운다. 저장본이 없어도 204다. 이전 회원 세션·임시 체험도 정리해 늦은 저장을 차단하고 호출자는 새 회원 세션으로 전환한다. DB 밖 이력 저장이 실패하면 완료로 응답하지 않고 관리 재시도가 필요하다.
          */
         delete: operations["deleteSavedProfile"];
         options?: never;

@@ -7,10 +7,11 @@ from alembic import command
 from alembic.autogenerate import compare_metadata
 from alembic.config import Config
 from alembic.migration import MigrationContext
-from sqlalchemy import inspect, insert, select, update
+from sqlalchemy import Uuid, String, column, inspect, insert, select, table, update
 from sqlalchemy.exc import IntegrityError
 
 from app.persistence import ApplicationDraft, Base, OpportunityVersion, ProfileVersion
+from app.persistence.base import UTCDateTime
 from tests.persistence_helpers import open_test_database
 from tests.test_member_models import NOW, saved_draft, seed
 
@@ -42,7 +43,10 @@ def test_empty_database_roundtrip_and_metadata_match(empty_db):
 def test_additional_revision_preserves_existing_rows_and_blocks_bulk_overwrite(empty_db):
     config = migration_config(empty_db)
     command.upgrade(config, "0001_persistent_schema")
-    owner, _, profile_id, document_id = seed(empty_db)
+    # 0001의 실제 열만 사용해 업그레이드 전 자료를 만든다. 최신 ORM 기본값은 아직 없는 열을 INSERT한다.
+    legacy_users = table('users', column('id', Uuid()), column('kakao_subject', String()), column('role', String()),
+        column('status', String()), column('created_at', UTCDateTime()))
+    owner, _, profile_id, document_id = seed(empty_db, users=legacy_users)
     empty_db.execute(insert(ApplicationDraft), saved_draft(owner, profile_id, document_id))
     command.upgrade(config, "head")
     assert empty_db.execute(select(ProfileVersion.version)).scalar_one() == 1

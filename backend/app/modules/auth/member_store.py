@@ -8,6 +8,7 @@ from redis.exceptions import RedisError
 from app.adapters.session_transition import _CLEANUP_PLAN, _CLEANUP_COMMIT
 
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS, StoreUnavailable, parse_session
+from app.modules.auth.member_cleanup import RedisMemberCleanup
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,7 @@ class MemberBinding:
     user_id: UUID
     now_ms: int
     reauth_until_ms: int
+    generation: int
 
 
 _LIFETIME = """
@@ -29,15 +31,27 @@ if ttl <= 0 or redis.call('PTTL', KEYS[1]) <= 0 then return {} end
 """
 
 _READ = _LIFETIME + """
-local b = redis.call('HMGET', KEYS[1], 'user_id', 'reauth_until_ms')
-if not b[1] then return {} end
+local b = redis.call('HMGET', KEYS[1], 'user_id', 'reauth_until_ms', 'user_generation')
+if not b[1] or not b[3] then return {} end
+if redis.call('SISMEMBER', ARGV[3] .. b[1] .. ':sessions', ARGV[4]) ~= 1 then return {} end
 local until_ms = tonumber(b[2] or '0')
 if not until_ms or until_ms < 0 or until_ms > now + 300000 then return redis.error_reply('Invalid binding state') end
-return {b[1], tostring(now), tostring(until_ms)}
+return {b[1], tostring(now), tostring(until_ms), b[3]}
 """
 
 _SWITCH = _LIFETIME + _CLEANUP_PLAN + """
 if redis.call('EXISTS', KEYS[2]) == 1 then return {} end
+if (redis.call('HGET', KEYS[1], 'user_id') or '') ~= ARGV[9] then return {} end
+if ARGV[5] ~= '' then
+    if redis.call('SCARD', KEYS[7]) > 16 then return redis.error_reply('Invalid member index') end
+    for _, digest in ipairs(redis.call('SMEMBERS', KEYS[7])) do
+        if redis.call('EXISTS', ARGV[10] .. digest, ARGV[10] .. digest .. ':journeys',
+            ARGV[10] .. digest .. ':save-intent', ARGV[12] .. digest) == 0 then redis.call('SREM', KEYS[7], digest) end
+    end
+    local count = redis.call('SCARD', KEYS[7])
+    if ARGV[9] == ARGV[5] and redis.call('SISMEMBER', KEYS[7], ARGV[7]) == 1 then count = count - 1 end
+    if count >= 16 then return redis.error_reply('Member session limit') end
+end
 local pending = nil
 if ARGV[6] ~= '' then
     pending = redis.call('HGETALL', KEYS[4])
@@ -52,7 +66,9 @@ end
 redis.call('HSET', KEYS[2], 'subject_id', ARGV[3], 'created_ms', now, 'last_ms', now, 'csrf_secret', ARGV[4])
 redis.call('PEXPIRE', KEYS[2], tonumber(ARGV[2]))
 if ARGV[5] ~= '' then
-    redis.call('HSET', KEYS[2], 'user_id', ARGV[5], 'reauth_until_ms', 0)
+    redis.call('HSET', KEYS[2], 'user_id', ARGV[5], 'reauth_until_ms', 0, 'user_generation', ARGV[8])
+    redis.call('SADD', KEYS[7], ARGV[11])
+    redis.call('PEXPIRE', KEYS[7], tonumber(ARGV[2]))
 end
 if pending then
     for i=1,#pending,2 do redis.call('HSET', KEYS[5], pending[i], pending[i+1]) end
@@ -62,20 +78,22 @@ end
 redis.call('DEL', KEYS[4])
 """ + _CLEANUP_COMMIT + """
 redis.call('DEL', KEYS[1], KEYS[3])
-return {ARGV[3], tostring(now), tostring(now), ARGV[4], tostring(now), ARGV[5]}
+if ARGV[9] ~= '' then redis.call('SREM', KEYS[8], ARGV[7]) end
+return {ARGV[3], tostring(now), tostring(now), ARGV[4], tostring(now), ARGV[5], tostring(cleaned_journeys)}
 """
 
 _REAUTH = _LIFETIME + """
 if redis.call('HGET', KEYS[1], 'user_id') ~= ARGV[3] then return {} end
 local until_ms = now + math.min(300000, ttl)
 redis.call('HSET', KEYS[1], 'reauth_until_ms', until_ms)
-return {ARGV[3], tostring(now), tostring(until_ms)}
+return {ARGV[3], tostring(now), tostring(until_ms), redis.call('HGET', KEYS[1], 'user_generation') or ''}
 """
 
 
 class RedisMemberStore:
     def __init__(self, client, *, session_prefix="rc:session:v1:", flow_prefix="rc:oauth:v1:"):
         self.client, self.session_prefix, self.flow_prefix = client, session_prefix, flow_prefix
+        self.member_prefix = session_prefix + 'member:'
         self._read, self._switch, self._reauth = (client.register_script(v) for v in (_READ, _SWITCH, _REAUTH))
 
     @staticmethod
@@ -93,25 +111,39 @@ class RedisMemberStore:
         if not values:
             return None
         try:
-            uid, now, until = values
-            return MemberBinding(UUID(uid), int(now), int(until))
+            uid, now, until, generation = values
+            generation = int(generation)
+            if not 0 <= generation < 2147483647: raise ValueError
+            return MemberBinding(UUID(uid), int(now), int(until), generation)
         except (ValueError, TypeError):
             raise StoreUnavailable from None
 
     async def read(self, digest):
         try:
-            return self._binding(await self._read(keys=[self.key(digest)], args=[ABSOLUTE_MS, IDLE_MS]))
+            return self._binding(await self._read(keys=[self.key(digest)], args=[ABSOLUTE_MS, IDLE_MS, self.member_prefix, digest]))
         except RedisError:
             raise StoreUnavailable from None
 
-    async def switch(self, old_digest, new_digest, subject_id, csrf_secret, user_id=None, *, save_intent_id=None):
+    async def switch(self, old_digest, new_digest, subject_id, csrf_secret, user_id=None, *, save_intent_id=None, generation=0, old_user_id=None, with_counts=False):
+        if type(generation) is not int or not 0 <= generation < 2147483647: raise StoreUnavailable
         try:
+            if user_id is not None:
+                index = self.member_prefix + str(user_id) + ':sessions'
+                if await self.client.scard(index) > 16: raise StoreUnavailable
+                digests = await self.client.smembers(index)
+                if len(digests) > 16: raise StoreUnavailable
+                for digest in digests:
+                    if not await self.client.exists(self.key(digest)):
+                        await RedisMemberCleanup(self).revoke_one(user_id, digest)
             keys = [self.key(old_digest), self.key(new_digest), self.flow_prefix + self._digest(old_digest)]
             keys += [self.key(old_digest) + ':save-intent', self.key(new_digest) + ':save-intent', self.key(old_digest) + ':journeys']
+            keys += [self.member_prefix + str(user_id) + ':sessions', self.member_prefix + str(old_user_id) + ':sessions']
             values = await self._switch(keys=keys, args=[ABSOLUTE_MS, IDLE_MS, str(subject_id), csrf_secret,
                                                        str(user_id) if user_id is not None else "",
-                                                       str(save_intent_id) if save_intent_id else '', old_digest])
-            return parse_session(values, new_digest)
+                                                       str(save_intent_id) if save_intent_id else '', old_digest, generation,
+                                                       str(old_user_id) if old_user_id else '', self.session_prefix, new_digest, self.flow_prefix])
+            session = parse_session([*values[:6], str(generation) if user_id else ''] if values else [], new_digest)
+            return (session, int(values[6]) if values else 0) if with_counts else session
         except RedisError:
             raise StoreUnavailable from None
 
@@ -121,10 +153,14 @@ class RedisMemberStore:
         except RedisError:
             raise StoreUnavailable from None
 
+    async def discard(self, session):
+        await RedisMemberCleanup(self).revoke_one(session.user_id, session.digest)
+
 
 class UnavailableMemberStore:
-    async def read(self, *args):
+    async def read(self, *args, **kwargs):
         raise StoreUnavailable
 
     switch = read
     reauth = read
+    discard = read

@@ -3,7 +3,7 @@
 from dataclasses import dataclass
 from uuid import UUID, uuid4
 
-from sqlalchemy import select, text
+from sqlalchemy import exists, select, text
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.exc import SQLAlchemyError
@@ -11,12 +11,14 @@ from sqlalchemy.exc import SQLAlchemyError
 from app.core.business_errors import AppError
 from app.modules.auth.service import Identity
 from app.persistence.members import User
+from app.persistence.operations import DeletionRecord
 
 
 @dataclass(frozen=True)
 class Account:
     id: UUID
     role: str
+    generation: int = 0
 
 
 class SqlAccountRepository:
@@ -35,7 +37,12 @@ class SqlAccountRepository:
             return None
         if row["role"] not in {"user", "admin"}:
             raise AppError("SERVICE_UNAVAILABLE")
-        return Account(row["id"], row["role"])
+        return Account(row["id"], row["role"], row['session_generation'])
+
+    @staticmethod
+    def _pending(db, user_id):
+        return db.scalar(select(exists().where(DeletionRecord.owner_id == user_id,
+            DeletionRecord.status.in_(['pending', 'failed']))))
 
     def link(self, identity: Identity) -> Account:
         # 타입 표시에 의존하지 않고 검증된 숫자 신원만 다시 검사한다.
@@ -52,7 +59,7 @@ class SqlAccountRepository:
                 db.execute(statement.on_conflict_do_nothing(index_elements=[User.kakao_subject]))
                 row = db.execute(select(User.__table__).where(User.kakao_subject == identity.subject).with_for_update()).mappings().one_or_none()
                 account = self._account(row)
-                if account is None:
+                if account is None or self._pending(db, account.id):
                     raise AppError("FORBIDDEN")
                 return account
         except SQLAlchemyError:
@@ -63,7 +70,7 @@ class SqlAccountRepository:
             with self.transaction() as db:
                 self._limits(db)
                 row = db.execute(select(User.__table__).where(User.id == account_id)).mappings().one_or_none()
-                return self._account(row)
+                return None if self._pending(db, account_id) else self._account(row)
         except SQLAlchemyError:
             raise AppError("SERVICE_UNAVAILABLE") from None
 

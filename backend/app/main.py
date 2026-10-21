@@ -36,6 +36,11 @@ from app.modules.auth.repository import RedisFlowStore
 from app.modules.auth.accounts import SqlAccountRepository, UnavailableAccountRepository
 from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberStore
 from app.modules.auth.members import MemberService
+from app.modules.auth.member_cleanup import RedisMemberCleanup, UnavailableMemberCleanup
+from app.modules.deletions import router as deletions
+from app.modules.deletions.journal import FileDeletionJournal, UnavailableDeletionJournal
+from app.modules.deletions.repository import SqlDeletionRepository, UnavailableDeletionRepository
+from app.modules.deletions.service import DeletionService
 from app.core.encryption import ContentCipher, EncryptionKeyRing, EncryptionUnavailable
 from app.modules.saved_profiles import router as saved_profiles
 from app.modules.saved_profiles.repository import SqlProfileRepository
@@ -199,6 +204,12 @@ def create_app(
     app.state.saved_draft_service = SavedDraftService(SqlDraftRepository(app.state.saved_profile_service.repository),
         app.state.member_service, app.state.consent_service, app.state.save_intent_service, app.state.journey_service, app.state.draft_service)
     app.state.draft_service.stored_drafts = app.state.saved_draft_service
+    app.state.deletion_service = DeletionService(
+        SqlDeletionRepository(sessionmaker(engine).begin) if engine is not None else UnavailableDeletionRepository(),
+        FileDeletionJournal(settings.deletion_journal_directory)
+            if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal(),
+        app.state.member_service, app.state.save_intent_service.policy,
+        RedisMemberCleanup(app.state.member_service.store) if redis_client is not None else UnavailableMemberCleanup())
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
@@ -224,6 +235,7 @@ def create_app(
     app.include_router(save_intents.router, prefix=API_PREFIX)
     app.include_router(saved_profiles.router, prefix=API_PREFIX)
     app.include_router(saved_drafts.router, prefix=API_PREFIX)
+    app.include_router(deletions.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
