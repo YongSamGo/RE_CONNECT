@@ -1,4 +1,5 @@
-# gitleaks 설정 — 기본 규칙을 그대로 쓰고, 예외는 아래 한 곳만 둔다.
+# gitleaks 설정 — 기본 규칙과 아래 문서 예외를 사용한다.
+# 이력의 특정 공개 예제/환경변수명 오탐은 .gitleaksignore의 정확한 fingerprint로만 제한한다.
 
 [extend]
 useDefault = true
