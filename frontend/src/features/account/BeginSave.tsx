@@ -16,6 +16,7 @@ import type { SaveInput } from './PendingSave'
 
 type Choice = { body: components['schemas']['SaveIntentCreate']; notices: components['schemas']['NoticeCatalog'];
   member: SaveInput | null; key: string; checked: boolean; started: boolean; intent: string | null; cancelled: boolean }
+type Result = { message: string; next: Choice }
 const positive = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 1 && value < 2 ** 31 ? value : invalid()
 
 export function BeginSaveRoute() {
@@ -26,7 +27,8 @@ export function BeginSaveRoute() {
 
 function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string }) {
   const scope = useMemoryScope<Choice | null>(() => null)
-  const request = useRequest<string>()
+  const request = useRequest<Result>()
+  const accept = (result: Result) => scope.setValue(result.next)
   const value = scope.value, busy = request.state.status === 'pending'
   const load = () => request.run(async (api, signal) => {
     const me = parseSession(required((await api.GET('/me', { signal })).data))
@@ -47,10 +49,9 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
         draft: draft ? { type: 'journey', journey_id: journeyId, ...draft } : null,
         base: saved === null ? null : positive(record(saved).version), consent: me.consents.find(item => item.purpose === 'storage')?.notice_version ?? null }
     }
-    scope.setValue({ body: { journey_id: journeyId, profile: { version: view.confirmed.version }, draft }, notices, member,
-      key: crypto.randomUUID(), checked: false, started: false, intent: null, cancelled: false })
-    return '서버의 확정·승인 참조를 확인했습니다.'
-  })
+    return { next: { body: { journey_id: journeyId, profile: { version: view.confirmed.version }, draft }, notices, member,
+      key: crypto.randomUUID(), checked: false, started: false, intent: null, cancelled: false }, message: '서버의 확정·승인 참조를 확인했습니다.' }
+  }, accept)
   const prepare = () => {
     if (!value || busy || !value.checked || !value.notices.storage || !value.notices.login_available || value.cancelled) return
     scope.setValue({ ...value, started: true })
@@ -61,17 +62,15 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
       const targets = record(result.targets)
       if (typeof result.save_intent_id !== 'string' || !isOpportunityId(result.save_intent_id) || !timestamp(result.expires_at)
         || targets.profile !== true || targets.draft !== (value.body.draft !== null)) return invalid()
-      scope.setValue({ ...value, started: true, intent: result.save_intent_id })
-      return '로그인용 저장 대기를 준비했습니다. 아직 회원 저장하지 않았습니다.'
-    })
+      return { next: { ...value, started: true, intent: result.save_intent_id }, message: '로그인용 저장 대기를 준비했습니다. 아직 회원 저장하지 않았습니다.' }
+    }, accept)
   }
   const cancel = () => {
     if (!value || busy) return
     void request.run(async (api, signal) => {
       if (value.intent) await api.DELETE('/auth/save-intents/{save_intent_id}', { signal, params: { path: { save_intent_id: value.intent } } })
-      scope.setValue({ ...value, cancelled: true })
-      return '선택한 저장 준비를 취소했습니다. 대화와 확정 자료는 유지합니다.'
-    })
+      return { next: { ...value, cancelled: true }, message: '선택한 저장 준비를 취소했습니다. 대화와 확정 자료는 유지합니다.' }
+    }, accept)
   }
   if (value?.member) return <PendingSave input={value.member} />
   return <div className="reading-width"><header className="page-heading"><p className="eyebrow">회원 저장 준비</p><h1>{draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'}</h1><p>직접 확정·승인한 자료를 확인합니다. 로그인 후 저장 여부를 따로 선택합니다.</p></header>
@@ -87,7 +86,7 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
       <Button variant="secondary" disabled={busy} onClick={cancel}>저장 준비 취소</Button>
     </section>}
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
-    {request.state.status === 'success' && <p role="status">{request.state.data}</p>}
+    {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
     <Link className="text-link" to={`/journeys/${journeyId}/profile`}>확정 프로필 확인 화면으로</Link>
   </div>
 }
