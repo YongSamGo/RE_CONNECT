@@ -126,7 +126,7 @@ API로 **사업이 있다는 것과 기간·인원·활동비**는 알 수 있�
 | `schedule_text` | 변환: 활동기간 `actperStartDe`~`actperEndDe` | 같음. `-`면 `null` | |
 | `deadline_date` | 변환: `appdurngEndDe` | 같음 | `YYYY-MM-DD` 형식 검증 |
 | `recruitment_status` | 변환: 오늘이 신청기간 안이면 `open`, 지났으면 `closed`, 시작 전 `unknown` | `annRcrtStatNm`이 `신청·접수중`이고 신청기간 안이면 `open`, `마감`이거나 지났으면 `closed` | 가치동행 `annApprvStatView`(`승인완료`)는 모집 상태가 아니다 |
-| `source_url` / `application_url` | **검수**: 운영자가 공식 안내 페이지를 확인해 입력 | 같음 | 응답에 URL이 없다. 추정해 만들지 않는다 |
+| `source_url` / `application_url` | **검수**: 운영자가 포털 공고 상세 `https://www.50plus.or.kr/appView.do?ANN_NO=<번호>`를 확인해 입력 | `/in_appView.do?…` (쿼리 키 확인 필요) | 응답에 URL·`ANN_NO`가 없다. 추정해 만들지 않는다(sources.md §4) |
 | `requirements` | 검수 | 검수 | 응답에 조건 필드가 없다 |
 | 나머지(`description_text`, `hours_per_week`, `required_documents` 등) | 없음 → `null` | 없음 → `null` | |
 
