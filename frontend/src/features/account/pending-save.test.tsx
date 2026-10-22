@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
@@ -145,4 +145,21 @@ it('drops the loaded pending choice on pagehide and never stores it in browser p
   expect(screen.queryByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: '현재 저장 대기 확인' })).toBeEnabled()
   expect(writes).toHaveLength(0)
+})
+
+it('discards a body parser that finishes after pagehide even after transport validation has finished', async () => {
+  const { me } = setup()
+  const original = Response.prototype.text
+  let reads = 0, finish!: (value: string) => void
+  vi.spyOn(Response.prototype, 'text').mockImplementation(function (this: Response) {
+    reads += 1
+    if (reads === 1) return new Promise(resolve => { finish = resolve })
+    return original.call(this)
+  })
+  await userEvent.click(screen.getByRole('button', { name: '현재 저장 대기 확인' }))
+  await waitFor(() => expect(reads).toBe(1))
+  act(() => window.dispatchEvent(new Event('pagehide')))
+  await act(async () => { finish(JSON.stringify(me)) })
+  expect(screen.queryByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: '현재 저장 대기 확인' })).toBeEnabled()
 })
