@@ -112,6 +112,8 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 
 ## 설정
 
+동의 후 익명 체험 생성·유휴/절대 수명·생성 멱등성은 [체험 수명 안내](../docs/data/journeys.md)를 따른다. 회원 저장본 가져오기와 실제 대화·본문 저장은 후속 API에 연결해야 한다.
+
 삭제·만료·취소 후 늦은 결과 참조 완료를 막는 내부 경계는 [결과 수명 안내](../docs/security/result-lifecycle.md)를 따른다. 실제 결과 본문과 회원 영구 저장은 같은 원자 연산/트랜잭션으로 후속 연결해야 한다.
 
 목적별 동의 수락과 현재 버전 검사는 [동의 검사 안내](../docs/security/consents.md)를 따른다. 실제 안내문 확정 전에는 `AI_NOTICE_VERSION`·`STORAGE_NOTICE_VERSION`을 설정하지 않는다. 회원용 저장 동의 HTTP 연결은 회원 인증 구현 후 진행한다.
