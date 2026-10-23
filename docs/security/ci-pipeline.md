@@ -26,6 +26,7 @@
 | 프론트엔드 점검 | npm audit signatures | 서명·출처가 검증되지 않은 패키지 | — (공급망 보안) | `frontend/package-lock.json`이 있을 때 |
 | | npm audit | 운영 의존성의 높음 이상 취약점 | 취약한 API 사용 | 〃 |
 | | lint / test / build | 코드 품질, 타입 오류 | — | 〃 |
+| | test:backend-contract | 실제 공개 지역 router의 ASGI 응답과 OpenAPI·FE 파서 간 불일치 | 요청·결과 검증 원칙(테스트 도구 적용) | Python 3.12·해시 고정 backend 의존성으로 실행. [범위·한계](../../frontend/contract-tests/README.md) |
 | 새 의존성 검토 | dependency-review | PR에서 새로 들어오는 취약 패키지 (중간 이상) | 취약한 API 사용 | PR이고 의존성 파일이 있을 때 (Dependency graph 필요) |
 | CodeQL | CodeQL `security-extended` | 데이터 흐름 기반 XSS·SSRF·경로 조작·SQL 삽입 등 | 입력데이터 검증 및 표현 전반 | 항상 (언어 자동 감지) |
 
