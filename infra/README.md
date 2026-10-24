@@ -22,6 +22,8 @@ docker compose --env-file .env -f infra/compose.dev.yaml up -d
 
 ## 규칙
 
+Ollama 텍스트 모델은 [고정 가중치 준비](../docs/ai/ollama-preparation.md)로 먼저 받고 오프라인 검증한다. 준비 도구는 서버·추론을 실행하지 않는다. 운영 Compose에는 검증한 모델 폴더를 읽기 전용으로 연결하며 런타임 이미지와 GPU 조합은 별도로 검증한다.
+
 - 인터넷에는 Nginx의 HTTPS만 공개한다. Redis·Ollama·음성 서비스는 내부 네트워크에만 둔다.
 - Redis는 RDB·AOF 영속화를 끄고, 개인정보를 영구 볼륨에 남기지 않는다.
 - 운영 PostgreSQL은 Compose 컨테이너가 아니라 비공개 RDS다. 로컬 개발·시험에서만 Compose PostgreSQL을 쓴다.
