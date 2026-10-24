@@ -8,8 +8,9 @@
 
 | 파일 | 내용 |
 |---|---|
-| `personas/P01~P08.json` | 가상 시니어 8명: 대화 문장(`interview`), 추출 직후 기대 프로필(`expected_profile`), 추출하면 안 되는 값(`must_not_extract`), 응답에 나오면 안 되는 값(`must_not_output`, P07), 확인 질문이 필요한 항목(`needs_confirmation`), 기대 역할(`expected_roles`) |
+| `personas/P01~P08.json` | 가상 시니어 8명: 대화 문장(`interview`), 추출 직후 기대 프로필(`expected_profile`), 추출하면 안 되는 값(`must_not_extract`), 응답에 나오면 안 되는 값(`must_not_output`, P07), 확인 질문이 필요한 항목(`needs_confirmation`), 기대 역할(`expected_roles`: 희망 표현, `expected_role_ids`: 역할 사전 기준 기대 후보) |
 | `eligibility_cases.json` | 가상 공고 6건(J1~J6)의 조건(`Requirement` 계약 형식)과 8명 × 6건 = 48건의 조건별·전체 기대 판정 |
+| `check_role_catalog.py` | 역할 사전 초안(`docs/data/role-catalog.json`)의 형식과, 페르소나 8명의 역할 후보가 `expected_role_ids`와 같은지 검사(#61) |
 | `check_eligibility.py` | `rules`대로 48건을 다시 계산해 기대 판정·`labels`·사례 목록과 대조. 데이터를 고친 뒤 `python eval/check_eligibility.py` (불일치가 있으면 종료 코드 1) |
 
 `requirements`의 각 조건은 [API 계약](../docs/api/openapi.yaml)의 `Requirement`를 그대로 따르므로 `id`·`group_id`가 UUID다. 사람이 읽는 라벨(`J1-R1`, 그룹은 `J1-G1`)은 공고별 `labels`에 라벨 → UUID로 적었고, `cases[].conditions`도 이 라벨을 키로 쓴다. UUID는 라벨에서 uuid5로 만든 고정값이라 다시 만들어도 같다.

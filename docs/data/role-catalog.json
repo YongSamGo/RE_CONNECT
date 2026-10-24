@@ -1,0 +1,286 @@
+[
+  {
+    "id": "reading_companion",
+    "name": "책 읽어주기 활동가",
+    "description": "도서관·복지관에서 아이나 어르신에게 책을 읽어 주는 역할",
+    "skill_tags": [
+      "낭독"
+    ],
+    "aliases": [],
+    "experience_rules": []
+  },
+  {
+    "id": "library_assistant",
+    "name": "도서관 자료 정리 도우미",
+    "description": "도서 정리와 대출 안내를 돕는 역할",
+    "skill_tags": [
+      "자료 정리"
+    ],
+    "aliases": [],
+    "experience_rules": []
+  },
+  {
+    "id": "learning_mentor",
+    "name": "학습 지도 활동가",
+    "description": "지역아동센터·방과후 교실에서 아이들의 공부를 돕는 역할",
+    "skill_tags": [
+      "학습 지도",
+      "초등 교육"
+    ],
+    "aliases": [
+      {
+        "alias": "공부 지도",
+        "skill_tag": "학습 지도"
+      },
+      {
+        "alias": "학습지도",
+        "skill_tag": "학습 지도"
+      },
+      {
+        "alias": "숙제 지도",
+        "skill_tag": "학습 지도"
+      },
+      {
+        "alias": "초등교육",
+        "skill_tag": "초등 교육"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "reading_mentor",
+    "name": "독서 지도 활동가",
+    "description": "아이들과 책을 함께 읽고 독서 습관을 돕는 역할",
+    "skill_tags": [
+      "독서 지도"
+    ],
+    "aliases": [
+      {
+        "alias": "독서지도",
+        "skill_tag": "독서 지도"
+      },
+      {
+        "alias": "독서 교육",
+        "skill_tag": "독서 지도"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "facility_manager",
+    "name": "시설 관리원",
+    "description": "아파트·공공시설의 설비 점검과 시설 관리를 맡는 역할",
+    "skill_tags": [
+      "시설 관리",
+      "전기 설비 점검"
+    ],
+    "aliases": [
+      {
+        "alias": "건물 관리",
+        "skill_tag": "시설 관리"
+      },
+      {
+        "alias": "시설관리",
+        "skill_tag": "시설 관리"
+      },
+      {
+        "alias": "전기 점검",
+        "skill_tag": "전기 설비 점검"
+      },
+      {
+        "alias": "설비 점검",
+        "skill_tag": "전기 설비 점검"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "visitor_guide",
+    "name": "민원·방문 안내 도우미",
+    "description": "기관 방문객과 주민의 문의를 받아 안내하는 역할",
+    "skill_tags": [
+      "민원 처리",
+      "고객 응대"
+    ],
+    "aliases": [
+      {
+        "alias": "민원 응대",
+        "skill_tag": "민원 처리"
+      },
+      {
+        "alias": "민원 안내",
+        "skill_tag": "민원 처리"
+      },
+      {
+        "alias": "고객 상담",
+        "skill_tag": "고객 응대"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "meal_assistant",
+    "name": "급식·조리 보조",
+    "description": "경로식당·복지관에서 조리와 배식을 돕는 역할",
+    "skill_tags": [
+      "단체 급식 조리",
+      "조리"
+    ],
+    "aliases": [
+      {
+        "alias": "급식 조리",
+        "skill_tag": "단체 급식 조리"
+      },
+      {
+        "alias": "반찬 조리",
+        "skill_tag": "조리"
+      },
+      {
+        "alias": "요리",
+        "skill_tag": "조리"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "community_organizer",
+    "name": "주민 모임 진행자",
+    "description": "동네 모임과 주민 활동을 꾸리고 진행하는 역할",
+    "skill_tags": [
+      "주민 모임 운영",
+      "행사 진행"
+    ],
+    "aliases": [
+      {
+        "alias": "모임 운영",
+        "skill_tag": "주민 모임 운영"
+      },
+      {
+        "alias": "부녀회 운영",
+        "skill_tag": "주민 모임 운영"
+      },
+      {
+        "alias": "행사 운영",
+        "skill_tag": "행사 진행"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "office_accounting",
+    "name": "사무 보조(회계)",
+    "description": "기관 사무실에서 회계·급여 관련 사무를 돕는 역할",
+    "skill_tags": [
+      "회계",
+      "결산",
+      "급여 정산",
+      "세금계산서 발행"
+    ],
+    "aliases": [
+      {
+        "alias": "경리",
+        "skill_tag": "회계"
+      },
+      {
+        "alias": "회계 사무",
+        "skill_tag": "회계"
+      },
+      {
+        "alias": "월말 결산",
+        "skill_tag": "결산"
+      },
+      {
+        "alias": "급여 계산",
+        "skill_tag": "급여 정산"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "digital_guide",
+    "name": "디지털 기기 안내 도우미",
+    "description": "어르신의 스마트폰·키오스크 사용을 옆에서 안내하는 역할",
+    "skill_tags": [
+      "디지털 기기 교육",
+      "소프트웨어 개발"
+    ],
+    "aliases": [
+      {
+        "alias": "스마트폰 교육",
+        "skill_tag": "디지털 기기 교육"
+      },
+      {
+        "alias": "키오스크 안내",
+        "skill_tag": "디지털 기기 교육"
+      },
+      {
+        "alias": "프로그램 개발",
+        "skill_tag": "소프트웨어 개발"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "mobility_supporter",
+    "name": "이동 지원 활동가",
+    "description": "병원·복지관 이동이 어려운 분의 차량 이동을 돕는 역할",
+    "skill_tags": [
+      "운전"
+    ],
+    "aliases": [
+      {
+        "alias": "차량 운행",
+        "skill_tag": "운전"
+      },
+      {
+        "alias": "택시 운전",
+        "skill_tag": "운전"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "care_assistant",
+    "name": "돌봄 보조 활동가",
+    "description": "요양시설·경로당에서 어르신 돌봄을 돕는 역할",
+    "skill_tags": [
+      "환자 돌봄",
+      "노인 돌봄"
+    ],
+    "aliases": [
+      {
+        "alias": "어르신 돌봄",
+        "skill_tag": "노인 돌봄"
+      },
+      {
+        "alias": "간병",
+        "skill_tag": "환자 돌봄"
+      },
+      {
+        "alias": "요양 보조",
+        "skill_tag": "노인 돌봄"
+      }
+    ],
+    "experience_rules": []
+  },
+  {
+    "id": "finance_educator",
+    "name": "금융 사기 예방 교육 강사",
+    "description": "어르신 대상 금융 사기 예방과 금융 생활 교육을 맡는 역할",
+    "skill_tags": [
+      "금융 상담",
+      "금융 상품 안내"
+    ],
+    "aliases": [
+      {
+        "alias": "대출 상담",
+        "skill_tag": "금융 상담"
+      },
+      {
+        "alias": "금융 교육",
+        "skill_tag": "금융 상품 안내"
+      }
+    ],
+    "experience_rules": []
+  }
+]
