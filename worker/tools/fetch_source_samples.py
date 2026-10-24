@@ -3,6 +3,7 @@
 사용 예 (오퍼레이션명·파라미터는 docs/data/sources.md 참고):
     python worker/tools/fetch_source_samples.py senuri --operation getJobList
     python worker/tools/fetch_source_samples.py volunteer --operation getVltrAreaList --param schSido=6110000
+    python worker/tools/fetch_source_samples.py seoul50plus --operation job --param year=2026
 
 보안 기준:
 - 통신 대상은 아래 SOURCES에 고정한 HTTPS 주소뿐이다. 사용자 입력으로 호스트를 바꿀 수 없고 리다이렉트도 따라가지 않는다.
@@ -17,6 +18,7 @@ from __future__ import annotations
 
 import argparse
 import http.client
+import json
 import os
 import re
 import sys
@@ -38,7 +40,7 @@ SOURCES = {
     # 한국노인인력개발원 노인 구인정보 — https://www.data.go.kr/data/15015153/openapi.do
     "senuri": {
         "base_url": "https://apis.data.go.kr/B552474/SenuriService",
-        "key_env": "DATA_GO_KR_SERVICE_KEY",
+        "env_var": "DATA_GO_KR_SERVICE_KEY",
         "key_param": "serviceKey",
         "default_params": {"pageNo": "1", "numOfRows": "10"},
     },
@@ -46,9 +48,21 @@ SOURCES = {
     # 확인된 오퍼레이션명·지역 파라미터는 docs/data/sources.md 3절 참고.
     "volunteer": {
         "base_url": "https://apis.data.go.kr/1741000/volunteerPartcptnService",
-        "key_env": "DATA_GO_KR_SERVICE_KEY",
+        "env_var": "DATA_GO_KR_SERVICE_KEY",
         "key_param": "serviceKey",
         "default_params": {"pageNo": "1", "numOfRows": "10"},
+    },
+    # 서울시50플러스 API 센터 — https://www.50plus.or.kr/apiIndex.do (가치동행 일자리·인턴십·교육, JSON 응답)
+    # 오퍼레이션이 경로라서 아래 이름으로만 고르게 한다. year는 필수 파라미터다.
+    # 경로는 API 매뉴얼(PDF, 2025-10) 기준이다. 웹페이지 설명의 job/list·internship/list는 "No service was found"로 404다.
+    "seoul50plus": {
+        "base_url": "https://openapi.50plus.or.kr/openapi/service",
+        "env_var": "SEOUL50PLUS_API_KEY",
+        "key_param": "accessKey",
+        "default_params": {"_type": "json", "pageNo": "1", "numOfRows": "10"},
+        "operations": {"job": "job1/list", "internship": "job2/list", "education": "education/list"},
+        "format": "json",
+        "ok_code": "0000",
     },
 }
 
@@ -90,14 +104,16 @@ def parse_params(pairs: list[str]) -> dict[str, str]:
 
 
 def fetch(source: dict, operation: str, params: dict[str, str]) -> bytes:
-    key = os.environ.get(source["key_env"], "").strip()
+    key = os.environ.get(source["env_var"], "").strip()
     if not key:
-        raise SystemExit(f"{source['key_env']}가 없습니다. 저장소 루트 .env에 넣어 주세요 (.env.example 참고).")
+        raise SystemExit(f"{source['env_var']}가 없습니다. 저장소 루트 .env에 넣어 주세요 (.env.example 참고).")
 
+    path = source["operations"][operation] if "operations" in source else operation
     query = {**source["default_params"], **params, source["key_param"]: key}
-    url = f"{source['base_url']}/{operation}?{urllib.parse.urlencode(query)}"
+    url = f"{source['base_url']}/{path}?{urllib.parse.urlencode(query)}"
     opener = urllib.request.build_opener(NoRedirect)
-    request = urllib.request.Request(url, headers={"Accept": "application/xml"})
+    accept = "application/json" if source.get("format") == "json" else "application/xml"
+    request = urllib.request.Request(url, headers={"Accept": accept})
     # 아래 어떤 예외든 메시지(str(exc))에는 인증키가 든 URL이 포함될 수 있어 코드·이름만 출력한다.
     try:
         with opener.open(request, timeout=TIMEOUT_SECONDS) as response:  # nosec B310 - https 고정 주소만 사용
@@ -130,6 +146,58 @@ def has_dtd(body: bytes) -> bool:
     except (ValueError, xml.parsers.expat.ExpatError):
         pass
     return found
+
+
+def _find_items(node: object) -> list | None:
+    """JSON 응답에서 item 목록을 찾는다. 공공 API는 response.body.items.item 형태가 많지만 깊이가 출처마다 다르다."""
+    if isinstance(node, dict):
+        for name, value in node.items():
+            if name == "item":
+                return value if isinstance(value, list) else [value]
+            found = _find_items(value)
+            if found is not None:
+                return found
+    elif isinstance(node, list):
+        for value in node:
+            found = _find_items(value)
+            if found is not None:
+                return found
+    return None
+
+
+def _find_value(node: object, name: str) -> object:
+    if isinstance(node, dict):
+        if name in node and not isinstance(node[name], (dict, list)):
+            return node[name]
+        for value in node.values():
+            found = _find_value(value, name)
+            if found is not None:
+                return found
+    elif isinstance(node, list):
+        for value in node:
+            found = _find_value(value, name)
+            if found is not None:
+                return found
+    return None
+
+
+def summarize_json(body: bytes, ok_code: str) -> None:
+    try:
+        root = json.loads(body)
+    except (ValueError, UnicodeDecodeError):
+        print("JSON이 아닙니다. 앞부분:", body[:300].decode("utf-8", "replace"))
+        return
+    for tag in ("resultCode", "resultMsg", "totalCount"):
+        value = _find_value(root, tag)
+        if value is not None:
+            print(f"{tag}: {value}")
+    if str(_find_value(root, "resultCode")) != ok_code:
+        print(f"경고: 정상 응답(resultCode {ok_code})이 아닙니다. 인증키·파라미터를 확인하고 이 샘플은 근거로 쓰지 마세요.")
+    items = [item for item in (_find_items(root) or []) if isinstance(item, dict)]
+    print(f"item 수: {len(items)}")
+    fields = Counter(name for item in items for name, value in item.items() if value not in (None, ""))
+    for name in sorted({name for item in items for name in item}):
+        print(f"  {name}  ({fields[name]}/{len(items)}건에 값 있음)")
 
 
 def summarize(body: bytes) -> None:
@@ -167,20 +235,27 @@ def main() -> None:
     parser.add_argument("--param", action="append", default=[], help="추가 요청 변수 name=value")
     args = parser.parse_args()
 
+    source = SOURCES[args.source]
     if not OPERATION_RE.fullmatch(args.operation):
         raise SystemExit("오퍼레이션명은 영문·숫자만 허용합니다.")
+    if "operations" in source and args.operation not in source["operations"]:
+        raise SystemExit(f"{args.source}의 오퍼레이션은 {', '.join(source['operations'])} 중 하나입니다.")
 
     load_dotenv(REPO_ROOT / ".env")
-    body = fetch(SOURCES[args.source], args.operation, parse_params(args.param))
+    body = fetch(source, args.operation, parse_params(args.param))
 
     out_dir = SAMPLE_DIR / args.source
     out_dir.mkdir(parents=True, exist_ok=True)
     # 같은 초에 --param만 바꿔 반복 호출해도 덮어쓰지 않도록 마이크로초까지 쓴다.
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
-    out_path = out_dir / f"{stamp}-{args.operation}.xml"
+    is_json = source.get("format") == "json"
+    out_path = out_dir / f"{stamp}-{args.operation}.{'json' if is_json else 'xml'}"
     out_path.write_bytes(body)
     print(f"저장: {out_path.relative_to(REPO_ROOT)}")
-    summarize(body)
+    if is_json:
+        summarize_json(body, source["ok_code"])
+    else:
+        summarize(body)
 
 
 if __name__ == "__main__":
