@@ -119,6 +119,7 @@ export function JourneyRecommendations({ journeyId }: { journeyId: string }) {
             {item.eligibility.needs_review_count > 0 && ` · 확인할 조건 ${item.eligibility.needs_review_count}개`}</p>
           <EligibilityCheck profile={state.data!.profile} opportunity={item.opportunity} onInvalidated={invalidate} />
           <Link className="button secondary" to={`/opportunities/${item.opportunity.id}`}>최신 상세·공식 원문·오류 신고 확인</Link>
+          <Link className="button secondary" to={`/journeys/${journeyId}/opportunities/${item.opportunity.id}/preparation`}>확정 경험으로 신청 준비</Link>
         </article></li>)}</ol>
         <p>공고의 모집 상태와 조건은 바뀔 수 있습니다. 상세와 공식 원문을 다시 확인해 주세요. 실제 신청은 공식 신청처에서 직접 진행합니다.</p>
       </>)}

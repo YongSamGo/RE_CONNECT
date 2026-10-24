@@ -9,6 +9,7 @@ import { PublicOpportunities } from './features/public-opportunities/PublicOppor
 import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
 import { ManualPreparation } from './features/preparation/ManualPreparation'
 import { OfficialPreparation } from './features/preparation/OfficialPreparation'
+import { JourneyDraftPreparationRoute } from './features/preparation/JourneyDraftEditor'
 import { emptyManualDraft } from './features/preparation/model'
 import type { ManualDraft } from './features/preparation/model'
 import { AccountPage } from './features/account/AccountPage'
@@ -113,6 +114,7 @@ export default function App() {
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/recommendations') ? screens[5] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/profile') ? screens[4] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/save') ? screens[8] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
       ?? (location.pathname === '/auth/result' ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
@@ -148,6 +150,7 @@ export default function App() {
       <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/journeys/:journeyId/conversation" element={<JourneyConversationRoute />} />
       <Route path="/journeys/:journeyId/recommendations" element={<JourneyRecommendationsRoute />} />
+      <Route path="/journeys/:journeyId/opportunities/:opportunityId/preparation" element={<JourneyDraftPreparationRoute />} />
       <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
