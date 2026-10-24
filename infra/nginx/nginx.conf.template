@@ -1,0 +1,79 @@
+worker_processes auto;
+pid /run/nginx/nginx.pid;
+error_log /dev/null;
+events { worker_connections 1024; }
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+    server_tokens off;
+    access_log off;
+    sendfile on;
+    client_max_body_size 64k;
+    client_header_timeout 15s;
+    client_body_timeout 30s;
+    keepalive_timeout 30s;
+    client_body_temp_path /run/nginx/client-body;
+    proxy_temp_path /run/nginx/proxy;
+    fastcgi_temp_path /run/nginx/fastcgi;
+    uwsgi_temp_path /run/nginx/uwsgi;
+    scgi_temp_path /run/nginx/scgi;
+
+    # No fallback certificate/site for an unknown SNI name.
+    server {
+        listen 443 ssl default_server;
+        ssl_reject_handshake on;
+        return 444;
+    }
+    server {
+        listen 443 ssl;
+        server_name @@DOMAIN@@;
+        ssl_certificate /run/secrets/tls-fullchain.pem;
+        ssl_certificate_key /run/secrets/tls-key.pem;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_session_tickets off;
+        # A valid SNI with a different HTTP Host must not reach the application.
+        if ($host != @@DOMAIN@@) { return 444; }
+
+        root /usr/share/nginx/html;
+        index index.html;
+        add_header Strict-Transport-Security "max-age=31536000" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header Referrer-Policy no-referrer always;
+        add_header X-Frame-Options DENY always;
+        # Includes callbacks, API errors and HTML; no authenticated material cache.
+        add_header Cache-Control "no-store" always;
+
+        location = /api { return 404; }
+        location ^~ /api/ {
+            # No URI/trailing slash here: keep the full /api/v1 prefix.
+            proxy_pass http://backend:8000;
+            proxy_http_version 1.1;
+            proxy_set_header Connection "";
+            proxy_set_header Host @@DOMAIN@@;
+            proxy_set_header X-Forwarded-Host @@DOMAIN@@;
+            proxy_set_header X-Forwarded-Proto https;
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header Forwarded "";
+            proxy_set_header X-Request-ID "";
+            proxy_connect_timeout 5s;
+            proxy_read_timeout 180s;
+            proxy_send_timeout 30s;
+            proxy_next_upstream off;
+            proxy_redirect off;
+            proxy_cache off;
+            proxy_no_cache 1;
+            proxy_hide_header Cache-Control;
+            proxy_hide_header Expires;
+            proxy_hide_header Pragma;
+            proxy_buffering off;
+            proxy_request_buffering off;
+            # Backend enforces 6 MiB audio; allow bounded multipart overhead here.
+            client_max_body_size 7m;
+            client_body_buffer_size 7m;
+        }
+        location ~ (^|/)\. { return 404; }
+        location /assets/ { try_files $uri =404; }
+        location / { try_files $uri $uri/ /index.html; }
+    }
+}
