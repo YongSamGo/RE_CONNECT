@@ -1,6 +1,7 @@
 """빈 DB upgrade/downgrade·스키마 일치·실제 SQL 불변 트리거를 검증한다."""
 
 from pathlib import Path
+from uuid import uuid4
 
 import pytest
 from alembic import command
@@ -10,7 +11,7 @@ from alembic.migration import MigrationContext
 from sqlalchemy import Uuid, String, column, inspect, insert, select, table, update
 from sqlalchemy.exc import IntegrityError
 
-from app.persistence import ApplicationDraft, Base, OpportunityVersion, ProfileVersion
+from app.persistence import ApplicationDraft, Base, OpportunityVersion, ProfileVersion, Source
 from app.persistence.base import UTCDateTime
 from tests.persistence_helpers import open_test_database
 from tests.test_member_models import NOW, saved_draft, seed
@@ -38,6 +39,23 @@ def test_empty_database_roundtrip_and_metadata_match(empty_db):
     assert set(inspect(empty_db).get_table_names()) == {"alembic_version"}
     command.upgrade(config, "head")
     assert empty_db.execute(select(ProfileVersion.__table__)).all() == []
+
+
+@pytest.mark.parametrize("existing_revision", ["0006_deletion_generations", "0004_manual_evidence"])
+def test_member_and_ingestion_branches_upgrade_without_losing_existing_source(empty_db, existing_revision):
+    config = migration_config(empty_db)
+    command.upgrade(config, existing_revision)
+    source_id = uuid4()
+    empty_db.execute(insert(Source), {
+        "id": source_id, "code": "fictional-branch-merge", "name": "가상 출처",
+        "base_url": "https://example.org", "enabled": True,
+    })
+
+    command.upgrade(config, "head")
+    command.upgrade(config, "head")
+
+    assert empty_db.execute(select(Source.name).where(Source.id == source_id)).scalar_one() == "가상 출처"
+    assert compare_metadata(MigrationContext.configure(empty_db), Base.metadata) == []
 
 
 def test_additional_revision_preserves_existing_rows_and_blocks_bulk_overwrite(empty_db):
