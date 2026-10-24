@@ -228,3 +228,72 @@ def test_member_journey_approval_document_update_and_review_flags_preserve_body(
         with ctx['engine'].connect() as db:
             assert db.scalar(select(func.count()).select_from(ApplicationDraft))==2
     run(tmp_path,scenario,backend)
+
+
+@pytest.mark.parametrize("database", ["sqlite", "postgresql"])
+def test_anonymous_edit_approval_then_explicit_member_bundle_save(tmp_path, database):
+    async def scenario(ctx, browser):
+        configured(ctx)
+
+        def mutation_headers():
+            return {**headers(browser), "Idempotency-Key": str(uuid4())}
+
+        created = await browser.post("/api/v1/journeys", json={"ai_notice_version": AI_VERSION, "saved_profile": None}, headers=mutation_headers())
+        assert created.status_code == 201, created.text
+        journey_id = created.json()["journey_id"]
+        profile_path = f"/api/v1/journeys/{journey_id}/profile"
+        edited_profile = await browser.patch(profile_path, json=ready_edit().model_dump(mode="json"), headers=headers(browser))
+        assert edited_profile.status_code == 200, edited_profile.text
+        confirmed = await browser.post(profile_path + "/confirm", json={"base_revision": 2}, headers=headers(browser))
+        assert confirmed.status_code == 200, confirmed.text
+
+        draft_path = f"/api/v1/journeys/{journey_id}/drafts"
+        creation_headers = mutation_headers()
+        creation_body = {"profile_version": 1, "opportunity": {"id": "00000000-0000-0000-0000-000000000001", "version": 1}, "mode": "manual", "saved_document": None}
+        created_draft = await browser.post(draft_path, json=creation_body, headers=creation_headers)
+        assert created_draft.status_code == 201, created_draft.text
+        assert (await browser.post(draft_path, json=creation_body, headers=creation_headers)).json() == created_draft.json()
+        draft_id = created_draft.json()["draft_id"]
+        draft_path += "/" + draft_id
+        content = {"self_introduction": "가상 도서관에서 자료를 정리했습니다.", "motivation": "가상 활동에 경험을 보태고 싶습니다."}
+        updated = await browser.patch(draft_path, json={"base_revision": 1, **content}, headers=headers(browser))
+        assert updated.status_code == 200 and updated.json()["approved_at"] is None
+        intent_body = {"journey_id": journey_id, "profile": {"version": 1}, "draft": {"draft_id": draft_id, "revision": 2}}
+        denied = await browser.post("/api/v1/auth/save-intents", json=intent_body, headers=mutation_headers())
+        assert denied.status_code == 409 and denied.json()["code"] == "DRAFT_NOT_APPROVED"
+        approved = await browser.post(draft_path + "/approve", json={"base_revision": 2}, headers=headers(browser))
+        assert approved.status_code == 200 and approved.json()["approved_at"] is not None
+        intent_body["draft"]["revision"] = 3
+        intent = await browser.post("/api/v1/auth/save-intents", json=intent_body, headers=mutation_headers())
+        assert intent.status_code == 201, intent.text
+        intent_id = intent.json()["save_intent_id"]
+
+        # 제공자 신원만 대역이다. state·PKCE·세션 교체와 동의/저장은 실제 서비스다.
+        await save_login(browser)
+        me = await browser.get("/api/v1/me")
+        assert me.json()["authenticated"] is True
+        assert me.json()["pending_save_intent"]["save_intent_id"] == intent_id
+        await grant(browser)
+        before_profile = await post(browser, body(intent_id))
+        assert before_profile.status_code == 409 and before_profile.json()["code"] == "PROFILE_NOT_SAVED"
+        profile_key = str(uuid4())
+        saved_profile = await save_profile(browser, profile_body(intent_id), profile_key)
+        assert saved_profile.status_code == 201, saved_profile.text
+        assert (await save_profile(browser, profile_body(intent_id), profile_key)).json() == saved_profile.json()
+        draft_key = str(uuid4())
+        saved = await post(browser, body(intent_id), draft_key)
+        assert saved.status_code == 201, saved.text
+        assert (await post(browser, body(intent_id), draft_key)).json() == saved.json()
+        current = await browser.get("/api/v1/drafts/" + saved.json()["document_id"])
+        assert current.status_code == 200 and current.headers["cache-control"] == "no-store"
+        for field, value in content.items():
+            assert current.json()[field] == value
+        assert current.json()["review_reasons"] == []
+        with sessionmaker(ctx["engine"])() as db:
+            assert db.scalar(select(func.count()).select_from(ProfileVersion)) == 1
+            assert db.scalar(select(func.count()).select_from(ApplicationDraft)) == 1
+            row = db.scalars(select(ApplicationDraft)).one()
+            assert content["self_introduction"].encode() not in row.ciphertext
+            assert row.algorithm == "AES-256-GCM"
+
+    run(tmp_path, scenario, database)
