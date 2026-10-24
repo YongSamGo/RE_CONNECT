@@ -89,3 +89,21 @@ it('rejects malformed transcription IDs, long text and invalid duration', () => 
     expect(() => parseTranscription({ ...result, ...changed })).toThrow()
   }
 })
+
+it('discards late parsed transcription after the user cancels waiting', async () => {
+  const { user, onUseText } = mount()
+  const original = Response.prototype.text
+  let release!: () => void, arrived!: () => void
+  const waiting = new Promise<void>(resolve => { release = resolve })
+  const parsing = new Promise<void>(resolve => { arrived = resolve })
+  vi.spyOn(Response.prototype, 'text').mockImplementation(async function (this: Response) {
+    const body = await original.call(this)
+    if (body.includes('"transcription_id"')) { arrived(); await waiting }
+    return body
+  })
+  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' })); await parsing
+  await user.click(screen.getByRole('button', { name: '전사 응답 기다리기 중지' }))
+  await act(async () => { release(); await waiting })
+  expect(screen.queryByLabelText('확인·수정할 전사 문장')).not.toBeInTheDocument()
+  expect(onUseText).not.toHaveBeenCalled()
+})
