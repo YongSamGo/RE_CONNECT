@@ -176,6 +176,8 @@ LLM 관련 위험은 [LLM·AI 도구 점검 기준](.claude/skills/kisa-secure-c
 
 AI 개발 도구(Codex·Claude Code 등)는 [`AGENTS.md`](AGENTS.md)의 팀 공용 지침으로 아래 규칙을 따릅니다. Claude Code는 [`CLAUDE.md`](CLAUDE.md)가 이 파일을 불러옵니다. 규칙을 바꾸면 이 장과 `AGENTS.md`를 같은 PR에서 고치고, 개인 취향 규칙은 각자 전역 설정(`~/.codex/AGENTS.md`, `~/.claude/CLAUDE.md`)에 둡니다.
 
+비밀값 파일(`.env` 등) 읽기와 강제 push는 저장소의 도구 설정(`.claude/settings.json`, `.codex/rules/`)이 실수 방지용으로 막습니다. 개인 설정으로 풀 수 없고, 막는 범위와 한계는 [`AGENTS.md` "도구 권한 설정"](AGENTS.md#도구-권한-설정)에 있습니다.
+
 ### 브랜치
 
 - `main` — 제출·시연용 안정 버전. `develop`이 검증된 시점에만 `develop → main` PR로 병합
