@@ -41,12 +41,12 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
     clearAttempt()
   }
   const apply = (draft: JourneyDraft, message: string): Result => ({ draft, message })
-  const create = (mode: 'manual' | 'generate') => {
+  const create = (mode: 'manual' | 'generate', restart = false) => {
     if (busy || (editor && !editor.replace)) return
     void request.run(async (api, signal) => {
       const me = parseSession(required((await api.GET('/me', { signal })).data))
       if (mode === 'generate' && !me.consents.some(value => value.purpose === 'ai_processing')) throw new ApiError('CONSENT_REQUIRED', 403)
-      let pending = attempt.value
+      let pending = restart ? null : attempt.value
       if (!pending || pending.body.mode !== mode) {
         const view = parseProfileView(required((await api.GET('/journeys/{journey_id}/profile', { signal, params: { path: { journey_id: journeyId } } })).data))
         if (!view.confirmed || view.has_unconfirmed_changes) throw new ApiError('PROFILE_NOT_CONFIRMED', 409)
@@ -98,11 +98,14 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
     }, accept)
   }
   const approved = !!editor && !editor.dirty && !!editor.draft.approved_at && !editor.draft.review_reasons.length
+  const canRestartAI = attempt.value?.body.mode === 'generate' && request.state.status === 'error'
+    && ['MODEL_UNAVAILABLE', 'AI_TIMEOUT', 'REQUEST_ALREADY_COMPLETED'].includes(request.state.error.code)
   const body = editor ? `자기소개\n${editor.introduction}\n\n지원동기\n${editor.motivation}` : ''
   return <section className="reading-width" aria-label="확정 경험으로 신청 준비"><h2>내 경험으로 지원 내용을 준비해요</h2>
     <p>AI 초안은 확정한 사실만 사용합니다. 지원동기는 직접 작성하고, 수정·승인·회원 저장을 따로 선택합니다.</p>
     {editor && <CheckboxField label="현재 화면 내용을 새 초안이나 서버 편집본으로 바꾸는 것을 확인했어요." checked={editor.replace} disabled={busy} onChange={event => scope.setValue({ ...editor, replace: event.target.checked })} />}
     <div className="actions"><Button pending={busy} disabled={!!editor && !editor.replace} onClick={() => create('generate')}>AI 초안 생성 · 같은 요청 재확인</Button><Button pending={busy} disabled={!!editor && !editor.replace} onClick={() => create('manual')}>AI 없이 빈 초안 직접 작성</Button>
+      {canRestartAI && <Button disabled={!!editor && !editor.replace} onClick={() => create('generate', true)}>AI 실패 후 새 요청으로 다시 생성</Button>}
       {busy && <Button variant="secondary" onClick={request.clear}>기다리기 중지</Button>}</div>
     {editor && <section className="panel"><h3>프로필 {editor.draft.profile_version}번 · 공고 {editor.draft.opportunity.version}번 기준</h3>
       {editor.draft.warnings.map((warning, index) => <p key={index}>{warning}</p>)}

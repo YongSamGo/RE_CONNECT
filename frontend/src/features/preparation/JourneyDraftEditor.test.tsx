@@ -25,12 +25,12 @@ function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: 
     if (path.endsWith('/drafts') && request.method === 'POST') {
       creations++
       const body = await request.clone().json()
-      if (options.aiFailure && body.mode === 'generate') return json({ error: { code: 'SERVICE_UNAVAILABLE' } }, 503)
+      if (options.aiFailure && body.mode === 'generate' && creations === 1) return json({ code: 'MODEL_UNAVAILABLE' }, 503)
       if (options.loseFirst && creations === 1) throw new TypeError('fixture lost response')
       current = { ...empty(), mode: body.mode }; return json(current, 201)
     }
     if (request.method === 'PATCH') {
-      if (options.conflict) return json({ error: { code: 'REVISION_CONFLICT' } }, 409)
+      if (options.conflict) return json({ code: 'VERSION_CONFLICT' }, 409)
       const body = await request.clone().json()
       current = { ...current, revision: current.revision + 1, self_introduction: body.self_introduction, motivation: body.motivation, approved_at: null }
     }
@@ -111,6 +111,30 @@ it('offers manual entry after AI failure without automatically sending another c
   await user.click(manual()); expect(await screen.findByLabelText('지원 자기소개')).toHaveValue('')
   act(() => window.dispatchEvent(new Event('pagehide')))
   expect(screen.queryByLabelText('지원 자기소개')).not.toBeInTheDocument()
+})
+
+it('starts a new AI key only after an explicit retry of a confirmed model failure', async () => {
+  const fetch = server({ aiFailure: true }), { user } = mount()
+  await user.click(screen.getByRole('button', { name: 'AI 초안 생성 · 같은 요청 재확인' }))
+  const retry = await screen.findByRole('button', { name: 'AI 실패 후 새 요청으로 다시 생성' })
+  const posts = () => fetch.mock.calls.map(([request]) => request).filter(request => request.method === 'POST')
+  expect(posts()).toHaveLength(1)
+  await user.click(retry); await screen.findByLabelText('지원 자기소개')
+  expect(posts()).toHaveLength(2)
+  expect(posts()[1].headers.get('Idempotency-Key')).not.toBe(posts()[0].headers.get('Idempotency-Key'))
+  expect((await posts()[1].clone().json()).mode).toBe('generate')
+})
+
+it('keeps the original AI key on network uncertainty and does not offer a fresh inference request', async () => {
+  const fetch = server({ loseFirst: true }), { user } = mount()
+  const generate = () => screen.getByRole('button', { name: 'AI 초안 생성 · 같은 요청 재확인' })
+  await user.click(generate()); await screen.findByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)
+  expect(screen.queryByRole('button', { name: 'AI 실패 후 새 요청으로 다시 생성' })).not.toBeInTheDocument()
+  await user.click(generate()); await screen.findByLabelText('지원 자기소개')
+  const posts = fetch.mock.calls.map(([request]) => request).filter(request => request.method === 'POST')
+  expect(posts).toHaveLength(2)
+  expect(posts[1].headers.get('Idempotency-Key')).toBe(posts[0].headers.get('Idempotency-Key'))
+  expect(await posts[1].clone().json()).toEqual(await posts[0].clone().json())
 })
 
 it('blocks AI generation without processing consent while allowing explicit manual entry', async () => {
