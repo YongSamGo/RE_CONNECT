@@ -15,3 +15,7 @@ tzdata
 redis
 # 개인 승인 본문의 AEAD 암호화와 목적/대상별 키 파생 (W03-06).
 cryptography
+
+# 공공 API의 검증한 IP 연결과 안전한 XML 파싱 (#45)
+httpcore[asyncio]
+defusedxml

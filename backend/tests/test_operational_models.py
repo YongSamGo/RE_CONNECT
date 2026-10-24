@@ -117,7 +117,8 @@ def test_audit_rejects_arbitrary_messages_and_unpaired_target(db):
 def test_permanent_metadata_does_not_create_journey_or_secret_columns():
     from app.persistence import Base
 
-    assert len(Base.metadata.tables) == 17  # 기존15개 + 본문 없는 프로필/지원서 응답 기록
+    assert len(Base.metadata.tables) == 20  # 기존15개 + 응답 기록2개 + 수집 상태/검수2개 + 수동 근거1개
+    assert {"ingestion_states", "ingestion_reviews"} <= set(Base.metadata.tables)
     assert not any("journey" in name for name in Base.metadata.tables)
     for table in Base.metadata.tables.values():
         assert not {"transcript", "conversation", "otp", "access_token", "service_key", "key_material"} & set(table.columns.keys())
