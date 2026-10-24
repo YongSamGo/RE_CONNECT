@@ -102,10 +102,13 @@ it('offers manual entry after AI failure without automatically sending another c
   expect(screen.queryByLabelText('지원 자기소개')).not.toBeInTheDocument()
 })
 
-it('does not create a draft without the current processing consent', async () => {
+it('blocks AI generation without processing consent while allowing explicit manual entry', async () => {
   const fetch = server({ consent: false }), { user } = mount()
-  await user.click(manual()); await screen.findByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)
+  await user.click(screen.getByRole('button', { name: 'AI 초안 생성 · 같은 요청 재확인' })); await screen.findByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)
   expect(fetch.mock.calls.filter(([request]) => request.method !== 'GET')).toHaveLength(0)
+  await user.click(manual()); expect(await screen.findByLabelText('지원 자기소개')).toHaveValue('')
+  const post = fetch.mock.calls.find(([request]) => request.method === 'POST')![0]
+  expect((await post.clone().json()).mode).toBe('manual')
 })
 
 it('discards a parsed creation response after pagehide instead of restoring private text', async () => {

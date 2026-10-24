@@ -1,5 +1,11 @@
 # W02-08.b / #19 · 실제 지역 라우터 계약 대조
 
+## #86 초안 계약 대조 (2026-10-24)
+
+`npm run test:draft-contract`는 별도 시험 Redis를 명시한 `PERSISTENCE_TEST_REDIS_URL`과 위와 같은 `CONTRACT_PYTHON`을 사용한다. Redis가 없으면 실패하며 모의 응답이나 skip으로 대체하지 않는다. 기존 기본 계약 명령에 Redis 의존성을 추가하지 않았다.
+
+가상 체험·확정 프로필과 메모리 SQLite 공고를 만들고, 실제 Redis 저장소·FastAPI 미들웨어/ASGI HTTP 응답을 원본 OpenAPI `JourneyDraft` 및 화면의 `parseJourneyDraft`와 대조한다. AI 동의 없는 수동 생성/멱등 재조회, 수정, 명시 승인, 현재본 조회, 수정 시 승인 해제, 오래된 revision의 409, 다른 세션의 404, AI 생성의 403과 추론 미호출을 확인한다. 임시 체험은 finally에서 종료하고 테스트용 네임스페이스를 정리한다. 실제 TCP 브라우저·PostgreSQL·실제 모델·카카오·저장 화면까지의 통합 증거는 아니다.
+
 2026-10-18 로컬 통합: 준비 안내 #66을 실제 SQL 저장소·API·HTTP·Vite 프록시·기존 프론트 클라이언트/파서에 연결했다. `npm run test:backend-contract`의 현재 결과는 11개 통과다. 시험 서버는 메모리 SQLite에 가상 공개 공고 3개와 비공개 공고 1개를 넣는다. 운영 `.env`·DB·Redis·LLM을 사용하지 않는다. 준비 응답의 3가지 접수 방법과 null/빈/명시 서류를 저장소 OpenAPI `Preparation`에 대조하며, 공개하지 않은 공고는 실제 JSON 404로 거절한다. 아래의 미구현 공고 API 설명은 이전 단계의 기록이다.
 
 가상 공고 생성에는 백엔드 시험의 공통 DB fixture를 재사용한다. Python 환경에는 `backend/requirements.txt`와 `backend/requirements-dev.txt`를 모두 해시 검증으로 설치한다. CI 프론트 계약 잡도 두 파일을 사용한다. 실제 제품 서버가 시험 fixture를 적재하는 경로는 없다.

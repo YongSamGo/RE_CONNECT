@@ -11,6 +11,7 @@
     "lint": "oxlint --deny-warnings",
     "test": "vitest run",
     "test:backend-contract": "vitest run --config vitest.contract.config.ts",
+    "test:draft-contract": "vitest run --config vitest.drafts.config.ts",
     "preview": "vite preview --host 127.0.0.1"
   },
   "dependencies": {

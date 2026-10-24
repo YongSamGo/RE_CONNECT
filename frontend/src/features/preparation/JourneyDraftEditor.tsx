@@ -45,7 +45,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
     if (busy || (editor && !editor.replace)) return
     void request.run(async (api, signal) => {
       const me = parseSession(required((await api.GET('/me', { signal })).data))
-      if (!me.consents.some(value => value.purpose === 'ai_processing')) throw new ApiError('CONSENT_REQUIRED', 403)
+      if (mode === 'generate' && !me.consents.some(value => value.purpose === 'ai_processing')) throw new ApiError('CONSENT_REQUIRED', 403)
       let pending = attempt.value
       if (!pending || pending.body.mode !== mode) {
         const view = parseProfileView(required((await api.GET('/journeys/{journey_id}/profile', { signal, params: { path: { journey_id: journeyId } } })).data))
