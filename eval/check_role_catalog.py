@@ -12,10 +12,22 @@ from __future__ import annotations
 import json
 import re
 import sys
+import unicodedata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ROLE_ID = re.compile(r"^[a-z][a-z0-9_]{1,63}$")
+# 계약 text()와 같은 숨은 문자 범주 (backend/app/contracts/fields.py)
+HIDDEN_CATEGORIES = frozenset({"Cc", "Cf", "Co", "Cs", "Zl", "Zp"})
+
+
+def valid_text(value: object, max_length: int) -> bool:
+    """계약 text(max_length): 문자열, NFC 기준 길이 1~max, 숨은 문자·공백뿐인 값 없음."""
+    if not isinstance(value, str):
+        return False
+    value = unicodedata.normalize("NFC", value)
+    return (1 <= len(value) <= max_length and value.strip() != ""
+            and not any(unicodedata.category(c) in HIDDEN_CATEGORIES for c in value))
 
 
 def normalize(tag: str) -> str:
@@ -30,11 +42,11 @@ def check_role(role: dict) -> list[str]:
         return problems
     if not ROLE_ID.fullmatch(role["id"]):
         problems.append(f"{where}: id 형식")
-    if not 1 <= len(role["name"]) <= 50 or not 1 <= len(role["description"]) <= 300:
-        problems.append(f"{where}: name·description 길이")
+    if not valid_text(role["name"], 50) or not valid_text(role["description"], 300):
+        problems.append(f"{where}: name·description 길이·숨은 문자·공백")
     tags = role["skill_tags"]
-    if len(tags) > 20 or any(not 1 <= len(t) <= 50 for t in tags):
-        problems.append(f"{where}: skill_tags 개수·길이")
+    if len(tags) > 20 or not all(valid_text(t, 50) for t in tags) or len(set(tags)) != len(tags):
+        problems.append(f"{where}: skill_tags 개수·길이·숨은 문자·중복")
     canonical = {normalize(t) for t in tags}
     if len(canonical) != len(tags):
         problems.append(f"{where}: 정규화 후 중복된 태그")
@@ -43,11 +55,18 @@ def check_role(role: dict) -> list[str]:
         problems.append(f"{where}: aliases 개수")
     for alias in role["aliases"]:
         name, target = normalize(alias["alias"]), normalize(alias["skill_tag"])
-        if name in seen or target not in canonical or not 1 <= len(alias["alias"]) <= 50:
+        if not valid_text(alias["alias"], 50) or not valid_text(alias["skill_tag"], 50):
+            problems.append(f"{where}: 별칭 값 길이·숨은 문자·공백")
+        if name in seen or target not in canonical:
             problems.append(f"{where}: 별칭 '{alias['alias']}'의 대상 또는 중복")
         seen.add(name)
+    if len(role["experience_rules"]) > 20:
+        problems.append(f"{where}: experience_rules 개수")
     for rule in role["experience_rules"]:
-        if rule["operator"] not in ("all", "any") or not {normalize(t) for t in rule["skill_tags"]} <= canonical:
+        rule_tags = rule["skill_tags"]
+        if not 1 <= len(rule_tags) <= 20 or len(set(rule_tags)) != len(rule_tags):
+            problems.append(f"{where}: 연결 규칙 태그 개수 1~20·중복")
+        if rule["operator"] not in ("all", "any") or not {normalize(t) for t in rule_tags} <= canonical:
             problems.append(f"{where}: 연결 규칙은 확인된 사전 태그만 사용")
     return problems
 
