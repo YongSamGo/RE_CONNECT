@@ -84,7 +84,7 @@ it('clears transcription text on cancellation and pagehide without importing it'
 })
 
 it('rejects malformed transcription IDs, long text and invalid duration', () => {
-  expect(parseTranscription(result)).toEqual({ id, text: result.text })
+  expect(parseTranscription(result)).toEqual(result)
   for (const changed of [{ transcription_id: '../other' }, { duration_seconds: 91 }, { duration_seconds: 0 }, { duration_seconds: Infinity }, { text: '가'.repeat(2001) }]) {
     expect(() => parseTranscription({ ...result, ...changed })).toThrow()
   }

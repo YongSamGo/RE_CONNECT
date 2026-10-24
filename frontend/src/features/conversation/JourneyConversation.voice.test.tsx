@@ -27,6 +27,7 @@ it('sends only the explicitly imported corrected transcript with its server refe
   const user = userEvent.setup()
   await user.click(screen.getByRole('button', { name: '체험 대화 준비하기' }))
   await user.type(await screen.findByLabelText('내가 해온 일'), '기존 직접 입력')
+  await user.click(screen.getByRole('button', { name: '말로 입력하고 전사 확인' }))
   await user.click(screen.getByRole('button', { name: '시험 음성 전사' }))
   const transcript = await screen.findByLabelText('확인·수정할 전사 문장')
   await user.clear(transcript); await user.type(transcript, '내가 확인하고 수정한 가상 경험')

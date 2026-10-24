@@ -112,6 +112,7 @@ export default function App() {
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/conversation') ? screens[2] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/recommendations') ? screens[5] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/profile') ? screens[4] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/save') ? screens[8] : undefined)
       ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)

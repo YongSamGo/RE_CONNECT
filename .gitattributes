@@ -20,3 +20,6 @@
 *.wav binary
 *.mp3 binary
 *.webm binary
+
+# 검토용 패치는 원본 코드의 줄 끝 공백과 unified diff의 빈 문맥 줄을 그대로 보존한다.
+speech/tts_compat/upstream.patch whitespace=-blank-at-eol

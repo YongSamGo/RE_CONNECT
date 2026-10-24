@@ -56,6 +56,7 @@ class ProfileDependency:
 
 
 class JourneyStore(Protocol):
+    async def question(self, session: Session, journey_id: UUID, notice_version: str, message_id: UUID): ...
     async def message_data(self, session: Session, journey_id: UUID, notice_version: str, field: str) -> str: ...
     async def end(self, session: Session, journey_id: UUID) -> None: ...
     async def create(self, session: Session, key_id: UUID, fingerprint: str, notice_version: str,
@@ -76,7 +77,7 @@ class UnavailableJourneyStore:
     async def create(self, *args, **kwargs):
         raise AppError("SERVICE_UNAVAILABLE")
 
-    message_data = end = load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
+    question = message_data = end = load = profile = update_profile = confirm_profile = resolve_profile = role_state = set_role_exclusions = create
 
 
 class JourneyService:
@@ -127,6 +128,12 @@ class JourneyService:
     async def profile(self, session: Session, journey_id: UUID) -> ProfileDraftView:
         # 직접 읽기/편집은 모델 호출이 없어 AI 동의를 요구하지 않는다. 저장소가 주체/수명을 재검사한다.
         return await self.store.profile(session, journey_id)
+
+    async def question(self, session: Session, journey_id: UUID, message_id: UUID):
+        record = await self.load(session, journey_id)
+        if record.view.first_message.message_id == message_id:
+            return record.view.first_message
+        return await self.store.question(session, journey_id, record.guard.ai_notice_version, message_id)
 
     async def conversation(self, session: Session, journey_id: UUID, notice_version: str) -> list[ConversationTurn]:
         try:

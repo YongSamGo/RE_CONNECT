@@ -4,6 +4,7 @@ from typing import Annotated, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, StrictInt
+from pydantic import StrictFloat
 
 from app.contracts.fields import CONTRACT_CONFIG, text
 from app.contracts.time import UtcDatetime
@@ -103,6 +104,13 @@ class MessageResult(BaseModel):
     profile: ProfileDraftView
     notices: Annotated[list[text(300)], Field(max_length=10)]
     next_step: Literal['continue', 'review_profile']
+
+
+class Transcription(BaseModel):
+    model_config = CONTRACT_CONFIG
+    transcription_id: UUID
+    text: text(2000, multiline=True)
+    duration_seconds: Annotated[StrictFloat, Field(ge=0, le=90)]
 
 
 class ConversationTurn(BaseModel):

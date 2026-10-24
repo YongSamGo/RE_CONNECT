@@ -14,7 +14,7 @@ function Reference({ url, label }: { url: string; label: string }) {
   const link = officialLink(url)
   return link ? <a className="button secondary" href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">{label} · {link.host} (새 창)</a> : <p>{label}: 확인된 공식 주소가 없어 링크를 제공하지 않습니다.</p>
 }
-function Content({ item, withDraft }: { item: Preparation; withDraft: boolean }) {
+export function OfficialPreparationContent({ item, showDraftNotice = true }: { item: Preparation; showDraftNotice?: boolean }) {
   const checks = useMemoryScope<number[]>(() => [])
   const available = item.recruitment_status === 'open' && !item.change_pending
   return <>
@@ -30,7 +30,7 @@ function Content({ item, withDraft }: { item: Preparation; withDraft: boolean })
       <div className="actions"><Reference url={item.source_url} label="공식 원문 확인" />{available && <Reference url={item.application_url} label="공식 신청 안내 확인" />}</div>
       <p className="quiet">새 창으로 이동해도 신청 완료로 기록하지 않으며, 서류·개인정보를 대신 제출하지 않습니다.</p>
     </section>
-    {!withDraft && <StatusNotice title="확정 경험에서 공고를 선택하면 지원서를 준비할 수 있어요">체험의 추천 화면에서 이 공고의 신청 준비를 열어 주세요. 공개 안내만 조회할 때는 개인 프로필이나 지원서를 만들지 않습니다.</StatusNotice>}
+    {showDraftNotice && <StatusNotice title="확정 경험에서 공고를 선택하면 지원서를 준비할 수 있어요">체험의 추천 화면에서 이 공고의 신청 준비를 열어 주세요. 공개 안내만 조회할 때는 개인 프로필이나 지원서를 만들지 않습니다.</StatusNotice>}
   </>
 }
 function Request({ id, withDraft }: { id: string; withDraft: boolean }) {
@@ -43,7 +43,7 @@ function Request({ id, withDraft }: { id: string; withDraft: boolean }) {
     {state.status === 'idle' && <StatusNotice title="공식 준비 안내를 불러와 주세요" actions={<Button onClick={() => void load()}>공식 준비 안내 불러오기</Button>}>로그인·AI 동의 없이 공개 안내를 조회합니다. 서버 응답이 없으면 오류를 안내하며 서류나 절차를 만들어 채우지 않습니다.</StatusNotice>}
     {state.status === 'pending' && <StatusNotice kind="loading" title="공식 준비 안내를 확인하고 있어요" actions={<Button variant="secondary" onClick={request.clear}>조회 취소하기</Button>}>최신 공고 버전의 서류와 접수 절차를 조회합니다.</StatusNotice>}
     {state.status === 'error' && <RequestError error={state.error} actions={<Button onClick={() => void load()}>준비 안내 다시 조회</Button>} />}
-    {state.status === 'success' && <><Content item={state.data} withDraft={withDraft} /><Button variant="secondary" onClick={() => void load()}>최신 준비 안내 다시 조회</Button></>}
+    {state.status === 'success' && <><OfficialPreparationContent item={state.data} showDraftNotice={!withDraft} /><Button variant="secondary" onClick={() => void load()}>최신 준비 안내 다시 조회</Button></>}
   </section>
 }
 export function OfficialPreparation({ opportunityId, withDraft = false }: { opportunityId?: string; withDraft?: boolean } = {}) {

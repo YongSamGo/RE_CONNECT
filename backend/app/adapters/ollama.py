@@ -20,6 +20,7 @@ from app.adapters.llm import (
     LLMInvalidOutputError,
     LLMTimeoutError,
     LLMUnavailableError,
+    LLMTransientUnavailableError,
     OutputT,
     UntrustedTurn,
 )
@@ -138,6 +139,11 @@ class OllamaLLMAdapter:
         try:
             async with self._client(self._timeout_seconds) as client:
                 data = await asyncio.wait_for(self._post_json(client, "/api/chat", payload), self._timeout_seconds)
+        except (httpx.ConnectError, httpx.ConnectTimeout):
+            # 고정 내부 목적지에 연결하지 못해 추론 요청이 시작되지 않은 경우만 재시도 후보.
+            if on_runtime_ended is not None:
+                on_runtime_ended()
+            raise LLMTransientUnavailableError("모델 런타임에 연결하지 못했습니다") from None
         except (TimeoutError, httpx.TimeoutException):
             raise LLMTimeoutError("모델 응답 시간이 초과되었습니다") from None
         except httpx.RequestError as exc:

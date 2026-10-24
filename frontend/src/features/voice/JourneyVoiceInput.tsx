@@ -12,7 +12,7 @@ import type { Transcript } from './transcription'
 
 type Attempt = { key: string; blob: Blob; owner: string | null }
 
-export function JourneyVoiceInput({ journeyId, replaceRequired, onUseText }: { journeyId: string; replaceRequired: boolean; onUseText: (text: string, id: string) => void }) {
+export function JourneyVoiceInput({ journeyId, replaceRequired, onUseText, onAccessLost }: { journeyId: string; replaceRequired: boolean; onUseText: (text: string, id: string) => void; onAccessLost?: (error: ApiError) => void }) {
   const request = useRequest<Transcript>()
   const recorder = useMemoryScope(() => 0)
   const setRecorderKey = recorder.setValue
@@ -22,8 +22,8 @@ export function JourneyVoiceInput({ journeyId, replaceRequired, onUseText }: { j
   const clearAttempt = attempt.clear, clearResult = result.clear
   useEffect(() => {
     if (request.state.status === 'error' && ['MODEL_UNAVAILABLE', 'AI_TIMEOUT', 'REQUEST_ALREADY_COMPLETED', 'VALIDATION_FAILED'].includes(request.state.error.code)) clearAttempt()
-    if (request.state.status === 'error' && ['CONSENT_REQUIRED', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND'].includes(request.state.error.code)) { clearAttempt(); clearResult(); setRecorderKey(value => value + 1) }
-  }, [request.state, clearAttempt, clearResult, setRecorderKey])
+    if (request.state.status === 'error' && ['CONSENT_REQUIRED', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND'].includes(request.state.error.code)) { clearAttempt(); clearResult(); setRecorderKey(value => value + 1); onAccessLost?.(request.state.error) }
+  }, [request.state, clearAttempt, clearResult, setRecorderKey, onAccessLost])
   const cancel = () => { request.clear(); clearAttempt(); clearResult() }
   const transcribe = (blob: Blob) => {
     if (pending || blob.size === 0 || blob.size > 6 * 1024 * 1024) return
@@ -48,7 +48,7 @@ export function JourneyVoiceInput({ journeyId, replaceRequired, onUseText }: { j
     {result.value.transcript && <section className="panel"><h3>전사 내용을 직접 확인해 주세요</h3>
       <TextAreaField label="확인·수정할 전사 문장" value={result.value.text} maxLength={2000} disabled={pending} onChange={event => result.setValue({ ...result.value, text: event.target.value })} />
       {replaceRequired && <CheckboxField label="현재 경험 입력을 확인한 전사 문장으로 바꿀게요." checked={result.value.replace} onChange={event => result.setValue({ ...result.value, replace: event.target.checked })} />}
-      <Button disabled={pending || !result.value.text.trim() || (replaceRequired && !result.value.replace)} onClick={() => { const value = result.value; if (value.transcript) { cancel(); setRecorderKey(key => key + 1); onUseText(value.text, value.transcript.id) } }}>확인한 전사 문장을 입력란으로 가져오기</Button>
+      <Button disabled={pending || !result.value.text.trim() || (replaceRequired && !result.value.replace)} onClick={() => { const value = result.value; if (value.transcript) { cancel(); setRecorderKey(key => key + 1); onUseText(value.text, value.transcript.transcription_id) } }}>확인한 전사 문장을 입력란으로 가져오기</Button>
       <p>입력란으로 가져와도 대화를 보내거나 프로필을 확정하지 않습니다.</p>
     </section>}
   </section>

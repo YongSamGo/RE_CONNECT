@@ -160,6 +160,9 @@ def test_multipart_upload_has_a_separate_bounded_envelope_allowance():
         called.append(True)
         return {"length": len(await request.body())}
 
+    # 봉투 크기만 검증하는 시험 라우터가 실제 multipart 업무 라우터보다 먼저 매칭된다.
+    app.router.routes.insert(0, app.router.routes.pop())
+
     with TestClient(app, base_url=ORIGIN) as client:
         client.get("/api/v1/me")
         supplied = headers(client) | {"Content-Type": "multipart/form-data; boundary=test"}

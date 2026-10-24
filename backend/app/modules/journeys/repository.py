@@ -77,6 +77,25 @@ end
 return {'ok', value}
 """
 
+_QUESTION = _SESSION + _VIEW + """
+local state = view(KEYS[2], KEYS[3], false)
+if state[1] ~= 'ok' then return state end
+local count = 0
+for _, field in ipairs(redis.call('HKEYS', KEYS[3])) do
+    if string.sub(field, 1, 15) == 'message_result:' then
+        count = count + 1
+        if count > 64 then return {'SERVICE_UNAVAILABLE'} end
+        local raw = redis.call('HGET', KEYS[3], field)
+        if not raw or string.len(raw) > 65536 then return {'SERVICE_UNAVAILABLE'} end
+        local ok, result = pcall(cjson.decode, raw)
+        if not ok or type(result) ~= 'table' then return {'SERVICE_UNAVAILABLE'} end
+        local question = result.assistant_message
+        if type(question) == 'table' and question.message_id == ARGV[7] then return {'ok', cjson.encode(question)} end
+    end
+end
+return {'NOT_FOUND'}
+"""
+
 _END = _SESSION_LIFETIME + """
 local m = redis.call('HMGET', KEYS[3], 'owner', 'digest')
 if m[1] and (m[1] ~= ARGV[1] or m[2] ~= ARGV[5]) then return {'ok'} end
@@ -177,6 +196,7 @@ class RedisJourneyStore:
         self._set_role_exclusions = client.register_script(_SET_ROLE_EXCLUSIONS)
         self._end = client.register_script(_END)
         self._message_data = client.register_script(_MESSAGE_DATA)
+        self._question = client.register_script(_QUESTION)
         self.session_key, self.resource_key = session_key, resource_key
         self.control_key, self.epoch, self.prefix = control_key, epoch, prefix
 
@@ -268,6 +288,22 @@ class RedisJourneyStore:
         resource = self.resource_key(session.subject_id, journey_id)
         values = await self._call_data(session, resource, notice_version, field)
         return values
+
+    async def question(self, session, journey_id, notice_version, message_id):
+        resource = self.resource_key(session.subject_id, journey_id)
+        try:
+            values = await self._question(keys=[self.session_key(session.digest), resource, resource + ':lifecycle'],
+                args=[*self._args(session, notice_version), str(message_id)])
+            if values and values[0] in {'NOT_FOUND', 'CONSENT_REQUIRED', 'SERVICE_UNAVAILABLE'}:
+                raise AppError(values[0])
+            if len(values) != 2 or values[0] != 'ok' or len(values[1].encode('utf-8')) > 16384:
+                raise ValueError
+            result = Message.model_validate_json(values[1])
+            if result.message_id != message_id:
+                raise ValueError
+            return result
+        except (RedisError, ValueError, TypeError, AttributeError):
+            raise AppError('SERVICE_UNAVAILABLE') from None
 
     async def _call_data(self, session, resource, notice_version, field):
         try:

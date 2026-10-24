@@ -12,6 +12,7 @@ from fastapi import FastAPI
 
 from app.adapters.ollama import OllamaLLMAdapter
 from app.adapters.kakao import KakaoAdapter
+from app.adapters.internal_speech import InternalSpeechAdapter
 from app.adapters.redis import RedisProbe, build_redis
 from app.core.config import Settings, get_settings
 from app.core.errors import UnhandledErrorMiddleware, register_error_handlers
@@ -61,6 +62,7 @@ from app.modules.sessions.middleware import RequestSecurityMiddleware
 from app.modules.requests.repository import RedisRequestStore
 from app.modules.requests.service import RequestService, UnavailableRequestStore
 from app.modules.admission.llm import ControlledLLMAdapter
+from app.modules.admission.speech import ControlledSpeechAdapter
 from app.modules.admission.repository import RedisAdmissionStore
 from app.modules.admission.service import AdmissionService, UnavailableAdmissionService
 from app.modules.opportunities import router as opportunities
@@ -82,6 +84,10 @@ from app.modules.recommendations.service import RecommendationService
 from app.modules.drafts import router as drafts
 from app.modules.drafts.repository import RedisDraftStore, UnavailableDraftStore
 from app.modules.drafts.service import DraftService
+from app.modules.transcriptions.repository import RedisTranscriptionStore, UnavailableTranscriptionStore
+from app.modules.transcriptions.service import TranscriptionService
+from app.modules.speech import router as speech
+from app.modules.speech.service import SpeechService
 from app.persistence.connection import DatabaseProbe, build_engine
 
 API_PREFIX = "/api/v1"
@@ -142,6 +148,8 @@ def create_app(
     app.state.admission_service = admission
     llm_adapter = ControlledLLMAdapter(build_llm_adapter(settings), admission)
     app.state.llm_adapter = llm_adapter
+    speech_adapter = ControlledSpeechAdapter(InternalSpeechAdapter(), admission)
+    app.state.speech_adapter = speech_adapter
 
     app.state.db_engine = engine
     app.state.redis = redis_client
@@ -161,7 +169,9 @@ def create_app(
         journey_store = RedisJourneyStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key,
                                          control_key=admission_store.control_key, epoch=settings.inference_control_epoch)
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
-    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter)
+    transcription_store = RedisTranscriptionStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableTranscriptionStore()
+    app.state.transcription_service = TranscriptionService(transcription_store, app.state.journey_service, speech_adapter)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     kakao = None
@@ -213,12 +223,15 @@ def create_app(
             if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal(),
         app.state.member_service, app.state.save_intent_service.policy,
         RedisMemberCleanup(app.state.member_service.store) if redis_client is not None else UnavailableMemberCleanup())
+    app.state.speech_service = SpeechService(app.state.journey_service, app.state.draft_service, app.state.opportunity_service,
+        app.state.consent_service, app.state.request_service, speech_adapter)
     probes: dict[Component, ReadinessProbe] = {component: NotConfiguredProbe() for component in COMPONENTS}
     if engine is not None:
         probes["db"] = DatabaseProbe(engine)
     if redis_client is not None:
         probes["redis"] = RedisProbe(redis_client)
     probes["llm"] = llm_adapter
+    probes['speech'] = speech_adapter
     probes.update(readiness_probes or {})
     app.state.settings = settings
     app.state.readiness_service = ReadinessService(probes, settings.health_check_timeout_seconds)
@@ -246,6 +259,7 @@ def create_app(
     app.include_router(roles.router, prefix=API_PREFIX)
     app.include_router(recommendations.router, prefix=API_PREFIX)
     app.include_router(drafts.router, prefix=API_PREFIX)
+    app.include_router(speech.router, prefix=API_PREFIX)
 
     return app
 

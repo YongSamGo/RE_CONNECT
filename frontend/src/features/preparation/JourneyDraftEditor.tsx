@@ -13,6 +13,7 @@ import { parseSession } from '../account/session'
 import { OfficialPreparation } from './OfficialPreparation'
 import { parsePreparation } from './official'
 import { parseJourneyDraft } from './draft-model'
+import { DraftReadAloud } from '../voice/DraftReadAloud'
 import type { JourneyDraft } from './draft-model'
 
 type Attempt = { key: string; body: components['schemas']['DraftCreate']; owner: string | null }
@@ -117,6 +118,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
         <Button pending={busy} disabled={editor.dirty || !editor.reviewed || !editor.introduction.trim() || !editor.motivation.trim() || approved || !!editor.draft.review_reasons.length} onClick={approve}>확인한 현재 본문 승인</Button>
         <Button variant="secondary" disabled={busy || (editor.dirty && !editor.replace)} onClick={reload}>서버의 현재 편집본 확인</Button></div>
       <p role="status">{approved ? '서버 승인 상태입니다. 회원 저장은 아직 별도입니다.' : '화면 내용을 수정했거나 아직 현재 본문을 승인하지 않았습니다.'}</p>
+      {!editor.dirty && !busy && <DraftReadAloud journeyId={journeyId} draft={editor.draft} />}
       {approved && <Link className="button primary" to={`/journeys/${journeyId}/drafts/${editor.draft.draft_id}/save`}>프로필과 지원서 회원 저장 선택</Link>}
       <div ref={fallback}><TextAreaField label="복사할 현재 작성 내용" value={body} readOnly rows={6} /></div>
       <Button variant="secondary" pending={copy.state.status === 'pending'} onClick={() => void copy.run(async () => {
