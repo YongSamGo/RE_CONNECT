@@ -125,12 +125,12 @@ API로 **사업이 있다는 것과 기간·인원·활동비**는 알 수 있�
 | `activity_region` | **검수**: `orgNm` → 자치구 대응표 | 같음 | 대응표는 sources.md §6. 표에 없으면 `null` |
 | `schedule_text` | 변환: 활동기간 `actperStartDe`~`actperEndDe` | 같음. `-`면 `null` | |
 | `deadline_date` | 변환: `appdurngEndDe` | 같음 | `YYYY-MM-DD` 형식 검증 |
-| `recruitment_status` | 변환: 오늘이 신청기간 안이면 `open`, 지났으면 `closed`, 시작 전 `unknown` | `annRcrtStatNm`이 `신청·접수중`이고 신청기간 안이면 `open`, `마감`이거나 지났으면 `closed` | 가치동행 `annApprvStatView`(`승인완료`)는 모집 상태가 아니다 |
+| `recruitment_status` | 변환: 오늘이 신청기간 안이면 `open`, 지났으면 `closed`, 시작 전 `unknown` | `annRcrtStatNm`이 `신청·접수중`이고 신청기간 안이면 `open`, `마감`이거나 지났으면 `closed`, **그 밖**(시작 전, 처음 보는 상태값, 날짜 `-`)은 `unknown` | 가치동행 `annApprvStatView`(`승인완료`)는 모집 상태가 아니다 |
 | `source_url` / `application_url` | **검수**: 운영자가 포털 공고 상세 `https://www.50plus.or.kr/appView.do?ANN_NO=<번호>`를 확인해 입력 | `/in_appView.do?…` (쿼리 키 확인 필요) | 응답에 URL·`ANN_NO`가 없다. 추정해 만들지 않는다(sources.md §4) |
 | `requirements` | 검수 | 검수 | 응답에 조건 필드가 없다 |
 | 나머지(`description_text`, `hours_per_week`, `required_documents` 등) | 없음 → `null` | 없음 → `null` | |
 
-- **중복 판정 키**: 공고 ID가 없으므로 `(데이터셋, bizYear, orgNm, bizNm, appdurngStartDe, appdurngEndDe)`를 정규화해 만든다. 같은 사업이 신청기간만 바꿔 다시 올라오면 새 항목으로 본다.
+- **중복 판정 키**: 공고 ID가 없으므로 `(데이터셋, bizYear, orgNm, bizNm, appdurngStartDe)`를 정규화해 만든다. 신청 종료일은 키에 넣지 않는다. 마감 연장(예: 10-31 → 11-15)은 같은 항목의 중요 변경(`deadline_date`)으로 새 검수 버전이 된다(#154). 같은 사업의 재공고는 신청 시작일이 달라 새 항목이 된다.
 - **교육(`education`)**: 계약 `activity_type`에 맞는 값이 없어 공고 후보로 만들지 않는다. 교육을 MVP 공고로 넣으려면 계약 변경이 먼저다. `lctCtt`(담당자 연락처가 섞임)와 `rpstLctr`(강사 이름)는 옮기지 않는다.
 - **이용 조건**: 회원 약관의 제3자 제공 금지와 데이터 페이지의 이용허락 표기가 충돌한다(sources.md §6). 확인 전에는 운영 공개에 쓰지 않는다.
 

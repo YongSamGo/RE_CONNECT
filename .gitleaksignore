@@ -3,5 +3,3 @@
 # 같은 공개 예제의 Markdown 변환본과 PDF 추출본이며 실제 서비스 자격증명이 아니다.
 9bbf461ac3b0fa578deb9d1f0285e0afdd54bc84:SW개발보안_obsidian/Security/SW-Diagnosis-2021/제4장-구현단계-보안약점-진단/제2절-보안기능/067-6.-하드코드된-중요정보.md:generic-api-key:331
 9bbf461ac3b0fa578deb9d1f0285e0afdd54bc84:legacy/security_kb/data/SW-Diagnosis-2021/extracted/p0355.txt:generic-api-key:38
-# 수집 도구의 env_key 필드에 적힌 환경변수 이름 SEOUL50PLUS_API_KEY. 키 값이 아니다.
-c597cc0d2d4099f6d191f256b61d7a08d4849593:worker/tools/fetch_source_samples.py:generic-api-key:60

@@ -185,7 +185,8 @@ def summarize_json(body: bytes, ok_code: str) -> None:
     try:
         root = json.loads(body)
     except (ValueError, UnicodeDecodeError):
-        print("JSON이 아닙니다. 앞부분:", body[:300].decode("utf-8", "replace"))
+        # 오류 페이지가 요청 URL(쿼리의 인증키)을 되비출 수 있어 원문을 출력하지 않는다
+        print(f"JSON이 아닙니다({len(body)}바이트). 저장한 샘플 파일에서 직접 확인하세요.")
         return
     for tag in ("resultCode", "resultMsg", "totalCount"):
         value = _find_value(root, tag)
@@ -195,7 +196,7 @@ def summarize_json(body: bytes, ok_code: str) -> None:
         print(f"경고: 정상 응답(resultCode {ok_code})이 아닙니다. 인증키·파라미터를 확인하고 이 샘플은 근거로 쓰지 마세요.")
     items = [item for item in (_find_items(root) or []) if isinstance(item, dict)]
     print(f"item 수: {len(items)}")
-    fields = Counter(name for item in items for name, value in item.items() if value not in (None, ""))
+    fields = Counter(name for item in items for name, value in item.items() if value not in (None, "", "-"))
     for name in sorted({name for item in items for name in item}):
         print(f"  {name}  ({fields[name]}/{len(items)}건에 값 있음)")
 
