@@ -1,0 +1,165 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: RE_CONNECT EC2 and private PostgreSQL network (deployment requires review)
+Parameters:
+  ImageId:
+    Type: AWS::EC2::Image::Id
+    Description: Reviewed x86_64 application image in the target region
+  InstanceType:
+    Type: String
+    Default: t3.small
+    AllowedValues: [t3.small, t3.medium, g4dn.xlarge]
+  DatabaseClass:
+    Type: String
+    Default: db.t4g.micro
+    AllowedValues: [db.t4g.micro, db.t4g.small]
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.42.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+  Gateway:
+    Type: AWS::EC2::InternetGateway
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: {Ref: Vpc}
+      InternetGatewayId: {Ref: Gateway}
+  AppSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: {Ref: Vpc}
+      CidrBlock: 10.42.0.0/24
+      AvailabilityZone: {Fn::Select: [0, {Fn::GetAZs: ''}]}
+      MapPublicIpOnLaunch: false
+  DatabaseSubnetA:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: {Ref: Vpc}
+      CidrBlock: 10.42.10.0/24
+      AvailabilityZone: {Fn::Select: [0, {Fn::GetAZs: ''}]}
+      MapPublicIpOnLaunch: false
+  DatabaseSubnetB:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: {Ref: Vpc}
+      CidrBlock: 10.42.11.0/24
+      AvailabilityZone: {Fn::Select: [1, {Fn::GetAZs: ''}]}
+      MapPublicIpOnLaunch: false
+  AppRoutes:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: {Ref: Vpc}
+  AppInternetRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachment
+    Properties:
+      RouteTableId: {Ref: AppRoutes}
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: {Ref: Gateway}
+  AppRouteAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: {Ref: AppSubnet}
+      RouteTableId: {Ref: AppRoutes}
+  DatabaseRoutes:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: {Ref: Vpc}
+  DatabaseRouteAssociationA:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: {Ref: DatabaseSubnetA}
+      RouteTableId: {Ref: DatabaseRoutes}
+  DatabaseRouteAssociationB:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: {Ref: DatabaseSubnetB}
+      RouteTableId: {Ref: DatabaseRoutes}
+  AppSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: HTTPS ingress only; no public SSH or service ports
+      VpcId: {Ref: Vpc}
+      SecurityGroupIngress:
+        - {IpProtocol: tcp, FromPort: 443, ToPort: 443, CidrIp: 0.0.0.0/0}
+      SecurityGroupEgress:
+        - {IpProtocol: tcp, FromPort: 443, ToPort: 443, CidrIp: 0.0.0.0/0}
+  DatabaseSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: PostgreSQL from application instances only
+      VpcId: {Ref: Vpc}
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 5432
+          ToPort: 5432
+          SourceSecurityGroupId: {Ref: AppSecurityGroup}
+      # An explicit rule suppresses EC2's implicit allow-all egress rule.
+      SecurityGroupEgress:
+        - {IpProtocol: tcp, FromPort: 9, ToPort: 9, CidrIp: 127.0.0.1/32}
+  AppDatabaseEgress:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: {Ref: AppSecurityGroup}
+      IpProtocol: tcp
+      FromPort: 5432
+      ToPort: 5432
+      DestinationSecurityGroupId: {Ref: DatabaseSecurityGroup}
+  DatabaseSubnets:
+    Type: AWS::RDS::DBSubnetGroup
+    Properties:
+      DBSubnetGroupDescription: Isolated subnets without an internet route
+      SubnetIds: [{Ref: DatabaseSubnetA}, {Ref: DatabaseSubnetB}]
+  DatabaseParameters:
+    Type: AWS::RDS::DBParameterGroup
+    Properties:
+      Description: Require encrypted PostgreSQL connections
+      Family: postgres16
+      Parameters:
+        rds.force_ssl: '1'
+  Database:
+    Type: AWS::RDS::DBInstance
+    DeletionPolicy: Snapshot
+    UpdateReplacePolicy: Snapshot
+    Properties:
+      Engine: postgres
+      EngineVersion: '16'
+      DBInstanceClass: {Ref: DatabaseClass}
+      DBName: reconnect
+      MasterUsername: reconnect_owner
+      ManageMasterUserPassword: true
+      AllocatedStorage: '20'
+      StorageType: gp3
+      StorageEncrypted: true
+      PubliclyAccessible: false
+      DeletionProtection: true
+      BackupRetentionPeriod: 7
+      CopyTagsToSnapshot: true
+      AutoMinorVersionUpgrade: true
+      DBSubnetGroupName: {Ref: DatabaseSubnets}
+      DBParameterGroupName: {Ref: DatabaseParameters}
+      VPCSecurityGroups: [{Ref: DatabaseSecurityGroup}]
+  Application:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: {Ref: ImageId}
+      InstanceType: {Ref: InstanceType}
+      MetadataOptions:
+        HttpEndpoint: enabled
+        HttpTokens: required
+        HttpPutResponseHopLimit: 1
+      BlockDeviceMappings:
+        - DeviceName: /dev/xvda
+          Ebs: {Encrypted: true, VolumeType: gp3, VolumeSize: 30, DeleteOnTermination: true}
+      NetworkInterfaces:
+        - DeviceIndex: '0'
+          AssociatePublicIpAddress: true
+          SubnetId: {Ref: AppSubnet}
+          GroupSet: [{Ref: AppSecurityGroup}]
+Outputs:
+  DatabaseHost:
+    Value: {Fn::GetAtt: [Database, Endpoint.Address]}
+  ApplicationId:
+    Value: {Ref: Application}
