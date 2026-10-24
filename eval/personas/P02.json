@@ -1,0 +1,33 @@
+{
+  "id": "P02",
+  "summary": "63세 전직 아파트 관리소장. 유급으로 시설관리·경비 일을 원한다.",
+  "test_focus": ["유급 취업", "자격증 OR 조건", "주당 시간 경계"],
+  "interview": [
+    "아파트 관리사무소에서 이십 년 일했고, 마지막 팔 년은 관리소장이었어요.",
+    "전기 설비 점검이랑 민원 처리, 경비원 근무표 짜는 일을 주로 했죠.",
+    "자격증은 전기기능사하고 주택관리사 보 있어요.",
+    "월급 받는 일로 찾고 있어요. 평일은 매일 가능하고 주 삼십 시간 정도요.",
+    "안양시 동안구 살고 안양이나 군포, 의왕까지는 차로 다닐 수 있어요.",
+    "육십삼년생이에요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "아파트 관리사무소 근무 20년, 그중 관리소장 8년", "skill_tags": ["시설 관리", "전기 설비 점검", "민원 처리", "근무 일정 관리"], "duration_note": "20년(관리소장 8년)"}
+    ],
+    "skills": ["시설 관리", "전기 설비 점검", "민원 처리", "근무 일정 관리"],
+    "preferred_regions": [{"province": "gyeonggi", "district": "anyang"}, {"province": "gyeonggi", "district": "gunpo"}, {"province": "gyeonggi", "district": "uiwang"}],
+    "activity_types": ["employment"],
+    "paid_preference": "paid",
+    "available_weekdays": [1, 2, 3, 4, 5],
+    "hours_per_week": 30,
+    "mobility_note": "자가용으로 안양·군포·의왕 이동 가능",
+    "residence_region": {"province": "gyeonggi", "district": "anyang"},
+    "birth_year": 1963,
+    "certifications": ["전기기능사", "주택관리사보"],
+    "completed_courses": null,
+    "activity_constraints": null
+  },
+  "must_not_extract": {"exact": [], "semantic": []},
+  "expected_roles": ["시설 관리원", "아파트 경비원", "전기 설비 관리"]
+}

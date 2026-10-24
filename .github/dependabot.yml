@@ -18,25 +18,25 @@ updates:
     commit-message:
       prefix: "sec"
 
-  # backend/, frontend/ 폴더가 생긴 뒤에 주석을 해제한다
-  # - package-ecosystem: pip
-  #   directory: /backend
-  #   schedule:
-  #     interval: weekly
-  #     day: monday
-  #     timezone: Asia/Seoul
-  #   cooldown:
-  #     default-days: 7
-  #   commit-message:
-  #     prefix: "sec"
-  #
-  # - package-ecosystem: npm
-  #   directory: /frontend
-  #   schedule:
-  #     interval: weekly
-  #     day: monday
-  #     timezone: Asia/Seoul
-  #   cooldown:
-  #     default-days: 7
-  #   commit-message:
-  #     prefix: "sec"
+  # backend Python 의존성 (requirements*.in → 해시 포함 requirements*.txt)
+  - package-ecosystem: pip
+    directory: /backend
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"

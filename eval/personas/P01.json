@@ -1,0 +1,34 @@
+{
+  "id": "P01",
+  "summary": "68세 전직 초등교사. 무급으로 아이들 공부를 돕거나 멘토링을 하고 싶다.",
+  "test_focus": ["정보가 충분한 기본 사례", "봉사·교육 역할 매핑"],
+  "interview": [
+    "초등학교에서 삼십오 년 동안 담임을 했어요. 정년 퇴직하고 이 년쯤 쉬었네요.",
+    "학교 다닐 때는 학부모 상담을 제일 많이 했고, 마지막 오 년은 방과후 독서 지도도 맡았어요.",
+    "돈은 안 받아도 되고, 아이들 공부 봐주는 일이면 좋겠어요.",
+    "성동구 살고요, 성동구나 바로 옆 광진구 정도까지는 다닐 수 있어요.",
+    "화요일하고 목요일 오후가 비어요. 일주일에 여섯 시간 정도면 괜찮아요.",
+    "자격증은 교원 자격증 말고는 따로 없어요. 1958년생이에요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "초등학교 담임교사 35년", "skill_tags": ["초등 교육", "학습 지도", "학부모 상담"], "duration_note": "35년"},
+      {"description": "방과후 독서 지도", "skill_tags": ["독서 지도"], "duration_note": "5년"}
+    ],
+    "skills": ["초등 교육", "학습 지도", "학부모 상담", "독서 지도"],
+    "preferred_regions": [{"province": "seoul", "district": "seongdong"}, {"province": "seoul", "district": "gwangjin"}],
+    "activity_types": ["volunteering"],
+    "paid_preference": "unpaid",
+    "available_weekdays": [2, 4],
+    "hours_per_week": 6,
+    "mobility_note": "성동구와 인접한 광진구까지 이동 가능",
+    "residence_region": {"province": "seoul", "district": "seongdong"},
+    "birth_year": 1958,
+    "certifications": ["교원 자격증"],
+    "completed_courses": null,
+    "activity_constraints": null
+  },
+  "must_not_extract": {"exact": [], "semantic": []},
+  "expected_roles": ["학습 지도 봉사", "독서 지도 봉사", "아동 멘토링"]
+}
