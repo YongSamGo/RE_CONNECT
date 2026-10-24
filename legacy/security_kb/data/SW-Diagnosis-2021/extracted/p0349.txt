@@ -1,0 +1,8 @@
+349
+제4장구현단계 보안약점 진단
+[6] Password Plaintext Storage, OWASP
+https://www.owasp.org/index.php/Password_Plaintext_Storage 
+[7] CWE-319, Cleartext Transmission of Sensitive Information, MITRE,
+http://cwe.mitre.org/data/definitions/319.html
+[8] nsecure Transport, OWASP,
+https://www.owasp.org/index.php/Insecure_Transport

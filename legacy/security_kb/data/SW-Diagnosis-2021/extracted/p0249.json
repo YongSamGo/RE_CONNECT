@@ -1,0 +1,350 @@
+{
+ "lines": [
+  {
+   "text": "249",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1769714355469,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있다.",
+   "bbox": [
+    70.86000061035156,
+    130.81100463867188,
+    90.83202362060547,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    167.29122924804688,
+    291.27935791015625,
+    178.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:String xml = \"xxe.xml\"; ",
+   "bbox": [
+    78.66000366210938,
+    192.21823120117188,
+    183.94911193847656,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();",
+   "bbox": [
+    78.66000366210938,
+    206.61825561523438,
+    369.8047180175781,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");",
+   "bbox": [
+    78.66000366210938,
+    221.01828002929688,
+    328.5041198730469,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "bbox": [
+    78.65999603271484,
+    235.41827392578125,
+    347.31854248046875,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:DocumentBuilder builder = df.newDocumentBuilder();",
+   "bbox": [
+    78.65999603271484,
+    249.81826782226562,
+    304.9241027832031,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:Document document = builder.parse(new InputSource(xml));",
+   "bbox": [
+    78.65998840332031,
+    264.21826171875,
+    333.7633972167969,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:DOMSource domSource = new DOMSource(document);",
+   "bbox": [
+    78.65998840332031,
+    278.6182556152344,
+    315.1789245605469,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SAXParserFactory 예제의 경우 5~6라인과 같이 제한설정을 추가할 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    311.0511169433594,
+    369.6486511230469,
+    322.0731201171875
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    347.53118896484375,
+    291.27935791015625,
+    358.5531921386719
+   ],
+   "block": 35,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:String xml = \"xxe.xml\";",
+   "bbox": [
+    78.66000366210938,
+    372.45819091796875,
+    181.47816467285156,
+    382.3581848144531
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:SaxHandler handler = new SaxHandler();",
+   "bbox": [
+    78.66000366210938,
+    386.8581848144531,
+    252.9332275390625,
+    396.7581787109375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:SAXParserFactory factory = SAXParserFactory.newInstance();",
+   "bbox": [
+    78.66000366210938,
+    401.2581787109375,
+    334.4395751953125,
+    411.1581726074219
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:SAXParser parser = factory.newSAXParser();",
+   "bbox": [
+    78.66000366210938,
+    415.6581726074219,
+    267.5728454589844,
+    425.55816650390625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");",
+   "bbox": [
+    78.66000366210938,
+    430.05816650390625,
+    344.1600646972656,
+    439.9581604003906
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "bbox": [
+    78.66000366210938,
+    444.4581604003906,
+    362.9684753417969,
+    454.358154296875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:parser.parse(xml, handler);",
+   "bbox": [
+    78.66000366210938,
+    458.858154296875,
+    194.2109832763672,
+    468.7581481933594
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "text": "1:String xml = \"xxe.xml\"; \n2:DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();\n3:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n4:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n5:DocumentBuilder builder = df.newDocumentBuilder();\n6:Document document = builder.parse(new InputSource(xml));\n7:DOMSource domSource = new DOMSource(document);",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.65998840332031,
+    191.0182312011719,
+    369.8047180175781,
+    289.71824951171874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1:String xml = \"xxe.xml\";\n2:SaxHandler handler = new SaxHandler();\n3:SAXParserFactory factory = SAXParserFactory.newInstance();\n4:SAXParser parser = factory.newSAXParser();\n5:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n6:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n7:parser.parse(xml, handler);",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    371.25819091796876,
+    362.9684753417969,
+    469.95814819335936
+   ]
+  }
+ ],
+ "native": "249\n제4장구현단계 보안약점 진단\n다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 \n있다.\n오탐코드의 예\n1:String xml = \"xxe.xml\"; \n2:DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();\n3:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n4:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n5:DocumentBuilder builder = df.newDocumentBuilder();\n6:Document document = builder.parse(new InputSource(xml));\n7:DOMSource domSource = new DOMSource(document);\nSAXParserFactory 예제의 경우 5~6라인과 같이 제한설정을 추가할 수 있다.\n오탐코드의 예\n1:String xml = \"xxe.xml\";\n2:SaxHandler handler = new SaxHandler();\n3:SAXParserFactory factory = SAXParserFactory.newInstance();\n4:SAXParser parser = factory.newSAXParser();\n5:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n6:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n7:parser.parse(xml, handler);\n",
+ "native_sha256": "1da14e7d1b77256429a8a13d9c7689e1d63c93f62087e587a692f0cbd5545835",
+ "chars": 852,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

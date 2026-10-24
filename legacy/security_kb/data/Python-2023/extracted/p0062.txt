@@ -1,0 +1,46 @@
+Python 시큐어코딩 가이드
+56
+다. 코드예제
+<참고 : 삽입 코드의 예>
+설명
+삽입 코드의 예
+내부망 중요 정보 획득
+http://sample_site.com/connect?url=http://192.168.0.45/member/list.json
+외부 접근 차단된 
+admin 페이지 접근
+http://sample_site.com/connect?url=http://192.168.0.45/admin
+도메인 체크를 우회하여 
+중요 정보 획득
+http://sample_site.com/connect?url=http://sample_site.com:x@192.168.0.45/member/
+list.json
+단축 URL을 이용한 
+Filter 우회
+http://sample_site.com/connect?url=http://bit.ly/sdjk3kjhkl3
+도메인을 사설IP로 설정해 
+중요정보 획득
+http://sample_site.com/connect?url=http://192.168.0.45/member/list.json
+서버내 파일 열람
+http://sample_site.com/connect?url=file:///etc/passwd
+다음 예제는 안전하지 않은 코드를 보여 준다. 사용자로부터 입력된 URL 주소를 검증 없이 사용하면 의도하지 
+않은 다른 서버의 자원에 접근할 수 있게 된다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+from django.shortcuts import render
+import requests
+def call_third_party_api(request):
+  addr = request.POST.get('address', '')
+  # 사용자가 입력한 주소를 검증하지 않고 HTTP 요청을 보낸 후  
+  # 응답을 사용자에게 반환
+  result = requests.get(addr).text
+  return render(request, '/result.html', {'result':result})
+다음과 같이 안전한 코드를 작성하면 사전에 정의된 서버 목록을 정의하고 매칭되는 URL만 사용할 수 있으므로 
+URL 값을 임의로 조작할 수 없다.

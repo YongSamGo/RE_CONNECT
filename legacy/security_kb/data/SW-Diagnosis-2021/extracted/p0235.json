@@ -1,0 +1,661 @@
+{
+ "lines": [
+  {
+   "text": "235",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "외부 입력값에서 파일명을 얻어오는 부분이 존재하는지 확인하고(①), 허용된 확장자에 대해서만 ",
+   "bbox": [
+    70.86000061035156,
+    142.51107788085938,
+    459.1965026855469,
+    153.5330810546875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "파일 업로드를 허용하는지 확인한다(②). 제어문 등을 사용하여 허용된 파일만 업로드 될 경우와 ",
+   "bbox": [
+    70.86000061035156,
+    159.55111694335938,
+    459.1348876953125,
+    170.5731201171875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "업로드된 파일명을 외부에서 알 수 없는 형태로 변경할 경우엔 안전하지만 그 외에는 취약하다.",
+   "bbox": [
+    70.86000061035156,
+    176.53103637695312,
+    432.3672180175781,
+    187.55303955078125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    225.83999633789062,
+    213.01107788085938,
+    301.42083740234375,
+    224.0330810546875
+   ],
+   "block": 28,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    237.93820190429688,
+    86.42539978027344,
+    247.83819580078125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public void upload(HttpServletRequest request) throws ServletException {",
+   "bbox": [
+    95.21954345703125,
+    237.93820190429688,
+    397.06414794921875,
+    247.83819580078125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    252.33819580078125,
+    86.39366912841797,
+    262.2381896972656
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// MultipartHttpServletRequest를 케스팅 ",
+   "bbox": [
+    95.18780517578125,
+    252.33819580078125,
+    257.99139404296875,
+    262.2381896972656
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    266.7381896972656,
+    86.42539978027344,
+    276.63818359375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;",
+   "bbox": [
+    95.21954345703125,
+    266.7381896972656,
+    422.8411865234375,
+    276.63818359375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: ",
+   "bbox": [
+    78.66000366210938,
+    281.13818359375,
+    88.95626831054688,
+    291.0381774902344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    295.5381774902344,
+    86.42539978027344,
+    305.43817138671875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String next = (String) mRequest.getFileNames().next(); ",
+   "bbox": [
+    95.21954345703125,
+    295.5381774902344,
+    321.2182922363281,
+    305.43817138671875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    309.93817138671875,
+    86.42539978027344,
+    319.8381652832031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MultipartFile file = mRequest.getFile(next); ",
+   "bbox": [
+    95.21954345703125,
+    309.93817138671875,
+    272.6045227050781,
+    319.8381652832031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    324.3381652832031,
+    86.42540740966797,
+    334.2381591796875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    338.7381591796875,
+    86.40424346923828,
+    348.6381530761719
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// MultipartFile로 부터 file 이름을 얻어옴 ",
+   "bbox": [
+    95.1983871459961,
+    338.7381591796875,
+    257.6961975097656,
+    348.6381530761719
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    353.1381530761719,
+    86.42539978027344,
+    363.03814697265625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = file.getOriginalFilename(); ·····································································①",
+   "bbox": [
+    95.21954345703125,
+    353.1381530761719,
+    447.7141418457031,
+    363.03814697265625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    367.53814697265625,
+    91.4051742553711,
+    377.4381408691406
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: // upload 파일에 대한 확장자 유효성 체크를 하지 않음 ",
+   "bbox": [
+    78.66000366210938,
+    381.9381408691406,
+    305.6565246582031,
+    391.838134765625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: File uploadDir = new File(“/app/webapp/data/upload/notice”); ",
+   "bbox": [
+    78.66000366210938,
+    396.338134765625,
+    350.67547607421875,
+    406.2381286621094
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: String uploadFilePath = uploadDir.getAbsolutePath()+”/”+fileName; ····························②",
+   "bbox": [
+    78.66000366210938,
+    410.7381286621094,
+    447.72198486328125,
+    420.63812255859375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    425.13812255859375,
+    91.4051742553711,
+    435.0381164550781
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: /* 이하 file upload 루틴 */",
+   "bbox": [
+    78.66000366210938,
+    439.5381164550781,
+    202.3060760498047,
+    449.4381103515625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16: }",
+   "bbox": [
+    78.66000366210938,
+    453.9381103515625,
+    98.49267578125,
+    463.8381042480469
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: }",
+   "bbox": [
+    78.66000366210938,
+    468.3381042480469,
+    98.49267578125,
+    478.23809814453125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "getOriginalFilename() 함수를 사용하여 파일을 업로드하면서 해당 파일의 확장자를 체크하지 않는 ",
+   "bbox": [
+    70.86000061035156,
+    500.7710876464844,
+    459.26763916015625,
+    511.7930908203125
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "경우엔 취약하다고 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    517.7509765625,
+    181.7272186279297,
+    528.7730102539062
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 업로드된 파일의 확장자를 체크하고 있지 않으므로 취약한 것으로 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    544.7508544921875,
+    417.4141540527344,
+    555.7728881835938
+   ],
+   "block": 48,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    575.2310791015625,
+    291.27935791015625,
+    586.2531127929688
+   ],
+   "block": 49,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    600.1580810546875,
+    86.42540740966797,
+    610.05810546875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while (itr.hasNext()) { ",
+   "bbox": [
+    95.21955108642578,
+    600.1580810546875,
+    184.2346954345703,
+    610.05810546875
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    614.55810546875,
+    86.39543151855469,
+    624.4581298828125
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Entry<String, List<MultipartFile>> entry = itr.next(); ",
+   "bbox": [
+    99.56990051269531,
+    614.55810546875,
+    306.11328125,
+    624.4581298828125
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    628.9580688476562,
+    86.42540740966797,
+    638.8580932617188
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fileList = entry.getValue(); ",
+   "bbox": [
+    99.59986877441406,
+    628.9580688476562,
+    208.22898864746094,
+    638.8580932617188
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    643.3580932617188,
+    86.42540740966797,
+    653.2581176757812
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "1:    public void upload(HttpServletRequest request) throws ServletException {\n2:    // MultipartHttpServletRequest를 케스팅 \n3:    MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;\n4: \n5:    String next = (String) mRequest.getFileNames().next(); \n6:    MultipartFile file = mRequest.getFile(next); \n7:\n8:    // MultipartFile로 부터 file 이름을 얻어옴 \n9:    String fileName = file.getOriginalFilename(); ·····································································①\n10:\n11: // upload 파일에 대한 확장자 유효성 체크를 하지 않음 \n12: File uploadDir = new File(“/app/webapp/data/upload/notice”); \n13: String uploadFilePath = uploadDir.getAbsolutePath()+”/”+fileName; ····························②\n14:\n15: /* 이하 file upload 루틴 */\n16: }\n17: }",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    78.66000366210938,
+    236.7382019042969,
+    447.72198486328125,
+    479.43809814453124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41
+   ],
+   "text": "1:    while (itr.hasNext()) { \n2:      Entry<String, List<MultipartFile>> entry = itr.next(); \n3:      fileList = entry.getValue(); \n4:",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    598.9580810546875,
+    306.11328125,
+    654.4581176757813
+   ]
+  }
+ ],
+ "native": "235\n제4장구현단계 보안약점 진단\n라. 진단방법\n외부 입력값에서 파일명을 얻어오는 부분이 존재하는지 확인하고(①), 허용된 확장자에 대해서만 \n파일 업로드를 허용하는지 확인한다(②). 제어문 등을 사용하여 허용된 파일만 업로드 될 경우와 \n업로드된 파일명을 외부에서 알 수 없는 형태로 변경할 경우엔 안전하지만 그 외에는 취약하다.\n일반적인 진단의 예\n1:\npublic void upload(HttpServletRequest request) throws ServletException {\n2:\n// MultipartHttpServletRequest를 케스팅 \n3:\nMultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;\n4: \n5:\nString next = (String) mRequest.getFileNames().next(); \n6:\nMultipartFile file = mRequest.getFile(next); \n7:\n8:\n// MultipartFile로 부터 file 이름을 얻어옴 \n9:\nString fileName = file.getOriginalFilename(); ·····································································①\n10:\n11: // upload 파일에 대한 확장자 유효성 체크를 하지 않음 \n12: File uploadDir = new File(“/app/webapp/data/upload/notice”); \n13: String uploadFilePath = uploadDir.getAbsolutePath()+”/”+fileName; ····························②\n14:\n15: /* 이하 file upload 루틴 */\n16: }\n17: }\ngetOriginalFilename() 함수를 사용하여 파일을 업로드하면서 해당 파일의 확장자를 체크하지 않는 \n경우엔 취약하다고 판정한다.\n다음의 예제는 업로드된 파일의 확장자를 체크하고 있지 않으므로 취약한 것으로 판정한다.\n정탐코드의 예\n1:\nwhile (itr.hasNext()) { \n2:\nEntry<String, List<MultipartFile>> entry = itr.next(); \n3:\nfileList = entry.getValue(); \n4:\n",
+ "native_sha256": "2af55904fab0972078d067d23a5a8224f302ff987f664505b876c01a23aaf79a",
+ "chars": 1181,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

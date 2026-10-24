@@ -1,0 +1,387 @@
+{
+ "lines": [
+  {
+   "text": "314",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "| 제2 절| 보안기능",
+   "bbox": [
+    76.5,
+    113.82512664794922,
+    187.05650329589844,
+    129.203125
+   ],
+   "block": 14,
+   "size": 13.857260704040527,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "보안기능(인증, 접근제어, 기밀성, 암호화, 권한관리 등)을 부적절하게 구현시 발생할 수 있는 보안 ",
+   "bbox": [
+    76.5,
+    163.63107299804688,
+    464.84124755859375,
+    174.653076171875
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "약점으로 적절한 인증 없는 중요기능 허용, 부적절한 인가 등이 포함된다.",
+   "bbox": [
+    76.5,
+    180.61099243164062,
+    355.1241149902344,
+    191.63299560546875
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1. 적절한 인증 없는 중요기능 허용",
+   "bbox": [
+    76.5,
+    229.60121154785156,
+    257.2710876464844,
+    243.98831176757812
+   ],
+   "block": 17,
+   "size": 12.85500431060791,
+   "fonts": [
+    "NanumSquareB"
+   ]
+  },
+  {
+   "text": "가. 개요",
+   "bbox": [
+    76.5,
+    267.7550964355469,
+    113.2763442993164,
+    279.8330993652344
+   ],
+   "block": 18,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "적절한 인증과정이 없이 중요정보(계좌이체 정보, 개인정보 등)를 열람(또는 변경)할 때 발생하는 ",
+   "bbox": [
+    76.5,
+    296.47119140625,
+    464.76019287109375,
+    307.4931945800781
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "보안약점이다.",
+   "bbox": [
+    76.5,
+    313.4510803222656,
+    130.79226684570312,
+    324.47308349609375
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "나. 보안대책",
+   "bbox": [
+    76.5,
+    360.5151062011719,
+    132.05699157714844,
+    372.5931091308594
+   ],
+   "block": 21,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "클라이언트의 보안검사를 우회하여 서버에 접근하지 못하도록 설계하고 중요한 정보가 있는 페이지는 ",
+   "bbox": [
+    76.5,
+    389.1711120605469,
+    464.846923828125,
+    400.193115234375
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "재인증을 적용(은행 계좌이체 등)한다. 또한 안전하다고 검증된 라이브러리나 프레임워크(OpenSSL",
+   "bbox": [
+    76.5,
+    406.1510009765625,
+    462.04437255859375,
+    417.1730041503906
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "이나 ESAPI의 보안기능 등)를 사용하는 것이 중요하다.",
+   "bbox": [
+    76.5,
+    423.1910095214844,
+    288.40380859375,
+    434.2130126953125
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    76.5,
+    470.1950988769531,
+    132.05699157714844,
+    482.2731018066406
+   ],
+   "block": 25,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "회원정보 수정시 수정을 요청한 사용자와 로그인한 사용자의 일치 여부를 확인하지 않고 처리하고 있다.",
+   "bbox": [
+    76.5,
+    498.9111022949219,
+    454.7739562988281,
+    509.93310546875
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    207.9600067138672,
+    532.87109375,
+    330.58392333984375,
+    543.8931274414062
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) ",
+   "bbox": [
+    85.0199966430664,
+    552.278076171875,
+    402.9957580566406,
+    562.1781005859375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") ",
+   "bbox": [
+    85.01998901367188,
+    566.6781005859375,
+    421.20294189453125,
+    576.578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MemberModel memberModel, BindingResult result, HttpServletRequest request, ",
+   "bbox": [
+    97.14013671875,
+    581.0780639648438,
+    430.1222229003906,
+    590.9780883789062
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpSession session) { ",
+   "bbox": [
+    97.14013671875,
+    595.47802734375,
+    192.07652282714844,
+    605.3780517578125
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    85.01998138427734,
+    609.8780517578125,
+    92.74483489990234,
+    619.778076171875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ModelAndView mav = new ModelAndView(); ",
+   "bbox": [
+    105.92018127441406,
+    609.8780517578125,
+    292.1346740722656,
+    619.778076171875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//1. 로그인한 사용자를 불러온다.",
+   "bbox": [
+    93.77974700927734,
+    624.278076171875,
+    211.62356567382812,
+    634.1781005859375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    85.01998138427734,
+    638.6780395507812,
+    92.7254409790039,
+    648.5780639648438
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String userId = (String) session.getAttribute(\"userId\");",
+   "bbox": [
+    105.89990234375,
+    638.6780395507812,
+    323.8827819824219,
+    648.5780639648438
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) \n2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") \nMemberModel memberModel, BindingResult result, HttpServletRequest request, \nHttpSession session) { ",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    85.01998901367188,
+    543.9931274414063,
+    430.1222229003906,
+    606.5780517578125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    19,
+    20,
+    21,
+    22,
+    23
+   ],
+   "text": "3:      ModelAndView mav = new ModelAndView(); \n//1. 로그인한 사용자를 불러온다.\n4:      String userId = (String) session.getAttribute(\"userId\");",
+   "language": "text",
+   "label": "HttpSession session) { ",
+   "bbox": [
+    85.01998138427734,
+    608.6780517578125,
+    323.8827819824219,
+    649.7780639648438
+   ]
+  }
+ ],
+ "native": "314\n| 제2 절| 보안기능\n보안기능(인증, 접근제어, 기밀성, 암호화, 권한관리 등)을 부적절하게 구현시 발생할 수 있는 보안 \n약점으로 적절한 인증 없는 중요기능 허용, 부적절한 인가 등이 포함된다.\n1. 적절한 인증 없는 중요기능 허용\n가. 개요\n적절한 인증과정이 없이 중요정보(계좌이체 정보, 개인정보 등)를 열람(또는 변경)할 때 발생하는 \n보안약점이다.\n나. 보안대책\n클라이언트의 보안검사를 우회하여 서버에 접근하지 못하도록 설계하고 중요한 정보가 있는 페이지는 \n재인증을 적용(은행 계좌이체 등)한다. 또한 안전하다고 검증된 라이브러리나 프레임워크(OpenSSL\n이나 ESAPI의 보안기능 등)를 사용하는 것이 중요하다.\n다. 코드예제\n회원정보 수정시 수정을 요청한 사용자와 로그인한 사용자의 일치 여부를 확인하지 않고 처리하고 있다.\n안전하지 않은 코드의 예 JAVA\n1: @RequestMapping(value = \"/modify.do\", method = RequestMethod.POST) \n2: public ModelAndView memberModifyProcess(@ModelAttribute(\"MemberModel\") \nMemberModel memberModel, BindingResult result, HttpServletRequest request, \nHttpSession session) { \n3:\nModelAndView mav = new ModelAndView(); \n//1. 로그인한 사용자를 불러온다.\n4:\nString userId = (String) session.getAttribute(\"userId\");\n",
+ "native_sha256": "82db78b0b9585834b10ae35fe19a7fc7135151f4653f74ba3649bf391f3ced8b",
+ "chars": 809,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

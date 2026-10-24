@@ -1,0 +1,50 @@
+343
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+System.Security.Cryptography.SHA256Managed().ComputeHash(data); String 
+hashedPassword = System.Text.Encoding.ASCII.GetString(data);
+12:
+}
+13:
+catch (Exception e)
+14:
+{
+15:
+Msg.Text = "An exception occurred retrieving your password: " + 
+Server.HtmlEncode(e.Message); 
+16:
+return; 
+17:
+}
+18:
+MailMessage Message = new MailMessage(); 
+19:
+Message.Body ="Your password is: "+Server.HtmlEncode(hasedPassword);
+20:
+SmtpMail.Send(Message);
+21:
+Msg.Text = "Password sent via e-mail."; 
+22: } 
+23: else 
+24: { 
+25:
+Msg.Text = "User name is not valid. Please check the value and try again.";
+26: }
+27:}
+파일에서 읽어온 비밀번호를 바로 사용하는 C예제 코드이다.
+안전하지 않은 코드의 예 C
+1: int dbaccess(){
+2:
+FILE *fp; char *server = "DBserver"; 
+3:
+char passwd[20]; 
+4:
+char user[20]; 
+5:
+SQLHENV henv; 
+6:
+SQLHDBC hdbc; 
+7:
+fp = fopen("config", "r"); 
+8:
+fgets(user, sizeof(user), fp);

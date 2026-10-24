@@ -1,0 +1,652 @@
+{
+ "lines": [
+  {
+   "text": "335",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    117.31112670898438,
+    290.500244140625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    77.94000244140625,
+    142.23818969726562,
+    90.6410903930664,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 유효성 점검없이 패스워드를 문자열로 읽는다. ",
+   "bbox": [
+    99.43522644042969,
+    142.23818969726562,
+    280.37017822265625,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    77.94000244140625,
+    156.63821411132812,
+    90.60582733154297,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "con = DriverManager.getConnection(url, usr, password.toString());",
+   "bbox": [
+    99.39997100830078,
+    156.63821411132812,
+    367.5852355957031,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16: } catch (FileNotFoundException e) { ",
+   "bbox": [
+    77.94000244140625,
+    171.03823852539062,
+    243.5794677734375,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    77.94000244140625,
+    185.43826293945312,
+    90.62522888183594,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    99.41937255859375,
+    185.43826293945312,
+    107.35314178466797,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: } catch (SQLException e) { ",
+   "bbox": [
+    77.94000244140625,
+    199.83828735351562,
+    207.92340087890625,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    77.94000244140625,
+    214.23831176757812,
+    90.62522888183594,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    99.41937255859375,
+    214.23831176757812,
+    107.35314178466797,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20: }",
+   "bbox": [
+    77.94000244140625,
+    228.6383056640625,
+    97.77267456054688,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MD5 등의 낮은 보안 수준의 알고리즘을 사용하는 경우는 안전하지 않다.",
+   "bbox": [
+    70.86000061035156,
+    261.0111083984375,
+    350.3205871582031,
+    272.0331115722656
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    297.5511169433594,
+    290.500244140625,
+    308.5731201171875
+   ],
+   "block": 33,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    77.94000244140625,
+    322.4781188964844,
+    85.70539855957031,
+    332.37811279296875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public static EgovFormBasedUUID nameUUIDFromBytes(byte[] name) {",
+   "bbox": [
+    98.8798599243164,
+    322.4781188964844,
+    391.292236328125,
+    332.37811279296875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    77.94000244140625,
+    336.87811279296875,
+    85.70539855957031,
+    346.7781066894531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MessageDigest md = null; ",
+   "bbox": [
+    103.25930786132812,
+    336.87811279296875,
+    215.01620483398438,
+    346.7781066894531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    77.94000244140625,
+    351.2781066894531,
+    85.69217681884766,
+    361.1781005859375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    103.24608612060547,
+    351.2781066894531,
+    123.40843963623047,
+    361.1781005859375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    77.94000244140625,
+    365.6781005859375,
+    85.70540618896484,
+    375.5780944824219
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "md = MessageDigest.getInstance(“MD5”); ",
+   "bbox": [
+    107.63964080810547,
+    365.6781005859375,
+    281.62811279296875,
+    375.5780944824219
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    77.94000244140625,
+    380.0780944824219,
+    85.70540618896484,
+    389.97808837890625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (NoSuchAlgorithmException e) { ",
+   "bbox": [
+    103.25930786132812,
+    380.0780944824219,
+    268.4095153808594,
+    389.97808837890625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    77.94000244140625,
+    394.47808837890625,
+    85.70540618896484,
+    404.3780822753906
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "throw new InternalError(“MD5 not supported”); ",
+   "bbox": [
+    112.07990264892578,
+    394.47808837890625,
+    307.7301940917969,
+    404.3780822753906
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    77.94000244140625,
+    408.8780822753906,
+    85.70540618896484,
+    418.778076171875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    103.25930786132812,
+    408.8780822753906,
+    105.99205017089844,
+    418.778076171875
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    77.94000244140625,
+    423.278076171875,
+    85.70540618896484,
+    433.1780700683594
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "byte[] md5Bytes = md.digest(name); ",
+   "bbox": [
+    103.25930786132812,
+    423.278076171875,
+    257.2679443359375,
+    433.1780700683594
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    77.94000244140625,
+    437.6780700683594,
+    85.67278289794922,
+    447.57806396484375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "md5Bytes[6] &= 0x0f; /* clear version */ ",
+   "bbox": [
+    103.2266845703125,
+    437.6780700683594,
+    277.5730285644531,
+    447.57806396484375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    77.94000244140625,
+    452.07806396484375,
+    90.61375427246094,
+    461.9780578613281
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "md5Bytes[6] |= 0x30; /* set to version 3 */ ",
+   "bbox": [
+    103.78821563720703,
+    452.07806396484375,
+    292.4894714355469,
+    461.9780578613281
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94000244140625,
+    466.4780578613281,
+    90.60759735107422,
+    476.3780517578125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "md5Bytes[8] &= 0x3f; /* clear variant */ ",
+   "bbox": [
+    103.78205871582031,
+    466.4780578613281,
+    275.8601989746094,
+    476.3780517578125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: md5Bytes[8] |= 0x80; /* set to IETF variant */",
+   "bbox": [
+    77.94000244140625,
+    480.8780517578125,
+    291.5189208984375,
+    490.7780456542969
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:return new EgovFormBasedUUID(md5Bytes);",
+   "bbox": [
+    77.94000244140625,
+    495.2780456542969,
+    274.6455078125,
+    505.17803955078125
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:}",
+   "bbox": [
+    77.94000244140625,
+    509.6780090332031,
+    93.33238983154297,
+    519.5780029296875
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13
+   ],
+   "text": "14:    // 유효성 점검없이 패스워드를 문자열로 읽는다. \n15:    con = DriverManager.getConnection(url, usr, password.toString());\n16: } catch (FileNotFoundException e) { \n17:    …\n18: } catch (SQLException e) { \n19:    …\n20: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    141.03818969726564,
+    367.5852355957031,
+    239.73829956054686
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40
+   ],
+   "text": "1:      public static EgovFormBasedUUID nameUUIDFromBytes(byte[] name) {\n2:        MessageDigest md = null; \n3:        try { \n4:         md = MessageDigest.getInstance(“MD5”); \n5:        } catch (NoSuchAlgorithmException e) { \n6:           throw new InternalError(“MD5 not supported”); \n7:        }\n8:        byte[] md5Bytes = md.digest(name); \n9:        md5Bytes[6] &= 0x0f; /* clear version */ \n10:      md5Bytes[6] |= 0x30; /* set to version 3 */ \n11:      md5Bytes[8] &= 0x3f; /* clear variant */ \n12: md5Bytes[8] |= 0x80; /* set to IETF variant */\n13:return new EgovFormBasedUUID(md5Bytes);\n14:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    321.2781188964844,
+    391.292236328125,
+    520.7780029296875
+   ]
+  }
+ ],
+ "native": "335\n제4장구현단계 보안약점 진단\n정탐코드의 예\n14:\n// 유효성 점검없이 패스워드를 문자열로 읽는다. \n15:\ncon = DriverManager.getConnection(url, usr, password.toString());\n16: } catch (FileNotFoundException e) { \n17:\n…\n18: } catch (SQLException e) { \n19:\n…\n20: }\nMD5 등의 낮은 보안 수준의 알고리즘을 사용하는 경우는 안전하지 않다.\n정탐코드의 예\n1:\npublic static EgovFormBasedUUID nameUUIDFromBytes(byte[] name) {\n2:\nMessageDigest md = null; \n3:\ntry { \n4:\nmd = MessageDigest.getInstance(“MD5”); \n5:\n} catch (NoSuchAlgorithmException e) { \n6:\nthrow new InternalError(“MD5 not supported”); \n7:\n}\n8:\nbyte[] md5Bytes = md.digest(name); \n9:\nmd5Bytes[6] &= 0x0f; /* clear version */ \n10:\nmd5Bytes[6] |= 0x30; /* set to version 3 */ \n11:\nmd5Bytes[8] &= 0x3f; /* clear variant */ \n12: md5Bytes[8] |= 0x80; /* set to IETF variant */\n13:return new EgovFormBasedUUID(md5Bytes);\n14:}\n",
+ "native_sha256": "28e60a7df7468b1b69f5788ea48ad4741dea5126e9888acbc724e6dd20bbb9e2",
+ "chars": 797,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

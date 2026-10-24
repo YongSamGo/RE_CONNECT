@@ -1,0 +1,50 @@
+474
+정탐코드의 예
+3:
+<%@ page import=”maha.ns.web.fta.gaa.comm.util.SSOSessionUtil”%>
+4:
+<%! 
+5:
+String commonPath = “/”; 
+6:
+String imagePath= commonPath +”img/”; 
+7:
+String imagePath_gis = imagePath +”gis/cmm/btn/”; 
+JSP 페이지나 서블릿 내에서의 내부 클래스 사용은 멤버필드가 아니므로 취약하지 않다. 
+오탐코드의 예
+1:
+<%@ page language=”java” import=”java.io.*, java.text.* ,java.util.*, java.net.*, 
+com.ins. 
+system.config.*, com.ins.system.exception.*”%> 
+2:
+<%! 
+3:
+private class CacheEntity { 
+4:
+String name; 
+5:
+String lastModified; 
+6:
+String expires; 
+7:
+String eTag;
+8:
+}
+Final 필드의 경우 클래스 내부에서 상수로 사용되는 값이므로 취약하지 않다.
+오탐코드의 예
+1:
+<%@ page import=”java.util.*” %> 
+2:
+<%@ page import=”maha.ns.comm.util.StringUtil” %> 
+3:
+<%@ page import=”maha.ns.comm.util.Page” %> 
+4:
+<%@ taglib uri=”comm.tld” prefix=”comm” %> 
+5:
+<%! 
+6:
+final String imagePath = “/img/”; 
+7:
+String treeImagePath = imagePath+”/port/tree.gif”; 
+8:
+%>

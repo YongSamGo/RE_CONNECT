@@ -1,0 +1,311 @@
+{
+ "lines": [
+  {
+   "text": "137",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐285 Improper Authorization, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.5200958251953,
+    281.26141357421875,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/285.html",
+   "bbox": [
+    99.59996032714844,
+    153.55117797851562,
+    306.03546142578125,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,",
+   "bbox": [
+    85.85955047607422,
+    174.5399932861328,
+    426.86639404296875,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index. php/Top_10_2013",
+   "bbox": [
+    99.60025024414062,
+    190.51095581054688,
+    318.15008544921875,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③CWE‐732 Incorrect Permission Assignment for Critical Resource, MITRE,",
+   "bbox": [
+    85.8598403930664,
+    211.4999542236328,
+    417.3511962890625,
+    222.5330810546875
+   ],
+   "block": 29,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/defini- tions/732.html ",
+   "bbox": [
+    99.59994506835938,
+    227.53106689453125,
+    317.20391845703125,
+    238.55307006835938
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④2016 OWASP Application Security Verification Standard, OWASP, Access Control ",
+   "bbox": [
+    85.85953521728516,
+    248.53097534179688,
+    459.19293212890625,
+    259.552978515625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Verification Requirements,",
+   "bbox": [
+    99.59994506835938,
+    264.55096435546875,
+    215.4157257080078,
+    275.5729675292969
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    99.59994506835938,
+    280.5108337402344,
+    456.0355224609375,
+    291.5328369140625
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project",
+   "bbox": [
+    99.59991455078125,
+    296.53082275390625,
+    199.3592987060547,
+    307.5528259277344
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Access Control Cheat Sheet, OWASP,",
+   "bbox": [
+    85.85950469970703,
+    317.5307312011719,
+    265.5832824707031,
+    328.552734375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Access_Control_Cheat_Sheet",
+   "bbox": [
+    99.59991455078125,
+    333.55072021484375,
+    380.4491271972656,
+    344.5727233886719
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥WASC Threat Classification Directory Indexing, WASC,",
+   "bbox": [
+    85.85950469970703,
+    354.5506286621094,
+    338.03466796875,
+    365.5726318359375
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246922/Directory%20Indexing",
+   "bbox": [
+    99.59991455078125,
+    370.510498046875,
+    420.27099609375,
+    381.5325012207031
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦Role Based Access Control (RBAC) and Role Based Security, NIST,",
+   "bbox": [
+    85.8604736328125,
+    391.5104064941406,
+    390.1116943359375,
+    402.53240966796875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://csrc.nist.gov/groups/SNS/rbac/",
+   "bbox": [
+    99.60086059570312,
+    407.5303955078125,
+    268.72381591796875,
+    418.5523986816406
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧CAPEC-101 Server Side Includes (SSI) Injection, CAPEC,",
+   "bbox": [
+    85.8604507446289,
+    428.5303039550781,
+    348.90032958984375,
+    439.55230712890625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://capec.mitre.org/data/definitions/101.html",
+   "bbox": [
+    99.60086059570312,
+    444.55029296875,
+    313.64581298828125,
+    455.5722961425781
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "137\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①CWE‐285 Improper Authorization, MITRE,\nhttp://cwe.mitre.org/data/definitions/285.html\n②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,\nhttps://www.owasp.org/index. php/Top_10_2013\n③CWE‐732 Incorrect Permission Assignment for Critical Resource, MITRE,\nhttp://cwe.mitre.org/data/defini- tions/732.html \n④2016 OWASP Application Security Verification Standard, OWASP, Access Control \nVerification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project\n⑤Access Control Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/Access_Control_Cheat_Sheet\n⑥WASC Threat Classification Directory Indexing, WASC,\nhttp://projects.webappsec.org/w/page/13246922/Directory%20Indexing\n⑦Role Based Access Control (RBAC) and Role Based Security, NIST,\nhttp://csrc.nist.gov/groups/SNS/rbac/\n⑧CAPEC-101 Server Side Includes (SSI) Injection, CAPEC,\nhttp://capec.mitre.org/data/definitions/101.html\n",
+ "native_sha256": "d4274129c051c902a33c0106809c863956ea570e4f5a6f70eea2eafb660655ab",
+ "chars": 982,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

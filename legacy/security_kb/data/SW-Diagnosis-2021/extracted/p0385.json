@@ -1,0 +1,675 @@
+{
+ "lines": [
+  {
+   "text": "385",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "아래 예제에서는 쿠키의 만료시간을 해당 기능에 맞춰 최소로 설정하고 있어 안전하다.",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    400.37176513671875,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    150.31112670898438,
+    291.27935791015625,
+    161.3331298828125
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: protected void doPost(HttpServletRequest request, HttpServletResponse response) {",
+   "bbox": [
+    78.66000366210938,
+    175.23818969726562,
+    438.0235595703125,
+    185.13818359375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    189.63821411132812,
+    86.40689086914062,
+    199.5382080078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…… ",
+   "bbox": [
+    108.40106201171875,
+    189.63821411132812,
+    126.8215103149414,
+    199.5382080078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    204.03823852539062,
+    86.42539978027344,
+    213.938232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String username = request.getParameter(“username”); ",
+   "bbox": [
+    99.59986877441406,
+    204.03823852539062,
+    324.3794860839844,
+    213.938232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    218.43826293945312,
+    86.38308715820312,
+    228.3382568359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char[] password = request.getParameter(“password”).toCharArray();",
+   "bbox": [
+    99.55754852294922,
+    218.43826293945312,
+    373.12896728515625,
+    228.3382568359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    232.8382568359375,
+    86.42539978027344,
+    242.73825073242188
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "boolean rememberMe = Boolean.valueOf(request.getParameter(“rememberme”));",
+   "bbox": [
+    99.59986114501953,
+    232.8382568359375,
+    429.318603515625,
+    242.73825073242188
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    247.23825073242188,
+    86.42540740966797,
+    257.13824462890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    261.63824462890625,
+    86.42540740966797,
+    271.5382385253906
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "LoginService loginService = new LoginServiceImpl();",
+   "bbox": [
+    99.59986877441406,
+    261.63824462890625,
+    313.7588195800781,
+    271.5382385253906
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    276.0382385253906,
+    86.42540740966797,
+    285.938232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (rememberMe) { ",
+   "bbox": [
+    99.59986877441406,
+    276.0382385253906,
+    178.1177520751953,
+    285.938232421875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    290.438232421875,
+    86.41482543945312,
+    300.3382263183594
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Cookie loginCookie = new Cookie(“rememberme”, “YES”); ",
+   "bbox": [
+    112.78932189941406,
+    290.438232421875,
+    354.3583068847656,
+    300.3382263183594
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    304.8382263183594,
+    91.38048553466797,
+    314.73822021484375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "loginCookie.setMaxAge(60*60*24); ",
+   "bbox": [
+    113.3746566772461,
+    304.8382263183594,
+    254.61077880859375,
+    314.73822021484375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    78.66000366210938,
+    319.23822021484375,
+    91.38578033447266,
+    329.1382141113281
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.addCookie(loginCookie); ",
+   "bbox": [
+    113.37995147705078,
+    319.23822021484375,
+    250.0691375732422,
+    329.1382141113281
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    333.6382141113281,
+    91.38048553466797,
+    343.5382080078125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "……",
+   "bbox": [
+    113.3746566772461,
+    333.6382141113281,
+    129.24661254882812,
+    343.5382080078125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    348.0382080078125,
+    91.3998794555664,
+    357.9382019042969
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} else { ",
+   "bbox": [
+    100.19401550292969,
+    348.0382080078125,
+    133.2989959716797,
+    357.9382019042969
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    362.4382019042969,
+    91.38048553466797,
+    372.33819580078125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "……",
+   "bbox": [
+    113.3746566772461,
+    362.4382019042969,
+    129.24661254882812,
+    372.33819580078125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    78.66000366210938,
+    376.83819580078125,
+    91.4051742553711,
+    386.7381896972656
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.1993179321289,
+    376.83819580078125,
+    102.93206024169922,
+    386.7381896972656
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    78.66000366210938,
+    391.2381896972656,
+    91.35579681396484,
+    401.13818359375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Arrays.fill(password, ‘ ‘); ",
+   "bbox": [
+    100.14994049072266,
+    391.2381896972656,
+    202.3157196044922,
+    401.13818359375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:}",
+   "bbox": [
+    78.66000366210938,
+    405.63818359375,
+    94.11234283447266,
+    415.5381774902344
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    458.0751037597656,
+    126.4169921875,
+    470.1531066894531
+   ],
+   "block": 43,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-539 Information Exposure Through Persistent Cookies, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    481.7511901855469,
+    403.7314453125,
+    492.773193359375
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/539.html",
+   "bbox": [
+    102.23980712890625,
+    497.77117919921875,
+    308.7279968261719,
+    508.7931823730469
+   ],
+   "block": 45,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not store unencrypted sensitive information on the client side, CERT,",
+   "bbox": [
+    85.85997772216797,
+    518.7710571289062,
+    419.3890380859375,
+    529.7930908203125
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s",
+   "bbox": [
+    102.24078369140625,
+    534.7308959960938,
+    456.0263366699219,
+    545.7529296875
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "tore+unencrypted+sensitive+information+on+the+client+side",
+   "bbox": [
+    102.24078369140625,
+    550.7509155273438,
+    370.09527587890625,
+    561.77294921875
+   ],
+   "block": 48,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Expire and Max-Age Attributes, OWASP,",
+   "bbox": [
+    85.86095428466797,
+    571.7507934570312,
+    282.23028564453125,
+    582.7728271484375
+   ],
+   "block": 49,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Session_Management_Cheat_Sheet#Expire_",
+   "bbox": [
+    102.24078369140625,
+    587.770751953125,
+    456.10833740234375,
+    598.7927856445312
+   ],
+   "block": 50,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "and _Max-Age_Attributes",
+   "bbox": [
+    102.24078369140625,
+    603.7306518554688,
+    215.2637939453125,
+    614.752685546875
+   ],
+   "block": 51,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34
+   ],
+   "text": "1: protected void doPost(HttpServletRequest request, HttpServletResponse response) {\n2:         …… \n3:      String username = request.getParameter(“username”); \n4:      char[] password = request.getParameter(“password”).toCharArray();\n5:      boolean rememberMe = Boolean.valueOf(request.getParameter(“rememberme”));\n6:\n7:      LoginService loginService = new LoginServiceImpl();\n8:      if (rememberMe) { \n9:           Cookie loginCookie = new Cookie(“rememberme”, “YES”); \n10:         loginCookie.setMaxAge(60*60*24); \n11:         response.addCookie(loginCookie); \n12:         ……\n13:    } else { \n14:         ……\n15:    }\n16:    Arrays.fill(password, ‘ ‘); \n17:}",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    174.03818969726564,
+    438.0235595703125,
+    416.73817749023436
+   ]
+  }
+ ],
+ "native": "385\n제4장구현단계 보안약점 진단\n아래 예제에서는 쿠키의 만료시간을 해당 기능에 맞춰 최소로 설정하고 있어 안전하다.\n오탐코드의 예\n1: protected void doPost(HttpServletRequest request, HttpServletResponse response) {\n2:\n…… \n3:\nString username = request.getParameter(“username”); \n4:\nchar[] password = request.getParameter(“password”).toCharArray();\n5:\nboolean rememberMe = Boolean.valueOf(request.getParameter(“rememberme”));\n6:\n7:\nLoginService loginService = new LoginServiceImpl();\n8:\nif (rememberMe) { \n9:\nCookie loginCookie = new Cookie(“rememberme”, “YES”); \n10:\nloginCookie.setMaxAge(60*60*24); \n11:\nresponse.addCookie(loginCookie); \n12:\n……\n13:\n} else { \n14:\n……\n15:\n}\n16:\nArrays.fill(password, ‘ ‘); \n17:}\n마. 참고자료\n[1] CWE-539 Information Exposure Through Persistent Cookies, MITRE,\nhttp://cwe.mitre.org/data/definitions/539.html\n[2] Do not store unencrypted sensitive information on the client side, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s\ntore+unencrypted+sensitive+information+on+the+client+side\n[3] Expire and Max-Age Attributes, OWASP,\nhttps://www.owasp.org/index.php/Session_Management_Cheat_Sheet#Expire_\nand _Max-Age_Attributes\n",
+ "native_sha256": "060cd9faca709a6a76e39142eb35f9d7147559979ea923de556d1110922f9b74",
+ "chars": 1125,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

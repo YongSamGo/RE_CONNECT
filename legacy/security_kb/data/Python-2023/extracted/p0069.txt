@@ -1,0 +1,13 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+63
+라. 참고자료
+① CWE-190: Integer Overflow or Wraparound, MITRE
+ https://cwe.mitre.org/data/definitions/190.html
+② Integer Overflow Error, ZAP,
+https://www.zaproxy.org/docs/alerts/30003/
+③ Arbitrary-precision arithmetic,
+https://en.wikipedia.org/wiki/Arbitrary-precision_arithmetic
+④ PEP 237 – Unifying Long Integers and Integers,
+https://peps.python.org/pep-0237/
+⑤ Numpy Types
+https://numpy.org/doc/stable/user/basics.types.html?highlight=s

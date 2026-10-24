@@ -1,0 +1,618 @@
+{
+ "lines": [
+  {
+   "text": "402",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음 예제는 로그인 정보를 잘못 입력하였을 경우 다시 입력을 시도하는데 있어 제한이 없다. 따라서 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.7737731933594,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공격자는 여러 가지 비밀번호로 인증을 재시도하여 올바른 비밀번호를 알아내고 로그인에 성공할 수 ",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    464.8431701660156,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있다.",
+   "bbox": [
+    76.5,
+    147.79092407226562,
+    96.4720230102539,
+    158.81292724609375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    187.81112670898438,
+    323.5413513183594,
+    198.8331298828125
+   ],
+   "block": 17,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "//로그인 실패 시 아무런 제약이 없음",
+   "bbox": [
+    83.58000183105469,
+    207.21823120117188,
+    211.57818603515625,
+    217.11822509765625
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: override protected void OnLoginError(EventArgs e)",
+   "bbox": [
+    83.58000183105469,
+    221.61825561523438,
+    303.0749206542969,
+    231.51824951171875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: {",
+   "bbox": [
+    83.58000183105469,
+    236.01824951171875,
+    98.43290710449219,
+    245.91824340820312
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    250.41824340820312,
+    91.34540557861328,
+    260.3182373046875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//do nothing",
+   "bbox": [
+    104.51986694335938,
+    250.41824340820312,
+    156.092041015625,
+    260.3182373046875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "4: }",
+   "bbox": [
+    83.58000183105469,
+    264.8182373046875,
+    98.43290710449219,
+    274.7182312011719
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "로그인 시도에 대한 횟수를 제한한다.",
+   "bbox": [
+    76.5,
+    297.19110107421875,
+    218.5662841796875,
+    308.2131042480469
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    226.67999267578125,
+    337.1512145996094,
+    309.04241943359375,
+    348.1732177734375
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: override protected void OnLoginError(EventArgs e) ",
+   "bbox": [
+    83.58000183105469,
+    356.55810546875,
+    305.59783935546875,
+    366.4580993652344
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    370.9580993652344,
+    91.34540557861328,
+    380.85809326171875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    113.27963256835938,
+    370.9580993652344,
+    116.01237487792969,
+    380.85809326171875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 연속적인 사용자 인증 시도에 대한 횟수를 제한",
+   "bbox": [
+    113.27963256835938,
+    385.35809326171875,
+    284.7090148925781,
+    395.2580871582031
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    399.7580871582031,
+    91.32688903808594,
+    409.6580810546875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if(ViewState[\"LoginErrors\"] == null)",
+   "bbox": [
+    122.08082580566406,
+    399.7580871582031,
+    262.13916015625,
+    409.6580810546875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.57999420166016,
+    414.1580810546875,
+    91.3189468383789,
+    424.0580749511719
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ViewState[\"LoginErrors\"] = 0; ",
+   "bbox": [
+    130.8934783935547,
+    414.1580810546875,
+    251.55560302734375,
+    424.0580749511719
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.57999420166016,
+    428.5580749511719,
+    91.3189468383789,
+    438.45806884765625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int ErrorCount = (int)ViewState[\"LoginErrors\"] + 1; ",
+   "bbox": [
+    122.07200622558594,
+    428.5580749511719,
+    329.1812744140625,
+    438.45806884765625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.57998657226562,
+    442.95806884765625,
+    91.34538269042969,
+    452.8580627441406
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ViewState[\"LoginErrors\"] = ErrorCount; ",
+   "bbox": [
+    122.09931945800781,
+    442.95806884765625,
+    280.42120361328125,
+    452.8580627441406
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.57998657226562,
+    471.758056640625,
+    91.34539031982422,
+    481.6580505371094
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if((ErrorCount > 3) && Login1.PasswordRecoveryUrl != ",
+   "bbox": [
+    122.10020446777344,
+    471.758056640625,
+    347.350341796875,
+    481.6580505371094
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "string.Empty)",
+   "bbox": [
+    83.57998657226562,
+    486.1580505371094,
+    136.83584594726562,
+    496.05804443359375
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.57998657226562,
+    500.55804443359375,
+    91.30836486816406,
+    510.4580383300781
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Response.Redirect(Login1.PasswordRecoveryUrl); ",
+   "bbox": [
+    130.8828887939453,
+    500.55804443359375,
+    332.44305419921875,
+    510.4580383300781
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.57998657226562,
+    514.9580078125,
+    91.34539031982422,
+    524.8580322265625
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    113.27961730957031,
+    514.9580078125,
+    116.01235961914062,
+    524.8580322265625
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    215.10000610351562,
+    560.35107421875,
+    320.6356506347656,
+    571.3731079101562
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: int validateUser(char *host, int port) { ",
+   "bbox": [
+    83.58000183105469,
+    579.758056640625,
+    253.6051483154297,
+    589.6580810546875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    594.1580810546875,
+    91.34540557861328,
+    604.05810546875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int socket = openSocketConnection(host, port); ",
+   "bbox": [
+    104.51986694335938,
+    594.1580810546875,
+    300.8674621582031,
+    604.05810546875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    608.5580444335938,
+    91.31101989746094,
+    618.4580688476562
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (socket < 0) {",
+   "bbox": [
+    104.48548889160156,
+    608.5580444335938,
+    170.08543395996094,
+    618.4580688476562
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "//로그인 실패 시 아무런 제약이 없음\n1: override protected void OnLoginError(EventArgs e)\n2: {\n3:      //do nothing\n4: }",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    198.9331298828125,
+    303.0749206542969,
+    275.91823120117186
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+   ],
+   "text": "1: override protected void OnLoginError(EventArgs e) \n2:         {\n// 연속적인 사용자 인증 시도에 대한 횟수를 제한\n3:             if(ViewState[\"LoginErrors\"] == null)\n4:                 ViewState[\"LoginErrors\"] = 0; \n5:             int ErrorCount = (int)ViewState[\"LoginErrors\"] + 1; \n6:             ViewState[\"LoginErrors\"] = ErrorCount; \n7:             if((ErrorCount > 3) && Login1.PasswordRecoveryUrl != \nstring.Empty)\n8:                 Response.Redirect(Login1.PasswordRecoveryUrl); \n9:         }",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    83.57998657226562,
+    348.2732177734375,
+    347.350341796875,
+    526.0580322265625
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "1: int validateUser(char *host, int port) { \n2:      int socket = openSocketConnection(host, port); \n3:      if (socket < 0) {",
+   "language": "c",
+   "label": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    83.58000183105469,
+    571.4731079101563,
+    300.8674621582031,
+    619.6580688476563
+   ]
+  }
+ ],
+ "native": "402\n다음 예제는 로그인 정보를 잘못 입력하였을 경우 다시 입력을 시도하는데 있어 제한이 없다. 따라서 \n공격자는 여러 가지 비밀번호로 인증을 재시도하여 올바른 비밀번호를 알아내고 로그인에 성공할 수 \n있다.\n안전하지 않은 코드의 예 C#\n//로그인 실패 시 아무런 제약이 없음\n1: override protected void OnLoginError(EventArgs e)\n2: {\n3:\n//do nothing\n4: }\n로그인 시도에 대한 횟수를 제한한다.\n안전한 코드의 예 C#\n1: override protected void OnLoginError(EventArgs e) \n2:\n{\n// 연속적인 사용자 인증 시도에 대한 횟수를 제한\n3:\nif(ViewState[\"LoginErrors\"] == null)\n4:\nViewState[\"LoginErrors\"] = 0; \n5:\nint ErrorCount = (int)ViewState[\"LoginErrors\"] + 1; \n6:\nViewState[\"LoginErrors\"] = ErrorCount; \n7:\nif((ErrorCount > 3) && Login1.PasswordRecoveryUrl != \nstring.Empty)\n8:\nResponse.Redirect(Login1.PasswordRecoveryUrl); \n9:\n}\n안전하지 않은 코드의 예 C\n1: int validateUser(char *host, int port) { \n2:\nint socket = openSocketConnection(host, port); \n3:\nif (socket < 0) {\n",
+ "native_sha256": "d16940d2e964687a8be5017bf1479eefbfa4dd473d8d80a0729552a4edfa2a0b",
+ "chars": 791,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,33 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+71
+안전한 코드 예시
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+    
+  # DB에서 기존 사용자의 Hash된 패스워드 가져오기
+  old_pwd = get_password_from_db(user)
+  # 패스워드를 변경하기 전 사용자에 대한 재인증을 수행한다.
+  if old_pwd == h_pwd:
+    new_h = hashlib.sha256(new_pwd.encode())
+    update_password_from_db(user, new_h.hexdigest())
+    return render(request, '/success.html')
+  else:
+    return render(request, ‘failed.html’, {'error': '패스워드가 일치하지 않습니다'})
+라. 참고자료
+① CWE-306: Missing Authentication for Critical Function, MITRE,
+https://cwe.mitre.org/data/definitions/306.html
+② Access Control, OWASP,
+https://www.owasp.org/index.php/Access_Control_Cheat_Sheet
+③ Using the Django authentication system, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/auth/default/
+④ Flask-Security, 
+https://flask-login.readthedocs.io/en/latest/

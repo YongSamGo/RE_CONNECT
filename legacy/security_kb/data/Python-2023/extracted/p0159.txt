@@ -1,0 +1,28 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화
+153
+아래 예제는 내부와 외부의 배열이 서로 참조되는 것을 예방하기 위해 [:]로 새로운 객체를 생성하여 값을 
+대입하고 있다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+class UserObj:
+  def __init__(self):
+    self.__privateVariable = []
+    
+  # private 배열에 외부 값을 바로 대입하는 경우 [:]를 사용하여 
+  # 외부와 내부의 배열이 서로 참조되지 않도록 해야 한다
+  def set_private_member(self, input_list):
+    self.__privateVariable = input_list[:]
+라. 참고자료
+① CWE-496: Public Data Assigned to Private Array-Typed Field, MITRE,
+https://cwe.mitre.org/data/definitions/496.html
+② Shallow and deep copy operations, Python Software Foundation,
+https://docs.python.org/3/library/copy.html
+➂ Private Variables, Python Software Foundation, 
+https://docs.python.org/3/tutorial/classes.html#private-variables

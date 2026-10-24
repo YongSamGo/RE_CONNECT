@@ -1,0 +1,611 @@
+{
+ "lines": [
+  {
+   "text": "356",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    215.10000610351562,
+    120.79122924804688,
+    320.6356506347656,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    96.26522827148438,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.05937194824219,
+    140.19808959960938,
+    107.7921142578125,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15: }",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    103.41267395019531,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "암호화되어 저장된 암호를 외부에서 불러오고 이를 비교하는 코드가 작성되어야 한다.",
+   "bbox": [
+    76.5,
+    186.97122192382812,
+    403.1778869628906,
+    197.99322509765625
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C",
+   "bbox": [
+    229.6199951171875,
+    226.9910888671875,
+    306.0576171875,
+    238.01309204101562
+   ],
+   "block": 18,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: extern char *salt; ",
+   "bbox": [
+    83.58000183105469,
+    246.398193359375,
+    169.6516876220703,
+    256.2981872558594
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: typedef int SQLSMALLINT; ",
+   "bbox": [
+    83.58000183105469,
+    260.7981872558594,
+    208.936279296875,
+    270.69818115234375
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: int dbaccess(char *user, char *passwd){ ",
+   "bbox": [
+    83.58000183105469,
+    275.19818115234375,
+    262.47161865234375,
+    285.0981750488281
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    289.5981750488281,
+    91.31454467773438,
+    299.4981689453125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char *server = \"DBserver\"; ",
+   "bbox": [
+    100.04874420166016,
+    289.5981750488281,
+    211.7386016845703,
+    299.4981689453125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    303.9981689453125,
+    91.31101989746094,
+    313.8981628417969
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char *cpasswd;",
+   "bbox": [
+    100.04521942138672,
+    303.9981689453125,
+    162.72201538085938,
+    313.8981628417969
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부에 있는 암호화된 비밀번호와 솔트를 불러옵니다.",
+   "bbox": [
+    101.16035461425781,
+    318.3981628417969,
+    295.7493591308594,
+    328.29815673828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58000183105469,
+    332.79815673828125,
+    91.34540557861328,
+    342.6981506347656
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "char* storedpasswd = getenv(“password”);",
+   "bbox": [
+    100.07959747314453,
+    332.79815673828125,
+    275.1884765625,
+    342.6981506347656
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7: char* salt = getenv(“salt”);",
+   "bbox": [
+    83.58000183105469,
+    347.1981506347656,
+    209.61412048339844,
+    357.09814453125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    361.59814453125,
+    91.34539794921875,
+    371.4981384277344
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLHENV henv; ",
+   "bbox": [
+    100.07959747314453,
+    361.59814453125,
+    169.31321716308594,
+    371.4981384277344
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    375.9981384277344,
+    91.34539794921875,
+    385.89813232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLHDBC hdbc; ",
+   "bbox": [
+    100.07959747314453,
+    375.9981384277344,
+    170.1383514404297,
+    385.89813232421875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);",
+   "bbox": [
+    83.58000183105469,
+    390.39813232421875,
+    372.322509765625,
+    400.2981262207031
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); ",
+   "bbox": [
+    83.58000183105469,
+    404.7981262207031,
+    312.054931640625,
+    414.6981201171875
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부에서 불러온 솔트 값을 사용해 비빌번호를 암호화합니다.",
+   "bbox": [
+    96.780029296875,
+    419.1981201171875,
+    316.9368896484375,
+    429.0981140136719
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12: cpasswd = crypt(passwd, salt);",
+   "bbox": [
+    83.58000183105469,
+    433.5981140136719,
+    228.5052947998047,
+    443.49810791015625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 암호화된 비밀번호와 외부에서 불러온 값을 비교합니다.",
+   "bbox": [
+    92.39970397949219,
+    447.99810791015625,
+    294.6086120605469,
+    457.8981018066406
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "13: if (strcmp(cpasswd, storedpasswd) != 0){",
+   "bbox": [
+    83.57999420166016,
+    462.3981018066406,
+    269.96630859375,
+    472.298095703125
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.57998657226562,
+    476.798095703125,
+    96.2599105834961,
+    486.6980895996094
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "printf(\"Incorrect password\\n\"); ",
+   "bbox": [
+    105.0540542602539,
+    476.798095703125,
+    228.6833038330078,
+    486.6980895996094
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.57998657226562,
+    491.1980895996094,
+    96.26519775390625,
+    501.09808349609375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLFreeHandle(SQL_HANDLE_DBC, &hdbc); ",
+   "bbox": [
+    105.05934143066406,
+    491.1980895996094,
+    288.7622985839844,
+    501.09808349609375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.57998657226562,
+    505.5980529785156,
+    96.26521301269531,
+    515.498046875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQLFreeHandle(SQL_HANDLE_ENV, &henv); ",
+   "bbox": [
+    105.0593490600586,
+    505.5980529785156,
+    287.95916748046875,
+    515.498046875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    83.57998657226562,
+    519.998046875,
+    96.26521301269531,
+    529.8980712890625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return -1; ",
+   "bbox": [
+    105.05935668945312,
+    519.998046875,
+    148.46682739257812,
+    529.8980712890625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18: }",
+   "bbox": [
+    83.57998657226562,
+    534.3980712890625,
+    103.41265869140625,
+    544.298095703125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:}",
+   "bbox": [
+    83.57998657226562,
+    548.7980346679688,
+    98.97237396240234,
+    558.6980590820312
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4
+   ],
+   "text": "14:    }\n15: }",
+   "language": "c",
+   "label": "안전하지 않은 코드의 예 C",
+   "bbox": [
+    83.58000183105469,
+    131.913232421875,
+    107.7921142578125,
+    165.69810791015624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "1: extern char *salt; \n2: typedef int SQLSMALLINT; \n3: int dbaccess(char *user, char *passwd){ \n4:    char *server = \"DBserver\"; \n5:    char *cpasswd;\n// 외부에 있는 암호화된 비밀번호와 솔트를 불러옵니다.\n6:    char* storedpasswd = getenv(“password”);\n7: char* salt = getenv(“salt”);\n8:    SQLHENV henv; \n9:    SQLHDBC hdbc; \n10: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);\n11: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); \n// 외부에서 불러온 솔트 값을 사용해 비빌번호를 암호화합니다.\n12: cpasswd = crypt(passwd, salt);\n// 암호화된 비밀번호와 외부에서 불러온 값을 비교합니다.\n13: if (strcmp(cpasswd, storedpasswd) != 0){\n14:    printf(\"Incorrect password\\n\"); \n15:    SQLFreeHandle(SQL_HANDLE_DBC, &hdbc); \n16:    SQLFreeHandle(SQL_HANDLE_ENV, &henv); \n17:    return -1; \n18: }\n19:}",
+   "language": "c",
+   "label": "안전한 코드의 예 C",
+   "bbox": [
+    83.57998657226562,
+    238.11309204101562,
+    372.322509765625,
+    559.8980590820313
+   ]
+  }
+ ],
+ "native": "356\n안전하지 않은 코드의 예 C\n14:\n}\n15: }\n암호화되어 저장된 암호를 외부에서 불러오고 이를 비교하는 코드가 작성되어야 한다.\n안전한 코드의 예 C\n1: extern char *salt; \n2: typedef int SQLSMALLINT; \n3: int dbaccess(char *user, char *passwd){ \n4:\nchar *server = \"DBserver\"; \n5:\nchar *cpasswd;\n// 외부에 있는 암호화된 비밀번호와 솔트를 불러옵니다.\n6:\nchar* storedpasswd = getenv(“password”);\n7: char* salt = getenv(“salt”);\n8:\nSQLHENV henv; \n9:\nSQLHDBC hdbc; \n10: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);\n11: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc); \n// 외부에서 불러온 솔트 값을 사용해 비빌번호를 암호화합니다.\n12: cpasswd = crypt(passwd, salt);\n// 암호화된 비밀번호와 외부에서 불러온 값을 비교합니다.\n13: if (strcmp(cpasswd, storedpasswd) != 0){\n14:\nprintf(\"Incorrect password\\n\"); \n15:\nSQLFreeHandle(SQL_HANDLE_DBC, &hdbc); \n16:\nSQLFreeHandle(SQL_HANDLE_ENV, &henv); \n17:\nreturn -1; \n18: }\n19:}\n",
+ "native_sha256": "8701d4427c1cad612fa108f383fbec73482e71a839352485365609faeda558e3",
+ "chars": 788,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

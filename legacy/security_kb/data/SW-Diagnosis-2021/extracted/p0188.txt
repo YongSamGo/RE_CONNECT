@@ -1,0 +1,45 @@
+188
+정탐코드의 예
+< ProjectCommentDAO.java > 
+131:public ArrayList getProjectCommentTblByWhere(String where) { 
+132:
+String sql_ = 
+this.getMessageSourceAccessor().getMessage(“ProjectCommentDao.
+getProjectCommentTbl”);
+133:
+ArrayList ret = new ArrayList();
+134:
+sql_ += “ “ + where;
+135:
+136:
+try { 
+137:
+JdbcTemplate template_ = this.getJdbcTemplate(); 
+138:
+List tmp = template_.query(sql_, new ProjectCommentRowMapper());
+139:
+ret = Util.trimToResize(tmp);
+140:
+} catch (DataAccessException e) {
+[ SQL 삽입 : JDO ]
+외부의 입력값에 대한 적절한 검사 과정을 거치지 않고, JDO(Java Data Objects) API의 SQL 또는 
+JDOQL 쿼리 생성을 위한 문자열로 사용하면, 공격자가 프로그래머가 의도하지 않았던 문자열을 
+전달함으로써 쿼리의 의미를 왜곡시키거나 그 구조를 변경하여 임의의 쿼리 명령어를 수행할 수 있다.
+다음의 예제에서는 공격자가 외부의 입력(name) 값을 foo’; DELETE FROM MYTABLE; --로 
+주게 되면, 다음과 같은 쿼리가 실행되어 테이블이 삭제될 수 있으므로 취약하다고 판정한다.
+SELECT col1 FROM MYTABLE WHERE name = ‘foo’ ; DELETE FROM MYTABLE; --’
+정탐코드의 예
+1: … 
+2: public class U9102 implements ContactDAO { 
+3:
+public List<Contact> listContacts() { 
+4:
+PersistenceManager pm = getPersistenceManagerFactory().getPersistenceMan ager(); 
+5:
+String query = “select from “ + Contact.class.getName(); 
+6:
+try { 
+7:
+Properties props = new Properties(); 
+8:
+String fileName = “contacts.txt”;

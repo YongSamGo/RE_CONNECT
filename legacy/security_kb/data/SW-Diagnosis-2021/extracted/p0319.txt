@@ -1,0 +1,27 @@
+319
+제4장구현단계 보안약점 진단
+2. 부적절한 인가
+가. 개요
+프로그램이 모든 가능한 실행경로에 대해서 접근제어를 검사하지 않거나 불완전하게 검사하는 경우, 
+공격자는 접근 가능한 실행경로 정보를 유출할 수 있다.
+나. 보안대책
+응용프로그램이 제공하는 정보와 기능을 역할에 따라 배분함으로써 공격자에게 노출되는 공격노 
+출면15)(Attack Surface)을 최소화하고 사용자의 권한에 따른 ACL(Access Control List)을 관리한다. 
+JAAS Authorization Framework나 OWASP ESAPI Access Control 등의 프레임워크를 사용해서 
+취약점을 제거할 수도 있다.
+다. 코드예제
+아래의 코드는 사용자 입력값에 따라 삭제작업을 수행하고 있으며, 사용자의 권한확인을 위한 별도의 
+통제가 적용되지 않고 있다.
+안전하지 않은 코드의 예 JAVA
+1: private BoardDao boardDao; 
+2: String action = request.getParameter("action"); 
+3: String contentId = request.getParameter("contentId"); 
+//요청을 하는 사용자의 delete 작원 권한 확인 없이 수행하고 있어 안전하지 않다.
+4:
+if (action != null && action.equals("delete")) { 
+5:
+boardDao.delete(contentId);
+6:
+}
+15) OSSTMM 3 Defines Attack Surface as “The lack of specific separations and functional controls that exist 
+for that vector”

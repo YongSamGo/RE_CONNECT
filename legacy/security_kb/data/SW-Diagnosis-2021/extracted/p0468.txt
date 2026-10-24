@@ -1,0 +1,30 @@
+468
+다음 예제는 서버가 특정 포트를 열어 클라이언트가 데이터를 보낼 때까지 기다렸다가 데이터를 받으면 
+역직렬화 코드가 실행된다. 이 경우 신뢰할 수 없는 데이터 값에 대한 검증 과정이 없으므로 아래 
+코드는 취약하다고 판정한다.
+정탐코드의 예
+1:conn,addr = self.receiver_socket.accept()
+2:data = conn.recv(1024)
+3:return Pickle.loads(data)
+다음 예제는 HMAC을 사용하여 데이터 무결성을 검증하므로 취약하지 않다고 판정한다.
+ㆍ클라이언트 코드
+오탐코드의 예
+1:pickled_data = pickle.dumps(data) 
+2:digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()
+3:header = '%s' % (digest)
+4:conn.send(header + ' ' + pickled_data)
+ㆍ서버 코드
+오탐코드의 예
+1:conn,addr = self.receiver_socket.accept() 
+2:data = conn.recv(1024) 
+3:recvd_digest, pickled_data = data.split(' ') 
+4:new_digest = hmac.new('shared-key', pickled_data, hashlib.sha1).hexdigest()
+5:if recvd_digest != new_digest:
+6:print 'Integrity check failed'
+7:else:
+8:unpickled_data = pickle.loads(pickled_data)
+마. 참고자료
+①CWE-918: Server-Side Request Forgery (SSRF), MITRE,
+https://cwe.mitre.org/data/definitions/918.html
+②Server Side Request Forgery, OWASP,
+https://owasp.org/www-community/attacks/Server_Side_Request_Forgery

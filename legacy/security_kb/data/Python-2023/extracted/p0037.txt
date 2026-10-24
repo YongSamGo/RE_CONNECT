@@ -1,0 +1,29 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+31
+다음은 subprocess() 함수를 사용해 별도의 프로세스로 응용 프로그램을 실행하는 안전하지 않은 예제다. 
+외부 입력값으로 받은 파라미터를 별도의 검증 없이 subprocess의 인자 값으로 사용하고 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+import subprocess
+from django.shortcuts import render
+def execute_command(request):
+    date = request.POST.get('date','')
+    # 입력받은 파라미터를 제한하지 않아 전달된 모든 프로그램이 실행될 수 있음
+    cmd_str = “cmd /c backuplog.bat ” + date
+    subprocess.run(cmd_str, shell=True)
+    return render(request, '/success.html')
+운영체제 명령어 실행 시에는 외부에서 들어오는 값에 의하여 멀티라인을 지원하는 특수문자(|, ;, &, :, `, 
+\, !)나 파일 리다이렉트 특수문자( >, >> )등을 제거하여 원하지 않는 운영체제 명령어가 실행될 수 없도록 
+필터링을 수행한다.
+명령어 라인을 구문 분석하고 escape 하는 기능을 제공하는 모듈인 shlex 모듈을 사용해 필터링을 수행할 
+수 있다. subprocess의 옵션 값 중 shell를 True로 설정할 경우 중간 프로세스에 의해 명령이 실행되고 파일 
+이름, 와일드카드(*), 환경변수 확장 등의 쉘 기능을 검증 없이 실행하게 되므로 shell의 옵션은 삭제해야 한다
+(기본값은 False).

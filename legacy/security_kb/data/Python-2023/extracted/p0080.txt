@@ -1,0 +1,9 @@
+Python 시큐어코딩 가이드
+74
+라. 참고자료
+① CWE-285: Improper Authorization, MITRE,
+https://cwe.mitre.org/data/definitions/285.html
+② Access Control, OWASP, 
+https://www.owasp.org/index.php/Access_Control_Cheat_Sheet
+③ Using the Django authentication system, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/auth/default/

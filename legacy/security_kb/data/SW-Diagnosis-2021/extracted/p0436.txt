@@ -1,0 +1,35 @@
+436
+아래 C 코드는 null 값을 반환할 수 있는 함수 IntegerAddressReturn()을 호출한다. P가 null인 
+상태에서 p 값을 참조하면 널 포인터 역참조가 발생한다.
+안전하지 않은 코드의 예 C
+1: void NullPointerDereference(int count) { 
+// IntegerAddressReturn()이 0을 return 하면 p는 null 값을 가지게 된다.
+2: int *p = IntegerAddressReturn();
+// null 값을 가지는 p 값을 참조하여 널(Null) 포인터 역참조가 발생한다.
+3:
+*p = count;
+4: }
+아래 C 코드는 null 값을 가질 수 있는 p를 참조하기 전에 null 검사를 진행하므로 안전한다.
+안전한 코드의 예 C
+1: void NullPointerDereference(int count) { 
+// IntegerAddressReturn()이 0을 return 하면 p는 null 값을 가지게 된다. 
+2:
+int *p = IntegerAddressReturn(); 
+// 참조하기전에 null 검사를 수행하므로 안전하다. 
+3:
+If(p != 0) *p = count;
+라. 진단방법
+표현된 객체가 널(Null) 값이 될 수 있는지 확인한다. 만약 널(Null) 값이 될 수 있는지 체크하여 예외 
+처리를 한 경우 안전으로 판단하고 널(Null) 체크를 하지 않은 경우 취약한 것으로 판단한다. (①)
+일반적인 진단의 예
+1: … 
+2: public void f() { 
+3:
+String cmd = System.getProperty(“cmd”); 
+4:
+// cmd가 널(null)인지 체크하지 않았다. 
+5:
+cmd = cmd.trim(); 
+6:
+System.out.println(cmd); ·········································································································①
+7: …

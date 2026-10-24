@@ -1,0 +1,7 @@
+163
+제3장분석․ 설계단계 보안항목 진단
+④The Transport Layer Security (TLS) Protocol Version 1.2, RFC5246,
+http://tools.ietf.org/html/rfc5246 
+⑤User Privacy Protection Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/User_Privacy_Protection_Cheat_Sheet#Strong
+_Cryptography

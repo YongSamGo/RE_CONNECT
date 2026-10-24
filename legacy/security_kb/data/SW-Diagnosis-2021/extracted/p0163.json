@@ -1,0 +1,112 @@
+{
+ "lines": [
+  {
+   "text": "163",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "④The Transport Layer Security (TLS) Protocol Version 1.2, RFC5246,",
+   "bbox": [
+    85.86000061035156,
+    113.83108520507812,
+    389.51123046875,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://tools.ietf.org/html/rfc5246 ",
+   "bbox": [
+    99.60040283203125,
+    129.79092407226562,
+    248.92242431640625,
+    140.81292724609375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤User Privacy Protection Cheat Sheet, OWASP,",
+   "bbox": [
+    85.85999298095703,
+    150.79086303710938,
+    302.4524841308594,
+    161.8128662109375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/User_Privacy_Protection_Cheat_Sheet#Strong",
+   "bbox": [
+    99.60040283203125,
+    166.81082153320312,
+    456.3888244628906,
+    177.83282470703125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "_Cryptography",
+   "bbox": [
+    99.60040283203125,
+    182.83078002929688,
+    162.7812957763672,
+    193.852783203125
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "163\n제3장분석․ 설계단계 보안항목 진단\n④The Transport Layer Security (TLS) Protocol Version 1.2, RFC5246,\nhttp://tools.ietf.org/html/rfc5246 \n⑤User Privacy Protection Cheat Sheet, OWASP,\nhttp://www.owasp.org/index.php/User_Privacy_Protection_Cheat_Sheet#Strong\n_Cryptography\n",
+ "native_sha256": "dce68c6173c09ff6fb55f4668acc5727f916909f0c52031b04b6b5fdc72b166b",
+ "chars": 260,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

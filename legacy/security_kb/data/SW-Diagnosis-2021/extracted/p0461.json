@@ -1,0 +1,286 @@
+{
+ "lines": [
+  {
+   "text": "461",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    117.31112670898438,
+    291.27935791015625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    91.4051742553711,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:int main(void) ",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    149.19471740722656,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:{ ",
+   "bbox": [
+    78.66000366210938,
+    171.03823852539062,
+    96.63616180419922,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: Foo foo1; // calls default ",
+   "bbox": [
+    78.66000366210938,
+    185.43826293945312,
+    203.3912353515625,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "constructor 14:std::cout << foo1.get_a() << ",
+   "bbox": [
+    78.66000366210938,
+    199.83828735351562,
+    253.59881591796875,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "std::endl; 15: return 0; ",
+   "bbox": [
+    83.10027313232422,
+    214.23831176757812,
+    180.45648193359375,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:}",
+   "bbox": [
+    78.66000366210938,
+    228.6383056640625,
+    94.11234283447266,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    281.0751037597656,
+    126.4169921875,
+    293.1531066894531
+   ],
+   "block": 32,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-457, Use of Uninitialized Variable, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    304.7510986328125,
+    311.3830871582031,
+    315.7731018066406
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/457.html",
+   "bbox": [
+    102.23983001708984,
+    320.7710876464844,
+    308.7279968261719,
+    331.7930908203125
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not read uninitialized memory, CERT,",
+   "bbox": [
+    85.86000061035156,
+    341.77099609375,
+    279.5674133300781,
+    352.7929992675781
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/EXP33-C.+Do+not+rea",
+   "bbox": [
+    102.23983001708984,
+    357.7308654785156,
+    455.728271484375,
+    368.75286865234375
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "d+uninitialized+memory",
+   "bbox": [
+    102.23983764648438,
+    373.7508544921875,
+    207.0572509765625,
+    384.7728576660156
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Uninitialized Variable, OWASP,",
+   "bbox": [
+    85.8600082397461,
+    394.7507629394531,
+    235.7878875732422,
+    405.77276611328125
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Uninitialized_variable",
+   "bbox": [
+    102.23983764648438,
+    410.770751953125,
+    350.6939697265625,
+    421.7927551269531
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "10:\n11:int main(void) \n12:{ \n13: Foo foo1; // calls default \nconstructor 14:std::cout << foo1.get_a() << \nstd::endl; 15: return 0; ",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    253.59881591796875,
+    225.3383056640625
+   ]
+  }
+ ],
+ "native": "461\n제4장구현단계 보안약점 진단\n정탐코드의 예\n10:\n11:int main(void) \n12:{ \n13: Foo foo1; // calls default \nconstructor 14:std::cout << foo1.get_a() << \nstd::endl; 15: return 0; \n16:}\n마. 참고자료\n[1] CWE-457, Use of Uninitialized Variable, MITRE,\nhttp://cwe.mitre.org/data/definitions/457.html\n[2] Do not read uninitialized memory, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/EXP33-C.+Do+not+rea\nd+uninitialized+memory\n[3] Uninitialized Variable, OWASP,\nhttps://www.owasp.org/index.php/Uninitialized_variable\n",
+ "native_sha256": "df9c861588030043631415dd0b6759461e1088f9f822cf8003ea47b224e64f79",
+ "chars": 502,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

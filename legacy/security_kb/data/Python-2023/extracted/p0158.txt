@@ -1,0 +1,31 @@
+Python 시큐어코딩 가이드
+152
+4. Private 배열에 Public 데이터 할당
+가. 개요
+public으로 선언된 메소드의 인자가 private로 선언된 배열에 저장되면 private 배열을 외부에서 접근하여 
+배열 수정과 객체 속성 변경이 가능해진다.
+나. 안전한 코딩기법
+public으로 선언된 메소드의 인자를 private 로 선언된 배열에 저장하지 않도록 한다. 사용자가 전달한 값으로 
+클래스 외부에서 private 값을 변경해서는 안 되며, 필요한 경우 별도의 인스턴스 변수로 정의하거나 의도한 
+기능이라면 전달된 값의 정상 여부를 검증한 후 적용해야 한다.
+다. 코드예제
+다음 예제는 __를 이용해서 파이썬의 내부 배열을 생성하고 외부 값을 대입하는 public 메소드를 사용하는 
+예시를 보여 준다. 이 경우 특정 배열 타입에 따라 외부에서 private 배열을 변조할 수 있는 문제를 내포하고 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+class UserObj:
+  __private_variable = []
+  def __init__(self):
+    pass
+  # private 배열에 외부 값을 바로 대입하는 public 메소드를 사용하는 
+  # 경우 취약하다
+  def set_private_member(self, input_list):
+    self.__private_variable = input_list

@@ -1,0 +1,70 @@
+236
+정탐코드의 예
+5:
+for(int i=0, s=fileList.size(); i<s; i++) { 
+6:
+file = (MultipartFile)fileList.get(i); 
+7:
+String orginFileName = file.getOriginalFilename(); 
+8:
+//--------------------------------------
+9:
+// 원 파일명이 없는 경우 처리 
+10:
+// (첨부가 되지 않은 input file type) 
+11:
+//--------------------------------------
+12:
+if (“”.equals(orginFileName)) continue; 
+13:
+////------------------------------------
+14:
+15:
+int index = orginFileName.lastIndexOf(“.”); 
+16:
+//String fileName = orginFileName.substring(0, index);
+17:
+String fileExt = orginFileName.substring(index + 1);
+18:
+String newName = KeyStr + EgovStringUtil.getTimeStamp() + fileKey;
+19:
+long _size = file.getSize();
+20:
+21:
+if (!””.equals(orginFileName)) {
+22:
+filePath = storePathString + File.separator + newName;
+23:
+file.transferTo(new File(filePath));
+24:
+}
+25:
+fvo = new FileVO();
+26:
+fvo.setFileExtsn(fileExt);
+27:
+fvo.setFileStreCours(storePathString);
+28:
+fvo.setFileMg(Long.toString(_size));
+29:
+fvo.setOrignlFileNm(orginFileName);
+30:
+fvo.setStreFileNm(newName);
+31:
+fvo.setAtchFileId(atchFileIdString);
+32:
+fvo.setFileSn(String.valueOf(fileKey));
+33: 
+34:
+//writeFile(file, newName, storePathString);
+35:
+result.add(fvo);
+36:
+37:
+fileKey++;
+38:
+}
+39:
+}
+40:
+return result;

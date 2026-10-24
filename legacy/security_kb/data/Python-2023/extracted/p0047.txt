@@ -1,0 +1,60 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+41
+만약 sax 패키지를 사용해 XML을 파싱할 경우 외부 엔티티를 처리하는 방식의 옵션(feature_external_ges)을 
+False로 설정해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+from xml.sax import make_parser
+from xml.sax.handler import feature_external_ges
+from xml.dom.pulldom import parseString, START_ELEMENT
+from django.shortcuts import render
+from .model import comments
+def get_xml(request):
+    if request.method == “GET”:
+      data = comments.objects.all()
+      com = data[0].comment
+      return render(request, '/xml_view.html', {'com':com})
+    elif request.method == “POST”:
+      parser = make_parser()
+      parser.setFeature(feature_external_ges, False)
+      doc = parseString(request.body.decode(‘utf-8’), parser=parser)
+      for event, node in doc:
+        if event == START_ELEMENT and node.tagName == “foo”:
+          doc.expandNode(node)
+          text = node.toxml()
+      comments.objects.filter(id=1).update(comment=text);
+      return render(request, '/xml_view.html')
+라. 참고자료
+① CWE-611: Improper Restriction of XML External Entity Reference, MITRE,
+https://cwe.mitre.org/data/definitions/611.html
+② XML External Entity (XXE) Processing, OWASP,
+https://owasp.org/www-community/vulnerabilities/XML_External_Entity_(XXE)_ Processing
+③ XML External Entity Prevention Cheat Sheet, OWASP,
+https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_Cheat_Sheet.html
+④ XML vulnerabilities, Python Software Foundation,
+https://docs.python.org/3/library/xml.html#xml-vulnerabilities 
+⑤ lxml API, lxml library,
+https://lxml.de/api/lxml.etree.XMLParser-class.html
+⑥ PyGoat, OWASP,
+https://github.com/adeyosemanputra/pygoat

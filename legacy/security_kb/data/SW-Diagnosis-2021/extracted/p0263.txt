@@ -1,0 +1,19 @@
+263
+제4장구현단계 보안약점 진단
+정탐코드의 예
+16: System.out.println(value);
+17: }
+18: …
+마. 참고자료
+[1] CWE-652 XQuery Injection, MITRE,
+http://cwe.mitre.org/data/definitions/652.html
+[2] Prevent XML Injection, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS16-J.+Prevent+X
+ML+Injection
+[3] CWE-643 XPath Injection, MITRE,
+http://cwe.mitre.org/data/definitions/643.html 
+[4] Prevent XPath Injection, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS53-J.+Prevent+ 
+XPath +Injection
+[5] XPATH Injection, OWASP,
+https://www.owasp.org/index.php/XPATH_Injection

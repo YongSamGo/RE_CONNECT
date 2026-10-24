@@ -1,0 +1,20 @@
+399
+제4장구현단계 보안약점 진단
+라. 진단방법
+클래스를 로드하기 위한 코드를 확인(①)하고 클래스를 로드하기 전에 체크섬을 실행 및 비교하여 
+로드하려는 코드가 변조되지 않았음을 확인하다. 다음의 예제에서는 로드하려는 클래스의 체크섬을 
+비교하여 무결성을 확인하고 있지 않으므로 취약하다고 판정한다.
+일반적인 진단의 예
+1: URL[] classURLs = new URL[]{ 
+2: new URL(“file:subdir/”) 
+3: }; 
+4: URLClassLoader loader = new URLClassLoader(classURLs); 
+5: Class loadedClass = Class.forName(“LoadMe”, true, loader); ·······································①
+마. 참고자료
+[1] CWE-494 Download of Code Without Integrity Check, MITRE,
+http://cwe.mitre.org/data/definitions/494.html
+[2] Do not rely on the default automatic signature verification provided by
+URLClassLoader and java.util.jar, CERT,
+http://www.securecoding.cert.org/confluence/display/java/SEC06-J.+Do+not
++rely+on+the+default+automatic+signature+verification+provided+by+URLClass
+Loader+and+java.util.jar

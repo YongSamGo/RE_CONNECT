@@ -1,0 +1,20 @@
+53
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①“XML Path Language (XPath) Version 1.0” W3C Recommendation, 16 Nov 1999
+http://www.w3.org/TR/xpath 
+②XQuery Injection, Common Attack Pattern Enumeration and Classification (CAPEC)
+http://capec.mitre.org/data/definitions/84.html
+③“Blind XPath Injection”, Amit Klein
+http://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_2004
+0518.pdf
+④Failure to Sanitize Data within XPath Expressions(‘XPath injection’)
+http://cwe.mitre.org/data/definitions/643.html
+⑤CWE-652 XQuery Injection, MITRE,
+http://cwe.mitre.org/data/definitions/652.html
+⑥CWE-643 XPath Injection, MITRE,
+http://cwe.mitre.org/data/definitions/643.html
+⑦2016 OWASP Application Security Verification Standard, OWASP, Malicious Input 
+Handling Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_Project

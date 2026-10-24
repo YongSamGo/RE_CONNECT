@@ -1,0 +1,40 @@
+Python 시큐어코딩 가이드
+128
+오류 처리 시 아래와 같이 에러 이름이나 에러 추적 정보가 노출되지 않도록 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+import logging
+def fetch_url(url, useragent, referer=None, retries=1, dimension=False):
+  ......
+  try:
+    response = requests.get(url, stream=True, timeout=5, headers={
+      'User-Agent': useragent,
+      'Referer': referer,
+    })
+    ......
+  except IOError:
+    # 에러 코드와 정보를 별도로 정의하고 최소 정보만 로깅
+    logger.error('ERROR-01:통신에러')
+라. 참고자료
+① CWE-209: Generation of Error Message Containing Sensitive Information, MITRE
+https://cwe.mitre.org/data/definitions/209.html
+② Improper Error Handling, OWASP,
+https://owasp.org/www-community/Improper_Error_Handling
+③ Errors and Exceptions, Python Software Foundation,
+https://docs.python.org/3/tutorial/errors.html
+➃ Django Error views, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/ref/views/#error-views
+➄ Flask Error Handlers, Flask
+https://flask.palletsprojects.com/en/2.0.x/errorhandling/#error-handlers

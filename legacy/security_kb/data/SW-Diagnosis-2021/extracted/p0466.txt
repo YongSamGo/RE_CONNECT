@@ -1,0 +1,36 @@
+466
+안전한 코드의 예 JAVA
+23:
+File targetFile = new File("/temp/" + multipartFile.getOriginalFilename());
+24:
+// 역직렬화 대상 클래스 이름의 화이트리스트 생성한다.
+25:
+Set<String> whitelist = new HashSet<String>(Arrays.asList(
+26:
+new String[] {
+27:
+"Student"
+28:
+}));
+29:
+try (InputStream fileStream = multipartFile.getInputStream()) {
+30:
+try (WhitelistedObjectInputStream ois =
+31:
+new WhitelistedObjectInputStream(fileStream, whitelist)) {
+32:
+// 화이트리스트에 없는 역직렬화 데이터의 경우 예외 발생시킨다.
+33:
+student = (Student) ois.readObject(); 
+34:
+}
+35:
+}
+36:
+return student;
+37:}
+라. 진단방법
+java.io.ObjectInputStream.readObject()와 같이 각 언어에서 제공하는 역직렬화 함수를 확인하고 
+(①), 해당 역직렬화 함수에서 사용하는 데이터가 신뢰할 수 있는 값인지 확인한다(②).
+만약 사용자 입력 값, 소켓으로 입력받은 값 등 출처를 신뢰할 수 없는 데이터를 검증하는 절차가 없
+으면 취약하다고 판정한다.

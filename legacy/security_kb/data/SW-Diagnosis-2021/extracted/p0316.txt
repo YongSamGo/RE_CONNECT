@@ -1,0 +1,33 @@
+316
+안전한 코드의 예 JAVA
+9:
+mav.addObject("member", memberModel); 
+10:
+mav.setViewName("/board/member_modify"); 
+11:
+return mav; 
+12:
+}
+13: ...
+//3. 동일한 경우에만 회원정보를 수정해야 안전하다.
+14:
+if (service.modifyMember(memberModel)) {
+...
+사용자 자격인증 없이 로그인 기능을 수행하는 C# 코드의 예제이다.
+안전하지 않은 코드의 예 C#
+1: protected void LoginButton_Click(object sender, EventArgs e) { 
+// 사용자의 자격인증 과정이 없이 로그인 기능을 수행합니다.
+2:
+FormsAuthentication.RedirectFromLoginPage(UserName.Text,
+RememberMe.Checked); 
+3: }
+사용자의 자격인증 후 로그인 기능을 수행해야 한다.
+안전한 코드의 예 C#
+1: protected void LoginButton_Click(object sender, EventArgs e) { 
+// 사용자의 자격인증 과정을 수행합니다.
+2:
+if(Membership.ValidateUser(UserName.Text, Password.Text)) { 
+FormsAuthentication.RedirectFromLoginPage(UserName.Text, RememberMe.Checked);
+3:
+}
+4:}

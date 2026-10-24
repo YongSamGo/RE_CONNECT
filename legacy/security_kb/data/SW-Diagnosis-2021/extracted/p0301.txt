@@ -1,0 +1,46 @@
+301
+제4장구현단계 보안약점 진단
+다음의 예제에서는 평문으로 사용자의 인증정보 및 “authenticated”를 쿠키에 저장하고 있다. 공격 자는 
+쿠키정보를 변경 가능하기 때문에 중요한 정보를 쿠키에 저장 시에는 암호화해서 사용하고, 가급적 
+해당정보는 WAS(Web Application Server) 서버의 세션에 저장한다.
+정탐코드의 예
+10: <% 
+11: String username = request.getParameter(“username”); 
+12: String password = request.getParameter(“password”); 
+13: if (username==nill || password==null || !isAuthenticatedUser(usename, password)) {
+14:
+throw new MyException(“인증 에러”);
+15: }
+16: Cookie userCookie = new
+Cookie(“user”,username);17:
+Cookie authCookie =
+new Cookie(“authenticated”,”1”);18: 
+19: response.addCookie(userCookie); 
+20: response.addCookie(authCookie); 
+21: %>
+다음의 예제에서는 HIDDEN 필드로 전송된 price를 가격으로 사용하지 않고 8번 라인에서 정해진 
+가격을 사용하고 있어 취약하지 않다.
+오탐코드의 예
+1:
+<input type=”hidden” name=”price” value=”1000”/> 
+2:
+<br/>품목 : HDTV 
+3:
+<br/>수량 : <input type=”hidden” name=”quantity” />개 
+4:
+<br/><input type=”submit” value=”구입” /> 
+5:
+......
+6:
+try {
+7:
+// 서버가 보유하고 있는 정보를 이용하여 가격을 처리 
+8:
+price = 1000;
+9:
+quantity = request.getParameter(“quantity”);
+10:
+total = quantity * Float.parseFloat(price); 
+11:}catch (Exception e) { 
+12:
+......

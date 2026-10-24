@@ -1,0 +1,18 @@
+238
+다음의 예제와 같이 getOriginalFilename()의 리턴 값을 저장하여 사용하지 않으면, 파일명을 사용
+하기 위해 다른 곳에서 해당 함수를 호출할 것이므로 취약하지 않다고 판정한다.
+오탐코드의 예
+1:
+if (!””.equals(file.getOriginalFilename())) {
+2:
+zipManageService.insertExcelZip(file.getInputStream());
+마. 참고자료
+[1] CWE-434 Unrestricted Upload of File with Dangerous Type, MITRE,
+http://cwe.mitre.org/data/definitions/434.html
+[2] Prevent arbitrary file upload, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS56-J.+Prevent+a
+rbitrary+file+upload 
+[3] Secure File Upload Check List With PHP, Clay,
+http://hungred.com/useful-information /secure-file-upload-check-list-php/
+[4] Unrestricted File Upload, OWASP
+https://www.owasp.org/index.php/Unrestricted_File_Upload

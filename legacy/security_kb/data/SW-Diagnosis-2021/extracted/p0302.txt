@@ -1,0 +1,13 @@
+302
+오탐코드의 예
+13:}
+14:
+......
+마. 참고자료
+[1] CWE-807 Reliance on Untrusted Inputs in a Security Decision, MITRE,
+http://cwe.mitre.org/data/definitions/807.html
+[2] Do not trust the values of environment variables, CERT,
+http://www.securecoding.cert.org/confluence/display/java/ENV02-J.+Do+not+t
+rust+the+values+of+environment+variables
+[3] Session Management, OWASP
+https://www.owasp.org/index.php/Session_Management_Cheat_Sheet

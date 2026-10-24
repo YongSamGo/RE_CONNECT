@@ -1,0 +1,37 @@
+338
+다음 예제는 비밀번호 등 중요 데이터를 해시값으로 변환하여 저장하고 있다.
+안전한 코드의 예 JAVA
+1: String id = request.getParameter("id");
+// 외부값에 의해 비밀번호 정보를 얻고 있다. 
+2: String pwd = request.getParameter("pwd"); 
+// 비밀번호를 솔트값을 포함하여 SHA-256 해시로 변경하여 안전하게 저장한다.
+3: MessageDigest md = MessageDigest.getInstance("SHA-256");
+4: md.reset();
+5: md.update(salt);
+6: byte[] hashInBytes = md.digest(pwd.getBytes()); 
+7: StringBuilder sb = new StringBuilder(); 
+8:
+for (byte b : hashInBytes) { 
+9:
+sb.append(String.format("%02x", b)); 
+10:
+}
+11:pwd = sb.toString();
+12: ......
+13:String sql = " insert into customer(id, pwd, name, ssn, zipcode, addr)“
++ " values (?, ?, ?, ?, ?, ?)"; 
+14:PreparedStatement stmt = con.prepareStatement(sql); 
+15:stmt.setString(1, id); 
+16:stmt.setString(2, pwd);
+17: ......
+18:stmt.executeUpdate();
+다음은 사용자의 비밀번호를 평문으로 저장해 놓고 출력하는 C# 코드의 예제이다. 
+안전하지 않은 코드의 예 C#
+1: namespace Security
+2: {
+3:
+public class FindPassword : System.Web.UI.Page 
+4:
+{
+5:
+protected void Page_Load(object sender, EventArgs e)

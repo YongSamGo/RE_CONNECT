@@ -1,0 +1,209 @@
+{
+ "lines": [
+  {
+   "text": "231",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-78 OS Command Injection, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.53121948242188,
+    282.8000793457031,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/78.html ",
+   "bbox": [
+    102.23983001708984,
+    153.55117797851562,
+    306.0495300292969,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Sanitize untrusted data passed to the Runtime.exec() method, CERT,",
+   "bbox": [
+    85.86000061035156,
+    174.55111694335938,
+    404.3305358886719,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/IDS07-J.+Sanitize+u",
+   "bbox": [
+    102.23983764648438,
+    190.51095581054688,
+    456.09173583984375,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ntrusted+data+passed+to+the+Runtime.exec()+method?focusedCommentId=64",
+   "bbox": [
+    102.23983764648438,
+    206.53091430664062,
+    456.2256774902344,
+    217.55291748046875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "65 1588#comment-64651588 ",
+   "bbox": [
+    102.23983764648438,
+    222.55087280273438,
+    237.7931365966797,
+    233.5728759765625
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Do not call system(), CERT,",
+   "bbox": [
+    85.8600082397461,
+    243.55078125,
+    222.5322265625,
+    254.57278442382812
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=",
+   "bbox": [
+    102.23983764648438,
+    259.5106506347656,
+    456.19140625,
+    270.53265380859375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2130132",
+   "bbox": [
+    102.23983764648438,
+    275.5306396484375,
+    140.62033081054688,
+    286.5526428222656
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] Reviewing Code for OS Injection, OWASP",
+   "bbox": [
+    85.8600082397461,
+    296.5305480957031,
+    284.89703369140625,
+    307.55255126953125
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Reviewing_Code_for_OS_Injection",
+   "bbox": [
+    102.23983764648438,
+    312.550537109375,
+    409.5896911621094,
+    323.5725402832031
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "231\n제4장구현단계 보안약점 진단\n마. 참고자료\n[1] CWE-78 OS Command Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/78.html \n[2] Sanitize untrusted data passed to the Runtime.exec() method, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/IDS07-J.+Sanitize+u\nntrusted+data+passed+to+the+Runtime.exec()+method?focusedCommentId=64\n65 1588#comment-64651588 \n[3] Do not call system(), CERT,\nhttp://www.securecoding.cert.org/confluence/pages/viewpage.action?pageId=\n2130132\n[4] Reviewing Code for OS Injection, OWASP\nhttps://www.owasp.org/index.php/Reviewing_Code_for_OS_Injection\n",
+ "native_sha256": "2cb9e3820a2e02e2e36bfbaac2ccb68e4bf7f77bbf5ba6a8a904b78b989f6765",
+ "chars": 580,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

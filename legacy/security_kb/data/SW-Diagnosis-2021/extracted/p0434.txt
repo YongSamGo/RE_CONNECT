@@ -1,0 +1,49 @@
+434
+안전하지 않은 코드의 예 JAVA
+//obj가 null이고 elt가 null이 아닐 경우, Null.equals 가 되어 널(Null) 포인터 역참조가 발생한다.
+9:
+if ((null == obj && null == elt) || obj.equals(elt)) { 
+10:
+count++; 
+11:
+}
+12:
+}
+13:
+return count;
+14: }
+obj가 null인지 검사 후 참조해야 한다.
+안전한 코드의 예 JAVA
+1: public static int cardinality (Object obj, final Collection col) { 
+2:
+int count = 0; 
+3:
+if (col == null) { 
+4:
+return count; 
+5:
+}
+6:
+Iterator it = col.iterator();
+7:
+while (it.hasNext()) { 
+8:
+Object elt = it.next();
+//obj가 null이 아닌 경우에만 obj.equal를 실행한다.
+9:
+if ((null == obj && null == elt) || (null != obj && obj.equals(elt))) {
+10:
+count++; 
+11:
+}
+12:
+}
+13:
+return count; 
+14:}
+다음 예제의 경우 request.getParameter에 의해 null이 들어오게 되면 널(Null) 포인터 역참조가 
+발생한다.
+안전하지 않은 코드의 예 JAVA
+1: String url = reuqest.getParamter("url");
+2: //url 에 null이 들어오면 널(Null) 포인터 역참조가 발생한다.
+3: if (url.equals(""))

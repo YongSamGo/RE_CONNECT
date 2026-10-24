@@ -1,0 +1,44 @@
+413
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+6:
+// 파일에 대한 처리를 한다. 
+7:
+} catch (IOException e) { 
+8:
+// TODO 에러 처리를 한다. 
+9:
+} finally { 
+10:
+// 자원을 해제한다. 
+11: }
+하지만 자바에서는 스트림을 생성할 때 IOExceptin을 발생시키며 이에 따라 예외에 대한 적절한 
+처리를 하면 되므로 문제가 되지 않는다.
+TOCTOU는 C 프로그래밍을 할 때 다음과 같은 경우에 발생한다.
+정탐코드의 예
+1: if (!access(file,W_OK)) 
+2: { 
+3:
+f = fopen(file,”w+”); 
+4:
+operate(f); 
+5:
+… 
+6: }
+7: else
+8: {
+9:
+fprintf(stderr,”Unable to open file %s.\n”,file);
+10:}
+실제로 경쟁 조건이 이루어지지 않는 경우 취약하지 않다.
+오탐코드의 예
+1:
+file = new File(filename); 
+2:
+File[] fList = file.listFiles(); 
+3:
+for (int i = 0; i < fList.length; i++) { 
+4:
+currentList.add(fList[i].getAbsolutePath() 
+5:
++ “$” + getLastModifiedTime(fList[i]) + “$”

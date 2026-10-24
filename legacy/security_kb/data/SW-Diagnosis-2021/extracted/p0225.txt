@@ -1,0 +1,27 @@
+225
+제4장구현단계 보안약점 진단
+운영체제 명령어 실행 시에는 아래와 같이 외부에서 들어오는 값에 의하여 멀티라인을 지원하는 특수 
+문자(| ; & :)나 파일 리다이렉트 특수문자(> >>)등을 제거하여 원하지 않은 운영체제 명령어가 실행 
+될 수 없도록 필터링을 수행한다.
+안전한 코드의 예 JAVA
+1: String date = request.getParameter("date");
+2: String command = new String("cmd.exe /c backuplog.bat");
+3: //외부로부터 입력 받은 값을 필터링으로 우회문자를 제거하여 사용한다.
+4: date = date.replaceAll("|","");
+5: date = date.replaceAll(";","");
+6: date = date.replaceAll("&","");
+7: date = date.replaceAll(":","");
+8: date = date.replaceAll(">","");
+9: Runtime.getRuntime().exec(command + date);
+다음 C# 코드는 외부 입력값을 프로세스가 실행할 파일 이름에 직접 사용하고 있다. 이는 공격자의 
+입력에 따라 의도하지 않은 명령어가 실행될 수 있다.
+안전하지 않은 코드의 예 C#
+1: //외부 입력값이 프로세스가 실행할 파일 이름을 지정하고 있습니다.
+2: string fileName = PgmTextBox.Text;
+3: ProcessStartInfo proStartInfo = new ProcessStartInfo();
+4: proStartInfo.FileName = fileName;
+5: Process.Start(proStartInfo); 
+적절한 정규식이나, white list 등을 이용하여 검증을 한 후 사용하도록 한다.
+안전한 코드의 예 C#
+1: string fileName = PgmTextBox.Text;
+2: //외부 입력값에 대해 정규식 등을 이용하여 검증을 해줘야 합니다.

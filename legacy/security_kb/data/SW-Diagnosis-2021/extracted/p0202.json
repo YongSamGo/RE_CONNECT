@@ -1,0 +1,788 @@
+{
+ "lines": [
+  {
+   "text": "202",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    206.5800018310547,
+    120.79122924804688,
+    329.1385192871094,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    341.0607604980469,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String fileName = request.getParameter(\"P\");",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    278.3717346191406,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: BufferedInputStream bis = null;",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    225.51083374023438,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: BufferedOutputStream bos = null;",
+   "bbox": [
+    83.58000183105469,
+    183.39816284179688,
+    235.49502563476562,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: FileInputStream fis = null;",
+   "bbox": [
+    83.58000183105469,
+    197.79818725585938,
+    202.9629669189453,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: try {",
+   "bbox": [
+    83.58000183105469,
+    212.19821166992188,
+    113.2655258178711,
+    222.09820556640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58000183105469,
+    226.59820556640625,
+    91.34540557861328,
+    236.49819946289062
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");",
+   "bbox": [
+    108.8993148803711,
+    226.59820556640625,
+    436.8231506347656,
+    236.49819946289062
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58001708984375,
+    240.99819946289062,
+    91.33307647705078,
+    250.898193359375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    108.88697814941406,
+    240.99819946289062,
+    116.82955932617188,
+    250.898193359375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58001708984375,
+    255.398193359375,
+    91.34542083740234,
+    265.2981872558594
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//외부로부터 입력받은 값이 검증 또는 처리 없이 파일처리에 수행되었다.",
+   "bbox": [
+    108.90019989013672,
+    255.398193359375,
+    362.3117980957031,
+    265.2981872558594
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    269.7981872558594,
+    96.26522827148438,
+    279.69818115234375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fis = new FileInputStream(\"C:/datas/\" + fileName);",
+   "bbox": [
+    109.43968200683594,
+    269.7981872558594,
+    317.8157958984375,
+    279.69818115234375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.58000183105469,
+    284.19818115234375,
+    96.26521301269531,
+    294.0981750488281
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "bis = new BufferedInputStream(fis);",
+   "bbox": [
+    109.43968200683594,
+    284.19818115234375,
+    257.1409912109375,
+    294.0981750488281
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.58000183105469,
+    298.5981750488281,
+    96.26522827148438,
+    308.4981689453125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "bos = new BufferedOutputStream(response.getOutputStream());",
+   "bbox": [
+    109.43968963623047,
+    298.5981750488281,
+    370.8470764160156,
+    308.4981689453125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "외부 입력값에 대하여 상대경로를 설정할 수 없도록 경로순회 문자열( / \\ & .. 등 )을 제거하고 파일의 ",
+   "bbox": [
+    76.5,
+    340.9910888671875,
+    464.85595703125,
+    352.0130920410156
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "경로설정에 사용한다.",
+   "bbox": [
+    76.5,
+    357.9709777832031,
+    158.9365997314453,
+    368.99298095703125
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    397.9910888671875,
+    314.61773681640625,
+    409.0130920410156
+   ],
+   "block": 29,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    83.58000183105469,
+    417.398193359375,
+    91.34540557861328,
+    427.2981872558594
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = request.getParameter(\"P\");",
+   "bbox": [
+    104.51986694335938,
+    417.398193359375,
+    287.2804260253906,
+    427.2981872558594
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    431.7981872558594,
+    91.34539794921875,
+    441.69818115234375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "BufferedInputStream bis = null; ",
+   "bbox": [
+    104.51986694335938,
+    431.7981872558594,
+    236.74411010742188,
+    441.69818115234375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    446.19818115234375,
+    91.32865142822266,
+    456.0981750488281
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "BufferedOutputStream bos = null; ",
+   "bbox": [
+    104.50312042236328,
+    446.19818115234375,
+    246.82960510253906,
+    456.0981750488281
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    460.5981750488281,
+    91.34540557861328,
+    470.4981689453125
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "FileInputStream fis = null; ",
+   "bbox": [
+    104.51986694335938,
+    460.5981750488281,
+    214.18927001953125,
+    470.4981689453125
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    474.9981689453125,
+    91.3321762084961,
+    484.8981628417969
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try { ",
+   "bbox": [
+    104.50663757324219,
+    474.9981689453125,
+    124.60904693603516,
+    484.8981628417969
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58000183105469,
+    489.3981628417969,
+    91.34540557861328,
+    499.29815673828125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");",
+   "bbox": [
+    113.27963256835938,
+    489.3981628417969,
+    441.2193908691406,
+    499.29815673828125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: ...",
+   "bbox": [
+    83.5791015625,
+    503.79815673828125,
+    103.6294937133789,
+    513.6981201171875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.5791015625,
+    518.1981201171875,
+    91.3445053100586,
+    528.09814453125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부 입력받은 값을 경로순회 문자열(./\\)을 제거하고 사용해야한다.",
+   "bbox": [
+    104.51896667480469,
+    518.1981201171875,
+    348.2619934082031,
+    528.09814453125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.5791015625,
+    532.59814453125,
+    91.3445053100586,
+    542.4981689453125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "filename = filename.replaceAll(\"\\\\.\", \"\").replaceAll(\"/\", \"\").replaceAll(\"\\\\\\\\\", \"\");",
+   "bbox": [
+    113.27873229980469,
+    532.59814453125,
+    423.0854797363281,
+    542.4981689453125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.5791015625,
+    546.9981079101562,
+    96.26432800292969,
+    556.8981323242188
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fis = new FileInputStream(\"C:/datas/\" + fileName);",
+   "bbox": [
+    113.8790512084961,
+    546.9981079101562,
+    322.1626281738281,
+    556.8981323242188
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.5791015625,
+    561.3980712890625,
+    96.26432800292969,
+    571.298095703125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "bis = new BufferedInputStream(fis);",
+   "bbox": [
+    113.8790512084961,
+    561.3980712890625,
+    261.4753112792969,
+    571.298095703125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.5791015625,
+    575.798095703125,
+    96.26432800292969,
+    585.6981201171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "bos = new BufferedOutputStream(response.getOutputStream());",
+   "bbox": [
+    113.87905883789062,
+    575.798095703125,
+    375.2395324707031,
+    585.6981201171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.5791015625,
+    590.1981201171875,
+    96.26431274414062,
+    600.09814453125
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int read;",
+   "bbox": [
+    113.87904357910156,
+    590.1981201171875,
+    148.28074645996094,
+    600.09814453125
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.5791015625,
+    604.5980834960938,
+    96.25550079345703,
+    614.4981079101562
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while((read = bis.read(buffer, 0, 1024)) != -1) {",
+   "bbox": [
+    113.8702392578125,
+    604.5980834960938,
+    310.1349182128906,
+    614.4981079101562
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.\n2: String fileName = request.getParameter(\"P\");\n3: BufferedInputStream bis = null;\n4: BufferedOutputStream bos = null;\n5: FileInputStream fis = null;\n6: try {\n7:        response.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");\n8:        ...\n9:        //외부로부터 입력받은 값이 검증 또는 처리 없이 파일처리에 수행되었다.\n10:      fis = new FileInputStream(\"C:/datas/\" + fileName);\n11:      bis = new BufferedInputStream(fis);\n12:      bos = new BufferedOutputStream(response.getOutputStream());",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    83.58000183105469,
+    131.913232421875,
+    436.8231506347656,
+    309.6981689453125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+   ],
+   "text": "1:      String fileName = request.getParameter(\"P\");\n2:      BufferedInputStream bis = null; \n3:      BufferedOutputStream bos = null; \n4:      FileInputStream fis = null; \n5:      try { \n6:         response.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");\n7: ...\n8:      // 외부 입력받은 값을 경로순회 문자열(./\\)을 제거하고 사용해야한다.\n9:         filename = filename.replaceAll(\"\\\\.\", \"\").replaceAll(\"/\", \"\").replaceAll(\"\\\\\\\\\", \"\");\n10:        fis = new FileInputStream(\"C:/datas/\" + fileName);\n11:        bis = new BufferedInputStream(fis);\n12:        bos = new BufferedOutputStream(response.getOutputStream());\n13:        int read;\n14:        while((read = bis.read(buffer, 0, 1024)) != -1) {",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.5791015625,
+    409.11309204101565,
+    441.2193908691406,
+    615.6981079101563
+   ]
+  }
+ ],
+ "native": "202\n안전하지 않은 코드의 예 JAVA\n1: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.\n2: String fileName = request.getParameter(\"P\");\n3: BufferedInputStream bis = null;\n4: BufferedOutputStream bos = null;\n5: FileInputStream fis = null;\n6: try {\n7:\nresponse.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");\n8:\n...\n9:\n//외부로부터 입력받은 값이 검증 또는 처리 없이 파일처리에 수행되었다.\n10:\nfis = new FileInputStream(\"C:/datas/\" + fileName);\n11:\nbis = new BufferedInputStream(fis);\n12:\nbos = new BufferedOutputStream(response.getOutputStream());\n외부 입력값에 대하여 상대경로를 설정할 수 없도록 경로순회 문자열( / \\ & .. 등 )을 제거하고 파일의 \n경로설정에 사용한다.\n안전한 코드의 예 JAVA\n1:\nString fileName = request.getParameter(\"P\");\n2:\nBufferedInputStream bis = null; \n3:\nBufferedOutputStream bos = null; \n4:\nFileInputStream fis = null; \n5:\ntry { \n6:\nresponse.setHeader(\"Content-Disposition\", \"attachment;filename=\"+fileName+\";\");\n7: ...\n8:\n// 외부 입력받은 값을 경로순회 문자열(./\\)을 제거하고 사용해야한다.\n9:\nfilename = filename.replaceAll(\"\\\\.\", \"\").replaceAll(\"/\", \"\").replaceAll(\"\\\\\\\\\", \"\");\n10:\nfis = new FileInputStream(\"C:/datas/\" + fileName);\n11:\nbis = new BufferedInputStream(fis);\n12:\nbos = new BufferedOutputStream(response.getOutputStream());\n13:\nint read;\n14:\nwhile((read = bis.read(buffer, 0, 1024)) != -1) {\n",
+ "native_sha256": "321ac31466a9f63949853053b2f962e698756c4b3e6232d1de2ce6847496bc16",
+ "chars": 1219,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

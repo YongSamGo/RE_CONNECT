@@ -1,0 +1,33 @@
+326
+안전하지 않은 코드의 예 JAVA
+//모든 사용자에게 읽기 권한을 허용하여 안전하지 않다.
+3:
+file.setReadable(true, false);
+//모든 사용자에게 쓰기 권한을 허용하여 안전하지 않다.
+4:
+file.setWritable(true, false);
+파일에 대해서는 최소권한을 할당해야 한다. 즉 해당 파일의 소유자에게만 읽기 권한을 부여한다.
+- setExecutable(p1) : 파라미터의 true/false 값에 따라 소유자의 실행권한 여부를 결정한다.
+- setReadable(p1) : 파라미터의 true/false 값에 따라 소유자의 읽기권한 여부를 결정한다.
+- setWritable(p1) : 파라미터의 true/false 값에 따라 소유자의 쓰기권한 여부를 결정한다.
+안전한 코드의 예 JAVA
+1:
+File file = new File("/home/setup/system.ini");
+//소유자에게 실행 권한을 금지하였다.
+2:
+file.setExecutable(false);
+//소유자에게 읽기 권한을 허용하였다.
+3:
+file.setReadable(true);
+//소유자에게 쓰기 권한을 금지하였다.
+4:
+file.setWritable(false);
+아래의 C# 코드는 모든 사용자에게 파일의 권한을 부여하고 있다.
+안전하지 않은 코드의 예 C#
+1: public static void AddDirectorySecurity(string FileName) 
+2: {
+// 디렉토리 정보 객체 생성
+3:
+DirectoryInfo dInfo = new DirectoryInfo(FileName);
+4:
+DirectorySecurity dSecurity = dInfo.GetAccessControl();

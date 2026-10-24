@@ -1,0 +1,43 @@
+329
+제4장구현단계 보안약점 진단
+일반적인 진단의 예
+1:// 파일 권한 : rw-rw-rw-, 디렉토리 권한 : rwxrwxrwx
+2:String cmd = “umask 0”;
+3:File file = new File(“/home/report/report.txt”);
+4:…
+5:Runtime.getRuntime().exec(cmd);
+아래 코드는 4 ~ 6번 라인에서 실행권한과 쓰기권한은 제외하고 읽기 권한만 부여하고 있어 취약하지 않다.
+오탐코드의 예
+1:
+try {
+2:
+......
+3:
+File file = new File(“/home/setup/system.ini”); 
+4:
+file.setExecutable(false);
+5:
+file.setReadable(true);
+6:
+file.setWritable(false);
+7:
+8:
+if (file.createNewFile()) {
+9:
+System.out.println(“File is created!”); 
+10:
+} else { 
+11:
+System.out.println(“File already exists.”); 
+12:
+}
+13:} catch (IOException e) {
+14:
+......
+15:}
+마. 참고자료
+[1] CWE-732 Incorrect Permission Assignment for Critical Resource, MITRE,
+http://cwe.mitre.org/data/definitions/732.html
+[2] Create files with appropriate access permissions, CERT,
+http://www.securecoding.cert.org/confluence/display/c/FIO06-C.+Create+files
++with+appropriate+access+permissions

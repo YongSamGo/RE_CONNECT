@@ -1,0 +1,111 @@
+{
+ "lines": [
+  {
+   "text": "486",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-495 Private Array-Typed Field Returned From A Public Method, MITRE,",
+   "bbox": [
+    91.5,
+    137.53121948242188,
+    447.42559814453125,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/495.html",
+   "bbox": [
+    107.87985229492188,
+    153.55117797851562,
+    314.3680419921875,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Do not return references to private mutable class members, CERT,",
+   "bbox": [
+    91.5000228881836,
+    174.55111694335938,
+    399.89068603515625,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/OBJ05-J.+Do+not+r",
+   "bbox": [
+    107.88082885742188,
+    190.51095581054688,
+    461.7972412109375,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "eturn+references+to+private+mutable+class+members",
+   "bbox": [
+    107.88082885742188,
+    206.53091430664062,
+    349.5414123535156,
+    217.55291748046875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "486\n마. 참고자료\n[1] CWE-495 Private Array-Typed Field Returned From A Public Method, MITRE,\nhttp://cwe.mitre.org/data/definitions/495.html\n[2] Do not return references to private mutable class members, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/OBJ05-J.+Do+not+r\neturn+references+to+private+mutable+class+members\n",
+ "native_sha256": "79f2d0eccf3dd6836da97aaf2d06c7d6b13dffd8e6b3ea78f9364f0160b2aba3",
+ "chars": 329,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

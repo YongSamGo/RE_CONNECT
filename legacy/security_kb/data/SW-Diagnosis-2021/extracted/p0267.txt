@@ -1,0 +1,36 @@
+267
+제4장구현단계 보안약점 진단
+익명 바인딩을 사용하지 않고 인증을 진행해야 한다.
+안전한 코드의 예 C#
+1: static void SearchRecord(string userSN, string userPW) 
+2: { 
+3: try { 
+4:
+DirectoryEntry oDE; 
+5:
+oDE = new DirectoryEntry(GetStrPath(), userSN, userPW);
+// userSN과 userPW 로 인증 후에 LDAP 쿼리를 실행 
+6:
+foreach(DirectoryEntry objChildDE om oDE.Children) { 
+7:
+...
+8:
+}
+9: } catch (NamingException e) { ... }
+아래 C 코드는 외부에서 불러온 filter를 LDAP 탐색에 그대로 사용하고 있다. LDAP 필터에 OR 
+연산 등을 사용하여 의도치 않은 동작이 발생할 수 있다.
+안전하지 않은 코드의 예 C
+1: void LDAPInjection() { 
+2:
+char *filter = getenv(“Filter”);
+3:
+int error_code; 
+4:
+LDAP *ld = NULL; 
+5:
+LDAPMessage *result; 
+// 외부에서 불러온 filter를 검증 없이 사용 
+6:
+error_code = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter,
+NULL, 0, NULL, NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result);
+7: }

@@ -1,0 +1,69 @@
+397
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+2:
+{
+3:
+var url = "https://www.somewhere.untrusted.com";
+4:
+var desDir = "D:/DestinationPath"; 
+5:
+string fileName = Path.GetFileName(url);
+6:
+string descFilePath = Path.Combine(desDir, fileName);
+7:
+try 
+8:
+{ 
+9:
+WebRequest myre = WebRequest.Create(url);
+10:
+}
+11:
+catch (Exception ex) 
+12:
+{
+13:
+throw new Exception(ex.Message); 
+14:
+}
+15:
+try
+16:
+{
+17:
+byte[] fileData;
+18:
+using (WebClient client = new WebClient())
+19:
+{
+20:
+fileData = client.DownloadData(url);
+21:
+}
+//해시 값 등을 사용하여 다운로드 받은 파일 무결성 검사
+22:
+CheckIntegrity(fileData);
+23:
+using (FileStream fs = new FileStream(descFilePath, 
+FileMode.OpenOrCreate))
+24:
+{
+25:
+fs.Write(fileData, 0, fileData.Length);
+26:
+}
+27:
+return true;
+28:
+}
+29:
+catch (Exception ex) 
+30:
+{
+31:
+throw new Exception(ex.Message); 
+32:
+}
+33:
+}

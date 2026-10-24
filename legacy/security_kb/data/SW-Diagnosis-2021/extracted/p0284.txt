@@ -1,0 +1,28 @@
+284
+13. HTTP 응답분할
+가. 개요
+HTTP 요청에 들어 있는 파라미터(Parameter)가 HTTP 응답헤더에 포함되어 사용자에게 다시 전달 
+될 때, 입력값에 CR(Carriage Return)이나 LF(Line Feed)와 같은 개행문자가 존재하면 HTTP 
+응답이 2개 이상으로 분리될 수 있다. 이 경우 공격자는 개행문자를 이용하여 첫 번째 응답을 종료
+시키고, 두 번째 응답에 악의적인 코드를 주입하여 XSS 및 캐시 훼손(Cache Poisoning) 공격 등을 
+수행 할 수 있다.
+나. 보안대책
+요청 파라미터의 값을 HTTP응답헤더(예를 들어, Set-Cookie 등)에 포함시킬 경우 CR, LF와 같은 
+개행문자를 제거한다.
+다. 코드예제
+외부입력값을 사용하여 반환되는 쿠키의 값을 설정하고 있다. 그런데, 공격자가 Wiley Hack er￦r
+￦nHTTP/1.1 200 OK￦r￦n를 lastLogin의 값으로 설정할 경우, 응답이 분리되어 전달되며 분리된 
+응답 본문의 내용을 공격자가 마음대로 수정할 수 있다.
+안전하지 않은 코드의 예 JAVA
+//외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.
+1: String lastLogin = request.getParameter("last_login");
+2: if (lastLogin == null || "".equals(lastLogin)) {
+3:
+return; 
+4: }
+// 쿠키는 Set-Cookie 응답헤더로 전달되므로 개행문자열 포함 여부 검증이 필요
+5: Cookie c = new Cookie("LASTLOGIN", lastLogin);
+6: c.setMaxAge(1000);
+7: c.setSecure(true);
+8: response.addCookie(c);
+9: response.setContentType("text/html");

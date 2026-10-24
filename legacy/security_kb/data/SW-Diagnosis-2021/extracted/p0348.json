@@ -1,0 +1,563 @@
+{
+ "lines": [
+  {
+   "text": "348",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음 예제는 중요정보에 접근 가능한 URL을 일반 채널을 이용하여 연결하는 예제이다. 따라서 해당 ",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    464.7962646484375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "채널에서 주고받는 데이터는 외부에서 쉽게 확인이 가능하고 공격에 활용될 수 있다. 보안 채널을 ",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    464.7619934082031,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "이용하고 있지 않기 때문에 보안약점을 가지고 있는 코드라고 진단할 수 있다.",
+   "bbox": [
+    76.5,
+    147.79092407226562,
+    372.1654968261719,
+    158.81292724609375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    184.33108520507812,
+    296.1402587890625,
+    195.35308837890625
+   ],
+   "block": 17,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: try { ",
+   "bbox": [
+    83.58000183105469,
+    209.25808715820312,
+    115.84928894042969,
+    219.1580810546875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    223.65811157226562,
+    91.34540557861328,
+    233.55810546875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "URL u = new URL(“http://www.secret.example.org/”); ",
+   "bbox": [
+    108.89930725097656,
+    223.65811157226562,
+    335.86151123046875,
+    233.55810546875
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    238.05810546875,
+    91.34539794921875,
+    247.95809936523438
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "HttpURLConnection hu = (HttpURLConnection) u.openConnection();",
+   "bbox": [
+    108.89930725097656,
+    238.05810546875,
+    384.98480224609375,
+    247.95809936523438
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.57998657226562,
+    252.45809936523438,
+    91.34539031982422,
+    262.35809326171875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "hu.setRequestMethod(“PUT”); ",
+   "bbox": [
+    108.89929962158203,
+    252.45809936523438,
+    231.48922729492188,
+    262.35809326171875
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.57998657226562,
+    266.85809326171875,
+    91.34539031982422,
+    276.7580871582031
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "hu.connect(); ",
+   "bbox": [
+    108.8992919921875,
+    266.85809326171875,
+    163.606201171875,
+    276.7580871582031
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.57998657226562,
+    281.2580871582031,
+    91.34539031982422,
+    291.1580810546875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "OutputStream os = hu.getOutputStream();",
+   "bbox": [
+    108.8992919921875,
+    281.2580871582031,
+    282.0035705566406,
+    291.1580810546875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.57998657226562,
+    295.6580810546875,
+    91.34539031982422,
+    305.5580749511719
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "hu.disconnect();",
+   "bbox": [
+    108.8992919921875,
+    295.6580810546875,
+    172.49375915527344,
+    305.5580749511719
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: } catch (IOException e) {",
+   "bbox": [
+    83.57998657226562,
+    310.0580749511719,
+    198.38604736328125,
+    319.95806884765625
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.57998657226562,
+    324.45806884765625,
+    91.34539031982422,
+    334.3580627441406
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//…",
+   "bbox": [
+    108.8992919921875,
+    324.45806884765625,
+    124.69277954101562,
+    334.3580627441406
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:}",
+   "bbox": [
+    83.57998657226562,
+    338.8580627441406,
+    98.97237396240234,
+    348.758056640625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    391.29510498046875,
+    132.05699157714844,
+    403.37310791015625
+   ],
+   "block": 28,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-312, Cleartext Storage of Sensitive Information, MITRE,",
+   "bbox": [
+    91.5,
+    414.97119140625,
+    378.42449951171875,
+    425.9931945800781
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/312.html",
+   "bbox": [
+    107.87982940673828,
+    430.9310607910156,
+    314.3680114746094,
+    441.95306396484375
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Clear sensitive information stored in reusable resources, CERT,",
+   "bbox": [
+    91.5,
+    451.93096923828125,
+    382.971435546875,
+    462.9529724121094
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/MEM03-",
+   "bbox": [
+    107.87985229492188,
+    467.9509582519531,
+    398.36529541015625,
+    478.97296142578125
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "C.+Clear+sensitive+information+stored+in+reusable+resources ",
+   "bbox": [
+    107.87985229492188,
+    483.9709167480469,
+    385.76507568359375,
+    494.992919921875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Be careful while handling sensitive data, such as passwords, in program code, CERT,",
+   "bbox": [
+    91.5000228881836,
+    504.9708557128906,
+    457.4827880859375,
+    515.9928588867188
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/MSC18-C.+Be+careful+",
+   "bbox": [
+    107.87985229492188,
+    520.9306640625,
+    461.90869140625,
+    531.9526977539062
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while+handling+sensitive+data%2C+such+as+passwords%2C+in+program+code",
+   "bbox": [
+    107.87985229492188,
+    536.9506225585938,
+    457.6510009765625,
+    547.97265625
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] Never hard code sensitive information, CERT,",
+   "bbox": [
+    91.4990234375,
+    557.9505615234375,
+    306.5934143066406,
+    568.9725952148438
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/MSC03-J.+Never+h",
+   "bbox": [
+    107.87885284423828,
+    573.9705200195312,
+    461.94873046875,
+    584.9925537109375
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ard+code+sensitive+information",
+   "bbox": [
+    107.87884521484375,
+    589.9303588867188,
+    248.2555389404297,
+    600.952392578125
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[5] Do not store unencrypted sensitive information on the client side, CERT, ",
+   "bbox": [
+    91.49901580810547,
+    610.9302978515625,
+    464.8344421386719,
+    621.9523315429688
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s",
+   "bbox": [
+    107.87887573242188,
+    626.9502563476562,
+    461.6644287109375,
+    637.9722900390625
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "tore+unencrypted+sensitive+information+on+the+client+side",
+   "bbox": [
+    107.87887573242188,
+    642.9702758789062,
+    375.7333679199219,
+    653.9923095703125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: try { \n2:        URL u = new URL(“http://www.secret.example.org/”); \n3:        HttpURLConnection hu = (HttpURLConnection) u.openConnection();\n4:        hu.setRequestMethod(“PUT”); \n5:        hu.connect(); \n6:        OutputStream os = hu.getOutputStream();\n7:        hu.disconnect();\n8: } catch (IOException e) {\n9:        //…\n10:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.57998657226562,
+    208.05808715820314,
+    384.98480224609375,
+    349.958056640625
+   ]
+  }
+ ],
+ "native": "348\n다음 예제는 중요정보에 접근 가능한 URL을 일반 채널을 이용하여 연결하는 예제이다. 따라서 해당 \n채널에서 주고받는 데이터는 외부에서 쉽게 확인이 가능하고 공격에 활용될 수 있다. 보안 채널을 \n이용하고 있지 않기 때문에 보안약점을 가지고 있는 코드라고 진단할 수 있다.\n정탐코드의 예\n1: try { \n2:\nURL u = new URL(“http://www.secret.example.org/”); \n3:\nHttpURLConnection hu = (HttpURLConnection) u.openConnection();\n4:\nhu.setRequestMethod(“PUT”); \n5:\nhu.connect(); \n6:\nOutputStream os = hu.getOutputStream();\n7:\nhu.disconnect();\n8: } catch (IOException e) {\n9:\n//…\n10:}\n마. 참고자료\n[1] CWE-312, Cleartext Storage of Sensitive Information, MITRE,\nhttp://cwe.mitre.org/data/definitions/312.html\n[2] Clear sensitive information stored in reusable resources, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/MEM03-\nC.+Clear+sensitive+information+stored+in+reusable+resources \n[3] Be careful while handling sensitive data, such as passwords, in program code, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/MSC18-C.+Be+careful+\nwhile+handling+sensitive+data%2C+such+as+passwords%2C+in+program+code\n[4] Never hard code sensitive information, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/MSC03-J.+Never+h\nard+code+sensitive+information\n[5] Do not store unencrypted sensitive information on the client side, CERT, \nhttp://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s\ntore+unencrypted+sensitive+information+on+the+client+side\n",
+ "native_sha256": "542e5b0cd2341f8a9ddb26c8c5b0292090608c47de88dffce629081c82cd7579",
+ "chars": 1357,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,195 @@
+{
+ "lines": [
+  {
+   "text": "313",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-134 Uncontrolled Format String, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.53121948242188,
+    304.22503662109375,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/134.html",
+   "bbox": [
+    102.23983001708984,
+    153.55117797851562,
+    308.7279968261719,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Exclude user input from format strings, CERT,",
+   "bbox": [
+    85.86000061035156,
+    174.55111694335938,
+    303.61444091796875,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/FIO30-C.+Exclude+use",
+   "bbox": [
+    102.23983001708984,
+    190.51095581054688,
+    456.452392578125,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "r+input+from+format+stringsb",
+   "bbox": [
+    102.23983764648438,
+    206.53091430664062,
+    234.993408203125,
+    217.55291748046875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Use valid format strings, CERT,",
+   "bbox": [
+    85.8600082397461,
+    227.53082275390625,
+    239.07418823242188,
+    238.55282592773438
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/FIO47-C.+Use+valid+f",
+   "bbox": [
+    102.23983764648438,
+    243.55081176757812,
+    456.1112976074219,
+    254.57281494140625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ormat+strings",
+   "bbox": [
+    102.23983764648438,
+    259.51068115234375,
+    163.2845458984375,
+    270.5326843261719
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] Format string attack, OWASP,",
+   "bbox": [
+    85.8600082397461,
+    280.5105895996094,
+    233.63414001464844,
+    291.5325927734375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Format_string_attack",
+   "bbox": [
+    102.23983764648438,
+    296.53057861328125,
+    351.4366455078125,
+    307.5525817871094
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "313\n제4장구현단계 보안약점 진단\n마. 참고자료\n[1] CWE-134 Uncontrolled Format String, MITRE,\nhttp://cwe.mitre.org/data/definitions/134.html\n[2] Exclude user input from format strings, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/FIO30-C.+Exclude+use\nr+input+from+format+stringsb\n[3] Use valid format strings, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/FIO47-C.+Use+valid+f\normat+strings\n[4] Format string attack, OWASP,\nhttps://www.owasp.org/index.php/Format_string_attack\n",
+ "native_sha256": "49e5dfaa827f708d765cdc719a9ec4eff05ff44cddc9df886c8535e4634f399f",
+ "chars": 487,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,37 @@
+191
+제4장구현단계 보안약점 진단
+정탐코드의 예
+5:
+<result column=”ID” property=”id” />
+6:
+<result column=”NAME” property=”name” />
+7:
+</resultMap>
+8: <select id=”listStudents” resultMap=”StudentResult”>
+9:
+SELECT NUM, NAME 
+10: FROM STUDENTS 
+11: ORDER BY NUM 
+12:</select>
+13:<select id=”nameStudent” parameterClass=”Integer” resultClass=”Student”>
+14: SELECT NUM, NAME 
+15: FROM STUDENTS 
+16: WHERE NUM = #num# 
+17:</select> 
+18:<!-- dynamic SQL 사용 --> 
+19:<delete id=”delStudent” parameterClass=”Student”> 
+20: DELETE STUDENTS 
+21: WHERE NUM = #num# AND NAME = ‘$name$’ 
+22:</delete>
+23:</sqlMap>
+[ SQL 삽입 : Hibernate ]
+외부의 신뢰할 수 없는 입력을 적절한 검사 과정을 거치지 않고 Hibernate API의 SQL 쿼리 생성을 
+위한 문자열로 사용하면, 공격자가 프로그래머가 의도하지 않았던 문자열을 전달함으로써 쿼리의 
+의미를 왜곡시키거나 그 구조를 변경하여 임의의 DB 명령어가 수행되도록 할 수 있다.
+다음의 예제에서는 외부의 입력(name)을 아무 검증과정 없이 쿼리에 그대로 사용하고 있다. 만일, 
+외부의 입력으로 “n’ or ‘1’=’1”과 같은 문자열이 입력되면, 다음과 같은 쿼리가 실행되어 테이블 
+내의 모든 레코드가 반환될 수 있으므로 취약하다고 판정한다.
+“from Student where studentName=’n’ or ‘1’=’1’”
+정탐코드의 예
+1: import org.hibernate.Query
+2: import org.hibernate.Session

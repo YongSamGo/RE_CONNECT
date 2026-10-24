@@ -1,0 +1,51 @@
+344
+안전하지 않은 코드의 예 C
+// 비밀번호를 파일에서 읽어 옵니다.
+9:
+fgets(passwd, sizeof(passwd), fp);
+10: fclose(fp);
+11: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
+12: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
+13: SQLConnect(hdbc, 
+14:
+(SQLCHAR*) server, 
+15:
+(SQLSMALLINT) strlen(server), 
+16:
+(SQLCHAR*) user, 
+17:
+(SQLSMALLINT) strlen(user), 
+18:
+//비밀번호의 암호화 없이 직접 연결합니다.
+19:
+(SQLCHAR*) passwd,
+20:
+(SQLSMALLINT) strlen(passwd) ); 
+21: return 0;
+외부에서 입력된 비밀번호는 검증의 과정을 거쳐서 사용해야 한다.
+안전한 코드의 예 C
+1: int dbaccess(){
+2:
+FILE *fp; char *server = "DBserver"; 
+3:
+char passwd[20]; 
+4:
+char user[20]; 
+5:
+char *encPasswd; 
+6:
+char *key;
+7:
+SQLHENV henv; 
+8:
+SQLHDBC hdbc; 
+// AES-CBC로 암호화 모드를 설정합니다.
+9:
+HCkCrypt2 crypt = CkCrypt2_putCryptAlgorithm(crypt,”aes”);
+10:
+CkCrypt2_putCipherMode(crypt,”cbc”);
+// 외부에서 암호화 키를 불러와 설정합니다.
+11:
+key = getenv(“encrypt_key”);
+12:
+CkCrypt2_SetEncodedKey(crypt,key,”hex”);

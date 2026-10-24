@@ -1,0 +1,50 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+59
+다. 코드예제
+사용자 요청에 포함된 값을 필터링 및 검증 없이 응답에 사용하는 경우 개행문자로 인해 여러 개의 응답으로 
+분할되어 사용자에게 전달될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+from django.http import HttpResponse
+def route(request):
+  content_type = request.POST.get('content-type')
+  # 외부 입력값을 검증 또는 필터링 하지 않고
+  # 응답 헤더의 값으로 포함시켜 회신한다
+  ......
+  res = HttpResponse()
+  res['Content-Type'] = content_type
+  return res
+응답 분할을 예방하기 위해 \r, \n과 같은 문자에 대해 치환 또는 예외처리를 적용해 응답분할이 발생하지 
+않도록 예방해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+from django.http import HttpResponse
+def route(request):
+  content_type = request.POST.get('content-type')
+  # 응답헤더에 포함될 수 있는 외부 입력값 내의 개행 문자를 제거한다
+  content_type = content_type.replace('\r', '')
+  content_type = content_type.replace('\n', '')
+  ......
+  res = HttpResponse()
+  res['Content-Type'] = content_type
+  return res

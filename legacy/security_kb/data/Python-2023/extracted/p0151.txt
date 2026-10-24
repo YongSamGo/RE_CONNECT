@@ -1,0 +1,36 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화
+145
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+from django.shortcuts import render
+class UserDescription:   
+  def get_user_profile(self):
+    result = self.get_user_discription(self.user_name)
+    ......
+    return result
+  def show_user_profile(self, name):
+    # 인스턴스 변수로 사용해 스레드 간 공유되지 않도록 한다
+    self.user_name = request.POST.get(‘name’, ‘’)
+    self.user_profile = self.get_user_profile()
+    
+    return render(request, 'profile.html', {'profile':self.user_profile})
+라. 참고자료
+① CWE-488: Exposure of Data Element to Wrong Session, MITRE,
+https://cwe.mitre.org/data/definitions/488.html
+② CWE-543: Use of Singleton Pattern Without Synchronization in a Multithreaded Context, MITRE,
+https://cwe.mitre.org/data/definitions/543.html
+➂ The global statement, Python Software Foundation,
+https://docs.python.org/3/reference/simple_stmts.html#global

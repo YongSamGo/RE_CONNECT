@@ -1,0 +1,48 @@
+311
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C
+/* 오류 처리 */
+6:
+}
+7:
+int ret = snprintf(msg, len, msg_format, user); 
+8:
+if (ret < 0 || ret >= len) { 
+/* 오류 처리 */
+9:
+}
+//
+10:
+fprintf(stderr, msg);
+11:
+free(msg);
+12:
+msg = NULL;
+13:}
+이 예제는 fprintf() 대신에 fputs()를 사용하여, msg를 포맷 문자열처럼 취급하지 않고 그대로 
+stderr로 출력한다.
+안전한 코드의 예 C
+1: void incorrect_password(const char *user) { 
+2:
+static const char msg_format[] = "%s cannot be authenticated.\n"; 
+3:
+size_t len = strlen(user) + sizeof(msg_format); 
+4:
+char *msg = (char *)malloc(len); 
+5:
+if (msg == NULL) {
+/* 오류 처리 */ 
+6:
+}
+7:
+int ret = snprintf(msg, len, msg_format, user); 
+8:
+if (ret < 0 || ret >= len) { 
+/* 오류 처리 */ 
+9:
+}
+//
+10:
+if (fputs(msg, stderr) == EOF) { 
+/* 오류 처리 */ 
+11: }

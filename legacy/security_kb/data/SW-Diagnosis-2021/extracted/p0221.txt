@@ -1,0 +1,38 @@
+221
+제4장구현단계 보안약점 진단
+오탐코드의 예
+9:
+<p> 제목 : <%=board_contents%> </p> 
+[ 크로스사이트 스크립트 : DOM ]
+다음의 예제에서는 request.getParameter()에서 전달된 외부의 입력(name)이 document.write()의 
+인자 값 생성에 그대로 사용되어 취약한 것으로 판정한다.
+정탐코드의 예
+1: …
+2: <% 
+3: // 외부로 부터 입력을 받는다. 
+4: String name = request.getParameter(“name”);
+5: %>
+6: <SCRIPT language=”javascript”> 
+7: // 외부의 입력을 그대로 출력한다. 
+8: document.write(“name:” + <%=name%> );
+다음의 예제에서는 request.getParameter()에서 전달된 외부의 입력(name)이 필터링되고 있으나 
+;) alert(documement.cookie);<%--를 파라미터에 입력할 경우 악성 스크립트가 실행된다. 크로스
+사이트 스크립트 : DOM을 방지하기 위해 ;, %, - 등도 필터링 문자에 추가한다.
+정탐코드의 예
+1:
+…
+2:
+<% 
+3:
+String name = request.getParameter(“name”); 
+4: name = name.replaceAll(“<”,”&lt;”); 
+5: name = name.replaceAll(“>”,”&gt;”); 
+6:
+name = name.replaceAll(“&”,”&amp;”); 
+7:
+name = name.replaceAll(“””,”&quot;”); 
+8: name = name.replaceAll(“’”, 
+“&#x27;”); 9: name = name.replaceAll(“/”,
+“&#x2F;”); 10: %> 
+11: <SCRIPT language=”javascript”> 
+12: document.write(“name:” + <%=name%> );

@@ -1,0 +1,35 @@
+248
+일반적인 진단의 예
+14:
+fileItem.write(xmlFile);
+15:
+DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+16:
+DocumentBuilder db = dbf.newDocumentBuilder(); 
+17:
+Document document = db.parse(xmlFile); ···································································①
+18:
+changeConfiguration(document); 
+19:
+...
+20:}
+다음의 SAXParserFactory 사용하는 예제에서는 사용자 입력 값인 XML file을 사용하고 있으나, 
+외부 엔티티 사용을 비활성화하지 않으므로 취약하다고 판정한다.
+정탐코드의 예
+1:@RequestMapping(value = "/xmlupload", method = RequestMethod.POST) 
+2:public Student xmlUpload(@RequestParam("file") MultipartFile multipartFile)
+3:File xmlFile = new File(multipartFile.getOriginalFilename());
+4:multipartFile.transferTo(xmlFile);
+5:SAXParserFactory factory = SAXParserFactory.newInstance();
+6:SAXParser saxParser = factory.newSAXParser();
+7:SAXParseraxParser.parse(new FileInputStream(xmlFile), new DefaultHandler());
+다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 
+있다.
+오탐코드의 예
+1 String xml = "xxe.xml"; 
+2 DocumentBuilderFactory df = DocumentBuilderFactory.newInstance(); 
+3 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+4 df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+5 DocumentBuilder builder = df.newDocumentBuilder(); 
+6 Document document = builder.parse(new InputSource(xml)); 
+7 DOMSource domSource = new DOMSource(document); 

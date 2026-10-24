@@ -1,0 +1,26 @@
+371
+제4장구현단계 보안약점 진단
+안전한 코드의 예 JAVA
+4: Matcher matcher = pattern.matcher(pass);
+5: if (!matcher.matches()) {
+6:
+return "비밀번호 조합규칙 오류";
+7: }
+8: UserVo userVO = new UserVo(id, pass); 
+9: ……
+10:String result = registerDAO.register(userVO);
+빈 비밀번호를 허용하는 C# 코드의 예제이다.
+안전하지 않은 코드의 예 C#
+// 빈 비밀번호를 허용
+1: NetworkCredential myCred = new NetworkCredential(UserName, ""); 
+빈 비밀번호를 허용하지 않도록 한다.
+안전한 코드의 예 C#
+// 빈 비밀번호를 사용하지 않음
+1: NetworkCredential secure_myCred = new NetworkCredential(UserName,
+Password);
+비밀번호에 대한 검증 없이 사용하는 C코드 예제이다.
+안전하지 않은 코드의 예 C
+1: bool authentication(char* id, char* pwd)
+2: { 
+3: MYSQL *connectInstance; 
+4: connectInstance = mysql_init(NULL);

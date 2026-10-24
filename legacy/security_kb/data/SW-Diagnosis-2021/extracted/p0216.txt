@@ -1,0 +1,37 @@
+216
+[ 크로스사이트 스크립트 : Reflected ]
+다음의 예제에서 @ModelAttribute(“apApsCommonCodeVO”) ApApsCommonCodeVO apAp 
+sCommonCodeVO 어노테이션에 따라 apsApsCommonCodeVO는 외부 입력값이다. 20라인에서 
+외부 입력값의 target값을 저장하고 26번째 라인에서 외부 입력값을 response의 output stream에 
+출력하고 있다. 그 과정에서 입력값에 대한 필터링이 없으므로 취약한 것으로 판정한다.
+정탐코드의 예
+16: @RequestMapping(“/aps/common/makeCommonCode.do”) 
+17: public void makeCommonCode(HttpSession session,
+@ModelAttribute(“apApsCom- monCodeVO”)
+18: ApApsCommonCodeVO apApsCommonCodeVO, HttpServletRequest request, 
+HttpServletResponse
+19: response, ModelMap model) throws Exception {
+20: String target = apApsCommonCodeVO.getTarget();
+21: List resultList = apApsExcelService.selectCommonCode(apApsCommonCodeVO);
+22: JSONArray jsonArray = new JSONArray();
+23: jsonArray = JSONArray.fromObject(resultList);
+24: response.setContentType(“text/xml;charset=utf-8”);
+25: PrintWriter printWriter = response.getWriter();
+26: printWriter.print(target);
+27: printWriter.print(jsonArray.toString());
+28: printWriter.flush();
+29: printWriter.close();
+30: }
+다음의 예제에서는 2라인에서 외부 입력값으로 request.getQueryString()를 입력받아 6라인에서 
+URL을 구성하여 출력하고 있어 취약하다.
+정탐코드의 예
+1:
+…
+2:
+<%@ taglib prefix=”c” url=”http://java.sun.com/jsp/jstl/core”%> 
+3:
+<%@ taglib uri=”http://java.sun.com/jsp/jstl/functions” prefix=”fn”%>
+4:
+…
+5:
+<c:out value=”${param.name}” escapeXml=”false” />

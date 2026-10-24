@@ -1,0 +1,35 @@
+537
+제5장부록
+1.7.1. 응답헤더에 쓰이는 외부 입력값 필터링
+ return s; 
+} 
+ : 
+private void doSomething(...) { 
+ : 
+ String p = request.getParameter(“data”); 
+ response.setHeader(filterCrLf(p)); 
+ : 
+} 
+1.7.2. 리다이렉트에 사용되는 외부 입력값 제한
+외부 입력값을 페이지 이동에 사용하는 경우, 연결할 URL과 도메인을 화이트 리스트로 정의하고 범위 내에서만 
+이동 할 수 있도록 제한한다.
+protected void doGet(HttpServletRequest request,
+HttpServletResponse response)
+ throws ServletException, IOException { 
+ // 외부로 연결할 URL과 도메인 목록 
+ // 내용이 많거나 변경이 잦은 경우, 관리자 기능으로 DB화하여 
+ 관리 String allowedURL[] = { 
+ “http://url1.com”,”http://url2.com”,”http://urlcom” 
+ }; 
+ String nurl = request.getParameter(“nurl”); if (nurl 
+ == null) nurl = “0”; 
+ try { 
+ Integer n =
+ Integer.parseInt(nurl); if (n >= 
+ 0 && n < 3) { 
+ response.sendRedirect(allowedURL[n]) 
+ } 
+ } catch (NumberFormatException nfe) { 
+ : 
+ } 
+}

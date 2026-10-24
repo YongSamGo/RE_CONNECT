@@ -1,0 +1,47 @@
+274
+라. 진단방법
+사용자 권한변경, 신규정보 등록 등 주요 기능을 확인하고(①), 해당 기능 수행시 권한확인 절차 존재 
+여부 확인한다(②). 권한확인 절차가 없거나 권한 확인 방법이 세션쿠키, 사용자 IP, SSL 인증과 같이 
+자동 제출되는 자격증명에 의존하는 경우 취약하다.
+일반적인 진단의 예
+1:
+…
+2:
+int level = request.getParameter(“level”); ··········································································①
+3:
+int group = request.getParameter(“group”); ·······································································①
+4:
+String id = request.getParameter(“id”); ···············································································①
+5:
+String sql=”update member set level=? , group=? where id=?;”; ·······························①
+6:
+pstmt =con.prepareStatement(sql);
+7:
+pstmt.setInt(1, level); 
+8:
+pstmt.setString(2, group); 
+9:
+pstmt.setInt(3, id); 
+10: pstmt.executeUpdate(); ···········································································································②
+11: …
+다음의 예제를 살펴보면, 2번째 라인에서 임의의 토큰을 생성한 후 세션에 저장하고, 5번째 라인에서 
+생성한 토큰을 HIDDEN 필드 항목의 값으로 설정한다. 그리고 10번째 라인에서 HIDDEN 필드의 
+토큰 값과 세션에 저장된 토큰 값을 비교하여 일치하는 경우에만 정상 요청으로 판단하여 처리하고 
+있기 때문에 오탐으로 판단한다.
+오탐코드의 예
+1:
+// 입력화면이 요청되었을 때, 임의의 토큰을 생성한 후 세션에 저장한다. 
+2:
+session.setAttribute(“SESSION_CSRF_TOKEN”, UUID.randomUUID().toString());
+3:
+4:
+// 입력화면에 임의의 토큰을 HIDDEN 필드항목의 값으로 설정해 서버로 전달되도록 한다.
+5:
+<input type=”hidden” name=”param_csrf_token” value=”${SESSION_CSRF_TOKEN}” />
+6:
+7:
+// 요청 파라미터와 세션에 저장된 토큰을 비교해서 일치하는 경우에만 요청을 처리한다.
+8:
+String pToken = request.getParameter(“param_csrf_token”);
+9:
+String sToken = (String)session.getAttribute(“SESSION_CSRF_TOKEN”);

@@ -1,0 +1,9 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+115
+라. 참고자료
+① CWE-494: Download of Code Without Integrity Check, MITRE,
+https://cwe.mitre.org/data/definitions/494.html
+② Secure hashes and message digests, Python Software Foundation,
+https://docs.python.org/3/library/hashlib.html
+➂ Top 25 Series – Download of Code Without Integrity Check, SANS,
+https://www.sans.org/blog/top-25-series-rank-20-download-of-code-without-integrity-check/

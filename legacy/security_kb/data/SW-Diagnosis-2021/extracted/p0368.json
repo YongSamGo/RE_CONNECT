@@ -1,0 +1,420 @@
+{
+ "lines": [
+  {
+   "text": "368",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "Math.random() 함수를 사용하여 난수 값을 발생시켰을 경우 취약하다.",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    351.12542724609375,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    150.31112670898438,
+    296.1402587890625,
+    161.3331298828125
+   ],
+   "block": 15,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public static int[] insertRandom(int[] Cnt, int i ,int scope) { ",
+   "bbox": [
+    83.58000183105469,
+    175.23818969726562,
+    341.13665771484375,
+    185.13818359375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: int ran = (int) (Math.random() * scope) - 1; ",
+   "bbox": [
+    83.58001708984375,
+    189.63821411132812,
+    280.04486083984375,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: if (checkDigit(ran,Cnt)) { ",
+   "bbox": [
+    83.58001708984375,
+    204.03823852539062,
+    195.90283203125,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: Cnt[i] = ran; ",
+   "bbox": [
+    83.58001708984375,
+    218.43826293945312,
+    148.5963897705078,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: } else { ",
+   "bbox": [
+    83.58001708984375,
+    232.8382568359375,
+    128.79722595214844,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: insertRandom(Cnt,i,scope); ",
+   "bbox": [
+    83.58001708984375,
+    247.23825073242188,
+    206.19644165039062,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: } ",
+   "bbox": [
+    83.58001708984375,
+    261.63824462890625,
+    100.95674133300781,
+    271.5382385253906
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: return Cnt; ",
+   "bbox": [
+    83.58001708984375,
+    276.0382385253906,
+    142.97662353515625,
+    285.938232421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: }",
+   "bbox": [
+    83.58001708984375,
+    290.438232421875,
+    98.43292236328125,
+    300.3382263183594
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "자체 랜덤 키 생성으로 취약점 보완하는 경우, 즉 다음의 예제와 같이 Date 요소들로 취약점을 보완 ",
+   "bbox": [
+    76.5,
+    322.8111877441406,
+    464.8020935058594,
+    333.83319091796875
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하는 경우는 안전하다고 판정한다.",
+   "bbox": [
+    76.5,
+    339.8511962890625,
+    207.2297821044922,
+    350.8731994628906
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    376.33111572265625,
+    296.1402587890625,
+    387.3531188964844
+   ],
+   "block": 27,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    83.58000183105469,
+    401.25811767578125,
+    91.31366729736328,
+    411.1581115722656
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "1: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-beginDate.getTi-",
+   "bbox": [
+    100.04785919189453,
+    401.25811767578125,
+    421.6247863769531,
+    411.1581115722656
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "meInMillis() + 1)) + beginDate.getTimeInMillis(); ",
+   "bbox": [
+    95.70016479492188,
+    415.6581115722656,
+    293.86102294921875,
+    425.55810546875
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Java.util.Random, java.security.SecurityRandom 사용시에는 복잡도가 상대적으로 높으므로 ",
+   "bbox": [
+    76.5,
+    448.03118896484375,
+    464.8343811035156,
+    459.0531921386719
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "취약 하지 않다.",
+   "bbox": [
+    76.5,
+    465.0711975097656,
+    136.2499237060547,
+    476.09320068359375
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    501.5511169433594,
+    296.91937255859375,
+    512.5731201171875
+   ],
+   "block": 32,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: import java.security.SecureRandom; ",
+   "bbox": [
+    84.30000305175781,
+    526.4780883789062,
+    243.92921447753906,
+    536.3781127929688
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: ….",
+   "bbox": [
+    84.30000305175781,
+    540.8780517578125,
+    107.04524230957031,
+    550.778076171875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: SecureRandom r = new SecureRandom(); ",
+   "bbox": [
+    84.30000305175781,
+    555.278076171875,
+    270.4288024902344,
+    565.1781005859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-",
+   "bbox": [
+    84.30000305175781,
+    569.6780395507812,
+    338.1258239746094,
+    579.5780639648438
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "beginDate.getTimeInMil- lis() + 1)) + beginDate.getTimeInMillis();",
+   "bbox": [
+    96.42015838623047,
+    584.0780639648438,
+    364.3453674316406,
+    593.9780883789062
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "text": "1: public static int[] insertRandom(int[] Cnt, int i ,int scope) { \n2: int ran = (int) (Math.random() * scope) - 1; \n3: if (checkDigit(ran,Cnt)) { \n4: Cnt[i] = ran; \n5: } else { \n6: insertRandom(Cnt,i,scope); \n7: } \n8: return Cnt; \n9: }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    174.03818969726564,
+    341.13665771484375,
+    301.53822631835936
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    21,
+    22,
+    23,
+    24,
+    25
+   ],
+   "text": "1: import java.security.SecureRandom; \n2: ….\n3: SecureRandom r = new SecureRandom(); \n4: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-\nbeginDate.getTimeInMil- lis() + 1)) + beginDate.getTimeInMillis();",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    525.2780883789062,
+    364.3453674316406,
+    595.1780883789063
+   ]
+  }
+ ],
+ "native": "368\nMath.random() 함수를 사용하여 난수 값을 발생시켰을 경우 취약하다.\n정탐코드의 예\n1: public static int[] insertRandom(int[] Cnt, int i ,int scope) { \n2: int ran = (int) (Math.random() * scope) - 1; \n3: if (checkDigit(ran,Cnt)) { \n4: Cnt[i] = ran; \n5: } else { \n6: insertRandom(Cnt,i,scope); \n7: } \n8: return Cnt; \n9: }\n자체 랜덤 키 생성으로 취약점 보완하는 경우, 즉 다음의 예제와 같이 Date 요소들로 취약점을 보완 \n하는 경우는 안전하다고 판정한다.\n오탐코드의 예\n1:\n1: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-beginDate.getTi-\nmeInMillis() + 1)) + beginDate.getTimeInMillis(); \nJava.util.Random, java.security.SecurityRandom 사용시에는 복잡도가 상대적으로 높으므로 \n취약 하지 않다.\n오탐코드의 예\n1: import java.security.SecureRandom; \n2: ….\n3: SecureRandom r = new SecureRandom(); \n4: long rand = ((r.nextLong()>>>1)%(endDate.getTimeInMillis()-\nbeginDate.getTimeInMil- lis() + 1)) + beginDate.getTimeInMillis();\n",
+ "native_sha256": "78026630410a6a2df481d159509d0190477180692ef5acbd5751d39ead625649",
+ "chars": 815,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

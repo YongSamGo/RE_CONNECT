@@ -1,0 +1,13 @@
+502
+마. 참고자료
+[1] CWE-676 Use of Potentially Dangerous Function, MITRE,
+http://cwe.mitre.org/data/definitions/676.html
+[2] CWE-242 Use of Inherently Dangerous Function, MITRE,
+http://cwe.mitre.org/data/definitions/242.html 
+[3] CWE-246 J2EE Bad Practices: Direct Use of Sockets, MITRE,
+http://cwe.mitre.org/data/definitions/246.html 
+[4] CWE-382 J2EE Bad Practices: Use of System.exit(), MITRE,
+http://cwe.mitre.org/data/definitions/382.html 
+[5] Do not use deprecated or obsolescent functions, CERT,
+http://www.securecoding.cert.org/confluence/display/c/MSC24-C.+Do+not+use
++deprecated+or+obsolescent+functions

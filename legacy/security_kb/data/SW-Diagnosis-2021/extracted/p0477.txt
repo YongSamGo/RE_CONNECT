@@ -1,0 +1,27 @@
+477
+제4장구현단계 보안약점 진단
+이에 따라 J2EE와 같은 응용프로그램에서 main() 메소드는 삭제한다. J2EE의 main() 메소드의 
+경우 디버깅 코드인 경우가 일반적이다.
+안전한 코드의 예 JAVA
+1: class Base64 { 
+2:
+public void otherMethod() { … } 
+3: }
+디버그용 코드가 남아있는 C# 코드의 예제이다.
+안전하지 않은 코드의 예 C#
+1: class Example {
+2: public void Log() { 
+3: //Console.WriteLine 등의 메소드를 사용한 디버그용 코드가 남아있습니다.
+4:
+Console.WriteLine("sensitive info");
+5:
+}
+6: }
+디버그용 코드를 삭제 하여야 한다.
+안전한 코드의 예 C#
+1: class Example { 
+2: public void Log() { 
+3: //디버그용 코드를 삭제해야 합니다.
+4: //Console.WriteLine("sensitive info");
+5: }
+6: }

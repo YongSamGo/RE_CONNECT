@@ -1,0 +1,35 @@
+295
+제4장구현단계 보안약점 진단
+다음의 예제에서 pubKey.available() 함수는 int 값을 리턴 한다. 그러므로 정수 값 한계를 벗어난 
+값은 발생하지 않는다.
+오탐코드의 예
+31:
+try { 
+32:
+URL url = Util.class.getClassLoader().getResource(publicKeyFilepath);
+33:
+pubKey = url.openStream();
+34:
+} catch (MalformedURLException e) {
+35:
+pubKey = new FileInputStream(publicKeyFilepath);
+36:
+}
+37:
+byte[] bytes = new byte[pubKey.available()];
+다음의 예제에서 입력 값은 HTTP 헤더의 한계값이 있으므로 정수의 한계를 초과할 가능성이 없다.
+오탐코드의 예
+1:
+String[] referer_split = Util.split(request.getHeader(“Referer”).toString(),”/”);
+2:
+String refererValue = referer_split[referer_split.length-1];
+다음의 예제에서 인자의 개수가 정수의 한계 이상으로 입력된다는 것은 실현 가능성이 희박하므로 
+취약하지 않은 것으로 판단한다.
+오탐코드의 예
+1:
+public static void main(String[] args) {
+2:
+String[] jsargs = {“-j=”+args[0]};
+3:
+String[] allArgs = new String[jsargs.length + args.length];
+사용자 입력 값 등 외부 값이 아닌 경우 취약하지 않다.

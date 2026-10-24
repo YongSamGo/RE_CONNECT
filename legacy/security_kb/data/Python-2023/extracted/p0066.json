@@ -1,0 +1,139 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "60",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    102.7816390991211,
+    119.12395477294922,
+    113.32826232910156
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Response Splitting'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    124.64191436767578,
+    504.4992980957031,
+    133.63050842285156
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/113.html",
+   "bbox": [
+    77.32001495361328,
+    140.8214111328125,
+    267.01031494140625,
+    149.80999755859375
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② HTTP Response Splitting, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    162.03448486328125,
+    219.43299865722656,
+    171.02308654785156
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/attacks/HTTP_Response_Splitting",
+   "bbox": [
+    77.32001495361328,
+    178.21395874023438,
+    359.1639709472656,
+    187.2025604248047
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Django security releases issued, Django Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    199.42706298828125,
+    331.2775573730469,
+    208.41566467285156
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://www.djangoproject.com/weblog/2021/may/06/security-releases/",
+   "bbox": [
+    77.32001495361328,
+    215.60653686523438,
+    370.8313903808594,
+    224.5951385498047
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "Python 시큐어코딩 가이드\n60\n라. 참고자료\n① CWE-113: Improper Neutralization of CRLF Sequences in HTTP Headers ('HTTP Response Splitting'), MITRE,\nhttps://cwe.mitre.org/data/definitions/113.html\n② HTTP Response Splitting, OWASP,\nhttps://owasp.org/www-community/attacks/HTTP_Response_Splitting\n③ Django security releases issued, Django Software Foundation,\nhttps://www.djangoproject.com/weblog/2021/may/06/security-releases/\n",
+ "native_sha256": "712182ac715446a9357b97bf77291e8ebfe70844df26b5e25e6c06b162df1a0c",
+ "chars": 410,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

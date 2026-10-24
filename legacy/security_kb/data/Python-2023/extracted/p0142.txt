@@ -1,0 +1,56 @@
+Python 시큐어코딩 가이드
+136
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+import os
+from django.shortcuts import render
+from xml.sax import make_parser
+from xml.sax.handler import feature_namespaces
+def parse_xml(request):
+  filename = request.POST.get('filename')
+  # filename이 None 인지 체크
+  if filename is None or filename.strip() == "":
+    return render(request, "/error.html", {"error": "파일 이름이 없습니다."})
+  if (filename.count('.') > 0):
+    name, ext = os.path.splitext(filename)
+  else:
+    ext = ''
+  if ext == ".xml":
+    parser = make_parser()
+    parser.setFeature(feature_namespaces, True)
+    handler = Handler()
+    parser.setContentHandler(handler)
+    parser.parse(filename)
+    result = handler.root
+    return render(request, "/success.html", {"result": result})
+라. 참고자료
+① CWE-476: NULL Pointer Dereference, MITRE,
+https://cwe.mitre.org/data/definitions/476.html
+② Null Dereference, OWASP,
+https://owasp.org/www-community/vulnerabilities/Null_Dereference
+➂ Built-in Constants, Python Software Foundation,
+https://docs.python.org/3/library/constants.html?#None

@@ -1,0 +1,49 @@
+253
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C#
+17:
+qout.SetOutputProperty(Serializer.METHOD, "xml"); 
+18:
+qout.SetOutputProperty(Serializer.DOCTYPE_PUBLIC, "-//W3C//DTD XHTML
+1.0 Strict//EN");
+19:
+qout.SetOutputProperty(Serializer.DOCTYPE_SYSTEM,
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd");
+20:
+qout.SetOutputProperty(Serializer.INDENT, "yes"); 
+21:
+qout.SetOutputProperty(Serializer.OMIT_XML_DECLARATION, "no");
+22:
+qout.SetOutputWriter(Response.Output);
+//별다른 검증 없이 XML 데이터에 접근합니다. 
+23:
+eval.Run(qout);27:
+}
+문자열 필터링으로 쿼리문 조작을 막을 수 있다.
+안전한 코드의 예 C#
+1:String squery = 
+2:
+"for $user in doc(users.xml)//user[username='"
+3:
++ UserTextBox.Text
+4:
++ "'and pass='"
+5:
++ PwdTextBox.Text
+6:
++ "'] return $user";
+// 문자열 필터링으로 위험한 문자열을 제거해 줍니다.
+7:
+string validatedQuery = squery.Replace('/','*');
+8: Processor processor = new Processor();
+9: XQueryCompiler compiler = processor.NewXQueryCompiler(); 
+10:
+XdmNode indoc = processor.NewDocumentBuilder().Build(new 
+Uri(Server.MapPath("users.xml"))); 
+11:using (StreamReader query = new StreamReader(validatedQuery)) 
+12:{ // tainted value propagated 
+13:
+XQueryCompiler compiler = processor.NewXQueryCompiler(); 
+14:
+XQueryExecutable exp = compiler.Compile(query.ReadToEnd()); //
+xquery created

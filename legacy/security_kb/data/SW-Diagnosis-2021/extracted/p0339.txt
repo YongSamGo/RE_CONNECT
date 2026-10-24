@@ -1,0 +1,56 @@
+339
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 C#
+6:
+{
+7:
+var userId = "tmp"; 
+8:
+MembershipUser user = Membership.GetUser(userId);
+9:
+if (user != null) 
+10:
+{
+11:
+var password = user.GetPassword(); 
+12:
+Response.Write(password);
+13:
+}
+14:
+else
+15:
+{
+16:
+Response.Write("the given userId is not valid");
+17:
+}
+18:
+}
+19:
+}
+20:}
+비밀번호는 암호화 하여 저장해야 하며, 출력하지 않도록 한다.
+안전한 코드의 예 C#
+1: namespace Security
+2: {
+3:
+public class FindPassword : System.Web.UI.Page
+4:
+{
+5:
+protected void Page_Load(object sender, EventArgs e)
+6:
+{
+7:
+var userId = "tmp";
+8:
+MembershipUser user = Membership.GetUser(userId);
+9:
+if (user != null)
+10:
+{
+11:
+var encrypetedPassword = user.GetPassword();
+12:
+SecureFindPasswordFunction();

@@ -1,0 +1,38 @@
+255
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+7:XPathExpression expr = xpath.compile("//users/user[login/text()='"+nm+"' and 
+password/text()='"+pw+"']/home_dir/text()"); 
+// 안전하지 않은 질의문이 담긴 expr을 평가하여 결과를 result에 저장한다.
+8:Object result = expr.evaluate(doc, XPathConstants.NODESET);
+// result의 결과를 NodeList 타입으로 변환하여 nodes 저장한다.
+9:NodeList nodes = (NodeList) result; 
+10:for (int i=0; i<nodes.getLength(); i++) { 
+11:
+String value = nodes.item(i).getNodeValue(); 
+12:
+if (value.indexOf(">") < 0) { 
+// 공격자가 이름과 비밀번호를 확인할 수 있다. 
+13:
+System.out.println(value);
+14:
+}:
+15:}
+다음의 예제는 XQuery를 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 구조가 
+바뀌는 것을 막을 수 있다.
+안전한 코드의 예 JAVA
+[ login.xq 파일 ]
+declare variable $loginID as xs:string external; 
+declare variable $password as xs:string external; 
+//users/user[@loginID=$loginID and @password=$password] 
+// XQuery를 이용한 XPath Injection 방지
+1:String nm = props.getProperty("name");
+2:String pw = props.getProperty("password");
+3:Document doc = new Builder().build("users.xml"); 
+//파라미터화된 쿼리가 담겨있는 login.xq를 읽어와서 파라미터화된 쿼리를 생성한다.
+4:XQuery xquery = new XQueryFactory().createXQuery(new File("login.xq"));
+5:Map vars = new HashMap();
+//검증되지 않은 외부값인 nm, pw를 파라미터화된 쿼리의 파라미터로 설정한다. 
+6:vars.put("loginID", nm);
+7:vars.put("password", pw);
+// 파라미터화된 쿼리를 실행하므로 외부값을 검증 없이 사용하여도 안전하다.

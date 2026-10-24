@@ -1,0 +1,29 @@
+429
+제4장구현단계 보안약점 진단
+3. 부적절한 예외 처리
+가. 개요
+프로그램 수행 중에 함수의 결과값에 대한 적절한 처리 또는 예외상황에 대한 조건을 적절하게 검사
+하지 않을 경우, 예기치 않은 문제를 야기할 수 있다.
+나. 보안대책
+값을 반환하는 모든 함수의 결과값을 검사하여, 그 값이 의도했던 값인지 검사하고, 예외 처리를 사용 
+하는 경우에 광범위한 예외 처리 대신 구체적인 예외 처리를 수행한다.
+다. 코드예제
+다음 예제는 try 블록에서 다양한 예외가 발생할 수 있음에도 불구하고 예외를 세분화하지 않고 광범
+위한 예외 클래스인 Exception을 사용하여 예외를 처리하고 있다.
+안전하지 않은 코드의 예 JAVA
+1: try {
+2:
+...
+3:
+reader = new BufferedReader(new InputStreamReader(url.openStream()));
+4:
+String line = reader.readLine(); 
+5:
+SimpleDateFormat format = new SimpleDateFormat("MM/DD/YY"); 
+6:
+Date date = format.parse(line);
+//예외처리를 세분화 할 수 있음에도 광범위하게 사용하여 예기치 않은 문제가 발생 할 수 있다.
+7: } catch (Exception e) {
+8:
+System.err.println("Exception : " + e.getMessage());
+9: }

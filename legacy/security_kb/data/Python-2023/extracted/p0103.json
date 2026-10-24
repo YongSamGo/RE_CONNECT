@@ -1,0 +1,169 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능",
+   "bbox": [
+    315.39373779296875,
+    46.76085662841797,
+    498.9757385253906,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "97",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    93.79303741455078,
+    119.12395477294922,
+    104.33966064453125
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-521: Weak Password Requirements, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    115.6533203125,
+    284.0470886230469,
+    124.64192199707031
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/521.html",
+   "bbox": [
+    77.32001495361328,
+    130.99386596679688,
+    267.01031494140625,
+    139.98245239257812
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Authentication Cheat Sheet, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    151.2481689453125,
+    229.9829864501953,
+    160.2367706298828
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    166.58871459960938,
+    406.18170166015625,
+    175.5773162841797
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Regular Expression HOWTO, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    186.843017578125,
+    316.2930603027344,
+    195.8316192626953
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/howto/regex.html",
+   "bbox": [
+    77.32001495361328,
+    202.18356323242188,
+    254.66343688964844,
+    211.1721649169922
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Password management in Django, Django Software Foundation, ",
+   "bbox": [
+    65.09266662597656,
+    222.43789672851562,
+    341.37652587890625,
+    231.42648315429688
+   ],
+   "block": 9,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/4.0/topics/auth/passwords/",
+   "bbox": [
+    77.32001495361328,
+    237.7784423828125,
+    330.1906433105469,
+    246.76702880859375
+   ],
+   "block": 10,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능\n97\n라. 참고자료\n① CWE-521: Weak Password Requirements, MITRE,\nhttps://cwe.mitre.org/data/definitions/521.html\n② Authentication Cheat Sheet, OWASP,\nhttps://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html\n③ Regular Expression HOWTO, Python Software Foundation,\nhttps://docs.python.org/3/howto/regex.html\n④ Password management in Django, Django Software Foundation, \nhttps://docs.djangoproject.com/en/4.0/topics/auth/passwords/\n",
+ "native_sha256": "72e3c692fbd092863074ffc076aa79d8f5ecc5fb0058ee6121db55619f7afb33",
+ "chars": 473,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

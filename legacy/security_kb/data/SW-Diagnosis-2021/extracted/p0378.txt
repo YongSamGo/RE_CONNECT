@@ -1,0 +1,34 @@
+378
+오탐코드의 예
+7:
+Enumeration<JarEntry> ens = jf.entries(); 
+8:
+while (ens.hasMoreElements()) { 
+9:
+JarEntry en = ens.nextElement(); 
+10:
+if (!en.isDirectory()) { 
+11:
+if (en.toString().equals(path)) { 
+12:
+byte[] data = readAll(jar.getInputStream(en), en.getSize());
+13:
+CodeSigner[] signers = en.getCodeSigners();
+14:
+if (signers != null && signers.length != 0){
+15:
+...
+16:
+}
+17: 
+}
+18:
+}
+19:
+}
+20:
+return null; 
+21:}
+마. 참고자료
+①CWE-347 : Improper Verification of Cryptographic Signature, MITRE,
+http://cwe.mitre.org/data/definitions/347.html

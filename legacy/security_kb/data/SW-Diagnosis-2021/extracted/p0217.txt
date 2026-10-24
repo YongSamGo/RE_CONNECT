@@ -1,0 +1,49 @@
+217
+제4장구현단계 보안약점 진단
+다음의 예제에서는 JSTL의 <c:out>을 이용하여 외부 값을 출력할 때 escapeXml값을 false로 설정
+하였기 때문에 스크립트가 실행될 수 있어 취약한 것으로 판정한다.
+정탐코드의 예
+1:
+<%
+2:
+String param = request.getParameter(“param”); 
+3:
+if ( param != null ) { 
+4:
+param = param.replaceAll(“<script>”,””); 
+5:
+param = param.replaceAll(“</script>”,””); 
+6:
+}
+7:
+%>
+8:
+…
+9:
+<p> 제목 : <%=title%> </p>
+다음의 예제에서는 필터링을 사용하였으나 <script> 문장을 공백으로 치환하였기 때문에 <sc<script>ript> 
+등으로 공격할 경우 스크립트가 실행되어 취약한 것으로 판정한다.
+정탐코드의 예
+1:
+<%
+2:
+String query = request.getQueryString(); 
+3:
+String nextUrl = request.getRequestURL().toString() + query; 
+4:
+%>
+5:
+….
+6:
+<input type=”hidden” name=”nextUrl” value= “<%=nextUrl%>” />
+다음의 예제에서는 외부 입력값이 html 주석으로 되어있어 수행되지 않으나, 공격시 주석을 닫는 
+부분과 함께 공격 스크립트를 삽입(--><script>…</script>)하면 취약하다.
+정탐코드의 예
+1:
+<%
+2:
+String param = request.getParameter(“param”);
+3:
+%>
+4:
+<!-- <%=param%> -->

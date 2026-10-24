@@ -1,0 +1,1076 @@
+{
+ "lines": [
+  {
+   "text": "236",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.03895568847656,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for(int i=0, s=fileList.size(); i<s; i++) { ",
+   "bbox": [
+    105.21342468261719,
+    142.23818969726562,
+    261.1754455566406,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    156.63821411132812,
+    92.04601287841797,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "file = (MultipartFile)fileList.get(i); ",
+   "bbox": [
+    109.6607437133789,
+    156.63821411132812,
+    244.7050018310547,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.30000305175781,
+    171.03823852539062,
+    92.0654067993164,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String orginFileName = file.getOriginalFilename(); ",
+   "bbox": [
+    109.68013000488281,
+    171.03823852539062,
+    312.6347961425781,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    84.30000305175781,
+    185.43826293945312,
+    92.0654067993164,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//--------------------------------------",
+   "bbox": [
+    109.68014526367188,
+    185.43826293945312,
+    307.5318603515625,
+    195.3382568359375
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    84.30000305175781,
+    199.83828735351562,
+    92.04071807861328,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 원 파일명이 없는 경우 처리 ",
+   "bbox": [
+    109.65544891357422,
+    199.83828735351562,
+    226.54991149902344,
+    209.73828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    84.30000305175781,
+    214.23831176757812,
+    96.98169708251953,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// (첨부가 되지 않은 input file type) ",
+   "bbox": [
+    110.15615844726562,
+    214.23831176757812,
+    255.27894592285156,
+    224.1383056640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    84.30000305175781,
+    228.6383056640625,
+    97.04517364501953,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//--------------------------------------",
+   "bbox": [
+    110.21964263916016,
+    228.6383056640625,
+    308.0845947265625,
+    238.53829956054688
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    84.30000305175781,
+    243.03829956054688,
+    97.04517364501953,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (“”.equals(orginFileName)) continue; ",
+   "bbox": [
+    110.21963500976562,
+    243.03829956054688,
+    266.87017822265625,
+    252.93829345703125
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    84.30000305175781,
+    257.43829345703125,
+    97.04517364501953,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "////------------------------------------",
+   "bbox": [
+    110.21963500976562,
+    257.43829345703125,
+    305.9209899902344,
+    267.3382873535156
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    84.30000305175781,
+    271.8382873535156,
+    97.04517364501953,
+    281.73828125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    84.30000305175781,
+    286.23828125,
+    97.04515838623047,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int index = orginFileName.lastIndexOf(“.”); ",
+   "bbox": [
+    110.2196273803711,
+    286.23828125,
+    285.38751220703125,
+    296.1382751464844
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    84.30000305175781,
+    300.6382751464844,
+    97.04517364501953,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//String fileName = orginFileName.substring(0, index);",
+   "bbox": [
+    110.21963500976562,
+    300.6382751464844,
+    332.9435729980469,
+    310.53826904296875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    84.30000305175781,
+    315.03826904296875,
+    97.04515838623047,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileExt = orginFileName.substring(index + 1);",
+   "bbox": [
+    110.2196273803711,
+    315.03826904296875,
+    321.3858337402344,
+    324.9382629394531
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    84.30000305175781,
+    329.4382629394531,
+    97.04515838623047,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String newName = KeyStr + EgovStringUtil.getTimeStamp() + fileKey;",
+   "bbox": [
+    110.21961975097656,
+    329.4382629394531,
+    397.8849182128906,
+    339.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    84.29998779296875,
+    343.8382568359375,
+    97.04515075683594,
+    353.7382507324219
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "long _size = file.getSize();",
+   "bbox": [
+    110.21961212158203,
+    343.8382568359375,
+    216.9244384765625,
+    353.7382507324219
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    84.29998779296875,
+    358.2382507324219,
+    97.04515838623047,
+    368.13824462890625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    84.29998779296875,
+    372.63824462890625,
+    97.00812530517578,
+    382.5382385253906
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (!””.equals(orginFileName)) {",
+   "bbox": [
+    110.1825942993164,
+    372.63824462890625,
+    233.04849243164062,
+    382.5382385253906
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    84.29998779296875,
+    387.0382385253906,
+    96.99930572509766,
+    396.938232421875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "filePath = storePathString + File.separator + newName;",
+   "bbox": [
+    123.3738021850586,
+    387.0382385253906,
+    353.0063171386719,
+    396.938232421875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    84.29998779296875,
+    401.438232421875,
+    96.99755096435547,
+    411.3382263183594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "file.transferTo(new File(filePath));",
+   "bbox": [
+    123.37203979492188,
+    401.438232421875,
+    257.0904541015625,
+    411.3382263183594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    84.29998779296875,
+    415.8382263183594,
+    97.04515838623047,
+    425.73822021484375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    119.0393295288086,
+    415.8382263183594,
+    121.7720718383789,
+    425.73822021484375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25:",
+   "bbox": [
+    84.29998779296875,
+    430.23822021484375,
+    97.02399444580078,
+    440.1382141113281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo = new FileVO();",
+   "bbox": [
+    119.01817321777344,
+    430.23822021484375,
+    200.8408660888672,
+    440.1382141113281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26:",
+   "bbox": [
+    84.29998779296875,
+    444.6382141113281,
+    97.00460052490234,
+    454.5382080078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setFileExtsn(fileExt);",
+   "bbox": [
+    118.998779296875,
+    444.6382141113281,
+    215.38787841796875,
+    454.5382080078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27:",
+   "bbox": [
+    84.29998779296875,
+    459.0382080078125,
+    97.0028305053711,
+    468.9382019042969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setFileStreCours(storePathString);",
+   "bbox": [
+    118.99700164794922,
+    459.0382080078125,
+    268.6922912597656,
+    468.9382019042969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28:",
+   "bbox": [
+    84.29998779296875,
+    473.4382019042969,
+    97.00812530517578,
+    483.33819580078125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setFileMg(Long.toString(_size));",
+   "bbox": [
+    119.00230407714844,
+    473.4382019042969,
+    259.41156005859375,
+    483.33819580078125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29:",
+   "bbox": [
+    84.29998779296875,
+    487.83819580078125,
+    97.01165008544922,
+    497.7381896972656
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setOrignlFileNm(orginFileName);",
+   "bbox": [
+    119.00582885742188,
+    487.83819580078125,
+    263.3167419433594,
+    497.7381896972656
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30:",
+   "bbox": [
+    84.29998779296875,
+    502.2381896972656,
+    97.00989532470703,
+    512.13818359375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setStreFileNm(newName);",
+   "bbox": [
+    119.00406646728516,
+    502.2381896972656,
+    239.16714477539062,
+    512.13818359375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "31:",
+   "bbox": [
+    84.29998016357422,
+    516.63818359375,
+    97.04513549804688,
+    526.5382080078125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setAtchFileId(atchFileIdString);",
+   "bbox": [
+    119.03931427001953,
+    516.63818359375,
+    255.1986083984375,
+    526.5382080078125
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "32:",
+   "bbox": [
+    84.29998016357422,
+    531.0381469726562,
+    97.01164245605469,
+    540.9381713867188
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fvo.setFileSn(String.valueOf(fileKey));",
+   "bbox": [
+    119.00581359863281,
+    531.0381469726562,
+    267.0455017089844,
+    540.9381713867188
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "33: ",
+   "bbox": [
+    84.29998016357422,
+    545.4381103515625,
+    99.57601165771484,
+    555.338134765625
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "34:",
+   "bbox": [
+    84.29998016357422,
+    559.838134765625,
+    97.04513549804688,
+    569.7381591796875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//writeFile(file, newName, storePathString);",
+   "bbox": [
+    119.03931427001953,
+    559.838134765625,
+    296.5044860839844,
+    569.7381591796875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "35:",
+   "bbox": [
+    84.29998016357422,
+    574.2381591796875,
+    97.01693725585938,
+    584.13818359375
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "result.add(fvo);",
+   "bbox": [
+    119.0111083984375,
+    574.2381591796875,
+    178.77442932128906,
+    584.13818359375
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "36:",
+   "bbox": [
+    84.29998016357422,
+    588.6381225585938,
+    97.04515075683594,
+    598.5381469726562
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "37:",
+   "bbox": [
+    84.29998016357422,
+    603.0380859375,
+    97.02751159667969,
+    612.9381103515625
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fileKey++;",
+   "bbox": [
+    119.02169036865234,
+    603.0380859375,
+    158.91354370117188,
+    612.9381103515625
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "38:",
+   "bbox": [
+    84.29998016357422,
+    617.4381103515625,
+    97.04515075683594,
+    627.338134765625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    110.21961212158203,
+    617.4381103515625,
+    112.95235443115234,
+    627.338134765625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "39:",
+   "bbox": [
+    84.29998016357422,
+    631.838134765625,
+    97.04515075683594,
+    641.7381591796875
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.83929443359375,
+    631.838134765625,
+    108.57203674316406,
+    641.7381591796875
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "40:",
+   "bbox": [
+    84.29998016357422,
+    646.2380981445312,
+    97.04513549804688,
+    656.1381225585938
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return result;",
+   "bbox": [
+    105.83927917480469,
+    646.2380981445312,
+    159.08364868164062,
+    656.1381225585938
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69
+   ],
+   "text": "5:      for(int i=0, s=fileList.size(); i<s; i++) { \n6:        file = (MultipartFile)fileList.get(i); \n7:        String orginFileName = file.getOriginalFilename(); \n8:        //--------------------------------------\n9:        // 원 파일명이 없는 경우 처리 \n10:      // (첨부가 되지 않은 input file type) \n11:      //--------------------------------------\n12:      if (“”.equals(orginFileName)) continue; \n13:      ////------------------------------------\n14:\n15:      int index = orginFileName.lastIndexOf(“.”); \n16:      //String fileName = orginFileName.substring(0, index);\n17:      String fileExt = orginFileName.substring(index + 1);\n18:      String newName = KeyStr + EgovStringUtil.getTimeStamp() + fileKey;\n19:      long _size = file.getSize();\n20:\n21:      if (!””.equals(orginFileName)) {\n22:           filePath = storePathString + File.separator + newName;\n23:           file.transferTo(new File(filePath));\n24:         }\n25:         fvo = new FileVO();\n26:         fvo.setFileExtsn(fileExt);\n27:         fvo.setFileStreCours(storePathString);\n28:         fvo.setFileMg(Long.toString(_size));\n29:         fvo.setOrignlFileNm(orginFileName);\n30:         fvo.setStreFileNm(newName);\n31:         fvo.setAtchFileId(atchFileIdString);\n32:         fvo.setFileSn(String.valueOf(fileKey));\n33: \n34:         //writeFile(file, newName, storePathString);\n35:         result.add(fvo);\n36:\n37:         fileKey++;\n38:      }\n39:    }\n40:    return result;",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    84.29998016357422,
+    141.03818969726564,
+    397.8849182128906,
+    657.3381225585938
+   ]
+  }
+ ],
+ "native": "236\n정탐코드의 예\n5:\nfor(int i=0, s=fileList.size(); i<s; i++) { \n6:\nfile = (MultipartFile)fileList.get(i); \n7:\nString orginFileName = file.getOriginalFilename(); \n8:\n//--------------------------------------\n9:\n// 원 파일명이 없는 경우 처리 \n10:\n// (첨부가 되지 않은 input file type) \n11:\n//--------------------------------------\n12:\nif (“”.equals(orginFileName)) continue; \n13:\n////------------------------------------\n14:\n15:\nint index = orginFileName.lastIndexOf(“.”); \n16:\n//String fileName = orginFileName.substring(0, index);\n17:\nString fileExt = orginFileName.substring(index + 1);\n18:\nString newName = KeyStr + EgovStringUtil.getTimeStamp() + fileKey;\n19:\nlong _size = file.getSize();\n20:\n21:\nif (!””.equals(orginFileName)) {\n22:\nfilePath = storePathString + File.separator + newName;\n23:\nfile.transferTo(new File(filePath));\n24:\n}\n25:\nfvo = new FileVO();\n26:\nfvo.setFileExtsn(fileExt);\n27:\nfvo.setFileStreCours(storePathString);\n28:\nfvo.setFileMg(Long.toString(_size));\n29:\nfvo.setOrignlFileNm(orginFileName);\n30:\nfvo.setStreFileNm(newName);\n31:\nfvo.setAtchFileId(atchFileIdString);\n32:\nfvo.setFileSn(String.valueOf(fileKey));\n33: \n34:\n//writeFile(file, newName, storePathString);\n35:\nresult.add(fvo);\n36:\n37:\nfileKey++;\n38:\n}\n39:\n}\n40:\nreturn result;\n",
+ "native_sha256": "4181ecaf5b4a64fa60913c937c88da7948742cc0807db931d613f934b00f93fa",
+ "chars": 1237,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

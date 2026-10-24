@@ -1,0 +1,125 @@
+{
+ "lines": [
+  {
+   "text": "349",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "[6] Password Plaintext Storage, OWASP",
+   "bbox": [
+    85.86000061035156,
+    113.83108520507812,
+    262.566162109375,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Password_Plaintext_Storage ",
+   "bbox": [
+    102.23983001708984,
+    129.79092407226562,
+    386.17510986328125,
+    140.81292724609375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[7] CWE-319, Cleartext Transmission of Sensitive Information, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    150.79086303710938,
+    396.47283935546875,
+    161.8128662109375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/319.html",
+   "bbox": [
+    102.2398681640625,
+    166.81082153320312,
+    308.7280578613281,
+    177.83282470703125
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[8] nsecure Transport, OWASP,",
+   "bbox": [
+    85.86003875732422,
+    187.81076049804688,
+    224.5599365234375,
+    198.832763671875
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Insecure_Transport",
+   "bbox": [
+    102.2398681640625,
+    203.83071899414062,
+    343.16363525390625,
+    214.85272216796875
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "349\n제4장구현단계 보안약점 진단\n[6] Password Plaintext Storage, OWASP\nhttps://www.owasp.org/index.php/Password_Plaintext_Storage \n[7] CWE-319, Cleartext Transmission of Sensitive Information, MITRE,\nhttp://cwe.mitre.org/data/definitions/319.html\n[8] nsecure Transport, OWASP,\nhttps://www.owasp.org/index.php/Insecure_Transport\n",
+ "native_sha256": "2c632ca8d6ed540d2ab0ee40ecc06eb00a210c274606eee90e6901884d4e63b2",
+ "chars": 315,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

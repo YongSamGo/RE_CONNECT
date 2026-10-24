@@ -1,0 +1,784 @@
+{
+ "lines": [
+  {
+   "text": "441",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 System.out.println(“After Throw 1”);은 실행되지 않는다.",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    370.88189697265625,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    144.31112670898438,
+    291.27935791015625,
+    155.3331298828125
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public static void testFunction(String dateStr1) throws Exception { ",
+   "bbox": [
+    78.66000366210938,
+    169.23818969726562,
+    365.3167724609375,
+    179.13818359375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    182.73818969726562,
+    86.40424346923828,
+    192.63818359375
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());",
+   "bbox": [
+    95.1983871459961,
+    182.73818969726562,
+    430.7413635253906,
+    192.63818359375
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    196.29849243164062,
+    86.42539978027344,
+    206.198486328125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Date date1 = null;",
+   "bbox": [
+    95.21954345703125,
+    196.29849243164062,
+    171.20567321777344,
+    206.198486328125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    209.79849243164062,
+    86.41217803955078,
+    219.698486328125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    95.2063217163086,
+    209.79849243164062,
+    112.784912109375,
+    219.698486328125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    223.29849243164062,
+    86.42539978027344,
+    233.198486328125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "date1 = sdf.parse(dateStr1);",
+   "bbox": [
+    99.59986877441406,
+    223.29849243164062,
+    214.32489013671875,
+    233.198486328125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    236.85879516601562,
+    86.39014434814453,
+    246.7587890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "} catch (ParseException e) {",
+   "bbox": [
+    95.18428039550781,
+    236.85879516601562,
+    210.96444702148438,
+    246.7587890625
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    250.35879516601562,
+    86.42539978027344,
+    260.2587890625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.err.println(“Inner Function”);",
+   "bbox": [
+    99.59986877441406,
+    250.35879516601562,
+    244.6045379638672,
+    260.2587890625
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    78.66000366210938,
+    263.8587951660156,
+    86.39366912841797,
+    273.7587890625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "e.printStackTrace();",
+   "bbox": [
+    99.56813049316406,
+    263.8587951660156,
+    176.61737060546875,
+    273.7587890625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    277.4190979003906,
+    86.42540740966797,
+    287.319091796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "thrownew Exception(e);",
+   "bbox": [
+    99.59986877441406,
+    277.4190979003906,
+    195.6972198486328,
+    287.319091796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    78.66000366210938,
+    290.9190979003906,
+    91.4051742553711,
+    300.819091796875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.1993179321289,
+    290.9190979003906,
+    102.93206024169922,
+    300.819091796875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    78.66000366210938,
+    304.4190979003906,
+    91.36638641357422,
+    314.319091796875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(“After Throw 1”);",
+   "bbox": [
+    100.16053009033203,
+    304.4190979003906,
+    246.61618041992188,
+    314.319091796875
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    317.9794006347656,
+    91.39810943603516,
+    327.87939453125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "int days1 = (int)((date1.getTime()/100000)/24);",
+   "bbox": [
+    100.19225311279297,
+    317.9794006347656,
+    291.2163391113281,
+    327.87939453125
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    331.4794006347656,
+    91.36638641357422,
+    341.37939453125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(“After Throw 2”);",
+   "bbox": [
+    100.16053009033203,
+    331.4794006347656,
+    246.61618041992188,
+    341.37939453125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    344.9794006347656,
+    91.4051742553711,
+    354.87939453125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.1993179321289,
+    344.9794006347656,
+    102.93206024169922,
+    354.87939453125
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 intdays1 = (int)((date1.getTime()/100000)/24);에서 data1이 널(Null)일 경우, ",
+   "bbox": [
+    70.86000061035156,
+    377.4111022949219,
+    459.1943664550781,
+    388.43310546875
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "널 (Null) 포인터 역참조가 발생하고 다음 단계로 진행되지 않게 된다. 이러한 이유로 intdays2 = (int) ",
+   "bbox": [
+    70.86001586914062,
+    394.3909912109375,
+    459.13385009765625,
+    405.4129943847656
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "((date1.getTime()/100000)/24); 문은 실행되지 않으며 널(Null)을 참조하지 않게 된다.",
+   "bbox": [
+    70.86001586914062,
+    411.3708801269531,
+    415.85357666015625,
+    422.39288330078125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    441.91119384765625,
+    291.27935791015625,
+    452.9331970214844
+   ],
+   "block": 43,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());",
+   "bbox": [
+    78.66000366210938,
+    466.83819580078125,
+    421.8854675292969,
+    476.7381896972656
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:Date date1 = null; ",
+   "bbox": [
+    78.66000366210938,
+    480.33819580078125,
+    164.91685485839844,
+    490.2381896972656
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:try { ",
+   "bbox": [
+    78.66000366210938,
+    493.83819580078125,
+    106.53838348388672,
+    503.7381896972656
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:date1 = sdf.parse(dateStr1); ",
+   "bbox": [
+    78.66000366210938,
+    507.3984680175781,
+    203.66978454589844,
+    517.2984619140625
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:} catch (ParseException e) { ",
+   "bbox": [
+    78.66000366210938,
+    520.8984375,
+    204.64208984375,
+    530.7984619140625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:System.err.println(“Inner Function”); ",
+   "bbox": [
+    78.66000366210938,
+    534.3984375,
+    233.82420349121094,
+    544.2984619140625
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:e.printStackTrace(); ",
+   "bbox": [
+    78.66000366210938,
+    547.958740234375,
+    165.86270141601562,
+    557.8587646484375
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:} ",
+   "bbox": [
+    78.66000366210938,
+    561.458740234375,
+    91.6563949584961,
+    571.3587646484375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    574.958740234375,
+    86.3971939086914,
+    584.8587646484375
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(“After Throw 1”); ",
+   "bbox": [
+    95.19133758544922,
+    574.958740234375,
+    244.12313842773438,
+    584.8587646484375
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:intdays1 = ",
+   "bbox": [
+    78.66000366210938,
+    588.51904296875,
+    136.6541290283203,
+    598.4190673828125
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "(int)((date1.getTime()/100000)/24);",
+   "bbox": [
+    78.66000366210938,
+    602.01904296875,
+    218.11900329589844,
+    611.9190673828125
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: intdays2",
+   "bbox": [
+    78.66000366210938,
+    615.51904296875,
+    128.92483520507812,
+    625.4190673828125
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "= (int)((date1.getTime()/100000)/24); 12:",
+   "bbox": [
+    78.66000366210938,
+    629.079345703125,
+    244.8319091796875,
+    638.9793701171875
+   ],
+   "block": 56,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(“After Throw 2”); ",
+   "bbox": [
+    78.66000366210938,
+    642.579345703125,
+    227.59530639648438,
+    652.4793701171875
+   ],
+   "block": 57,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "1: public static void testFunction(String dateStr1) throws Exception { \n2:    SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());\n3:    Date date1 = null;\n4:    try {\n5:      date1 = sdf.parse(dateStr1);\n6:    } catch (ParseException e) {\n7:      System.err.println(“Inner Function”);\n8:      e.printStackTrace();\n9:      thrownew Exception(e);\n10:    }\n11:    System.out.println(“After Throw 1”);\n12:    int days1 = (int)((date1.getTime()/100000)/24);\n13:    System.out.println(“After Throw 2”);\n14:    }",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    168.03818969726564,
+    430.7413635253906,
+    356.07939453125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+   ],
+   "text": "1:SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());\n2:Date date1 = null; \n3:try { \n4:date1 = sdf.parse(dateStr1); \n5:} catch (ParseException e) { \n6:System.err.println(“Inner Function”); \n7:e.printStackTrace(); \n8:} \n9:    System.out.println(“After Throw 1”); \n10:intdays1 = \n(int)((date1.getTime()/100000)/24);\n11: intdays2\n= (int)((date1.getTime()/100000)/24); 12:\nSystem.out.println(“After Throw 2”); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    465.63819580078126,
+    421.8854675292969,
+    653.6793701171875
+   ]
+  }
+ ],
+ "native": "441\n제4장구현단계 보안약점 진단\n다음의 예제에서 System.out.println(“After Throw 1”);은 실행되지 않는다.\n오탐코드의 예\n1: public static void testFunction(String dateStr1) throws Exception { \n2:\nSimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());\n3:\nDate date1 = null;\n4:\ntry {\n5:\ndate1 = sdf.parse(dateStr1);\n6:\n} catch (ParseException e) {\n7:\nSystem.err.println(“Inner Function”);\n8:\ne.printStackTrace();\n9:\nthrownew Exception(e);\n10:\n}\n11:\nSystem.out.println(“After Throw 1”);\n12:\nint days1 = (int)((date1.getTime()/100000)/24);\n13:\nSystem.out.println(“After Throw 2”);\n14:\n}\n다음의 예제에서 intdays1 = (int)((date1.getTime()/100000)/24);에서 data1이 널(Null)일 경우, \n널 (Null) 포인터 역참조가 발생하고 다음 단계로 진행되지 않게 된다. 이러한 이유로 intdays2 = (int) \n((date1.getTime()/100000)/24); 문은 실행되지 않으며 널(Null)을 참조하지 않게 된다.\n오탐코드의 예\n1:SimpleDateFormat sdf = new SimpleDateFormat(“yyyyMMdd”,Locale.getDefault());\n2:Date date1 = null; \n3:try { \n4:date1 = sdf.parse(dateStr1); \n5:} catch (ParseException e) { \n6:System.err.println(“Inner Function”); \n7:e.printStackTrace(); \n8:} \n9:\nSystem.out.println(“After Throw 1”); \n10:intdays1 = \n(int)((date1.getTime()/100000)/24);\n11: intdays2\n= (int)((date1.getTime()/100000)/24); 12:\nSystem.out.println(“After Throw 2”); \n",
+ "native_sha256": "adc4849abb793c774071f395c2f5037f63fb5f1cd59cf85aea9c0e7b2a6090e7",
+ "chars": 1217,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

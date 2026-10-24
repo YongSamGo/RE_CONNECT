@@ -1,0 +1,48 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+103
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+import os
+import socket
+import ssl
+HOST, PORT = "127.0.0.1", 7917
+def connect_with_server():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as sock:
+        # 보안 정책 수동 설정
+        context = ssl.SSLContext()
+        # SSLContext 생성자를 직접 호출할 때, CERT_NONE이 기본값
+        # 상대방을 인증하지 않기 때문에 통신하고자하는 서버의 신뢰성을 보장할 수 없음
+        context.verify_mode = ssl.CERT_NONE 
+        with context.wrap_socket(sock) as ssock:
+            try:
+                ssock.connect((HOST, PORT))
+                ssock.send("Hello I'm a vulnerable client :)".encode("utf-8"))
+                data = ssock.recv(1024).decode("utf-8")
+                print(f">> server from ({HOST}, {PORT}): {data}\n")
+            finally:
+                ssock.close()
+SSL 연결 시 PROTOCOL_TLS_CLIENT 프로토콜을 추가해 인증서 유효성 검사와 호스트 이름 확인을 
+위한 context를 구성하면 verify_mode가 CERT_REQUIRED로 설정되며 서버의 인증서 유효성을 검증할 수 있다.

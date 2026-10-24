@@ -1,0 +1,572 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능",
+   "bbox": [
+    315.39373779296875,
+    46.76085662841797,
+    498.9757385253906,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "107",
+   "bbox": [
+    490.4127197265625,
+    702.9564819335938,
+    504.04571533203125,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    98.3472671508789,
+    335.33807373046875,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    119.392578125,
+    94.51471710205078,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    134.7331085205078,
+    94.51471710205078,
+    143.24232482910156
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    149.9538116455078,
+    94.51471710205078,
+    158.46302795410156
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    165.2943572998047,
+    94.51471710205078,
+    173.80357360839844
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    180.51504516601562,
+    94.51471710205078,
+    189.02426147460938
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    195.8555908203125,
+    94.51471710205078,
+    204.36480712890625
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    211.0762939453125,
+    94.51471710205078,
+    219.58551025390625
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.http import HttpResponse",
+   "bbox": [
+    104.41199493408203,
+    118.89088439941406,
+    257.12225341796875,
+    127.90178680419922
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def remind_user_state(request):",
+   "bbox": [
+    104.41199493408203,
+    149.45211791992188,
+    228.7756805419922,
+    158.46302795410156
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  res = HttpResponse()",
+   "bbox": [
+    104.41199493408203,
+    164.79266357421875,
+    197.91647338867188,
+    173.80357360839844
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다",
+   "bbox": [
+    104.41199493408203,
+    180.0133514404297,
+    375.20098876953125,
+    189.02426147460938
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  res.set_cookie('rememberme', 1, max_age=60*60*24*365)",
+   "bbox": [
+    104.41199493408203,
+    195.35389709472656,
+    339.9695129394531,
+    204.36480712890625
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return res",
+   "bbox": [
+    104.41199493408203,
+    210.57460021972656,
+    151.993896484375,
+    219.58551025390625
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "만료 시간은 해당 기능에 맞춰 최소로 설정하고 영속적인 쿠키에는 중요 정보가 포함되지 않도록 한다. 쿠키를 ",
+   "bbox": [
+    75.04237365722656,
+    264.2168884277344,
+    507.2037353515625,
+    274.1642761230469
+   ],
+   "block": 19,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "HTTPS를 통해서만 전송하도록 secure 속성값을 True(기본값은 False)를 사용할 수 있다. 클라이언트 측에서 ",
+   "bbox": [
+    65.09266662597656,
+    284.23150634765625,
+    507.0838623046875,
+    294.17889404296875
+   ],
+   "block": 20,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "JavaScript를 통해 쿠키를 접근하지 못하도록 제한 하고자 할 경우엔 httpOnly 속성을 True(기본값은 False)로 ",
+   "bbox": [
+    65.09266662597656,
+    304.12628173828125,
+    507.3236083984375,
+    314.07366943359375
+   ],
+   "block": 21,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "설정한다. 다음은 쿠키 만료 시간을 1시간으로 설정한 예시다.",
+   "bbox": [
+    65.09266662597656,
+    324.1408996582031,
+    320.77618408203125,
+    334.0882873535156
+   ],
+   "block": 22,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    370.5220642089844,
+    319.7541809082031,
+    380.4694519042969
+   ],
+   "block": 23,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    391.6872253417969,
+    94.51471710205078,
+    400.1964416503906
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    406.9079284667969,
+    94.51471710205078,
+    415.4171447753906
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    422.24847412109375,
+    94.51471710205078,
+    430.7576904296875
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    437.4691467285156,
+    94.51471710205078,
+    445.9783630371094
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    452.8096923828125,
+    94.51471710205078,
+    461.31890869140625
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    468.0303955078125,
+    94.51471710205078,
+    476.53961181640625
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    483.3709411621094,
+    94.51471710205078,
+    491.8801574707031
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.http import HttpResponse",
+   "bbox": [
+    104.41199493408203,
+    391.185546875,
+    257.12225341796875,
+    400.1964416503906
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def remind_user_state(request):",
+   "bbox": [
+    104.41199493408203,
+    421.7467956542969,
+    228.7756805419922,
+    430.7576904296875
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  res = HttpResponse()",
+   "bbox": [
+    104.41199493408203,
+    436.96746826171875,
+    197.91647338867188,
+    445.9783630371094
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 쿠키의 만료시간을 적절하게 부여하고 secure 및 httpOnly 옵션을 활성화 한다.",
+   "bbox": [
+    104.41199493408203,
+    452.3080139160156,
+    405.9360656738281,
+    461.31890869140625
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  res.set_cookie('rememberme', 1, max_age=60*60, secure=True, httponly=True)",
+   "bbox": [
+    104.41199493408203,
+    467.5287170410156,
+    410.2156066894531,
+    476.53961181640625
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return res",
+   "bbox": [
+    104.41199493408203,
+    482.8692626953125,
+    151.993896484375,
+    491.8801574707031
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Django에서는 settings.py에 아래와 같이 추가해 전역으로 설정할 수 있다.",
+   "bbox": [
+    75.04237365722656,
+    527.4031372070312,
+    390.7837829589844,
+    537.3505249023438
+   ],
+   "block": 40,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "text": "1: from django.http import HttpResponse\n2:\n3: def remind_user_state(request):\n4:   res = HttpResponse()\n5:   # 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다\n6:   res.set_cookie('rememberme', 1, max_age=60*60*24*365)\n7:   return res",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    108.3946548461914,
+    375.20098876953125,
+    220.78551025390624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33
+   ],
+   "text": "1: from django.http import HttpResponse\n2:\n3: def remind_user_state(request):\n4:   res = HttpResponse()\n5:   # 쿠키의 만료시간을 적절하게 부여하고 secure 및 httpOnly 옵션을 활성화 한다.\n6:   res.set_cookie('rememberme', 1, max_age=60*60, secure=True, httponly=True)\n7:   return res",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    380.5694519042969,
+    410.2156066894531,
+    493.0801574707031
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능\n107\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\nfrom django.http import HttpResponse\ndef remind_user_state(request):\n  res = HttpResponse()\n  # 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다\n  res.set_cookie('rememberme', 1, max_age=60*60*24*365)\n  return res\n만료 시간은 해당 기능에 맞춰 최소로 설정하고 영속적인 쿠키에는 중요 정보가 포함되지 않도록 한다. 쿠키를 \nHTTPS를 통해서만 전송하도록 secure 속성값을 True(기본값은 False)를 사용할 수 있다. 클라이언트 측에서 \nJavaScript를 통해 쿠키를 접근하지 못하도록 제한 하고자 할 경우엔 httpOnly 속성을 True(기본값은 False)로 \n설정한다. 다음은 쿠키 만료 시간을 1시간으로 설정한 예시다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\nfrom django.http import HttpResponse\ndef remind_user_state(request):\n  res = HttpResponse()\n  # 쿠키의 만료시간을 적절하게 부여하고 secure 및 httpOnly 옵션을 활성화 한다.\n  res.set_cookie('rememberme', 1, max_age=60*60, secure=True, httponly=True)\n  return res\nDjango에서는 settings.py에 아래와 같이 추가해 전역으로 설정할 수 있다.\n",
+ "native_sha256": "3579c257317c82bcc6c80fe2cc1e9c93e38f06de7babff14572ce4527f872840",
+ "chars": 828,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

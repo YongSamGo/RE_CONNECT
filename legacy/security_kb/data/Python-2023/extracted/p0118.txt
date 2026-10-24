@@ -1,0 +1,31 @@
+Python 시큐어코딩 가이드
+112
+짧은 길이의 패스워드로 강도 높은 해시값을 생성하기 위해서는 반드시 솔트 값을 함께 전달해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+import hashlib
+import secrets
+def get_hash_from_pwd(pw):
+  # 솔트 값을 사용하면 길이가 짧은 패스워드로도 고강도의 해시를 생성할 수 있다.
+  # 솔트 값은 사용자별로 유일하게 생성해야 하며, 패스워드와 함께 DB에 저장해야 한다
+  salt = secrets.token_hex(32)
+  h = hashlib.sha256(salt.encode() + pw.encode())
+  return h.digest(), salt
+라. 참고자료
+① CWE-759: Use of a One-Way Hash without a Salt, MITRE,
+https://cwe.mitre.org/data/definitions/759.html
+② Password Storage Cheat Sheet – Salting, OWASP, 
+https://cheatsheetseries.owasp.org/cheatsheets/Password_Storage_Cheat_Sheet.html#salting
+③ hashlib – Secure hashes and message digests, Python Software Foundation,
+https://docs.python.org/3/library/hashlib.html
+④ secrets, Python Software Foundation, 
+https://docs.python.org/ko/3/library/secrets.html#module-secrets

@@ -1,0 +1,37 @@
+348
+다음 예제는 중요정보에 접근 가능한 URL을 일반 채널을 이용하여 연결하는 예제이다. 따라서 해당 
+채널에서 주고받는 데이터는 외부에서 쉽게 확인이 가능하고 공격에 활용될 수 있다. 보안 채널을 
+이용하고 있지 않기 때문에 보안약점을 가지고 있는 코드라고 진단할 수 있다.
+정탐코드의 예
+1: try { 
+2:
+URL u = new URL(“http://www.secret.example.org/”); 
+3:
+HttpURLConnection hu = (HttpURLConnection) u.openConnection();
+4:
+hu.setRequestMethod(“PUT”); 
+5:
+hu.connect(); 
+6:
+OutputStream os = hu.getOutputStream();
+7:
+hu.disconnect();
+8: } catch (IOException e) {
+9:
+//…
+10:}
+마. 참고자료
+[1] CWE-312, Cleartext Storage of Sensitive Information, MITRE,
+http://cwe.mitre.org/data/definitions/312.html
+[2] Clear sensitive information stored in reusable resources, CERT,
+http://www.securecoding.cert.org/confluence/display/c/MEM03-
+C.+Clear+sensitive+information+stored+in+reusable+resources 
+[3] Be careful while handling sensitive data, such as passwords, in program code, CERT,
+http://www.securecoding.cert.org/confluence/display/c/MSC18-C.+Be+careful+
+while+handling+sensitive+data%2C+such+as+passwords%2C+in+program+code
+[4] Never hard code sensitive information, CERT,
+http://www.securecoding.cert.org/confluence/display/java/MSC03-J.+Never+h
+ard+code+sensitive+information
+[5] Do not store unencrypted sensitive information on the client side, CERT, 
+http://www.securecoding.cert.org/confluence/display/java/FIO52-J.+Do+not+s
+tore+unencrypted+sensitive+information+on+the+client+side

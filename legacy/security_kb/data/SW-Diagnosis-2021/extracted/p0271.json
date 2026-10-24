@@ -1,0 +1,181 @@
+{
+ "lines": [
+  {
+   "text": "271",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-90 LDAP Injection, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    137.53121948242188,
+    246.39442443847656,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/90.html ",
+   "bbox": [
+    102.23983001708984,
+    154.51113891601562,
+    306.0495300292969,
+    165.53314208984375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Prevent LDAP injection, CERT,",
+   "bbox": [
+    85.86000061035156,
+    176.53109741210938,
+    235.71559143066406,
+    187.5531005859375
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/java/IDS54-J.+Prevent+ ",
+   "bbox": [
+    102.23983001708984,
+    193.51101684570312,
+    458.8357849121094,
+    204.53302001953125
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "LDAP+injection",
+   "bbox": [
+    102.23983764648438,
+    210.55105590820312,
+    169.5884552001953,
+    221.57305908203125
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] LDAP injection, OWASP",
+   "bbox": [
+    85.8600082397461,
+    232.51089477539062,
+    207.5204315185547,
+    243.53289794921875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet",
+   "bbox": [
+    102.23983764648438,
+    249.5509033203125,
+    439.1539611816406,
+    260.5729064941406
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] “LDAP Resources”",
+   "bbox": [
+    85.86001586914062,
+    271.5107421875,
+    183.6346893310547,
+    282.5327453613281
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://ldapman.org/",
+   "bbox": [
+    102.2398452758789,
+    288.5507507324219,
+    190.04710388183594,
+    299.57275390625
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "271\n제4장구현단계 보안약점 진단\n마. 참고자료\n[1] CWE-90 LDAP Injection, MITRE,\nhttp://cwe.mitre.org/data/definitions/90.html \n[2] Prevent LDAP injection, CERT,\nhttp://www.securecoding.cert.org/confluence/display/java/IDS54-J.+Prevent+ \nLDAP+injection\n[3] LDAP injection, OWASP\nhttps://www.owasp.org/index.php/LDAP_Injection_Prevention_Cheat_Sheet\n[4] “LDAP Resources”\nhttp://ldapman.org/\n",
+ "native_sha256": "15a7a2187c69988c6d269cb35eff9a4b32be43fd9bb2fedd8bef68430640d880",
+ "chars": 371,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

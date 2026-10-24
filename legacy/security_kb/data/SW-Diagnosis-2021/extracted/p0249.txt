@@ -1,0 +1,21 @@
+249
+제4장구현단계 보안약점 진단
+다음의 DocumentBuilderFactory를 사용하는 예제에서는 3~4라인과 같은 제한 설정을 추가할 수 
+있다.
+오탐코드의 예
+1:String xml = "xxe.xml"; 
+2:DocumentBuilderFactory df = DocumentBuilderFactory.newInstance();
+3:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+4:df.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+5:DocumentBuilder builder = df.newDocumentBuilder();
+6:Document document = builder.parse(new InputSource(xml));
+7:DOMSource domSource = new DOMSource(document);
+SAXParserFactory 예제의 경우 5~6라인과 같이 제한설정을 추가할 수 있다.
+오탐코드의 예
+1:String xml = "xxe.xml";
+2:SaxHandler handler = new SaxHandler();
+3:SAXParserFactory factory = SAXParserFactory.newInstance();
+4:SAXParser parser = factory.newSAXParser();
+5:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+6:parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+7:parser.parse(xml, handler);

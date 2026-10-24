@@ -1,0 +1,215 @@
+{
+ "lines": [
+  {
+   "text": "414",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    117.31112670898438,
+    296.91937255859375,
+    128.3331298828125
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    84.30000305175781,
+    142.23818969726562,
+    92.06539916992188,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ ((fList[i].length() / 1024) > 0 ? (fList[i].length() / 1024) : 1) ",
+   "bbox": [
+    109.68013000488281,
+    142.23818969726562,
+    365.61737060546875,
+    152.13818359375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    84.29998779296875,
+    156.63821411132812,
+    92.05833435058594,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ “KB”);",
+   "bbox": [
+    109.67306518554688,
+    156.63821411132812,
+    143.185302734375,
+    166.5382080078125
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    84.29998779296875,
+    171.03823852539062,
+    99.21283721923828,
+    180.938232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    223.4752197265625,
+    132.05699157714844,
+    235.55322265625
+   ],
+   "block": 18,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-367 Time-of-check Time-of-use(TOCTOU) Race Condition, MITRE",
+   "bbox": [
+    91.5,
+    247.15121459960938,
+    430.0284729003906,
+    258.1732177734375
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/367.html",
+   "bbox": [
+    107.87884521484375,
+    263.17120361328125,
+    314.3670349121094,
+    274.1932067871094
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Avoid TOCTOU race conditions while accessing files, CERT",
+   "bbox": [
+    91.49901580810547,
+    284.1711120605469,
+    364.22283935546875,
+    295.193115234375
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/FIO45-C.+Avoid+TOCT",
+   "bbox": [
+    107.87884521484375,
+    300.1309814453125,
+    461.9878234863281,
+    311.1529846191406
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "OU+race+conditions+while+accessing+files",
+   "bbox": [
+    107.87884521484375,
+    316.1509704589844,
+    298.1094055175781,
+    327.1729736328125
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6
+   ],
+   "text": "6:        + ((fList[i].length() / 1024) > 0 ? (fList[i].length() / 1024) : 1) \n7:        + “KB”);\n8: }",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    141.03818969726564,
+    365.61737060546875,
+    182.138232421875
+   ]
+  }
+ ],
+ "native": "414\n오탐코드의 예\n6:\n+ ((fList[i].length() / 1024) > 0 ? (fList[i].length() / 1024) : 1) \n7:\n+ “KB”);\n8: }\n마. 참고자료\n[1] CWE-367 Time-of-check Time-of-use(TOCTOU) Race Condition, MITRE\nhttp://cwe.mitre.org/data/definitions/367.html\n[2] Avoid TOCTOU race conditions while accessing files, CERT\nhttp://www.securecoding.cert.org/confluence/display/c/FIO45-C.+Avoid+TOCT\nOU+race+conditions+while+accessing+files\n",
+ "native_sha256": "16b37d1399115ee940f8f156aa89fff52a7937998031943dbd8588c1d42a7ee4",
+ "chars": 400,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

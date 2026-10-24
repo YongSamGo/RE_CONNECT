@@ -1,0 +1,21 @@
+137
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①CWE‐285 Improper Authorization, MITRE,
+http://cwe.mitre.org/data/definitions/285.html
+②2013 OWASP Top 10 ‐ A7 Missing Function Level Access Control, OWASP,
+https://www.owasp.org/index. php/Top_10_2013
+③CWE‐732 Incorrect Permission Assignment for Critical Resource, MITRE,
+http://cwe.mitre.org/data/defini- tions/732.html 
+④2016 OWASP Application Security Verification Standard, OWASP, Access Control 
+Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_Standard_Project
+⑤Access Control Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Access_Control_Cheat_Sheet
+⑥WASC Threat Classification Directory Indexing, WASC,
+http://projects.webappsec.org/w/page/13246922/Directory%20Indexing
+⑦Role Based Access Control (RBAC) and Role Based Security, NIST,
+http://csrc.nist.gov/groups/SNS/rbac/
+⑧CAPEC-101 Server Side Includes (SSI) Injection, CAPEC,
+http://capec.mitre.org/data/definitions/101.html

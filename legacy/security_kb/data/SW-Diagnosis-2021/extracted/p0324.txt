@@ -1,0 +1,13 @@
+324
+오탐코드의 예
+{
+8:
+// 삭제작업을 수행한다.
+9:
+}
+10:}
+마. 참고자료
+[1] CWE-285 Improper Authorization, MITRE,
+http://cwe.mitre.org/data/definitions/285.html
+[2] Access Control, OWASP,
+https://www.owasp.org/index.php/Access_Control_Cheat_Sheet

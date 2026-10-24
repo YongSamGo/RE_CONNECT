@@ -1,0 +1,42 @@
+Python 시큐어코딩 가이드
+42
+9. XML 삽입
+가. 개요
+검증되지 않은 외부 입력값이 XQuery 또는 XPath 쿼리문을 생성하는 문자열로 사용되어 공격자가 쿼리문의 
+구조를 임의로 변경하고 임의의 쿼리를 실행해 허가되지 않은 데이터를 열람하거나 인증절차를 우회할 수 있는 
+보안약점이다.
+나. 안전한 코딩기법
+XQuery 또는 XPath 쿼리에 사용되는 외부 입력 데이터에 대하여 특수문자 및 쿼리 예약어를 필터링 하고 
+인자화된 쿼리문을 지원하는 XQuery를 사용해야 한다.
+다. 코드예제
+다음 예제는 파이썬에서 XML 데이터를 처리하기 위한 기본 모듈인 xml.etree.ElementTree를 이용하여 
+사용자 정보를 가져오는 예제다. xml.etree.ElementTree 모듈은 제한적인 Xpath 기능을 제공하며 Xpath 
+표현식을 인자화해서 사용하는 방법을 제공하지 않는다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+from django.shortcuts import render
+from lxml import etree
+def parse_xml(request):
+  user_name = request.POST.get('user_name', '')
+  parser = etree.XMLParser(resolve_entities=False)
+  tree = etree.parse('user.xml', parser)
+  root = tree.getroot()
+  # 검증되지 않은 외부 입력값 user_name을 사용한 안전하지 않은
+  # 질의문이 query 변수에 저장
+  query = "/collection/users/user[@name='" + user_name + "']/home/text()"
+  elmts = root.xpath(query)
+  return render(request, 'parse_xml.html', {'xml_element':elmts})

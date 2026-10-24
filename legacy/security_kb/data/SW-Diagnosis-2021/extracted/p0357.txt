@@ -1,0 +1,41 @@
+357
+제4장구현단계 보안약점 진단
+라. 진단방법
+ㆍ하드코드된 비밀번호
+사용자․관리자 로그인페이지(식별․인증)를 요청하는 모듈․함수를 확인하여 사용자․관리자 비밀번호가 
+소스코드 안에 직접 코딩되어 있는지 확인하고 내․외부 서버(업무서버, DB 등)에 접속을 관리하는 
+모듈․ 함수를 확인하여 서버 접속 비밀번호가 소스코드 안에 직접 코딩되어 있는지 확인한다.
+비밀번호를 별도의 파일에 저장하여 사용하지 않고 소스코드 안에 하드코딩 되어 있는 경우엔 취약 
+하다고 판정한다.
+다음의 예제에서 데이터베이스 접속 정보인 비밀번호를 4번 라인에서 입력하고 있다.
+일반적인 진단의 예
+1:
+private static final String JDBC_DRIVER = “org.gjt.mm.mysql.Driver”;
+2:
+private static final String JDBC_URL = “jdbc:mysql://192.168.200.24:1621/com”;
+3:
+private static final String JDBC_USER = “com”; 
+4:
+private static final String JDBC_PASSWORD = “com01”; 
+5:
+...
+6:
+public Connection DBConnect(String url, String id) { 
+7:
+try {
+8:
+conn = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+9:
+} catch (SQLException +
+e)
+{ System.err.println(“ 
+…”);
+10:
+}
+11:
+return conn;
+12: }
+ㆍ하드코드된 암호화 키
+DB접속 등 비밀번호 사용이 필요한 로직을 확인하고(①), 사용된 비밀번호의 암호화 여부 확인한다
+(②). 암호화된 비밀번호가 소스내에 존재하는지 여부 확인한다(③). 소스코드내에 암호화된 비밀
+번호를 저장하는 경우 취약하다.

@@ -1,0 +1,320 @@
+{
+ "lines": [
+  {
+   "text": "418",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제어조건이 존재하여 제어가 되는 재귀인 경우 취약하지 않다.",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    312.2983093261719,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    150.31112670898438,
+    296.1402587890625,
+    161.3331298828125
+   ],
+   "block": 15,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public MenuVO getFirstLeafChildMenu(int menuSeq) { ",
+   "bbox": [
+    83.58000183105469,
+    175.23818969726562,
+    319.12213134765625,
+    185.13818359375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    189.63821411132812,
+    91.34539794921875,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "List<MenuVO> childMenuList = menuMap.get(menuSeq).getChildMenuList();",
+   "bbox": [
+    100.07959747314453,
+    189.63821411132812,
+    408.5428161621094,
+    199.5382080078125
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.57998657226562,
+    204.03823852539062,
+    91.34538269042969,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (CollectionUtils.isEmpty(childMenuList)) {",
+   "bbox": [
+    100.07958221435547,
+    204.03823852539062,
+    274.1120300292969,
+    213.938232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.57998657226562,
+    218.43826293945312,
+    91.34538269042969,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return menuMap.get(menuSeq);",
+   "bbox": [
+    104.51985168457031,
+    218.43826293945312,
+    233.71327209472656,
+    228.3382568359375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.57998657226562,
+    232.8382568359375,
+    91.34539031982422,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    100.07958984375,
+    232.8382568359375,
+    102.81233215332031,
+    242.73825073242188
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.57998657226562,
+    247.23825073242188,
+    91.34539031982422,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return getFirstLeafChildMenu(childMenuList.get(0).getMenuSeq());",
+   "bbox": [
+    100.07958221435547,
+    247.23825073242188,
+    365.6651916503906,
+    257.13824462890625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    83.57998657226562,
+    261.63824462890625,
+    98.43289184570312,
+    271.5382385253906
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    314.0751037597656,
+    132.05699157714844,
+    326.1531066894531
+   ],
+   "block": 23,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-674 Uncontrolled Recursion, MITRE,",
+   "bbox": [
+    91.5,
+    337.7510986328125,
+    293.8840637207031,
+    348.7731018066406
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/674.html",
+   "bbox": [
+    107.87982940673828,
+    353.7710876464844,
+    314.3680114746094,
+    364.7930908203125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] CWE-835, Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,",
+   "bbox": [
+    91.5,
+    374.77099609375,
+    426.16265869140625,
+    385.7929992675781
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/835.html",
+   "bbox": [
+    107.87982177734375,
+    390.7308654785156,
+    314.3680114746094,
+    401.75286865234375
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14
+   ],
+   "text": "1: public MenuVO getFirstLeafChildMenu(int menuSeq) { \n2:    List<MenuVO> childMenuList = menuMap.get(menuSeq).getChildMenuList();\n3:    if (CollectionUtils.isEmpty(childMenuList)) {\n4:      return menuMap.get(menuSeq);\n5:    }\n6:    return getFirstLeafChildMenu(childMenuList.get(0).getMenuSeq());\n7: }",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    83.57998657226562,
+    174.03818969726564,
+    408.5428161621094,
+    272.7382385253906
+   ]
+  }
+ ],
+ "native": "418\n제어조건이 존재하여 제어가 되는 재귀인 경우 취약하지 않다.\n오탐코드의 예\n1: public MenuVO getFirstLeafChildMenu(int menuSeq) { \n2:\nList<MenuVO> childMenuList = menuMap.get(menuSeq).getChildMenuList();\n3:\nif (CollectionUtils.isEmpty(childMenuList)) {\n4:\nreturn menuMap.get(menuSeq);\n5:\n}\n6:\nreturn getFirstLeafChildMenu(childMenuList.get(0).getMenuSeq());\n7: }\n마. 참고자료\n[1] CWE-674 Uncontrolled Recursion, MITRE,\nhttp://cwe.mitre.org/data/definitions/674.html\n[2] CWE-835, Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,\nhttp://cwe.mitre.org/data/definitions/835.html\n",
+ "native_sha256": "8b872fae7a818b502fa9d88fec54bb4e8a75322c928b3b10831f012f9cc28ddd",
+ "chars": 554,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

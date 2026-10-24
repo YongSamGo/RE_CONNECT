@@ -1,0 +1,410 @@
+{
+ "lines": [
+  {
+   "text": "405",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.25999450683594,
+    117.31112670898438,
+    290.500244140625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    77.94000244140625,
+    142.23818969726562,
+    90.62522888183594,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    103.79969024658203,
+    142.23818969726562,
+    106.53243255615234,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    77.94000244140625,
+    156.63821411132812,
+    90.6146469116211,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (getNextMessage(socket, password, PASSWORD_SIZE) > 0)",
+   "bbox": [
+    108.22937774658203,
+    156.63821411132812,
+    363.0859375,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    77.94000244140625,
+    171.03823852539062,
+    90.62522888183594,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    108.23995971679688,
+    171.03823852539062,
+    110.97270202636719,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    77.94000244140625,
+    185.43826293945312,
+    90.60407257080078,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "isValidUser = AuthenticateUser(username, password);",
+   "bbox": [
+    112.5982437133789,
+    185.43826293945312,
+    332.40155029296875,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    77.94000244140625,
+    199.83828735351562,
+    90.62522888183594,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    112.61940002441406,
+    199.83828735351562,
+    115.35214233398438,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    77.94000244140625,
+    214.23831176757812,
+    90.62522888183594,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    108.23995971679688,
+    214.23831176757812,
+    110.97270202636719,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    77.94000244140625,
+    228.6383056640625,
+    90.62522888183594,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    103.79969024658203,
+    228.6383056640625,
+    106.53243255615234,
+    238.53829956054688
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    77.94000244140625,
+    243.03829956054688,
+    90.62521362304688,
+    252.93829345703125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "return(SUCCESS);",
+   "bbox": [
+    99.41935729980469,
+    243.03829956054688,
+    170.60202026367188,
+    252.93829345703125
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    77.94000244140625,
+    257.43829345703125,
+    90.62522888183594,
+    267.3382873535156
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    99.41937255859375,
+    257.43829345703125,
+    102.15211486816406,
+    267.3382873535156
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    309.8750915527344,
+    126.4169921875,
+    321.9530944824219
+   ],
+   "block": 34,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-307, Improper Restriction of Excessive Authentication Attempts, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    333.5511169433594,
+    447.16015625,
+    344.5731201171875
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/307.html",
+   "bbox": [
+    102.23980712890625,
+    349.57110595703125,
+    308.7279968261719,
+    360.5931091308594
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Blocking Brute Force Attacks, OWASP,",
+   "bbox": [
+    85.85997772216797,
+    370.5710144042969,
+    272.26873779296875,
+    381.593017578125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Blocking_Brute_Force_Attacks",
+   "bbox": [
+    102.23980712890625,
+    386.5308837890625,
+    392.0684814453125,
+    397.5528869628906
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "16:      {\n17:        if (getNextMessage(socket, password, PASSWORD_SIZE) > 0)\n18:        {\n19:         isValidUser = AuthenticateUser(username, password);\n20:         }\n21:        }\n22:      }\n23:    return(SUCCESS);\n24:    }",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    77.94000244140625,
+    141.03818969726564,
+    363.0859375,
+    268.5382873535156
+   ]
+  }
+ ],
+ "native": "405\n제4장구현단계 보안약점 진단\n정탐코드의 예\n16:\n{\n17:\nif (getNextMessage(socket, password, PASSWORD_SIZE) > 0)\n18:\n{\n19:\nisValidUser = AuthenticateUser(username, password);\n20:\n}\n21:\n}\n22:\n}\n23:\nreturn(SUCCESS);\n24:\n}\n마. 참고자료\n[1] CWE-307, Improper Restriction of Excessive Authentication Attempts, MITRE,\nhttp://cwe.mitre.org/data/definitions/307.html\n[2] Blocking Brute Force Attacks, OWASP,\nhttps://www.owasp.org/index.php/Blocking_Brute_Force_Attacks\n",
+ "native_sha256": "bfa3f7cff121905b5e2c5a5c6fbfc0e32d77b9f3caa838011ea9ddb63e7ecccf",
+ "chars": 438,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,52 @@
+452
+오탐코드의 예
+6:
+pstmt = conn.prepareStatement(sqlSelect); 
+7:
+pstmt1 = conn.prepareStatement(sqlUpdate); 
+8:
+rs = pstmt.executeQuery(); 
+9:
+while( rs.next()) { 
+10:
+System.out.println(“#################### user_id : “ + rs.getString(“US 
+ER_ID”)); 
+11:
+pstmt1.setString(1, CryptUtils.encrypt(rs.getString(“PWD”)));
+12:
+pstmt1.setString(2, rs.getString(“USER_ID”));
+13:
+pstmt1.executeUpdate();
+14:
+pstmt1.clearParameters();
+15:
+System.out.println(“#################### 01 : “); 
+16: }
+17:
+conn.commit(); 
+18:} catch(Exception e) { 
+19:
+e.printStackTrace(); 
+20:
+try { 
+21:
+conn.rollback(); 
+22: } catch (Exception ex) { } 
+23:} finally { 
+24: try { 
+25:
+rs.close(); 
+26: } catch (Exception e) { } 
+27: try { 
+28:
+pstmt.close(); 
+29: } catch(Exception e) { } 
+30: try { 
+31:
+pstmt1.close(); 
+32: } catch (Exception e) { } 
+33: try { 
+34:
+conn.close(); 
+35: } catch (Exception e) { } 
+36:}

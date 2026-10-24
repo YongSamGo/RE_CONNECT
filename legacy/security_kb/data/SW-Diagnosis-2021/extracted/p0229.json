@@ -1,0 +1,452 @@
+{
+ "lines": [
+  {
+   "text": "229",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    117.31112670898438,
+    291.27935791015625,
+    128.3331298828125
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "25: }",
+   "bbox": [
+    78.66000366210938,
+    142.23818969726562,
+    98.49267578125,
+    152.13818359375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26: if (“WINDOWS”.equals(Globals.OS_TYPE)) { ",
+   "bbox": [
+    78.66000366210938,
+    156.63821411132812,
+    274.5782775878906,
+    166.5382080078125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27:",
+   "bbox": [
+    78.66000366210938,
+    171.03823852539062,
+    91.37696075439453,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "cnt = -1; ",
+   "bbox": [
+    100.17109680175781,
+    171.03823852539062,
+    141.8083953857422,
+    180.938232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28:",
+   "bbox": [
+    78.66000366210938,
+    185.43826293945312,
+    91.4051742553711,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "p = Runtime.getRuntime().exec(execStr); ",
+   "bbox": [
+    100.19931030273438,
+    185.43826293945312,
+    269.0828552246094,
+    195.3382568359375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29: }",
+   "bbox": [
+    78.66000366210938,
+    199.83828735351562,
+    98.49267578125,
+    209.73828125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30:}",
+   "bbox": [
+    78.66000366210938,
+    214.23831176757812,
+    94.11234283447266,
+    224.1383056640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "프레임워크 특성상 Property 사용은 금지할 수 없다. 하지만 시스템 프로퍼티 등 공용으로 사용하는 ",
+   "bbox": [
+    70.86000061035156,
+    246.61111450195312,
+    459.2051696777344,
+    257.63311767578125
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "프로퍼티가 아닌 개별 사용 프로퍼티일 경우는 취약한 것으로, 시스템 프로퍼티를 사용하는 경우는 ",
+   "bbox": [
+    70.86000061035156,
+    263.651123046875,
+    459.1923828125,
+    274.6731262207031
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 것으로 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    280.6310119628906,
+    164.69464111328125,
+    291.65301513671875
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제에서 5라인 cmdStr 변수는 Property에서 값을 가져 온 이후 7라인에서 문자열을 ",
+   "bbox": [
+    70.86000061035156,
+    307.63092041015625,
+    459.2012634277344,
+    318.6529235839844
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "만드는데 사용되고, 해당 문자열이 9라인에서 명령어로 사용되므로 안전한 것으로 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    324.6108093261719,
+    423.9115295410156,
+    335.6328125
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    361.1512145996094,
+    291.27935791015625,
+    372.1732177734375
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: public static floatgetMoryFreeCpcty() throws Exception {",
+   "bbox": [
+    78.66000366210938,
+    386.0780944824219,
+    322.3174133300781,
+    395.97808837890625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: float cpcty = 0; ",
+   "bbox": [
+    78.66000366210938,
+    400.47808837890625,
+    158.09205627441406,
+    410.3780822753906
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: Process p = null; ",
+   "bbox": [
+    78.66000366210938,
+    414.8780822753906,
+    164.79605102539062,
+    424.778076171875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: try { ",
+   "bbox": [
+    78.66000366210938,
+    429.278076171875,
+    110.92929077148438,
+    439.1780700683594
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: String cmdStr = EgovProperties.getPathProperty(Globals.SERVER_CONF_PATH,",
+   "bbox": [
+    78.66000366210938,
+    443.6780700683594,
+    412.2917785644531,
+    453.57806396484375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: “SHELL.”+Globals.OS_TYPE+”.getMoryInfo”); ",
+   "bbox": [
+    78.66000366210938,
+    458.07806396484375,
+    272.5357971191406,
+    467.9780578613281
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: String[] command = {cmdStr.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPA- ",
+   "bbox": [
+    78.66000366210938,
+    472.4780578613281,
+    438.9792785644531,
+    482.3780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "RATOR),”FREE“} ",
+   "bbox": [
+    90.7801513671875,
+    486.8780517578125,
+    159.0731658935547,
+    496.7780456542969
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    78.65999603271484,
+    501.2780456542969,
+    93.57284545898438,
+    511.17803955078125
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9: p = Runtime.getRuntime().exec(command); ",
+   "bbox": [
+    78.65999603271484,
+    515.677978515625,
+    268.9416809082031,
+    525.5780029296875
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "사용자의 입력값이 운영체제 명령어를 실행하는데 들어가지 않을 때에는 안전한 것으로 판정한다.",
+   "bbox": [
+    70.86000061035156,
+    548.0510864257812,
+    442.9776916503906,
+    559.0731201171875
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "text": "25: }\n26: if (“WINDOWS”.equals(Globals.OS_TYPE)) { \n27:    cnt = -1; \n28:    p = Runtime.getRuntime().exec(execStr); \n29: }\n30:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    141.03818969726564,
+    274.5782775878906,
+    225.3383056640625
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+   ],
+   "text": "1: public static floatgetMoryFreeCpcty() throws Exception {\n2: float cpcty = 0; \n3: Process p = null; \n4: try { \n5: String cmdStr = EgovProperties.getPathProperty(Globals.SERVER_CONF_PATH,\n6: “SHELL.”+Globals.OS_TYPE+”.getMoryInfo”); \n7: String[] command = {cmdStr.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPA- \nRATOR),”FREE“} \n8: }\n9: p = Runtime.getRuntime().exec(command); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.65999603271484,
+    384.8780944824219,
+    438.9792785644531,
+    526.7780029296875
+   ]
+  }
+ ],
+ "native": "229\n제4장구현단계 보안약점 진단\n정탐코드의 예\n25: }\n26: if (“WINDOWS”.equals(Globals.OS_TYPE)) { \n27:\ncnt = -1; \n28:\np = Runtime.getRuntime().exec(execStr); \n29: }\n30:}\n프레임워크 특성상 Property 사용은 금지할 수 없다. 하지만 시스템 프로퍼티 등 공용으로 사용하는 \n프로퍼티가 아닌 개별 사용 프로퍼티일 경우는 취약한 것으로, 시스템 프로퍼티를 사용하는 경우는 \n안전한 것으로 판정한다.\n다음의 예제에서 5라인 cmdStr 변수는 Property에서 값을 가져 온 이후 7라인에서 문자열을 \n만드는데 사용되고, 해당 문자열이 9라인에서 명령어로 사용되므로 안전한 것으로 판정한다.\n오탐코드의 예\n1: public static floatgetMoryFreeCpcty() throws Exception {\n2: float cpcty = 0; \n3: Process p = null; \n4: try { \n5: String cmdStr = EgovProperties.getPathProperty(Globals.SERVER_CONF_PATH,\n6: “SHELL.”+Globals.OS_TYPE+”.getMoryInfo”); \n7: String[] command = {cmdStr.replace(‘\\\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPA- \nRATOR),”FREE“} \n8: }\n9: p = Runtime.getRuntime().exec(command); \n사용자의 입력값이 운영체제 명령어를 실행하는데 들어가지 않을 때에는 안전한 것으로 판정한다.\n",
+ "native_sha256": "e3e6228808c179ce40fa14d4723024e2208e2db564be6e5f398942ed3df749f9",
+ "chars": 831,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

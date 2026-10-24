@@ -1,0 +1,139 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "124",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    78.60518646240234,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    102.7816390991211,
+    119.12395477294922,
+    113.32826232910156
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-674: Uncontrolled Recursion, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    124.64191436767578,
+    252.75823974609375,
+    133.63050842285156
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/674.html",
+   "bbox": [
+    77.32001495361328,
+    139.98245239257812,
+    267.01031494140625,
+    148.97105407714844
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    160.23678588867188,
+    377.43048095703125,
+    169.22537231445312
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/835.html",
+   "bbox": [
+    77.32001495361328,
+    175.57733154296875,
+    267.01031494140625,
+    184.56591796875
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ sys.setrecursionlimit, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    195.83163452148438,
+    282.84619140625,
+    204.82022094726562
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/sys.html#sys.setrecursionlimit",
+   "bbox": [
+    77.32001495361328,
+    211.17218017578125,
+    331.52130126953125,
+    220.1607666015625
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "Python 시큐어코딩 가이드\n124\n라. 참고자료\n① CWE-674: Uncontrolled Recursion, MITRE,\nhttps://cwe.mitre.org/data/definitions/674.html\n② CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop'), MITRE,\nhttps://cwe.mitre.org/data/definitions/835.html\n③ sys.setrecursionlimit, Python Software Foundation,\nhttps://docs.python.org/3/library/sys.html#sys.setrecursionlimit\n",
+ "native_sha256": "9671573b46b433570d80030ed5127b61adff0c4c26c3df3bedc7b781c7a33fc8",
+ "chars": 359,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,44 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+21
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+import socket
+from django.shortcuts import render
+ALLOW_PORT = [4000, 6000, 9000]
+def get_info(request):
+  port = int(request.POST.get('port'))
+  # 사용 가능한 포트 번호를 화이트리스트 내의 포트로 제한
+  if port not in ALLOW_PORT:
+    return render(request, '/error.html', {'error':'소켓연결 실패'})
+  with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.bind(('127.0.0.1', port))
+    ......
+    return render(request, '/success.html') 
+라. 참고자료
+① CWE-22: Improper Limitation of a Pathname to a Restricted Directory ('Path Traversal'), MITRE,
+https://cwe.mitre.org/data/definitions/22.html
+② CWE-99: Improper Control of Resource Identifiers ('Resource Injection'), MITRE,
+https://cwe.mitre.org/data/definitions/99.html
+③ Path Traversal, OWASP,
+https://owasp.org/www-community/attacks/Path_Traversal
+④ Resource Injection, OWASP,
+https://owasp.org/www-community/attacks/Resource_Injection
+⑤ File Uploads, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/http/file-uploads/
+⑥ HTML Helpers, Werkzeug,
+https://werkzeug.palletsprojects.com/en/2.0.x/utils/#module-werkzeug.utils

@@ -1,0 +1,23 @@
+275
+제4장구현단계 보안약점 진단
+오탐코드의 예
+10: if (pToken != null && pToken.equals(sToken) { 
+11:
+// 일치하는 토큰이 존재하는 경우 -> 정상 처리 
+12:
+......
+13: } else { 
+14:
+// 토큰이 없거나 값이 일치하지 않는 경우 -> 오류 메시지 출력 
+15:
+..
+..
+..
+16: }
+마. 참고자료
+[1] CWE-352 Cross-Site Request Forgery(CSRF), MITRE,
+http://cwe.mitre.org/data/definitions/352.html 
+[2] "Security Corner: Cross-Site Request Forgeries", Chris Shiflett,
+http://shiflett.org/articles/cross-site-request-forgeries
+[3] Cross-Site_Request_Forgery_(CSRF),
+https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)

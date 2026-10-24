@@ -1,0 +1,29 @@
+213
+제4장구현단계 보안약점 진단
+안전한 코드의 예 JAVA
+7: keyword = keyword.replaceAll("'", "&#x27;");
+8: keyword = keyword.replaceAll("/"", "&#x2F;");
+9: keyword = keyword.replaceAll("(", "&#x28;");
+10:keyword = keyword.replaceAll(")", "&#x29;");
+11:검색어 : <%=keyword%>
+12://방법2. JSP에서 출력값에 JSTL c:out 을 사용하여 처리한다. 
+13:<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+14:<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+15:검색결과 : <c:out value="${m.content}"/> 
+16:<script type="text/javascript"> 
+17: //방법3. 잘 만들어진 외부 라이브러리를 활용(NAVER Lucy-XSS-Filter, OWASP ESAPI, 
+OWASP Java-Encoder-Project)
+18:document.write("keyword:“ +
+<%=Encoder.encodeForJS(Encoder.encodeForHTML(keyword))%>);
+19: </script>
+다음 C# 코드는 외부 입력값을 출력에 바로 사용하고 있다. 이는 XSS 공격을 유발 할 수 있다.
+안전하지 않은 코드의 예 C#
+1: string usrInput = Request.QueryString["ID"];
+2: // 외부 입력 값이 검증 없이 화면에 출력 됩니다.
+3: string str = "ID : " + usrinput;
+4: Request.Write(str);
+AntiXss 패키지 등을 사용하여 XSS 공격을 예방할 수 있다.
+안전한 코드의 예 C#
+1: string usrInput = Request.QueryString["ID"]; 
+2: string str = "ID : " + usrinput; 
+3: //AntiXss 패키지 등을 이용하여 외부 입력값을 필터링 합니다.

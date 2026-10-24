@@ -1,0 +1,830 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "35",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.79331970214844,
+    119.392578125,
+    96.07327270507812,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.79331970214844,
+    133.05523681640625,
+    96.07327270507812,
+    141.564453125
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.79331970214844,
+    146.5980682373047,
+    96.07327270507812,
+    155.10728454589844
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    83.79331970214844,
+    160.14088439941406,
+    96.07327270507812,
+    168.6501007080078
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    83.79331970214844,
+    173.6837158203125,
+    96.07327270507812,
+    182.19293212890625
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    83.79331970214844,
+    187.22653198242188,
+    96.07327270507812,
+    195.73574829101562
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    83.79331970214844,
+    200.7693634033203,
+    96.07327270507812,
+    209.27857971191406
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    83.79331970214844,
+    214.43203735351562,
+    96.07327270507812,
+    222.94125366210938
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    83.79331970214844,
+    227.974853515625,
+    96.07327270507812,
+    236.48406982421875
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    83.79331970214844,
+    241.51768493652344,
+    96.07327270507812,
+    250.0269012451172
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    83.79331970214844,
+    255.06051635742188,
+    96.07327270507812,
+    263.5697326660156
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25:",
+   "bbox": [
+    83.79331970214844,
+    268.60333251953125,
+    96.07327270507812,
+    277.112548828125
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26:",
+   "bbox": [
+    83.79331970214844,
+    282.1461486816406,
+    96.07327270507812,
+    290.6553649902344
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "27:",
+   "bbox": [
+    83.79331970214844,
+    295.8088073730469,
+    96.07327270507812,
+    304.3180236816406
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "28:",
+   "bbox": [
+    83.79331970214844,
+    309.3516540527344,
+    96.07327270507812,
+    317.8608703613281
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "29:",
+   "bbox": [
+    83.79331970214844,
+    322.89447021484375,
+    96.07327270507812,
+    331.4036865234375
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "30:",
+   "bbox": [
+    83.79331970214844,
+    336.4372863769531,
+    96.07327270507812,
+    344.9465026855469
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "31:",
+   "bbox": [
+    83.79331970214844,
+    349.9801025390625,
+    96.07327270507812,
+    358.48931884765625
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "32:",
+   "bbox": [
+    83.79331970214844,
+    363.52294921875,
+    96.07327270507812,
+    372.03216552734375
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "33:",
+   "bbox": [
+    83.79331970214844,
+    377.18560791015625,
+    96.07327270507812,
+    385.69482421875
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "34:",
+   "bbox": [
+    83.79331970214844,
+    390.7284240722656,
+    96.07327270507812,
+    399.2376403808594
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "35:",
+   "bbox": [
+    83.79331970214844,
+    404.2712707519531,
+    96.07327270507812,
+    412.7804870605469
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "36:",
+   "bbox": [
+    83.79331970214844,
+    417.8140869140625,
+    96.07327270507812,
+    426.32330322265625
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "37:",
+   "bbox": [
+    83.79331970214844,
+    431.3569030761719,
+    96.07327270507812,
+    439.8661193847656
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def file_upload(request):",
+   "bbox": [
+    105.97038269042969,
+    133.05523681640625,
+    200.48760986328125,
+    141.564453125
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 파일 개수 제한",
+   "bbox": [
+    105.97038269042969,
+    146.5980682373047,
+    176.56646728515625,
+    155.10728454589844
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  if len(request.FILES) == 0 or len(request.FILES) > FILE_COUNT_LIMIT:",
+   "bbox": [
+    105.97038269042969,
+    160.14088439941406,
+    394.08544921875,
+    168.6501007080078
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    return render(request, '/error.html', {'error': '파일 개수 초과'})",
+   "bbox": [
+    105.97038269042969,
+    173.6837158203125,
+    356.3929138183594,
+    182.19293212890625
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  for filename, upload_file in request.FILES.items():",
+   "bbox": [
+    105.97038269042969,
+    200.7693634033203,
+    310.4114685058594,
+    209.27857971191406
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 파일 타입 체크",
+   "bbox": [
+    105.97038269042969,
+    214.43203735351562,
+    184.95849609375,
+    222.94125366210938
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    if upload_file.content_type != 'image/jpeg':",
+   "bbox": [
+    105.97038269042969,
+    227.974853515625,
+    290.27301025390625,
+    236.48406982421875
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return render(request, '/error.html', {'error': '파일 타입 오류'})",
+   "bbox": [
+    105.97038269042969,
+    241.51768493652344,
+    364.90411376953125,
+    250.0269012451172
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    # 파일 크기 제한",
+   "bbox": [
+    105.97038269042969,
+    255.06051635742188,
+    184.95849609375,
+    263.5697326660156
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    if upload_file.size > FILE_SIZE_LIMIT:",
+   "bbox": [
+    105.97038269042969,
+    268.60333251953125,
+    269.1739501953125,
+    277.112548828125
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return render(request, '/error.html', {'error': '파일사이즈 오류'})",
+   "bbox": [
+    105.97038269042969,
+    282.1461486816406,
+    368.0208740234375,
+    290.6553649902344
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      # 파일 확장자 검사",
+   "bbox": [
+    105.97038269042969,
+    295.8088073730469,
+    200.9012908935547,
+    304.3180236816406
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      file_name, file_ext = os.path.splitext(upload_file.name)",
+   "bbox": [
+    105.97038269042969,
+    309.3516540527344,
+    344.76617431640625,
+    317.8608703613281
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    if file_ext.lower() not in WHITE_LIST_EXT:",
+   "bbox": [
+    105.97038269042969,
+    322.89447021484375,
+    289.7922058105469,
+    331.4036865234375
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      return render(request, '/error.html', {'error': '파일 타입 오류'})",
+   "bbox": [
+    105.97038269042969,
+    336.4372863769531,
+    364.90411376953125,
+    344.9465026855469
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    fs = FileSystemStorage(location='media/screenshot', base_url = 'media/screenshot')",
+   "bbox": [
+    105.97038269042969,
+    363.52294921875,
+    451.4539794921875,
+    372.03216552734375
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    for upload_file in request.FILES.values():",
+   "bbox": [
+    105.97038269042969,
+    377.18560791015625,
+    282.0004577636719,
+    385.69482421875
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      filename = fs.save(upload_file.name, upload_file)",
+   "bbox": [
+    105.97038269042969,
+    390.7284240722656,
+    322.708984375,
+    399.2376403808594
+   ],
+   "block": 46,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "      filename_list.append(filename)",
+   "bbox": [
+    105.97038269042969,
+    404.2712707519531,
+    248.2666473388672,
+    412.7804870605469
+   ],
+   "block": 47,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  return render(request, \"/success.html\", {\"filename_list\": filename_list})",
+   "bbox": [
+    105.97038269042969,
+    431.3569030761719,
+    387.9212951660156,
+    439.8661193847656
+   ],
+   "block": 48,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    496.4823303222656,
+    119.12395477294922,
+    507.0289306640625
+   ],
+   "block": 50,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-434: Unrestricted Upload of File with Dangerous Type, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    518.2227783203125,
+    361.24603271484375,
+    527.2113647460938
+   ],
+   "block": 51,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/434.html",
+   "bbox": [
+    77.32001495361328,
+    533.5632934570312,
+    267.01031494140625,
+    542.5518798828125
+   ],
+   "block": 52,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Unrestricted File Upload, OWASP,",
+   "bbox": [
+    65.09266662597656,
+    553.817626953125,
+    216.91650390625,
+    562.8062133789062
+   ],
+   "block": 53,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload",
+   "bbox": [
+    77.32001495361328,
+    569.1581420898438,
+    382.18017578125,
+    578.146728515625
+   ],
+   "block": 54,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ User-uploaded content, Django Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    589.4124755859375,
+    294.9551086425781,
+    598.4010620117188
+   ],
+   "block": 55,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/topics/security/#user-uploaded-content-security",
+   "bbox": [
+    77.32001495361328,
+    604.7529907226562,
+    431.5264892578125,
+    613.7415771484375
+   ],
+   "block": 56,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "text": "14:\n15: def file_upload(request):\n16:   # 파일 개수 제한\n17:   if len(request.FILES) == 0 or len(request.FILES) > FILE_COUNT_LIMIT:\n18:     return render(request, '/error.html', {'error': '파일 개수 초과'})\n19:\n20:   for filename, upload_file in request.FILES.items():\n21:     # 파일 타입 체크\n22:     if upload_file.content_type != 'image/jpeg':\n23:       return render(request, '/error.html', {'error': '파일 타입 오류'})\n24:     # 파일 크기 제한\n25:     if upload_file.size > FILE_SIZE_LIMIT:\n26:       return render(request, '/error.html', {'error': '파일사이즈 오류'})\n27:       # 파일 확장자 검사\n28:       file_name, file_ext = os.path.splitext(upload_file.name)\n29:     if file_ext.lower() not in WHITE_LIST_EXT:\n30:       return render(request, '/error.html', {'error': '파일 타입 오류'})\n31:\n32:     fs = FileSystemStorage(location='media/screenshot', base_url = 'media/screenshot')\n33:     for upload_file in request.FILES.values():\n34:       filename = fs.save(upload_file.name, upload_file)\n35:       filename_list.append(filename)\n36:\n37:   return render(request, \"/success.html\", {\"filename_list\": filename_list})",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    83.79331970214844,
+    108.3946548461914,
+    451.4539794921875,
+    441.0661193847656
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n35\n안전한 코드 예시\n14:\n15:\n16:\n17:\n18:\n19:\n20:\n21:\n22:\n23:\n24:\n25:\n26:\n27:\n28:\n29:\n30:\n31:\n32:\n33:\n34:\n35:\n36:\n37:\ndef file_upload(request):\n  # 파일 개수 제한\n  if len(request.FILES) == 0 or len(request.FILES) > FILE_COUNT_LIMIT:\n    return render(request, '/error.html', {'error': '파일 개수 초과'})\n  for filename, upload_file in request.FILES.items():\n    # 파일 타입 체크\n    if upload_file.content_type != 'image/jpeg':\n      return render(request, '/error.html', {'error': '파일 타입 오류'})\n    # 파일 크기 제한\n    if upload_file.size > FILE_SIZE_LIMIT:\n      return render(request, '/error.html', {'error': '파일사이즈 오류'})\n      # 파일 확장자 검사\n      file_name, file_ext = os.path.splitext(upload_file.name)\n    if file_ext.lower() not in WHITE_LIST_EXT:\n      return render(request, '/error.html', {'error': '파일 타입 오류'})\n    fs = FileSystemStorage(location='media/screenshot', base_url = 'media/screenshot')\n    for upload_file in request.FILES.values():\n      filename = fs.save(upload_file.name, upload_file)\n      filename_list.append(filename)\n  return render(request, \"/success.html\", {\"filename_list\": filename_list})\n라. 참고자료\n① CWE-434: Unrestricted Upload of File with Dangerous Type, MITRE,\nhttps://cwe.mitre.org/data/definitions/434.html\n② Unrestricted File Upload, OWASP,\nhttps://owasp.org/www-community/vulnerabilities/Unrestricted_File_Upload\n③ User-uploaded content, Django Software Foundation,\nhttps://docs.djangoproject.com/en/3.2/topics/security/#user-uploaded-content-security\n",
+ "native_sha256": "e41f7a2d50041ebdd45dda1c3e7be7f23e35ea73dd7d38edb44677b740fae9ce",
+ "chars": 1501,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

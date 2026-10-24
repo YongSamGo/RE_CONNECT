@@ -1,0 +1,29 @@
+345
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C
+13: fp = fopen("config", "r"); 
+14: fgets(user, sizeof(user), fp); 
+// 비밀번호를 파일에서 읽어옵니다.
+15: fgets(passwd, sizeof(passwd), fp);
+16: fclose(fp);
+// 비밀번호 암호화를 진행합니다.
+17: ncPasswd = CkCrypt2_encryptStringENC(crypt, passwd);
+18: SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
+19: SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
+20: SQLConnect(hdbc,
+21:
+(SQLCHAR*) server,
+22:
+(SQLSMALLINT) strlen(server),
+23:
+(SQLCHAR*) user,
+24:
+(SQLSMALLINT) strlen(user),
+25:
+// 암호화된 비밀번호를 사용합니다.
+26:
+(SQLCHAR*) encPasswd,
+27:
+(SQLSMALLINT) strlen(verifiedPwd) );
+28: return 0;
+29:}

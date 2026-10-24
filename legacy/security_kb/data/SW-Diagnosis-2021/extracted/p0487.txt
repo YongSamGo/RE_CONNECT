@@ -1,0 +1,24 @@
+487
+제4장구현단계 보안약점 진단
+4. Private 배열에 Public 데이터 할당
+가. 개요
+public으로 선언된 메소드의 인자가 private선언된 배열에 저장되면, private배열을 외부에서 접근
+하여 배열수정과 객체 속성변경이 가능해진다.
+나. 보안대책
+public으로 선언된 메서드의 인자를 private선언된 배열로 저장되지 않도록 한다. 인자로 들어온 
+배열의 복사본을 생성하고 clone() 메소드로 복사된 원소를 저장하도록 하여 private변수에 할당
+하여 private선언된 배열과 객체속성에 대한 의도하지 않게 수정되는 것을 방지한다. 만약 배열 객체
+의 원소가 String 타입 등과 같이 변경이 되지 않는 경우에는 인자로 들어온 배열의 복사본을 생성
+하여 할당한다.
+다. 코드예제
+아래의 코드는 멤버 변수 userRoles는 private로 선언되었지만 public으로 선언된 setUserRoles 
+메소드로 인자가 할당되어 배열의 원소를 외부에서 변경할 수 있다. 이 경우 의도하지 않은 배열과 
+원소에 대한 객체속성 수정이 발생할 수 있다.
+안전하지 않은 코드의 예 JAVA (배열의 원소가 일반객체일 경우)
+1: //userRoles 필드는 private이지만, public인 setUserRoles()로 외부의 배열이 할당되면, 사실상 
+public 필드가 된다.
+2: private UserRole[] userRoles;
+3: public void setUserRoles(UserRole[] userRoles) {
+4:
+this.userRoles = userRoles;
+5: }

@@ -1,0 +1,295 @@
+{
+ "lines": [
+  {
+   "text": "85",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐119 Improper Restriction of Operations within the Bounds of a Memory Buffer, ",
+   "bbox": [
+    85.86000061035156,
+    136.3799591064453,
+    459.12127685546875,
+    147.4130859375
+   ],
+   "block": 25,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "MITRE, http://cwe.mitre.org/data/definitions/119.html",
+   "bbox": [
+    99.60055541992188,
+    152.41104125976562,
+    331.7921142578125,
+    163.43304443359375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②Buffer Overflow, Wikipedia, http://en.wikipedia.org/wiki/Buffer_overflow",
+   "bbox": [
+    85.86014556884766,
+    173.41098022460938,
+    419.97662353515625,
+    184.4329833984375
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③WASC Threat Classification v2.0 Buffer Overflow, WASC,",
+   "bbox": [
+    85.86013793945312,
+    189.43093872070312,
+    349.7100830078125,
+    200.45294189453125
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246916/ Buffer%20Overflow",
+   "bbox": [
+    99.60054779052734,
+    206.41085815429688,
+    413.13714599609375,
+    217.432861328125
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Smashing The Stack For Fun And Profit, Aleph One,",
+   "bbox": [
+    85.86013793945312,
+    228.43081665039062,
+    325.7471923828125,
+    239.45281982421875
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://insecure.org/stf/smashstack.html",
+   "bbox": [
+    99.60054779052734,
+    245.41070556640625,
+    277.59661865234375,
+    256.4327087402344
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Stack BufferOverflow(스택 버퍼오버플로우), Inhack,",
+   "bbox": [
+    85.86013793945312,
+    267.4306640625,
+    315.96734619140625,
+    278.4526672363281
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://inhack.org/wordpress/?p=2932 ",
+   "bbox": [
+    99.60054779052734,
+    284.4105529785156,
+    268.63372802734375,
+    295.43255615234375
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Stack-based Overflow Exploit: Introduction to Classical and Advanced Overflow ",
+   "bbox": [
+    85.86112213134766,
+    306.4305114746094,
+    459.1954650878906,
+    317.4525146484375
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Technique, wowhacker, ",
+   "bbox": [
+    99.60153198242188,
+    323.410400390625,
+    209.5395050048828,
+    334.4324035644531
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://web.archive.org/web/20070818115455/http://www.neworder.box.sk/n",
+   "bbox": [
+    99.60153198242188,
+    340.3902893066406,
+    455.8534851074219,
+    351.41229248046875
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ewsread.php?newsid=12476",
+   "bbox": [
+    99.60153198242188,
+    357.4302978515625,
+    225.41603088378906,
+    368.4523010253906
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦CWE-134 Uncontrolled Format String, MITRE,",
+   "bbox": [
+    85.86112213134766,
+    379.39013671875,
+    301.66796875,
+    390.4121398925781
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/134.html",
+   "bbox": [
+    99.60153198242188,
+    396.4301452636719,
+    306.03704833984375,
+    407.4521484375
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧WASC Threat Classification Format String, WASC,",
+   "bbox": [
+    85.86112213134766,
+    418.3899841308594,
+    317.75762939453125,
+    429.4119873046875
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246926/For- mat%20String",
+   "bbox": [
+    99.60153198242188,
+    435.42999267578125,
+    408.3724670410156,
+    446.4519958496094
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "85\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①CWE‐119 Improper Restriction of Operations within the Bounds of a Memory Buffer, \nMITRE, http://cwe.mitre.org/data/definitions/119.html\n②Buffer Overflow, Wikipedia, http://en.wikipedia.org/wiki/Buffer_overflow\n③WASC Threat Classification v2.0 Buffer Overflow, WASC,\nhttp://projects.webappsec.org/w/page/13246916/ Buffer%20Overflow\n④Smashing The Stack For Fun And Profit, Aleph One,\nhttp://insecure.org/stf/smashstack.html\n⑤Stack BufferOverflow(스택 버퍼오버플로우), Inhack,\nhttp://inhack.org/wordpress/?p=2932 \n⑥Stack-based Overflow Exploit: Introduction to Classical and Advanced Overflow \nTechnique, wowhacker, \nhttp://web.archive.org/web/20070818115455/http://www.neworder.box.sk/n\newsread.php?newsid=12476\n⑦CWE-134 Uncontrolled Format String, MITRE,\nhttp://cwe.mitre.org/data/definitions/134.html\n⑧WASC Threat Classification Format String, WASC,\nhttp://projects.webappsec.org/w/page/13246926/For- mat%20String\n",
+ "native_sha256": "4e6285b28ca4da716c51826eac1eb079e7f247b059b679b366067982f6697258",
+ "chars": 937,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

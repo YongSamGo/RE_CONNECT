@@ -1,0 +1,39 @@
+498
+아래 예제와 같이 gets_s() 또는 fgets()함수를 사용하여 입력값의 크기를 제한하여 사용해야 한다.
+안전한 코드의 예 C
+1: #include <stdio.h>
+2: void requestString()
+3: {
+4:
+char str[100];
+5:
+//gets_s() 함수는 문자열 길이 제한이 가능하다.
+6:
+gets_s(str, sizeof(str));
+7: }
+다음 예제는 J2EE 응용 프로그램에서 프레임워크 메소드 호출 대신에 소켓을 직접 사용하고 있어, 
+프레임워크에서 제공하는 보안기능을 제공받지 못한다.
+안전하지 않은 코드의 예 JAVA
+1: public class S246 extends javax.servlet.http.HttpServlet { 
+2:
+private Socket socket 
+3:
+protected void doGet(HttpServletRequest request, 
+4:
+HttpServletResponse response) throws ServletException { 
+5:
+try { 
+6: //프레임워크의 메소드 호출 대신 소켓을 직접 사용하고 있어 프레임워크에서 제공하는 보안기능을 
+제공받지 못해 안전하지 않다.
+7:
+socket = new Socket("kisa.or.kr", 8080); 
+8:
+} catch (UnknownHostException e) {
+9:
+.......
+타겟이 WAS로 작성될 경우 아래의 코드처럼 보안기능을 제공하는 프레임워크 메소드인 URL 
+Connection 을 이용하여야한다.
+안전한 코드의 예 JAVA
+1: public class S246 extends javax.servlet.http.HttpServlet { 
+2:
+protected void doGet(HttpServletRequest request,

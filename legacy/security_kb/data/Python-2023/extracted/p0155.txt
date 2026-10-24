@@ -1,0 +1,9 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제6절 캡슐화
+149
+라. 참고자료
+① CWE-489: Active Debug Code, MITRE,
+https://cwe.mitre.org/data/definitions/489.html
+② Settings, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/ref/settings/#debug
+➂ Debug Mode, Flask,
+https://flask.palletsprojects.com/en/2.0.x/quickstart/#debug-mode

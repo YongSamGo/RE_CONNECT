@@ -1,0 +1,45 @@
+278
+라. 진단방법
+다른 시스템의 서비스를 호출하는 함수가 존재하는지 확인하고(①) 다른 시스템을 호출할 때 사용되는 
+입력 값이(②) 신뢰할 수 있는 값인지 확인한다. 만약 입력 값이 신뢰할 수 없고 별도의 검증절차가 
+없으면 안전하지 않다고 판정한다.
+일반적인 진단의 예
+1:public class G03 extends HttpServlet { 
+2:
+protected void doPost(HttpServletRequest req, HttpServletResponse res)
+3:
+throws ServletException, IOException { 
+4:
+String url = req.getParameter("url"); ·································································②
+5:
+6:
+InputStream inputStream = null; 
+7:
+OutputStream outputStream = null; 
+8:
+//사용자에게 url을 입력 받는다.
+9:
+URL u = new URL(url);
+10:
+res.setHeader("content-disposition","attachment;fileName=‘’");
+11:
+12:
+int length;
+13:
+byte[] bytes = new byte[1024];
+14:
+// 입력받은 URL을 stream으로 생성한다.
+15:
+inputStream = u.openStream(); ·········································································①
+16:
+outputStream = res.getOutputStream(); 
+17:
+while ((length = inputStream.read(bytes)) > 0) { 
+18:
+outputStream.write(bytes, 0, length); 
+19:
+}
+20:
+21:
+}
+22:}

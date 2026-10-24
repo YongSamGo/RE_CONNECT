@@ -1,0 +1,463 @@
+{
+ "lines": [
+  {
+   "text": "250",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "SchemaFactory의 경우 SchemaFactory 또는 Validator 클래스의 setProperty()를 사용하여 제",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    462.0014953613281,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "한설정을 추가할 수 있다.",
+   "bbox": [
+    76.5,
+    130.81100463867188,
+    173.1577606201172,
+    141.8330078125
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    161.29122924804688,
+    296.91937255859375,
+    172.313232421875
+   ],
+   "block": 16,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:SchemaFactory factory =",
+   "bbox": [
+    84.30000305175781,
+    186.21823120117188,
+    194.08926391601562,
+    196.11822509765625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");",
+   "bbox": [
+    84.30000305175781,
+    199.77853393554688,
+    389.7254638671875,
+    209.67852783203125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");",
+   "bbox": [
+    84.29998779296875,
+    213.27853393554688,
+    352.20654296875,
+    223.17852783203125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "bbox": [
+    84.29998779296875,
+    226.77853393554688,
+    371.0555114746094,
+    236.67852783203125
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:Schema schema = factory.newSchema(Source); ",
+   "bbox": [
+    84.29998779296875,
+    240.33883666992188,
+    289.9098815917969,
+    250.23883056640625
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    266.2311096191406,
+    296.91937255859375,
+    277.25311279296875
+   ],
+   "block": 22,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:SchemaFactory factory =",
+   "bbox": [
+    84.30000305175781,
+    291.1581115722656,
+    194.08926391601562,
+    301.05810546875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");",
+   "bbox": [
+    84.30000305175781,
+    304.6581115722656,
+    389.7254638671875,
+    314.55810546875
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:Schema schema = factory.newSchema();",
+   "bbox": [
+    84.29998779296875,
+    318.1581115722656,
+    259.99432373046875,
+    328.05810546875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:Validator validator = schema.newValidator();",
+   "bbox": [
+    84.29998779296875,
+    331.7184143066406,
+    270.6563720703125,
+    341.618408203125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");",
+   "bbox": [
+    84.29998779296875,
+    345.2184143066406,
+    358.2433776855469,
+    355.118408203125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "bbox": [
+    84.29998779296875,
+    358.7184143066406,
+    377.06494140625,
+    368.618408203125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "XMLInputFactory 클래스의 setProperty()를 사용하여 제한설정을 추가할 수 있다. ",
+   "bbox": [
+    76.5,
+    391.1512145996094,
+    403.5268249511719,
+    402.1732177734375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    241.6199951171875,
+    421.631103515625,
+    296.91937255859375,
+    432.6531066894531
+   ],
+   "block": 30,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:XMLInputFactory factory = XMLInputFactory.newFactory(); ",
+   "bbox": [
+    84.30000305175781,
+    446.55810546875,
+    331.3063659667969,
+    456.4580993652344
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:factory.setProperty(XMLInputFactory.SUPPORT_DTD, false); ",
+   "bbox": [
+    84.30000305175781,
+    460.05810546875,
+    335.56072998046875,
+    469.9580993652344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);",
+   "bbox": [
+    84.30000305175781,
+    473.618408203125,
+    427.93450927734375,
+    483.5184020996094
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:XMLEventReadereventReader= factory.createXMLEventReader(new FileReader(\"xxe.xml\")); ",
+   "bbox": [
+    84.30001831054688,
+    487.118408203125,
+    452.979736328125,
+    497.0184020996094
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    539.5551147460938,
+    132.05699157714844,
+    551.6331176757812
+   ],
+   "block": 35,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE-611: Improper Restriction of XML External Entity Reference, MITRE,",
+   "bbox": [
+    91.5,
+    563.2310791015625,
+    430.7320861816406,
+    574.2531127929688
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/611.html ",
+   "bbox": [
+    105.24038696289062,
+    579.2510375976562,
+    319.3966369628906,
+    590.2730712890625
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②XML Entity Prevention Cheet Sheet, OWASP",
+   "bbox": [
+    91.4999771118164,
+    600.2509155273438,
+    301.01068115234375,
+    611.27294921875
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_",
+   "bbox": [
+    105.24038696289062,
+    616.2108154296875,
+    461.4298400878906,
+    627.2328491210938
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Cheat_Sheet.html",
+   "bbox": [
+    105.24038696289062,
+    632.2307739257812,
+    183.98609924316406,
+    643.2528076171875
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7,
+    8
+   ],
+   "text": "1:SchemaFactory factory =\nSchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");\n2:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n3:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n4:Schema schema = factory.newSchema(Source); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    185.0182312011719,
+    389.7254638671875,
+    251.43883056640624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+   ],
+   "text": "1:SchemaFactory factory =\nSchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");\n2:Schema schema = factory.newSchema();\n3:Validator validator = schema.newValidator();\n4:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n5:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.29998779296875,
+    289.95811157226564,
+    389.7254638671875,
+    369.818408203125
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1:XMLInputFactory factory = XMLInputFactory.newFactory(); \n2:factory.setProperty(XMLInputFactory.SUPPORT_DTD, false); \n3:factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);\n4:XMLEventReadereventReader= factory.createXMLEventReader(new FileReader(\"xxe.xml\")); ",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    84.30000305175781,
+    445.35810546875,
+    452.979736328125,
+    498.21840209960936
+   ]
+  }
+ ],
+ "native": "250\nSchemaFactory의 경우 SchemaFactory 또는 Validator 클래스의 setProperty()를 사용하여 제\n한설정을 추가할 수 있다.\n오탐코드의 예\n1:SchemaFactory factory =\nSchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");\n2:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n3:factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\n4:Schema schema = factory.newSchema(Source); \n오탐코드의 예\n1:SchemaFactory factory =\nSchemaFactory.newInstance(\"XMLConstants.W3C_XML_SCHEMA_NS_URI\");\n2:Schema schema = factory.newSchema();\n3:Validator validator = schema.newValidator();\n4:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, \"\");\n5:validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, \"\");\nXMLInputFactory 클래스의 setProperty()를 사용하여 제한설정을 추가할 수 있다. \n오탐코드의 예\n1:XMLInputFactory factory = XMLInputFactory.newFactory(); \n2:factory.setProperty(XMLInputFactory.SUPPORT_DTD, false); \n3:factory.setProperty(XMLInputFactory.IS_SUPPORTING_EXTERNAL_ENTITIES, false);\n4:XMLEventReadereventReader= factory.createXMLEventReader(new FileReader(\"xxe.xml\")); \n마. 참고자료\n①CWE-611: Improper Restriction of XML External Entity Reference, MITRE,\nhttps://cwe.mitre.org/data/definitions/611.html \n②XML Entity Prevention Cheet Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/XML_External_Entity_Prevention_\nCheat_Sheet.html\n",
+ "native_sha256": "1b0a8e0c607680c0ea046678f58deee74da7f20c434b5c6608c32a04cd501b64",
+ "chars": 1293,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

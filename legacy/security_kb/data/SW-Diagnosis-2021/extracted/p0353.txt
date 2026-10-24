@@ -1,0 +1,45 @@
+353
+제4장구현단계 보안약점 진단
+비밀번호는 코드 상에서 보이지 않게 사용해야 한다. 아래의 예시는 환경 변수를 이용하여 비밀번호 를 
+사용한다.
+안전한 코드의 예 C
+1: int dbaccess(char *server, char *user, char *passwd){ 
+2:
+SQLHENV henv; 
+3:
+SQLHDBC hdbc; 
+4:
+// 비밀번호를 외부에서 불러와서 사용
+5:
+char *password = getenv(“password”);
+6:
+SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &henv);
+7:
+SQLAllocHandle(SQL_HANDLE_DBC, henv, &hdbc);
+8:
+SQLConnect(hdbc, (SQLCHAR*) server, strlen(server), user, strlen(user),
+password, strlen(password));
+9:
+SQLFreeHandle(SQL_HANDLE_DBC, hdbc);
+10: SQLFreeHandle(SQL_HANDLE_ENV, henv);
+11: return 0;
+12:}
+ㆍ하드코드된 암호화 키
+소스 코드 내부에 암호화 키를 상수 형태로 하드코딩하여 사용하면 악의적인 공격자에게 암호화 
+키가 노출될 위협이 있다.
+안전하지 않은 코드의 예 JAVA
+1: import javax.crypto.KeyGenerator; 
+2: import javax.crypto.spec.SecretKeySpec; 
+3: import javax.crypto.Cipher; 
+4:
+……
+5: public String encriptString(String usr) { 
+//암호화 키를 소스코드 내부에 사용하는 것은 안전하지 않다.
+6:
+String key = "22df3023sf~2;asn!@#/>as";
+7:
+if (key != null) {
+8:
+byte[] bToEncrypt = usr.getBytes("UTF-8");
+9:
+SecretKeySpec sKeySpec = new SecretKeySpec(key.getBytes(), "AES");

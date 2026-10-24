@@ -1,0 +1,50 @@
+228
+일반적인 진단의 예
+4:
+FileInputStream in = new FileInputStream(fileName); 
+5:
+props.load(in);
+6:
+7:
+// 외부에서 전달된 값이 시스템 내부 명령어의 일부로 사용됨. 
+8:
+String version = props.getProperty(“dir_type”) ································································②
+9:
+String cmd = new String(“cmd.exe /c rmanDB.bat “);
+10: 
+11:
+// 입력값 검증 없이 내부 명령어의 일부로 사용됨. 
+12:
+Runtime.getRuntime().exec(cmd + “c:\\prog_cmd\\” + version); ·································①
+13:
+}
+다음의 예제에서 외부 입력값인 processMon의 값을 파라미터로 getProcessId를 호출하고, 19 
+라인에서 execStr 문자열을 만들며 그 문자열이 28라인에서 명령어로 쓰이고 있어 취약한 것으로 
+판정한다.
+정탐코드의 예
+< EgovProcessMonController.java > 
+1: @RequestMapping(“/utl/sys/prm/selectProcessSttus.do”) 
+2: public String selectProcessSttus(@ModelAttribute(“processMonVO”) ProcessMonVO 
+processMonVO, ModelMap model) throws Exception { 
+4: …
+5: }
+< ProcessMonChecker.java >
+14:public staticString getProcessId(String processNm) throws Exception {
+15:
+Process p = null; 
+16:
+String procsSttus = 
+null; 17:BufferedReader buf =
+null; 18:String result = null;
+19:
+String execStr = “tasklist /fo table /nh /fi \”imagename eq “+processNm+”\””;
+20:
+int cnt = 0;
+21:
+String str = null;
+22:
+try {
+23:
+if (Globals.OS_TYPE == null) {
+24:
+throw new RuntimeException(“Globals.OS_TYPE property value is needed”);

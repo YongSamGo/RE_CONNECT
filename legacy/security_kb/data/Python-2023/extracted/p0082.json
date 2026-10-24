@@ -1,0 +1,384 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "76",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "주요 파일에 대해서는 최소 권한만 할당해야 한다. 구체적으로 파일의 소유자라고 하더라도 기본적으로 읽기 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.9639892578125,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "권한만 부여해야 하며, 부득이하게 쓰기 권한이 필요한 경우에만 제한적으로 쓰기 권한을 부여해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    113.92750549316406,
+    496.8740234375,
+    123.87489318847656
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    160.1888427734375,
+    319.7541809082031,
+    170.13621520996094
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    89.78712463378906,
+    184.23033142089844,
+    97.27186584472656,
+    192.7395477294922
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    89.78712463378906,
+    198.61209106445312,
+    97.27186584472656,
+    207.12130737304688
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    89.78712463378906,
+    212.9938507080078,
+    97.27186584472656,
+    221.50306701660156
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    89.78712463378906,
+    227.3756103515625,
+    97.27186584472656,
+    235.88482666015625
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    89.78712463378906,
+    241.7573699951172,
+    97.27186584472656,
+    250.26658630371094
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    89.78712463378906,
+    256.25897216796875,
+    97.27186584472656,
+    264.7681884765625
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    89.78712463378906,
+    270.6407470703125,
+    97.27186584472656,
+    279.14996337890625
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    89.78712463378906,
+    285.0224914550781,
+    97.27186584472656,
+    293.5317077636719
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "import os",
+   "bbox": [
+    107.28901672363281,
+    184.23033142089844,
+    145.04098510742188,
+    192.7395477294922
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def write_file():",
+   "bbox": [
+    107.28901672363281,
+    212.49215698242188,
+    166.79978942871094,
+    221.50306701660156
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 소유자 외에는 아무런 권한을 주지 않음.",
+   "bbox": [
+    107.28901672363281,
+    226.87391662597656,
+    266.9997863769531,
+    235.88482666015625
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  os.chmod('/root/system_config', 0o700)",
+   "bbox": [
+    107.28901672363281,
+    241.25567626953125,
+    269.9619445800781,
+    250.26658630371094
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  with open(\"/root/system_config\", ‘'w') as f:",
+   "bbox": [
+    107.28901672363281,
+    270.1390686035156,
+    285.5968933105469,
+    279.14996337890625
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    f.write(\"your config is broken\")",
+   "bbox": [
+    107.28901672363281,
+    284.52081298828125,
+    244.42835998535156,
+    293.5317077636719
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    355.900634765625,
+    119.12395477294922,
+    366.4472351074219
+   ],
+   "block": 22,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-732: Incorrect Permission Assignment for Critical Resource, MITRE,",
+   "bbox": [
+    65.09266662597656,
+    377.7608947753906,
+    381.0267639160156,
+    386.74951171875
+   ],
+   "block": 23,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/732.html",
+   "bbox": [
+    77.32001495361328,
+    392.9815673828125,
+    267.01031494140625,
+    401.9701843261719
+   ],
+   "block": 24,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② OS – Miscellaneous operating system interfaces, Python Software Foundation,",
+   "bbox": [
+    65.09266662597656,
+    412.8258056640625,
+    399.2472229003906,
+    422.3443603515625
+   ],
+   "block": 25,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.python.org/3/library/os.html",
+   "bbox": [
+    77.32001495361328,
+    428.5764465332031,
+    241.1162109375,
+    437.5650634765625
+   ],
+   "block": 26,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: import os\n2:\n3: def write_file():\n4:   # 소유자 외에는 아무런 권한을 주지 않음.\n5:   os.chmod('/root/system_config', 0o700)\n6:\n7:   with open(\"/root/system_config\", ‘'w') as f:\n8:     f.write(\"your config is broken\")",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    89.78712463378906,
+    170.23621520996093,
+    285.5968933105469,
+    294.73170776367186
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n76\n주요 파일에 대해서는 최소 권한만 할당해야 한다. 구체적으로 파일의 소유자라고 하더라도 기본적으로 읽기 \n권한만 부여해야 하며, 부득이하게 쓰기 권한이 필요한 경우에만 제한적으로 쓰기 권한을 부여해야 한다.\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\nimport os\ndef write_file():\n  # 소유자 외에는 아무런 권한을 주지 않음.\n  os.chmod('/root/system_config', 0o700)\n  with open(\"/root/system_config\", ‘'w') as f:\n    f.write(\"your config is broken\")\n라. 참고자료\n① CWE-732: Incorrect Permission Assignment for Critical Resource, MITRE,\nhttps://cwe.mitre.org/data/definitions/732.html\n② OS – Miscellaneous operating system interfaces, Python Software Foundation,\nhttps://docs.python.org/3/library/os.html\n",
+ "native_sha256": "26559d248ef4f2ed38f6f435b644eb0c4fe9949af8eb79171e22c87cc0bed320",
+ "chars": 599,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

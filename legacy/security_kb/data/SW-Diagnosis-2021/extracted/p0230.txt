@@ -1,0 +1,38 @@
+230
+다음의 예제에서 fname은 srcFile.getName()의 결과값인 파일의 이름이므로 명령어에 삽입되어 
+공격할 수 있는 file separator나 “..” 등의 문자열이 없으므로 취약하지 않은 것으로 판정한다.
+오탐코드의 예
+1: public static String getOwner(String file) throws Exception{ 
+2:
+String owner = “”; 
+3:
+String src = file.replace(‘\\’, FILE_SEPARATOR).replace(‘/’, FILE_SEPARATOR);
+4:
+BufferedReader b_err=null; 
+5:
+BufferedReader b_out=null; 
+6:
+try { 
+7:
+File srcFile = newFile(src); 
+8:
+if (srcFile.exists()) { 
+9:
+String parentPath = srcFile.getParent(); 
+10:
+String fname = srcFile.getName(); 
+11:
+Process p = null; 
+12:
+String cmdStr = EgovProperties.getProperty(Globals.SHELL_FILE_PATH, 
+“SHELL.”+Globals.OS_TYPE+”.getDrctryOwner”); 
+13:
+String[] command = {cmdStr.replace(‘\\’, FILE_SEPARATOR).replace(‘/’,
+FILE_SEP- ARATOR), parentPath.replace(‘\\’, FILE_SEPARATOR).replace(‘/’,
+FILE_SEPARATOR), fname};
+14:
+p = Runtime.getRuntime().exec(command); 
+15:
+}
+16: }
+17:}

@@ -1,0 +1,527 @@
+{
+ "lines": [
+  {
+   "text": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현",
+   "bbox": [
+    260.61041259765625,
+    46.76085662841797,
+    498.9752197265625,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.790975570678711,
+   "fonts": [
+    "GmarketSansTTFBold",
+    "Haansoft Batang",
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "49",
+   "bbox": [
+    494.9679870605469,
+    702.9564819335938,
+    504.04541015625,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "Django 프레임워크와 Flask 프레임워크는 미들웨어와 프레임워크에서 기본적으로 CSRF Token을 사용해서 ",
+   "bbox": [
+    75.04237365722656,
+    93.91288757324219,
+    506.9639892578125,
+    103.86027526855469
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "CSRF 공격으로부터 보호하는 기능을 가지고 있다. 해당 기능을 사용하기 위해 form 태그 내부에 csrf_token을 ",
+   "bbox": [
+    65.09266662597656,
+    113.92750549316406,
+    507.0838623046875,
+    123.87489318847656
+   ],
+   "block": 3,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "사용해야 한다.",
+   "bbox": [
+    65.09266662597656,
+    133.82228088378906,
+    125.37830352783203,
+    143.7696533203125
+   ],
+   "block": 4,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "다. 코드예제",
+   "bbox": [
+    65.09266662597656,
+    182.7202606201172,
+    119.12395477294922,
+    193.2668914794922
+   ],
+   "block": 5,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "가) Django 프레임워크 사용",
+   "bbox": [
+    65.09266662597656,
+    206.6898651123047,
+    184.05502319335938,
+    216.63723754882812
+   ],
+   "block": 6,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "Django 프레임워크에서는 1.2 버전부터 CSRF 취약점을 방지 기능을 기본으로 제공하고 있다. 미들웨어의 ",
+   "bbox": [
+    75.04237365722656,
+    232.69688415527344,
+    506.8446350097656,
+    242.64425659179688
+   ],
+   "block": 7,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "CSRF 옵션을 비활성하거나 템플릿에서 csrf_exempt decorator를 사용하는 경우 CSRF 공격에 노출될 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    252.7115020751953,
+    504.18646240234375,
+    262.65887451171875
+   ],
+   "block": 8,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "⦁Django 미들웨어 설정(settings.py) 사례",
+   "bbox": [
+    65.09266662597656,
+    294.07177734375,
+    246.98992919921875,
+    304.60565185546875
+   ],
+   "block": 9,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    324.0210266113281,
+    335.33807373046875,
+    333.9684143066406
+   ],
+   "block": 10,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    345.06634521484375,
+    94.51471710205078,
+    353.5755615234375
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    361.2458190917969,
+    94.51471710205078,
+    369.7550354003906
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    377.3054504394531,
+    94.51471710205078,
+    385.8146667480469
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    393.4849548339844,
+    94.51471710205078,
+    401.9941711425781
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    409.5445861816406,
+    94.51471710205078,
+    418.0538024902344
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    425.72406005859375,
+    94.51471710205078,
+    434.2332763671875
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    441.78369140625,
+    94.51471710205078,
+    450.29290771484375
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    457.9631652832031,
+    94.51471710205078,
+    466.4723815917969
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    474.0227966308594,
+    94.51471710205078,
+    482.5320129394531
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    490.2022705078125,
+    94.51488494873047,
+    498.71148681640625
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MIDDLEWARE = [",
+   "bbox": [
+    104.41199493408203,
+    345.06634521484375,
+    177.05804443359375,
+    353.5755615234375
+   ],
+   "block": 23,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.sessions.middleware.SessionMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    361.2458190917969,
+    331.6142883300781,
+    369.7550354003906
+   ],
+   "block": 24,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # MIDDLEWARE 목록에서 CSRF 항목을 삭제 또는 주석처리 하면",
+   "bbox": [
+    104.41199493408203,
+    377.3054504394531,
+    355.06182861328125,
+    385.8146667480469
+   ],
+   "block": 25,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # Django 앱에서 CSRF 유효성 검사가 전역적으로 제거된다",
+   "bbox": [
+    104.41199493408203,
+    393.4849548339844,
+    328.0898132324219,
+    401.9941711425781
+   ],
+   "block": 26,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # 'django.middleware.csrf.CsrfViewMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    409.5445861816406,
+    298.0495300292969,
+    418.0538024902344
+   ],
+   "block": 27,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.auth.middleware.AuthenticationMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    425.72406005859375,
+    340.4880065917969,
+    434.2332763671875
+   ],
+   "block": 28,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.messages.middleware.MessageMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    441.78369140625,
+    342.16387939453125,
+    450.29290771484375
+   ],
+   "block": 29,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.middleware.locale.LocaleMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    457.9631652832031,
+    286.542236328125,
+    466.4723815917969
+   ],
+   "block": 30,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  ......",
+   "bbox": [
+    104.41199493408203,
+    474.0227966308594,
+    128.18460083007812,
+    482.5320129394531
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "]",
+   "bbox": [
+    104.41199493408203,
+    490.2022705078125,
+    107.05046844482422,
+    498.71148681640625
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음은 Django의 CSRF 기능을 활성화하기 위한 안전한 미들웨어 설정 예제를 보여 준다. 미들웨어의 ",
+   "bbox": [
+    75.04237365722656,
+    534.3543090820312,
+    506.8441467285156,
+    544.3016967773438
+   ],
+   "block": 34,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "CSRF 기능을 주석 또는 삭제 처리하지 않아야 한다. 템플릿 페이지에는 csrf_token을 form 태그 안에 명시",
+   "bbox": [
+    65.09266662597656,
+    554.2490844726562,
+    504.00360107421875,
+    564.1964721679688
+   ],
+   "block": 35,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "해야 미들웨어에서 정상적으로 CSRF 기능을 사용할 수 있다.",
+   "bbox": [
+    65.09266662597656,
+    574.263671875,
+    319.4575500488281,
+    584.2110595703125
+   ],
+   "block": 36,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30
+   ],
+   "text": "1: MIDDLEWARE = [\n2:   'django.contrib.sessions.middleware.SessionMiddleware',\n3:   # MIDDLEWARE 목록에서 CSRF 항목을 삭제 또는 주석처리 하면\n4:   # Django 앱에서 CSRF 유효성 검사가 전역적으로 제거된다\n5:   # 'django.middleware.csrf.CsrfViewMiddleware',\n6:   'django.contrib.auth.middleware.AuthenticationMiddleware',\n7:   'django.contrib.messages.middleware.MessageMiddleware',\n8:   'django.middleware.locale.LocaleMiddleware',\n9:   ......\n10: ]",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    334.06841430664065,
+    355.06182861328125,
+    499.91148681640624
+   ]
+  }
+ ],
+ "native": "PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현\n49\nDjango 프레임워크와 Flask 프레임워크는 미들웨어와 프레임워크에서 기본적으로 CSRF Token을 사용해서 \nCSRF 공격으로부터 보호하는 기능을 가지고 있다. 해당 기능을 사용하기 위해 form 태그 내부에 csrf_token을 \n사용해야 한다.\n다. 코드예제\n가) Django 프레임워크 사용\nDjango 프레임워크에서는 1.2 버전부터 CSRF 취약점을 방지 기능을 기본으로 제공하고 있다. 미들웨어의 \nCSRF 옵션을 비활성하거나 템플릿에서 csrf_exempt decorator를 사용하는 경우 CSRF 공격에 노출될 수 있다.\n⦁Django 미들웨어 설정(settings.py) 사례\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\nMIDDLEWARE = [\n  'django.contrib.sessions.middleware.SessionMiddleware',\n  # MIDDLEWARE 목록에서 CSRF 항목을 삭제 또는 주석처리 하면\n  # Django 앱에서 CSRF 유효성 검사가 전역적으로 제거된다\n  # 'django.middleware.csrf.CsrfViewMiddleware',\n  'django.contrib.auth.middleware.AuthenticationMiddleware',\n  'django.contrib.messages.middleware.MessageMiddleware',\n  'django.middleware.locale.LocaleMiddleware',\n  ......\n]\n다음은 Django의 CSRF 기능을 활성화하기 위한 안전한 미들웨어 설정 예제를 보여 준다. 미들웨어의 \nCSRF 기능을 주석 또는 삭제 처리하지 않아야 한다. 템플릿 페이지에는 csrf_token을 form 태그 안에 명시\n해야 미들웨어에서 정상적으로 CSRF 기능을 사용할 수 있다.\n",
+ "native_sha256": "97c135c962f460c33e3b4584e079cfc787709a3e0b6bbe331ef5db7a44bb9ad6",
+ "chars": 967,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

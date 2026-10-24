@@ -1,0 +1,13 @@
+313
+제4장구현단계 보안약점 진단
+마. 참고자료
+[1] CWE-134 Uncontrolled Format String, MITRE,
+http://cwe.mitre.org/data/definitions/134.html
+[2] Exclude user input from format strings, CERT,
+http://www.securecoding.cert.org/confluence/display/c/FIO30-C.+Exclude+use
+r+input+from+format+stringsb
+[3] Use valid format strings, CERT,
+http://www.securecoding.cert.org/confluence/display/c/FIO47-C.+Use+valid+f
+ormat+strings
+[4] Format string attack, OWASP,
+https://www.owasp.org/index.php/Format_string_attack

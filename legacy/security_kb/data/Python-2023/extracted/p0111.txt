@@ -1,0 +1,11 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+105
+라. 참고자료
+① CWE-295: Improper Certificate Validation, MITRE,
+https://cwe.mitre.org/data/definitions/295.html
+② Identification and Authentication Failures, OWASP,
+https://owasp.org/Top10/A07_2021-Identification_and_Authentication_Failures/
+③ TLS/SSL Wrapper for Socket Object, Python documentation
+https://docs.python.org/ko/3/library/ssl.html
+④ Improper Certificate validation, AWS.
+https://docs.aws.amazon.com/codeguru/detector-library/python/improper-certificate-validation/

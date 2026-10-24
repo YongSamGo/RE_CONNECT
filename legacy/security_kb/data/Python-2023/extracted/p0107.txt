@@ -1,0 +1,10 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+101
+라. 참고자료
+① CWE-347: Improper Verification of Cryptographic Signature, MITRE,
+https://cwe.mitre.org/data/definitions/347.html
+② Security Consideration for Code Signing, NIST,
+https://csrc.nist.gov/CSRC/media/Publications/white-paper/2018/01/26/security-considerations-for-code
+-signing/final/documents/security-considerations-for-code-signing.pdf
+③ Verifying a signature, PyCryptodome.
+https://www.pycryptodome.org/src/signature/signature?highlight=verify#verifying-a-signature

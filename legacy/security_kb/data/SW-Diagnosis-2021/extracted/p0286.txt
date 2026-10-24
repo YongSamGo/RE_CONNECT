@@ -1,0 +1,53 @@
+286
+라. 진단방법
+Response 헤더에 변수가 사용되는 것을 확인하고(①), 변수가 외부 입력값인지 확인한 후(②), 개행 
+문자(\r, \n) 제거를 위한 필터링 또는 검증절차가 있는지 확인한다. 외부 입력값에 대한 필터링 절차가 
+없다면 취약하다.
+일반적인 진단의 예
+1:
+protected void common(HttpServletRequest request, HttpServletResponse
+response) throws Exception { 
+2:
+String fileid = request.getParameter(“fileid”); ································································②
+3:
+4:
+BufferedInputStream in = null; 
+5:
+String uploadPath = properties.getString(propertyName + “UPLOAD”);
+6:
+7:
+try {
+8:
+String fileName = uploadPath + “/” + fileid; 
+9:
+10:
+response.setContentType(mimetype + “;charset=utf-8”); 
+11:
+String fileName = java.net.URLEncoder.encode(fileid, “UTF-8”); 
+12:
+13:
+response.setHeader(“Content-Disposition”,
+14:
+“attachment; filename=\”” + fileName + “\””); ··························································①
+15:
+response.setHeader(“Content-Transfer-Encoding”, “binary”);
+16:
+17:
+response.getOutputStream().flush();
+18:
+response.getOutputStream().close();
+19:
+}
+20:
+catch(Exception e) { 
+21:
+if(in!=null) { 
+22:
+in.close(); 
+23:
+}
+24:
+}
+25:
+finally{ }
+26: }

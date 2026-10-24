@@ -1,0 +1,25 @@
+359
+제4장구현단계 보안약점 진단
+암호화를 위한 암호화 키가 아닌 알고리즘명을 지정하는 경우 취약하지 않다.
+오탐코드의 예
+1:
+// 키를 설정한다.
+2:
+sKey = new SecretKeySpec( key, “DESede” );
+마. 참고자료
+[1] CWE-259 Use of Hard-coded Password, MITRE,
+http://cwe.mitre.org/data/definitions/259.html
+[2] Be careful while handling sensitive data, such as passwords, in program code, CERT
+http://www.securecoding.cert.org/confluence/display/c/MSC18-
+C.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra
+m+code
+[3] Password Management: Hardcoded Password, OWASP
+https://www.owasp.org/index.php/Password_Management:_Hardcoded_Password
+[4] CWE-321 Use of Hard-coded Cryptographic Key, MITRE,
+http://cwe.mitre.org/data/definitions/321.html
+[5] Be careful while handling sensitive data, such as passwords, in program code, CERT,
+http://www.securecoding.cert.org/confluence/display/c/MSC18-
+C.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra
+m+code
+[6] Use of hard-coded password, OWASP,
+https://www.owasp.org/index.php/Use_of_hard-coded_password

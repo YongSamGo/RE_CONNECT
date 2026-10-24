@@ -1,0 +1,46 @@
+411
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C
+// mutex_lock, mutex_unlock을 이용해 공유 자원 접근을 제한한다.
+4:
+mutex_lock(&account_lock);
+5:
+account += amount; 
+6:
+mutex_unlock(&account_lock);
+7: }
+8: void withdraw(int amount) { 
+9:
+mutex_lock(&account_lock);
+10:
+account -= amount;
+11:
+mutex_unlock(&account_lock);
+12:}
+라. 진단방법
+소스코드 상에 다음과 같이 공유자원(파일/폴더, 소켓, 드라이버 등)을 여러 프로세스가 사용하는지 
+확인한다(①). 이 때, 하나의 공유자원을 동시에 접근할 가능성이 존재한다면 취약하다고 판단하며, 
+동기화 구문 등을 사용할 경우 안전하다고 판단한다. 그 외 공유자원 억세스를 관리하는 pool 형태의 
+자체 모듈을 제작할 경우에도 안전하다고 판단한다.
+일반적인 진단의 예
+1:
+import java.io.*; 
+2:
+3:
+class FileAccessThread extends Thread { 
+4:
+public void run() { 
+5:
+try { 
+6:
+File f = new File(“Test_367.txt”); ···················································································①
+7:
+if(f.exists()) { 
+8:
+// 만약 파일이 존재하면 파일 내용을 읽음 
+9:
+BufferedReader br = new BufferedReader(new FileReader(f));
+10:
+br.close();
+11:
+}

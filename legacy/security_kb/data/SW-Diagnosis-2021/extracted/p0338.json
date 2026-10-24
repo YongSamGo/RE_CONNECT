@@ -1,0 +1,598 @@
+{
+ "lines": [
+  {
+   "text": "338",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "다음 예제는 비밀번호 등 중요 데이터를 해시값으로 변환하여 저장하고 있다.",
+   "bbox": [
+    76.5,
+    113.83108520507812,
+    369.1322326660156,
+    124.85308074951172
+   ],
+   "block": 14,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    153.79122924804688,
+    314.61773681640625,
+    164.813232421875
+   ],
+   "block": 15,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: String id = request.getParameter(\"id\");",
+   "bbox": [
+    83.58000183105469,
+    173.19808959960938,
+    251.46127319335938,
+    183.09808349609375
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부값에 의해 비밀번호 정보를 얻고 있다. ",
+   "bbox": [
+    95.70015716552734,
+    187.59811401367188,
+    265.7208557128906,
+    197.49810791015625
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: String pwd = request.getParameter(\"pwd\"); ",
+   "bbox": [
+    83.58000183105469,
+    201.99813842773438,
+    273.85382080078125,
+    211.89813232421875
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 비밀번호를 솔트값을 포함하여 SHA-256 해시로 변경하여 안전하게 저장한다.",
+   "bbox": [
+    83.58000183105469,
+    216.39816284179688,
+    366.55108642578125,
+    226.29815673828125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "3: MessageDigest md = MessageDigest.getInstance(\"SHA-256\");",
+   "bbox": [
+    83.58000183105469,
+    230.79815673828125,
+    349.64508056640625,
+    240.69815063476562
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4: md.reset();",
+   "bbox": [
+    83.58000183105469,
+    245.19815063476562,
+    139.64706420898438,
+    255.09814453125
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5: md.update(salt);",
+   "bbox": [
+    83.58000183105469,
+    259.59814453125,
+    160.4036102294922,
+    269.4981384277344
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: byte[] hashInBytes = md.digest(pwd.getBytes()); ",
+   "bbox": [
+    83.58000183105469,
+    273.9981384277344,
+    296.44390869140625,
+    283.89813232421875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: StringBuilder sb = new StringBuilder(); ",
+   "bbox": [
+    83.58000183105469,
+    288.39813232421875,
+    257.17974853515625,
+    298.2981262207031
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    302.7981262207031,
+    91.34539794921875,
+    312.6981201171875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "for (byte b : hashInBytes) { ",
+   "bbox": [
+    113.27963256835938,
+    302.7981262207031,
+    230.5504913330078,
+    312.6981201171875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    317.1981201171875,
+    91.34539794921875,
+    327.0981140136719
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sb.append(String.format(\"%02x\", b)); ",
+   "bbox": [
+    122.09933471679688,
+    317.1981201171875,
+    270.8883972167969,
+    327.0981140136719
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    331.5981140136719,
+    96.26522827148438,
+    341.49810791015625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    113.87995910644531,
+    331.5981140136719,
+    116.61270141601562,
+    341.49810791015625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:pwd = sb.toString();",
+   "bbox": [
+    83.58000183105469,
+    345.99810791015625,
+    178.32327270507812,
+    355.8981018066406
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: ......",
+   "bbox": [
+    83.58000183105469,
+    360.3981018066406,
+    116.52452850341797,
+    370.298095703125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:String sql = \" insert into customer(id, pwd, name, ssn, zipcode, addr)“",
+   "bbox": [
+    83.58000183105469,
+    374.798095703125,
+    391.0929870605469,
+    384.6980895996094
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "+ \" values (?, ?, ?, ?, ?, ?)\"; ",
+   "bbox": [
+    96.24057006835938,
+    389.1980895996094,
+    217.12033081054688,
+    399.09808349609375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:PreparedStatement stmt = con.prepareStatement(sql); ",
+   "bbox": [
+    83.58091735839844,
+    403.59808349609375,
+    320.18975830078125,
+    413.4980773925781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:stmt.setString(1, id); ",
+   "bbox": [
+    83.58091735839844,
+    417.9980773925781,
+    182.4339599609375,
+    427.8980712890625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:stmt.setString(2, pwd);",
+   "bbox": [
+    83.58091735839844,
+    432.3980712890625,
+    189.80615234375,
+    442.2980651855469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17: ......",
+   "bbox": [
+    83.58091735839844,
+    446.7980651855469,
+    116.52544403076172,
+    456.69805908203125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:stmt.executeUpdate();",
+   "bbox": [
+    83.58091735839844,
+    461.19805908203125,
+    185.4778594970703,
+    471.0980529785156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "다음은 사용자의 비밀번호를 평문으로 저장해 놓고 출력하는 C# 코드의 예제이다. ",
+   "bbox": [
+    76.5,
+    493.57110595703125,
+    392.70233154296875,
+    504.5931091308594
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    212.10000610351562,
+    533.591064453125,
+    323.5413513183594,
+    544.6130981445312
+   ],
+   "block": 38,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: namespace Security",
+   "bbox": [
+    83.58000183105469,
+    552.998046875,
+    177.44970703125,
+    562.8980712890625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: {",
+   "bbox": [
+    83.58000183105469,
+    567.3980712890625,
+    98.43290710449219,
+    577.298095703125
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    581.798095703125,
+    91.3074951171875,
+    591.6981201171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public class FindPassword : System.Web.UI.Page ",
+   "bbox": [
+    104.48196411132812,
+    581.798095703125,
+    310.5856018066406,
+    591.6981201171875
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    596.1980590820312,
+    91.34540557861328,
+    606.0980834960938
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "{",
+   "bbox": [
+    104.51986694335938,
+    596.1980590820312,
+    107.25260925292969,
+    606.0980834960938
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    610.5980834960938,
+    91.34540557861328,
+    620.4981079101562
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void Page_Load(object sender, EventArgs e)",
+   "bbox": [
+    113.2796401977539,
+    610.5980834960938,
+    337.69598388671875,
+    620.4981079101562
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26
+   ],
+   "text": "1: String id = request.getParameter(\"id\");\n// 외부값에 의해 비밀번호 정보를 얻고 있다. \n2: String pwd = request.getParameter(\"pwd\"); \n// 비밀번호를 솔트값을 포함하여 SHA-256 해시로 변경하여 안전하게 저장한다.\n3: MessageDigest md = MessageDigest.getInstance(\"SHA-256\");\n4: md.reset();\n5: md.update(salt);\n6: byte[] hashInBytes = md.digest(pwd.getBytes()); \n7: StringBuilder sb = new StringBuilder(); \n8:         for (byte b : hashInBytes) { \n9:             sb.append(String.format(\"%02x\", b)); \n10:        }\n11:pwd = sb.toString();\n12: ......\n13:String sql = \" insert into customer(id, pwd, name, ssn, zipcode, addr)“\n+ \" values (?, ?, ?, ?, ?, ?)\"; \n14:PreparedStatement stmt = con.prepareStatement(sql); \n15:stmt.setString(1, id); \n16:stmt.setString(2, pwd);\n17: ......\n18:stmt.executeUpdate();",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.58000183105469,
+    164.913232421875,
+    391.0929870605469,
+    472.2980529785156
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36
+   ],
+   "text": "1: namespace Security\n2: {\n3:      public class FindPassword : System.Web.UI.Page \n4:      {\n5:         protected void Page_Load(object sender, EventArgs e)",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    83.58000183105469,
+    544.7130981445313,
+    337.69598388671875,
+    621.6981079101563
+   ]
+  }
+ ],
+ "native": "338\n다음 예제는 비밀번호 등 중요 데이터를 해시값으로 변환하여 저장하고 있다.\n안전한 코드의 예 JAVA\n1: String id = request.getParameter(\"id\");\n// 외부값에 의해 비밀번호 정보를 얻고 있다. \n2: String pwd = request.getParameter(\"pwd\"); \n// 비밀번호를 솔트값을 포함하여 SHA-256 해시로 변경하여 안전하게 저장한다.\n3: MessageDigest md = MessageDigest.getInstance(\"SHA-256\");\n4: md.reset();\n5: md.update(salt);\n6: byte[] hashInBytes = md.digest(pwd.getBytes()); \n7: StringBuilder sb = new StringBuilder(); \n8:\nfor (byte b : hashInBytes) { \n9:\nsb.append(String.format(\"%02x\", b)); \n10:\n}\n11:pwd = sb.toString();\n12: ......\n13:String sql = \" insert into customer(id, pwd, name, ssn, zipcode, addr)“\n+ \" values (?, ?, ?, ?, ?, ?)\"; \n14:PreparedStatement stmt = con.prepareStatement(sql); \n15:stmt.setString(1, id); \n16:stmt.setString(2, pwd);\n17: ......\n18:stmt.executeUpdate();\n다음은 사용자의 비밀번호를 평문으로 저장해 놓고 출력하는 C# 코드의 예제이다. \n안전하지 않은 코드의 예 C#\n1: namespace Security\n2: {\n3:\npublic class FindPassword : System.Web.UI.Page \n4:\n{\n5:\nprotected void Page_Load(object sender, EventArgs e)\n",
+ "native_sha256": "3d94aab43ef13a89a9288089ad69230db9c260291906d4a5659b2d9073dc912d",
+ "chars": 987,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

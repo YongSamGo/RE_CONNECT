@@ -1,0 +1,817 @@
+{
+ "lines": [
+  {
+   "text": "286",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "Response 헤더에 변수가 사용되는 것을 확인하고(①), 변수가 외부 입력값인지 확인한 후(②), 개행 ",
+   "bbox": [
+    76.5,
+    142.51107788085938,
+    464.89508056640625,
+    153.5330810546875
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "문자(\\r, \\n) 제거를 위한 필터링 또는 검증절차가 있는지 확인한다. 외부 입력값에 대한 필터링 절차가 ",
+   "bbox": [
+    76.5,
+    159.55111694335938,
+    464.7718811035156,
+    170.5731201171875
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "없다면 취약하다.",
+   "bbox": [
+    76.5,
+    176.53103637695312,
+    141.8981475830078,
+    187.55303955078125
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    230.6999969482422,
+    213.01107788085938,
+    306.34197998046875,
+    224.0330810546875
+   ],
+   "block": 18,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    83.58000183105469,
+    237.93820190429688,
+    91.34540557861328,
+    247.83819580078125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "protected void common(HttpServletRequest request, HttpServletResponse",
+   "bbox": [
+    100.07960510253906,
+    237.93820190429688,
+    403.942138671875,
+    247.83819580078125
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response) throws Exception { ",
+   "bbox": [
+    100.08053588867188,
+    252.33819580078125,
+    223.82626342773438,
+    262.2381896972656
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58094024658203,
+    266.7381896972656,
+    91.3463363647461,
+    276.63818359375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileid = request.getParameter(“fileid”); ································································②",
+   "bbox": [
+    108.9002456665039,
+    266.7381896972656,
+    452.5938415527344,
+    276.63818359375
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58096313476562,
+    281.13818359375,
+    91.34636688232422,
+    291.0381774902344
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58096313476562,
+    295.5381774902344,
+    91.34636688232422,
+    305.43817138671875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "BufferedInputStream in = null; ",
+   "bbox": [
+    108.9002685546875,
+    295.5381774902344,
+    236.72650146484375,
+    305.43817138671875
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58096313476562,
+    309.93817138671875,
+    91.32256317138672,
+    319.8381652832031
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String uploadPath = properties.getString(propertyName + “UPLOAD”);",
+   "bbox": [
+    108.87646484375,
+    309.93817138671875,
+    394.2242431640625,
+    319.8381652832031
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.580078125,
+    324.3381652832031,
+    91.3454818725586,
+    334.2381591796875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.580078125,
+    338.7381591796875,
+    91.3322525024414,
+    348.6381530761719
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    108.88616180419922,
+    338.7381591796875,
+    126.46475219726562,
+    348.6381530761719
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.580078125,
+    353.1381530761719,
+    91.3454818725586,
+    363.03814697265625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = uploadPath + “/” + fileid; ",
+   "bbox": [
+    113.27970886230469,
+    353.1381530761719,
+    297.499267578125,
+    363.03814697265625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.580078125,
+    367.53814697265625,
+    91.3454818725586,
+    377.4381408691406
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.580078125,
+    381.9381408691406,
+    96.26528930664062,
+    391.838134765625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.setContentType(mimetype + “;charset=utf-8”); ",
+   "bbox": [
+    113.88002014160156,
+    381.9381408691406,
+    345.7548522949219,
+    391.838134765625
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.580078125,
+    396.338134765625,
+    96.26530456542969,
+    406.2381286621094
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String fileName = java.net.URLEncoder.encode(fileid, “UTF-8”); ",
+   "bbox": [
+    113.88003540039062,
+    396.338134765625,
+    375.4564208984375,
+    406.2381286621094
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    83.580078125,
+    410.7381286621094,
+    96.26530456542969,
+    420.63812255859375
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    83.580078125,
+    425.13812255859375,
+    96.26530456542969,
+    435.0381164550781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.setHeader(“Content-Disposition”,",
+   "bbox": [
+    113.88003540039062,
+    425.13812255859375,
+    286.5091552734375,
+    435.0381164550781
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    83.580078125,
+    439.5381164550781,
+    96.26528930664062,
+    449.4381103515625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "“attachment; filename=\\”” + fileName + “\\””); ··························································①",
+   "bbox": [
+    113.88002014160156,
+    439.5381164550781,
+    452.57781982421875,
+    449.4381103515625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:",
+   "bbox": [
+    83.580078125,
+    453.9381103515625,
+    96.26530456542969,
+    463.8381042480469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.setHeader(“Content-Transfer-Encoding”, “binary”);",
+   "bbox": [
+    113.88003540039062,
+    453.9381103515625,
+    357.53857421875,
+    463.8381042480469
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:",
+   "bbox": [
+    83.580078125,
+    468.3381042480469,
+    96.26530456542969,
+    478.23809814453125
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "17:",
+   "bbox": [
+    83.580078125,
+    482.73809814453125,
+    96.26528930664062,
+    492.6380920410156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.getOutputStream().flush();",
+   "bbox": [
+    113.88002014160156,
+    482.73809814453125,
+    257.25372314453125,
+    492.6380920410156
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "18:",
+   "bbox": [
+    83.580078125,
+    497.1380920410156,
+    96.26530456542969,
+    507.0380859375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "response.getOutputStream().close();",
+   "bbox": [
+    113.88003540039062,
+    497.1380920410156,
+    258.6052551269531,
+    507.0380859375
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "19:",
+   "bbox": [
+    83.580078125,
+    511.5381164550781,
+    96.26530456542969,
+    521.4381103515625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    105.0594482421875,
+    511.5381164550781,
+    107.79219055175781,
+    521.4381103515625
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "20:",
+   "bbox": [
+    83.580078125,
+    525.9380493164062,
+    96.24590301513672,
+    535.8380737304688
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "catch(Exception e) { ",
+   "bbox": [
+    105.04004669189453,
+    525.9380493164062,
+    189.61666870117188,
+    535.8380737304688
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "21:",
+   "bbox": [
+    83.580078125,
+    540.3380126953125,
+    96.27234649658203,
+    550.238037109375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if(in!=null) { ",
+   "bbox": [
+    109.44681549072266,
+    540.3380126953125,
+    158.3118133544922,
+    550.238037109375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "22:",
+   "bbox": [
+    83.580078125,
+    554.738037109375,
+    96.25206756591797,
+    564.6380615234375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "in.close(); ",
+   "bbox": [
+    113.8667984008789,
+    554.738037109375,
+    154.90728759765625,
+    564.6380615234375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "23:",
+   "bbox": [
+    83.580078125,
+    569.1380615234375,
+    96.26530456542969,
+    579.0380859375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    109.43976593017578,
+    569.1380615234375,
+    112.1725082397461,
+    579.0380859375
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "24:",
+   "bbox": [
+    83.580078125,
+    583.5380249023438,
+    96.26530456542969,
+    593.4380493164062
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    109.43976593017578,
+    583.5380249023438,
+    112.1725082397461,
+    593.4380493164062
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "25:",
+   "bbox": [
+    83.580078125,
+    597.93798828125,
+    96.28292083740234,
+    607.8380126953125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "finally{ }",
+   "bbox": [
+    109.45738220214844,
+    597.93798828125,
+    142.26527404785156,
+    607.8380126953125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "26: }",
+   "bbox": [
+    83.580078125,
+    612.3380126953125,
+    103.41273498535156,
+    622.238037109375
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52
+   ],
+   "text": "1:    protected void common(HttpServletRequest request, HttpServletResponse\nresponse) throws Exception { \n2:        String fileid = request.getParameter(“fileid”); ································································②\n3:\n4:        BufferedInputStream in = null; \n5:        String uploadPath = properties.getString(propertyName + “UPLOAD”);\n6:\n7:        try {\n8:         String fileName = uploadPath + “/” + fileid; \n9:\n10:        response.setContentType(mimetype + “;charset=utf-8”); \n11:        String fileName = java.net.URLEncoder.encode(fileid, “UTF-8”); \n12:\n13:        response.setHeader(“Content-Disposition”,\n14:        “attachment; filename=\\”” + fileName + “\\””); ··························································①\n15:        response.setHeader(“Content-Transfer-Encoding”, “binary”);\n16:\n17:        response.getOutputStream().flush();\n18:        response.getOutputStream().close();\n19:    }\n20:    catch(Exception e) { \n21:      if(in!=null) { \n22:        in.close(); \n23:      }\n24:      }\n25:      finally{ }\n26: }",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    83.58000183105469,
+    236.7382019042969,
+    452.5938415527344,
+    623.438037109375
+   ]
+  }
+ ],
+ "native": "286\n라. 진단방법\nResponse 헤더에 변수가 사용되는 것을 확인하고(①), 변수가 외부 입력값인지 확인한 후(②), 개행 \n문자(\\r, \\n) 제거를 위한 필터링 또는 검증절차가 있는지 확인한다. 외부 입력값에 대한 필터링 절차가 \n없다면 취약하다.\n일반적인 진단의 예\n1:\nprotected void common(HttpServletRequest request, HttpServletResponse\nresponse) throws Exception { \n2:\nString fileid = request.getParameter(“fileid”); ································································②\n3:\n4:\nBufferedInputStream in = null; \n5:\nString uploadPath = properties.getString(propertyName + “UPLOAD”);\n6:\n7:\ntry {\n8:\nString fileName = uploadPath + “/” + fileid; \n9:\n10:\nresponse.setContentType(mimetype + “;charset=utf-8”); \n11:\nString fileName = java.net.URLEncoder.encode(fileid, “UTF-8”); \n12:\n13:\nresponse.setHeader(“Content-Disposition”,\n14:\n“attachment; filename=\\”” + fileName + “\\””); ··························································①\n15:\nresponse.setHeader(“Content-Transfer-Encoding”, “binary”);\n16:\n17:\nresponse.getOutputStream().flush();\n18:\nresponse.getOutputStream().close();\n19:\n}\n20:\ncatch(Exception e) { \n21:\nif(in!=null) { \n22:\nin.close(); \n23:\n}\n24:\n}\n25:\nfinally{ }\n26: }\n",
+ "native_sha256": "3f6098718893353b794d6c218e827ec3cd271c61a076dbbfe178395b97a169fe",
+ "chars": 1083,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

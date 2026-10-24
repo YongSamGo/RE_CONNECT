@@ -1,0 +1,11 @@
+600
+3.1.3. 오류메시지로 정보노출 방지
+웹 애플리케이션 서버를 설정해 특정 에러나 예외사항에 대해 지정된 페이지가 사용자에게 보여지도록 한다.
+<error-page>
+<error-code>404</error-code>
+<location>/WEB-INF/jsp/common/error/404error.jsp</location>
+</error-page>
+<error-page>
+<exception-type>java.lang.Throwable</exception-type>
+<location>/WEB-INF/jsp/common/error/error.jsp</location>
+</error-page>

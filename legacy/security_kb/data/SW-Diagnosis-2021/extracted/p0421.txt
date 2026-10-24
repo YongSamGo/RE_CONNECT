@@ -1,0 +1,39 @@
+421
+제4장구현단계 보안약점 진단
+예외 관련한 최소한의 정보만 출력하도록 한다.
+안전한 코드의 예 C#
+1: try
+2: {
+3:
+//do something
+4: }
+5: catch (CustomException e)
+6: {
+7:
+_log.Debug(“ERROR-01 : error information”);
+8: }
+라. 진단방법
+해당 취약점에서 시스템 환경, 유저정보, 민감한 정보 등에 대한 기준을 정적도구가 판단하기 어려움에 
+따라 진단원이 출력함수 등으로 외부에 출력되는 값 중 민감한 정보 등을 판단할 필요가 있다. 오류메
+시지를 출력하는 경우(①) 해당오류에 시스템 환경, 유저정보, 데이터 등 민감한 정보가 포함되어 있는지 
+확인한다.
+일반적인 진단의 예
+1: public static void main(String[] args) { 
+2:
+String urlString = args[0]; 
+3:
+try { 
+4:
+URL url = new URL(urlString); 
+5:
+URLConnection cmx = 
+6:
+url.openConnection(); 
+7:
+cmx.connect(); 
+8:
+} catch (Exception e) { 
+9:
+e.printStackTrace(); ··················································································································①
+10: }
+11:}

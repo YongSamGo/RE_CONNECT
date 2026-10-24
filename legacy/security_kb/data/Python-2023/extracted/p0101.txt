@@ -1,0 +1,83 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+95
+사용자 계정 보호를 위해 회원가입 시 패스워드 복잡도와 길이를 검증 후 가입 승인처리를 수행해야 한다. 
+코드 내의 특수문자(‘!@#$%^&*’)는 기업 내부 정책에 따라 변경하여 사용하면 되며, 패스워드를 숫자로만 
+10자리로 구성할 경우 취약할 수 있으니 사용자가 안전한 패스워드로 변경할 수 있도록 안내해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+28:
+29:
+30:
+31:
+32:
+33:
+34:
+35:
+36:
+37:
+38:
+39:
+40:
+41:
+from flask import request, redirect
+from Models import User
+from Models import db
+import re
+@app.route('/register', methods=['POST'])
+def register():
+  userid = request.form.get('userid')
+  password = request.form.get('password')
+  confirm_password = request.form.get('confirm_password')
+  if password != confirm_password:
+    return make_response("패스워드가 일치하지 않습니다.", 400)
+    
+  if not check_password(password):
+    return make_response("패스워드 조합규칙에 맞지 않습니다.", 400)
+  else:
+    usertable = User() 
+    usertable.userid = userid
+    usertable.password = password
+        
+    db.session.add(usertable)
+    db.session.commit()
+    return make_response("회원가입 성공", 200)
+def check_password(password):
+  # 3종 이상 문자로 구성된 8자리 이상 패스워드 검사 정규식 적용
+  PT1 = re.compile('^(?=.*[A-Z])(?=.*[a-z])[A-Za-z\d!@#$%^&*]{8,}$')
+  PT2 = re.compile('^(?=.*[A-Z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$')
+  PT3 = re.compile('^(?=.*[A-Z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')
+  PT4 = re.compile('^(?=.*[a-z])(?=.*\d)[A-Za-z\d!@#$%^&*]{8,}$')
+  PT5 = re.compile('^(?=.*[a-z])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')
+  PT6 = re.compile('^(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$')
+  # 문자 구성 상관없이 10자리 이상 패스워드 검사 정규식
+  PT7 = re.compile('^[A-Za-z\d!@#$%^&*]{10,}$')
+  for pattern in [PT1, PT2, PT3, PT4, PT5, PT6, PT7]:
+    if pattern.match(password):
+      return True
+  return False

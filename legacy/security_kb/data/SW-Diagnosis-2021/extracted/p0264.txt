@@ -1,0 +1,33 @@
+264
+10. LDAP 삽입
+가. 개요
+공격자가 외부 입력으로 의도하지 않은 LDAP(Lightweight Directory Access Protocol) 명령어
+를 수행할 수 있다. 즉, 웹 응용프로그램이 사용자가 제공한 입력을 올바르게 처리하지 못하면, 공격
+자가 LDAP 명령문의 구성을 바꿀 수 있다. 이로 인해 프로세스가 명령을 실행한 컴포넌트와 동일
+한 권한(Permission)을 가지고 동작하게 된다.
+외부입력값을 적절한 처리 없이 LDAP 쿼리문이나 결과의 일부로 사용하는 경우, LDAP 쿼리문이 
+실행될 때 공격자는 LDAP 쿼리문의 내용을 마음대로 변경할 수 있다.
+나. 보안대책
+DN(Distinguished Name)과 필터에 사용되는 사용자 입력값에는 특수문자가 포함되지 않도록 
+특수 문자를 제거한다. 만약 특수문자를 사용해야 하는 경우에는 특수문자( = + < > # ; \ 등)가 실행
+명령이 아닌 일반문자로 인식되도록 처리한다.
+다. 코드예제
+userSN과 userPassword 변수의 값으로 *을 전달할 경우 필터 문자열은 “(&(sn=S*)(userPass 
+word=*))”가 되어 항상 참이 되며 이는 의도하지 않은 동작을 유발시킬 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: private void searchRecord(String userSN, String userPassword) throws 
+NamingException { 
+2:
+Hashtable<String, String> env = new Hashtable<String, String>(); 
+3:
+env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
+4:
+try { 
+5:
+DirContext dctx = new InitialDirContext(env); 
+6:
+SearchControls sc = new SearchControls(); 
+7:
+String[] attributeFilter = { "cn", "mail" }; 
+8:
+sc.setReturningAttributes(attributeFilter);

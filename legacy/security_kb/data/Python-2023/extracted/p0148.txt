@@ -1,0 +1,53 @@
+Python 시큐어코딩 가이드
+142
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+import hmac
+import hashlib
+import pickle
+from django.shortcuts import render
+def load_user_object(request):
+  # 데이터 변조를 확인하기 위한 해시값
+  hashed_pickle = request.POST.get("hashed_pickle", "")
+  # 사용자로부터 입력받은 데이터를 직렬화(pickle)
+  pickled_userinfo = pickle.dumps(request.POST.get("userinfo", ""))
+  # HMAC 검증을 위한 비밀키는 생성
+  m = hmac.new(key="secret_key".encode("utf-8"), digestmod=hashlib.sha512)
+  # 직렬화된 사용자 입력값을 해싱
+  m.update(pickled_userinfo)
+  # 전달받은 해시값(hashed_pickle)과 직렬화 데이터(userinfo)의 해시값을 비교하여 검증
+  if hmac.compare_digest(str(m.digest()), hashed_pickle):
+    user_obj = pickle.loads(pickled_userinfo)
+    return render(request, "/load_user_obj.html", {"obj": user_obj})
+  else:
+    return render(request, "/error.html", {"error": "신뢰할 수 없는 데이터입니다."}
+라. 참고자료
+① CWE-502: Deserialization of Untrusted Data, MITRE,
+https://cwe.mitre.org/data/definitions/502.html
+② Deserialization Cheat Sheet, OWASP, 
+https://cheatsheetseries.owasp.org/cheatsheets/Deserialization_Cheat_Sheet.html
+③ Python object serialization, Python Software Foundation,
+https://docs.python.org/3/library/pickle.html

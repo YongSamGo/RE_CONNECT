@@ -1,0 +1,479 @@
+{
+ "lines": [
+  {
+   "text": "482",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA (배열의 원소가 일반객체일 경우)",
+   "bbox": [
+    155.4600067138672,
+    120.79122924804688,
+    380.2166748046875,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: private Color[] colors;",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    183.62742614746094,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: //메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    416.1637268066406,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public void onCreate(Bundle savedInstanceState) { ",
+   "bbox": [
+    83.58001708984375,
+    168.99813842773438,
+    304.3477478027344,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58001708984375,
+    183.39816284179688,
+    91.34542083740234,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "super.onCreate(savedInstanceState); ",
+   "bbox": [
+    100.07962036132812,
+    183.39816284179688,
+    248.9145050048828,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58001708984375,
+    197.79818725585938,
+    91.32514190673828,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Color[] newColors = getUserColors(); ",
+   "bbox": [
+    100.05934143066406,
+    197.79818725585938,
+    253.7064971923828,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58001708984375,
+    212.19821166992188,
+    91.32955169677734,
+    222.09820556640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "......",
+   "bbox": [
+    104.50401306152344,
+    212.19821166992188,
+    120.3759536743164,
+    222.09820556640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7: }",
+   "bbox": [
+    83.58001708984375,
+    226.59820556640625,
+    98.43292236328125,
+    236.49819946289062
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: public Color[] getUserColors(Color[] userColors) { ",
+   "bbox": [
+    83.58001708984375,
+    240.99819946289062,
+    298.127685546875,
+    250.898193359375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58001708984375,
+    255.398193359375,
+    91.34542083740234,
+    265.2981872558594
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//배열을 복사한다.",
+   "bbox": [
+    100.0796127319336,
+    255.398193359375,
+    166.8643341064453,
+    265.2981872558594
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "10: Color[] colors = new Color [userColors.length];",
+   "bbox": [
+    83.58001708984375,
+    269.7981872558594,
+    292.7671203613281,
+    279.69818115234375
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: for (int i = 0; i < colors.length; i++)",
+   "bbox": [
+    83.58001708984375,
+    284.19818115234375,
+    248.9426727294922,
+    294.0981750488281
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: //clone()메소드를 이용하여 배열의 원소도 복사한다. ",
+   "bbox": [
+    83.58001708984375,
+    298.5981750488281,
+    288.63092041015625,
+    308.4981689453125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13: colors[i] = this.colors[i].clone();",
+   "bbox": [
+    83.58001708984375,
+    312.9981689453125,
+    225.8968963623047,
+    322.8981628417969
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14: return colors;",
+   "bbox": [
+    83.58001708984375,
+    327.3981628417969,
+    155.18321228027344,
+    337.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:}",
+   "bbox": [
+    83.58001708984375,
+    341.79815673828125,
+    98.97240447998047,
+    351.6981506347656
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "아래의 코드는 멤버 변수 colors는 private로 선언되었지만, public으로 선언된 getColors() 메소드로 ",
+   "bbox": [
+    76.5,
+    374.1711120605469,
+    464.83343505859375,
+    385.193115234375
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "reference를 얻을 수 있다. 이 경우 의도하지 않은 배열의 수정이 발생할 수 있다.",
+   "bbox": [
+    76.5,
+    391.21112060546875,
+    387.8534851074219,
+    402.2331237792969
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)",
+   "bbox": [
+    96.41999816894531,
+    431.1711120605469,
+    439.22637939453125,
+    442.193115234375
+   ],
+   "block": 32,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: // private 인 배열을 public인 메소드가 return한다.",
+   "bbox": [
+    83.58000183105469,
+    450.5780944824219,
+    279.6092834472656,
+    460.47808837890625
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: private String[] colors;",
+   "bbox": [
+    83.58000183105469,
+    464.97808837890625,
+    186.26234436035156,
+    474.8780822753906
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: public String[] getColors() { return colors; }",
+   "bbox": [
+    83.58000183105469,
+    479.3780822753906,
+    272.8524475097656,
+    489.278076171875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "private배열의 복사본을 만들고, 이를 반환하도록 작성하면, private 선언된 배열에 대한 의도하지 ",
+   "bbox": [
+    76.5,
+    511.7510681152344,
+    464.8362121582031,
+    522.7730712890625
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "않은 수정을 방지할 수 있다.",
+   "bbox": [
+    76.5,
+    528.7910766601562,
+    184.5001220703125,
+    539.8131103515625
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1: private Color[] colors;\n2: //메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.\n3: public void onCreate(Bundle savedInstanceState) { \n4:    super.onCreate(savedInstanceState); \n5:    Color[] newColors = getUserColors(); \n6:      ......\n7: }\n8: public Color[] getUserColors(Color[] userColors) { \n9:    //배열을 복사한다.\n10: Color[] colors = new Color [userColors.length];\n11: for (int i = 0; i < colors.length; i++)\n12: //clone()메소드를 이용하여 배열의 원소도 복사한다. \n13: colors[i] = this.colors[i].clone();\n14: return colors;\n15:}",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA (배열의 원소가 일반객체일 경우)",
+   "bbox": [
+    83.58000183105469,
+    131.913232421875,
+    416.1637268066406,
+    352.8981506347656
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    24,
+    25,
+    26
+   ],
+   "text": "1: // private 인 배열을 public인 메소드가 return한다.\n2: private String[] colors;\n3: public String[] getColors() { return colors; }",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)",
+   "bbox": [
+    83.58000183105469,
+    442.293115234375,
+    279.6092834472656,
+    490.478076171875
+   ]
+  }
+ ],
+ "native": "482\n안전한 코드의 예 JAVA (배열의 원소가 일반객체일 경우)\n1: private Color[] colors;\n2: //메소드를 private으로 하거나, 복제본 반환, 수정하는 public 메소드를 별도로 만든다.\n3: public void onCreate(Bundle savedInstanceState) { \n4:\nsuper.onCreate(savedInstanceState); \n5:\nColor[] newColors = getUserColors(); \n6:\n......\n7: }\n8: public Color[] getUserColors(Color[] userColors) { \n9:\n//배열을 복사한다.\n10: Color[] colors = new Color [userColors.length];\n11: for (int i = 0; i < colors.length; i++)\n12: //clone()메소드를 이용하여 배열의 원소도 복사한다. \n13: colors[i] = this.colors[i].clone();\n14: return colors;\n15:}\n아래의 코드는 멤버 변수 colors는 private로 선언되었지만, public으로 선언된 getColors() 메소드로 \nreference를 얻을 수 있다. 이 경우 의도하지 않은 배열의 수정이 발생할 수 있다.\n안전하지 않은 코드의 예 JAVA (배열의 원소가 String 타입 등과 같이 수정이 되지 않는 경우)\n1: // private 인 배열을 public인 메소드가 return한다.\n2: private String[] colors;\n3: public String[] getColors() { return colors; }\nprivate배열의 복사본을 만들고, 이를 반환하도록 작성하면, private 선언된 배열에 대한 의도하지 \n않은 수정을 방지할 수 있다.\n",
+ "native_sha256": "5556c1372d699ee0f95935dfc06b0fa46185d6a9ff28f0521121938921027a56",
+ "chars": 920,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

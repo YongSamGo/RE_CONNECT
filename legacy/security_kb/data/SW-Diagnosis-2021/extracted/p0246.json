@@ -1,0 +1,488 @@
+{
+ "lines": [
+  {
+   "text": "246",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    206.5800018310547,
+    120.79122924804688,
+    329.1385192871094,
+    131.813232421875
+   ],
+   "block": 14,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:SAXParserFactory factory = SAXParserFactory.newInstance(); ",
+   "bbox": [
+    83.58000183105469,
+    140.19808959960938,
+    341.9706726074219,
+    150.09808349609375
+   ],
+   "block": 15,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58000183105469,
+    154.59811401367188,
+    91.34540557861328,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SAXParser saxParser = factory.newSAXParser();",
+   "bbox": [
+    144.11996459960938,
+    154.59811401367188,
+    339.095947265625,
+    164.49810791015625
+   ],
+   "block": 16,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    168.99813842773438,
+    91.34540557861328,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 외부개체 참조 제한 설정 없이 secure.xml 파일을 읽어서 파싱하여 안전하지 않다.",
+   "bbox": [
+    144.11996459960938,
+    168.99813842773438,
+    448.8666076660156,
+    178.89813232421875
+   ],
+   "block": 17,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58000183105469,
+    183.39816284179688,
+    96.26522827148438,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "saxParser.parse(new FileInputStream(\"secure.xml\"), new DefaultHandler());",
+   "bbox": [
+    144.65945434570312,
+    183.39816284179688,
+    447.20501708984375,
+    193.29815673828125
+   ],
+   "block": 18,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    83.57998657226562,
+    197.79818725585938,
+    96.26521301269531,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    109.4396743774414,
+    197.79818725585938,
+    112.17241668701172,
+    207.69818115234375
+   ],
+   "block": 19,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12: }",
+   "bbox": [
+    83.57998657226562,
+    212.19821166992188,
+    103.41265869140625,
+    222.09820556640625
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 JAXP DocumentBuilderFactory를 사용하는 경우 아래와 같이 제한 설정 추가할 수 있다.",
+   "bbox": [
+    76.5,
+    244.57110595703125,
+    455.3888244628906,
+    255.59310913085938
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    221.10000610351562,
+    284.5911865234375,
+    314.61773681640625,
+    295.6131896972656
+   ],
+   "block": 22,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();",
+   "bbox": [
+    83.58000183105469,
+    303.99810791015625,
+    379.5845642089844,
+    313.8981018066406
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:// XML 파서가 doctype을 정의하지 못하도록 설정한다.",
+   "bbox": [
+    83.57913208007812,
+    318.3981018066406,
+    300.5112609863281,
+    328.298095703125
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:dbf.setFeature(\"http://apache.org/xml/featuresdisallow-doctype-decl\", true);",
+   "bbox": [
+    83.57913208007812,
+    332.798095703125,
+    400.21588134765625,
+    342.6980895996094
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:// 외부 일반 엔티티를 포함하지 않도록 설정한다.",
+   "bbox": [
+    83.57913208007812,
+    347.1980895996094,
+    274.0874938964844,
+    357.09808349609375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:dbf.setFeature(\"http://xml.org/sax/features/external-general-entities\", false);",
+   "bbox": [
+    83.57913208007812,
+    361.59808349609375,
+    402.9432373046875,
+    371.4980773925781
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:// 외부 파라미터도 포함하지 않도록 설정한다.",
+   "bbox": [
+    83.57911682128906,
+    375.9980773925781,
+    262.0255432128906,
+    385.8980712890625
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:dbf.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false);",
+   "bbox": [
+    83.57911682128906,
+    390.3980712890625,
+    414.2718811035156,
+    400.2980651855469
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:// 외부 DTD 비활성화한다.",
+   "bbox": [
+    83.57913208007812,
+    404.7980651855469,
+    193.88499450683594,
+    414.69805908203125
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:dbf.setFeature(\"http://apache.org/xml/features/nonvalidating/load-external-dtd\", false);",
+   "bbox": [
+    83.57913208007812,
+    419.19805908203125,
+    444.1511535644531,
+    429.0980529785156
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:// XIncude를 사용하지 않는다.",
+   "bbox": [
+    83.57826232910156,
+    433.5980529785156,
+    213.4205322265625,
+    443.498046875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:dbf.setXIncludeAware(false);",
+   "bbox": [
+    83.57826232910156,
+    447.998046875,
+    210.38023376464844,
+    457.8980407714844
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:// 생성된 파서가 엔티티 참조 노드를 확장하지 않도록 한다.",
+   "bbox": [
+    83.57826232910156,
+    462.3980407714844,
+    318.622314453125,
+    472.29803466796875
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:dbf.setExpandEntityReferences(false);",
+   "bbox": [
+    83.57826232910156,
+    476.79803466796875,
+    248.2127685546875,
+    486.6980285644531
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:DocumentBuilder db = dbf.newDocumentBuilder();",
+   "bbox": [
+    83.57826232910156,
+    491.1980285644531,
+    302.7487487792969,
+    501.0980224609375
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:Document document = db.parse(receivedXml);",
+   "bbox": [
+    83.57826232910156,
+    505.5980529785156,
+    286.8687438964844,
+    515.498046875
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "16:Model model = (Model) u.unmarshal(document);",
+   "bbox": [
+    83.57826232910156,
+    519.9979858398438,
+    294.4085693359375,
+    529.8980102539062
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11
+   ],
+   "text": "7:SAXParserFactory factory = SAXParserFactory.newInstance(); \n8:                       SAXParser saxParser = factory.newSAXParser();\n9:                       // 외부개체 참조 제한 설정 없이 secure.xml 파일을 읽어서 파싱하여 안전하지 않다.\n10:                     saxParser.parse(new FileInputStream(\"secure.xml\"), new DefaultHandler());\n11:      }\n12: }",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    83.57998657226562,
+    131.913232421875,
+    448.8666076660156,
+    223.29820556640624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "1:DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n2:// XML 파서가 doctype을 정의하지 못하도록 설정한다.\n3:dbf.setFeature(\"http://apache.org/xml/featuresdisallow-doctype-decl\", true);\n4:// 외부 일반 엔티티를 포함하지 않도록 설정한다.\n5:dbf.setFeature(\"http://xml.org/sax/features/external-general-entities\", false);\n6:// 외부 파라미터도 포함하지 않도록 설정한다.\n7:dbf.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false);\n8:// 외부 DTD 비활성화한다.\n9:dbf.setFeature(\"http://apache.org/xml/features/nonvalidating/load-external-dtd\", false);\n10:// XIncude를 사용하지 않는다.\n11:dbf.setXIncludeAware(false);\n12:// 생성된 파서가 엔티티 참조 노드를 확장하지 않도록 한다.\n13:dbf.setExpandEntityReferences(false);\n14:DocumentBuilder db = dbf.newDocumentBuilder();\n15:Document document = db.parse(receivedXml);\n16:Model model = (Model) u.unmarshal(document);",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    83.57826232910156,
+    295.71318969726565,
+    444.1511535644531,
+    531.0980102539063
+   ]
+  }
+ ],
+ "native": "246\n안전하지 않은 코드의 예 JAVA\n7:SAXParserFactory factory = SAXParserFactory.newInstance(); \n8:\nSAXParser saxParser = factory.newSAXParser();\n9:\n// 외부개체 참조 제한 설정 없이 secure.xml 파일을 읽어서 파싱하여 안전하지 않다.\n10:\nsaxParser.parse(new FileInputStream(\"secure.xml\"), new DefaultHandler());\n11:\n}\n12: }\n다음의 JAXP DocumentBuilderFactory를 사용하는 경우 아래와 같이 제한 설정 추가할 수 있다.\n안전한 코드의 예 JAVA\n1:DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();\n2:// XML 파서가 doctype을 정의하지 못하도록 설정한다.\n3:dbf.setFeature(\"http://apache.org/xml/featuresdisallow-doctype-decl\", true);\n4:// 외부 일반 엔티티를 포함하지 않도록 설정한다.\n5:dbf.setFeature(\"http://xml.org/sax/features/external-general-entities\", false);\n6:// 외부 파라미터도 포함하지 않도록 설정한다.\n7:dbf.setFeature(\"http://xml.org/sax/features/external-parameter-entities\", false);\n8:// 외부 DTD 비활성화한다.\n9:dbf.setFeature(\"http://apache.org/xml/features/nonvalidating/load-external-dtd\", false);\n10:// XIncude를 사용하지 않는다.\n11:dbf.setXIncludeAware(false);\n12:// 생성된 파서가 엔티티 참조 노드를 확장하지 않도록 한다.\n13:dbf.setExpandEntityReferences(false);\n14:DocumentBuilder db = dbf.newDocumentBuilder();\n15:Document document = db.parse(receivedXml);\n16:Model model = (Model) u.unmarshal(document);\n",
+ "native_sha256": "fb8f6c4d0e6aac5a14e901bd6105cd9faaba846dd33624b712ccd001300c1392",
+ "chars": 1162,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

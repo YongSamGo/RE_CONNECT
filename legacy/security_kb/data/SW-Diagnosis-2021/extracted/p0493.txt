@@ -1,0 +1,32 @@
+493
+제4장구현단계 보안약점 진단
+그러므로, 다음의 예제와 같이 DNS lookup에 의한 호스트 이름 비교를 하지 않고, IP 주소를 직접 
+비교하도록 수정한다.
+안전한 코드의 예 JAVA
+1: public void doGet(HttpServletRequest req, HttpServletResponse res) 
+throws ServletException, IOException { 
+2:
+String ip = req.getRemoteAddr(); 
+3:
+if (ip == null || "".equals(ip)) return ; 
+4: //이용하려는 실제 서버의 IP 주소를 사용하여 DNS변조에 방어한다.
+5:
+String trustedAddr = "127.0.0.1"; 
+6:
+if (ip.equals(trustedAddr)) {
+7:
+do_something_for_Trust_System(); 
+8:
+}
+다음의 예제는 도메인명으로 해당 요청을 신뢰할 수 있는지를 검사한다. 그러나 공격자는 DNS 캐
+시 등을 조작해서 쉽게 이러한 보안 설정을 우회할 수 있다.
+안전하지 않은 코드의 예 C#
+1: bool trusted; 
+2: string remoteIpAddress = Request.ServerVariables["REMOTE_HOST"];
+3: IPAddress hostIPAddress = IPAddress.Parse(remoteIpAddress);
+4: IPHostEntry hostInfo = Dns.GetHostByAddress(hostIPAddress);
+5: string hostName = hostInfo.HostName; 
+6: if (hostName.EndsWith("trust.com"))
+7: {
+8: trusted = true; 
+9: }

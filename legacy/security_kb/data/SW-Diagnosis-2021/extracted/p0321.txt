@@ -1,0 +1,42 @@
+321
+제4장구현단계 보안약점 진단
+안전한 코드의 예 C#
+4:
+…
+5: }
+사용자 자격인증 없이 LDAP 검색을 시도하는 C코드의 예제이다.
+안전하지 않은 코드의 예 C
+1: #define FIND_DN "uid=han,ou=staff,dc=example,dc=com" 
+2: int searchData2LDAP(LDAP *ld, char *username) { 
+3:
+unsigned long rc; 
+4:
+char filter[20]; 
+5:
+LDAPMessage *result; 
+6:
+snprintf(filter, sizeof(filter),"(name=%s)", username);
+// 사용자의 인증 없이 LDAP 검색을 시도합니다.
+7:
+rc = ldap_search_ext_s(ld, FIND_DN, LDAP_SCOPE_BASE, filter, NULL, 0, 
+NULL,NULL, LDAP_NO_LIMIT, LDAP_NO_LIMIT, &result); 
+8:
+return rc; 
+9: }
+사용자의 자격인증 및 로그인 정보와 일치하는지 검사 후 LDAP 검색을 진행해야 한다. 
+안전한 코드의 예 C
+1: #define FIND_DN "uid=han,ou=staff,dc=example,dc=com" 
+2:
+int searchData2LDAP(LDAP *ld, char *username, char *password) {
+3:
+unsigned long rc;
+4: char filter[20];
+5:
+LDAPMessage *result 
+//username을 인증합니다.
+6:
+if ( ldap_simple_bind_s(ld, username, password) != LDAP_SUCCESS ) {
+7:
+printf("authorization error");
+8:
+return(FAIL);

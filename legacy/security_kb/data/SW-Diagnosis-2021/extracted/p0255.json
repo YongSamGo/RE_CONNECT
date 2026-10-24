@@ -1,0 +1,626 @@
+{
+ "lines": [
+  {
+   "text": "255",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    200.94000244140625,
+    120.79122924804688,
+    323.49853515625,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "7:XPathExpression expr = xpath.compile(\"//users/user[login/text()='\"+nm+\"' and ",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    403.95611572265625,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "password/text()='\"+pw+\"']/home_dir/text()\"); ",
+   "bbox": [
+    85.67984008789062,
+    154.59811401367188,
+    263.6148376464844,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// 안전하지 않은 질의문이 담긴 expr을 평가하여 결과를 result에 저장한다.",
+   "bbox": [
+    77.94001007080078,
+    168.99813842773438,
+    359.64892578125,
+    178.89813232421875
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "8:Object result = expr.evaluate(doc, XPathConstants.NODESET);",
+   "bbox": [
+    77.94001007080078,
+    183.39816284179688,
+    340.5760498046875,
+    193.29815673828125
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// result의 결과를 NodeList 타입으로 변환하여 nodes 저장한다.",
+   "bbox": [
+    77.94001007080078,
+    197.79818725585938,
+    310.6886291503906,
+    207.69818115234375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "9:NodeList nodes = (NodeList) result; ",
+   "bbox": [
+    77.94001007080078,
+    212.19821166992188,
+    236.27682495117188,
+    222.09820556640625
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:for (int i=0; i<nodes.getLength(); i++) { ",
+   "bbox": [
+    77.94001007080078,
+    226.59820556640625,
+    252.53318786621094,
+    236.49819946289062
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    77.94001007080078,
+    240.99819946289062,
+    90.62523651123047,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String value = nodes.item(i).getNodeValue(); ",
+   "bbox": [
+    103.7997055053711,
+    240.99819946289062,
+    287.0777282714844,
+    250.898193359375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    77.94001007080078,
+    255.398193359375,
+    90.62523651123047,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if (value.indexOf(\">\") < 0) { ",
+   "bbox": [
+    103.79969787597656,
+    255.398193359375,
+    214.96420288085938,
+    265.2981872558594
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 공격자가 이름과 비밀번호를 확인할 수 있다. ",
+   "bbox": [
+    90.59966278076172,
+    269.7981872558594,
+    268.3011474609375,
+    279.69818115234375
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    77.94001007080078,
+    284.19818115234375,
+    90.62523651123047,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(value);",
+   "bbox": [
+    108.2399673461914,
+    284.19818115234375,
+    209.9633026123047,
+    294.0981750488281
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    77.94001007080078,
+    298.5981750488281,
+    90.62523651123047,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}:",
+   "bbox": [
+    99.41938018798828,
+    298.5981750488281,
+    104.965087890625,
+    308.4981689453125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:}",
+   "bbox": [
+    77.94001007080078,
+    312.9981689453125,
+    93.3323974609375,
+    322.8981628417969
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음의 예제는 XQuery를 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 구조가 ",
+   "bbox": [
+    70.86000061035156,
+    345.3712158203125,
+    459.1788024902344,
+    356.3932189941406
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "바뀌는 것을 막을 수 있다.",
+   "bbox": [
+    70.86000061035156,
+    362.4112243652344,
+    170.3389434814453,
+    373.4332275390625
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    216.89999389648438,
+    402.3712158203125,
+    310.3565673828125,
+    413.3932189941406
+   ],
+   "block": 40,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[ login.xq 파일 ]",
+   "bbox": [
+    79.37999725341797,
+    421.7781982421875,
+    138.5121612548828,
+    431.6781921386719
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "declare variable $loginID as xs:string external; ",
+   "bbox": [
+    79.37999725341797,
+    436.1781921386719,
+    272.8308410644531,
+    446.07818603515625
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "declare variable $password as xs:string external; ",
+   "bbox": [
+    79.37999725341797,
+    450.57818603515625,
+    283.3510437011719,
+    460.4781799316406
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//users/user[@loginID=$loginID and @password=$password] ",
+   "bbox": [
+    79.37999725341797,
+    464.9781799316406,
+    324.8650207519531,
+    474.878173828125
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "// XQuery를 이용한 XPath Injection 방지",
+   "bbox": [
+    79.37999725341797,
+    479.378173828125,
+    231.9208221435547,
+    489.2781677246094
+   ],
+   "block": 45,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:String nm = props.getProperty(\"name\");",
+   "bbox": [
+    79.37999725341797,
+    493.7781677246094,
+    248.42137145996094,
+    503.67816162109375
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:String pw = props.getProperty(\"password\");",
+   "bbox": [
+    79.3800048828125,
+    508.1781311035156,
+    263.61090087890625,
+    518.078125
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:Document doc = new Builder().build(\"users.xml\"); ",
+   "bbox": [
+    79.3800048828125,
+    522.578125,
+    291.78460693359375,
+    532.4781494140625
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//파라미터화된 쿼리가 담겨있는 login.xq를 읽어와서 파라미터화된 쿼리를 생성한다.",
+   "bbox": [
+    79.3800048828125,
+    536.9781494140625,
+    389.4749755859375,
+    546.878173828125
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:XQuery xquery = new XQueryFactory().createXQuery(new File(\"login.xq\"));",
+   "bbox": [
+    79.3800048828125,
+    551.3781127929688,
+    388.41534423828125,
+    561.2781372070312
+   ],
+   "block": 50,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:Map vars = new HashMap();",
+   "bbox": [
+    79.37997436523438,
+    565.778076171875,
+    205.46607971191406,
+    575.6781005859375
+   ],
+   "block": 51,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//검증되지 않은 외부값인 nm, pw를 파라미터화된 쿼리의 파라미터로 설정한다. ",
+   "bbox": [
+    79.37997436523438,
+    580.1781005859375,
+    377.69677734375,
+    590.078125
+   ],
+   "block": 52,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:vars.put(\"loginID\", nm);",
+   "bbox": [
+    79.37997436523438,
+    594.578125,
+    180.08860778808594,
+    604.4781494140625
+   ],
+   "block": 53,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:vars.put(\"password\", pw);",
+   "bbox": [
+    79.37997436523438,
+    608.9780883789062,
+    189.81979370117188,
+    618.8781127929688
+   ],
+   "block": 54,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 파라미터화된 쿼리를 실행하므로 외부값을 검증 없이 사용하여도 안전하다.",
+   "bbox": [
+    79.37997436523438,
+    623.3781127929688,
+    348.05633544921875,
+    633.2781372070312
+   ],
+   "block": 55,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5
+   ],
+   "text": "7:XPathExpression expr = xpath.compile(\"//users/user[login/text()='\"+nm+\"' and \npassword/text()='\"+pw+\"']/home_dir/text()\"); \n// 안전하지 않은 질의문이 담긴 expr을 평가하여 결과를 result에 저장한다.",
+   "language": "java",
+   "label": "안전하지 않은 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    403.95611572265625,
+    180.09813232421874
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19
+   ],
+   "text": "8:Object result = expr.evaluate(doc, XPathConstants.NODESET);\n// result의 결과를 NodeList 타입으로 변환하여 nodes 저장한다.\n9:NodeList nodes = (NodeList) result; \n10:for (int i=0; i<nodes.getLength(); i++) { \n11:      String value = nodes.item(i).getNodeValue(); \n12:      if (value.indexOf(\">\") < 0) { \n// 공격자가 이름과 비밀번호를 확인할 수 있다. \n13:        System.out.println(value);\n14:    }:\n15:}",
+   "language": "text",
+   "label": "// 안전하지 않은 질의문이 담긴 expr을 평가하여 결과를 result에 저장한다.",
+   "bbox": [
+    77.94001007080078,
+    182.1981628417969,
+    340.5760498046875,
+    324.09816284179686
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37
+   ],
+   "text": "[ login.xq 파일 ]\ndeclare variable $loginID as xs:string external; \ndeclare variable $password as xs:string external; \n//users/user[@loginID=$loginID and @password=$password] \n// XQuery를 이용한 XPath Injection 방지\n1:String nm = props.getProperty(\"name\");\n2:String pw = props.getProperty(\"password\");\n3:Document doc = new Builder().build(\"users.xml\"); \n//파라미터화된 쿼리가 담겨있는 login.xq를 읽어와서 파라미터화된 쿼리를 생성한다.\n4:XQuery xquery = new XQueryFactory().createXQuery(new File(\"login.xq\"));\n5:Map vars = new HashMap();\n//검증되지 않은 외부값인 nm, pw를 파라미터화된 쿼리의 파라미터로 설정한다. \n6:vars.put(\"loginID\", nm);\n7:vars.put(\"password\", pw);\n// 파라미터화된 쿼리를 실행하므로 외부값을 검증 없이 사용하여도 안전하다.",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    79.37997436523438,
+    413.49321899414065,
+    389.4749755859375,
+    634.4781372070313
+   ]
+  }
+ ],
+ "native": "255\n제4장구현단계 보안약점 진단\n안전하지 않은 코드의 예 JAVA\n7:XPathExpression expr = xpath.compile(\"//users/user[login/text()='\"+nm+\"' and \npassword/text()='\"+pw+\"']/home_dir/text()\"); \n// 안전하지 않은 질의문이 담긴 expr을 평가하여 결과를 result에 저장한다.\n8:Object result = expr.evaluate(doc, XPathConstants.NODESET);\n// result의 결과를 NodeList 타입으로 변환하여 nodes 저장한다.\n9:NodeList nodes = (NodeList) result; \n10:for (int i=0; i<nodes.getLength(); i++) { \n11:\nString value = nodes.item(i).getNodeValue(); \n12:\nif (value.indexOf(\">\") < 0) { \n// 공격자가 이름과 비밀번호를 확인할 수 있다. \n13:\nSystem.out.println(value);\n14:\n}:\n15:}\n다음의 예제는 XQuery를 사용하여 미리 쿼리 골격을 생성함으로써 외부입력으로 인해 쿼리 구조가 \n바뀌는 것을 막을 수 있다.\n안전한 코드의 예 JAVA\n[ login.xq 파일 ]\ndeclare variable $loginID as xs:string external; \ndeclare variable $password as xs:string external; \n//users/user[@loginID=$loginID and @password=$password] \n// XQuery를 이용한 XPath Injection 방지\n1:String nm = props.getProperty(\"name\");\n2:String pw = props.getProperty(\"password\");\n3:Document doc = new Builder().build(\"users.xml\"); \n//파라미터화된 쿼리가 담겨있는 login.xq를 읽어와서 파라미터화된 쿼리를 생성한다.\n4:XQuery xquery = new XQueryFactory().createXQuery(new File(\"login.xq\"));\n5:Map vars = new HashMap();\n//검증되지 않은 외부값인 nm, pw를 파라미터화된 쿼리의 파라미터로 설정한다. \n6:vars.put(\"loginID\", nm);\n7:vars.put(\"password\", pw);\n// 파라미터화된 쿼리를 실행하므로 외부값을 검증 없이 사용하여도 안전하다.\n",
+ "native_sha256": "a3ad021a554f6e905e7501eb4c0a2ac6e1207e1b3156a7e8f52b4132209937da",
+ "chars": 1293,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

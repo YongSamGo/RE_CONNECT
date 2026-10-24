@@ -1,0 +1,15 @@
+222
+마. 참고자료
+[1] CWE-79 Improper Neutralization of Input During Web Page Generation ('Cross-site 
+Scripting'), MITRE,
+http://cwe.mitre.org/data/definitions/79.html
+[2] Properly encode or escape output, CERT,
+http://www.securecoding.cert.org/confluence/display/java/IDS51-J.+Properly+
+encode+or+escape+output
+[3] XSS (Cross Site Scripting) Prevention Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/XSS_(Cross_Site_Scripting)_Prevention_Cheat
+_Sheet
+[4] DOM based XSS Prevention Cheat Sheet, OWASP,
+https://www.owasp.org/index.php/DOM_based_XSS_Prevention_Cheat_Sheet
+[5] “Understanding Malicious Content Mitigation for Web Developers”
+http://www.cert.org/tech_tips/malicious_code_mitigation.html

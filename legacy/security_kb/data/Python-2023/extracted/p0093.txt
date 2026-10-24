@@ -1,0 +1,63 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+87
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+17:
+18:
+19:
+20:
+21:
+22:
+23:
+24:
+25:
+26:
+27:
+import pymysql
+import json
+def query_execute(query, config_path):
+    with open(config_path, 'r') as config:
+    # 설정 파일에서 user, passwd를 가져와 사용
+       dbconf = json.load(fp=config)
+    # 암호화되어 있는 블록 암호화 키를 복호화 해서 가져오는  
+       # 사용자 정의 함수
+       blockKey = get_decrypt_key(dbconf['blockKey'])
+       # 설정 파일에 암호화되어 있는 값을 가져와 복호화한 후에 사용
+       dbUser = decrypt(blockKey, dbconf['user'])
+       dbPasswd = decrypt(blockKey, dbconf['passwd'])
+    dbconn = pymysql.connect(
+      host=dbconf['host']
+      port=dbconf['port'],
+      user=dbUser,
+      passwd=dbPasswd,
+      db=dbconf['db_name'],
+      charset='utf8',
+    )
+        curs = dbconn.cursor()
+        curs.execute(query)
+        dbconn.commit()
+        dbconn.close()
+라. 참고자료
+① CWE-259: Use of Hard-coded Password, MITRE,
+https://cwe.mitre.org/data/definitions/259.html
+② CWE-321: Use of Hard-coded Cryptographic Key, MITRE,
+https://cwe.mitre.org/data/definitions/321.html
+③ Use of hard-coded password, OWASP,
+https://owasp.org/www-community/vulnerabilities/Use_of_hard-coded_password
+④ Password Management Hardcoded Password, OWASP,
+https://owasp.org/www-community/vulnerabilities/Password_Management_Hardcoded_Password

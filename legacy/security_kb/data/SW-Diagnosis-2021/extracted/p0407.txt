@@ -1,0 +1,59 @@
+407
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+1: class FileMgmtThread extends Thread { 
+2:
+private String manageType = ""; 
+3:
+public FileMgmtThread (String type) { 
+4:
+manageType = type; 
+5:
+}
+//멀티쓰레드 환경에서 공유자원에 여러프로세스가 사용하여 동시에 접근할 가능성이 있어 안전하지 
+않다.
+6:
+public void run() {
+7:
+try {
+8:
+if (manageType.equals("READ")) { 
+9:
+File f = new File("Test_367.txt"); 
+10:
+if (f.exists()) { 
+11:
+BufferedReader br = new BufferedReader(new FileReader(f));
+12:
+br.close();
+13:
+}
+14:
+} else if (manageType.equals("DELETE")) {
+15:
+File f = new File("Test_367.txt"); 
+16:
+if (f.exists()) { 
+17:
+f.delete(); 
+18:
+} else { … } 
+19: 
+}
+20:
+} catch (IOException e) { … } 
+21: }
+22:}
+23:public class CWE367 {
+24: public static void main (String[] args) { 
+25:
+FileMgmtThread fileAccessThread = new FileMgmtThread("READ");
+26:
+FileMgmtThread fileDeleteThread = new FileMgmtThread("DELETE");
+//파일의 읽기와 삭제가 동시에 수행되어 안전하지 않다.
+27:
+fileAccessThread.start();
+28:
+fileDeleteThread.start();
+29: }
+30:}

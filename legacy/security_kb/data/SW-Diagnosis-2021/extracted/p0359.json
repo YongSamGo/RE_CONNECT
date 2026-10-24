@@ -1,0 +1,382 @@
+{
+ "lines": [
+  {
+   "text": "359",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "암호화를 위한 암호화 키가 아닌 알고리즘명을 지정하는 경우 취약하지 않다.",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    363.4922180175781,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "오탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    150.31112670898438,
+    291.27935791015625,
+    161.3331298828125
+   ],
+   "block": 25,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    78.66000366210938,
+    175.23818969726562,
+    86.40601348876953,
+    185.13818359375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 키를 설정한다.",
+   "bbox": [
+    95.20015716552734,
+    175.23818969726562,
+    160.5691375732422,
+    185.13818359375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    189.63821411132812,
+    86.42539978027344,
+    199.5382080078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "sKey = new SecretKeySpec( key, “DESede” );",
+   "bbox": [
+    95.21954345703125,
+    189.63821411132812,
+    286.2876892089844,
+    199.5382080078125
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    242.07510375976562,
+    126.4169921875,
+    254.15310668945312
+   ],
+   "block": 28,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "[1] CWE-259 Use of Hard-coded Password, MITRE,",
+   "bbox": [
+    85.86000061035156,
+    265.7510986328125,
+    316.489990234375,
+    276.7731018066406
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/259.html",
+   "bbox": [
+    102.23983001708984,
+    281.7710876464844,
+    308.7279968261719,
+    292.7930908203125
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[2] Be careful while handling sensitive data, such as passwords, in program code, CERT",
+   "bbox": [
+    85.86000061035156,
+    302.77099609375,
+    449.294189453125,
+    313.7929992675781
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/MSC18-",
+   "bbox": [
+    102.23980712890625,
+    318.7308654785156,
+    390.6359558105469,
+    329.75286865234375
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "C.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra",
+   "bbox": [
+    102.23980712890625,
+    334.7508544921875,
+    455.8836364746094,
+    345.7728576660156
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "m+code",
+   "bbox": [
+    102.23980712890625,
+    350.7708435058594,
+    137.79132080078125,
+    361.7928466796875
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[3] Password Management: Hardcoded Password, OWASP",
+   "bbox": [
+    85.85997772216797,
+    371.770751953125,
+    344.1017150878906,
+    382.7927551269531
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Password_Management:_Hardcoded_Password",
+   "bbox": [
+    102.23980712890625,
+    387.7306213378906,
+    452.853271484375,
+    398.75262451171875
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[4] CWE-321 Use of Hard-coded Cryptographic Key, MITRE,",
+   "bbox": [
+    85.86001586914062,
+    408.73052978515625,
+    353.7505798339844,
+    419.7525329589844
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/321.html",
+   "bbox": [
+    102.2398452758789,
+    424.7505187988281,
+    308.72802734375,
+    435.77252197265625
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[5] Be careful while handling sensitive data, such as passwords, in program code, CERT,",
+   "bbox": [
+    85.86001586914062,
+    445.75042724609375,
+    451.8427734375,
+    456.7724304199219
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.securecoding.cert.org/confluence/display/c/MSC18-",
+   "bbox": [
+    102.23983764648438,
+    461.7704162597656,
+    390.635986328125,
+    472.79241943359375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "C.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra",
+   "bbox": [
+    102.23983764648438,
+    477.73028564453125,
+    455.8836669921875,
+    488.7522888183594
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "m+code",
+   "bbox": [
+    102.23983764648438,
+    493.7502746582031,
+    137.79135131835938,
+    504.77227783203125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[6] Use of hard-coded password, OWASP,",
+   "bbox": [
+    85.8600082397461,
+    514.7501831054688,
+    273.61041259765625,
+    525.772216796875
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/Use_of_hard-coded_password",
+   "bbox": [
+    102.23983764648438,
+    530.7701416015625,
+    393.3359069824219,
+    541.7921752929688
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    4,
+    5,
+    6,
+    7
+   ],
+   "text": "1:    // 키를 설정한다.\n2:    sKey = new SecretKeySpec( key, “DESede” );",
+   "language": "text",
+   "label": "오탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    174.03818969726564,
+    286.2876892089844,
+    200.7382080078125
+   ]
+  }
+ ],
+ "native": "359\n제4장구현단계 보안약점 진단\n암호화를 위한 암호화 키가 아닌 알고리즘명을 지정하는 경우 취약하지 않다.\n오탐코드의 예\n1:\n// 키를 설정한다.\n2:\nsKey = new SecretKeySpec( key, “DESede” );\n마. 참고자료\n[1] CWE-259 Use of Hard-coded Password, MITRE,\nhttp://cwe.mitre.org/data/definitions/259.html\n[2] Be careful while handling sensitive data, such as passwords, in program code, CERT\nhttp://www.securecoding.cert.org/confluence/display/c/MSC18-\nC.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra\nm+code\n[3] Password Management: Hardcoded Password, OWASP\nhttps://www.owasp.org/index.php/Password_Management:_Hardcoded_Password\n[4] CWE-321 Use of Hard-coded Cryptographic Key, MITRE,\nhttp://cwe.mitre.org/data/definitions/321.html\n[5] Be careful while handling sensitive data, such as passwords, in program code, CERT,\nhttp://www.securecoding.cert.org/confluence/display/c/MSC18-\nC.+Be+careful+while+handling+sensitive+data,+such+as+passwords,+in+progra\nm+code\n[6] Use of hard-coded password, OWASP,\nhttps://www.owasp.org/index.php/Use_of_hard-coded_password\n",
+ "native_sha256": "9311e3be541ea68c370e5f464736d677c6277dba630cce23aac3b9543788476d",
+ "chars": 1016,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

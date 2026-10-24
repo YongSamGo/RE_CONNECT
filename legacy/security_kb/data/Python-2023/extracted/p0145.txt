@@ -1,0 +1,16 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제5절 코드오류
+139
+안전한 코드 예시
+1:
+2:
+3:
+# with 절을 빠져나갈 때 f를 시스템에 반환
+with open('config.cfg') as f:
+  print(f.read())
+라. 참고자료
+① CWE-404: Improper Resource Shutdown or Release, MITRE,
+https://cwe.mitre.org/data/definitions/404.html
+② Unreleased Resource, OWASP,
+https://owasp.org/www-community/vulnerabilities/Unreleased_Resource
+➂ The With statement, Python Software Foundation,
+https://docs.python.org/3/reference/compound_stmts.html#grammar-token-python-grammar-with_stmt

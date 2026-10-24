@@ -1,0 +1,48 @@
+463
+제4장구현단계 보안약점 진단
+안전하지 않은 코드의 예 JAVA
+1;public static void main(String[] args) throws
+2:IOException, GeneralSecurityException, ClassNotFoundException {
+3:
+....
+4:
+// map을 역직렬화 한다.
+5:
+ObjectInputStream in = new ObjectInputStream(new FileInputStream("data"));
+6:
+sealedMap = (SealedObject) in.readObject(); 
+7:
+in.close(); 
+8:
+9:
+// 객체를 추출한다.
+10:
+cipher = Cipher.getInstance("AES");
+11:
+cipher.init(Cipher.DECRYPT_MODE, key);
+12:
+signedMap = (SignedObject) sealedMap.getObject(cipher);
+13:
+14:
+// 서명값 검증 과정에서 불일치 시 예외를 리턴하고, 일치 시 map 값을 읽는다.
+15:
+if (!signedMap.verify(kp.getPublic(), sig)) {
+16:
+throw new GeneralSecurityException("Map failed verification");
+17:
+}
+18:
+map = (SerializableMap<String, Integer>) signedMap.getObject();
+19:}
+다음 예제는 서명 값을 검증하여 메시지 위변조를 방지할 수 있는 코드이다.
+안전한 코드의 예 JAVA
+1:public static void main(String[] args) throws 
+2:IOException, GeneralSecurityException, ClassNotFoundException {
+3:
+....
+4:
+// map을 역직렬화 한다.
+5:
+ObjectInputStream in = new ObjectInputStream(new FileInputStream("data"));
+6:
+sealedMap = (SealedObject) in.readObject();

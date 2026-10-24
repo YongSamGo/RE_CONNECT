@@ -1,0 +1,9 @@
+432
+마. 참고자료
+[1] CWE-754 Improper Check for Unusual or Exceptional Conditions, MITRE
+http://cwe.mitre.org/data/definitions/754.html 
+[2] Do not complete abruptly from a finally block, CERT,
+http://www.securecoding.cert.org/confluence/display/java/ERR04-J.+Do+not+
+complete+abruptly+from+a+finally+block 
+[3] Exception Handling in Spring MVC, Spring,
+http://spring.io/blog/2013/11/01/exception-handling-in-spring-mvc

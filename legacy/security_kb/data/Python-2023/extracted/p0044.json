@@ -1,0 +1,168 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "38",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "라. 참고자료",
+   "bbox": [
+    65.09266662597656,
+    93.79303741455078,
+    119.12395477294922,
+    104.33966064453125
+   ],
+   "block": 2,
+   "size": 10.547856330871582,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "① CWE-601: URL Redirection to Untrusted Site ('Open Redirect'), MITRE,",
+   "bbox": [
+    65.09266662597656,
+    115.6533203125,
+    371.91497802734375,
+    124.64192199707031
+   ],
+   "block": 3,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cwe.mitre.org/data/definitions/601.html",
+   "bbox": [
+    77.32001495361328,
+    130.99386596679688,
+    267.01031494140625,
+    139.98245239257812
+   ],
+   "block": 4,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "② Unvalidated Redirects and Forwards Cheat Sheet, OWASP",
+   "bbox": [
+    65.09266662597656,
+    151.2481689453125,
+    317.5125732421875,
+    160.2367706298828
+   ],
+   "block": 5,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html",
+   "bbox": [
+    77.32001495361328,
+    166.58871459960938,
+    496.08868408203125,
+    175.5773162841797
+   ],
+   "block": 6,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "③ Django shortcut functions – redirect, Django Sowftware Foundation,",
+   "bbox": [
+    65.09266662597656,
+    186.3130645751953,
+    355.61090087890625,
+    195.8316192626953
+   ],
+   "block": 7,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "https://docs.djangoproject.com/en/3.2/topics/http/shortcuts/",
+   "bbox": [
+    77.32001495361328,
+    202.18356323242188,
+    323.3568115234375,
+    211.1721649169922
+   ],
+   "block": 8,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "④ Redirects and Errors, Flask,",
+   "bbox": [
+    65.09266662597656,
+    222.43789672851562,
+    190.901611328125,
+    231.42648315429688
+   ],
+   "block": 9,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "https://flask.palletsprojects.com/en/2.0.x/quickstart/#redirects-and-errors",
+   "bbox": [
+    77.32001495361328,
+    237.7784423828125,
+    375.799560546875,
+    246.76702880859375
+   ],
+   "block": 10,
+   "size": 8.989649772644043,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "Python 시큐어코딩 가이드\n38\n라. 참고자료\n① CWE-601: URL Redirection to Untrusted Site ('Open Redirect'), MITRE,\nhttps://cwe.mitre.org/data/definitions/601.html\n② Unvalidated Redirects and Forwards Cheat Sheet, OWASP\nhttps://cheatsheetseries.owasp.org/cheatsheets/Unvalidated_Redirects_and_Forwards_Cheat_Sheet.html\n③ Django shortcut functions – redirect, Django Sowftware Foundation,\nhttps://docs.djangoproject.com/en/3.2/topics/http/shortcuts/\n④ Redirects and Errors, Flask,\nhttps://flask.palletsprojects.com/en/2.0.x/quickstart/#redirects-and-errors\n",
+ "native_sha256": "31f1ca4f42d342e4abbe8b3cb15c3abf545936b5e400fd08338a57233defc859",
+ "chars": 539,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

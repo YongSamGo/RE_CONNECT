@@ -1,0 +1,736 @@
+{
+ "lines": [
+  {
+   "text": "450",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "라. 진단방법",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "자원(파일기술자, 힙메모리, 소켓)이 선언되고, 선언된 자원이 할당된 경우 해제되는지 확인한다. ",
+   "bbox": [
+    76.5,
+    142.51107788085938,
+    464.8226318359375,
+    153.5330810546875
+   ],
+   "block": 15,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "진단자는 제어문, 예외처리문 등의 분기 등에 따라 모든 흐름(control flow)을 판단하여 자원해제 ",
+   "bbox": [
+    76.5,
+    159.55111694335938,
+    464.82464599609375,
+    170.5731201171875
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "여부를 체크해야 한다. 할당된 자원이 해제될 경우 안전하다고 판단하고 자원이 해제되지 않는 분기가 ",
+   "bbox": [
+    76.5,
+    176.53103637695312,
+    464.8304748535156,
+    187.55303955078125
+   ],
+   "block": 17,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "존재할 경우 취약하다.",
+   "bbox": [
+    76.5,
+    193.51095581054688,
+    161.81150817871094,
+    204.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "일반적인 진단의 예",
+   "bbox": [
+    230.6999969482422,
+    224.05117797851562,
+    306.34197998046875,
+    235.07318115234375
+   ],
+   "block": 19,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: … ",
+   "bbox": [
+    83.58000183105469,
+    248.97811889648438,
+    106.17713928222656,
+    258.87811279296875
+   ],
+   "block": 20,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2: try { ",
+   "bbox": [
+    83.58000183105469,
+    263.37811279296875,
+    115.84928894042969,
+    273.2781066894531
+   ],
+   "block": 21,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    277.7781066894531,
+    91.31366729736328,
+    287.6781005859375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Class.forName(“com.mysql.jdbc.Driver”); ",
+   "bbox": [
+    100.04785919189453,
+    277.7781066894531,
+    264.9803771972656,
+    287.6781005859375
+   ],
+   "block": 22,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58000183105469,
+    292.1781005859375,
+    91.34539794921875,
+    302.0780944824219
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "conn = DriverManager.getConnection(url); ",
+   "bbox": [
+    100.07959747314453,
+    292.1781005859375,
+    272.0475158691406,
+    302.0780944824219
+   ],
+   "block": 23,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58000183105469,
+    306.5780944824219,
+    91.34540557861328,
+    316.47808837890625
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "…",
+   "bbox": [
+    100.07960510253906,
+    306.5780944824219,
+    108.01337432861328,
+    316.47808837890625
+   ],
+   "block": 24,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6: } catch (ClassNotFoundException e) { ",
+   "bbox": [
+    83.58000183105469,
+    320.97808837890625,
+    251.64991760253906,
+    330.8780822753906
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58000183105469,
+    335.3780822753906,
+    91.31454467773438,
+    345.278076171875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "conn.rollback(); ",
+   "bbox": [
+    104.48900604248047,
+    335.3780822753906,
+    167.22576904296875,
+    345.278076171875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: } finally { ",
+   "bbox": [
+    83.58000183105469,
+    349.778076171875,
+    135.3919219970703,
+    359.6780700683594
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58000183105469,
+    364.1780700683594,
+    91.31719207763672,
+    374.07806396484375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "if(conn != null) conn.close(); ",
+   "bbox": [
+    108.87110137939453,
+    364.1780700683594,
+    226.6611328125,
+    374.07806396484375
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:}",
+   "bbox": [
+    83.58000183105469,
+    378.57806396484375,
+    98.9723892211914,
+    388.4780578613281
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음과 같은 예제는 rs.close(), pstmt.close() 등 자원 해제가 try catch 문안에서 함께 이루어지고 ",
+   "bbox": [
+    76.5,
+    410.95111083984375,
+    464.7747802734375,
+    421.9731140136719
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "있다. 이 경우 rs.close()문에서 예외가 발생하면 pstmt.close() 이하의 자원 해제는 이루어지지 ",
+   "bbox": [
+    76.5,
+    427.9309997558594,
+    464.83251953125,
+    438.9530029296875
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "않으므로 자원유출이 일어난다.",
+   "bbox": [
+    76.5,
+    444.97100830078125,
+    196.1268310546875,
+    455.9930114746094
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    240.89999389648438,
+    475.45111083984375,
+    296.1402587890625,
+    486.4731140136719
+   ],
+   "block": 33,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    83.58000183105469,
+    500.37811279296875,
+    91.3321762084961,
+    510.2781066894531
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "try {",
+   "bbox": [
+    100.06637573242188,
+    500.37811279296875,
+    117.70491027832031,
+    510.2781066894531
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    83.58000183105469,
+    514.778076171875,
+    91.34539794921875,
+    524.6781005859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String sqlSelect = “SELECT USER_ID, PWD FROM USER” ",
+   "bbox": [
+    104.51985931396484,
+    514.778076171875,
+    347.8018798828125,
+    524.6781005859375
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    83.58000183105469,
+    529.1781005859375,
+    91.34539794921875,
+    539.078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "String sqlUpdate = “UPDATE USER SET PASSWD = ? WHERE USER_ID = ?”",
+   "bbox": [
+    104.51985931396484,
+    529.1781005859375,
+    428.29351806640625,
+    539.078125
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    83.58001708984375,
+    543.5780639648438,
+    91.3180923461914,
+    553.4780883789062
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Class.forName(“oracle.jdbc.driver.OracleDriver”);",
+   "bbox": [
+    104.4925537109375,
+    543.5780639648438,
+    297.5502624511719,
+    553.4780883789062
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    83.58001708984375,
+    557.97802734375,
+    91.326904296875,
+    567.8780517578125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "conn =",
+   "bbox": [
+    108.88081359863281,
+    557.97802734375,
+    137.62046813964844,
+    567.8780517578125
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "DriverManager.getConnection(“jdbc:oracle:thin:@192.168.1.1:1521:db”, “aaa”, “AAA”);",
+   "bbox": [
+    100.0796127319336,
+    572.3780517578125,
+    446.62664794921875,
+    582.278076171875
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    83.58001708984375,
+    586.778076171875,
+    91.34453582763672,
+    596.6781005859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt = conn.prepareStatement(sqlSelect); ",
+   "bbox": [
+    108.89844512939453,
+    586.778076171875,
+    286.0876159667969,
+    596.6781005859375
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    83.58001708984375,
+    601.1780395507812,
+    91.34541320800781,
+    611.0780639648438
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "pstmt1 = conn.prepareStatement(sqlUpdate); ",
+   "bbox": [
+    108.89932250976562,
+    601.1780395507812,
+    294.9277038574219,
+    611.0780639648438
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    83.58001708984375,
+    615.5780639648438,
+    91.34541320800781,
+    625.4780883789062
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "rs = pstmt.executeQuery(); ",
+   "bbox": [
+    108.89932250976562,
+    615.5780639648438,
+    222.456298828125,
+    625.4780883789062
+   ],
+   "block": 42,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    83.58001708984375,
+    629.97802734375,
+    91.34541320800781,
+    639.8780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "while( rs.next()) { ",
+   "bbox": [
+    108.89932250976562,
+    629.97802734375,
+    182.16592407226562,
+    639.8780517578125
+   ],
+   "block": 43,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    83.58001708984375,
+    644.3780517578125,
+    96.25641632080078,
+    654.278076171875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "System.out.println(“#################### user_id : “ +",
+   "bbox": [
+    118.25059509277344,
+    644.3780517578125,
+    359.0904235839844,
+    654.278076171875
+   ],
+   "block": 44,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+   ],
+   "text": "1: … \n2: try { \n3:    Class.forName(“com.mysql.jdbc.Driver”); \n4:    conn = DriverManager.getConnection(url); \n5:    …\n6: } catch (ClassNotFoundException e) { \n7:      conn.rollback(); \n8: } finally { \n9:        if(conn != null) conn.close(); \n10:}",
+   "language": "text",
+   "label": "일반적인 진단의 예",
+   "bbox": [
+    83.58000183105469,
+    247.7781188964844,
+    272.0475158691406,
+    389.6780578613281
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46
+   ],
+   "text": "1:    try {\n2:      String sqlSelect = “SELECT USER_ID, PWD FROM USER” \n3:      String sqlUpdate = “UPDATE USER SET PASSWD = ? WHERE USER_ID = ?”\n4:      Class.forName(“oracle.jdbc.driver.OracleDriver”);\n5:        conn =\nDriverManager.getConnection(“jdbc:oracle:thin:@192.168.1.1:1521:db”, “aaa”, “AAA”);\n6:        pstmt = conn.prepareStatement(sqlSelect); \n7:        pstmt1 = conn.prepareStatement(sqlUpdate); \n8:        rs = pstmt.executeQuery(); \n9:        while( rs.next()) { \n10:         System.out.println(“#################### user_id : “ +",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    83.58000183105469,
+    499.17811279296876,
+    446.62664794921875,
+    655.478076171875
+   ]
+  }
+ ],
+ "native": "450\n라. 진단방법\n자원(파일기술자, 힙메모리, 소켓)이 선언되고, 선언된 자원이 할당된 경우 해제되는지 확인한다. \n진단자는 제어문, 예외처리문 등의 분기 등에 따라 모든 흐름(control flow)을 판단하여 자원해제 \n여부를 체크해야 한다. 할당된 자원이 해제될 경우 안전하다고 판단하고 자원이 해제되지 않는 분기가 \n존재할 경우 취약하다.\n일반적인 진단의 예\n1: … \n2: try { \n3:\nClass.forName(“com.mysql.jdbc.Driver”); \n4:\nconn = DriverManager.getConnection(url); \n5:\n…\n6: } catch (ClassNotFoundException e) { \n7:\nconn.rollback(); \n8: } finally { \n9:\nif(conn != null) conn.close(); \n10:}\n다음과 같은 예제는 rs.close(), pstmt.close() 등 자원 해제가 try catch 문안에서 함께 이루어지고 \n있다. 이 경우 rs.close()문에서 예외가 발생하면 pstmt.close() 이하의 자원 해제는 이루어지지 \n않으므로 자원유출이 일어난다.\n정탐코드의 예\n1:\ntry {\n2:\nString sqlSelect = “SELECT USER_ID, PWD FROM USER” \n3:\nString sqlUpdate = “UPDATE USER SET PASSWD = ? WHERE USER_ID = ?”\n4:\nClass.forName(“oracle.jdbc.driver.OracleDriver”);\n5:\nconn =\nDriverManager.getConnection(“jdbc:oracle:thin:@192.168.1.1:1521:db”, “aaa”, “AAA”);\n6:\npstmt = conn.prepareStatement(sqlSelect); \n7:\npstmt1 = conn.prepareStatement(sqlUpdate); \n8:\nrs = pstmt.executeQuery(); \n9:\nwhile( rs.next()) { \n10:\nSystem.out.println(“#################### user_id : “ +\n",
+ "native_sha256": "b5efe9543cd5f415064b3dd74288d54079b2d1d9809a2887bbeb2440e8f1d3d6",
+ "chars": 1082,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

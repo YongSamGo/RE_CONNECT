@@ -1,0 +1,495 @@
+{
+ "lines": [
+  {
+   "text": "49",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "2. 입력값이 DB 쿼리의 구조를 변경시키는지 점검하기 위한 테스트 계획이 수립되어 있는가?",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    426.9085998535156,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "진단방법",
+   "bbox": [
+    186.17999267578125,
+    135.09823608398438,
+    216.187255859375,
+    144.99822998046875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "관련산출물 검토예시",
+   "bbox": [
+    357.7200012207031,
+    135.09823608398438,
+    427.3883056640625,
+    144.99822998046875
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "2-1 쿼리문의 구조를 변경할 수 있는 입력값이 쿼리 구조 변경에 영향을 ",
+   "bbox": [
+    76.6802978515625,
+    152.55825805664062,
+    328.2283020019531,
+    162.458251953125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "주는지 점검할 수 있는 테스트 계획이 수립되어 있는지 확인",
+   "bbox": [
+    95.28057861328125,
+    165.63796997070312,
+    289.8766174316406,
+    175.5379638671875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "테스트 입력값 : ",
+   "bbox": [
+    95.28057861328125,
+    178.65829467773438,
+    149.07949829101562,
+    188.55828857421875
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "특수문자( ‘ , “ , = , & , | , ! , ( , ) , { , } , $ , % , @ 등 ) 예약어 ",
+   "bbox": [
+    95.28057861328125,
+    191.67861938476562,
+    328.236328125,
+    201.57861328125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "(UNION, SELECT, THEN, IF, INSTANCE, END, COLUMN 등) ",
+   "bbox": [
+    95.28057861328125,
+    204.75833129882812,
+    328.1605224609375,
+    214.6583251953125
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "함수 명(DATABASE(), CONCAT(), COUNT(), LOWER() 등)",
+   "bbox": [
+    95.28057861328125,
+    217.77865600585938,
+    304.98956298828125,
+    227.67864990234375
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 프로그램명세서, 클래스설계서, 개발가이드,",
+   "bbox": [
+    70.86000061035156,
+    279.0111083984375,
+    434.8972473144531,
+    290.0331115722656
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "단위 테스트케이스, 단위테스트시나리오 등",
+   "bbox": [
+    70.86000061035156,
+    295.9909973144531,
+    235.69500732421875,
+    307.01300048828125
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    70.86000061035156,
+    342.99517822265625,
+    220.3914794921875,
+    355.07318115234375
+   ],
+   "block": 30,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    159.0,
+    367.35809326171875,
+    174.12704467773438,
+    377.2580871582031
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    334.20001220703125,
+    367.35809326171875,
+    381.5479431152344,
+    377.2580871582031
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    126.36079406738281,
+    387.6980895996094,
+    206.7713165283203,
+    397.59808349609375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "SQL 삽입",
+   "bbox": [
+    341.22406005859375,
+    387.6980895996094,
+    374.59173583984375,
+    397.59808349609375
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    438.39508056640625,
+    126.4169921875,
+    450.47308349609375
+   ],
+   "block": 33,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①SDL Quick security references on SQL injection, Bala Neerumalla,",
+   "bbox": [
+    85.86000061035156,
+    462.07110595703125,
+    386.9304504394531,
+    473.0931091308594
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://go.microsoft.com/?linkid=9707610 ",
+   "bbox": [
+    99.59942626953125,
+    478.0910949707031,
+    284.30877685546875,
+    489.11309814453125
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②SQL Injection Prevention Cheat Sheet, OWASP,",
+   "bbox": [
+    85.8599853515625,
+    499.09100341796875,
+    308.5521545410156,
+    510.1130065917969
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "www.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet",
+   "bbox": [
+    99.60039520263672,
+    515.0508422851562,
+    395.98516845703125,
+    526.0728759765625
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③CAPEC-66 SQL Injection, CAPEC,",
+   "bbox": [
+    85.8599853515625,
+    536.0507202148438,
+    248.81295776367188,
+    547.07275390625
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://capec.mitre.org/data/definitions/66.html",
+   "bbox": [
+    99.60039520263672,
+    552.0707397460938,
+    308.11328125,
+    563.0927734375
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④CWE-89 SQL Injection, MITRE, http://cwe.mitre.org/data/definitions/89.html",
+   "bbox": [
+    85.8599853515625,
+    573.0706176757812,
+    441.4591979980469,
+    584.0926513671875
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤2016 OWASP Application Security Verification Standard, OWASP, Malicious Input ",
+   "bbox": [
+    85.8599853515625,
+    594.070556640625,
+    459.18365478515625,
+    605.0925903320312
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Handling Verification Re- quirements,",
+   "bbox": [
+    99.60040283203125,
+    610.0905151367188,
+    264.9788818359375,
+    621.112548828125
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Veri ",
+   "bbox": [
+    99.60040283203125,
+    626.0503540039062,
+    458.84759521484375,
+    637.0723876953125
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "fication_Stan- dard_Project",
+   "bbox": [
+    99.60040283203125,
+    642.0703735351562,
+    218.2451934814453,
+    653.0924072265625
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+   ],
+   "bbox": [
+    70.68000030517578,
+    130.80798848470053,
+    453.7200012207031,
+    231.00799560546875
+   ],
+   "cells": [
+    [
+     "진단방법",
+     "관련산출물 검토예시"
+    ],
+    [
+     "2-1 쿼리문의 구조를 변경할 수 있는 입력값이 쿼리 구조 변경에 영향을\n주는지 점검할 수 있는 테스트 계획이 수립되어 있는지 확인\n테스트 입력값 :\n특수문자( ‘ , “ , = , & , | , ! , ( , ) , { , } , $ , % , @ 등 ) 예약어\n(UNION, SELECT, THEN, IF, INSTANCE, END, COLUMN 등)\n함수 명(DATABASE(), CONCAT(), COUNT(), LOWER() 등)",
+     ""
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "진단방법\n관련산출물 검토예시\n2-1 쿼리문의 구조를 변경할 수 있는 입력값이 쿼리 구조 변경에 영향을 \n주는지 점검할 수 있는 테스트 계획이 수립되어 있는지 확인\n테스트 입력값 : \n특수문자( ‘ , “ , = , & , | , ! , ( , ) , { , } , $ , % , @ 등 ) 예약어 \n(UNION, SELECT, THEN, IF, INSTANCE, END, COLUMN 등) \n함수 명(DATABASE(), CONCAT(), COUNT(), LOWER() 등)"
+  },
+  {
+   "kind": "table",
+   "indices": [
+    14,
+    15,
+    16,
+    17
+   ],
+   "bbox": [
+    70.68000030517578,
+    361.7479960123698,
+    453.7200012207031,
+    402.3680114746094
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "SQL 삽입"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n입력데이터 검증 및 표현\nSQL 삽입"
+  }
+ ],
+ "native": "49\n제3장분석․ 설계단계 보안항목 진단\n2. 입력값이 DB 쿼리의 구조를 변경시키는지 점검하기 위한 테스트 계획이 수립되어 있는가?\n진단방법\n관련산출물 검토예시\n2-1 쿼리문의 구조를 변경할 수 있는 입력값이 쿼리 구조 변경에 영향을 \n주는지 점검할 수 있는 테스트 계획이 수립되어 있는지 확인\n테스트 입력값 : \n특수문자( ‘ , “ , = , & , | , ! , ( , ) , { , } , $ , % , @ 등 ) 예약어 \n(UNION, SELECT, THEN, IF, INSTANCE, END, COLUMN 등) \n함수 명(DATABASE(), CONCAT(), COUNT(), LOWER() 등)\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 프로그램명세서, 클래스설계서, 개발가이드,\n단위 테스트케이스, 단위테스트시나리오 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n입력데이터 검증 및 표현\nSQL 삽입\n마. 참고자료\n①SDL Quick security references on SQL injection, Bala Neerumalla,\nhttp://go.microsoft.com/?linkid=9707610 \n②SQL Injection Prevention Cheat Sheet, OWASP,\nwww.owasp.org/index.php/SQL_Injection_Prevention_Cheat_Sheet\n③CAPEC-66 SQL Injection, CAPEC,\nhttp://capec.mitre.org/data/definitions/66.html\n④CWE-89 SQL Injection, MITRE, http://cwe.mitre.org/data/definitions/89.html\n⑤2016 OWASP Application Security Verification Standard, OWASP, Malicious Input \nHandling Verification Re- quirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Veri \nfication_Stan- dard_Project\n",
+ "native_sha256": "bc0c9ede65b11bf29036791da0e8664e1b2d80d8346355a6a68fd69eb0ad7556",
+ "chars": 1064,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

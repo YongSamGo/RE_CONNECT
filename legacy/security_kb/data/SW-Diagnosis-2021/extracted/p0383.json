@@ -1,0 +1,338 @@
+{
+ "lines": [
+  {
+   "text": "383",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 JAVA",
+   "bbox": [
+    215.4600067138672,
+    120.79122924804688,
+    308.9777526855469,
+    131.813232421875
+   ],
+   "block": 24,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2: loginCookie.setMaxAge(60*60*24);",
+   "bbox": [
+    77.94000244140625,
+    140.19808959960938,
+    228.70986938476562,
+    150.09808349609375
+   ],
+   "block": 25,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: response.addCookie(loginCookie);",
+   "bbox": [
+    77.94000244140625,
+    154.59811401367188,
+    224.14791870117188,
+    164.49810791015625
+   ],
+   "block": 26,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "다음은 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있는 C# 코드의 예제이다. 쿠키의 유효 ",
+   "bbox": [
+    70.86000061035156,
+    186.97122192382812,
+    459.1466369628906,
+    197.99322509765625
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "기간이 긴 경우 사용자 하드디스크에 쿠키가 저장되며 저장된 쿠키는 쉽게 도용될 수 있으므로 취약 ",
+   "bbox": [
+    70.86000061035156,
+    204.01126098632812,
+    459.2032470703125,
+    215.03326416015625
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "하다.",
+   "bbox": [
+    70.86000061035156,
+    220.99118041992188,
+    90.83202362060547,
+    232.01318359375
+   ],
+   "block": 29,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    206.4600067138672,
+    260.95111083984375,
+    317.9013671875,
+    271.9731140136719
+   ],
+   "block": 30,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”);",
+   "bbox": [
+    77.94000244140625,
+    280.35809326171875,
+    338.1473083496094,
+    290.2580871582031
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다.",
+   "bbox": [
+    77.94000244140625,
+    294.7580871582031,
+    336.24932861328125,
+    304.6580810546875
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2: cookie.Expires = DateTime.Now.AddMinutes(60.0*24.0*365.0);",
+   "bbox": [
+    77.94000244140625,
+    309.1580810546875,
+    344.3287048339844,
+    319.0580749511719
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: Response.Cookies.Add(cookie);",
+   "bbox": [
+    77.94000244140625,
+    323.5580749511719,
+    215.37844848632812,
+    333.45806884765625
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "쿠키의 만료 시간을 10분으로 설정하고 있는 C# 코드의 예제이다.",
+   "bbox": [
+    70.86000061035156,
+    355.9910888671875,
+    324.19317626953125,
+    367.0130920410156
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "안전한 코드의 예 C#",
+   "bbox": [
+    221.0399932861328,
+    395.95111083984375,
+    303.40240478515625,
+    406.9731140136719
+   ],
+   "block": 36,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”); ",
+   "bbox": [
+    77.94000244140625,
+    415.35809326171875,
+    340.61822509765625,
+    425.2580871582031
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "//쿠키의 만료시간은 해당 기능에 맞춰 최소로 사용한다.",
+   "bbox": [
+    77.94000244140625,
+    429.7580871582031,
+    272.5290222167969,
+    439.6580810546875
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "2: cookie.Expires = DateTime.Now.AddMinutes(10d);",
+   "bbox": [
+    77.94000244140625,
+    444.1580810546875,
+    293.80560302734375,
+    454.0580749511719
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3: Response.Cookies.Add(cookie);",
+   "bbox": [
+    77.94000244140625,
+    458.5580749511719,
+    215.37844848632812,
+    468.45806884765625
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumBold",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4
+   ],
+   "text": "2: loginCookie.setMaxAge(60*60*24);\n3: response.addCookie(loginCookie);",
+   "language": "java",
+   "label": "안전한 코드의 예 JAVA",
+   "bbox": [
+    77.94000244140625,
+    131.913232421875,
+    228.70986938476562,
+    165.69810791015624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    9,
+    10,
+    11,
+    12
+   ],
+   "text": "1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”);\n//쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다.\n2: cookie.Expires = DateTime.Now.AddMinutes(60.0*24.0*365.0);\n3: Response.Cookies.Add(cookie);",
+   "language": "csharp",
+   "label": "안전하지 않은 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    272.0731140136719,
+    344.3287048339844,
+    334.65806884765624
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    15,
+    16,
+    17,
+    18
+   ],
+   "text": "1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”); \n//쿠키의 만료시간은 해당 기능에 맞춰 최소로 사용한다.\n2: cookie.Expires = DateTime.Now.AddMinutes(10d);\n3: Response.Cookies.Add(cookie);",
+   "language": "csharp",
+   "label": "안전한 코드의 예 C#",
+   "bbox": [
+    77.94000244140625,
+    407.0731140136719,
+    340.61822509765625,
+    469.65806884765624
+   ]
+  }
+ ],
+ "native": "383\n제4장구현단계 보안약점 진단\n안전한 코드의 예 JAVA\n2: loginCookie.setMaxAge(60*60*24);\n3: response.addCookie(loginCookie);\n다음은 쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있는 C# 코드의 예제이다. 쿠키의 유효 \n기간이 긴 경우 사용자 하드디스크에 쿠키가 저장되며 저장된 쿠키는 쉽게 도용될 수 있으므로 취약 \n하다.\n안전하지 않은 코드의 예 C#\n1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”);\n//쿠키의 만료시간을 1년으로 과도하게 길게 설정하고 있어 안전하지 않다.\n2: cookie.Expires = DateTime.Now.AddMinutes(60.0*24.0*365.0);\n3: Response.Cookies.Add(cookie);\n쿠키의 만료 시간을 10분으로 설정하고 있는 C# 코드의 예제이다.\n안전한 코드의 예 C#\n1: HttpCookie cookie = Request.Cookies.Get(“ExampleCookie”); \n//쿠키의 만료시간은 해당 기능에 맞춰 최소로 사용한다.\n2: cookie.Expires = DateTime.Now.AddMinutes(10d);\n3: Response.Cookies.Add(cookie);\n",
+ "native_sha256": "d337ccdbd400e423ddf85742fa2b87dee2495ac26555067985bea5a163e08d61",
+ "chars": 665,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,43 @@
+203
+제4장구현단계 보안약점 진단
+안전한 코드의 예 JAVA
+15:
+bos.write(buffer,0,read); 
+16:
+}
+17:
+}
+인자값이 파일 이름인 경우에는 애플리케이션에서 정의(제한)한 디렉토리 c:\help_files\에서 파일을 
+읽어서 출력하지만, args[0]의 값으로 "..\..\..\windows\system32\drivers\etc\hosts"와 같이 
+경로조작 문자열을 포함한 입력이 들어오는 경우 접근이 제한된 경로의 파일을 열람할 수 있다.
+안전하지 않은 코드의 예 JAVA
+1: public class ShowHelp { 
+2:
+private final static String safeDir = "c:\\help_files\\"; 
+3:
+public static void main(String[] args) throws IOException { 
+4:
+String helpFile = args[0];
+5:
+try (BufferedReader br = new BufferedReader(new FileReader(safeDir + helpFile))) {
+6:
+String line;
+7:
+while ((line = br.readLine()) != null) { 
+8:
+System.out.println(line);
+9:
+}
+10:
+...
+11:
+}
+외부 입력값으로 파일 경로를 조합하여 파일 시스템에 접근하는 경로를 만들지 말아야 한다.
+외부에서 입력되는 값에 대하여 null 여부를 체크하고, 외부에서 입력되는 파일 이름에서 경로조작 
+문자열 제거 조치 후 사용하도록 한다.
+안전한 코드의 예 JAVA
+1: public class ShowHelpSolution { 
+2:
+private final static String safeDir = "c:\\help_files\\";
+3:
+//경로조작 문자열 포함 여부를 확인하고 조치 후 사용하도록 한다.

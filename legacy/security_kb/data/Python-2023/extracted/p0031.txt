@@ -1,0 +1,39 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+25
+프레임워크 자체에서 XSS 공격으로부터 보호해 주는 기능이 있더라도 완전하지 않은 경우도 있고 개발자의 
+실수로 보호기능이 무효화 되는 경우가 있으므로 주의를 기울여야 한다.
+다. 코드예제
+가) Django 예제
+Django 프레임워크는 XSS 공격에 대한 보안기능을 내장하고 있지만 유의해야 할 사항이 몇 가지 있다. 
+Django의 “safestring(django.utils.safestring)”의 기능을 오용할 경우 Django의 XSS 공격에 대한 보호 
+정책이 무력화 될 수 있다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+from django.shortcuts import render
+from django.utils.safestring import mark_safe
+def profile_link(request):
+    # 외부 입력값을 검증 없이 HTML 태그 생성의 인자로 사용
+    profile_url = request.POST.get('profile_url')
+    profile_name = requst.POST.get('profile_name')
+    
+    object_link = '<a href="{}">{}</a>'.format(profile_url, profile_name)
+    # mark_safe함수는 Django의 XSS escape 정책을 따르지 않는다
+    object_link = mark_safe(object_link)
+    
+    return render(request, 'my_profile.html',{'object_link':object_link})
+Django 프레임워크는 템플릿 생성 시 HTML에서 위험한 것으로 간주되는 특수 문자(“<”, “>”, “‘”, “””, 
+“&”)를 모두 HTML 엔티티로 치환 하지만 mark_safe를 사용할 경우 이 정책을 따르지 않는다. 따라서 
+mark_safe 함수를 사용할 경우에는 각별한 주의가 필요하고 신뢰할 수 없는 데이터에 대해서는 mark_safe 
+함수를 사용하지 않아야 한다.

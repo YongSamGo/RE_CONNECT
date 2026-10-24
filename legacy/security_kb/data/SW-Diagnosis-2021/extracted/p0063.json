@@ -1,0 +1,269 @@
+{
+ "lines": [
+  {
+   "text": "63",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    113.85517120361328,
+    126.4169921875,
+    125.93317413330078
+   ],
+   "block": 24,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐99 Resource Injection, MITRE, ",
+   "bbox": [
+    85.86000061035156,
+    137.5200958251953,
+    259.6585693359375,
+    148.55322265625
+   ],
+   "block": 25,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/99.html",
+   "bbox": [
+    99.59996032714844,
+    153.55117797851562,
+    300.596435546875,
+    164.57318115234375
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE‐78 OS Command Injection, MITRE, ",
+   "bbox": [
+    85.85955047607422,
+    174.5399932861328,
+    279.8553161621094,
+    185.5731201171875
+   ],
+   "block": 27,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/78.html ",
+   "bbox": [
+    99.59996032714844,
+    190.51095581054688,
+    303.3834533691406,
+    201.532958984375
+   ],
+   "block": 28,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③CWE‐22 Path Traversal, MITRE, http://cwe.mitre.org/data/definitions/22.html",
+   "bbox": [
+    85.85955047607422,
+    211.4999542236328,
+    440.7395324707031,
+    222.5330810546875
+   ],
+   "block": 29,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "④WASC Threat Classification v2.0 OS Commanding, WASC,",
+   "bbox": [
+    85.86053466796875,
+    232.510986328125,
+    354.3394775390625,
+    243.53298950195312
+   ],
+   "block": 30,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/ page/13246950/OS%20Commanding",
+   "bbox": [
+    99.60094451904297,
+    248.53097534179688,
+    417.7206726074219,
+    259.552978515625
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤WASC Threat Classification v2.0 Path Traversal, WASC,",
+   "bbox": [
+    85.86053466796875,
+    269.5308837890625,
+    341.03179931640625,
+    280.5528869628906
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246952/ Path%20Traversal",
+   "bbox": [
+    99.60094451904297,
+    285.5508728027344,
+    404.47955322265625,
+    296.5728759765625
+   ],
+   "block": 33,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Command Injection, OWASP, ",
+   "bbox": [
+    85.86053466796875,
+    306.55078125,
+    231.3040771484375,
+    317.5727844238281
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Command_Injection",
+   "bbox": [
+    99.60094451904297,
+    322.5106506347656,
+    339.4234313964844,
+    333.53265380859375
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦File System Path Traversal, OWASP,",
+   "bbox": [
+    85.86053466796875,
+    343.51055908203125,
+    258.3891906738281,
+    354.5325622558594
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/File_System#Path_traversal",
+   "bbox": [
+    99.60094451904297,
+    359.5305480957031,
+    372.65911865234375,
+    370.55255126953125
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑧Directory traversal attack, Wikipedia,",
+   "bbox": [
+    85.86053466796875,
+    380.53045654296875,
+    259.6517028808594,
+    391.5524597167969
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://en.wikipedia.org/wiki/Directory_traversal_attack",
+   "bbox": [
+    99.60094451904297,
+    396.5504455566406,
+    339.08837890625,
+    407.57244873046875
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "63\n제3장분석․ 설계단계 보안항목 진단\n마. 참고자료\n①CWE‐99 Resource Injection, MITRE, \nhttp://cwe.mitre.org/data/definitions/99.html\n②CWE‐78 OS Command Injection, MITRE, \nhttp://cwe.mitre.org/data/definitions/78.html \n③CWE‐22 Path Traversal, MITRE, http://cwe.mitre.org/data/definitions/22.html\n④WASC Threat Classification v2.0 OS Commanding, WASC,\nhttp://projects.webappsec.org/w/ page/13246950/OS%20Commanding\n⑤WASC Threat Classification v2.0 Path Traversal, WASC,\nhttp://projects.webappsec.org/w/page/13246952/ Path%20Traversal\n⑥Command Injection, OWASP, \nhttp://www.owasp.org/index.php/Command_Injection\n⑦File System Path Traversal, OWASP,\nhttp://www.owasp.org/index.php/File_System#Path_traversal\n⑧Directory traversal attack, Wikipedia,\nhttp://en.wikipedia.org/wiki/Directory_traversal_attack\n",
+ "native_sha256": "5036908f704618c24f06b60648b249a7bf90cf2269f5c0bd6900601907a0dc9f",
+ "chars": 778,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

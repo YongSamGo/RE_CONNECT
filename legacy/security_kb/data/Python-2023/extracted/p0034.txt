@@ -1,0 +1,38 @@
+Python 시큐어코딩 가이드
+28
+동적 웹 페이지 생성에 사용하는 데이터를 HTML 엔티티 코드 (Entity Code)로 치환하여 안전하게 표현해야 
+한다. html.escape 메소드는 문자열의 &, < 및 > 특수문자를 HTML에서 안전한 값으로 변환한다. quote 
+옵션 값이 True이면 문자 (“)와 (‘)도 변환된다. <a href=”…“>에서처럼 따옴표로 구분된 HTML 속성
+(attribute) 값이 들어간 문자열을 포함할 경우에도 사용할 수 있다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+import html
+from flask import Flask, request, render_template
+@app.route('/search', methods=['POST'])
+def search():
+  search_keyword = request.form.get('search_keyword')
+    # 동적 웹페이지 생성에 사용되는 데이터는
+    # HTML 엔티티코드로 치환하여 표현해야 한다
+    escape_keyword = html.escape(search_keyword)
+    return render_template('search.html', search_keyword=escape_keyword)
+라. 참고자료
+① CWE-79: Improper Neutralization of Input During Web Page Generation ('Cross-site Scripting'), MITRE,
+https://cwe.mitre.org/data/definitions/79.html
+② Cross Site Scripting (XSS), OWASP,
+https://owasp.org/www-community/attacks/xss/
+③ html - HyperText Markup Language support, Python Software Foundation,
+https://docs.python.org/3/library/html.html
+④ Flask Security Considerations Cross-Site Scripting (XSS), Flask docs,
+https://flask-docs-kr.readthedocs.io/ko/latest/security.html
+⑤ Django Security in Django Cross site scripting (XSS) protection, Django Software Foundation,
+https://docs.djangoproject.com/en/3.2/topics/security/

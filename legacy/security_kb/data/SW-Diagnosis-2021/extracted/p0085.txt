@@ -1,0 +1,20 @@
+85
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①CWE‐119 Improper Restriction of Operations within the Bounds of a Memory Buffer, 
+MITRE, http://cwe.mitre.org/data/definitions/119.html
+②Buffer Overflow, Wikipedia, http://en.wikipedia.org/wiki/Buffer_overflow
+③WASC Threat Classification v2.0 Buffer Overflow, WASC,
+http://projects.webappsec.org/w/page/13246916/ Buffer%20Overflow
+④Smashing The Stack For Fun And Profit, Aleph One,
+http://insecure.org/stf/smashstack.html
+⑤Stack BufferOverflow(스택 버퍼오버플로우), Inhack,
+http://inhack.org/wordpress/?p=2932 
+⑥Stack-based Overflow Exploit: Introduction to Classical and Advanced Overflow 
+Technique, wowhacker, 
+http://web.archive.org/web/20070818115455/http://www.neworder.box.sk/n
+ewsread.php?newsid=12476
+⑦CWE-134 Uncontrolled Format String, MITRE,
+http://cwe.mitre.org/data/definitions/134.html
+⑧WASC Threat Classification Format String, WASC,
+http://projects.webappsec.org/w/page/13246926/For- mat%20String

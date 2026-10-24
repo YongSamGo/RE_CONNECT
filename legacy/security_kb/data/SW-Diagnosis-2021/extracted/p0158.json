@@ -1,0 +1,211 @@
+{
+ "lines": [
+  {
+   "text": "158",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐312, Cleartext Storage of Sensitive Information, MITRE,",
+   "bbox": [
+    91.5,
+    137.5200958251953,
+    372.84130859375,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/312.html",
+   "bbox": [
+    105.23995971679688,
+    153.55117797851562,
+    311.67547607421875,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②CWE‐539 Information Exposure Through Persistent Cookies, MITRE,",
+   "bbox": [
+    91.49954986572266,
+    174.5399932861328,
+    403.58489990234375,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/definitions/539.html ",
+   "bbox": [
+    105.23995971679688,
+    190.51095581054688,
+    314.4469299316406,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③2016 OWASP Application Security Verification Standard, OWASP, Data Protection ",
+   "bbox": [
+    91.49954986572266,
+    211.51089477539062,
+    464.8320617675781,
+    222.53289794921875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Verification Requirements,",
+   "bbox": [
+    105.23995971679688,
+    227.5308837890625,
+    221.05572509765625,
+    238.55288696289062
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    105.23995971679688,
+    243.55087280273438,
+    461.675537109375,
+    254.5728759765625
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_Project",
+   "bbox": [
+    105.23992919921875,
+    259.5107421875,
+    204.9993133544922,
+    270.5327453613281
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Sensitive Data, Microsoft Patterns & Practices, MSDN,",
+   "bbox": [
+    91.49951934814453,
+    280.5106506347656,
+    343.6924133300781,
+    291.53265380859375
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://msdn.microsoft.com/en-us/library/ff650867.aspx",
+   "bbox": [
+    105.23992919921875,
+    296.5306396484375,
+    354.15240478515625,
+    307.5526428222656
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Password in the Clear, W3C,",
+   "bbox": [
+    91.49951934814453,
+    317.5305480957031,
+    230.46612548828125,
+    328.55255126953125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.w3.org/2001/tag/doc/passwordsInTheClear-52",
+   "bbox": [
+    105.23992919921875,
+    333.550537109375,
+    370.1657409667969,
+    344.5725402832031
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "158\n마. 참고자료\n①CWE‐312, Cleartext Storage of Sensitive Information, MITRE,\nhttp://cwe.mitre.org/data/definitions/312.html\n②CWE‐539 Information Exposure Through Persistent Cookies, MITRE,\nhttp://cwe.mitre.org/data/definitions/539.html \n③2016 OWASP Application Security Verification Standard, OWASP, Data Protection \nVerification Requirements,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_Project\n④Sensitive Data, Microsoft Patterns & Practices, MSDN,\nhttp://msdn.microsoft.com/en-us/library/ff650867.aspx\n⑤Password in the Clear, W3C,\nhttp://www.w3.org/2001/tag/doc/passwordsInTheClear-52\n",
+ "native_sha256": "eb328c263b0946010430be8b352316b0c6242f2c43da2ab0cc392629c6b49aff",
+ "chars": 630,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

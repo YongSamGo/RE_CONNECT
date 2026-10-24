@@ -1,0 +1,16 @@
+Python 시큐어코딩 가이드
+110
+프로그램 개발 시에 주석문 등에 남겨놓은 사용자 계정이나 패스워드 등의 정보는 개발 완료 후 확실하게 
+삭제해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+def user_login(id, passwd):
+  # 주석문에 포함된 민감한 정보는 삭제
+  result = login(id, passwd)
+  return result
+라. 참고자료
+① CWE-615: Inclusion of Sensitive Information in Source Code Comments, MITRE,
+https://cwe.mitre.org/data/definitions/615.html

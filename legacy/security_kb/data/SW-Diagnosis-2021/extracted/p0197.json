@@ -1,0 +1,585 @@
+{
+ "lines": [
+  {
+   "text": "197",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    474.89642333984375,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제4장구현단계 보안약점 진단",
+   "bbox": [
+    361.3800048828125,
+    72.36726379394531,
+    458.28363037109375,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg"
+   ]
+  },
+  {
+   "text": "다음 예제에서는 6라인에서 동적코드 실행 함수인 ScriptEngine.eval함수를 사용하고 있으며, 11라인의 ",
+   "bbox": [
+    70.86000061035156,
+    113.83108520507812,
+    459.1328430175781,
+    124.85308074951172
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "실행코드 데이터 name은 사용자의 입력 값이므로 취약하다고 판정한다.",
+   "bbox": [
+    70.8599853515625,
+    130.81100463867188,
+    348.2977600097656,
+    141.8330078125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "정탐코드의 예",
+   "bbox": [
+    235.97999572753906,
+    167.29122924804688,
+    291.27935791015625,
+    178.313232421875
+   ],
+   "block": 26,
+   "size": 10.020000457763672,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1: class ACC { ",
+   "bbox": [
+    78.66000366210938,
+    192.21823120117188,
+    142.17953491210938,
+    202.11822509765625
+   ],
+   "block": 27,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    78.66000366210938,
+    206.61825561523438,
+    86.39278411865234,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "public static void executeScript(final String name) throws ScriptException {",
+   "bbox": [
+    112.76728057861328,
+    206.61825561523438,
+    421.8281555175781,
+    216.51824951171875
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    78.66000366210938,
+    221.01828002929688,
+    86.42540740966797,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ScriptEngineManager manager = new ScriptEngineManager();",
+   "bbox": [
+    143.6393585205078,
+    221.01828002929688,
+    394.128662109375,
+    230.91827392578125
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    78.66000366210938,
+    235.41827392578125,
+    86.38573455810547,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ScriptEngine engine = manager.getEngineByName(\"javascript\");",
+   "bbox": [
+    143.5996856689453,
+    235.41827392578125,
+    400.2701721191406,
+    245.31826782226562
+   ],
+   "block": 30,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    78.66000366210938,
+    249.81826782226562,
+    86.40160369873047,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// eval을 이용해서 변수 name 값을 표시한다. ",
+   "bbox": [
+    143.61553955078125,
+    249.81826782226562,
+    320.8956298828125,
+    259.71826171875
+   ],
+   "block": 31,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    78.66000366210938,
+    264.21826171875,
+    86.42540740966797,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "engine.eval(\"print('\" + name + \"')\");",
+   "bbox": [
+    143.63934326171875,
+    264.21826171875,
+    284.737060546875,
+    274.1182556152344
+   ],
+   "block": 32,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    78.66000366210938,
+    278.6182556152344,
+    86.42540740966797,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "}",
+   "bbox": [
+    112.7999038696289,
+    278.6182556152344,
+    115.53264617919922,
+    288.51824951171875
+   ],
+   "block": 33,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8: }",
+   "bbox": [
+    78.66000366210938,
+    293.01824951171875,
+    93.5728530883789,
+    302.9182434082031
+   ],
+   "block": 34,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    78.66000366210938,
+    307.4182434082031,
+    86.4130630493164,
+    317.3182373046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    112.78755187988281,
+    307.4182434082031,
+    120.73013305664062,
+    317.3182373046875
+   ],
+   "block": 35,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10: @RequestMapping(value = \"/print\", method = RequestMethod.POST) ",
+   "bbox": [
+    78.66000366210938,
+    321.8182373046875,
+    380.0753479003906,
+    331.7182312011719
+   ],
+   "block": 36,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11: public void print(@RequestParam(\"name\") String name) throws ScriptException{",
+   "bbox": [
+    78.66000366210938,
+    336.2182312011719,
+    420.7296447753906,
+    346.11822509765625
+   ],
+   "block": 37,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    78.66000366210938,
+    350.61822509765625,
+    91.35932159423828,
+    360.5182189941406
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "// 사용자 입력값인 name을 이용해서 eval 을 사용하는 함수를 호출한다.",
+   "bbox": [
+    108.91322326660156,
+    350.61822509765625,
+    381.36700439453125,
+    360.5182189941406
+   ],
+   "block": 38,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    78.66000366210938,
+    365.0182189941406,
+    91.4051742553711,
+    374.918212890625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ACC.executeScript(name);",
+   "bbox": [
+    108.95907592773438,
+    365.0182189941406,
+    213.6954345703125,
+    374.918212890625
+   ],
+   "block": 39,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "14:",
+   "bbox": [
+    78.66000366210938,
+    379.418212890625,
+    91.3840103149414,
+    389.3182067871094
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "...",
+   "bbox": [
+    108.93791961669922,
+    379.418212890625,
+    116.88404083251953,
+    389.3182067871094
+   ],
+   "block": 40,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "15:}",
+   "bbox": [
+    78.66000366210938,
+    393.8182067871094,
+    94.11234283447266,
+    403.71820068359375
+   ],
+   "block": 41,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "PHP의 eval() 함수는 PHP 코드를 실행하는 함수이며, 괄호 안의 문자열을 실행한다. 아래 코드는 ",
+   "bbox": [
+    70.86000061035156,
+    432.2511901855469,
+    459.1884765625,
+    443.273193359375
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "공격자가 2라인의 arg 파라미터에 아래와 같은 명령어를 추가하여 PHP 삽입코드를 실행될 수 있으나 ",
+   "bbox": [
+    70.86000061035156,
+    449.2310791015625,
+    459.22161865234375,
+    460.2530822753906
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "이를 사전에 검증하지 않고 3라인에서 코드를 실행하기 때문에 취약한 것으로 판단한다.",
+   "bbox": [
+    70.86000061035156,
+    466.2109680175781,
+    405.9183349609375,
+    477.23297119140625
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "[ 삽임코드의 예]",
+   "bbox": [
+    80.76000213623047,
+    507.7701110839844,
+    144.3028564453125,
+    518.1981201171875
+   ],
+   "block": 45,
+   "size": 9.386387825012207,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/vul.php?arg=1;phpinfo() ",
+   "bbox": [
+    80.76000213623047,
+    527.9180908203125,
+    180.5994873046875,
+    537.818115234375
+   ],
+   "block": 46,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/vul.php?arg=1;system(\"uname -a\") ",
+   "bbox": [
+    80.76000213623047,
+    542.3180541992188,
+    226.55886840820312,
+    552.2180786132812
+   ],
+   "block": 47,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/vul.php?arg=1;system(\"cat /etc/passwd\") ",
+   "bbox": [
+    80.76000213623047,
+    556.7180786132812,
+    252.3746337890625,
+    566.6181030273438
+   ],
+   "block": 48,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "/vul.php?arg=1;system(\"ps -ef\")",
+   "bbox": [
+    80.76000213623047,
+    571.1180419921875,
+    209.88294982910156,
+    581.01806640625
+   ],
+   "block": 49,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29
+   ],
+   "text": "1: class ACC { \n2:           public static void executeScript(final String name) throws ScriptException {\n3:                         ScriptEngineManager manager = new ScriptEngineManager();\n4:                         ScriptEngine engine = manager.getEngineByName(\"javascript\");\n5:                         // eval을 이용해서 변수 name 값을 표시한다. \n6:                         engine.eval(\"print('\" + name + \"')\");\n7:           }\n8: }\n9:           ...\n10: @RequestMapping(value = \"/print\", method = RequestMethod.POST) \n11: public void print(@RequestParam(\"name\") String name) throws ScriptException{\n12:        // 사용자 입력값인 name을 이용해서 eval 을 사용하는 함수를 호출한다.\n13:        ACC.executeScript(name);\n14:        ...\n15:}",
+   "language": "text",
+   "label": "정탐코드의 예",
+   "bbox": [
+    78.66000366210938,
+    191.0182312011719,
+    421.8281555175781,
+    404.91820068359374
+   ]
+  }
+ ],
+ "native": "197\n제4장구현단계 보안약점 진단\n다음 예제에서는 6라인에서 동적코드 실행 함수인 ScriptEngine.eval함수를 사용하고 있으며, 11라인의 \n실행코드 데이터 name은 사용자의 입력 값이므로 취약하다고 판정한다.\n정탐코드의 예\n1: class ACC { \n2:\npublic static void executeScript(final String name) throws ScriptException {\n3:\nScriptEngineManager manager = new ScriptEngineManager();\n4:\nScriptEngine engine = manager.getEngineByName(\"javascript\");\n5:\n// eval을 이용해서 변수 name 값을 표시한다. \n6:\nengine.eval(\"print('\" + name + \"')\");\n7:\n}\n8: }\n9:\n...\n10: @RequestMapping(value = \"/print\", method = RequestMethod.POST) \n11: public void print(@RequestParam(\"name\") String name) throws ScriptException{\n12:\n// 사용자 입력값인 name을 이용해서 eval 을 사용하는 함수를 호출한다.\n13:\nACC.executeScript(name);\n14:\n...\n15:}\nPHP의 eval() 함수는 PHP 코드를 실행하는 함수이며, 괄호 안의 문자열을 실행한다. 아래 코드는 \n공격자가 2라인의 arg 파라미터에 아래와 같은 명령어를 추가하여 PHP 삽입코드를 실행될 수 있으나 \n이를 사전에 검증하지 않고 3라인에서 코드를 실행하기 때문에 취약한 것으로 판단한다.\n[ 삽임코드의 예]\n/vul.php?arg=1;phpinfo() \n/vul.php?arg=1;system(\"uname -a\") \n/vul.php?arg=1;system(\"cat /etc/passwd\") \n/vul.php?arg=1;system(\"ps -ef\")\n",
+ "native_sha256": "88be50c74792d0b82652d9133d034b41c0f02170fe6bb0d06d1af8786a662f84",
+ "chars": 998,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

@@ -1,0 +1,39 @@
+376
+쿠키의 만료시간은 해당 기능에 맞춰 최소로 설정하고 영속적인 쿠키에는 중요 정보가 포함되지 않도록 
+한다.
+안전한 코드의 예 JAVA
+1:File f = new File(downloadedFilePath); 
+2:JarFile jf = new JarFile(f, true);
+3:Enumeration<JarEntry> ens = jf.entries(); 
+4:while (ens.hasMoreElements()) { 
+5:
+JarEntry en = ens.nextElement(); 
+6:
+if (!en.isDirectory()) { 
+7:
+if (en.toString().equals(path)) { 
+8:
+byte[] data = readAll(jar.getInputStream(en), en.getSize());
+9:
+CoeSigner[] signers = en.getCodeSigners();
+10:
+...
+11:
+}
+12:
+}
+13:}
+14:jf.close();
+라. 진단방법
+JarFile을 생성할 때 전자서명 여부를 확인하는 Boolean형 파라미터가 있는 생성자를 사용하여 전자
+서명 여부를 검증하는지 확인한다. 또한 JarEntry.getCodeSigners() 메소드로 전자서명 주체 검증 
+여부를 확인한다.
+일반적인 진단의 예
+1:List<FileItem> fileItemsList = uploader.parseRequest(request); 
+2:Iterator<FileItem> fileItemsIterator = fileItemsList.iterator(); 
+3:while (fileItemsIterator.hasNext()) { 
+4:
+FileItem fileItem = fileItemsIterator.next(); 
+5:
+File file = new File(request.getServletContext().getAttribute("FILES_DIR") + 
+File.separator + fileItem.getName());

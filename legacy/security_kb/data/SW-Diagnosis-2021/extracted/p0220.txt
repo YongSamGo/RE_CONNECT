@@ -1,0 +1,49 @@
+220
+오탐코드의 예
+2:
+String exam_tgt_se = request.getParameter(“exam_tgt_se”); 
+3:
+String mw_take_no = request.getParameter(“mw_take_no”); 
+4:
+String apv_perm_reg_mgt_no = request.getParameter(“apv_perm_reg_mgt_no”);
+5:
+String mw_afr_no = request.getParameter(“mw_afr_no”); 
+6:
+7:
+System.out.println(“exam_tgt_se : “ + exam_tgt_se); 
+8:
+System.out.println(“mw_take_no : “ + mw_take_no); 
+9:
+System.out.println(“apv_perm_reg_mgt_no : “ + apv_perm_reg_mgt_no);
+다음의 예제와 같이 사용자 입력값이 아닌 경우에는 안전한 것으로 판정한다.
+오탐코드의 예
+1:
+var CompPath = “%XPLATFORM%\\” + sKey + “\\component”;
+2:
+//XLauncher.componentpath = CompPath; 
+3:
+XLauncher.onlyone = “false”; 
+4:
+var iconStr = “<%= request.getRequestURL() %>”;
+[ 크로스사이트 스크립트 : Stored ]
+다음의 예제와 같이 게시판 제목, 내용 또는 사용자 정보와 같이 입력 폼에 의해 데이터베이스에 저장 된 
+데이터가 웹페이지에 출력될 경우 취약하며, 메뉴 이름 등과 같이 사용자 입력으로 수정되지 않는 
+데이터베이스에 저장된 값이 출력될 경우 취약하지 않는다고 판정한다. 데이터베이스가 할당된 변수가 
+사용자 입력으로 수정되는 변수 여부 판단은 정적도구를 사용하여 판단하기 어렵다.
+오탐코드의 예
+1:
+<%
+2:
+…
+3:
+rs = pstmt.executeQuery(query);
+4:
+while(rs.next()){ 
+5:
+board_contents = rs.getString(“board_contents”))
+6:
+… }
+7:
+%>
+8:
+…

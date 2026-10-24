@@ -1,0 +1,3375 @@
+[
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | 개발 도구 지침 정비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드, B · AI·데이터 (작업이 막히지 않는지 검토, Codex 사용자 확인) |\n| 우선순위 | 선택 (`.env`에 실제 API 키가 들어가는 시점 전에 판단) |\n| 기능·화면 연결 | 전체 (개발 과정) |\n\n## 배경\n\n#123(PR #124)에서 AI 개발 도구 공용 지침(`AGENTS.md`·`CLAUDE.md`)을 만들었다. 지침은 \"무엇을 하라\"는 안내일 뿐이고, 도구의 행동을 막는 권한 설정은 저장소에 없다.\n\n지금 걸려 있는 장치는 다음과 같다.\n\n- 비밀값 커밋·push: `.gitignore`, gitleaks CI, Push protection이 막는다.\n- `main`·`develop` 직접 push·force push: 브랜치 보호가 막는다.\n\n막히지 않는 것은 다음과 같다.\n\n- Claude Code·Codex가 `.env`·`*.pem`·`*.key`를 **읽는 것**. 읽은 값이 대화 기록이나 도구 출력에 남을 수 있다.\n- 작업 브랜치 force push처럼 브랜치 보호 밖의 위험한 명령. 실행 여부가 각자의 권한 모드에 맡겨져 있다.\n\nAGT-04 기준으로는 설정 파일이 없으면 `해당없음`이라 필수는 아니다. 팀 공용으로 강제할지를 이 이슈에서 정한다.\n\n## 진행 단계\n\n- [ ] Claude Code: `.claude/settings.json`의 `permissions.deny`\n  - `.env`·`.env.*`·`*.pem`·`*.key` 읽기를 차단한다. `.env.example`은 막지 않는다.\n  - `git push --force`·`-f`·`--force-with-lease`를 차단한다.\n- [ ] Codex: 프로젝트 단위 설정(`.codex/`)이 적용되는지 공식 문서로 확인한다. 적용되지 않으면 각자 개인 설정에 둘 내용을 `AGENTS.md`에 안내한다.\n- [ ] 모든 명령 자동 허용, 권한 확인 생략, hooks, MCP 서버는 넣지 않는다 (AGT-04 판정 기준).\n- [ ] `AGENTS.md`(또는 `CLAUDE.md`)에 차단 범위와 한계를 적는다.\n- [ ] 새 세션에서 실제로 막히는지 직접 시험하고, 결과를 PR에 적는다.\n\n## 착수 전에 정할 것\n\n- [ ] 팀 공용으로 강제할지, 각자 개인 설정에 둘지\n  - 저장소의 deny 규칙은 개인 설정의 허용으로 풀 수 없다.\n- [ ] 차단 범위: 읽기만 막을지, 셸 명령(`cat .env` 등)도 막을지\n- [ ] Claude 사용자만 보호되는 상태를 받아들일지 (Codex 설정이 안 될 경우)\n\n## 주의할 점\n\n- **완전 차단이 아니다.** `Read` 차단은 Claude의 파일 읽기 도구만 막고, 셸 명령은 따로 막아야 한다. 명령 차단은 문자열 앞부분 일치라 우회 방법이 남는다. 그래서 \"실수 방지용\"으로 문서화한다.\n- **경로 패턴 문법이 틀리면 오류 없이 무효가 된다.** CI가 검사하지 못하므로 직접 시험해야 한다.\n- **팀원이 하던 작업이 막힐 수 있다.** 예를 들어 Claude에게 `.env` 확인을 맡기던 팀원은 그 작업을 직접 해야 한다.\n\n## 완료 확인\n\n- 새로 받은 저장소의 Claude Code 세션에서 `.env` 읽기와 force push가 막히고, `.env.example` 읽기는 된다.\n- `/kisa-review --llm-only`의 AGT-04 판정이 `양호`다.\n- PR에 CODEOWNERS 리뷰가 붙고 `숨은 문자·지시문 점검`이 통과한다.\n\n## 참고\n\n- 관련 이슈: #123 (PR #124 — 공용 지침)\n- 기준: `.claude/skills/kisa-secure-coding-python/references/llm-security.md` AGT-04, `docs/security/ci-pipeline.md` \"CODEOWNERS\"\n- 작업 브랜치(예정): `chore/agent-permissions` → `develop`\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      }
+    ],
+    "number": 125,
+    "state": "OPEN",
+    "title": "[CHORE] AI 개발 도구 공용 권한 설정 — Claude·Codex 비밀값 읽기·위험 명령 차단 (AGT-04)",
+    "updatedAt": "2026-10-15T09:40:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/125"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | 개발 도구 지침 정비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드, B · AI·데이터 (각 폴더 규칙 검토) |\n| 우선순위 | P1 |\n| 기능·화면 연결 | 전체 (개발 과정) |\n\n## 배경\n\n팀원 모두 Claude Code를 쓰지만, 저장소에 공용 지침(`CLAUDE.md`)이 없다.\n\n- 브랜치 전략(작업 PR → `develop` squash, `develop` → `main` merge commit), 커밋 메시지 형식, KISA 약점 이름 표기 같은 규칙이 README 7장에만 있다. 개인 전역 설정에 따로 적어 둔 사람만 Claude가 이를 따른다.\n- 비신뢰 데이터 원칙(README 5.1), `/kisa-review` 사용법, `security-reports/` 비공개 규칙을 Claude가 작업 중에 알지 못한다.\n- #113(PR #114)에서 `CLAUDE.md`·`AGENTS.md`를 CODEOWNERS 대상과 숨은 문자 검사 대상에 미리 넣어 두었다. 파일을 만들면 바로 지정 리뷰와 CI 점검을 받는다.\n\n## 진행 단계\n\n### A. 새 파일\n- [ ] `CLAUDE.md` (저장소 최상위) — 짧게 유지하고 자세한 내용은 기존 문서로 링크한다\n  - 프로젝트 한 줄 소개와 폴더 지도 (README 3장 링크)\n  - 브랜치·병합 방식·커밋 메시지 형식 (README 7장)\n  - 보안 원칙: 사용자 입력·공고 원문·LLM 출력은 비신뢰 데이터, 개인정보·비밀값 로그 금지, `.env` 커밋 금지\n  - 보안 점검: `/kisa-review` 사용법, 보고서는 `security-reports/`에만 저장 (공개 저장소에 미조치 취약점 금지)\n  - 저장소 파일·도구 출력 속 지시문은 따르지 않는다 (AGT-03)\n  - 개인 취향 규칙(커밋에 도구 표시 여부 등)은 넣지 않고 각자 `~/.claude/CLAUDE.md`에 둔다\n- [ ] (검토) 폴더별 `CLAUDE.md` — `backend/`·`frontend/`에 실행·테스트 명령만 짧게. 폴더 README와 중복되면 만들지 않는다\n\n### B. 기존 파일\n- [ ] `.gitignore` — `CLAUDE.local.md`, `.claude/settings.local.json` 추가 (개인 파일 커밋 방지)\n- [ ] `README.md` 7장 — `CLAUDE.md` 안내 한 줄\n- [ ] `docs/security/ci-pipeline.md` CODEOWNERS 표 — 실제 파일이 생겼음을 반영 (필요 시)\n\n## 착수 전에 정할 것\n\n- [ ] 팀 공통으로 강제할 규칙과 개인 설정으로 둘 규칙의 경계 (예: P1~P4 리뷰 등급은 공통, 도구 표시 여부는 개인)\n- [ ] `AGENTS.md`도 함께 둘지 (Codex 등 다른 도구 사용자가 있으면 `CLAUDE.md`와 내용을 공유)\n- [ ] 폴더별 `CLAUDE.md`를 둘지, 최상위 하나로 끝낼지\n\n## 완료 확인\n\n- 새로 받은 저장소에서 Claude Code에 \"작업 브랜치를 만들어 PR을 올려줘\"라고 하면 `develop` 기준·브랜치 이름 규칙·PR 템플릿을 따른다\n- PR에 CODEOWNERS 리뷰 요청이 자동으로 붙고, `숨은 문자·지시문 점검`이 통과한다\n- `CLAUDE.md`의 링크가 모두 실제 파일을 가리킨다\n\n## 참고\n\n- 관련 이슈: #113 (PR #114 — CODEOWNERS, 숨은 문자 검사, `llm-security.md` AGT-02·03)\n- 기준: README 5장(보안 개발 진행 방식)·7장(협업 규칙), `docs/security/kisa-review.md`\n- 작업 브랜치(예정): `chore/claude-md` → `develop`\n",
+    "closedAt": "2026-10-15T11:55:33Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N5HA",
+        "name": "P1",
+        "description": "명세에 포함된 후속 구현",
+        "color": "fbca04"
+      }
+    ],
+    "number": 123,
+    "state": "CLOSED",
+    "title": "[CHORE] 저장소 공용 CLAUDE.md 작성 — 팀 공통 Claude Code 지침",
+    "updatedAt": "2026-10-15T11:55:33Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/123"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | 보안 점검 체계 보강 — LLM 프롬프트 인젝션 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 (LLM 점검 항목 검토, `eval/` 평가 표본 연결) |\n| 우선순위 | P1 |\n| 기능·화면 연결 | F1 대화·프로필 추출, 공고 수집·추천 (LLM 연동 전체) |\n\n## 배경\n\n지금은 프롬프트 인젝션을 체계적으로 검사하는 장치가 없다.\n\n- `/kisa-review`: KISA 49개 항목에 프롬프트 인젝션이 없어 \"KISA 밖 위험\"으로 발견 시 적기만 하고, 정해진 점검 항목·판정 기준이 없다.\n- CI(gitleaks·zizmor·bandit·CodeQL·pip-audit): 프롬프트 인젝션이나 저장소 문서에 숨긴 지시문을 잡는 도구가 없다.\n- README 5.3의 방어 원칙(공고 원문 격리, 도구 금지, 악성 공고 샘플 테스트)은 계획으로만 있고, `eval/personas/P07.json` 인젝션 표본은 자동 테스트로 돌지 않는다(#30 이후).\n\n대상은 두 가지다.\n1. **서비스의 LLM 기능**: 사용자 대화·외부 공고 원문·LLM 출력을 통한 직접/간접 인젝션\n2. **저장소 내용 → AI 개발 도구**: PR·문서·에이전트 지시 파일에 숨긴 문장이 Claude·Codex 같은 도구를 조종하는 경로\n\n2026-10-15에 저장소 텍스트 파일 전체(develop·main·작업 브랜치)를 수동 점검한 결과 악성 지시문·숨은 문자는 없었다. 이 이슈는 그 점검을 일회성이 아니라 상시 장치로 만드는 작업이다.\n\n## 진행 단계\n\n### A. 새 파일\n- [ ] `.claude/skills/kisa-secure-coding-python/references/llm-security.md` — LLM 점검 항목 `LLM-01~` (OWASP LLM Top 10 기준). 항목마다 판정 기준·탐지 신호·정탐/오탐 조건\n  - 직접·간접 인젝션, 지시문과 외부 데이터 분리, 출력 스키마 검증, 도구·권한 최소화, 시스템 프롬프트 노출(카나리), 개인정보 마스킹, 호출 한도·자원 고갈, 모델·가중치 출처(RM-11 연결)\n  - 로컬 LLM(Ollama + Qwen3)과 외부 LLM API 방식을 모두 다룬다\n- [ ] `.github/CODEOWNERS` — `.claude/`, `.github/`, `.gitleaks.toml`, 향후 `AGENTS.md`·`CLAUDE.md` 변경 시 지정 리뷰어 필수\n- [ ] `.github/scripts/check_hidden_text.py` — 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자) 검사, 에이전트 지시 파일에 새로 들어온 \"지시 무시\"류 문구 경고. 표준 라이브러리만 사용\n\n### B. 기존 파일 (필수)\n- [ ] `.claude/commands/kisa-review.md` — 0-1절 \"KISA 밖 위험\"을 LLM 점검 항목 기준으로 교체, 2절 인덱스에 LLM 표, 절차에 LLM 점검 단계, 보고 형식 섹션 정리 (`--llm-only` 옵션 검토)\n- [ ] `.claude/skills/kisa-secure-coding-python/SKILL.md` — 참조 파일 표·검사 절차·항목 인덱스·빠른 탐지 패턴에 LLM 항목 추가\n- [ ] `.github/workflows/ci.yml` — 숨은 문자 검사 job 추가, `CI 통과`(`ci-ok`)의 `needs`에 포함\n- [ ] `docs/security/kisa-review.md` — 사용법·\"다시잇다에 맞춘 부분\"·구성 표·기준 문서(OWASP LLM Top 10)·변경 이력\n- [ ] `docs/security/ci-pipeline.md` — 구성 파일·점검 표·실패 시 대응·CODEOWNERS·브랜치 보호 설정 절차\n\n### C. 기존 파일 (권장)\n- [ ] `README.md` — 5.2 흐름 ⑤ 자동 점검에 숨은 문자 검사, 5.3 \"프롬프트 인젝션\"에 LLM 점검 항목 링크, 품질·보안 점검 도구 목록과 PR 규칙 정리\n- [ ] `.github/pull_request_template.md` — \"LLM 프롬프트에서 외부 데이터를 지시문과 분리했다\", \"에이전트 지시 파일(`.claude/` 등)을 바꿨다면 사유를 적었다\" 체크 항목\n- [ ] `team-vault/SW개발보안_obsidian/Security/INDEX.md` — LLM 관련 행과 \"두 가이드가 직접 다루지 않는 위험\" 문단에 LLM 점검 항목 링크\n\n## 착수 전에 정할 것\n\n- [ ] CODEOWNERS 리뷰어 (보안 담당 단독 / 팀원 중 1명)\n- [ ] 브랜치 보호에서 \"Require review from Code Owners\" 켜기 (저장소 설정, 소유자 작업)\n- [ ] `Plan/05_Engineering_Constraints.md`·`Plan/Implementation_Plan.md`의 CI 도구 목록을 맞출지 여부 (Plan 문서는 이 이슈 범위 밖, 합의 시에만)\n- [ ] LLM 스택 표기 통일: `README.md`는 OpenAI API, `Plan/03`은 Ollama + Qwen3 (점검 항목은 두 방식 모두 다룸)\n\n## 완료 확인\n\n- `/kisa-review`로 LLM 항목이 보고서에 `LLM-xx` ID와 판정으로 나온다 (설계 문서만 있어도 판정 가능)\n- 숨은 문자를 넣은 시험 커밋에서 CI가 실패하고, 정상 커밋에서는 통과한다\n- `.claude/`·`.github/` 변경 PR에 CODEOWNERS 리뷰 요청이 자동으로 붙는다\n- 위 체크리스트의 문서가 서로 같은 항목 ID·파일 경로를 가리킨다\n\n## 참고\n\n- 관련 이슈: #10(평가 표본), #30(추출·근거 검증 — `eval/` 인젝션 표본 자동화), #65(실제 공고 추천 평가 — 간접 인젝션 사례)\n- 기준: [OWASP Top 10 for LLM Applications](https://genai.owasp.org/llm-top-10/), README 5.3 \"가이드에 독립 항목이 없는 위험\"\n- 작업 브랜치(예정): `sec/llm-prompt-injection-checks` → `develop`\n",
+    "closedAt": "2026-10-15T09:06:01Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N5HA",
+        "name": "P1",
+        "description": "명세에 포함된 후속 구현",
+        "color": "fbca04"
+      }
+    ],
+    "number": 113,
+    "state": "CLOSED",
+    "title": "[SEC] LLM 프롬프트 인젝션 점검 항목과 저장소 숨은 지시문 검사 추가",
+    "updatedAt": "2026-10-15T09:06:01Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/113"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W14 · 릴리스와 제출 — 같은 릴리스로 제출 확인 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 제출물 6종 |\n\n## 먼저 완료할 작업\n\n- #108\n\n## 진행 단계\n\n- [ ] 10/29 제출 목표로 업로드\n- [ ] 수신·재생·파일 검증\n- [ ] 10/30 18시 이전 최종 확인\n\n## 완료 확인\n\n실제 제출 완료/수신 증거. 업로드 시작만으로 완료 처리하지 않음\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W14-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w14-04--업로드수신최종-제출-확인)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 109,
+    "state": "OPEN",
+    "title": "[W14-04] 업로드·수신·최종 제출 확인",
+    "updatedAt": "2026-10-14T12:46:43Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/109"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W14 · 릴리스와 제출 — 같은 릴리스로 제출 확인 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안, B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 제출물 6종 |\n\n## 먼저 완료할 작업\n\n- #105\n- #107\n- #97\n\n## 진행 단계\n\n- [ ] 같은 릴리스 코드/배포/영상/문서 확정\n- [ ] 최신 공고·URL·파일/영상·새 환경 실행\n- [ ] 소스 패키지 비밀 제외\n\n## 완료 확인\n\n여섯 제출물이 열리고 코드·영상·배포 버전 일치\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #109\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W14-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w14-03--같은-릴리스로-제출물-확정)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 108,
+    "state": "OPEN",
+    "title": "[W14-03] 같은 릴리스로 제출물 확정",
+    "updatedAt": "2026-10-14T12:46:45Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/108"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W14 · 릴리스와 제출 — 같은 릴리스로 제출 확인 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터, C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 제출물 6종 |\n\n## 먼저 완료할 작업\n\n- #98\n- #106\n\n## 진행 단계\n\n- [ ] 개발기획서·개요서·PPT/PDF/스크립트·포스터 초안\n- [ ] 출처/AI/보안 평가 증거\n- [ ] 영상 시나리오·실제 촬영\n\n## 완료 확인\n\n구현/미검증 상태와 실제 자료 구분. 개인정보·비밀이 자료에 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #108\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W14-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w14-02--제출-문서발표영상-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 107,
+    "state": "OPEN",
+    "title": "[W14-02] 제출 문서·발표·영상 준비",
+    "updatedAt": "2026-10-14T12:46:49Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/107"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W14 · 릴리스와 제출 — 같은 릴리스로 제출 확인 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 제출물 6종 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [ ] 최신 대회 미션·A 트랙·양식·채널 확인\n- [ ] 제출물6종 체크리스트\n- [ ] 릴리스/증거 표기 양식\n\n## 완료 확인\n\n확정된 형식·마감·제출 채널 기록. 예전 공지 추정으로 제출하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #107\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W14-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w14-01--대회-양식채널제출-목록-확인)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 106,
+    "state": "OPEN",
+    "title": "[W14-01] 대회 양식·채널·제출 목록 확인",
+    "updatedAt": "2026-10-14T12:46:51Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/106"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안, B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #99\n- #100\n- #101\n- #102\n- #103\n- #104\n\n## 진행 단계\n\n- [ ] 결함 우선순위·실제 시간 기록\n- [ ] 수정 후 관련 범위 재시험\n- [ ] 미해결·릴리스 게이트 판정\n\n## 완료 확인\n\n필수 완료 기준에 실패한 항목을 완료로 처리하지 않음. 릴리스별 증거 확정\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #108\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-08--결함-수정재시험릴리스-판정)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 105,
+    "state": "OPEN",
+    "title": "[W13-08] 결함 수정·재시험·릴리스 판정",
+    "updatedAt": "2026-10-14T12:46:56Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/105"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #98\n- #97\n\n## 진행 단계\n\n- [ ] Redis/DB/모델 장애·재시작\n- [ ] 공개 조회/직접 작성과 429/503 분기\n- [ ] HTTPS·새 환경·롤백·최신 공고 확인\n\n## 완료 확인\n\n장애 중 개인정보 처리 한도 우회 없음. 준비상태별 사용 경로 설명 가능\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-07--장애배포롤백-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 104,
+    "state": "OPEN",
+    "title": "[W13-07] 장애·배포·롤백 시험",
+    "updatedAt": "2026-10-14T12:48:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/104"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #98\n- #87\n\n## 진행 단계\n\n- [ ] Android Chrome/iPhone Safari/PC Chrome\n- [ ] 확대/키보드·포커스·레이블·녹음/읽기\n- [ ] 시니어 과업 관찰·문구 수정\n\n## 완료 확인\n\n실제 기기/브라우저·과업 결과 기록. 사용자 성과를 표본 없이 주장하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-06--실제-기기접근성사용성-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 103,
+    "state": "OPEN",
+    "title": "[W13-06] 실제 기기·접근성·사용성 시험",
+    "updatedAt": "2026-10-14T12:46:59Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/103"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안, A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #98\n- #35\n\n## 진행 단계\n\n- [ ] 음성 성공/취소/실패/종료/연결 중단\n- [ ] tmpfs/로그/볼륨/백업·외부 추론 통신 검사\n- [ ] 제한·중복·OOM·슬롯/프로세스 복구\n\n## 완료 확인\n\n음성 영구 저장·외부 AI 추론 전송 없음. 런타임 종료 전 새 실행 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-05--음성-수명한도공유-자원-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 102,
+    "state": "OPEN",
+    "title": "[W13-05] 음성 수명·한도·공유 자원 시험",
+    "updatedAt": "2026-10-14T12:43:31Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/102"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터, A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #98\n- #87\n\n## 진행 단계\n\n- [ ] SQLi/XSS/CSRF·권한/ID 우회\n- [ ] SSRF/XXE/과대 파일·응답\n- [ ] 인젝션/허위 사실/악성 모델 출력\n\n## 완료 확인\n\n결과·권한·검수 상태 조작 차단. 자동 도구 통과만으로 완료하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-04--웹ai-공격-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 101,
+    "state": "OPEN",
+    "title": "[W13-04] 웹·AI 공격 시험",
+    "updatedAt": "2026-10-14T12:49:02Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/101"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #87\n- #95\n\n## 진행 단계\n\n- [ ] 로그인 취소/재사용·저장 대기 만료\n- [ ] 타 사용자/동시 저장·철회·탈퇴\n- [ ] 늦은 결과/백업 복원 삭제\n\n## 완료 확인\n\n모든 저장본·파생본 삭제와 복구 경계 확인. 재시도·멱등성 검증\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-03--회원-저장삭제복구-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 100,
+    "state": "OPEN",
+    "title": "[W13-03] 회원 저장·삭제·복구 시험",
+    "updatedAt": "2026-10-14T12:49:05Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/100"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터, A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #98\n\n## 진행 단계\n\n- [ ] 초안/소유권/버전 거절\n- [ ] 재확정·OR·unknown·마감/재검수\n- [ ] 역할 제외·근거·신청 안내\n\n## 완료 확인\n\n명세 핵심 경계 재현. 공고 변경·프로필 수정으로 잘못된 사실 판단 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #105\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-02--승인버전추천-경계-시험)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 99,
+    "state": "OPEN",
+    "title": "[W13-02] 승인·버전·추천 경계 시험",
+    "updatedAt": "2026-10-14T12:49:08Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/99"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W13 · 통합 시험과 수정 — 전체 여정·보안·기기 검증 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터, C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #34\n- #93\n- #81\n- #83\n- #84\n- #85\n- #86\n- #88\n- #89\n\n## 진행 단계\n\n- [ ] 실제 검수 공고와 비회원 텍스트 전체 여정\n- [ ] STT 수정·확정·추천·준비·읽어주기\n- [ ] 첫 실제 소요시간·병목 재산정\n\n## 완료 확인\n\n운영과 같은 EC2/RDS 구조에서 끝까지 이동. 미완료를 모의 연동으로 대체하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #99\n- #101\n- #102\n- #103\n- #104\n- #107\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W13-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w13-01--첫-비회원-전체-여정-통합)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 98,
+    "state": "OPEN",
+    "title": "[W13-01] 첫 비회원 전체 여정 통합",
+    "updatedAt": "2026-10-14T12:47:03Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/98"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드, B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #93\n- #95\n- #96\n\n## 진행 단계\n\n- [ ] 코드/DB 호환 롤백·모델 재준비\n- [ ] 장애·키/권한/비용 운영 절차\n- [ ] 공개 정책·담당 인계\n\n## 완료 확인\n\n새 환경 실행/복원/롤백 절차 재현. 실제 값이 있는 정책·문의 경로\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #104\n- #108\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-08--롤백운영-절차인계)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 97,
+    "state": "OPEN",
+    "title": "[W12-08] 롤백·운영 절차·인계",
+    "updatedAt": "2026-10-14T12:49:12Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/97"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #93\n- #49\n- #55\n\n## 진행 단계\n\n- [ ] 6시간 수집/출처 우선·마감 갱신\n- [ ] 로그14일/감사30일/삭제 이력30일 정리\n- [ ] 제한·모델·DB·Redis 장애 상태\n\n## 완료 확인\n\n실패 시 마지막 성공 유지. 보관 작업과 재시작을 실제 실행 확인\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #97\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-07--주기-수집보관-정리장애-상태)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 96,
+    "state": "OPEN",
+    "title": "[W12-07] 주기 수집·보관 정리·장애 상태",
+    "updatedAt": "2026-10-14T12:49:16Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/96"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #94\n- #93\n\n## 진행 단계\n\n- [ ] 격리 복원·키/DB 연결 확인\n- [ ] 최신 삭제 이력 재적용·전 버전/파생 자료 점검\n- [ ] 확인 후 재공개\n\n## 완료 확인\n\n삭제했던 자료가 복원 서비스에 조회되지 않음. 원문 없는 복구 증거\n\n## 보완할 계약 (계획 §5)\n\n- **삭제 경합·복구:** 삭제/철회 상태와 결과 저장 검사를 원자적으로 묶는다. Redis와 RDS에 걸친 저장/삭제는 계정 상태·삭제 세대·DB 트랜잭션을 재검사한다. DB 밖 최신 최소 삭제 이력의 위치·권한·보관기간을 지정한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #97\n- #100\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-06--복원-후-삭제-재적용)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 95,
+    "state": "OPEN",
+    "title": "[W12-06] 복원 후 삭제 재적용",
+    "updatedAt": "2026-10-14T12:49:19Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/95"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #90\n- #25\n- #78\n\n## 진행 단계\n\n- [ ] RDS 7일 자동 백업·수동 스냅샷 목록\n- [ ] DB 밖 최신 최소 삭제 이력·키 복구 분리\n- [ ] 복원 체크리스트\n\n## 완료 확인\n\n백업과 최신 삭제 이력이 같은 과거 시점으로 되돌아가지 않음. 30일 이력 관리\n\n## 보완할 계약 (계획 §5)\n\n- **삭제 경합·복구:** 삭제/철회 상태와 결과 저장 검사를 원자적으로 묶는다. Redis와 RDS에 걸친 저장/삭제는 계정 상태·삭제 세대·DB 트랜잭션을 재검사한다. DB 밖 최신 최소 삭제 이력의 위치·권한·보관기간을 지정한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #95\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-05--백업최신-삭제-이력-관리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 94,
+    "state": "OPEN",
+    "title": "[W12-05] 백업·최신 삭제 이력 관리",
+    "updatedAt": "2026-10-14T12:49:22Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/94"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드, B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #91\n- #92\n- #26\n- #19\n\n## 진행 단계\n\n- [ ] FE 타입/빌드·Pytest/Bandit/pip-audit/gitleaks CI\n- [ ] 릴리스 이미지·환경/비밀 주입\n- [ ] 테스트 환경 배포·모듈 추가 통합\n\n## 완료 확인\n\n검사를 통과한 버전 배포. 라이브러리/모델/프롬프트/마이그레이션 버전 기록\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #95\n- #96\n- #97\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-04--ci릴리스-이미지배포)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 93,
+    "state": "OPEN",
+    "title": "[W12-04] CI·릴리스 이미지·배포",
+    "updatedAt": "2026-10-14T12:49:26Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/93"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #90\n- #28\n- #18\n\n## 진행 단계\n\n- [ ] EC2 GPU/런타임·Compose 내부 모델 서비스\n- [ ] 가중치 전용 볼륨·tmpfs·Cloud 비활성\n- [ ] readiness·권한·swap/core dump 검사\n\n## 완료 확인\n\n사용자 요청 전에 모델 적재. 음성/본문이 모델 볼륨/호스트 로그에 없음\n\n## 보완할 계약 (계획 §5)\n\n- **준비/상태 확인:** `/health/live`, `/health/ready`는 최소 상태만 반환한다. DB/Redis/모델별 readiness를 구분해 AI 장애만으로 공개 공고 조회 전체를 중지하지 않는다. 상세는 운영자 API\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #34\n- #93\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-03--ec2-gpu모델-실행-환경)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 92,
+    "state": "OPEN",
+    "title": "[W12-03] EC2 GPU·모델 실행 환경",
+    "updatedAt": "2026-10-14T12:49:29Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/92"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #90\n- #13\n- #22\n\n## 진행 단계\n\n- [ ] 도메인/HTTPS·프론트 빌드 Nginx\n- [ ] /와 /api/* 경로·/api/v1 유지\n- [ ] callback 로그·cache·본문 제한\n\n## 완료 확인\n\nUI 새로고침 라우트/JSON/음성 정상. 운영 Vite/모델/Redis 포트 비공개\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #93\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-02--httpsnginx-경로도메인)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 91,
+    "state": "OPEN",
+    "title": "[W12-02] HTTPS·Nginx 경로·도메인",
+    "updatedAt": "2026-10-14T12:49:33Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/91"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W12 · AWS 배포와 운영 — 배포·백업·복구·운영 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #6\n- #18\n\n## 진행 단계\n\n- [ ] VPC·EC2·RDS/보안 그룹\n- [ ] 비공개 DB·최소권한 계정·암호화\n- [ ] 검증 TLS 연결·마이그레이션\n\n## 완료 확인\n\nRDS 인터넷 접근 불가. EC2만 필요한 연결. CA/호스트 검증 켠 정상 접속\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #91\n- #92\n- #94\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W12-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w12-01--ec2rds비공개-네트워크)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 90,
+    "state": "OPEN",
+    "title": "[W12-01] EC2·RDS·비공개 네트워크",
+    "updatedAt": "2026-10-14T12:49:35Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/90"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터, C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #82\n- #83\n- #86\n- #32\n- #43\n\n## 진행 단계\n\n- [ ] 읽기 대상 참조·POST speech/재생·중지\n- [ ] 녹음과 상호 중지·음성 정리\n- [ ] 전 체험 종료/만료·새로고침 새 시작\n\n## 완료 확인\n\n임의 텍스트 TTS 불가. 음성 재생 실패에서도 텍스트 유지. 이전 여정 미복원\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /speech` | 읽어주기 제공 화면 |\n\n## 보완할 계약 (계획 §5)\n\n- **TTS 읽기 참조:** 화면 응답에 서버 발급 `speech_target`을 넣거나 같은 응답의 버전 참조로 resolve한다. 주체·자료 버전·보이는 텍스트·만료를 연결한다. 일반 공고 읽기도 AI 동의를 검사한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-10](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-10--읽어주기종료재진입-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 89,
+    "state": "OPEN",
+    "title": "[W11-10] 읽어주기·종료·재진입 연결",
+    "updatedAt": "2026-10-14T12:47:05Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/89"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #57\n- #55\n\n## 진행 단계\n\n- [ ] UX10 MFA·공고 편집/검수\n- [ ] 상태/신고/감사\n- [ ] 실패·버전 충돌\n\n## 완료 확인\n\n운영자 화면이 API 역할/MFA를 우회하지 않음. 개인 본문 표시 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-09](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-09--운영자-관리-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 88,
+    "state": "OPEN",
+    "title": "[W11-09] 운영자 관리 화면",
+    "updatedAt": "2026-10-14T12:47:08Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/88"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #79\n\n## 진행 단계\n\n- [ ] 로그인/저장 동의 왕복 UI\n- [ ] UX09 조회·수정·삭제/철회/탈퇴\n- [ ] 기존본 교체·취소·저장 실패\n\n## 완료 확인\n\n자기 저장 자료만 표시. 재진입에 저장본만 조회하고 대화는 새로 시작\n\n## 보완할 계약 (계획 §5)\n\n- **비회원 지원서 단독 저장:** 문서의 근거 프로필은 삭제/재검토 연결에 필요하다. 승인 프로필이 미저장인 경우 프로필+지원서 저장을 화면에서 명시하고 동의를 받는다. 자기 저장본과 일치하면 그 버전을 연결한다. 몰래 프로필 저장하지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #100\n- #101\n- #103\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-08--로그인저장내-정보-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 87,
+    "state": "OPEN",
+    "title": "[W11-08] 로그인·저장·내 정보 화면",
+    "updatedAt": "2026-10-14T12:47:11Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/87"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #69\n- #70\n- #71\n\n## 진행 단계\n\n- [ ] UX08 서류/준비 체크\n- [ ] 생성/직접 작성·수정/승인\n- [ ] 복사·공식 안내·실패\n\n## 완료 확인\n\n체크와 미승인 본문 영구 저장 없음. 외부 이동 후 신청 완료 오표시 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #89\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-07--신청-준비지원서-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 86,
+    "state": "OPEN",
+    "title": "[W11-07] 신청 준비·지원서 화면",
+    "updatedAt": "2026-10-14T12:47:15Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/86"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #50\n- #65\n- #56\n\n## 진행 단계\n\n- [ ] UX06 추천/검색·빈 결과·필터\n- [ ] UX07 상세·원문·자격·신고\n- [ ] 변경/마감/확인 필요 안내\n\n## 완료 확인\n\n미충족·unknown 구분. 자동 조건 완화와 성공 확률 표시 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-06--추천공고-상세신고-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 85,
+    "state": "OPEN",
+    "title": "[W11-06] 추천·공고 상세·신고 화면",
+    "updatedAt": "2026-10-14T12:47:18Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/85"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #40\n- #41\n- #61\n- #62\n\n## 진행 단계\n\n- [ ] UX05 초안 편집·최소 항목 오류\n- [ ] 확정/재확정·이전 결과 표시\n- [ ] 확정 뒤 역할 후보·근거·제외\n\n## 완료 확인\n\n역할 영역은 확정 후 같은 화면. 저장 버튼과 확정 버튼 구분\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-05--프로필역할-확인-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 84,
+    "state": "OPEN",
+    "title": "[W11-05] 프로필·역할 확인 화면",
+    "updatedAt": "2026-10-14T12:47:21Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/84"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #82\n- #38\n\n## 진행 단계\n\n- [ ] 녹음 권한/형식·90초/6MiB\n- [ ] UX04 전사 수정·보내기/취소\n- [ ] blob/track/object URL 정리\n\n## 완료 확인\n\n세 기기 녹음 검증 대상으로 구현. 수정 전사만 메시지에 전달\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #89\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-04--녹음전사-확인-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 83,
+    "state": "OPEN",
+    "title": "[W11-04] 녹음·전사 확인 화면",
+    "updatedAt": "2026-10-14T12:47:24Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/83"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #81\n- #37\n- #35\n\n## 진행 단계\n\n- [ ] UX03 한 질문 대화·텍스트\n- [ ] 초안 이동·중복 클릭 제어\n- [ ] 오류 시 입력 유지\n\n## 완료 확인\n\n다음 질문/확인 이동. 초안 확인 강제 완료 없이 언제든 가능\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #83\n- #89\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-03--한-질문씩-대화-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 82,
+    "state": "OPEN",
+    "title": "[W11-03] 한 질문씩 대화 화면",
+    "updatedAt": "2026-10-14T12:47:27Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/82"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #80\n- #36\n- #9\n- #50\n\n## 진행 단계\n\n- [ ] UX01 시작/공개 탐색\n- [ ] UX02 AI 안내·동의\n- [ ] 새 체험·미동의 공개 경로\n\n## 완료 확인\n\n로그인 없이 시작. 동의 전에 모델 호출 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #82\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-02--시작동의-화면)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 81,
+    "state": "OPEN",
+    "title": "[W11-02] 시작·동의 화면",
+    "updatedAt": "2026-10-14T12:47:29Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/81"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W11 · 전체 화면과 접근성 — 모바일·PC에서 전체 화면 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·UX01~10 |\n\n## 먼저 완료할 작업\n\n- #13\n- #19\n\n## 진행 단계\n\n- [ ] 18px/44px 공통 UI·폼\n- [ ] 포커스/레이블/상태·로딩/오류\n- [ ] 메모리 상태·금지 저장소·민감 캐시 경계\n\n## 완료 확인\n\n공통 조작이 키보드 가능. local/sessionStorage·IndexedDB에 여정 본문 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #81\n- #84\n- #85\n- #86\n- #87\n- #88\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W11-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w11-01--공통-ui메모리-상태접근성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 80,
+    "state": "OPEN",
+    "title": "[W11-01] 공통 UI·메모리 상태·접근성",
+    "updatedAt": "2026-10-14T12:47:33Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/80"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #77\n- #78\n\n## 진행 단계\n\n- [ ] 두 사용자·익명·운영자 접근 비교\n- [ ] 로그인 저장 왕복·동시 저장/삭제\n- [ ] 실패/탈퇴/철회 재시험\n\n## 완료 확인\n\n다른 소유자의 조회·수정·삭제 전부 차단. 실패를 완료로 표시하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #87\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-08--다른-사용자-접근저장-경합-검증)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 79,
+    "state": "OPEN",
+    "title": "[W10-08] 다른 사용자 접근·저장 경합 검증",
+    "updatedAt": "2026-10-14T12:49:39Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/79"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #75\n- #76\n- #27\n\n## 진행 단계\n\n- [ ] 개별 지원서/프로필 전 버전·파생 문서 삭제\n- [ ] 동의 철회·탈퇴·세션/체험 무효화\n- [ ] 최소 삭제 이력·재시도 상태\n\n## 완료 확인\n\n삭제 직후 타 조회/늦은 저장 차단. 복구용 최신 이력 전달 계약 존재\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /consents/withdraw` | UX09 |\n| `DELETE /profiles/me` | UX09 |\n| `DELETE /drafts/{id}` | UX09 |\n| `DELETE /me` | UX09 |\n\n## 보완할 계약 (계획 §5)\n\n- **삭제 경합·복구:** 삭제/철회 상태와 결과 저장 검사를 원자적으로 묶는다. Redis와 RDS에 걸친 저장/삭제는 계정 상태·삭제 세대·DB 트랜잭션을 재검사한다. DB 밖 최신 최소 삭제 이력의 위치·권한·보관기간을 지정한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #79\n- #94\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-07--삭제철회탈퇴)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 78,
+    "state": "OPEN",
+    "title": "[W10-07] 삭제·철회·탈퇴",
+    "updatedAt": "2026-10-14T12:49:42Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/78"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #75\n- #76\n- #42\n\n## 진행 단계\n\n- [ ] 내 저장 자료 조회·새 임시 편집\n- [ ] 재확정/재승인 후 저장\n- [ ] 저장 실패 복사/재시도\n\n## 완료 확인\n\n수정 중 자동 저장 없음. 기존 저장본은 새 승인 전 유지\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #79\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-06--저장-자료-조회재편집)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 77,
+    "state": "OPEN",
+    "title": "[W10-06] 저장 자료 조회·재편집",
+    "updatedAt": "2026-10-14T12:49:44Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/77"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #74\n- #68\n- #25\n\n## 진행 단계\n\n- [ ] 승인 임시 지원서 암호화 저장\n- [ ] 문서/버전·근거 프로필 매핑\n- [ ] 목록/상세/기존 문서 갱신\n\n## 완료 확인\n\n저장 프로필 연결이 없으면 승인 프로필도 명시적 동의로 함께 저장. 미승인 차단\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /drafts` | UX09 |\n| `GET /drafts/{id}` | UX09 |\n| `POST /drafts` | UX08/UX09 |\n\n## 보완할 계약 (계획 §5)\n\n- **비회원 지원서 단독 저장:** 문서의 근거 프로필은 삭제/재검토 연결에 필요하다. 승인 프로필이 미저장인 경우 프로필+지원서 저장을 화면에서 명시하고 동의를 받는다. 자기 저장본과 일치하면 그 버전을 연결한다. 몰래 프로필 저장하지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #77\n- #78\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-05--승인-지원서-암호화-저장)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 76,
+    "state": "OPEN",
+    "title": "[W10-05] 승인 지원서 암호화 저장",
+    "updatedAt": "2026-10-14T12:49:47Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/76"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #74\n- #25\n\n## 진행 단계\n\n- [ ] GET/POST profile versions\n- [ ] 기준 저장 버전·새 불변 본문\n- [ ] 교체 확인·저장 응답 멱등성\n\n## 완료 확인\n\n본문 암호화·소유권 검사. 승인/저장 동의 누락과 충돌 거절\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /profiles/me` | UX09 |\n| `POST /profiles/me/versions` | UX05/UX09 |\n\n## 보완할 계약 (계획 §5)\n\n- **비회원 지원서 단독 저장:** 문서의 근거 프로필은 삭제/재검토 연결에 필요하다. 승인 프로필이 미저장인 경우 프로필+지원서 저장을 화면에서 명시하고 동의를 받는다. 자기 저장본과 일치하면 그 버전을 연결한다. 몰래 프로필 저장하지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #42\n- #77\n- #78\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-04--확정-프로필-암호화-저장)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 75,
+    "state": "OPEN",
+    "title": "[W10-04] 확정 프로필 암호화 저장",
+    "updatedAt": "2026-10-14T12:49:50Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/75"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #73\n- #40\n- #21\n- #24\n\n## 진행 단계\n\n- [ ] 승인 자료만 save-intent 발급\n- [ ] state/시작 세션 연결·10분 TTL\n- [ ] 인증 후 동의·교체 확인·일회 소비\n\n## 완료 확인\n\n취소/만료/재사용 저장 불가. 인증 성공만으로 자동 저장하지 않음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /auth/kakao/start` | UX01/UX05/UX08 |\n| `GET /auth/kakao/callback` | 로그인 왕복 |\n| `POST /auth/save-intents` (추가 계약 제안) | 저장 버튼·로그인 왕복 |\n\n## 보완할 계약 (계획 §5)\n\n- **로그인 저장 대기 발급:** `POST /auth/save-intents`: 현재 세션 소유의 승인 프로필/지원서 참조만 받는다. 서버가 본문을 조회해 opaque 대기 참조·10분 만료를 반환한다. CSRF·소유권·멱등성 적용. URL에 본문/자격증명 없음\n- **비회원 지원서 단독 저장:** 문서의 근거 프로필은 삭제/재검토 연결에 필요하다. 승인 프로필이 미저장인 경우 프로필+지원서 저장을 화면에서 명시하고 동의를 받는다. 자기 저장본과 일치하면 그 버전을 연결한다. 몰래 프로필 저장하지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #75\n- #76\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-03--승인-자료의-일회-저장-전달)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 74,
+    "state": "OPEN",
+    "title": "[W10-03] 승인 자료의 일회 저장 전달",
+    "updatedAt": "2026-10-14T12:49:53Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/74"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #72\n\n## 진행 단계\n\n- [ ] 카카오↔내부 User 연결\n- [ ] 로그인 시 세션 교체·GET me/logout\n- [ ] 재인증·탈퇴/MFA 세션 연계\n\n## 완료 확인\n\n클라이언트 역할 불신. logout·만료·회수 후 중요 요청 차단\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /auth/kakao/callback` | 로그인 왕복 |\n| `POST /auth/logout` | UX09 |\n| `GET /me` | UX01/UX09/UX10 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #52\n- #74\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-02--내부-계정로그인-세션)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 73,
+    "state": "OPEN",
+    "title": "[W10-02] 내부 계정·로그인 세션",
+    "updatedAt": "2026-10-14T12:49:55Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/73"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W10 · 회원 인증·저장·삭제 — 승인 자료 저장·조회·삭제 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F09 |\n\n## 먼저 완료할 작업\n\n- #7\n- #20\n- #22\n- #16\n\n## 진행 단계\n\n- [ ] 허용 로그인 목적·일회 state\n- [ ] 코드 교환·신원 확인\n- [ ] 허용 callback/return 경로·취소 처리\n\n## 완료 확인\n\nstate 위조/재사용·다른 시작 세션 거절. 인가 코드·토큰 로그 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /auth/kakao/start` | UX01/UX05/UX08 |\n| `GET /auth/kakao/callback` | 로그인 왕복 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #52\n- #73\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W10-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w10-01--카카오-인증-왕복-검증)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 72,
+    "state": "OPEN",
+    "title": "[W10-01] 카카오 인증 왕복 검증",
+    "updatedAt": "2026-10-14T12:49:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/72"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #66\n- #68\n\n## 진행 단계\n\n- [ ] 현재 편집 문장 복사\n- [ ] 실패 시 선택 복사 안내\n- [ ] 공식 안내 이동·준비 체크 임시 상태\n\n## 완료 확인\n\n복사 내용이 화면과 일치. 외부 이동을 신청 완료로 표시하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #86\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-06--편집-문장-복사공식-안내-이동)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 71,
+    "state": "OPEN",
+    "title": "[W09-06] 편집 문장 복사·공식 안내 이동",
+    "updatedAt": "2026-10-14T12:47:36Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/71"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #68\n- #35\n\n## 진행 단계\n\n- [ ] 허위 사실·불량 출력 거절\n- [ ] AI 실패 입력 유지/직접 작성\n- [ ] 중복·취소·삭제 경합 연결\n\n## 완료 확인\n\n생성 실패가 편집 내용을 지우지 않음. 늦은 초안이 삭제 자료 복원 안 함\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #86\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-05--생성-실패수동-작성-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 70,
+    "state": "OPEN",
+    "title": "[W09-05] 생성 실패·수동 작성 연결",
+    "updatedAt": "2026-10-14T12:50:01Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/70"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #68\n- #41\n- #47\n\n## 진행 단계\n\n- [ ] 프로필/공고 근거 버전 변경 감지\n- [ ] 재검토 플래그·재생성 조건\n- [ ] 종료/중요 변경 시 최신 안내\n\n## 완료 확인\n\n기존 문장 자동 갱신 없음. 새 생성/승인/저장 직전에 유효성 재검사\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #86\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-04--근거-변경-시-재검토-표시)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 69,
+    "state": "OPEN",
+    "title": "[W09-04] 근거 변경 시 재검토 표시",
+    "updatedAt": "2026-10-14T12:50:04Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/69"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #67\n- #24\n\n## 진행 단계\n\n- [ ] drafts 생성/PATCH API\n- [ ] 편집 리비전·수정 시 승인 해제\n- [ ] 명시적 approve API\n\n## 완료 확인\n\n수정 본문 승인 전 영구 저장 불가. 오래된 편집/승인 409\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/drafts` | UX08/UX09 |\n| `PATCH /journeys/{id}/drafts/{draft_id}` | UX08 |\n| `POST /journeys/{id}/drafts/{draft_id}/approve` | UX08 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #69\n- #70\n- #71\n- #76\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-03--지원서-편집승인-api)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 68,
+    "state": "OPEN",
+    "title": "[W09-03] 지원서 편집·승인 API",
+    "updatedAt": "2026-10-14T12:50:07Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/68"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #40\n- #60\n- #30\n- #27\n\n## 진행 단계\n\n- [ ] 승인 프로필·공고 버전 생성 입력\n- [ ] 사실/근거 검증·임시 초안\n- [ ] generate/manual/from_saved 생성 서비스\n\n## 완료 확인\n\n초안·종료/보류 공고 거절. 직접 작성은 AI 미실행. 자기 자료 가져오기만 허용\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/drafts` | UX08/UX09 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #68\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-02--지원서-생성직접-작성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 67,
+    "state": "OPEN",
+    "title": "[W09-02] 지원서 생성·직접 작성",
+    "updatedAt": "2026-10-14T12:44:09Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/67"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W09 · 신청 준비와 지원서 — 서류 안내·지원서 편집·복사 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F08 |\n\n## 먼저 완료할 작업\n\n- #50\n\n## 진행 단계\n\n- [ ] preparation API·공식 서류/절차\n- [ ] 온라인/전화/방문/이메일/복합 안내\n- [ ] 공식 URL·확인 필요 상태\n\n## 완료 확인\n\n원문에 없는 서류를 필수 추가하지 않음. 공식 접수 안내 경로 존재\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /opportunities/{id}/preparation` | UX08 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #71\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W09-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w09-01--공식-서류접수-절차-안내)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 66,
+    "state": "OPEN",
+    "title": "[W09-01] 공식 서류·접수 절차 안내",
+    "updatedAt": "2026-10-14T12:50:11Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/66"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | A · 기획·프론트엔드, C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #64\n- #10\n- #54\n\n## 진행 단계\n\n- [ ] 실제 검수 공고×페르소나 평가\n- [ ] 명백한 미충족/무근거 연결 검토\n- [ ] 수정·재시험·추천 API 연결\n\n## 완료 확인\n\n평가 표본/기대/실제/결함 기록. 성공 확률로 점수 표시 안 함\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /recommendations` | UX06 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #85\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-08--실제-공고로-추천-평가)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 65,
+    "state": "OPEN",
+    "title": "[W08-08] 실제 공고로 추천 평가",
+    "updatedAt": "2026-10-14T12:44:08Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/65"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #63\n\n## 진행 단계\n\n- [ ] 태그 Jaccard·공백 토큰\n- [ ] 0.7/0.3 점수·0점/무근거 제외\n- [ ] 마감·공고 ID 동점·상위 5건\n\n## 완료 확인\n\n명세 계산과 일치. 모든 추천에 경험·공고 버전 근거, unknown 안내\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /recommendations` | UX06 |\n\n## 보완할 계약 (계획 §5)\n\n- **공고 설명:** 검색 계산에 사용하는 `description_text`(공식 원문 설명, 선택적·최대 5,000자)의 저장/공개·검수 계약을 명시한다. 값이 없으면 제목/역할/역량만 계산하고 설명을 만들어 채우지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #65\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-07--추천-점수정렬근거)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 64,
+    "state": "OPEN",
+    "title": "[W08-07] 추천 점수·정렬·근거",
+    "updatedAt": "2026-10-14T12:44:07Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/64"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #60\n- #48\n- #62\n\n## 진행 단계\n\n- [ ] 최신 승인/모집/신선도·지역/유형 후보\n- [ ] 전체 자격 미충족 제외\n- [ ] 선택 필터·역할 제외\n\n## 완료 확인\n\nOR 전체 충족은 유지. 필수조건 자동 완화·미검수 추천 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /recommendations` | UX06 |\n\n## 보완할 계약 (계획 §5)\n\n- **역할 제외·중요 변경:** 복합 역할 공고의 제외 기준, 검수 중요 변경 필드, 이전 공개본 추천 보류를 공통 규칙으로 고정한다. 서로 다른 FE/추천/운영자 판단을 만들지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #64\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-06--추천-후보와-필수조건-필터)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 63,
+    "state": "OPEN",
+    "title": "[W08-06] 추천 후보와 필수조건 필터",
+    "updatedAt": "2026-10-14T12:44:07Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/63"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P1 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #61\n\n## 진행 단계\n\n- [ ] 역할 제외/복원 API\n- [ ] 존재하는 역할·소유 체험 검사\n- [ ] 현재 추천 필터에만 반영\n\n## 완료 확인\n\n제외로 프로필 사실 변경 안 됨. 다른 체험 필터 접근 불가\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `PUT /journeys/{id}/role-exclusions` | UX05/UX06 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #63\n- #84\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-05--역할-제외복원)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N5HA",
+        "name": "P1",
+        "description": "명세에 포함된 후속 구현",
+        "color": "fbca04"
+      }
+    ],
+    "number": 62,
+    "state": "OPEN",
+    "title": "[W08-05] 역할 제외·복원",
+    "updatedAt": "2026-10-14T12:50:14Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/62"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P1 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #40\n- #17\n\n## 진행 단계\n\n- [ ] 역할 사전·확인된 태그/별칭\n- [ ] 경험 ID 근거 연결\n- [ ] 확정 후 역할 후보 API\n\n## 완료 확인\n\n후보마다 실제 확정 경험 ID 존재. 근거 없음은 일반 탐색 안내\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /journeys/{id}/roles` | UX05 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #62\n- #84\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-04--경험-근거가-있는-역할-후보)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N5HA",
+        "name": "P1",
+        "description": "명세에 포함된 후속 구현",
+        "color": "fbca04"
+      }
+    ],
+    "number": 61,
+    "state": "OPEN",
+    "title": "[W08-04] 경험 근거가 있는 역할 후보",
+    "updatedAt": "2026-10-14T12:44:06Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/61"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #59\n- #40\n- #50\n\n## 진행 단계\n\n- [ ] 확정 참조·공고 버전 resolve\n- [ ] 조건별 사용자 값/원문·전체 결과\n- [ ] 재확정/변경 재평가 API\n\n## 완료 확인\n\n초안·타 사용자 차단. 희망 활동지역을 거주 자격으로 사용하지 않음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /opportunities/{id}/eligibility` | UX07 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #63\n- #67\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-03--확정-정보로-자격-대조-api)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 60,
+    "state": "OPEN",
+    "title": "[W08-03] 확정 정보로 자격 대조 API",
+    "updatedAt": "2026-10-14T12:50:17Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/60"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #58\n\n## 진행 단계\n\n- [ ] AND/OR 3상태 결합\n- [ ] 기준일·출생연도 연령 범위\n- [ ] 모순/중첩/빈 조건 처리\n\n## 완료 확인\n\nOR 단일 미충족이 전체 미충족으로 오판되지 않음. 경계 연령은 unknown\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #60\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-02--andor연령-경계-판정)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 59,
+    "state": "OPEN",
+    "title": "[W08-02] AND/OR·연령 경계 판정",
+    "updatedAt": "2026-10-14T12:50:20Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/59"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W08 · 자격·역할·추천 — 자격·경험에 근거한 공고 추천 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F04/F06/F07 |\n\n## 먼저 완료할 작업\n\n- #15\n- #10\n\n## 진행 단계\n\n- [ ] 필드별 연산·값 허용표\n- [ ] 순수 규칙 비교 함수\n- [ ] 누락/null/빈 배열·미해석 처리\n\n## 완료 확인\n\n연령·거주·자격·교육·요일·시간·기타가 지원/미지원으로 구분. LLM 판정 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #59\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W08-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w08-01--자격조건별-비교-규칙)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 58,
+    "state": "OPEN",
+    "title": "[W08-01] 자격조건별 비교 규칙",
+    "updatedAt": "2026-10-14T12:50:23Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/58"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #54\n- #56\n- #26\n\n## 진행 단계\n\n- [ ] 감사 기간·페이지 조회\n- [ ] 최소 메타데이터·30일 정리\n- [ ] 개인 본문 조회 경로 검토\n\n## 완료 확인\n\n승인·정정·회수 행위 추적. 운영자 경로에 개인 본문 기능 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /admin/audit` | UX10 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #88\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-06--감사-기록-조회정리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 57,
+    "state": "OPEN",
+    "title": "[W07-06] 감사 기록 조회·정리",
+    "updatedAt": "2026-10-14T12:50:26Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/57"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #50\n- #52\n- #22\n\n## 진행 단계\n\n- [ ] 공고 오류 유형 중심 신고 접수\n- [ ] 주체/IP 제한·목록\n- [ ] 상태·사유 처리\n\n## 완료 확인\n\n일반 사용자 관리 API 불가. 불필요 개인정보 자유 입력 수집 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /reports` | UX07 |\n| `GET /admin/reports` | UX10 |\n| `PATCH /admin/reports/{id}` | UX10 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #57\n- #85\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-05--공고-오류-신고처리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 56,
+    "state": "OPEN",
+    "title": "[W07-05] 공고 오류 신고·처리",
+    "updatedAt": "2026-10-14T12:50:29Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/56"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #52\n- #49\n- #23\n\n## 진행 단계\n\n- [ ] 수집·마지막 성공·신선도 표시 API\n- [ ] 모델 준비/실행 제한·장애 집계\n- [ ] 본문 없는 운영 상태\n\n## 완료 확인\n\n운영자가 실패·혼잡을 파악. 개인 프로필/지원서 본문 응답 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /admin/operations` | UX10 |\n\n## 보완할 계약 (계획 §5)\n\n- **준비/상태 확인:** `/health/live`, `/health/ready`는 최소 상태만 반환한다. DB/Redis/모델별 readiness를 구분해 AI 장애만으로 공개 공고 조회 전체를 중지하지 않는다. 상세는 운영자 API\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #88\n- #96\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-04--수집모델장애-상태-조회)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 55,
+    "state": "OPEN",
+    "title": "[W07-04] 수집·모델·장애 상태 조회",
+    "updatedAt": "2026-10-14T12:50:32Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/55"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #53\n- #26\n\n## 진행 단계\n\n- [ ] 승인·반려 상태 전이\n- [ ] 비공개·모집 종료 근거\n- [ ] 검수 사유·감사 기록\n\n## 완료 확인\n\n승인 필수 필드/공식 경로 검사. 관리 역할/MFA 우회 불가\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /admin/opportunities/{id}/approve` | UX10 |\n| `POST /admin/opportunities/{id}/hide` | UX10 |\n| `POST /admin/opportunities/{id}/close` | UX10 |\n| `POST /admin/opportunities/{id}/reject` (추가 계약 제안) | UX10 |\n\n## 보완할 계약 (계획 §5)\n\n- **공고 반려:** `POST /admin/opportunities/{id}/reject`: 기준 버전·사유. pending → rejected만 허용하고 역할·MFA·감사 적용\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #57\n- #65\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-03--공고-승인반려숨김종료)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 54,
+    "state": "OPEN",
+    "title": "[W07-03] 공고 승인·반려·숨김·종료",
+    "updatedAt": "2026-10-14T12:50:34Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/54"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #52\n- #47\n- #51\n\n## 진행 단계\n\n- [ ] 운영자 목록/등록/PATCH\n- [ ] 기준 버전·중요 변경 분류\n- [ ] 원문/정규화 비교용 검수 데이터\n\n## 완료 확인\n\n오래된 변경 409. 미검수 중요 변경은 추천 보류\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET/POST /admin/opportunities` | UX10 |\n| `PATCH /admin/opportunities/{id}` | UX10 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #54\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-02--운영자-공고-등록수정-api)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 53,
+    "state": "OPEN",
+    "title": "[W07-02] 운영자 공고 등록·수정 API",
+    "updatedAt": "2026-10-14T12:50:38Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/53"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W07 · 운영자와 신고 — 운영자가 검수·신고를 처리 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F10 |\n\n## 먼저 완료할 작업\n\n- #72\n- #73\n- #25\n\n## 진행 단계\n\n- [ ] 제한 절차로 운영자 부여/회수\n- [ ] MFA 등록·검증·복구\n- [ ] 세션 결합·OTP 재사용/시도 제한\n\n## 완료 확인\n\n일반 가입에서 역할 선택 불가. MFA 만료/역할 회수 즉시 관리 API 차단\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /admin/mfa/verify` | UX10 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #53\n- #55\n- #56\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W07-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w07-01--운영자-권한과-mfa)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 52,
+    "state": "OPEN",
+    "title": "[W07-01] 운영자 권한과 MFA",
+    "updatedAt": "2026-10-14T12:50:42Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/52"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #44\n- #47\n\n## 진행 단계\n\n- [ ] 공식 자료 수동 입력·근거 기록\n- [ ] 필수 필드 검사·초안 생성\n- [ ] 현재 유효 공고 20건 확보 목표 추적\n\n## 완료 확인\n\n실제 자료만 검수 대상으로 생성. 목표 미달을 허위 공고로 채우지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #53\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-08--공식-자료-수동-입력공고-확보)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 51,
+    "state": "OPEN",
+    "title": "[W06-08] 공식 자료 수동 입력·공고 확보",
+    "updatedAt": "2026-10-14T12:44:05Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/51"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #48\n- #22\n\n## 진행 단계\n\n- [ ] 공개 목록/상세·검색·페이지\n- [ ] 승인/모집/지역·필터·바인딩\n- [ ] 공식 URL·원문·확인 시각 제공\n\n## 완료 확인\n\n미검수·비공개·종료 자료 노출 정책 검사. AI/Redis 장애 중 DB 조회 유지\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET /opportunities` | UX01/UX06 |\n| `GET /opportunities/{id}` | UX07 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #56\n- #60\n- #66\n- #81\n- #85\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-07--공개-목록상세검색-api)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 50,
+    "state": "OPEN",
+    "title": "[W06-07] 공개 목록·상세·검색 API",
+    "updatedAt": "2026-10-14T12:50:45Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/50"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #48\n\n## 진행 단계\n\n- [ ] 수집 실행 명령·중복 실행 제어\n- [ ] IngestionRun 집계\n- [ ] 출처 제한 우선·6시간 스케줄 인터페이스\n\n## 완료 확인\n\n같은 출처 동시 수집으로 버전 꼬임 없음. 실패 이후 재실행 가능\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #55\n- #96\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-06--수집-실행집계스케줄-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 49,
+    "state": "OPEN",
+    "title": "[W06-06] 수집 실행·집계·스케줄 연결",
+    "updatedAt": "2026-10-14T12:44:04Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/49"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #47\n\n## 진행 단계\n\n- [ ] 모집/마감·날짜/시각 규칙\n- [ ] 48시간 지연→추천 보류\n- [ ] 실패/일시 누락·최종 성공 시각 처리\n\n## 완료 확인\n\n수집 장애를 종료로 해석하지 않음. 마감 당일 시각을 추정하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #49\n- #50\n- #63\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-05--마감신선도수집-실패-처리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 48,
+    "state": "OPEN",
+    "title": "[W06-05] 마감·신선도·수집 실패 처리",
+    "updatedAt": "2026-10-14T12:44:04Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/48"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #46\n- #18\n\n## 진행 단계\n\n- [ ] source/external_id 중복 제약\n- [ ] content_hash·불변 새 버전\n- [ ] 중요 변경→재검수/추천 보류\n\n## 완료 확인\n\n반복 수집에 중복 없음. 변경본이 공개본을 무검수 덮어쓰지 않음\n\n## 보완할 계약 (계획 §5)\n\n- **역할 제외·중요 변경:** 복합 역할 공고의 제외 기준, 검수 중요 변경 필드, 이전 공개본 추천 보류를 공통 규칙으로 고정한다. 서로 다른 FE/추천/운영자 판단을 만들지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #48\n- #51\n- #53\n- #69\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-04--중복-방지변경-버전-관리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 47,
+    "state": "OPEN",
+    "title": "[W06-04] 중복 방지·변경 버전 관리",
+    "updatedAt": "2026-10-14T12:44:03Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/47"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #45\n- #15\n\n## 진행 단계\n\n- [ ] 제목·기관·지역/원격·시간·보수·공식 URL\n- [ ] 원문 조건·AND/OR 정규화\n- [ ] 미해석 조건/미확인 매핑 보존\n\n## 완료 확인\n\n없는 사실을 생성하지 않음. 조건 없음과 조건 미해석 구분\n\n## 보완할 계약 (계획 §5)\n\n- **공고 설명:** 검색 계산에 사용하는 `description_text`(공식 원문 설명, 선택적·최대 5,000자)의 저장/공개·검수 계약을 명시한다. 값이 없으면 제목/역할/역량만 계산하고 설명을 만들어 채우지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #47\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-03--공고와-원문-조건-정규화)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 46,
+    "state": "OPEN",
+    "title": "[W06-03] 공고와 원문 조건 정규화",
+    "updatedAt": "2026-10-14T12:44:02Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/46"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #44\n- #26\n\n## 진행 단계\n\n- [ ] 고정 HTTP 대상·redirect 검사\n- [ ] timeout/크기·DTD/외부 엔티티 차단\n- [ ] 안전한 파서·실패 결과\n\n## 완료 확인\n\nSSRF/XXE/과대 응답 거절. 사용자 URL로 임의 수집하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #46\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-02--안전한-외부-수집파싱)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 45,
+    "state": "OPEN",
+    "title": "[W06-02] 안전한 외부 수집·파싱",
+    "updatedAt": "2026-10-14T12:44:01Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/45"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W06 · 공고와 수집 — 실제 공고를 안전하게 수집·갱신 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F05/F06/F08 |\n\n## 먼저 완료할 작업\n\n- #8\n- #17\n\n## 진행 단계\n\n- [ ] 출처별 설정·고정 목적지·이용 조건\n- [ ] 실제 필드→표준 계약 매핑\n- [ ] 실패/미확인 필드 규칙\n\n## 완료 확인\n\n실제 취업/봉사 샘플로 매핑 확인. 모의 응답은 실제 API 증거와 분리\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #45\n- #51\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W06-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w06-01--출처-설정과-실제-필드-매핑)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 44,
+    "state": "OPEN",
+    "title": "[W06-01] 출처 설정과 실제 필드 매핑",
+    "updatedAt": "2026-10-14T12:44:01Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/44"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #36\n- #27\n\n## 진행 단계\n\n- [ ] 종료 DELETE·진행 결과 폐기\n- [ ] 만료 자료 참조 정리\n- [ ] 새로고침/새 시작의 이전 자료 접근 차단\n\n## 완료 확인\n\n이전 대화 복원 API 경로 없음. 종료·만료 후 늦은 결과 저장 안 됨\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `DELETE /journeys/{id}` | 모든 체험 화면 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #89\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-08--체험-종료삭제재진입-처리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 43,
+    "state": "OPEN",
+    "title": "[W05-08] 체험 종료·삭제·재진입 처리",
+    "updatedAt": "2026-10-14T12:50:50Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/43"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #40\n- #75\n\n## 진행 단계\n\n- [ ] 자기 저장 프로필로 새 Journey 생성\n- [ ] 저장 지원서 편집용 자료 참조 준비\n- [ ] 대화·준비 체크 미복원\n\n## 완료 확인\n\n타 사용자 참조 불가. 회원도 항상 새 대화·새 편집본에서 시작\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys` | UX02/UX09 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #77\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-07--저장-자료로-새-체험-시작)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 42,
+    "state": "OPEN",
+    "title": "[W05-07] 저장 자료로 새 체험 시작",
+    "updatedAt": "2026-10-14T12:50:54Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/42"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #40\n\n## 진행 단계\n\n- [ ] 편집 중 기존 확정본 유지\n- [ ] 재확정 후 추천/자격 무효화\n- [ ] 기존 지원서 근거 변경 표시 인터페이스\n\n## 완료 확인\n\n이전 결과 버전 구분. 지원서 본문 자동 변경 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/profile/confirm` | UX05 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #69\n- #84\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-06--재확정-후-결과-갱신)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 41,
+    "state": "OPEN",
+    "title": "[W05-06] 재확정 후 결과 갱신",
+    "updatedAt": "2026-10-14T12:50:57Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/41"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #39\n\n## 진행 단계\n\n- [ ] 최소 경험/희망 지역/유형 검사\n- [ ] 명시적 확정·불변 버전\n- [ ] 확정 참조 resolver\n\n## 완료 확인\n\n미확정·위조 본문 참조 거절. confirmed_at/version은 서버 부여\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/profile/confirm` | UX05 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #41\n- #42\n- #60\n- #61\n- #67\n- #74\n- #84\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-05--프로필-확정과-버전-부여)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 40,
+    "state": "OPEN",
+    "title": "[W05-05] 프로필 확정과 버전 부여",
+    "updatedAt": "2026-10-14T12:51:00Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/40"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #36\n\n## 진행 단계\n\n- [ ] profile GET/PATCH\n- [ ] 경험 ID 서버 부여·수동 수정/삭제\n- [ ] 기준 리비전 검사\n\n## 완료 확인\n\nAI가 없어도 초안 직접 작성·수정 가능. 소유권·지역·필드 범위 검증\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `GET/PATCH /journeys/{id}/profile` | UX05 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #40\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-04--프로필-직접-작성편집)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 39,
+    "state": "OPEN",
+    "title": "[W05-04] 프로필 직접 작성·편집",
+    "updatedAt": "2026-10-14T12:51:02Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/39"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #36\n- #33\n- #27\n\n## 진행 단계\n\n- [ ] 제한 음성 transcription API\n- [ ] 전사 ID·수정 텍스트 전달 계약\n- [ ] 취소·음성 참조 폐기\n\n## 완료 확인\n\nSTT 원문이 자동 추출되지 않음. 사용자가 보낸 수정 텍스트만 사용\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/transcriptions` | UX03/UX04 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #83\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-03--음성-전사-확인수정-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 38,
+    "state": "OPEN",
+    "title": "[W05-03] 음성 전사 확인·수정 연결",
+    "updatedAt": "2026-10-14T12:51:06Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/38"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #36\n- #30\n- #23\n- #27\n\n## 진행 단계\n\n- [ ] 확인 텍스트 message API\n- [ ] 추출 결과·근거 검증/리비전 반영\n- [ ] 하나의 다음 질문·입력 유지\n\n## 완료 확인\n\n실패 때 기존 입력/확정본 유지. 동시에 수정된 초안 덮어쓰지 않음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/messages` | UX03/UX04 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #82\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-02--한-질문씩-대화초안-추출)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 37,
+    "state": "OPEN",
+    "title": "[W05-02] 한 질문씩 대화·초안 추출",
+    "updatedAt": "2026-10-14T12:51:09Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/37"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W05 · 체험과 프로필 — 대화에서 확정 프로필까지 연결 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F03 |\n\n## 먼저 완료할 작업\n\n- #15\n- #20\n- #21\n- #24\n\n## 진행 단계\n\n- [ ] Redis Journey 구조·리비전\n- [ ] 동의 후 생성·초기 질문\n- [ ] 유휴 30분/최대 2시간\n\n## 완료 확인\n\n미동의 생성에서 AI 실행 없음. 자동 조회가 TTL을 연장하지 않음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys` | UX02/UX09 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #37\n- #38\n- #39\n- #43\n- #81\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W05-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w05-01--임시-체험-생성과-만료)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 36,
+    "state": "OPEN",
+    "title": "[W05-01] 임시 체험 생성과 만료",
+    "updatedAt": "2026-10-14T12:51:12Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/36"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안, A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #33\n- #27\n\n## 진행 단계\n\n- [ ] timeout·503·429 변환\n- [ ] 일시 오류 1회/전체 60초 재시도\n- [ ] 수동 입력·편집·공개 탐색 연결\n\n## 완료 확인\n\n재시도 중복 집계 없음. 실제 종료 전 슬롯 미해제. 외부 AI 자동 전환 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #70\n- #82\n- #102\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-08--모델-장애혼잡재시도-처리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 35,
+    "state": "OPEN",
+    "title": "[W04-08] 모델 장애·혼잡·재시도 처리",
+    "updatedAt": "2026-10-14T12:44:00Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/35"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #29\n- #30\n- #33\n- #92\n\n## 진행 단계\n\n- [ ] 실제 EC2 단일/교대 모델 실행\n- [ ] RAM/VRAM·90초 STT·최대 TTS·60초 기준 측정\n- [ ] OOM/취소·다운로드 없는 요청 확인\n\n## 완료 확인\n\n측정 장비·버전·품질·지연·최대 메모리 기록. 미달은 조정 후 재검증\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #98\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-07--실제-ec2-성능품질-검증)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 34,
+    "state": "OPEN",
+    "title": "[W04-07] 실제 EC2 성능·품질 검증",
+    "updatedAt": "2026-10-14T12:43:59Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/34"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #31\n- #32\n- #23\n- #26\n\n## 진행 단계\n\n- [ ] 별도 내부 Speech 서비스·Adapter\n- [ ] STT/TTS readiness·tmpfs·자원 제한\n- [ ] FastAPI event loop와 추론 분리\n\n## 완료 확인\n\n내부 연결만 가능. LLM/STT/TTS가 동일 실행 슬롯 정책 사용\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /speech` | 읽어주기 제공 화면 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #34\n- #35\n- #38\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-06--내부-음성-서비스-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 33,
+    "state": "OPEN",
+    "title": "[W04-06] 내부 음성 서비스 연결",
+    "updatedAt": "2026-10-14T12:43:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/33"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #28\n- #10\n\n## 진행 단계\n\n- [ ] Qwen3-TTS 한국어 고정 화자\n- [ ] 표시 문장·길이 제한\n- [ ] 음성 응답·실패/재생 종료 정리\n\n## 완료 확인\n\n실제 텍스트와 발화 일치 평가. 사용자 화자 복제·영구 음성 캐시 없음\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /speech` | 읽어주기 제공 화면 |\n\n## 보완할 계약 (계획 §5)\n\n- **TTS 읽기 참조:** 화면 응답에 서버 발급 `speech_target`을 넣거나 같은 응답의 버전 참조로 resolve한다. 주체·자료 버전·보이는 텍스트·만료를 연결한다. 일반 공고 읽기도 AI 동의를 검사한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #33\n- #89\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-05--로컬-한국어-읽어주기-구현)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 32,
+    "state": "OPEN",
+    "title": "[W04-05] 로컬 한국어 읽어주기 구현",
+    "updatedAt": "2026-10-14T12:43:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/32"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #28\n- #10\n\n## 진행 단계\n\n- [ ] faster-whisper 다국어 모델 적재\n- [ ] 제한 형식 decode·길이/무음 검사\n- [ ] 전사·실패·취소와 버퍼 정리\n\n## 완료 확인\n\n90초/6MiB 경계, 무음·잘못된 파일·한국어 사례 결과와 정리 증거\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/transcriptions` | UX03/UX04 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #33\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-04--로컬-음성-인식-구현)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 31,
+    "state": "OPEN",
+    "title": "[W04-04] 로컬 음성 인식 구현",
+    "updatedAt": "2026-10-14T12:43:57Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/31"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #29\n- #10\n\n## 진행 단계\n\n- [ ] 경험 추출·한 질문·지원서 프롬프트 분리\n- [ ] 기존 경험 ID/근거 참조 검사\n- [ ] 불필요 개인정보 탐지·환각/인젝션 표본 평가\n\n## 완료 확인\n\n없는 경험·기간·자격을 사실로 승인하지 않음. 필터 한계를 기록\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /journeys/{id}/messages` | UX03/UX04 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #34\n- #37\n- #67\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-03--추출질문지원서-근거-검증)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 30,
+    "state": "OPEN",
+    "title": "[W04-03] 추출·질문·지원서 근거 검증",
+    "updatedAt": "2026-10-14T12:43:56Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/30"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #28\n- #15\n\n## 진행 단계\n\n- [ ] 내부 Ollama /api/chat Adapter\n- [ ] JSON format·stream=false·thinking 설정 확인\n- [ ] content만 파싱·스키마 재검증\n\n## 완료 확인\n\n정상·불량 JSON 구분. 모델 결과로 서버 승인/권한 변경 불가\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #30\n- #34\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-02--ollama-텍스트-통신-모듈)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 29,
+    "state": "OPEN",
+    "title": "[W04-02] Ollama 텍스트 통신 모듈",
+    "updatedAt": "2026-10-14T12:43:55Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/29"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W04 · 로컬 모델과 음성 — EC2에서 텍스트·음성 처리 검증 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F02/F08/F11 |\n\n## 먼저 완료할 작업\n\n- #6\n- #12\n\n## 진행 단계\n\n- [ ] Qwen3/STT/TTS 후보·라이선스 확인\n- [ ] 공식 가중치·revision/digest 준비\n- [ ] 런타임/드라이버·컨테이너 조합 기록\n\n## 완료 확인\n\n준비 다운로드와 추론 분리. 임의 모델·원격 코드·Cloud 추론 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #29\n- #31\n- #32\n- #92\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W04-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w04-01--모델가중치런타임-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 28,
+    "state": "OPEN",
+    "title": "[W04-01] 모델·가중치·런타임 준비",
+    "updatedAt": "2026-10-14T12:43:55Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/28"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #23\n- #24\n\n## 진행 단계\n\n- [ ] 활성·취소·삭제/계정 세대 검사\n- [ ] 결과 저장 직전 원자 재검사\n- [ ] 프로세스 중단 후 슬롯 복구 절차\n\n## 완료 확인\n\n삭제/만료와 완료 경합에서 자료 재생성 없음. 종료 미확인 슬롯은 새 실행 금지\n\n## 보완할 계약 (계획 §5)\n\n- **삭제 경합·복구:** 삭제/철회 상태와 결과 저장 검사를 원자적으로 묶는다. Redis와 RDS에 걸친 저장/삭제는 계정 상태·삭제 세대·DB 트랜잭션을 재검사한다. DB 밖 최신 최소 삭제 이력의 위치·권한·보관기간을 지정한다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #35\n- #37\n- #38\n- #43\n- #67\n- #78\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-08--삭제만료-후-결과-저장-차단)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 27,
+    "state": "OPEN",
+    "title": "[W03-08] 삭제·만료 후 결과 저장 차단",
+    "updatedAt": "2026-10-14T12:51:16Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/27"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터, A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #14\n\n## 진행 단계\n\n- [ ] 공통 오류 코드·최소 로그\n- [ ] 콜백 query/음성/본문/토큰/OTP 제거\n- [ ] 감사·운영 로그 보관 설정\n\n## 완료 확인\n\n의도한 오류에도 본문·비밀·trace 미노출. request_id로 결과 추적 가능\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #33\n- #45\n- #54\n- #57\n- #93\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-07--안전한-오류-응답과-로그)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 26,
+    "state": "OPEN",
+    "title": "[W03-07] 안전한 오류 응답과 로그",
+    "updatedAt": "2026-10-14T12:51:19Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/26"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #16\n\n## 진행 단계\n\n- [ ] AES-256-GCM·새 nonce·대상 AAD\n- [ ] 키 버전/암호화 메타데이터·키 분리\n- [ ] 복구용 키·변조/키 없음 처리\n\n## 완료 확인\n\n정상 복호화·암호문/소유 대상 변조 거절. 키가 DB/소스/DB 백업에 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #52\n- #75\n- #76\n- #94\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-06--개인-본문-암호화와-키-관리)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 25,
+    "state": "OPEN",
+    "title": "[W03-06] 개인 본문 암호화와 키 관리",
+    "updatedAt": "2026-10-14T12:51:22Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/25"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #20\n- #18\n\n## 진행 단계\n\n- [ ] 주체/체험/API별 요청 ID·입력 해시\n- [ ] 진행/완료 재전송 처리\n- [ ] 리비전 CAS·저장 멱등성 인터페이스\n\n## 완료 확인\n\n동일 입력 재사용은 새 실행 없음. 같은 키 다른 입력·오래된 리비전은 409\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #27\n- #36\n- #68\n- #74\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-05--중복-요청동시-수정-제어)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 24,
+    "state": "OPEN",
+    "title": "[W03-05] 중복 요청·동시 수정 제어",
+    "updatedAt": "2026-10-14T12:51:25Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/24"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #20\n- #18\n\n## 진행 단계\n\n- [ ] IP/주체/계정·KST 일별 한도 원자 집계\n- [ ] 전체 LLM/STT/TTS 공유 슬롯 1개\n- [ ] Redis 실패·실제 런타임 종료/재시도 처리\n\n## 완료 확인\n\n거절은 미실행. 타임아웃만으로 슬롯 조기 반환 없음. Redis 장애에서 우회 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #27\n- #33\n- #37\n- #55\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-04--호출-한도와-공유-추론-슬롯)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 23,
+    "state": "OPEN",
+    "title": "[W03-04] 호출 한도와 공유 추론 슬롯",
+    "updatedAt": "2026-10-14T12:51:28Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/23"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #20\n\n## 진행 단계\n\n- [ ] 변경 요청 CSRF·Origin 검사\n- [ ] 인증/복사 응답 캐시 정책\n- [ ] 신뢰 프록시·CORS·입력 크기 제한\n\n## 완료 확인\n\n위조 Origin/토큰·직접 헤더 위조·초과 JSON 거절. 공개 조회 유지\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #50\n- #56\n- #72\n- #91\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-03--위조-요청과대-입력-차단)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 22,
+    "state": "OPEN",
+    "title": "[W03-03] 위조 요청·과대 입력 차단",
+    "updatedAt": "2026-10-14T12:51:31Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/22"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #9\n- #16\n- #20\n\n## 진행 단계\n\n- [ ] AI/저장 동의 목적·버전 검증\n- [ ] Consent 기록/체험 동의 연결\n- [ ] 목적별 철회·삭제 대상 표 작성\n\n## 완료 확인\n\n미동의·폐기 버전에서 AI 호출/회원 저장 불가\n\n## 관련 API\n\n| API | 화면 연결 |\n|---|---|\n| `POST /consents` | UX02/저장 동의 |\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #36\n- #74\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-02--ai저장-동의-검사)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 21,
+    "state": "OPEN",
+    "title": "[W03-02] AI·저장 동의 검사",
+    "updatedAt": "2026-10-14T12:51:34Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/21"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W03 · 공통 보안과 실행 제어 — 세션·동의·암호화·요청 제한 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | F01~F11 |\n\n## 먼저 완료할 작업\n\n- #14\n- #18\n\n## 진행 단계\n\n- [ ] 익명 안전 쿠키 세션\n- [ ] 자원 소유권·사적 404 처리\n- [ ] 세션 교체·유휴/절대 만료\n\n## 완료 확인\n\nUUID만 아는 다른 주체의 접근 불가. 자격증명 URL/영구 저장소 노출 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #21\n- #22\n- #23\n- #24\n- #36\n- #72\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W03-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w03-01--익명-세션과-자료-소유권-검사)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 20,
+    "state": "OPEN",
+    "title": "[W03-01] 익명 세션과 자료 소유권 검사",
+    "updatedAt": "2026-10-14T12:51:37Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/20"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #5\n- #13\n- #15\n\n## 진행 단계\n\n- [ ] OpenAPI/TS 타입 생성 또는 일치 검사\n- [ ] 공통 API 클라이언트·오류 변환\n- [ ] 계약 예제·최소 CI\n\n## 완료 확인\n\n계약 변경이 타입/빌드 검사에서 드러남. 모의 연동 명시\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #80\n- #93\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-08--프론트엔드-타입api-클라이언트-연결)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 19,
+    "state": "OPEN",
+    "title": "[W02-08] 프론트엔드 타입·API 클라이언트 연결",
+    "updatedAt": "2026-10-14T12:47:39Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/19"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #16\n- #17\n\n## 진행 단계\n\n- [ ] Alembic 초기/추가 변경\n- [ ] 개발 Compose PG·Redis·내부 네트워크\n- [ ] upgrade·정상 조회 검사\n\n## 완료 확인\n\n빈 DB에서 재현. Redis RDB/AOF와 개인정보 영구 볼륨 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #20\n- #23\n- #24\n- #47\n- #90\n- #92\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-07--db-변경과-개발-compose-구성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 18,
+    "state": "OPEN",
+    "title": "[W02-07] DB 변경과 개발 Compose 구성",
+    "updatedAt": "2026-10-14T12:51:40Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/18"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #15\n\n## 진행 단계\n\n- [ ] Source/IngestionRun/RoleDefinition/OpportunityVersion\n- [ ] Report/AuditEvent/DeletionRecord\n- [ ] 출처 ID 중복·공개 버전 제약\n\n## 완료 확인\n\n12개 논리 엔터티의 저장 경계 정의. Journey는 RDS FK 대상 아님\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #18\n- #44\n- #61\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-06--공고수집운영-db-모델-정의)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 17,
+    "state": "OPEN",
+    "title": "[W02-06] 공고·수집·운영 DB 모델 정의",
+    "updatedAt": "2026-10-14T12:51:43Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/17"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #14\n- #15\n\n## 진행 단계\n\n- [ ] User/Consent/ProfileVersion/ApplicationDraft 영구 모델\n- [ ] 키·문서/프로필 버전·소유권 관계\n- [ ] 삭제 관계·인덱스 정의\n\n## 완료 확인\n\n저장 모델이 초안/대화 원문을 포함하지 않고 버전 제약 존재\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #18\n- #21\n- #25\n- #72\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-05--회원프로필지원서-db-모델-정의)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 16,
+    "state": "OPEN",
+    "title": "[W02-05] 회원·프로필·지원서 DB 모델 정의",
+    "updatedAt": "2026-10-14T12:51:46Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/16"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #5\n- #14\n\n## 진행 단계\n\n- [ ] Profile/Experience/Region/Requirement 등 Pydantic 타입\n- [ ] 필드/연산 허용표·null/빈 배열\n- [ ] UTC/KST·지역 목록 공통화\n\n## 완료 확인\n\n불법 enum·시군구·조건 타입 거절. FE용 같은 지역 목록 제공\n\n## 보완할 계약 (계획 §5)\n\n- **공고 설명:** 검색 계산에 사용하는 `description_text`(공식 원문 설명, 선택적·최대 5,000자)의 저장/공개·검수 계약을 명시한다. 값이 없으면 제목/역할/역량만 계산하고 설명을 만들어 채우지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #16\n- #17\n- #19\n- #29\n- #36\n- #46\n- #58\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-04--공통-데이터-타입과-지역-목록-정의)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": "2026-10-16T11:51:36Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 15,
+    "state": "CLOSED",
+    "title": "[W02-04] 공통 데이터 타입과 지역 목록 정의",
+    "updatedAt": "2026-10-16T11:51:36Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/15"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #12\n\n## 진행 단계\n\n- [ ] FastAPI 설정·모듈 골격\n- [ ] 서비스/저장소/Adapter 인터페이스\n- [ ] request_id·기본 상태 경로\n\n## 완료 확인\n\nFastAPI가 DB·AI 구체 구현에 화면 코드를 결합하지 않음\n\n## 보완할 계약 (계획 §5)\n\n- **준비/상태 확인:** `/health/live`, `/health/ready`는 최소 상태만 반환한다. DB/Redis/모델별 readiness를 구분해 AI 장애만으로 공개 공고 조회 전체를 중지하지 않는다. 상세는 운영자 API\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #15\n- #16\n- #20\n- #26\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-03--백엔드-기본-구조-구성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": "2026-10-15T10:24:49Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 14,
+    "state": "CLOSED",
+    "title": "[W02-03] 백엔드 기본 구조 구성",
+    "updatedAt": "2026-10-15T10:24:49Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/14"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능 |\n\n## 먼저 완료할 작업\n\n- #12\n\n## 진행 단계\n\n- [ ] React/TS/Vite 골격\n- [ ] 화면 라우트·오류 경계\n- [ ] 최소 타입·빌드 검사\n\n## 완료 확인\n\n빈 화면이라도 모든 UX 경로를 열고 빌드 가능\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #19\n- #80\n- #91\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W02-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-02--프론트엔드-기본-화면-구성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 13,
+    "state": "OPEN",
+    "title": "[W02-02] 프론트엔드 기본 화면 구성",
+    "updatedAt": "2026-10-14T12:47:41Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/13"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\r\n|---|---|\r\n| 작업 묶음 | W02 · 개발 기반과 데이터 — 모두 같은 타입과 개발 환경 사용 |\r\n| 주담당 역할 | C · 백엔드·보안 |\r\n| 협력 | A · 기획·프론트엔드 |\r\n| 우선순위 | P0 |\r\n| 기능·화면 연결 | 전 기능 |\r\n\r\n## 먼저 완료할 작업\r\n\r\n- #4\r\n\r\n## 진행 단계\r\n\r\n- [x] frontend/backend/speech/infra/tests 경계 구성\r\n- [x] 실행 안내·비밀 제외\r\n- [x] 버전 고정 파일·설정 예제 준비\r\n\r\n## 완료 확인\r\n\r\n새 작업 환경에서 같은 구조와 개발 명령 사용\r\n\r\n## 이 작업이 끝나야 시작할 수 있는 작업\r\n\r\n- #13\r\n- #14\r\n- #28\r\n\r\n## 참고\r\n\r\n- 작업 카드: [Implementation_Plan.md · W02-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w02-01--저장소-구조와-실행-안내-구성)\r\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\r\n\r\n",
+    "closedAt": "2026-10-15T08:07:51Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 12,
+    "state": "CLOSED",
+    "title": "[W02-01] 저장소 구조와 실행 안내 구성",
+    "updatedAt": "2026-10-15T08:07:51Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/12"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안, B · AI·데이터 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #5\n\n## 진행 단계\n\n- [ ] 작업별 상태·실제 시간 기록 양식 작성\n- [ ] 첫 통합/공개 게이트 지정\n- [ ] 차단 사유·재검증일 관리\n\n## 완료 확인\n\n진행 현황에서 완료 증거·미검증·일정 변경을 구분 가능\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-08](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-08--진행-상태와-검증-기록-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 11,
+    "state": "OPEN",
+    "title": "[W01-08] 진행 상태와 검증 기록 준비",
+    "updatedAt": "2026-10-14T12:47:44Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/11"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [ ] 가상 프로필 5~10개·조건 사례 준비\n- [ ] 한국어 공개/동의한 시험 음성 확보\n- [ ] 기대 추출·판정·추천 작성\n\n## 완료 확인\n\n평가 입력과 기대값 존재. 사용자 운영 음성을 평가용으로 축적하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #30\n- #31\n- #32\n- #58\n- #65\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-07](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-07--프로필한국어-음성-평가-표본-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 10,
+    "state": "OPEN",
+    "title": "[W01-07] 프로필·한국어 음성 평가 표본 준비",
+    "updatedAt": "2026-10-14T12:43:54Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/10"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #6\n\n## 진행 단계\n\n- [ ] 실제 운영 주체·연락 경로·리전 확인\n- [ ] AI/저장 동의문 목적·버전 작성\n- [ ] 삭제·보관·외부 인증 안내 작성\n\n## 완료 확인\n\n안내문이 실제 EC2/RDS 처리와 일치. 미정 값을 완료로 표시하지 않음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #21\n- #81\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-06](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-06--처리저장-동의문-작성)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 9,
+    "state": "OPEN",
+    "title": "[W01-06] 처리·저장 동의문 작성",
+    "updatedAt": "2026-10-14T12:47:46Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/9"
+  },
+  {
+    "assignees": [
+      {
+        "id": "MDQ6VXNlcjgzOTM2MTI5",
+        "login": "JBR-313",
+        "name": "",
+        "databaseId": 83936129
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | B · AI·데이터 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [x] 취업/공공일자리·봉사 출처 확인\n- [ ] 승인 요청·실제 자료 확보\n- [ ] 이용 조건·공식 접수 URL 검증\n\n## 완료 확인\n\n출처별 실제 샘플·접근 상태 존재. API 미승인은 수동 자료 경로로 구분\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #44\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-05](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-05--실제-취업봉사-자료-확보)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N3eg",
+        "name": "역할: B AI·데이터",
+        "description": "주담당 역할 B · AI·데이터 (모델 Adapter·음성·출처/수집·역할·추천)",
+        "color": "0e8a16"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 8,
+    "state": "OPEN",
+    "title": "[W01-05] 실제 취업·봉사 자료 확보",
+    "updatedAt": "2026-10-14T14:36:10Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/8"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [ ] 카카오 앱·웹 설정 준비\n- [ ] 개발/운영 콜백 목록 등록\n- [ ] 외부 시험 계정·취소 경로 확보\n\n## 완료 확인\n\n정상 로그인에 사용할 앱 설정 존재. 비밀은 저장소 제외\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #72\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-04](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-04--카카오-로그인-앱-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 7,
+    "state": "OPEN",
+    "title": "[W01-04] 카카오 로그인 앱 준비",
+    "updatedAt": "2026-10-14T12:51:58Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/7"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | 없음 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [ ] AWS 계정·접근·GPU 사용 가능 여부 확인\n- [ ] 리전·EC2/RDS 후보·가동시간·비용 상한 기록\n- [ ] 도메인/HTTPS 준비\n\n## 완료 확인\n\n실제 준비 상태와 지출 조건 확인. 미확보 항목에 담당·다음 확인일 있음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #9\n- #28\n- #90\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-03](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-03--awsgpu비용도메인-준비)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 6,
+    "state": "OPEN",
+    "title": "[W01-03] AWS·GPU·비용·도메인 준비",
+    "updatedAt": "2026-10-14T12:52:01Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/6"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDOBgbqjQ",
+        "login": "SeungwonKwon",
+        "name": "",
+        "databaseId": 101116557
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | C · 백엔드·보안 |\n| 협력 | A · 기획·프론트엔드 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- #4\n\n## 진행 단계\n\n- [ ] 모든 API 입출력·공통 오류 확정\n- [ ] 아래 §5 추가 계약 정의\n- [ ] 정상/누락/409/429 예제 준비\n\n## 완료 확인\n\nFE·BE·모델이 같은 계약 사용. 없는 API를 화면에서 임의 호출하지 않음\n\n## 보완할 계약 (계획 §5)\n\n- **로그인 저장 대기 발급:** `POST /auth/save-intents`: 현재 세션 소유의 승인 프로필/지원서 참조만 받는다. 서버가 본문을 조회해 opaque 대기 참조·10분 만료를 반환한다. CSRF·소유권·멱등성 적용. URL에 본문/자격증명 없음\n- **공고 반려:** `POST /admin/opportunities/{id}/reject`: 기준 버전·사유. pending → rejected만 허용하고 역할·MFA·감사 적용\n- **공고 설명:** 검색 계산에 사용하는 `description_text`(공식 원문 설명, 선택적·최대 5,000자)의 저장/공개·검수 계약을 명시한다. 값이 없으면 제목/역할/역량만 계산하고 설명을 만들어 채우지 않는다\n- **TTS 읽기 참조:** 화면 응답에 서버 발급 `speech_target`을 넣거나 같은 응답의 버전 참조로 resolve한다. 주체·자료 버전·보이는 텍스트·만료를 연결한다. 일반 공고 읽기도 AI 동의를 검사한다\n- **역할 제외·중요 변경:** 복합 역할 공고의 제외 기준, 검수 중요 변경 필드, 이전 공개본 추천 보류를 공통 규칙으로 고정한다. 서로 다른 FE/추천/운영자 판단을 만들지 않는다\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #11\n- #15\n- #19\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-02](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-02--api-계약과-오류-예제-확정)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": "2026-10-15T09:06:18Z",
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4WA",
+        "name": "역할: C 백엔드·보안",
+        "description": "주담당 역할 C · 백엔드·보안 (API·DB·인증·암호화·삭제·인프라)",
+        "color": "5319e7"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 5,
+    "state": "CLOSED",
+    "title": "[W01-02] API 계약과 오류 예제 확정",
+    "updatedAt": "2026-10-15T09:06:18Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/5"
+  },
+  {
+    "assignees": [
+      {
+        "id": "U_kgDODRxWjQ",
+        "login": "jokebear117",
+        "name": "SeongUk",
+        "databaseId": 219960973
+      }
+    ],
+    "body": "| 항목 | 내용 |\n|---|---|\n| 작업 묶음 | W01 · 착수와 계약 — 담당·계약·계정·실제 자료 준비 |\n| 주담당 역할 | A · 기획·프론트엔드 |\n| 협력 | C · 백엔드·보안 |\n| 우선순위 | P0 |\n| 기능·화면 연결 | 전 기능·전 화면 |\n\n## 먼저 완료할 작업\n\n- 없음 — 첫 공동 작업\n\n## 진행 단계\n\n- [ ] v1.1 범위·제외 범위 확인\n- [ ] A/B/C 담당 지정\n- [ ] 실제 가용시간·준비 상태 기록\n\n## 완료 확인\n\n범위표·담당·달력 존재. 기관/외부 AI 과거 초안과 충돌 없음\n\n## 이 작업이 끝나야 시작할 수 있는 작업\n\n- #5\n- #6\n- #7\n- #8\n- #10\n- #12\n- #106\n\n## 참고\n\n- 작업 카드: [Implementation_Plan.md · W01-01](https://github.com/YongSamGo/RE_CONNECT/blob/main/Plan/Implementation_Plan.md#w01-01--범위담당가용시간-확인)\n- 상태는 `미착수 → 진행 → 검토 → 통과` 또는 `차단`으로 기록합니다. 코드 작성·계약 예제 연결·실제 연동·배포 검증을 구분하고, 실제 API·EC2·기기 증거가 없으면 통과로 옮기지 않습니다.\n",
+    "closedAt": null,
+    "labels": [
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N25g",
+        "name": "역할: A 기획·프론트엔드",
+        "description": "주담당 역할 A · 기획·프론트엔드 (화면·접근성·사용자 과업·제출 자료)",
+        "color": "1d76db"
+      },
+      {
+        "id": "LA_kwDOUvevTc8AAAAC8_N4vw",
+        "name": "P0",
+        "description": "공개·완료 판정에 필수",
+        "color": "b60205"
+      }
+    ],
+    "number": 4,
+    "state": "OPEN",
+    "title": "[W01-01] 범위·담당·가용시간 확인",
+    "updatedAt": "2026-10-14T12:47:50Z",
+    "url": "https://github.com/YongSamGo/RE_CONNECT/issues/4"
+  }
+]

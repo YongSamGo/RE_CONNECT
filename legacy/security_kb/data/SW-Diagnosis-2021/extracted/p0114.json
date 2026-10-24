@@ -1,0 +1,225 @@
+{
+ "lines": [
+  {
+   "text": "114",
+   "bbox": [
+    57.959999084472656,
+    696.9080810546875,
+    72.35639953613281,
+    707.8070678710938
+   ],
+   "block": 13,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    76.5,
+    113.85517120361328,
+    132.05699157714844,
+    125.93317413330078
+   ],
+   "block": 14,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①CWE‐307, Improper Restriction of Excessive Authentication Attempts, MITRE,",
+   "bbox": [
+    91.5,
+    137.5200958251953,
+    447.1104431152344,
+    148.55322265625
+   ],
+   "block": 15,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "http://cwe.mitre.org/data/ definitions/307.html ",
+   "bbox": [
+    105.23995971679688,
+    153.55117797851562,
+    317.34429931640625,
+    164.57318115234375
+   ],
+   "block": 16,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10 ‐ A2 Broken Authentication and Session Management, ",
+   "bbox": [
+    91.49954986572266,
+    174.5399932861328,
+    464.8399963378906,
+    185.5731201171875
+   ],
+   "block": 17,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "OWASP, https://www.owasp. org/index.php/Top_10_2013",
+   "bbox": [
+    105.24004364013672,
+    190.51095581054688,
+    364.60552978515625,
+    201.532958984375
+   ],
+   "block": 18,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③2016 OWASP Application Security Verification Standard, OWASP, Authentication ",
+   "bbox": [
+    91.4996337890625,
+    211.51089477539062,
+    464.82135009765625,
+    222.53289794921875
+   ],
+   "block": 19,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Verification Require-ments,",
+   "bbox": [
+    105.23907470703125,
+    227.5308837890625,
+    226.5496368408203,
+    238.55288696289062
+   ],
+   "block": 20,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific",
+   "bbox": [
+    105.23907470703125,
+    243.55087280273438,
+    461.6746826171875,
+    254.5728759765625
+   ],
+   "block": 21,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ation_Standard_ Project",
+   "bbox": [
+    105.23907470703125,
+    259.5107421875,
+    207.8138427734375,
+    270.5327453613281
+   ],
+   "block": 22,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Authentication Cheat Sheet Prevent Brute Force Attacks, OWASP,",
+   "bbox": [
+    91.49866485595703,
+    280.5106506347656,
+    395.06787109375,
+    291.53265380859375
+   ],
+   "block": 23,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Au-thentication_Cheat_Sheet#Prevent_Brute-",
+   "bbox": [
+    105.23907470703125,
+    296.5306396484375,
+    461.7353515625,
+    307.5526428222656
+   ],
+   "block": 24,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Force_Attacks",
+   "bbox": [
+    105.23907470703125,
+    312.5506286621094,
+    166.69810485839844,
+    323.5726318359375
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤WASC Insufficient Anti-automation, WASC,",
+   "bbox": [
+    91.49866485595703,
+    333.550537109375,
+    297.18756103515625,
+    344.5725402832031
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://projects.webappsec.org/w/page/13246938/Insuffi-cient%20Anti-automation",
+   "bbox": [
+    105.23907470703125,
+    349.5104064941406,
+    457.40924072265625,
+    360.53240966796875
+   ],
+   "block": 27,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [],
+ "native": "114\n마. 참고자료\n①CWE‐307, Improper Restriction of Excessive Authentication Attempts, MITRE,\nhttp://cwe.mitre.org/data/ definitions/307.html \n②2013 OWASP Top 10 ‐ A2 Broken Authentication and Session Management, \nOWASP, https://www.owasp. org/index.php/Top_10_2013\n③2016 OWASP Application Security Verification Standard, OWASP, Authentication \nVerification Require-ments,\nhttp://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific\nation_Standard_ Project\n④Authentication Cheat Sheet Prevent Brute Force Attacks, OWASP,\nhttp://www.owasp.org/index.php/Au-thentication_Cheat_Sheet#Prevent_Brute-\nForce_Attacks\n⑤WASC Insufficient Anti-automation, WASC,\nhttp://projects.webappsec.org/w/page/13246938/Insuffi-cient%20Anti-automation\n",
+ "native_sha256": "36cae2ae61cd821a5faa9c527e29ea4f49fc7fcd02e45ffd988cf0c2e6ca1818",
+ "chars": 738,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

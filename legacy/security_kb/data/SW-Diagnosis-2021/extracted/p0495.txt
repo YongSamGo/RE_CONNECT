@@ -1,0 +1,50 @@
+495
+제4장구현단계 보안약점 진단
+다음의 C 코드는 IP 주소를 직접 비교하여 DNS 캐시 조작에 대해 안전하다.
+안전한 코드의 예 C
+1:
+struct hostent *hp;struct in_addr myaddr; 
+2:
+char* tHost = "127.0.0.1"; 
+3:
+myaddr.s_addr=inet_addr(ip_addr_string); 
+4:
+hp = gethostbyaddr((char *) &myaddr, sizeof(struct in_addr), AF_INET);
+5:
+// 호스트의 이름이 아니라 IP로 직접 비교한다.
+6:
+if (hp && !strncmp(hp->h_name, tHost, sizeof(tHost))) {
+7:
+trusted = true;
+8:
+} else { 
+9:
+trusted = false; 
+10: }
+라. 진단방법
+DNS lookup을 하는 모듈이 존재하는지 확인하고(①), 보안결정을 하는 부분이 존재하는지 확인 
+한다(②). DNS 이름으로 해당 요청이 신뢰할 수 있는지를 검사한다. 그러나 공격자가 DNS 캐시 등
+을 조작하면 잘못된 신뢰 상태 정보를 얻을 수 있다.
+일반적인 진단의 예
+1: public class U247 extends HttpServlet { 
+2:
+public void doGet(HttpServletRequest req, HttpServletResponse res) throws Servlet 
+Exception, IOException { 
+3:
+boolean trusted = false; 
+4:
+String ip = req.getRemoteAddr(); 
+5:
+// 호스트의 IP 주소를 얻어온다. 
+6:
+InetAddress addr = InetAddress.getByName(ip); ····························································①
+7:
+// 호스트의 DNS이름이 신뢰할 수 있는 도메인(trustme.com)에 속하는지 검사한다.
+8:
+if (addr.getCanonicalHostName().endsWith(“trustme.com”) ) { ····································②
+9:
+trusted = true;
+10:
+}
+11:
+if (trusted) {

@@ -1,0 +1,793 @@
+{
+ "lines": [
+  {
+   "text": "Python 시큐어코딩 가이드",
+   "bbox": [
+    70.2473373413086,
+    47.02835464477539,
+    166.67918395996094,
+    55.058170318603516
+   ],
+   "block": 0,
+   "size": 7.7757439613342285,
+   "fonts": [
+    "GmarketSansTTFMedium"
+   ]
+  },
+  {
+   "text": "50",
+   "bbox": [
+    65.09266662597656,
+    702.9564819335938,
+    74.17008209228516,
+    710.9862670898438
+   ],
+   "block": 1,
+   "size": 8.030754089355469,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전한 코드 예시",
+   "bbox": [
+    248.74269104003906,
+    98.3472671508789,
+    319.7541809082031,
+    108.2946548461914
+   ],
+   "block": 2,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    119.392578125,
+    94.51471710205078,
+    127.90178680419922
+   ],
+   "block": 5,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    135.57205200195312,
+    94.51471710205078,
+    144.08126831054688
+   ],
+   "block": 6,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    151.63168334960938,
+    94.51471710205078,
+    160.14089965820312
+   ],
+   "block": 7,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    167.8111572265625,
+    94.51471710205078,
+    176.32037353515625
+   ],
+   "block": 8,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    183.87078857421875,
+    94.51471710205078,
+    192.3800048828125
+   ],
+   "block": 9,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    200.05027770996094,
+    94.51471710205078,
+    208.5594940185547
+   ],
+   "block": 10,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    216.1099090576172,
+    94.51471710205078,
+    224.61912536621094
+   ],
+   "block": 11,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    232.2893829345703,
+    94.51471710205078,
+    240.79859924316406
+   ],
+   "block": 12,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    248.34901428222656,
+    94.51471710205078,
+    256.85821533203125
+   ],
+   "block": 13,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "MIDDLEWARE = [",
+   "bbox": [
+    104.41199493408203,
+    119.392578125,
+    177.05804443359375,
+    127.90178680419922
+   ],
+   "block": 14,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.sessions.middleware.SessionMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    135.57205200195312,
+    331.6142883300781,
+    144.08126831054688
+   ],
+   "block": 15,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  # MIDDLEWARE 목록에서 CSRF 항목을 활성화 한다",
+   "bbox": [
+    104.41199493408203,
+    151.63168334960938,
+    309.6288146972656,
+    160.14089965820312
+   ],
+   "block": 16,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.middleware.csrf.CsrfViewMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    167.8111572265625,
+    288.8182067871094,
+    176.32037353515625
+   ],
+   "block": 17,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.auth.middleware.AuthenticationMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    183.87078857421875,
+    340.4880065917969,
+    192.3800048828125
+   ],
+   "block": 18,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.contrib.messages.middleware.MessageMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    200.05027770996094,
+    342.16387939453125,
+    208.5594940185547
+   ],
+   "block": 19,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  'django.middleware.locale.LocaleMiddleware',",
+   "bbox": [
+    104.41199493408203,
+    216.1099090576172,
+    286.542236328125,
+    224.61912536621094
+   ],
+   "block": 20,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  ......",
+   "bbox": [
+    104.41199493408203,
+    232.2893829345703,
+    128.18460083007812,
+    240.79859924316406
+   ],
+   "block": 21,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "]",
+   "bbox": [
+    104.41199493408203,
+    248.34901428222656,
+    107.05046844482422,
+    256.85821533203125
+   ],
+   "block": 22,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⦁Django 뷰 기능 설정(views.py) 사례",
+   "bbox": [
+    65.09266662597656,
+    296.9481506347656,
+    233.2041778564453,
+    307.4820251464844
+   ],
+   "block": 24,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium",
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "미들웨어에 CSRF 검증 기능이 활성화 되어 있어도 View에서 CSRF 기능을 해제하는 경우에는 해당 요청에 ",
+   "bbox": [
+    75.04237365722656,
+    322.4630126953125,
+    506.9639892578125,
+    332.410400390625
+   ],
+   "block": 25,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "대해서 CSRF 검증 기능을 사용하지 않게 된다. 다음은 Function-Based View에서 CSRF 검증 기능을 비활성화 ",
+   "bbox": [
+    65.09266662597656,
+    342.4776306152344,
+    507.3236083984375,
+    352.4250183105469
+   ],
+   "block": 26,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "하는 예제를 보여 준다.",
+   "bbox": [
+    65.09266662597656,
+    362.3724060058594,
+    161.4609832763672,
+    372.3197937011719
+   ],
+   "block": 27,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "안전하지 않은 코드 예시",
+   "bbox": [
+    233.2786865234375,
+    403.8398132324219,
+    335.33807373046875,
+    413.7872009277344
+   ],
+   "block": 28,
+   "size": 9.948545455932617,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "1:",
+   "bbox": [
+    87.02997589111328,
+    424.8851013183594,
+    94.51471710205078,
+    433.3943176269531
+   ],
+   "block": 31,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "2:",
+   "bbox": [
+    87.02997589111328,
+    441.0646057128906,
+    94.51471710205078,
+    449.5738220214844
+   ],
+   "block": 32,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "3:",
+   "bbox": [
+    87.02997589111328,
+    457.1242370605469,
+    94.51471710205078,
+    465.6334533691406
+   ],
+   "block": 33,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "4:",
+   "bbox": [
+    87.02997589111328,
+    473.3037109375,
+    94.51471710205078,
+    481.81292724609375
+   ],
+   "block": 34,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "5:",
+   "bbox": [
+    87.02997589111328,
+    489.36334228515625,
+    94.51471710205078,
+    497.87255859375
+   ],
+   "block": 35,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "6:",
+   "bbox": [
+    87.02997589111328,
+    505.5428466796875,
+    94.51471710205078,
+    514.0520629882812
+   ],
+   "block": 36,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "7:",
+   "bbox": [
+    87.02997589111328,
+    521.6024780273438,
+    94.51471710205078,
+    530.1116943359375
+   ],
+   "block": 37,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "8:",
+   "bbox": [
+    87.02997589111328,
+    537.7819213867188,
+    94.51471710205078,
+    546.2911376953125
+   ],
+   "block": 38,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "9:",
+   "bbox": [
+    87.02997589111328,
+    553.841552734375,
+    94.51471710205078,
+    562.3507690429688
+   ],
+   "block": 39,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "10:",
+   "bbox": [
+    82.23493194580078,
+    570.0210571289062,
+    94.51488494873047,
+    578.5302734375
+   ],
+   "block": 40,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "11:",
+   "bbox": [
+    82.23493194580078,
+    586.0806884765625,
+    94.51488494873047,
+    594.5899047851562
+   ],
+   "block": 41,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "12:",
+   "bbox": [
+    82.23493194580078,
+    602.2601318359375,
+    94.51488494873047,
+    610.7693481445312
+   ],
+   "block": 42,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "13:",
+   "bbox": [
+    82.23493194580078,
+    618.3197631835938,
+    94.51488494873047,
+    626.8289794921875
+   ],
+   "block": 43,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.shortcuts import render",
+   "bbox": [
+    104.41199493408203,
+    424.3834228515625,
+    247.80897521972656,
+    433.3943176269531
+   ],
+   "block": 44,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "from django.views.decorators.csrf import csrf_exempt",
+   "bbox": [
+    104.41199493408203,
+    440.56292724609375,
+    316.6177978515625,
+    449.5738220214844
+   ],
+   "block": 45,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "# csrf.exempt 데코레이터로 미들웨어에서 보호되는 CSRF 기능을 해제한다",
+   "bbox": [
+    104.41199493408203,
+    473.3037109375,
+    376.04022216796875,
+    481.81292724609375
+   ],
+   "block": 46,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "@csrf.exempt",
+   "bbox": [
+    104.41199493408203,
+    489.36334228515625,
+    157.6622772216797,
+    497.87255859375
+   ],
+   "block": 47,
+   "size": 8.510202407836914,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "def pay_to_point(request):",
+   "bbox": [
+    104.41199493408203,
+    505.0411682128906,
+    206.11911010742188,
+    514.0520629882812
+   ],
+   "block": 48,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  user_id = request.POST.get('user_id', '')",
+   "bbox": [
+    104.41199493408203,
+    521.1007690429688,
+    267.4445495605469,
+    530.1116943359375
+   ],
+   "block": 49,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  pay = request.POST.get('pay', '')",
+   "bbox": [
+    104.41199493408203,
+    537.2802124023438,
+    239.033935546875,
+    546.2911376953125
+   ],
+   "block": 50,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  product_info = request.POST.get('product_info', '')",
+   "bbox": [
+    104.41199493408203,
+    553.33984375,
+    307.00360107421875,
+    562.3507690429688
+   ],
+   "block": 51,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "  ret = handle_pay(user_id, pay, product_info)",
+   "bbox": [
+    104.41199493408203,
+    585.5789794921875,
+    286.62469482421875,
+    594.5899047851562
+   ],
+   "block": 52,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "    ",
+   "bbox": [
+    104.41199493408203,
+    601.7584228515625,
+    121.37445068359375,
+    610.2686157226562
+   ],
+   "block": 53,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang"
+   ]
+  },
+  {
+   "text": "  return render(request, '/view_wallet.html', {'wallet':ret})",
+   "bbox": [
+    104.41199493408203,
+    617.8180541992188,
+    327.8620300292969,
+    626.8289794921875
+   ],
+   "block": 54,
+   "size": 8.510202407836914,
+   "fonts": [
+    "Haansoft Batang",
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "code",
+   "indices": [
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20
+   ],
+   "text": "1: MIDDLEWARE = [\n2:   'django.contrib.sessions.middleware.SessionMiddleware',\n3:   # MIDDLEWARE 목록에서 CSRF 항목을 활성화 한다\n4:   'django.middleware.csrf.CsrfViewMiddleware',\n5:   'django.contrib.auth.middleware.AuthenticationMiddleware',\n6:   'django.contrib.messages.middleware.MessageMiddleware',\n7:   'django.middleware.locale.LocaleMiddleware',\n8:   ......\n9: ]",
+   "language": "python",
+   "label": "안전한 코드 예시",
+   "bbox": [
+    87.02997589111328,
+    108.3946548461914,
+    342.16387939453125,
+    258.05821533203124
+   ]
+  },
+  {
+   "kind": "code",
+   "indices": [
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49
+   ],
+   "text": "1: from django.shortcuts import render\n2: from django.views.decorators.csrf import csrf_exempt\n3:\n4: # csrf.exempt 데코레이터로 미들웨어에서 보호되는 CSRF 기능을 해제한다\n5: @csrf.exempt\n6: def pay_to_point(request):\n7:   user_id = request.POST.get('user_id', '')\n8:   pay = request.POST.get('pay', '')\n9:   product_info = request.POST.get('product_info', '')\n10:\n11:   ret = handle_pay(user_id, pay, product_info)\n12:     \n13:   return render(request, '/view_wallet.html', {'wallet':ret})",
+   "language": "python",
+   "label": "안전하지 않은 코드 예시",
+   "bbox": [
+    82.23493194580078,
+    413.8872009277344,
+    376.04022216796875,
+    628.0289794921875
+   ]
+  }
+ ],
+ "native": "Python 시큐어코딩 가이드\n50\n안전한 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\nMIDDLEWARE = [\n  'django.contrib.sessions.middleware.SessionMiddleware',\n  # MIDDLEWARE 목록에서 CSRF 항목을 활성화 한다\n  'django.middleware.csrf.CsrfViewMiddleware',\n  'django.contrib.auth.middleware.AuthenticationMiddleware',\n  'django.contrib.messages.middleware.MessageMiddleware',\n  'django.middleware.locale.LocaleMiddleware',\n  ......\n]\n⦁Django 뷰 기능 설정(views.py) 사례\n미들웨어에 CSRF 검증 기능이 활성화 되어 있어도 View에서 CSRF 기능을 해제하는 경우에는 해당 요청에 \n대해서 CSRF 검증 기능을 사용하지 않게 된다. 다음은 Function-Based View에서 CSRF 검증 기능을 비활성화 \n하는 예제를 보여 준다.\n안전하지 않은 코드 예시\n1:\n2:\n3:\n4:\n5:\n6:\n7:\n8:\n9:\n10:\n11:\n12:\n13:\nfrom django.shortcuts import render\nfrom django.views.decorators.csrf import csrf_exempt\n# csrf.exempt 데코레이터로 미들웨어에서 보호되는 CSRF 기능을 해제한다\n@csrf.exempt\ndef pay_to_point(request):\n  user_id = request.POST.get('user_id', '')\n  pay = request.POST.get('pay', '')\n  product_info = request.POST.get('product_info', '')\n  ret = handle_pay(user_id, pay, product_info)\n    \n  return render(request, '/view_wallet.html', {'wallet':ret})\n",
+ "native_sha256": "7abec2838696ef8196eecfda03522131ecdcbeae185571cd9663cfb569e31b43",
+ "chars": 1049,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "56c33d0f4a374c4c4dc048dd9f3cbbc433a014b5f5b6b98ad2e5580b5b8d3752",
+ "version": 1,
+ "code_version": 4
+}

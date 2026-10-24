@@ -1,0 +1,35 @@
+304
+나. 보안대책
+프로그램 상에서 메모리 버퍼를 사용할 경우 적절한 버퍼의 크기를 설정하고, 설정된 범위의 메모리 
+내에서 올바르게 읽거나 쓸 수 있게 통제하여야 한다. 특히, 문자열 저장시 널(Null) 문자로 종료하지 
+않으면 의도하지 않은 결과를 가져오게 되므로 널(Null) 문자를 버퍼 범위내에 삽입하여 널(Null) 
+문자로 종료되도록 해야 한다.
+다. 코드예제
+다음 코드는 포인터 구조체의 개별 필드에 특정 문자열을 복사하는 프로그램이다. 잘못 계산된 데이터 
+크기 sizeof(cv_struct)로 인해 프로그램은 연속된 메모리 공간인 포인터 y를 덮어쓰는 버퍼 오버 
+플로우를 발생시킨다. 또한 프로그램은 복사된 문자열에 대해 종료 문자를 첨가시키지 않았기 때문 에 
+문자열의 참조시 잘못된 결과를 가져올 수 있다.
+안전하지 않은 코드의 예 C
+1: typedef struct _charvoid { 
+2:
+char x[16]; 
+3:
+void * y; 
+4:
+void * z; 
+5: } charvoid 
+6: void badCode() { 
+7:
+charvoid cv_struct 
+8:
+cv_struct.y = (void *) SRC_STR; 
+9:
+printLine((char *) cv_struct.y);
+ /* sizeof(cv_struct)의 사용으로 포인터 y에 덮어쓰기 발생 */ 
+10:
+memcpy(cv_struct.x, SRC_STR, sizeof(cv_struct)); 
+11:
+printLine((char *) cv_struct.x);
+12:
+printLine((char *) cv_struct.y);
+13:}

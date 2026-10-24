@@ -1,0 +1,33 @@
+162
+진단방법
+관련산출물 검토예시
+1-3 중요정보를 포함하는 쿠키 전송을 위해 안전한 암호화 정책(TLSv2, 
+VPN 등)이 적용된 암호화 통신 구간을 사용하도록 설계되어 있는지 확인
+아키텍처설계서 검토
+1-4 암호화 통신 구간을 사용하지 않는 경우 중요정보를 안전한 암호 
+알고리즘을 사용하여 암호화해서 전송하도록 설계되어 있는지 확인
+프로그램명세서, 유즈케이스설계서, 
+클래스설계서, 개발가이드 검토
+2. 쿠키에 포함된 중요정보에 암호화가 적용되었는지에 대한 테스트 계획을 수립하고 있는가?
+진단방법
+관련산출물 검토예시
+2-1 네트워크 구간의 패킷 스니핑 등으로 쿠키에 포함된 암호화하여 전
+송되어야 하는 중요정보의 노출 여부를 점검하는 테스트 계획이 수
+립되어 있는지 확인
+단위테스트계획서 검토
+요구사항정의서, 요구사항추적표, 아키텍처설계서, 유즈케이스설계서, 클래스설계서, 개발가이드, 
+프로그램명세서, 단위테스트계획서 등
+라. 연관된 구현단계 보안약점 항목
+유형
+보안약점 항목
+보안기능
+암호화되지 않은 중요정보
+마. 참고자료
+①CWE‐319, Cleartext Transmission of Sensitive Information, MITRE,
+http://cwe.mitre.org/data/definitions/312.html
+②Transport Layer Protection Cheat Sheet, OWASP,
+http://www.owasp.org/index.php/Transport_Layer_Pro- tection_Cheat_Sheet
+③2016 OWASP Application Security Verification Standard, OWASP, Communications 
+security Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Verific
+ation_ Standard_Project

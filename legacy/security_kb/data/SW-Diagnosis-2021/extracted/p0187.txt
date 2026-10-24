@@ -1,0 +1,34 @@
+187
+제4장구현단계 보안약점 진단
+다음의 예제를 살펴보면, 5라인에서 PreparedStatement 객체를 사용하고 있으나 객체를 상수 
+스트링으로 생성하여 파라미터 부분을 setString 메소드로 설정하지 않아, 4라인에서 사용자의 외부 
+입력 값이 쿼리문의 구조를 바꾸게 되어 취약하다고 판정한다.
+정탐코드의 예
+1: … 
+2: String tableName = props.getProperty(“jdbc.tableName”); 
+3: String name = props.getProperty(“jdbc.name”); 
+4: String query = “SELECT * FROM “ + tableName + “ WHERE Name =‘” + name + “’”;
+5: stmt = con.prepareStatement(query); 
+6: rs = stmt.executeQuery(); 
+7: … 
+다음의 예제를 살펴보면, 15라인에서 사용자의 입력값이 변수 pid에 저장되고, 19라인에서 comment 
+Dao.getProjectCommentTblByWhere 함수의 파라미터로 사용된다. 해당 함수의 134라인에서 
+문자열을 만들게 되고, 138번 라인에서 해당 문자열을 이용해서 쿼리를 실행하므로 취약하다고 
+판정 한다.
+정탐코드의 예
+< projectDetail.jsp >
+14: <% 
+15: String pid = request.getParameter(“projectid”) == null ? “” : 
+request.getParame- ter(“projectid”); 
+16:MashupProjectDao mashupDao = (MashupProjectDao)
+DAOHelper.getMashupPro- jectDao(application); 
+17: ProjectCommentDao commentDao = (ProjectCommentDao)
+DAOHelper.getProject- CommentDao(application); 
+18: MashupProjectTbl prjTbl = mashupDao.getMashupProjectTbl(pid); 
+19: ArrayList commentList =
+commentDao.getProjectCommentTblByWhere(“where projectid=” + pid +  “ order by 
+writedate desc”); 
+20: String loginID = session.getAttribute(“userid”) == null ? “” : (String)
+session.getAt- tribute(“userid”); 
+21: int category = prjTbl.getCategory(); 
+22: String categoryStr = “”;

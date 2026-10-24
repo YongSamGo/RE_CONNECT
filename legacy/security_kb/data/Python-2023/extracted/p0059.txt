@@ -1,0 +1,39 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제1절 입력데이터 검증 및 표현
+53
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+from flask import Flask
+from flask_wtf.csrf import CSRFProtect
+# CSRF 설정 추가
+csrf = CSRFProtect(app)
+app = Flask(__name__)
+app.config[‘SECRET_KEY’] = os.environ.get('SECRET_KEY')
+csrf.init_app(app)
+⦁Flask 템플릿 설정 사례
+위 코드처럼 함수에 CSRF 기능을 활성화 해도 HTML 파일에 csrf_token을 명시하지 않을 경우 CSRF 
+검증 기능을 사용할 수 없다.
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+<form action="" method="POST">
+<!-- form 태그 내부에 csrf_token 미적용-->
+    <table>
+        {{as_table}}
+    </table>
+    <input type="submit"/>
+</form>
+템플릿 페이지에도 csrf_token 값을 명시해줘야 정상적인 CSRF 검증이 수행된다.
+FlaskForm 사용 시에는 {{ form.csrf_token }}을 명시해야 하고 템플릿에 FlaskForm을 사용하지 않을 
+경우에는 form 태그 안에 hidden input 값으로 {{ csrf_token }} 값을 명시해야 한다.

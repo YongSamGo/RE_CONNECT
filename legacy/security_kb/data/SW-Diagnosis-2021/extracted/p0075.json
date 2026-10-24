@@ -1,0 +1,422 @@
+{
+ "lines": [
+  {
+   "text": "75",
+   "bbox": [
+    460.5,
+    696.9080810546875,
+    470.0967102050781,
+    707.8070678710938
+   ],
+   "block": 22,
+   "size": 9.0,
+   "fonts": [
+    "Dinmed"
+   ]
+  },
+  {
+   "text": "제3장분석․ 설계단계 보안항목 진단",
+   "bbox": [
+    342.7799987792969,
+    71.85810089111328,
+    458.2848815917969,
+    80.53080749511719
+   ],
+   "block": 23,
+   "size": 7.582552433013916,
+   "fonts": [
+    "SDGogoRound03Rg",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 프로그램 명세서, 클래스설계서, ",
+   "bbox": [
+    70.86000061035156,
+    139.81112670898438,
+    459.1807556152344,
+    150.8331298828125
+   ],
+   "block": 25,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "단위 테스트케이스 등",
+   "bbox": [
+    70.86000061035156,
+    156.79104614257812,
+    153.4793243408203,
+    167.81304931640625
+   ],
+   "block": 26,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "라. 연관된 구현단계 보안약점 항목",
+   "bbox": [
+    70.86000061035156,
+    203.795166015625,
+    220.3914794921875,
+    215.8731689453125
+   ],
+   "block": 27,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "유형",
+   "bbox": [
+    159.0,
+    228.158203125,
+    174.12704467773438,
+    238.05819702148438
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "보안약점 항목",
+   "bbox": [
+    334.20001220703125,
+    228.158203125,
+    381.5479431152344,
+    238.05819702148438
+   ],
+   "block": 28,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumMedium"
+   ]
+  },
+  {
+   "text": "입력데이터 검증 및 표현",
+   "bbox": [
+    126.36079406738281,
+    248.49819946289062,
+    206.7713165283203,
+    258.398193359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "크로스사이트 요청 위조",
+   "bbox": [
+    318.9037170410156,
+    248.49819946289062,
+    396.91387939453125,
+    258.398193359375
+   ],
+   "block": 29,
+   "size": 8.907171249389648,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "마. 참고자료",
+   "bbox": [
+    70.86000061035156,
+    299.1950988769531,
+    126.4169921875,
+    311.2731018066406
+   ],
+   "block": 30,
+   "size": 10.888216018676758,
+   "fonts": [
+    "KoPubDotumBold"
+   ]
+  },
+  {
+   "text": "①“Cross-Site Request Forgery”, Wikipedia ",
+   "bbox": [
+    85.86000061035156,
+    322.8712158203125,
+    280.8603210449219,
+    333.8932189941406
+   ],
+   "block": 31,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://en.wikipedia.org/wiki/Cross-site_request_forgery ",
+   "bbox": [
+    99.60041046142578,
+    338.8912048339844,
+    348.9945983886719,
+    349.9132080078125
+   ],
+   "block": 32,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "②2013 OWASP Top 10 ‐ A8 Cross‐Site Request Forgery(CSRF), OWASP,",
+   "bbox": [
+    85.86000061035156,
+    359.8800048828125,
+    407.7142028808594,
+    370.9131164550781
+   ],
+   "block": 33,
+   "size": 9.92959213256836,
+   "fonts": [
+    "KoPubDotumLight",
+    "HaansoftBatang"
+   ]
+  },
+  {
+   "text": "https://www.owasp.org/index.php/ Top_10_2013",
+   "bbox": [
+    99.60018920898438,
+    375.8509826660156,
+    318.1470642089844,
+    386.87298583984375
+   ],
+   "block": 34,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "③CSRF Prevention Cheat Sheet, OWASP, ",
+   "bbox": [
+    85.85977935791016,
+    396.85089111328125,
+    276.8193359375,
+    407.8728942871094
+   ],
+   "block": 35,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Preventi",
+   "bbox": [
+    99.60018920898438,
+    412.8708801269531,
+    456.09844970703125,
+    423.89288330078125
+   ],
+   "block": 36,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "on_Cheat_Sheet",
+   "bbox": [
+    99.60018920898438,
+    428.890869140625,
+    171.29443359375,
+    439.9128723144531
+   ],
+   "block": 37,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "④Spring MVC support for CSRF prevention, eyallupu,",
+   "bbox": [
+    85.85977935791016,
+    449.8907775878906,
+    323.06719970703125,
+    460.91278076171875
+   ],
+   "block": 38,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://blog.eyallupu.com/2012/04/csrf-defense-in-spring-mvc-31.html",
+   "bbox": [
+    99.60018920898438,
+    465.85064697265625,
+    420.7061462402344,
+    476.8726501464844
+   ],
+   "block": 39,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑤Cross-Site Request Forgery: Demystified, ynori7,",
+   "bbox": [
+    85.8607177734375,
+    486.8505554199219,
+    316.1341247558594,
+    497.87255859375
+   ],
+   "block": 40,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://halls-of-valhalla.org/beta/articles/cross-site-re-quest-forgery-demystifi",
+   "bbox": [
+    99.60112762451172,
+    502.8705139160156,
+    455.9312438964844,
+    513.8925170898438
+   ],
+   "block": 41,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "ed,47/",
+   "bbox": [
+    99.60113525390625,
+    518.8904418945312,
+    128.80474853515625,
+    529.9124755859375
+   ],
+   "block": 42,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑥Cross-Site Request Forgeries: Exploitation and Prevention, William Zeller and ",
+   "bbox": [
+    85.86072540283203,
+    539.890380859375,
+    459.180419921875,
+    550.9124145507812
+   ],
+   "block": 43,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "Edward W. Felten, ",
+   "bbox": [
+    99.60110473632812,
+    555.8502197265625,
+    183.52496337890625,
+    566.8722534179688
+   ],
+   "block": 44,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://people.eecs.berkeley.edu/~daw/teaching/cs261-f11/reading/csrf.pdf",
+   "bbox": [
+    99.60110473632812,
+    571.8701782226562,
+    435.5614929199219,
+    582.8922119140625
+   ],
+   "block": 45,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "⑦Cross Site Request Forgery Protection, Django,",
+   "bbox": [
+    85.8607177734375,
+    592.8701171875,
+    305.3729553222656,
+    603.8921508789062
+   ],
+   "block": 46,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  },
+  {
+   "text": "http://docs.djangoproject.com/en/1.8/ref/csrf/",
+   "bbox": [
+    99.60112762451172,
+    608.8900756835938,
+    308.166015625,
+    619.912109375
+   ],
+   "block": 47,
+   "size": 9.895223617553711,
+   "fonts": [
+    "KoPubDotumLight"
+   ]
+  }
+ ],
+ "regions": [
+  {
+   "kind": "table",
+   "indices": [
+    5,
+    6,
+    7,
+    8
+   ],
+   "bbox": [
+    70.68000030517578,
+    222.54798380533853,
+    453.7200012207031,
+    263.1679992675781
+   ],
+   "cells": [
+    [
+     "유형",
+     "보안약점 항목"
+    ],
+    [
+     "입력데이터 검증 및 표현",
+     "크로스사이트 요청 위조"
+    ]
+   ],
+   "simple": true,
+   "exact": true,
+   "text": "유형\n보안약점 항목\n입력데이터 검증 및 표현\n크로스사이트 요청 위조"
+  }
+ ],
+ "native": "75\n제3장분석․ 설계단계 보안항목 진단\n요구사항정의서, 요구사항추적표, 아키텍처설계서, 개발가이드, 프로그램 명세서, 클래스설계서, \n단위 테스트케이스 등\n라. 연관된 구현단계 보안약점 항목\n유형\n보안약점 항목\n입력데이터 검증 및 표현\n크로스사이트 요청 위조\n마. 참고자료\n①“Cross-Site Request Forgery”, Wikipedia \nhttp://en.wikipedia.org/wiki/Cross-site_request_forgery \n②2013 OWASP Top 10 ‐ A8 Cross‐Site Request Forgery(CSRF), OWASP,\nhttps://www.owasp.org/index.php/ Top_10_2013\n③CSRF Prevention Cheat Sheet, OWASP, \nhttp://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF)_Preventi\non_Cheat_Sheet\n④Spring MVC support for CSRF prevention, eyallupu,\nhttp://blog.eyallupu.com/2012/04/csrf-defense-in-spring-mvc-31.html\n⑤Cross-Site Request Forgery: Demystified, ynori7,\nhttp://halls-of-valhalla.org/beta/articles/cross-site-re-quest-forgery-demystifi\ned,47/\n⑥Cross-Site Request Forgeries: Exploitation and Prevention, William Zeller and \nEdward W. Felten, \nhttp://people.eecs.berkeley.edu/~daw/teaching/cs261-f11/reading/csrf.pdf\n⑦Cross Site Request Forgery Protection, Django,\nhttp://docs.djangoproject.com/en/1.8/ref/csrf/\n",
+ "native_sha256": "bf4f2456598b701a9c38569c115cde8f1ae81da0c7cbdbcbe2e46e7f12e7d34f",
+ "chars": 1014,
+ "replacement_characters": 0,
+ "control_characters": [],
+ "source_sha256": "75336080bd167cfd2655c5587c2c7e07c9916a70ddd4063d22178591c60ba888",
+ "version": 1,
+ "code_version": 4
+}

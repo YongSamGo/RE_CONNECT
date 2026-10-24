@@ -1,0 +1,43 @@
+417
+제4장구현단계 보안약점 진단
+재귀함수는 함수내부에서 자신을 호출하는 경우이다. 함수명과 파라미터의 개수, 파라미터의 자료형이 
+일치하는 경우 취약하다.
+정탐코드의 예
+1: public class RecursiveCall { 
+2:
+private int a; 
+3:
+4:
+public void func(int a) { 
+5:
+this.a = a; 
+6:
+}
+7:
+8:
+public void func(String a) { 
+9:
+func(a); 
+10: }
+11:}
+다음의 예제와 같이 같은 이름에 파라미터가 다른 함수가 있는 경우는 취약하지 않다. 다음의 예제는 
+func(String a)에서 func(int a)를 호출하고 있는데 recursive call 이 아닌 다른 함수의 호출이므로 
+안전하다.
+오탐코드의 예
+1: public class RecursiveCall { 
+2:
+private int a 
+3: 
+4:
+public void func(int a) { 
+5:
+this.a = a; 
+6:
+}
+7: 
+8:
+public void func(String a) { 
+9:
+func(Integer.parseInt(a)); 
+10: }
+11:}

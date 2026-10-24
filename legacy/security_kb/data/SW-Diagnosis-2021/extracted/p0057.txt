@@ -1,0 +1,16 @@
+57
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①CWE‐90 LDAP Injection, MITRE, http://cwe.mitre.org/data/definitions/90.html 
+②2016 OWASP Application Security Verification Standard, OWASP, Malicious Input 
+Handling Verification Requirements,
+http://www.owasp.org/index.php/Category:OWASP_Application_Security_Ver- 
+ification_Standard_Project
+③“LDAP Resources”, http://ldapman.org/
+④“LDAP Injection & Blind LDAP Injection”
+http :// ww w.blackh at .com/present ations/bh -europe-08/ Alon- 
+so-Parada/Whitepaper/bh-eu-08-alonso-parada-WP.pdf
+⑤“A String Representation of LDAP Search Filters”,
+http://www.ietf.org/rfc/rfc1960.txt
+⑥Failure to Sanitize Data into LDAP Queries(‘LDAP Injection’),
+http://cwe.mitre.org/data/definitions/90.html

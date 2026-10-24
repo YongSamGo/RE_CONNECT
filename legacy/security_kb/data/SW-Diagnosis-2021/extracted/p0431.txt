@@ -1,0 +1,35 @@
+431
+제4장구현단계 보안약점 진단
+발생 가능한 예외를 세분화하고 발생 가능한 순서에 따라 예외를 처리하고 있다.
+안전한 코드의 예 C#
+1: try { 
+2:
+InvokeMtd(); 
+// 발생할 수 있는 오류의 종류와 순서에 맞춰서 예외 처리 한다.
+3:
+} catch (IOException e) {
+4:
+logger.Debug(“IOException log here”); 
+5: } catch (SQLException e){
+6:
+logger.Debug(“SQLException log here”);
+7: }
+라. 진단방법
+함수 또는 메소드에 대하여 반환값을 검사하고 예외를 발생시키는 경우(①) 구체적인 예외처리를 
+수행하는지 확인한다.
+일반적인 진단의 예
+1: public void readFromFile(String fileName) { 
+2:
+try { 
+3:
+… 
+4:
+File myFile = new File(fileName); 
+5:
+FileReader fr = new FileReader(myFile); 
+6:
+…
+7:
+} catch(Exception ex){…} ······································································································①
+8:
+}

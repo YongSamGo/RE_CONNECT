@@ -1,0 +1,18 @@
+63
+제3장분석․ 설계단계 보안항목 진단
+마. 참고자료
+①CWE‐99 Resource Injection, MITRE, 
+http://cwe.mitre.org/data/definitions/99.html
+②CWE‐78 OS Command Injection, MITRE, 
+http://cwe.mitre.org/data/definitions/78.html 
+③CWE‐22 Path Traversal, MITRE, http://cwe.mitre.org/data/definitions/22.html
+④WASC Threat Classification v2.0 OS Commanding, WASC,
+http://projects.webappsec.org/w/ page/13246950/OS%20Commanding
+⑤WASC Threat Classification v2.0 Path Traversal, WASC,
+http://projects.webappsec.org/w/page/13246952/ Path%20Traversal
+⑥Command Injection, OWASP, 
+http://www.owasp.org/index.php/Command_Injection
+⑦File System Path Traversal, OWASP,
+http://www.owasp.org/index.php/File_System#Path_traversal
+⑧Directory traversal attack, Wikipedia,
+http://en.wikipedia.org/wiki/Directory_traversal_attack

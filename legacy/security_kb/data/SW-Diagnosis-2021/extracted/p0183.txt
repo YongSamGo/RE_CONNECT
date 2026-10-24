@@ -1,0 +1,30 @@
+183
+제4장구현단계 보안약점 진단
+Hibernate의 경우 기본으로 PreparedStatement를 사용하지만, 아래 코드와 같이 파라미터 바인딩
+(binding)없이 사용할 경우 외부로부터 입력받은 값에 의해 쿼리의 구조가 변경 될 수 있다.
+안전하지 않은 코드의 예 Hibernate
+1: import org.hibernate.Query
+2: import org.hibernate.Session 
+3: ......
+4: //외부로부터 입력받은 값을 검증 없이 사용할 경우 안전하지 않다.
+5: String name = request.getParameter("name");
+6: //Hiberate는 기본으로 PreparedStatement를 사용하지만, 파라미터 바인딩 없이 사용 할 경우 
+안전하지 않다.
+7: Query query = session.createQuery("from Student where studentName = '" + name 
++ "'  ");
+아래 코드와 같이 외부 입력값이 위치하는 부분을 ? 또는 :명명된 파라미터 변수로 설정하고, 실행 시에 
+해당 파라미터가 전달되는 바인딩(binding)을 함으로써 외부의 입력이 쿼리의 구조를 변경시키는 
+것을 방지할 수 있다.
+안전한 코드의 예 Hibernate
+1: import org.hibernate.Query 
+2: import org.hibernate.Session 
+3: ...... 
+4: String name = request.getParameter("name");
+5: //1. 파라미터 바인딩을 위해 ?를 사용한다.
+6: Query query = session.createQuery("from Student where studentName = ? ");
+7: //2. 파라미터 바인딩을 사용하여 외부 입력값에 의해 쿼리 구조 변경을 못하게 사용하였다.
+8: query.setString(0, name);
+안전한 코드의 예 Hibernate
+1: import org.hibernate.Query 
+2: import org.hibernate.Session 
+3: ......

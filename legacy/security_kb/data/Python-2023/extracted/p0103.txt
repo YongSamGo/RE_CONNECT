@@ -1,0 +1,11 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+97
+라. 참고자료
+① CWE-521: Weak Password Requirements, MITRE,
+https://cwe.mitre.org/data/definitions/521.html
+② Authentication Cheat Sheet, OWASP,
+https://cheatsheetseries.owasp.org/cheatsheets/Authentication_Cheat_Sheet.html
+③ Regular Expression HOWTO, Python Software Foundation,
+https://docs.python.org/3/howto/regex.html
+④ Password management in Django, Django Software Foundation, 
+https://docs.djangoproject.com/en/4.0/topics/auth/passwords/

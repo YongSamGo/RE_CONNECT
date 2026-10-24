@@ -1,0 +1,59 @@
+PART 제2장 시큐어코딩 가이드 ❘ 제2절 보안기능
+73
+안전하지 않은 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+from django.shortcuts import render
+from .model import Content
+def delete_content(request):
+  action = request.POST.get('action', '')
+  content_id = request.POST.get('content_id', '')
+  # 작업 요청을 하는 사용자의 권한 확인 없이 delete를 수행
+  if action is not None and action == "delete":
+    Content.objects.filter(id=content_id).delete()
+    return render(request, '/success.html')
+  else:
+    return render(request, '/error.html', {'error':'접근 권한이 없습니다.'})
+세션에 저장된 사용자 정보를 통해 해당 사용자가 수행할 작업에 대한 권한이 있는지 확인한 후 권한이 있는 
+경우에만 작업을 수행하도록 해야 한다.
+안전한 코드 예시
+1:
+2:
+3:
+4:
+5:
+6:
+7:
+8:
+9:
+10:
+11:
+12:
+13:
+14:
+15:
+16:
+from django.contrib.auth.decorators import login_required, permission_required
+from django.shortcuts import render
+from .model import Content
+@login_required
+ # 해당 기능을 수행할 권한이 있는지 확인
+@permission_required('content.delete', raise_exception=True)
+def delete_content(request):
+  action = request.POST.get('action', '')
+  content_id = request.POST.get('content_id', '')
+  if action is not None and action == "delete":
+    Content.objects.filter(id=content_id).delete()
+    return render(request, '/success.html')
+  else:
+    return render(request, '/error.html', {'error':'삭제 실패'})
