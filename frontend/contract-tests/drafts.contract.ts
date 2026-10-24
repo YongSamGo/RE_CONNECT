@@ -27,6 +27,15 @@ it('parses actual Redis-backed draft creation, revision, approval and invalidati
   expect(drafts[2].approved_at).not.toBeNull()
   expect(drafts[3]).toEqual(drafts[2])
   expect(drafts[4].approved_at).toBeNull()
+  for (const [key, source, reason] of [['closed', drafts[2], 'opportunity_closed'], ['profile_changed', drafts[4], 'profile_changed']] as const) {
+    expect(validate(actual[key]), JSON.stringify(validate.errors)).toBe(true)
+    const reviewed = parseJourneyDraft(actual[key], source.opportunity, source.profile_version)
+    expect(reviewed.review_reasons).toEqual([reason])
+    expect(reviewed.self_introduction).toBe(source.self_introduction)
+    expect(reviewed.motivation).toBe(source.motivation)
+    expect(reviewed.approved_at).toBe(source.approved_at)
+    expect(reviewed.revision).toBe(source.revision)
+  }
   expect(actual.stale_patch).toBe(409)
   expect(actual.other_owner).toBe(404)
   expect(actual.ai_without_consent).toBe(403)

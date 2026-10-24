@@ -13,7 +13,7 @@ const stamp = '2026-10-18T00:00:00Z'
 const reference = { id: opportunityId, version: 1 }
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
 const empty = () => ({ draft_id: draftId, revision: 1, mode: 'manual', profile_version: 1, opportunity: reference, self_introduction: '', motivation: '', approved_at: null as string | null, review_reasons: [], warnings: [] })
-function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: boolean; consent?: boolean } = {}) {
+function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: boolean; consent?: boolean; loseApproval?: boolean; reviewReasons?: string[] } = {}) {
   let current = empty(), creations = 0
   const fetch = vi.fn(async (request: Request) => {
     const path = new URL(request.url).pathname
@@ -34,7 +34,11 @@ function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: 
       const body = await request.clone().json()
       current = { ...current, revision: current.revision + 1, self_introduction: body.self_introduction, motivation: body.motivation, approved_at: null }
     }
-    if (path.endsWith('/approve')) current = { ...current, revision: current.revision + 1, approved_at: stamp }
+    if (path.endsWith('/approve')) {
+      current = { ...current, revision: current.revision + 1, approved_at: stamp }
+      if (options.loseApproval) throw new TypeError('fixture lost approval response')
+    }
+    if (request.method === 'GET' && path.endsWith(draftId)) return json({ ...current, review_reasons: options.reviewReasons ?? [] })
     return json(current)
   })
   vi.stubGlobal('fetch', fetch)
@@ -48,6 +52,13 @@ function mount() {
 const manual = () => screen.getByRole('button', { name: 'AI 없이 빈 초안 직접 작성' })
 const approve = () => screen.getByRole('button', { name: '확인한 현재 본문 승인' })
 const review = () => screen.getByRole('checkbox', { name: '두 항목을 읽고 확정 경험과 공고에 맞는 내용임을 확인했어요.' })
+async function writeAndUpdate(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(manual())
+  await user.type(await screen.findByLabelText('지원 자기소개'), '가상 경험')
+  await user.type(screen.getByLabelText('지원 동기'), '가상 지원동기')
+  await user.click(screen.getByRole('button', { name: '수정 내용을 임시 초안에 반영' }))
+  await screen.findByText('수정 내용을 서버 임시 초안에 반영했습니다. 다시 읽고 승인해 주세요.')
+}
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 
 it('requires explicit patch, renewed review and server approval before offering member save', async () => {
@@ -140,6 +151,31 @@ it('keeps a selectable copy fallback when clipboard permission fails', async () 
   const field = screen.getByLabelText('복사할 현재 작성 내용') as HTMLTextAreaElement
   expect(field).toHaveFocus(); expect(field.selectionStart).toBe(0); expect(field.selectionEnd).toBe(field.value.length)
   expect(screen.queryByRole('link', { name: '프로필과 지원서 회원 저장 선택' })).not.toBeInTheDocument()
+})
+
+it('recovers a lost approval reply by reading current state without submitting approval again', async () => {
+  const fetch = server({ loseApproval: true }), { user } = mount()
+  await writeAndUpdate(user); await user.click(review()); await user.click(approve())
+  await screen.findByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)
+  expect(screen.queryByRole('link', { name: '프로필과 지원서 회원 저장 선택' })).not.toBeInTheDocument()
+  await user.click(screen.getByRole('button', { name: '서버의 현재 편집본 확인' }))
+  expect(await screen.findByRole('link', { name: '프로필과 지원서 회원 저장 선택' })).toBeVisible()
+  expect(fetch.mock.calls.filter(([request]) => request.url.endsWith('/approve'))).toHaveLength(1)
+  expect(screen.getByLabelText('지원 동기')).toHaveValue('가상 지원동기')
+})
+
+it.each(['profile_changed', 'opportunity_changed', 'opportunity_closed'])('blocks approval and member-save on reloaded %s without rewriting the old text', async reason => {
+  const fetch = server({ reviewReasons: [reason] }), { user } = mount()
+  await writeAndUpdate(user); await user.click(review()); await user.click(approve())
+  await screen.findByRole('link', { name: '프로필과 지원서 회원 저장 선택' })
+  await user.click(screen.getByRole('button', { name: '서버의 현재 편집본 확인' }))
+  expect(await screen.findByRole('heading', { name: '근거를 다시 확인해 주세요' })).toBeVisible()
+  expect(screen.getByLabelText('지원 자기소개')).toHaveValue('가상 경험')
+  expect(screen.getByLabelText('지원 동기')).toHaveValue('가상 지원동기')
+  expect(screen.queryByRole('link', { name: '프로필과 지원서 회원 저장 선택' })).not.toBeInTheDocument()
+  await user.click(review()); expect(approve()).toBeDisabled()
+  expect(manual()).toBeDisabled()
+  expect(fetch.mock.calls.filter(([request]) => request.url.endsWith('/approve'))).toHaveLength(1)
 })
 
 it('rejects substituted references, unsafe revisions and unrecognized review flags', () => {

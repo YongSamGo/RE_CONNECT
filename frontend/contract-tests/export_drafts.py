@@ -15,9 +15,12 @@ with patch("app.core.config.get_settings", return_value=Settings(_env_file=None,
     from tests.test_admission import with_redis
     from tests.test_consents import csrf
     from tests.test_journey_drafts import body, setup
+    from tests.test_profile_confirmation import ready_edit
     from tests.persistence_helpers import open_test_database
 
 import httpx  # noqa: E402
+from sqlalchemy import update  # noqa: E402
+from app.persistence.operations import OpportunityVersion  # noqa: E402
 
 
 async def scenario(admission, admission_store, redis):
@@ -53,9 +56,19 @@ async def scenario(admission, admission_store, redis):
                 assert response.status_code == 200 and response.headers["cache-control"] == "no-store"
                 result["current"] = response.json()
                 result["inference_calls"] = runtime.calls
+                db.execute(update(OpportunityVersion).values(recruitment_status="closed"))
+                response = await client.get(target)
+                assert response.status_code == 200, response.text
+                result["closed"] = response.json()
+                db.execute(update(OpportunityVersion).values(recruitment_status="open"))
                 response = await client.patch(target, json={**edited_body, "base_revision": 3, "motivation": "수정한 가상 지원동기"}, headers=csrf(client))
                 assert response.status_code == 200, response.text
                 result["changed"] = response.json()
+                await journeys.update_profile(issued.session, journey.journey_id, ready_edit(revision=3, description="수정한 가상 경험"))
+                await journeys.confirm_profile(issued.session, journey.journey_id, 4)
+                response = await client.get(target)
+                assert response.status_code == 200, response.text
+                result["profile_changed"] = response.json()
                 other = await sessions.issue()
                 client.cookies.set("__Host-rc_session", other.token)
                 result["other_owner"] = (await client.get(target)).status_code
