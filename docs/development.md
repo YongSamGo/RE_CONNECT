@@ -76,6 +76,8 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 Dependabot이 새 버전을 7일 기다린 뒤 업데이트 PR을 만든다. 직접 버전을 올릴 때도 배포된 지 7일이 지나지 않은 버전은 피한다.
 
+예외: 알려진 취약점(`pip-audit`·`npm audit`에 걸린 권고)의 수정판은 7일을 기다리지 않고 올릴 수 있다. PR에 권고 ID, 공식 배포물과의 해시 대조, 바뀐 패키지가 수정 대상 하나뿐인지를 적고 Code Owner 승인을 받는다. 7일이 지난 뒤 같은 버전에 새 경보가 없는지 다시 확인한다(첫 사례: certifi 2026.10.19, PYSEC-2026-4320, #212).
+
 ## 6. 줄바꿈·편집기
 
 - [.gitattributes](../.gitattributes)가 텍스트 파일을 LF로 통일한다. Windows에서 CRLF로 바뀐 셸 스크립트·Dockerfile은 Linux 컨테이너에서 실행되지 않기 때문이다.
