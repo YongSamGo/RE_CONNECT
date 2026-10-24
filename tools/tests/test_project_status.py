@@ -53,6 +53,15 @@ class ProjectStatusTests(unittest.TestCase):
         self.assertIn("제목 &#124; &lt;script&gt; 둘째 줄", output)
         self.assertNotIn("<script>", output)
 
+    def test_legacy_title_prefix_is_linked(self):
+        pr = dict(title="[11] 진행 기록 (#16)", closingIssuesReferences=[])
+        self.assertEqual(status.linked_issues(pr), {11, 16})
+
+    def test_arbitrary_brackets_are_not_issue_links(self):
+        for title in ["docs: 예시 [11]", "[11]suffix", "[W01-08] 작업"]:
+            with self.subTest(title=title):
+                self.assertEqual(status.linked_issues(dict(title=title, closingIssuesReferences=[])), set())
+
 
 if __name__ == "__main__":
     unittest.main()

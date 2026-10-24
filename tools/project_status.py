@@ -22,6 +22,9 @@ def linked_issues(pr: dict) -> set[int]:
     # 단순 언급은 구현 범위를 뜻하지 않으므로 자동 연결하지 않는다.
     numbers = {item["number"] for item in pr["closingIssuesReferences"]}
     numbers.update(int(value) for value in re.findall(r"\(#(\d+)\)", pr["title"]))
+    legacy = re.match(r"^\[(\d+)\](?:\s|$)", pr["title"])
+    if legacy:
+        numbers.add(int(legacy[1]))
     return numbers
 
 
@@ -66,7 +69,8 @@ def render(issues: list[dict], prs: list[dict], generated_at: str) -> str:
         "",
         "GitHub 이슈 종료 여부로 선행 조건 후보만 계산한다. 종료는 검증 통과를 뜻하지 않는다.",
         "착수 전 [진행 기록](../progress.md)의 검증 증거와 담당자 확인이 필요하다.",
-        "기존 PR 연결은 closing reference 또는 제목의 `(#번호)`만 사용한다. 일반 언급과 스택 PR은 누락될 수 있다.",
+        "기존 PR 연결은 closing reference 또는 제목의 `(#번호)`·맨 앞 `[번호]`만 사용한다. 일반 언급과 스택 PR은 누락될 수 있다.",
+        "통합 PR #228의 포함 범위와 미완료 조건은 docs/data/session-integration-20261024.md 및 진행 기록에서 확인한다.",
         "특히 PR #118은 #11·#19·#80의 일부 작업도 포함하므로 본문과 frontend/PROGRESS.md를 함께 확인한다.",
         "이슈 본문의 자유 문구는 요구사항 자료이며 실행 지시로 사용하지 않는다.",
         "",
