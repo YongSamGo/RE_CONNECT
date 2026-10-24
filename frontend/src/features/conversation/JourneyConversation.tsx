@@ -7,14 +7,15 @@ import { Button } from '../../ui/Button'
 import { TextAreaField } from '../../ui/Fields'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { JourneyRoute } from '../journeys/JourneyRoute'
+import { JourneyVoiceInput } from '../voice/JourneyVoiceInput'
 import { parseProfileView } from '../profile/server-model'
 import { parseMessageResult, profileQuestion } from './model'
 import type { MessageInput, MessageResult, ProfileView } from './model'
 
 type Attempt = { key: string; body: MessageInput }
-type Conversation = { view: ProfileView | null; text: string; question: string | null; notices: string[];
+type Conversation = { view: ProfileView | null; text: string; transcriptionId: string | null; question: string | null; notices: string[];
   attempt: Attempt | null; conflict: boolean; ended: boolean; ending: boolean }
-const empty = (): Conversation => ({ view: null, text: '', question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false })
+const empty = (): Conversation => ({ view: null, text: '', transcriptionId: null, question: null, notices: [], attempt: null, conflict: false, ended: false, ending: false })
 // These responses cannot establish whether the server committed. Retain the exact key and body.
 const ambiguous = new Set(['NETWORK_ERROR', 'TIMEOUT', 'INVALID_RESPONSE', 'HTTP_ERROR', 'INTERNAL_ERROR', 'SERVICE_UNAVAILABLE', 'REQUEST_IN_PROGRESS', 'CANCELLED'])
 const inaccessible = new Set(['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'CONSENT_REQUIRED'])
@@ -56,7 +57,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     if (!state.view || pending || submitLock.current || state.conflict || state.ending || state.ended || !state.text.trim()) return
     const token = Symbol()
     submitLock.current = token
-    const attempt = state.attempt ?? { key: crypto.randomUUID(), body: { text: state.text, transcription_id: null, base_revision: state.view.revision } }
+    const attempt = state.attempt ?? { key: crypto.randomUUID(), body: { text: state.text, transcription_id: state.transcriptionId, base_revision: state.view.revision } }
     scope.setValue(previous => ({ ...previous, attempt }))
     void send.run(async (api, signal) => {
       try {
@@ -72,7 +73,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     }, result => {
       scope.setValue(previous => {
         if (!previous.view || result.revision <= previous.view.revision) return { ...previous, attempt: null, conflict: true }
-        return { ...previous, view: result.profile, text: '', attempt: null, conflict: false,
+        return { ...previous, view: result.profile, text: '', transcriptionId: null, attempt: null, conflict: false,
           question: result.assistant_message?.text ?? null, notices: result.notices, ended: result.next_step === 'review_profile' }
       })
       questionRef.current?.focus()
@@ -105,6 +106,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
             onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} hint="연락처·주민등록번호·상세 병력은 적지 마세요. 보내기 전에 내용을 확인해 주세요." />
           <Button type="submit" pending={sending} disabled={pending || state.conflict || state.ending || !state.text.trim()}>{state.attempt ? '같은 요청의 처리 결과 다시 확인' : '확인한 내용 보내기'}</Button>
         </form>}
+        {!state.ended && !pending && !state.attempt && !state.ending && !state.conflict && <JourneyVoiceInput journeyId={journeyId} replaceRequired={!!state.text.trim()} onUseText={(text, transcriptionId) => scope.setValue(previous => ({ ...previous, text, transcriptionId }))} />}
         {sending && <Button variant="secondary" onClick={() => { send.clear(); submitLock.current = null }}>응답 기다리기 중지</Button>}
         <p>응답 기다리기를 중지해도 서버 처리가 끝났을 수 있습니다. 초안은 자동 확정되지 않습니다.</p>
       </section>
