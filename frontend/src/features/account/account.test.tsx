@@ -67,6 +67,46 @@ describe('member and operator request boundaries', () => {
     expect(screen.queryByRole('link', { name: /카카오/ })).not.toBeInTheDocument()
     expect(fetch).toHaveBeenCalledTimes(1)
   })
+  it('keeps account deletion disabled without server reauthentication even after confirmation', async () => {
+    const fetch = vi.fn(async () => json(member)); vi.stubGlobal('fetch', fetch)
+    mount(<AccountPage />)
+    await userEvent.click(screen.getByRole('button', { name: '내 로그인 상태 확인' }))
+    await userEvent.click(await screen.findByLabelText('회원 탈퇴와 모든 저장 자료 삭제를 확인했어요.'))
+    expect(screen.getByRole('button', { name: '재인증한 계정 탈퇴' })).toBeDisabled()
+    expect(screen.getByRole('link', { name: '카카오에서 내 계정 재인증' })).toHaveAttribute('href', '/api/v1/auth/kakao/start?purpose=reauth')
+    expect(fetch).toHaveBeenCalledTimes(1)
+  })
+  it('deletes only after confirmation and reauth, and verifies anonymous state before completion', async () => {
+    const onLogout = vi.fn()
+    const fetch = vi.fn().mockResolvedValueOnce(json({ ...member, user: { ...member.user, reauth_until: new Date(Date.now() + 300000).toISOString() } }))
+      .mockResolvedValueOnce(new Response(null, { status: 204 })).mockResolvedValueOnce(json(anonymousSession))
+    vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    mount(<AccountPage onLogout={onLogout} />)
+    await userEvent.click(screen.getByRole('button', { name: '내 로그인 상태 확인' }))
+    expect(await screen.findByRole('button', { name: '재인증한 계정 탈퇴' })).toBeDisabled()
+    await userEvent.click(screen.getByLabelText('회원 탈퇴와 모든 저장 자료 삭제를 확인했어요.'))
+    await userEvent.click(screen.getByRole('button', { name: '재인증한 계정 탈퇴' }))
+    expect(await screen.findByText('회원 탈퇴와 저장 자료 삭제를 완료했습니다.')).toBeVisible()
+    expect(onLogout).toHaveBeenCalledTimes(1)
+    const request = fetch.mock.calls[1]![0] as Request
+    expect(request.method).toBe('DELETE')
+    expect(request.url).toBe('https://reconnect.test/api/v1/me')
+    expect(request.headers.get('X-CSRF-Token')).toBe('token')
+    expect(request.body).toBeNull()
+  })
+  it('withdraws AI purpose explicitly without requesting saved profile deletion', async () => {
+    const fetch = vi.fn().mockResolvedValueOnce(json(member)).mockResolvedValueOnce(json({ purpose: 'ai_processing' })).mockResolvedValueOnce(json({ ...member, consents: [] }))
+    vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    mount(<AccountPage />)
+    await userEvent.click(screen.getByRole('button', { name: '내 로그인 상태 확인' }))
+    await userEvent.click(await screen.findByLabelText('AI 처리 동의를 철회하고 임시 체험을 종료할게요.'))
+    await userEvent.click(screen.getByRole('button', { name: 'AI 동의 철회하고 임시 체험 종료' }))
+    expect(await screen.findByText('AI 처리 동의를 철회하고 임시 체험을 종료했습니다.')).toBeVisible()
+    const request = fetch.mock.calls[1]![0] as Request
+    expect(request.url).toBe('https://reconnect.test/api/v1/consents/withdraw')
+    expect(await request.json()).toEqual({ purpose: 'ai_processing' })
+    expect(fetch).toHaveBeenCalledTimes(3)
+  })
   it.each([
     { ...member, user: null },
     { ...member, user: { ...member.user, roles: ['superuser'] } },
