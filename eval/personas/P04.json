@@ -29,5 +29,6 @@
   },
   "must_not_extract": {"exact": [], "semantic": []},
   "expected_roles": ["사무 보조(회계)", "경리 사무원"],
+  "expected_role_ids": ["office_accounting"],
   "notes": "'서울 서쪽'은 구 목록으로 임의 확장하지 않는다. 시·도 전체(district=null)로 두고 이동 범위는 mobility_note로 보존."
 }

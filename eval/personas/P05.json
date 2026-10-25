@@ -29,5 +29,6 @@
   },
   "must_not_extract": {"exact": [], "semantic": []},
   "expected_roles": ["디지털 기기 사용 교육 봉사", "키오스크 안내 봉사"],
+  "expected_role_ids": ["digital_guide"],
   "notes": "'평일 오전'은 요일만 확정하고 시간대는 현재 계약에 필드가 없으므로 버리지 않고 사용자 확인 대상으로 남긴다. '가르쳐 드리고 싶다'는 희망이지 경험이 아니므로 '디지털 기기 교육'은 역량이 아니라 expected_roles에서만 다룬다."
 }
