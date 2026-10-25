@@ -50,8 +50,20 @@ python infra/aws/check_database_tls.py --host <RDS-DNS-endpoint> --ca-file <AWS-
    멤버가 아니며 CREATE·TRUNCATE·GRANT 권한 및 `alembic_version` 접근 권한이 없다.
    TLS 연결로 정상 DML 성공과 DDL·마이그레이션 테이블 변경 거절을 실제 확인한다.
 
-SQL은 아직 실제 PostgreSQL/RDS에서 실행하지 않았다. 기존 DB 적용·공개 스키마 내
-추가 테이블/시퀀스·DB 계정 회전·백업 복구 후 권한은 운영 전 별도로 검증한다.
+전용 Unix socket PostgreSQL 16에서 역할 시험 5개를 실행했다. 초기 NOLOGIN·상승 권한 없음,
+실제 실행 계정의 DML/시퀀스 사용, DDL·TRUNCATE·마이그레이션 테이블·소유자 함수 접근과
+역할 승격 거절을 확인했다. 새 테이블의 자동 권한 부여 없음, 명시적 재적용, 다른 소유자
+객체가 있을 때 권한 전체 롤백, 초기화 재실행 시 기존 역할 보존도 확인했다.
+
+역할 시험은 `DB_ROLE_TEST_SOCKET`이 명시된 새 `/tmp/reconnect-db-roles-.../socket`
+클러스터에서만 실행한다. 실제 서버의 data_directory·포트·TCP listen 비활성·버전·기존 역할
+없음을 검사하며 `reconnect` DB/역할을 만들거나 수정하므로 운영 DB에는 사용할 수 없다.
+psycopg와 psql이 필요하고, 시험 클러스터는 별도로 준비·종료해야 한다.
+변수 없이 일반 오프라인 시험을 돌리면 역할 시험은 제외된다.
+
+이 증거는 로컬 trust 인증의 별도 클러스터에서 얻었다. RDS 배포·실제 자격 증명·TLS를
+사용한 역할 접속은 검증하지 않았다. 기존 DB 적용·공개 스키마 내 추가 테이블/시퀀스·
+별도 관리 작업 역할·계정 회전·백업 복구 후 권한은 운영 전 별도로 검증한다.
 
 공식 근거:
 
