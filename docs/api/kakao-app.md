@@ -40,11 +40,11 @@
 
 | 앱 | Redirect URI | 쓰임 |
 |---|---|---|
-| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(`uvicorn`, 기본 포트 8000)으로 W10-01 왕복 시험. 콜백이 보내는 `/auth/result`는 화면 경로라 8000에서는 404로 끝나므로 결과는 주소창의 `status`로 확인한다. 화면까지 볼 때는 아래 5173 경로로 시험한다 |
-| 개발 | `http://localhost:5173/api/v1/auth/kakao/callback` | 프론트엔드 개발 서버가 `/api`를 백엔드로 넘길 때(#13). 포트가 바뀌면 함께 고친다 |
+| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(`uvicorn`, 기본 포트 8000)으로 W10-01 왕복 시험. 콜백이 보내는 `/auth/result`는 화면 경로라 8000에서는 404로 끝나므로 결과는 주소창의 `status`로 확인한다. 로그인 시작(`/api/v1/auth/kakao/start`)도 반드시 `http://localhost:8000`으로 연다. 화면까지 볼 때는 아래 5173 경로로 시험한다 |
+| 개발 | `http://localhost:5173/api/v1/auth/kakao/callback` | 프론트엔드 개발 서버가 `/api/v1`을 백엔드로 넘길 때([frontend/vite.config.ts](../../frontend/vite.config.ts)). 개발 서버는 `127.0.0.1`에 떠서 `http://127.0.0.1:5173/`을 안내하지만, 화면은 반드시 `http://localhost:5173`으로 연다. 포트나 설정이 바뀌면 함께 고친다 |
 | 운영 | `https://<운영 도메인>/api/v1/auth/kakao/callback` | 도메인 확보(#6 W01-03) 뒤 등록한다. 그 전까지 운영 앱은 만들기만 한다 |
 
-`127.0.0.1`·사설 IP·와일드카드 주소는 등록하지 않는다.
+`127.0.0.1`·사설 IP·와일드카드 주소는 등록하지 않는다. 쿠키는 호스트 단위라서 `127.0.0.1`로 연 화면의 세션은 `localhost`로 돌아오는 콜백에 실리지 않고, 계약대로 "세션 없음"이 되어 `status=failed`로 끝난다. 그래서 개발 주소는 `localhost` 하나로 맞춘다.
 
 ## 4. 취소·실패 경로
 
