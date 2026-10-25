@@ -100,7 +100,7 @@ def test_real_http_stores_message_draft_evidence_and_replays_without_repeating_i
             assert runtime.calls == 2 and (await journeys.profile(issued.session, journey.journey_id)).revision == 3
             assert (await client.post(path, json={**body, 'text': '다른 답변'}, headers=headers)).status_code == 409
             for changes, status in [({'base_revision': True}, 422), ({'owner_id': str(uuid4())}, 422),
-                                    ({'transcription_id': str(uuid4())}, 404), ({'text': '연락처를 적었습니다.'}, 422)]:
+                                    ({'transcription_id': str(uuid4())}, 404), ({'text': '연락처는 공일공 구팔칠육 오사삼이예요.'}, 422)]:
                 result = await client.post(path, json={**body, **changes}, headers={**headers, 'Idempotency-Key': str(uuid4())})
                 assert result.status_code == status
             from app.modules.consents.models import ConsentCreate
