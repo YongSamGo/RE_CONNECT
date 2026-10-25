@@ -64,7 +64,7 @@ av==16.1.0 \
     --hash=sha256:f42e1a68ec2aebd21f7eb6895be69efa6aa27eec1670536876399725bbda4b99 \
     --hash=sha256:f49243b1d27c91cd8c66fdba90a674e344eb8eb917264f36117bf2b6879118fd
     # via
-    #   -r speech/requirements.in
+    #   -r requirements.in
     #   faster-whisper
 click==8.5.0 \
     --hash=sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360 \
@@ -75,7 +75,7 @@ click==8.5.0 \
 colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
-    # via -r speech/requirements.in
+    # via -r requirements.in
 ctranslate2==4.8.2 \
     --hash=sha256:00bc9f44172d05bd2becefe757d2397ab3292fad1695169f9ebb9c16eb497ce2 \
     --hash=sha256:077e96d0c9c7308b989538b6f9955e9c42e87b65cb4c7005817f938ba497b6d4 \
@@ -113,20 +113,20 @@ ctranslate2==4.8.2 \
     --hash=sha256:f6f0b576c247984d3fc299a372ccc9319b668d6d25b0539f3c861beba15d0504 \
     --hash=sha256:fedda669421a57f8164568ee86ea265727016988d310fcc2e24ca30e9ec457cd
     # via
-    #   -r speech/requirements.in
+    #   -r requirements.in
     #   faster-whisper
-fastapi==0.143.0 \
-    --hash=sha256:1acffe48206a80917cf7dac21992b5c44b25384e8902bf745c1fd9dabcf6c51f \
-    --hash=sha256:3e9395fd35276425b61b516a31fdd7c77fe2af83e41b4da22e30696fb1304c5d
-    # via -r speech/requirements.in
+fastapi==0.144.0 \
+    --hash=sha256:7392b2609ebaf7e2dbffd38b8a927499e61a50e55dd0e57323ebee30efc1a462 \
+    --hash=sha256:ce62d92f1abe5e06f9111a3d39c675340d440ee7095beab06ec31fee7c070a71
+    # via -r requirements.in
 faster-whisper==1.2.1 \
     --hash=sha256:79a66ad50688c0b794dd501dc340a736992a6342f7f95e5811be60b5224a26a7
-    # via -r speech/requirements.in
+    # via -r requirements.in
 filelock==4.2.1 \
     --hash=sha256:7be2662e9e826b9bba28afc0f843a123280d799a2ea44bb5d35ccec67905ae44 \
     --hash=sha256:c4c937ccac2a813cee448e662a56366cfb374c0f8702e75f295c412cc1c5d5a3
     # via
-    #   -r speech/requirements.in
+    #   -r requirements.in
     #   huggingface-hub
 flatbuffers==25.12.19 \
     --hash=sha256:7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4
@@ -248,7 +248,7 @@ numpy==2.5.4 \
     --hash=sha256:fe4d21ab149f15e4e6043dfb0de87e6e5f34ac176cde83060e9802981fca2ac2 \
     --hash=sha256:ffa6ce09a1c6a08e9667dd9c97aa0b14184e8d18f2a14b78b2a2328c9147f076
     # via
-    #   -r speech/requirements.in
+    #   -r requirements.in
     #   ctranslate2
     #   onnxruntime
 onnxruntime==1.31.0 \
@@ -581,4 +581,4 @@ typing-inspection==0.4.4 \
 uvicorn==0.54.0 \
     --hash=sha256:505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf \
     --hash=sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620
-    # via -r speech/requirements.in
+    # via -r requirements.in
