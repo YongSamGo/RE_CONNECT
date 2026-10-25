@@ -67,7 +67,7 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 
 **확인된 데이터 문제**
 - **공고 ID·공식 상세/신청 URL이 없다.** 계약의 `application_url`·`source_url`을 응답만으로 만들 수 없다. 중복 판정 키도 `(bizYear, orgNm, bizNm, 신청기간)` 같은 조합으로 만들어야 한다.
-- 포털의 공고 상세 경로는 2026-10-22에 확인했다: 가치동행일자리 `https://www.50plus.or.kr/appView.do?ANN_NO=<번호>`(예: `ANN_NO=1549`), 일자리(구 인턴십) `/in_appView.do`(목록 스크립트의 `APP_VIEW_URL`, 쿼리 키는 미확인). `/detail.do?id=`·`/life/detail.do?id=`는 공고가 아닌 안내 게시글이다. API 응답에 `ANN_NO`가 없어 응답과 상세 페이지를 자동으로 잇지는 못한다.
+- 포털의 공고 상세 경로는 2026-10-22에 확인했다: 가치동행일자리 `https://www.50plus.or.kr/appView.do?ANN_NO=<번호>`(예: `ANN_NO=1549`), 일자리(구 인턴십) `/in_appView.do?ANN_NO=<번호>`(2026-10-25 [공식 상세 페이지](https://www.50plus.or.kr/in_appView.do?ANN_NO=1271)에서 쿼리 키까지 확인). `/detail.do?id=`·`/life/detail.do?id=`는 공고가 아닌 안내 게시글이다. API 응답에 `ANN_NO`가 없어 응답과 상세 페이지를 자동으로 잇지는 못한다.
 - **지역 필드가 없다.** `orgNm`(예: `성동센터`, `동부캠퍼스`)으로만 추정할 수 있다. 센터는 이름의 자치구, 캠퍼스는 소재지 확인이 필요하다.
 - 가치동행 일자리의 `annApprvStatView`는 샘플 199건 모두 `승인완료`로 **모집 상태가 아니다**. 모집 여부는 신청기간으로 판단한다. 일자리는 `annRcrtStatNm`(`마감`, `신청·접수중`), 교육은 `lctStatView`(샘플에 `마감`, `폐강`)가 있다.
 - 날짜는 매뉴얼의 `YYYYMMDD`가 아니라 실제로는 `YYYY-MM-DD`다. 일자리의 활동기간에는 `-`가 온다.

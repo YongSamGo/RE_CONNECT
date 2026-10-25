@@ -10,7 +10,7 @@
 import asyncio
 import json
 import logging
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from typing import Any
 
 import httpx
@@ -20,6 +20,7 @@ from app.adapters.llm import (
     LLMInvalidOutputError,
     LLMTimeoutError,
     LLMUnavailableError,
+    LLMTransientUnavailableError,
     OutputT,
     UntrustedTurn,
 )
@@ -118,21 +119,31 @@ class OllamaLLMAdapter:
             payload["think"] = self._think
         return payload
 
+    def validate_request(self, *, instructions, untrusted_turns, output_model) -> None:
+        if not untrusted_turns:
+            raise ValueError("대화 턴이 비어 있습니다")
+        if output_model.model_config.get("extra") != "forbid":
+            raise ValueError("출력 모델은 정의하지 않은 필드를 거절해야 합니다")
+        self._payload(instructions, untrusted_turns, output_model)
+
     async def generate_structured(
         self,
         *,
         instructions: str,
         untrusted_turns: Sequence[UntrustedTurn],
         output_model: type[OutputT],
+        on_runtime_ended: Callable[[], None] | None = None,
     ) -> OutputT:
-        if not untrusted_turns:
-            raise ValueError("대화 턴이 비어 있습니다")
-        if output_model.model_config.get("extra") != "forbid":
-            raise ValueError("출력 모델은 정의하지 않은 필드를 거절해야 합니다")
+        self.validate_request(instructions=instructions, untrusted_turns=untrusted_turns, output_model=output_model)
         payload = self._payload(instructions, untrusted_turns, output_model)
         try:
             async with self._client(self._timeout_seconds) as client:
                 data = await asyncio.wait_for(self._post_json(client, "/api/chat", payload), self._timeout_seconds)
+        except (httpx.ConnectError, httpx.ConnectTimeout):
+            # 고정 내부 목적지에 연결하지 못해 추론 요청이 시작되지 않은 경우만 재시도 후보.
+            if on_runtime_ended is not None:
+                on_runtime_ended()
+            raise LLMTransientUnavailableError("모델 런타임에 연결하지 못했습니다") from None
         except (TimeoutError, httpx.TimeoutException):
             raise LLMTimeoutError("모델 응답 시간이 초과되었습니다") from None
         except httpx.RequestError as exc:
@@ -142,6 +153,9 @@ class OllamaLLMAdapter:
             # json.JSONDecodeError도 ValueError다. 원문을 체인으로 남기지 않는다.
             raise LLMInvalidOutputError("모델 응답 형식이 올바르지 않습니다") from None
 
+        # 입력/출력 검증 오류와 실제 연산 종료는 다르다. 정상 최종 응답에서만 슬롯 반환을 허용한다.
+        if data.get("done") is True and data.get("done_reason") in ("stop", "length") and on_runtime_ended is not None:
+            on_runtime_ended()
         message = data.get("message")
         content = message.get("content") if isinstance(message, dict) else None
         if data.get("done") is not True or data.get("done_reason") != "stop" or not isinstance(content, str):

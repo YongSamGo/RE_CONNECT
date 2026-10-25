@@ -78,3 +78,4 @@ main { max-width: 1280px; padding: 0 48px 70px; margin: auto; min-height: 50vh; 
   .panel { padding: 24px; } .page-heading { padding-top: 36px; } .preview-toolbar { flex-wrap: wrap; padding: 12px 24px; }
   .site-footer { margin: 0 24px; } .site-footer span { display: block; margin-top: 4px; }
 }
+.notice-body { white-space: pre-wrap; overflow-wrap: anywhere; }

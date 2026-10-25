@@ -28,6 +28,10 @@ class LLMUnavailableError(LLMError):
     """런타임에 연결할 수 없거나, 모델이 없거나, 런타임이 오류로 답함 → 503 `MODEL_UNAVAILABLE`."""
 
 
+class LLMTransientUnavailableError(LLMUnavailableError):
+    """연결이 성립되지 않아 요청을 보내지 못한 일시 오류."""
+
+
 class LLMInvalidOutputError(LLMError):
     """응답이 잘렸거나 JSON·`output_model` 검증에 실패함. 같은 입력으로 바로 재시도하지 않는다."""
 
