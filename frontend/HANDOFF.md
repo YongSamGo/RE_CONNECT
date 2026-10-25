@@ -14,7 +14,7 @@
 - #11의 인계/진행 기록은 `dfd4cbf`에 작성했다. 현재 후속은 **#19 / W02-08.b**: 실제 지역 라우터 ASGI 응답 → OpenAPI 응답 스키마 → 기존 FE 지역 파서를 대조하는 검사와 CI 연결. [실행·범위](contract-tests/README.md). export_regions.py는 전체 앱이 아니라 실제 router를 독립 마운트하며 `.env`·DB·AI·리스닝 포트를 사용하지 않는다. 외부 서버·전체 앱·브라우저 HTTP 통합 성공으로 표현하지 않는다.
 - #19 W02-08.c: 실제 앱+Vite 프록시+기존 API 클라이언트의 HTTP 시험 3건 추가(계약 시험 합계 8건). 공개 지역 GET·request ID, 미구현 공고 API의 실제 JSON 404, 화면 SPA 반환을 검증했다. 브라우저에서 실제 지역 버전·성동구 선택 및 오류 시 조건 유지 확인. `vite.config.ts`는 루프백 host와 고정 backend 8000 proxy를 제공한다. 현재 시험용 backend도 루프백 8000에서 실행 중이며 시험 명령은 contract-tests/README.md에 있다.
 - #19 잔여: #13(PR #118) 승인·병합, 다른 실제 업무 API·인증/CSRF 변경 요청·운영 HTTP·원격 CI. 기존 타입 생성/클라이언트를 재작성하지 않는다. #9 운영 동의문과 #36 체험 API 없이 실제 개인 데이터 처리·서버 여정 연동을 시작하지 않는다. GitHub에 댓글·상태 변경·push·PR 생성은 하지 않았다.
-- 보안: 사용자가 제공한 AGENTS.md → 원래 폴더의 `SW개발보안_obsidian/Security/INDEX.md` → 관련 원문을 선택 참조한다. 배포본은 현재 작업트리 `team-vault/SW개발보안_obsidian/Security/`에도 있다. 기존 원문·PDF·Obsidian 설정 보존. 새 기술 판단을 공식 가이드 정책으로 설명하지 않는다.
+- 보안: 루트 AGENTS.md → `SW개발보안_obsidian/Security/INDEX.md` → 관련 원문을 선택 참조한다. 이 경로는 프로젝트 루트 기준이다. 기존 원문·PDF·Obsidian 설정 보존. 새 기술 판단을 공식 가이드 정책으로 설명하지 않는다. 경로 전환과 기존 사본 정리는 [볼트 전환 안내](../docs/security/vault-migration.md)를 따른다.
 - 위험한 저장소 변경·원격 병합·보호 우회·실제 인증/개인 자료 삭제는 이 인계의 자동 허가가 아니다.
 
 2026-10-17 후속: #80 W11-01의 공통 폼 접근성 일부를 보완했다. TextAreaField/CheckboxField가 호출자가 준 aria-invalid를 보존하고 자체 오류가 있으면 true를 우선한다. 도움말·글자 수·필수 표식·종료 안내/버튼·모바일 메뉴 글씨를 18px로 맞췄다. 프론트 321건·lint·build 통과, Chromium에서 도움말 18px·종료 버튼 44px 이상·좁은 화면 넘침 없음을 확인했다. 실제 기기/스크린리더는 미검증. #13/#19는 여전히 선행 통과 대기이며 #80을 완료 처리하지 않았다.

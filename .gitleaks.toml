@@ -14,3 +14,12 @@ paths = [
   '''^team-vault/SW개발보안_obsidian/Security/(Python-2023|SW-Diagnosis-2021)/''',
   '''^\.claude/skills/kisa-secure-coding-python/references/[^/]+\.md$''',
 ]
+
+# 기존 볼트 경로 예외는 해당 사본을 삭제할 때 제거한다 (docs/security/vault-migration.md).
+# 새 볼트는 PR #159의 공식 PDF 355쪽 교육 예시 두 파일만 예외로 둔다.
+[[allowlists]]
+description = "KISA 2021 PDF 355쪽의 하드코드 중요정보 교육 예시"
+paths = [
+  '''^SW개발보안_obsidian/Security/SW-Diagnosis-2021/제4장-구현단계-보안약점-진단/제2절-보안기능/067-6\.-하드코드된-중요정보\.md$''',
+  '''^legacy/security_kb/data/SW-Diagnosis-2021/extracted/p0355\.txt$''',
+]

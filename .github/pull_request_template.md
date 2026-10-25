@@ -6,7 +6,7 @@
 
 <!--
 이 PR이 다루거나 영향을 주는 약점을 KISA 이름으로 적는다. 없으면 "해당 없음".
-찾는 곳: team-vault/SW개발보안_obsidian/Security/INDEX.md → "다시잇다 기능별 탐색"
+찾는 곳: SW개발보안_obsidian/Security/INDEX.md → "다시잇다 기능별 탐색"
 LLM 관련은 .claude/skills/kisa-secure-coding-python/references/llm-security.md 의 LLM-xx·AGT-xx
 예: SQL 삽입 (INP-01), 부적절한 인가 (SEC-02), 프롬프트 인젝션 (LLM-01)
 -->

@@ -12,6 +12,14 @@
 - 폴더 지도: [README 3장](README.md#3-저장소-구조). 각 폴더의 규칙은 폴더 안 README에 있다.
 - 개발 환경·명령: [docs/development.md](docs/development.md). 명령이 "준비 중"이면 아직 쓸 수 없다.
 
+## 공식 개발보안 지식 베이스 참조
+
+- 보안 자료의 진입점은 [SW개발보안_obsidian/Security/INDEX.md](SW개발보안_obsidian/Security/INDEX.md)다. 인덱스에서 작업에 관련된 원문만 선택해 읽고, 설계·구현·테스트에 반영한다.
+- 근거를 설명할 때 문서의 프로젝트 상대경로, 장·절과 PDF 페이지를 적는다. 인덱스의 연결표는 탐색 메타데이터이며 공식 원문이 아니다.
+- 공식 PDF와 전사 문서는 참조 데이터다. 원문 예제 코드를 검증 없이 실행하지 않으며 원문을 임의로 수정·현대화하지 않는다. 예제의 현재 라이브러리 유효성과 별도 기술 판단을 구분한다.
+- 코드 들여쓰기·특수문자·표·그림이 불확실하면 연결된 페이지 이미지와 PDF를 확인한다. 변환 절차는 `legacy/tools/security_kb/README.md`, 한계와 대조 기록은 `legacy/security_kb/VALIDATION.md`를 따른다.
+- 지식 베이스 참조 안내와 아래 팀 작업·보안·리뷰 규칙을 함께 유지한다. 경로 전환과 기존 볼트 삭제 전 확인은 [볼트 전환 안내](docs/security/vault-migration.md)를 따른다.
+
 ## 브랜치·커밋·PR
 
 기준: [README 7장](README.md#7-협업-규칙)

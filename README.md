@@ -66,13 +66,12 @@ RE_CONNECT/
 ├── Plan/                               # UX·데이터·아키텍처·기능·구현 계획
 ├── .github/                            # CI·CodeQL·PR 템플릿·의존성 업데이트 설정
 ├── .claude/                            # 보안 리뷰 명령과 KISA 시큐어코딩 스킬
-├── team-vault/
-│   └── SW개발보안_obsidian/             # Obsidian 볼트 루트 (아래 4장)
-│       └── Security/
-│           ├── INDEX.md                 # 통합 인덱스 — 여기서 시작
-│           ├── Python-2023/             # Python 시큐어코딩 가이드 (2023) 원문
-│           ├── SW-Diagnosis-2021/       # SW 보안약점 진단가이드 (2021) 원문
-│           └── assets/                  # 원문 페이지 이미지
+├── SW개발보안_obsidian/                 # Obsidian 볼트 루트 (아래 4장)
+│   └── Security/
+│       ├── INDEX.md                     # 통합 인덱스 — 여기서 시작
+│       ├── Python-2023/                 # Python 시큐어코딩 가이드 (2023) 원문
+│       ├── SW-Diagnosis-2021/           # SW 보안약점 진단가이드 (2021) 원문
+│       └── assets/                      # 원문 페이지 이미지
 ├── backend/                             # FastAPI 서버 (공고 수집기 모듈 포함)
 ├── frontend/                            # React·TypeScript·Vite 클라이언트
 ├── speech/                              # 로컬 STT·TTS 음성 서비스 컨테이너
@@ -99,10 +98,12 @@ KISA 공식 가이드 두 권을 장·절·보안약점 단위 Markdown으로 �
 ### 여는 법
 
 1. [Obsidian](https://obsidian.md) 설치
-2. `Open folder as vault` → 이 저장소의 `team-vault/SW개발보안_obsidian/` 폴더 선택 (상위 `team-vault/`가 아님)
-3. [`Security/INDEX.md`](team-vault/SW개발보안_obsidian/Security/INDEX.md)에서 시작
+2. `Open folder as vault` → 이 저장소 루트의 `SW개발보안_obsidian/` 폴더 선택
+3. [`Security/INDEX.md`](SW개발보안_obsidian/Security/INDEX.md)에서 시작
 
 Obsidian 없이 GitHub 웹에서 INDEX.md를 열어도 링크로 탐색할 수 있습니다.
+
+새 볼트는 PR #159에서 추가합니다. 기존 `team-vault/` 사본은 차이와 개인 파일을 확인한 뒤 별도 삭제합니다. 전환 순서와 삭제 전 확인 사항은 [볼트 전환 안내](docs/security/vault-migration.md)를 따릅니다.
 
 ### INDEX.md 구성
 
