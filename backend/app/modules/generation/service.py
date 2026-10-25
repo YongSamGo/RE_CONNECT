@@ -109,10 +109,21 @@ class GroundedGenerationService:
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
 
-    async def next_question(self, *, missing_fields: Sequence[RecommendationField]) -> str | None:
+    @staticmethod
+    def _question_fields(missing_fields: Sequence[RecommendationField]) -> list[RecommendationField]:
         fields = list(dict.fromkeys(missing_fields))
         if any(field not in _QUESTIONS for field in fields):
             raise GenerationInputError("질문 항목을 확인해 주세요")
+        return fields
+
+    @classmethod
+    def fallback_question(cls, *, missing_fields: Sequence[RecommendationField]) -> str | None:
+        """모델 없이 누락 항목의 고정 순서로 고른다. 모델 경로와 같은 고정 질문 문장만 쓴다."""
+        fields = cls._question_fields(missing_fields)
+        return _QUESTIONS[fields[0]] if fields else None
+
+    async def next_question(self, *, missing_fields: Sequence[RecommendationField]) -> str | None:
+        fields = self._question_fields(missing_fields)
         if not fields:
             return None
         plan = await self._generate(prompts.QUESTION, {"allowed_fields": fields}, QuestionPlan)

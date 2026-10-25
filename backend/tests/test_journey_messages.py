@@ -14,6 +14,7 @@ from app.core.config import Settings
 from app.main import create_app
 from app.modules.admission.llm import ControlledLLMAdapter
 from app.modules.generation.models import ExtractionPlan
+from app.modules.generation.service import GroundedGenerationService
 from app.modules.journeys.messages import JourneyMessageService
 from app.modules.requests.service import RequestService
 from tests.test_admission import with_redis
@@ -234,6 +235,24 @@ def test_real_redis_timeout_retains_input_state_and_does_not_release_unconfirmed
             await service.send(issued.session, identity, journey.journey_id, str(uuid4()), body)
         assert runtime.calls == 1
         assert (await journeys.update_profile(issued.session, journey.journey_id, ready_edit())).revision == 2
+    with_redis(scenario)
+
+
+def test_real_redis_short_remaining_time_skips_second_model_call_and_releases_slot(monkeypatch):
+    # 남은 시간이 질문 선택 최소 시간보다 적으면 두 번째 모델 호출을 시작하지 않는다.
+    monkeypatch.setattr('app.modules.journeys.messages.QUESTION_MIN_SECONDS', 61)
+    async def scenario(admission, admission_store, redis):
+        issued, _, journeys, _, identity, journey, runtime, service = await setup(admission, admission_store, redis)
+        body = MessageCreate(text=TEXT, transcription_id=None, base_revision=1)
+        result = await service.send(issued.session, identity, journey.journey_id, str(uuid4()), body)
+        assert runtime.calls == 1
+        assert result.assistant_message is not None
+        assert result.assistant_message.text == GroundedGenerationService.fallback_question(
+            missing_fields=result.profile.missing_for_recommendation)
+        assert await redis.hget(admission_store.control_key, 'active') is None
+        second = MessageCreate(text=TEXT, transcription_id=None, base_revision=result.revision)
+        assert (await service.send(issued.session, identity, journey.journey_id, str(uuid4()), second)).revision == result.revision + 1
+        assert runtime.calls == 2
     with_redis(scenario)
 
 
