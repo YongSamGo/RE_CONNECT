@@ -15,7 +15,7 @@
 | K3 | 신원 확인 | OpenID Connect를 켠다. `login`·`save`는 토큰 교환 후 `GET /v2/user/me`의 `id`만 읽는다. `reauth`만 `scope=openid`와 `nonce`를 보내 ID 토큰을 받고 K9대로 검사한다. 액세스 토큰은 K8의 예외 말고는 저장하지 않는다 | 회원번호 하나만 필요하다. 재인증이 실제로 일어났는지는 ID 토큰의 `auth_time`으로만 알 수 있다 |
 | K4 | Client Secret | 사용(ON)한다 | REST API 키만으로 토큰을 받을 수 없게 한다. ON이면 토큰 요청에 필수다 |
 | K5 | PKCE | `S256`으로 쓴다. `code_verifier`는 state와 함께 세션에 저장한다. #72에서 왕복이 되는지 시험하고, 안 되면 결과를 여기에 적고 state·Client Secret만 쓴다 | discovery가 `code_challenge_methods_supported: ["S256"]`을 알린다(REST API 문서의 요청 파라미터 표에는 없다). 인가 코드가 새도 교환을 막는 층이 하나 더 생긴다 |
-| K6 | Redirect URI | 서버 설정값 `KAKAO_REDIRECT_URI` 하나로 고정한다. 요청의 Host 헤더로 만들지 않는다 | 등록 목록과 다른 주소로 코드가 가지 않게 한다 |
+| K6 | Redirect URI | 서버 설정값 `PUBLIC_ORIGIN` + `/api/v1/auth/kakao/callback` 하나로 고정한다. 요청의 Host 헤더로 만들지 않는다 | 등록 목록과 다른 주소로 코드가 가지 않게 한다 |
 | K7 | 로그아웃 | 서비스 세션만 끝낸다. 카카오계정 함께 로그아웃은 쓰지 않아 로그아웃 Redirect URI를 등록하지 않는다 | 공용 PC에서도 서비스 세션 회수로 충분하고, 등록 주소를 줄인다 |
 | K8 | 탈퇴 연결 끊기 | 어드민 키를 발급·보관하지 않는다. #78(W10-07)에서 다음 중 하나로 정한다: ① `reauth` 콜백의 액세스 토큰을 서버 쪽 세션에만 5분(D21) 보관했다가 `DELETE /me`에서 쓰고 지운다 ② 콜백에서 바로 연결을 끊는다 | 어드민 키는 앱의 모든 사용자를 다룰 수 있어 노출 피해가 크다. 액세스 토큰으로도 `POST /v1/user/unlink`를 부를 수 있지만, `DELETE /me`는 콜백보다 최대 5분 늦게 오므로 토큰을 버리면 부를 수 없다 |
 | K9 | 재인증 | `purpose=reauth`는 인가 요청에 `prompt=login`·`scope=openid`·`nonce`를 붙인다. 콜백은 ID 토큰의 서명(JWKS)·`iss`·`aud`·`exp`·`nonce`를 확인하고, `auth_time`이 이번 state 발급 시각 이후이며 `sub`가 현재 회원의 회원번호와 같을 때만 재인증으로 인정한다 | 인가 URL은 브라우저를 거치므로 사용자가 `prompt=login`을 지울 수 있다. 공용 PC에 남은 카카오 세션으로 남의 계정을 탈퇴시키지 못하게 서버가 `auth_time`으로 확인한다. 카카오톡 인앱 브라우저는 `prompt=login`을 지원하지 않으므로 W10-01에서 그 경우를 시험한다 |
@@ -40,8 +40,8 @@
 
 | 앱 | Redirect URI | 쓰임 |
 |---|---|---|
-| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(`uvicorn`, 기본 포트 8000)으로 W10-01 왕복 시험. 콜백이 보내는 `/auth/result`는 화면 경로라 8000에서는 404로 끝나므로 결과는 주소창의 `status`로 확인한다. 로그인 시작(`/api/v1/auth/kakao/start`)도 반드시 `http://localhost:8000`으로 연다. 화면까지 볼 때는 아래 5173 경로로 시험한다 |
-| 개발 | `http://localhost:5173/api/v1/auth/kakao/callback` | 프론트엔드 개발 서버가 `/api/v1`을 백엔드로 넘길 때([frontend/vite.config.ts](../../frontend/vite.config.ts)). 개발 서버는 `127.0.0.1`에 떠서 `http://127.0.0.1:5173/`을 안내하지만, 화면은 반드시 `http://localhost:5173`으로 연다. 포트나 설정이 바뀌면 함께 고친다 |
+| 개발 | `http://localhost:8000/api/v1/auth/kakao/callback` | 백엔드 단독 실행(기본 포트 8000, `PUBLIC_ORIGIN=http://localhost:8000`)으로 W10-01 왕복 시험. 콜백이 보내는 `/auth/result`는 화면 경로라 8000에서는 404로 끝나므로 결과는 주소창의 `status`로 확인한다. 로그인 시작(`/api/v1/auth/kakao/start`)도 반드시 `http://localhost:8000`으로 연다. 화면까지 볼 때는 아래 5173 경로로 시험한다 |
+| 개발 | `http://localhost:5173/api/v1/auth/kakao/callback` | 프론트엔드 개발 서버가 `/api/v1`을 백엔드로 넘길 때([frontend/vite.config.ts](../../frontend/vite.config.ts), `PUBLIC_ORIGIN=http://localhost:5173`). 개발 서버는 `127.0.0.1`에 떠서 `http://127.0.0.1:5173/`을 안내하지만, 화면은 반드시 `http://localhost:5173`으로 연다. 포트나 설정이 바뀌면 함께 고친다 |
 | 운영 | `https://<운영 도메인>/api/v1/auth/kakao/callback` | 도메인 확보(#6 W01-03) 뒤 등록한다. 그 전까지 운영 앱은 만들기만 한다 |
 
 `127.0.0.1`·사설 IP·와일드카드 주소는 등록하지 않는다. 쿠키는 호스트 단위라서 `127.0.0.1`로 연 화면의 세션은 `localhost`로 돌아오는 콜백에 실리지 않고, 계약대로 "세션 없음"이 되어 `status=failed`로 끝난다. 그래서 개발 주소는 `localhost` 하나로 맞춘다.
@@ -66,9 +66,10 @@
 |---|---|---|
 | `KAKAO_REST_API_KEY` | 앱 키 → REST API 키 | `.env` (개발 앱), 운영 서버 비밀값 저장소 (운영 앱) |
 | `KAKAO_CLIENT_SECRET` | 2절 5번의 클라이언트 시크릿 | 위와 같음 |
-| `KAKAO_REDIRECT_URI` | 3절 목록 중 그 환경의 주소 | 위와 같음 |
+| `KAKAO_APP_ID` | 앱 ID(숫자). 토큰의 앱 ID와 대조한다 | 위와 같음 |
+| `PUBLIC_ORIGIN` | 3절 목록 중 그 환경의 출처(경로 제외). callback 주소가 여기서 정해진다 | 위와 같음 |
 
-코드에서 읽기 시작하는 것은 #72(W10-01)다. 이름은 [.env.example](../../.env.example)에 있다.
+백엔드 사용 방식은 [카카오 인증 왕복](../security/kakao-roundtrip.md)(W10-01)에 있다. 이름은 [.env.example](../../.env.example)에 있다.
 
 ## 7. 비밀 관리
 

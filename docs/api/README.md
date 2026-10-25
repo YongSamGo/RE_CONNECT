@@ -11,6 +11,8 @@
 
 03 §3의 경로 46개가 모두 들어 있다. 여기에 지역 목록(`GET /regions`), 운영자 공고 상세(`GET /admin/opportunities/{id}`), 내부 health 2개가 더 있다.
 
+#87 회원 화면 연결에서는 `GET /consents/notices`(명시적으로 게시한 현재 안내문)와 `DELETE /auth/save-intents/{save_intent_id}`(현재 세션의 정확한 저장 대기 폐기)를 보완했다. 안내문 조회는 동의가 아니며, 취소는 이미 저장한 자료·동의·로그인을 되돌리지 않는다. 회원 취소는 저장과 같은 소유자 잠금으로 직렬화한다.
+
 로컬 검사:
 
 ```bash
@@ -215,3 +217,5 @@ sequenceDiagram
 
 - [02 Data Design](../../Plan/02_Data_Design.md) v1.2: 공고 `description_text`·`description_truncated`·`change_pending`, Requirement 연산 허용표, 중요 변경 필드
 - [03 Architecture](../../Plan/03_Architecture_and_Dependencies.md) v1.2: 추가 경로(저장 대기·반려·지역 목록·운영자 공고 상세), 카카오 시작 목적(`login`·`save`·`reauth`), 읽어주기·자격 대조 입력, 헤더·CSRF·오류 코드
+
+#69 후속: 자기 체험 지원서의 현재 재검토 사유와 편집 충돌 재조회를 위해 `GET /journeys/{journey_id}/drafts/{draft_id}`를 추가했다. 목록/이전 세션 복원이 아니며 조회로 체험 수명을 연장하지 않는다. 상세는 [지원서 서버 기록](../data/journey-drafts.md)을 따른다.

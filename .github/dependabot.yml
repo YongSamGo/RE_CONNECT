@@ -30,14 +30,35 @@ updates:
     commit-message:
       prefix: "sec"
 
-  # frontend/ 폴더가 생긴 뒤에 주석을 해제한다
-  # - package-ecosystem: npm
-  #   directory: /frontend
-  #   schedule:
-  #     interval: weekly
-  #     day: monday
-  #     timezone: Asia/Seoul
-  #   cooldown:
-  #     default-days: 7
-  #   commit-message:
-  #     prefix: "sec"
+  - package-ecosystem: pip
+    directory: /speech
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"
+
+  - package-ecosystem: pip
+    directory: /speech/tts_compat
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"

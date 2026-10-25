@@ -1,0 +1,60 @@
+# 오류·운영 로그 처리 (W03-07)
+
+관련 이슈: #26. 구현·로컬 검증 완료, 실제 배포 로그·보관 검증은 미완료다.
+
+## 고정 업무 오류
+
+서비스는 `app.core.business_errors.AppError`에 계약의 코드만 넣는다.
+예: `raise AppError("VERSION_CONFLICT")` 또는
+`raise AppError("REQUEST_IN_PROGRESS", retry_after=2)`.
+HTTP 상태와 안내 문구는 중앙 레지스트리에서 정한다. 원문·예외 메시지·임의 헤더를 받지 않는다.
+진행 중 요청은 대기 시간을 반드시 지정한다. 대기 시간은 정수 1~86,400초만 허용한다.
+
+모든 오류에 `Cache-Control: no-store`와 서버의 요청 ID를 붙인다.
+422에만 필드 오류를 포함하고 입력값·Pydantic 메시지를 버린다. 소유하지 않은 자원은
+없는 자원과 같은 `NOT_FOUND`를 사용해야 한다. 이 예외 클래스가 소유권을 대신 검사하지 않는다.
+LLM/Speech 실패를 어떤 업무 코드로 바꿀지는 호출 서비스가 선택한다.
+
+## 안전한 실행과 로그
+
+`backend/`에서 `python -m app`으로 실행한다. Uvicorn의 원본 접속 로그는 끄고
+`SafeJsonFormatter`를 루트·서버·앱 로그에 적용한다. 기존 외부 라이브러리의 별도 핸들러는
+비활성화한다. 다른 실행 명령을 사용할 때도 `LOGGING_CONFIG`를 적용해야 한다.
+기본 실행은 로컬 인터페이스 127.0.0.1:8000이며 운영 바인딩·프로세스 관리는 #93에서 연결한다.
+
+요청 로그는 서버 요청 ID, 허용된 HTTP 메서드, 상태, 처리 시간과 UTC 시각만 기록한다.
+임의 로그 메시지·포맷 인자·logger 이름·소스 경로·스택·예외·임의 extra를 출력하지 않는다.
+따라서 콜백 query(code/state), Authorization/Cookie, OTP, 전사·음성·프로필·지원서 본문을
+로그 메시지로 전달해도 이 formatter에서 출력하지 않는다. 라이브러리 원문 대신 일반
+`runtime_event`만 남으므로 진단 상세는 줄어든다. request_id로 요청 처리 결과를 연결한다.
+
+이 설정은 `print`, 별도 파일 쓰기, 이후 추가하는 비관리 핸들러, Nginx·Docker·Ollama 자체 로그를
+통제하지 않는다. 입력을 그런 경로에 기록하지 않고 배포 시 각 수집 경로도 확인해야 한다.
+stdout은 로컬 파일로 복제하지 않으며, 운영 수집 경로에만 필요한 보관기간을 적용한다.
+
+## 보관 설정과 남은 배포 검증
+
+`infra/logging/log-groups.json`은 CloudFormation 로그 그룹 설정이다. 일반 운영 로그는
+14일, 보안·운영자 감사는 30일로 설정한다(Plan/02 §5). 이 기간은 프로젝트 정책이다.
+`RetentionInDays`는 [AWS 공식 문서](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-logs-loggroup.html#cfn-logs-loggroup-retentionindays)를 확인했다.
+
+아직 AWS에 적용하지 않았다. 이 템플릿은 로그 그룹만 정의하며 EC2 수집기·IAM 권한·
+stdout 전달·감사 기록 저장소는 구성하지 않는다. #57·#93·#96에서 수집과 삭제 작업을 연결하고
+실제 로그 그룹 보관 값, 오래된 이벤트 만료, Docker·호스트 중복본과 백업의 보관 경계를 확인한다.
+CloudWatch의 만료 처리를 물리적 즉시 삭제로 주장하지 않는다. 감사 이벤트 본문 API·DB 보관은 #57이다.
+
+## 검증과 공식 참조
+
+정상 요청·검증 실패·예외·업무 오류에 대해 콜백 query, 토큰, OTP, 본문과 추적 정보의
+비노출을 검사했다. 30개 오류 코드를 OpenAPI enum과 대조하고 상태·고정 문구·재시도 헤더를 검증했다.
+형식화할 때 입력 객체의 문자열 변환도 호출하지 않는지 검사했다.
+
+`SW개발보안_obsidian/Security/INDEX.md` → 아래 원문을 사용했다. 저장소의 전사본 경로:
+
+- `team-vault/SW개발보안_obsidian/Security/Python-2023/제2장-시큐어코딩-가이드/제4절-에러처리/043-1.-오류-메시지-정보노출.md`:
+  제2장 제4절 1항, PDF 131~134쪽. 최소 정보와 미리 정의한 오류 메시지를 구현에 반영했다.
+- `team-vault/SW개발보안_obsidian/Security/SW-Diagnosis-2021/제4장-구현단계-보안약점-진단/제4절-에러처리/082-1.-오류-메시지-정보노출.md`:
+  제4장 제4절 1항, PDF 419~425쪽. 응답의 오류 원문·내부 구조 노출을 진단했다.
+
+가이드 예제의 Django/Java 코드와 현재 FastAPI 구현은 구분했다. 로그의 14일/30일 정책과
+허용 메타데이터 목록은 프로젝트 설계이며 공식 가이드의 보관기간 규정이 아니다.
