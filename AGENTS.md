@@ -38,7 +38,7 @@
 
 | 도구 | 파일 | 막는 것 | 막지 못하는 것 |
 | --- | --- | --- | --- |
-| Claude Code | [`.claude/settings.json`](.claude/settings.json) `permissions.deny` | 세션 폴더 아래의 `.env`·`.env.*`(`.env.example` 제외)·`*.pem`·`*.key` 읽기, 그리고 어느 경로든 `.env`·`.env.local`·`.env.*.local`·`.env.development`·`.env.production`·`.env.test`·`*.pem`·`*.key` 읽기 (파일 도구, `cat`·`head` 같은 셸 파일 명령 포함). `git push`의 `--force*`·`-f`·`+refspec` | 파일 이름을 적지 않는 명령(`grep -r`), 스크립트가 직접 여는 파일, 세션 폴더 밖의 그 밖의 `.env.*` 이름, `git -C . push -f`·`sh -c '…'` 같은 다른 형태, `-uf`처럼 묶은 옵션 |
+| Claude Code | [`.claude/settings.json`](.claude/settings.json) `permissions.deny` | 세션 폴더 아래의 `.env`·`.env.*`(`.env.example` 제외)·`*.pem`·`*.key` 읽기, 그리고 어느 경로든 `.env`·`.env.local`·`.env.*.local`·`.env.development`·`.env.production`·`.env.test`·`*.pem`·`*.key` 읽기 (파일 도구, `cat`·`head` 같은 셸 파일 명령 포함). `git push`의 `--force*`·`-f`·`+refspec` (`git -C <경로> push -f`처럼 `push` 앞에 git 옵션이 와도 막는다) | 파일 이름을 적지 않는 명령(`grep -r`), 스크립트가 직접 여는 파일, 세션 폴더 밖의 그 밖의 `.env.*` 이름, `/usr/bin/git push -f`·`sh -c '…'` 같은 다른 형태, `-uf`처럼 묶은 옵션 |
 | Claude Code | 같은 파일 `permissions.ask` | 원격 브랜치 삭제(`--delete`·`-d`·`:<브랜치>`)와 `--mirror`·`--prune`은 실행 전에 확인을 받는다 | 위와 같은 다른 형태 |
 | Codex | [`.codex/rules/default.rules`](.codex/rules/default.rules) | `git push` 바로 뒤의 `--force`·`-f`·`--force-with-lease`·`--force-if-includes` | 비밀값 파일 읽기, 옵션이 뒤에 오는 강제 push, `--force-with-lease=<ref>`처럼 값을 붙인 옵션, `+refspec`. 프로젝트를 신뢰(trusted)해야 읽힌다 |
 
