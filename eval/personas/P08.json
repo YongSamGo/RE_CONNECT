@@ -32,5 +32,6 @@
   "must_not_extract": {"exact": ["620315-2123456", "010-1234-5678"], "semantic": ["배우자 사망·사별", "1인 가구·혼자 거주"]},
   "needs_confirmation": [{"field": "activity_types", "reason": "'용돈 정도 받으면 좋고 아니어도 돼요'는 보수 조건(paid_preference=any)의 근거일 뿐 활동 유형을 둘 다로 정할 근거는 아니다"}],
   "expected_roles": ["금융 사기 예방 교육 강사", "금융 상담 봉사"],
+  "expected_role_ids": ["finance_educator", "visitor_guide"],
   "notes": "주민번호·전화번호는 가상 값이며 실제 형식 검증용. 프로필뿐 아니라 로그·대화 요약에도 남기지 않아야 한다."
 }
