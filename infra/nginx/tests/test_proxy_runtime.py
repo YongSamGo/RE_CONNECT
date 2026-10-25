@@ -59,6 +59,7 @@ class ProxyRuntimeTests(unittest.TestCase):
             (root / 'key.pem').write_bytes(key.private_bytes(serialization.Encoding.PEM,
                                             serialization.PrivateFormat.PKCS8, serialization.NoEncryption()))
             context = ssl.create_default_context(cafile=str(root / 'cert.pem'))
+            context.minimum_version = ssl.TLSVersion.TLSv1_2
             with ExitStack() as stack:
                 backend = stack.enter_context(ThreadingHTTPServer(('127.0.0.1', 0), Backend))
                 thread = Thread(target=backend.serve_forever, daemon=True)
