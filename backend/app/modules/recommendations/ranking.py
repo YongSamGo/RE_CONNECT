@@ -73,8 +73,7 @@ def rank_candidates(profile: ProfileContent, candidates: list[Candidate], catalo
         if score == 0:
             continue
         evidence = [experience.id for experience in profile.experiences
-                    if {canonical(tag) for tag in experience.skill_tags} & opportunity_tags
-                    or experience_tokens[experience.id] & opportunity_tokens]
+                    if {canonical(tag) for tag in experience.skill_tags} & opportunity_tags]
         if not evidence:
             continue
         matched_roles = [id for id in opportunity.role_tags if id in roles and match_roles(profile, [roles[id]], ())]
@@ -82,7 +81,7 @@ def rank_candidates(profile: ProfileContent, candidates: list[Candidate], catalo
                                 if canonical(tag) in shared_tags})
         ranked.append(ScoredCandidate(candidate, score, RecommendationMatch(
             experience_ids=evidence, skill_tags=original_tags,
-            # 계산에는 전체 토큰을 쓰되 공개 계약의 50자 한도를 넘는 토큰은 표시하지 않는다.
-            keywords=sorted(token for token in shared_tokens if len(token) <= 50), role_ids=matched_roles,
+            # 자유 문장 조각은 순위 계산에만 쓰고 공개 근거로 표시하지 않는다.
+            keywords=[], role_ids=matched_roles,
         )))
     return sorted(ranked, key=lambda value: (-value.score, deadline_key(value)))[:5]

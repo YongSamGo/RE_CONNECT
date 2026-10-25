@@ -64,11 +64,13 @@ class IngestionState(Base):
     __table_args__ = (
         CheckConstraint("request_count >= 0", name="request_count"),
         CheckConstraint("next_page >= 1", name="next_page"),
+        CheckConstraint("region_index BETWEEN 0 AND 2", name="region_index"),
     )
     source_id: Mapped[UUID] = mapped_column(ForeignKey("sources.id", ondelete="CASCADE"), primary_key=True)
     quota_date: Mapped[date] = mapped_column(Date)
     request_count: Mapped[int] = mapped_column(Integer, default=0)
     next_page: Mapped[int] = mapped_column(Integer, default=1)
+    region_index: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     next_run_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
 
 

@@ -14,7 +14,7 @@ VALUES (gen_random_uuid(), 'manual_work24', '고용24 수동 확인', 'https://w
 RETURNING id;
 ```
 
-지원하는 code/base_url은 `manual_work24`/`https://www.work24.go.kr`, `manual_50plus`/`https://www.50plus.or.kr`, `manual_volunteer`/`https://www.1365.go.kr`이다. 호스트만 일치하는 임의 경로는 허용하지 않는다. 고용24의 실제 `empDetailAuthView.do`/VALIDATION/tb_workinfoworknet 상세 링크, 50플러스 센터 `detail.do?id=숫자`, 1365 `P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=숫자` 형식만 받는다. 1365 실제 정상 자료의 현행 경로/조건 재확인은 남아 있다. 새 기관·경로는 코드 리뷰와 실자료 확인 후 허용표에 추가한다. 노원구청 등 다른 공식 기관의 자료도 현재 허용표 밖이면 보류한다.
+지원하는 code/base_url은 `manual_work24`/`https://www.work24.go.kr`, `manual_50plus`/`https://www.50plus.or.kr`, `manual_volunteer`/`https://www.1365.go.kr`이다. 호스트만 일치하는 임의 경로는 허용하지 않는다. 고용24의 실제 `empDetailAuthView.do`/VALIDATION/tb_workinfoworknet 상세 링크, 50플러스 일자리 `appView.do?ANN_NO=숫자` 또는 `in_appView.do?ANN_NO=숫자`, 1365 `P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=숫자` 형식만 받는다. 1365 실제 정상 자료의 현행 경로/조건 재확인은 남아 있다. 새 기관·경로는 코드 리뷰와 실자료 확인 후 허용표에 추가한다. 노원구청 등 다른 공식 기관의 자료도 현재 허용표 밖이면 보류한다.
 
 ## 입력 계약
 
@@ -64,3 +64,5 @@ progress는 활성 수동 출처에 근거가 있는 최신 버전만 검사한�
 출처 URL 또는 기관·제목·마감이 같은 후보는 중복 집계하지 않는다. 서로 다르게 표기된 동일 모집의 완전한 식별은 사람 대조가 필요하다. 출처별 필드 진위·전체 조건 누락 여부도 검수로 확인한다. stale/closed/unknown/rejected/hidden/조건 미해석 자료는 현재 유효 후보 수에 넣지 않는다. 테스트용 DB의 가상 fixture 수를 실제 확보 수로 보고하지 않는다.
 
 현재 실제 자료의 개별 확인·보류 이유·목표 미달은 커밋하지 않는 `security-reports/`의 확보 기록으로 관리한다. 접근 불가·자료 부족으로 20건에 못 미치면 부족 수를 그대로 기록한다. 이 PR의 코드/DB 검증은 운영 승인과 20건 실제 확보 완료를 뜻하지 않는다.
+
+2026-10-25 공식 페이지 확인: [가치동행일자리](https://www.50plus.or.kr/appView.do?ANN_NO=1505), [경력인재지원](https://www.50plus.or.kr/in_appView.do?ANN_NO=1271). 일반 센터 게시글 `detail.do?id=`는 일자리 상세 근거로 허용하지 않는다. 추가 쿼리·중복 식별자·유사 호스트도 거절한다. 주소 형식 검증은 내용 검수·공개 승인을 대신하지 않는다.

@@ -48,7 +48,7 @@ def test_exact_jaccard_and_keyword_weights_use_sets_and_only_confirmed_facts():
     result = rank(person, [item])[0]
     assert result.score == Fraction(7, 10) * Fraction(1, 2) + Fraction(3, 10) * Fraction(1, 5)
     assert result.matched.experience_ids == [experience.id]
-    assert result.matched.skill_tags == ["낭독"] and result.matched.keywords == ["낭독"]
+    assert result.matched.skill_tags == ["낭독"] and result.matched.keywords == []
     before = person.model_dump()
     assert rank(person, [item])[0].score == result.score and person.model_dump() == before
 
@@ -90,17 +90,31 @@ def test_tied_scores_order_kst_deadline_then_id_and_unknown_deadline_last_top_fi
     assert items[0].deadline_at is None
 
 
-def test_long_keyword_is_scored_without_breaking_public_display_limit():
-    long = "가" * 60
+@pytest.mark.parametrize("word", ["업무", "마지막", "20년(관리소장", "가" * 60])
+def test_free_text_overlap_cannot_create_experience_evidence(word):
     person = profile()
     value = person.model_dump()
-    value["experiences"][0]["description"] = long
+    value["experiences"][0]["description"] = word
     value["experiences"][0]["skill_tags"] = []
     from app.contracts.profile import ProfileContent
     person = ProfileContent.model_validate(value)
-    result = rank(person, [public(title=long, description_text=None, role_tags=[], skill_tags=[])])[0]
-    assert result.score == Fraction(3, 10) and result.matched.keywords == []
-    assert result.matched.experience_ids == [person.experiences[0].id]
+    assert rank(person, [public(title=word, description_text=None, role_tags=[], skill_tags=[])]) == []
+
+
+def test_free_text_only_ranks_supported_candidates_without_exposing_sentence_fragments():
+    person = profile()
+    value = person.model_dump()
+    value["experiences"][0]["description"] = "업무 마지막 20년(관리소장"
+    second = {**value["experiences"][0], "id": uuid4(), "skill_tags": ["무관한역량"]}
+    value["experiences"].append(second)
+    from app.contracts.profile import ProfileContent
+    person = ProfileContent.model_validate(value)
+    common = dict(description_text=None, skill_tags=["낭독"], role_tags=[])
+    plain = rank(person, [public(title="낭독", **common)])[0]
+    overlap = rank(person, [public(title="낭독 업무 마지막 20년(관리소장", **common)])[0]
+    assert overlap.score > plain.score
+    assert overlap.matched.experience_ids == [person.experiences[0].id]
+    assert overlap.matched.keywords == [] and overlap.matched.skill_tags == ["낭독"]
 
 
 @pytest.mark.parametrize("race", ["revision", "publication", "expired"])

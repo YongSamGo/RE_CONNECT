@@ -24,7 +24,7 @@ from tests.ingestion_helpers import ingestion_database
 from tests.persistence_helpers import NOW
 from tests.test_contracts import opportunity, requirement
 
-URL = "https://www.50plus.or.kr/nwc/detail.do?id=12345"
+URL = "https://www.50plus.or.kr/appView.do?ANN_NO=12345"
 
 
 def material(source, **changes):
@@ -45,14 +45,26 @@ def setup(engine, source):
 @pytest.mark.parametrize("url", [
     "https://evil.example/nwc/detail.do?id=12345", "https://www.50plus.or.kr.evil.example/nwc/detail.do?id=12345",
     "https://www.50plus.or.kr@evil.example/nwc/detail.do?id=12345", "https://127.0.0.1/nwc/detail.do?id=12345",
-    URL + "&url=https://evil.example", URL + "&id=999", URL.replace("12345", "%31%32%33%34%35%26x%3D1"),
-    URL.replace("/nwc/", "/../nwc/"), URL.replace("/detail", "/%64etail"), URL.replace("https", "http"),
+    URL + "&url=https://evil.example", URL + "&ANN_NO=999", URL.replace("12345", "%31%32%33%34%35%26x%3D1"),
+    URL.replace("/appView", "/../appView"), URL.replace("/appView", "/%61ppView"), URL.replace("https", "http"),
     URL + "#fragment", URL.replace(".or.kr/", ".or.kr:443/"), URL.replace("12345", ""),
+    "https://www.50plus.or.kr/nwc/detail.do?id=12345",
+    URL.replace("ANN_NO", "id"), URL.replace("12345", "0"), URL.replace("12345", "-1"),
+    URL.replace("12345", "1234567890123"), URL.replace("ANN_NO", "ann_no"),
 ])
 def test_official_path_rejects_host_confusion_redirect_and_ambiguous_identifiers(url):
     data = material(uuid4()); data["snapshot"]["source_url"] = data["evidence"]["url"] = url
     with pytest.raises((ValidationError, ValueError)):
         ManualInput.model_validate(data)
+
+
+@pytest.mark.parametrize("path", ["appView.do", "in_appView.do"])
+def test_verified_50plus_job_paths_accept_only_announcement_id(path):
+    url = "https://www.50plus.or.kr/" + path + "?ANN_NO=12345"
+    assert official_url(url) == url
+    data = material(uuid4(), snapshot={"source_url": url, "application_url": url})
+    data["evidence"]["url"] = url
+    assert ManualInput.model_validate(data).snapshot.source_url == url
 
 
 def test_verified_work24_path_and_query_order():

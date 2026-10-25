@@ -91,7 +91,6 @@ def test_success_pins_numeric_ip_but_preserves_tls_and_host(monkeypatch, network
 
 @pytest.mark.parametrize("operation,identifier,path,param", [
     ("senuri_detail", "K-fixture", b"/B552474/SenuriService/getJobInfo?", b"id=K-fixture"),
-    ("volunteer_list", None, b"/1741000/volunteerPartcptnService/getVltrSearchWordList?", b"pageNo=1"),
     ("volunteer_detail", "123", b"/1741000/volunteerPartcptnService/getVltrPartcptnItem?", b"progrmRegistNo=123"),
 ])
 def test_fixed_operations(monkeypatch, network, operation, identifier, path, param):
@@ -101,12 +100,28 @@ def test_fixed_operations(monkeypatch, network, operation, identifier, path, par
     assert path in written and param in written
 
 
+@pytest.mark.parametrize("region", collector.VOLUNTEER_REGIONS)
+def test_volunteer_list_requires_fixed_capital_region_in_wire_request(monkeypatch, network, region):
+    result, _ = run_fetch(monkeypatch, network, collector.FetchRequest(
+        operation="volunteer_list", region_code=region, page_no=2))
+    assert result.status == collector.FetchStatus.OK
+    written = b"".join(network.stream.writes)
+    assert b"/1741000/volunteerPartcptnService/getVltrAreaList?" in written
+    assert ("schSido=" + region).encode() in written and b"pageNo=2" in written
+
+
 @pytest.mark.parametrize("kwargs", [
     {"operation": "https://attacker.invalid"}, {"url": "http://127.0.0.1"},
     {"operation": "senuri_detail"}, {"external_id": "fixture"},
     {"operation": "senuri_detail", "external_id": "../private"},
     {"operation": "senuri_detail", "external_id": "fixture\n"},
     {"page_no": True}, {"page_no": 0}, {"num_rows": 101},
+    {"operation": "volunteer_list"},
+    {"operation": "volunteer_list", "region_code": "6260000"},
+    {"operation": "volunteer_list", "region_code": "6110000&redirect=evil"},
+    {"operation": "volunteer_list", "region_code": 6110000},
+    {"region_code": "6110000"},
+    {"operation": "volunteer_detail", "external_id": "123", "region_code": "6110000"},
 ])
 def test_request_cannot_supply_url_or_unbounded_parameters(kwargs):
     with pytest.raises(ValidationError):

@@ -27,7 +27,7 @@ MANUAL_SOURCES = {
 }
 # 기존 수집기와 별도의 수동 경로다. 허용표 변경은 실제 공식 경로 확인 후 코드 리뷰한다.
 PATHS = {
-    "www.50plus.or.kr": (r"/[a-z]{2,12}/detail\.do", {"id"}),
+    "www.50plus.or.kr": (r"/(?:appView|in_appView)\.do", {"ANN_NO"}),
     "www.work24.go.kr": (r"/wk/a/b/1500/empDetailAuthView\.do", {"wantedAuthNo", "infoTypeCd", "infoTypeGroup"}),
     "www.1365.go.kr": (r"/vols/P9210/partcptn/timeCptn\.do", {"type", "progrmRegistNo"}),
 }
@@ -51,7 +51,7 @@ def official_url(value):
     if len(query) != len(pairs) or set(query) != policy[1]:
         raise ValueError("공식 상세 식별자 필요")
     if parts.hostname == "www.50plus.or.kr":
-        valid = re.fullmatch(r"[1-9][0-9]{0,11}", query["id"])
+        valid = re.fullmatch(r"[1-9][0-9]{0,11}", query["ANN_NO"])
     elif parts.hostname == "www.1365.go.kr":
         valid = query["type"] == "show" and re.fullmatch(r"[1-9][0-9]{0,11}", query["progrmRegistNo"])
     else:

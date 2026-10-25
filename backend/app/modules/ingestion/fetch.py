@@ -21,7 +21,7 @@ HOST = "apis.data.go.kr"
 ENDPOINTS = {
     "senuri_list": "/B552474/SenuriService/getJobList",
     "senuri_detail": "/B552474/SenuriService/getJobInfo",
-    "volunteer_list": "/1741000/volunteerPartcptnService/getVltrSearchWordList",
+    "volunteer_list": "/1741000/volunteerPartcptnService/getVltrAreaList",
     "volunteer_detail": "/1741000/volunteerPartcptnService/getVltrPartcptnItem",
 }
 MAX_BYTES = 2 * 1024 * 1024
@@ -30,6 +30,8 @@ MAX_DEPTH = 32
 MAX_TEXT = 65536
 TOTAL_TIMEOUT = 20.0
 IO_TIMEOUT = 5.0
+# 순서는 영속 수집 커서의 region_index와 대응한다. 변경 시 커서 마이그레이션이 필요하다.
+VOLUNTEER_REGIONS = ("6110000", "6410000", "6280000")
 
 
 class FetchRequest(BaseModel):
@@ -39,11 +41,14 @@ class FetchRequest(BaseModel):
     page_no: int = Field(default=1, ge=1, le=100000)
     num_rows: int = Field(default=10, ge=1, le=100)
     external_id: str | None = Field(default=None, pattern=r"^[A-Za-z0-9_-]{1,64}$")
+    region_code: Literal["6110000", "6410000", "6280000"] | None = None
 
     @model_validator(mode="after")
     def detail_has_id(self):
         if self.operation.endswith("_detail") != (self.external_id is not None):
             raise ValueError("상세 요청에는 식별자가 필요하고 목록에는 사용할 수 없습니다")
+        if (self.operation == "volunteer_list") != (self.region_code is not None):
+            raise ValueError("봉사 목록에는 수도권 지역이 필요하고 다른 요청에는 사용할 수 없습니다")
         return self
 
 
@@ -190,6 +195,8 @@ def _url(request: FetchRequest, key: SecretStr) -> str:
               "numOfRows": str(request.num_rows)}
     if request.external_id is not None:
         params["id" if request.operation == "senuri_detail" else "progrmRegistNo"] = request.external_id
+    if request.region_code is not None:
+        params["schSido"] = request.region_code
     return "https://" + HOST + ENDPOINTS[request.operation] + "?" + urlencode(params)
 
 

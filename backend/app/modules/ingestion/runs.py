@@ -39,6 +39,7 @@ class SqlRun:
     def __init__(self, connection, source, run_id, state, clock):
         self.connection, self.source, self.id, self.clock = connection, source, run_id, clock
         self.page = state["next_page"]
+        self.region_index = state["region_index"]
         self.counts = Counts()
 
     def consume(self, max_requests):
@@ -72,10 +73,13 @@ class SqlRun:
         self.counts.rejection_counts[code] = self.counts.rejection_counts.get(code, 0) + 1
         self.progress()
 
-    def checkpoint(self, page):
+    def checkpoint(self, page, *, region_index=None):
+        region_index = self.region_index if region_index is None else region_index
         with self.connection.begin():
-            self.connection.execute(update(State).where(State.source_id == self.source["id"]).values(next_page=page))
+            self.connection.execute(update(State).where(State.source_id == self.source["id"]).values(
+                next_page=page, region_index=region_index))
         self.page = page
+        self.region_index = region_index
 
     def finish(self, code=None):
         now = to_utc(self.clock())
@@ -121,7 +125,7 @@ class RunRepository:
                 if state is None:
                     next_run = source["last_success_at"] + timedelta(hours=6) if source["last_success_at"] else None
                     connection.execute(insert(State), {"source_id": source_id, "quota_date": kst_date(now), "request_count": 0, "next_page": 1, "next_run_at": next_run})
-                    state = {"next_page": 1, "next_run_at": next_run}
+                    state = {"next_page": 1, "region_index": 0, "next_run_at": next_run}
                 if due and state["next_run_at"] is not None and state["next_run_at"] > now:
                     yield None
                     return

@@ -19,7 +19,7 @@ from sqlalchemy.pool import NullPool, StaticPool
 from sqlalchemy.schema import CreateSchema, DropSchema
 
 from app.collect import store_factory
-from app.modules.ingestion.fetch import FetchResult, FetchStatus, parse_xml
+from app.modules.ingestion.fetch import FetchResult, FetchStatus, VOLUNTEER_REGIONS, parse_xml
 from app.modules.ingestion.runner import Collector
 from app.modules.ingestion.runs import BASE_URLS, RunRepository, SqlRun, StopRun
 from app.modules.opportunities.ingestion import IngestionService
@@ -79,7 +79,7 @@ def setup(request):
                             return
                         if state is None:
                             db.execute(insert(State), {"source_id": identifier, "quota_date": clock().date(), "request_count": 0, "next_page": 1})
-                            state = {"next_page": 1}
+                            state = {"next_page": 1, "region_index": 0}
                         run_id = uuid4()
                         db.execute(insert(Run), {"id": run_id, "source_id": identifier, "status": "running", "started_at": clock()})
                     yield SqlRun(db, source, run_id, state, clock)
@@ -123,6 +123,72 @@ def rows(setup, model):
 
 def execute(setup, **kwargs):
     return asyncio.run(setup.collector.run(setup.source, rows=1, **kwargs))
+
+
+def volunteer_fetcher(setup, *, empty_regions=()):
+    with setup.engine.begin() as db:
+        db.execute(update(Source).where(Source.id == setup.source).values(
+            code="volunteer", base_url=BASE_URLS["volunteer"]))
+    calls = []
+
+    async def fetcher(request, key):
+        calls.append(request)
+        if request.operation == "volunteer_list":
+            if request.region_code in empty_regions:
+                return parse_xml(b"<response><header><resultCode>00</resultCode></header>"
+                                 b"<body><items/><totalCount>0</totalCount></body></response>")
+            return envelope({"progrmRegistNo": request.region_code + str(request.page_no),
+                             "progrmSj": "가상 봉사", "sidoCd": request.region_code}, 2)
+        return envelope({"progrmRegistNo": request.external_id, "progrmSj": "가상 봉사",
+                         "mnnstNm": "가상 기관", "adultPosblAt": "Y", "progrmSttusSe": "2",
+                         "noticeBgnde": "20260101", "noticeEndde": "20261231"}, 1)
+
+    setup.collector.fetcher = fetcher
+    return calls
+
+
+def test_volunteer_budget_resumes_exact_region_and_page_before_marking_success(setup):
+    calls = volunteer_fetcher(setup)
+    assert execute(setup, max_requests=2).failure_code == "budget_exhausted"
+    state = rows(setup, State)[0]
+    assert (state["region_index"], state["next_page"]) == (0, 2)
+    assert execute(setup, max_requests=4).failure_code == "budget_exhausted"
+    state = rows(setup, State)[0]
+    assert (state["region_index"], state["next_page"]) == (1, 2)
+    assert rows(setup, Source)[0]["last_success_at"] is None
+    assert execute(setup, max_requests=6).status == "succeeded"
+    assert [(r.region_code, r.page_no) for r in calls if r.operation.endswith("_list")] == [
+        (region, page) for region in VOLUNTEER_REGIONS for page in (1, 2)]
+    state = rows(setup, State)[0]
+    assert (state["region_index"], state["next_page"], state["request_count"]) == (0, 1, 12)
+    assert len(rows(setup, OpportunityVersion)) == 6
+    assert rows(setup, Source)[0]["last_success_at"] == setup.clock()
+
+
+def test_volunteer_page_limit_and_empty_region_advance_without_false_completion(setup):
+    calls = volunteer_fetcher(setup, empty_regions=(VOLUNTEER_REGIONS[0], VOLUNTEER_REGIONS[2]))
+    assert execute(setup, max_pages=1).failure_code == "incomplete"
+    assert rows(setup, State)[0]["region_index"] == 1
+    assert rows(setup, Source)[0]["last_success_at"] is None
+    assert execute(setup, max_requests=5).status == "succeeded"
+    assert [(r.region_code, r.page_no) for r in calls if r.operation.endswith("_list")] == [
+        (VOLUNTEER_REGIONS[0], 1), (VOLUNTEER_REGIONS[1], 1),
+        (VOLUNTEER_REGIONS[1], 2), (VOLUNTEER_REGIONS[2], 1)]
+    assert rows(setup, State)[0]["request_count"] == 6
+
+
+def test_volunteer_regions_share_daily_quota_and_resume_after_failed_detail(setup):
+    volunteer_fetcher(setup)
+    with setup.engine.begin() as db:
+        db.execute(insert(State), {"source_id": setup.source, "quota_date": setup.clock().date(),
+                                  "request_count": 999, "next_page": 2, "region_index": 1})
+    assert execute(setup).failure_code == "budget_exhausted"
+    state = rows(setup, State)[0]
+    assert (state["region_index"], state["next_page"], state["request_count"]) == (1, 2, 1000)
+    assert execute(setup).failure_code == "budget_exhausted"
+    setup.clock.now += timedelta(days=1)
+    assert execute(setup).status == "succeeded"
+    assert rows(setup, State)[0]["request_count"] == 6
 
 
 def test_success_persists_pending_versions_metadata_and_aggregate(setup):

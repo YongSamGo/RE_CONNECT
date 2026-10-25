@@ -107,7 +107,7 @@ export function JourneyRecommendations({ journeyId }: { journeyId: string }) {
       {state.status === 'success' && (state.data === null ? <StatusNotice label="프로필 확인" title="먼저 프로필을 직접 확정해 주세요">프로필에서 경험·희망 지역·활동 유형을 확인하고 확정할 수 있습니다. 대화를 끝낼 필요는 없습니다.</StatusNotice> : <>
         <p>확정 프로필 {state.data.profile.version}번 · {checkedTime(state.data.generated_at)} 조회</p>
         {state.data.based_on_previous_confirmed && <StatusNotice label="프로필 수정 중" title="이전 확정 프로필 기준">수정한 초안은 아직 반영되지 않았습니다. 프로필을 재확정하고 추천을 다시 확인해 주세요.</StatusNotice>}
-        {state.data.items.length === 0 && <StatusNotice label="추천 결과" title="현재 조건에 연결되는 추천이 없습니다">필수조건을 완화하지 않았습니다. 선택 필터와 확정 프로필을 직접 확인하거나 공개 공고를 살펴보세요.</StatusNotice>}
+        {state.data.items.length === 0 && <StatusNotice label="추천 결과" title="현재 조건에 연결되는 추천이 없습니다">연결 근거가 충분한 공고를 찾지 못했습니다. 경험·역량과 선택 필터를 확인하고 프로필을 다시 확정하거나 공개 공고를 살펴보세요.</StatusNotice>}
         <ol className="opportunity-list">{state.data.items.slice(0, 5).map(item => <li className="panel" key={`${item.opportunity.id}:${item.opportunity.version}`}><article>
           <h2>{item.opportunity.title}</h2><p>{item.opportunity.organization_name} · {item.opportunity.activity_type === 'employment' ? '취업·공공일자리' : '봉사'}</p>
           <p>{item.opportunity.activity_region ? provinces[item.opportunity.activity_region.province] : '지역 확인 필요'}{item.opportunity.remote_allowed === true && ' · 원격 가능'} · {deadlineLabel(item.opportunity)}</p>

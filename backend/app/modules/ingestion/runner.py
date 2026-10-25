@@ -7,7 +7,7 @@ import re
 from sqlalchemy import insert, select, text, update
 
 from app.contracts.time import utc_now
-from app.modules.ingestion.fetch import FetchRequest, FetchStatus, fetch
+from app.modules.ingestion.fetch import FetchRequest, FetchStatus, VOLUNTEER_REGIONS, fetch
 from app.modules.ingestion.normalize import Candidate, normalize_items
 from app.modules.ingestion.runs import BASE_URLS, DAILY_LIMITS, StopRun
 from app.modules.opportunities.ingestion import RecordOpportunity
@@ -106,7 +106,9 @@ class Collector:
                 async with asyncio.timeout(600):
                     for _ in range(max_pages):
                         page = run.page
-                        document = await self._fetch(run, source + "_list", max_requests, page_no=page, num_rows=rows)
+                        region = VOLUNTEER_REGIONS[run.region_index] if source == "volunteer" else None
+                        document = await self._fetch(run, source + "_list", max_requests,
+                                                     page_no=page, num_rows=rows, region_code=region)
                         items = document.root.findall("body/items/item")
                         run.counts.fetched_count += len(items)
                         run.progress()
@@ -141,7 +143,10 @@ class Collector:
                             elif result.outcome in {"changed", "closed"}:
                                 run.counts.changed_count += 1
                         if page * rows >= document.total_count:
-                            run.checkpoint(1)
+                            if source == "volunteer" and run.region_index < len(VOLUNTEER_REGIONS) - 1:
+                                run.checkpoint(1, region_index=run.region_index + 1)
+                                continue
+                            run.checkpoint(1, region_index=0)
                             run.finish()
                             return RunResult("succeeded", run.id)
                         run.checkpoint(page + 1)
