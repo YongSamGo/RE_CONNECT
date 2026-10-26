@@ -69,7 +69,7 @@ function AdminWorkspace() {
     </section>)}
     {selected && state.status === 'success' && state.data.kind === 'opportunities' && <><Button variant="secondary" onClick={() => { const target = { id: selected.id, version: selected.version }; request.clear(); setSelected(null); setEditor({ target }) }}>선택한 공고 수정</Button><OpportunityReview key={`${selected.id}:${selected.version}`} id={selected.id} version={selected.version} /></>}
     {selected?.report && state.status === 'success' && state.data.kind === 'reports' && <ReportReview key={`${selected.id}:${selected.version}`} report={selected.report} onRefresh={() => load('reports')} />}
-    <StatusNotice title="실제 운영 서버 검증이 남아 있어요">공고 등록·수정·검수·종료·신고 처리·감사 조회는 서버 권한·MFA·버전 검증을 통과해야 하며 현재 실제 서버 연결은 검증 전입니다.</StatusNotice>
+    <StatusNotice label="처리 전 확인" title="공식 원문과 최신 상태를 확인해 주세요">공고의 공개·비공개·종료와 신고 처리는 이용자에게 영향을 줍니다. 변경 사항과 처리 근거를 확인한 뒤 진행해 주세요.</StatusNotice>
   </>
 }
 

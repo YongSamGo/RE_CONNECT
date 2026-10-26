@@ -118,7 +118,7 @@ export function PublicOpportunities() {
       <div className="actions catalog-keyword"><Button type="submit" disabled={regionsPending} pending={loading} pendingLabel="공고를 불러오고 있어요">공고 검색하기</Button>{loading && <Button variant="secondary" onClick={cancel}>조회 취소하기</Button>}</div>
     </form>
     <section className="catalog-results" ref={resultRef} tabIndex={-1} aria-label="공고 조회 결과">
-      {state.status === 'idle' && <StatusNotice label="공개 탐색" title="검색 조건을 고르고 공고를 불러오세요">검색 버튼을 누르면 공개 공고 API에서 조회합니다. 현재 서버는 연결 검증 전이며, 응답이 없으면 오류를 안내합니다.</StatusNotice>}
+      {state.status === 'idle' && <StatusNotice label="공개 탐색" title="검색 조건을 고르고 공고를 불러오세요">검색 버튼을 누르면 공개 공고를 조회합니다. 로그인이나 AI 처리 동의 없이 살펴볼 수 있어요.</StatusNotice>}
       {state.status === 'loading' && <StatusNotice kind="loading" title="공고를 확인하고 있어요">조회가 끝나기 전에는 결과를 확정하지 않습니다. 원하면 조회를 취소할 수 있어요.</StatusNotice>}
       {state.status === 'error' && <><p className="applied-search">조회한 조건: {searchDescription(state.query)}</p><RequestError error={state.error} actions={state.error.code !== 'DAILY_QUOTA_EXCEEDED' ? <Button onClick={() => void load(state.query, state.page)}>같은 조건으로 다시 조회</Button> : undefined} /></>}
       {state.status === 'loaded' && <>
