@@ -1,10 +1,13 @@
 """운영자 검수 상태 전이 규칙 (W07-03, openapi 운영자 경로).
 
-- 승인·반려: 그 공고의 최신 버전이면서 `pending`인 버전만. 더 새 버전이 있으면 VERSION_CONFLICT.
+- 승인: 그 공고의 최신 버전이면서 `pending`인 버전만. 더 새 버전이 있으면 VERSION_CONFLICT.
+- 반려: `pending`이면 최신이 아니어도 받는다. 더 새 버전에 밀린 버전을 정리할 길이 있어야 한다.
 - 비공개·모집 종료: 지금 공개 중인 버전만. 공개본이 없으면 INVALID_STATE_TRANSITION.
 - `rejected`·`hidden`은 그 버전에서 끝난다. 다시 공개하려면 새 `pending` 버전을 만들어 승인한다.
-- 모집 종료는 공개본과 그 뒤의 `pending` 버전을 함께 닫는다. 종료 전에 들어온 "모집 중" 버전을
-  나중에 승인해도 조용히 다시 열리지 않게 하기 위해서다.
+- 비공개는 그 뒤의 `pending`도 함께 숨기고, 모집 종료는 그 뒤의 `pending`도 함께 닫는다(닫힌 버전은 승인 422).
+  숨기거나 닫기 전에 들어온 버전을 다른 운영자가 승인해 공고가 다시 공개·재개되지 않게 하기 위해서다.
+- 운영자가 출처보다 먼저 종료하면 다음 수집이 "모집 중" 새 `pending`을 한 번 만든다. 닫힌 쪽→열린 쪽은
+  재검수 대상 변경(Plan/02 §6)이라 그대로 두고, 운영자가 `recruitment_closed`로 반려한다.
 - 상태 변경·검수 근거·감사 기록은 한 트랜잭션이다. 감사 기록을 못 남기면 상태도 바꾸지 않는다.
 """
 
@@ -17,6 +20,7 @@ from uuid import UUID
 from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.ingestion.manual import official_url
+from app.modules.ingestion.normalize import UNREVIEWED_EVIDENCE_PREFIX
 from app.modules.opportunities.lifecycle import assess_lifecycle
 from app.modules.opportunities.versions import OpportunitySnapshot
 from app.modules.opportunity_reviews.models import (
@@ -43,12 +47,19 @@ class NotPublishable(Exception):
 def publishability_problems(snapshot: OpportunitySnapshot, *, now: datetime) -> tuple[FieldProblem, ...]:
     """제목·기관·접수 경로·HTTPS 형식은 저장 계약이 이미 보장한다. 여기서는 공개 시점 조건만 본다.
 
+    수집기가 넣은 "필수조건 미검수" 표식 조건이 남아 있으면 승인하지 않는다. 운영자가 PATCH로 조건을 구조화하거나
+    "명시된 필수조건 없음"을 확인해 표식을 지운 새 버전을 만들어야 한다.
+
     원문 주소는 출처별 공식 상세 경로 허용표(수집기·수동 입력과 같은 표)에 맞아야 한다. 자동 수집 출처의
     base_url은 API 주소라 원문 호스트와 다르므로 출처 주소와의 비교로 대신하지 않는다.
     """
     problems = []
     if snapshot.activity_region is None and snapshot.remote_allowed is not True:
         problems.append(FieldProblem("content.activity_region", "required"))
+    # 수집기의 미검수 표식이 남아 있으면 원문 연령·자격 제한이 자격 판정에서 빠진 채 추천된다.
+    # 원문을 해석할 수 없어 남긴 다른 `other` 조건은 검수를 마친 최종 상태이므로 막지 않는다.
+    if any(r.field == "other" and r.source_evidence.startswith(UNREVIEWED_EVIDENCE_PREFIX) for r in snapshot.requirements):
+        problems.append(FieldProblem("content.requirements", "invalid_value"))
     try:
         official_url(snapshot.source_url)
     except ValueError:

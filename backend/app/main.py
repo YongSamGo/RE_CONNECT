@@ -71,6 +71,9 @@ from app.modules.admission.speech import ControlledSpeechAdapter
 from app.modules.admission.repository import RedisAdmissionStore
 from app.modules.admission.service import AdmissionService, UnavailableAdmissionService
 from app.modules.opportunities import router as opportunities
+from app.modules.admin_opportunities import router as admin_opportunities
+from app.modules.admin_opportunities.repository import SqlAdminOpportunityRepository, UnavailableAdminOpportunityRepository
+from app.modules.admin_opportunities.service import AdminOpportunityService
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.service import PublicOpportunityService, UnavailableOpportunityRepository
 from app.modules.opportunities.ingestion import IngestionService, UnavailableIngestionRepository
@@ -81,6 +84,10 @@ from app.modules.audit.repository import SqlAuditRepository, UnavailableAuditRep
 from app.modules.audit.service import AuditService
 from app.modules.opportunity_reviews.repository import SqlOpportunityReviewRepository
 from app.modules.opportunity_reviews.service import OpportunityReviewService, UnavailableOpportunityReviewRepository
+from app.modules.reports import router as reports
+from app.modules.reports.repository import SqlReportRepository, UnavailableReportRepository
+from app.modules.reports.service import ReportService
+from app.modules.reports.store import RedisReportStore, UnavailableReportStore
 from app.modules.journeys import router as journeys
 from app.modules.journeys.repository import RedisJourneyStore
 from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
@@ -198,6 +205,8 @@ def create_app(
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     app.state.opportunity_review_service = OpportunityReviewService(
         SqlOpportunityReviewRepository(engine.begin) if engine is not None else UnavailableOpportunityReviewRepository())
+    app.state.admin_opportunity_service = AdminOpportunityService(
+        SqlAdminOpportunityRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAdminOpportunityRepository())
     app.state.audit_service = AuditService(
         SqlAuditRepository(engine.connect, engine.begin) if engine is not None else UnavailableAuditRepository())
     kakao = None
@@ -235,6 +244,11 @@ def create_app(
                     if engine is not None and cipher is not None else UnavailableOperatorMfaRepository())
     app.state.member_service.mfa = operator_mfa
     app.state.operator_mfa_service = OperatorMfaService(operator_mfa, app.state.member_service)
+    limits_ready = redis_client is not None and isinstance(admission, AdmissionService)
+    app.state.report_service = ReportService(
+        RedisReportStore(redis_client) if limits_ready else UnavailableReportStore(),
+        SqlReportRepository(engine.begin, cipher) if engine is not None else UnavailableReportRepository(),
+        app.state.opportunity_service, admission.digest if limits_ready else None)
     app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
         app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
     app.state.journey_service.stored_profiles = app.state.saved_profile_service
@@ -293,6 +307,8 @@ def create_app(
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(opportunity_reviews.router, prefix=API_PREFIX)
+    app.include_router(admin_opportunities.router, prefix=API_PREFIX)
+    app.include_router(reports.router, prefix=API_PREFIX)
     app.include_router(audit.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)

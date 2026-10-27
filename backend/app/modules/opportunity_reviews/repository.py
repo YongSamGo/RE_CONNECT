@@ -48,9 +48,11 @@ class SqlOpportunityReviewRepository:
 
     @staticmethod
     def _review(db, opportunity_id, target, command, check):
-        latest = db.scalar(select(func.max(V.version)).where(V.opportunity_id == opportunity_id))
-        if command.base_version != latest:
-            raise AppError("VERSION_CONFLICT")
+        # 승인은 최신 버전만 공개본으로 만든다. 반려는 더 새 버전에 밀린 pending도 정리할 수 있어야 한다.
+        if command.action == "approve":
+            latest = db.scalar(select(func.max(V.version)).where(V.opportunity_id == opportunity_id))
+            if command.base_version != latest:
+                raise AppError("VERSION_CONFLICT")
         if target["review_status"] != "pending":
             raise AppError("INVALID_STATE_TRANSITION")
         if check is not None:
@@ -78,9 +80,12 @@ class SqlOpportunityReviewRepository:
             raise AppError("VERSION_CONFLICT")
         if command.action == "hide":
             # 공개 포인터를 먼저 지워야 승인 상태를 바꿀 수 있다. 저장 지원서는 읽을 때 종료 재검토 표시가 붙는다.
+            # 그 뒤의 pending도 함께 숨긴다. 숨기기 전에 들어온 버전을 다른 운영자가 승인해 다시 공개하지 않게 한다.
             db.execute(delete(P).where(P.opportunity_id == opportunity_id))
-            db.execute(update(V).where(V.opportunity_id == opportunity_id, V.version == command.base_version)
-                       .values(review_status="hidden", reviewed_at=command.at))
+            db.execute(update(V).where(
+                V.opportunity_id == opportunity_id,
+                or_(V.version == command.base_version, (V.version > command.base_version) & (V.review_status == "pending")),
+            ).values(review_status="hidden", reviewed_at=command.at))
             return ReviewResult(id=opportunity_id, version=command.base_version, review_status="hidden", reviewed_at=command.at)
         if target["recruitment_status"] == "closed":
             raise AppError("INVALID_STATE_TRANSITION")

@@ -57,9 +57,9 @@ def opportunity_values(opportunity_id=OPPORTUNITY_ID, version=1, **updates):
     }
 
 
-def seed_opportunity(db, *, opportunity_id=OPPORTUNITY_ID, external_id="fictional-external"):
+def seed_opportunity(db, *, opportunity_id=OPPORTUNITY_ID, external_id="fictional-external", versions=OpportunityVersion):
     source_id = uuid4()
     db.execute(insert(Source), {"id": source_id, "code": "fictional-source", "name": "가상 출처", "base_url": "https://example.org/api"})
     db.execute(insert(OpportunityDocument), {"id": opportunity_id, "source_id": source_id, "external_id": external_id})
-    db.execute(insert(OpportunityVersion), opportunity_values(opportunity_id))
+    db.execute(insert(versions), opportunity_values(opportunity_id))
     return source_id, opportunity_id
