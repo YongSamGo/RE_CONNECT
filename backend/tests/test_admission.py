@@ -164,7 +164,7 @@ def test_redis_timeout_and_cancellation_do_not_release_and_old_token_cannot_rele
         token = await client.hget(store.control_key, "active")
         await expect_error("SERVICE_UNAVAILABLE", store.release(Lease("0" * 64)))
         assert await client.hget(store.control_key, "active") == token
-        # 종료 미확인 상태를 운영자가 임의로 해제하는 경로는 만들지 않는다.
+        # 종료 미확인 슬롯을 시간만 보고 넘기는 자동·공개 경로는 없다. 운영자 복구는 별도 시험에서 확인한다.
         await store.release(Lease(token))  # 시험만 다음 취소 시나리오로 이동
         entered = asyncio.Event()
         async def cancel_target(completion):
@@ -264,4 +264,53 @@ def test_actual_ollama_adapter_terminal_signal_releases_even_invalid_output_but_
             await adapter.generate_structured(identity=identity(), instructions="x", untrusted_turns=[UntrustedTurn(role="user", text="x")], output_model=Extracted)
         await expect_error("INFERENCE_BUSY", adapter.generate_structured(identity=identity(), instructions="x", untrusted_turns=[UntrustedTurn(role="user", text="x")], output_model=Extracted))
         assert len(calls) == 1
+    with_redis(scenario)
+
+
+def test_operator_release_requires_runtime_stop_confirmation_and_lease_fingerprint():
+    import manage_inference
+    for argv in (["release", "--lease", "0123456789abcdef"], ["release", "--lease", "ABC", "--confirm-runtime-stopped"],
+                 ["release", "--confirm-runtime-stopped"], []):
+        with pytest.raises(SystemExit) as caught:
+            manage_inference.parse_args(argv)
+        assert caught.value.code == 2
+    args = manage_inference.parse_args(["release", "--lease", "0123456789abcdef", "--confirm-runtime-stopped"])
+    assert (args.command, args.lease, args.confirm_runtime_stopped) == ("release", "0123456789abcdef", True)
+
+
+def test_operator_cli_without_settings_reports_fixed_unavailable(monkeypatch, capsys):
+    import manage_inference
+    monkeypatch.setattr(manage_inference, "get_settings", lambda: Settings(_env_file=None))
+    assert manage_inference.main(["status"]) == 1
+    assert capsys.readouterr().out.strip() == '{"completed": false, "code": "SERVICE_UNAVAILABLE"}'
+
+
+def test_redis_operator_recovery_releases_only_the_inspected_stuck_lease_and_keeps_daily_counts():
+    from app.modules.admission.repository import lease_fingerprint
+    async def scenario(service, store, client):
+        assert await store.recover(service.identity_key_id, "0" * 16) == "not_active"
+        async def unknown(completion):
+            await asyncio.Event().wait()
+        await expect_error("AI_TIMEOUT", service.run(identity(), "llm", unknown, timeout_seconds=0.01))
+        token = await client.hget(store.control_key, "active")
+        status = await store.slot_status(service.identity_key_id)
+        assert status.ready and status.kind == "llm" and status.lease == lease_fingerprint(token) and status.global_count == 1
+        assert token not in repr(status)
+        # 다른 지문·다른 세대·다른 식별키로는 비우지 않는다.
+        wrong = "0" * 16 if status.lease != "0" * 16 else "1" * 16
+        assert await store.recover(service.identity_key_id, wrong) == "lease_changed"
+        other_epoch = RedisAdmissionStore(client, epoch=uuid4(), prefix=store.prefix)
+        await expect_error("SERVICE_UNAVAILABLE", other_epoch.recover(service.identity_key_id, status.lease))
+        await expect_error("SERVICE_UNAVAILABLE", store.recover("0" * 64, status.lease))
+        await expect_error("INFERENCE_BUSY", service.run(identity(), "tts", ended))
+        assert await store.recover(service.identity_key_id, status.lease) == "released"
+        assert await client.hget(store.control_key, "active") is None and await client.hget(store.control_key, "kind") is None
+        assert await client.hget(store.control_key, "global") == "1"
+        assert await service.run(identity(), "tts", ended) == "ok"
+        assert await client.hget(store.control_key, "global") == "2"
+        # 검사 뒤 새 실행이 슬롯을 잡았다면 예전 지문으로 그 실행을 비우지 않는다.
+        await expect_error("AI_TIMEOUT", service.run(identity(), "stt", unknown, timeout_seconds=0.01))
+        newer = await client.hget(store.control_key, "active")
+        assert await store.recover(service.identity_key_id, status.lease) == "lease_changed"
+        assert await client.hget(store.control_key, "active") == newer
     with_redis(scenario)

@@ -19,6 +19,10 @@ from app.modules.requests.service import Replay, RequestScope, RequestService, R
 from app.modules.sessions.service import Session
 
 MESSAGE_TIMEOUT_SECONDS = 60
+# 다음 질문 항목 선택에 남겨 둘 최소 시간. 이보다 적게 남으면 모델을 부르지 않고 고정 순서로 고른다.
+# 종료를 확인하지 못한 호출은 공유 슬롯을 계속 잡으므로, 끝낼 시간이 없는 두 번째 호출은 시작하지 않는다.
+# 실제 CPU 런타임 지연을 측정(#34/#92)한 뒤 조정한다.
+QUESTION_MIN_SECONDS = 20
 
 
 class JourneyMessageService:
@@ -50,7 +54,9 @@ class JourneyMessageService:
             if len(turns) > 64 or sum(len(turn.text.encode('utf-8')) for turn in turns) > 12000:
                 raise AppError('PAYLOAD_TOO_LARGE')
             generation = GroundedGenerationService(self.llm.for_identity(identity))
-            async with asyncio.timeout(MESSAGE_TIMEOUT_SECONDS):
+            loop = asyncio.get_running_loop()
+            deadline = loop.time() + MESSAGE_TIMEOUT_SECONDS
+            async with asyncio.timeout_at(deadline):
                 preview = await generation.extract_experiences(user_texts=[turn.text for turn in turns],
                     existing_experiences=current.draft.experiences)
                 experiences = list(current.draft.experiences)
@@ -72,7 +78,11 @@ class JourneyMessageService:
                 await self.journeys.load(session, journey_id)
                 if (await self.journeys.profile(session, journey_id)).revision != body.base_revision:
                     raise AppError('VERSION_CONFLICT')
-                question = await generation.next_question(missing_fields=draft.missing_for_recommendation())
+                missing = draft.missing_for_recommendation()
+                if deadline - loop.time() >= QUESTION_MIN_SECONDS:
+                    question = await generation.next_question(missing_fields=missing)
+                else:
+                    question = generation.fallback_question(missing_fields=missing)
             revision = body.base_revision + 1
             view = ProfileDraftView(revision=revision, draft=draft, evidence=evidence, confirmed=current.confirmed,
                 has_unconfirmed_changes=current.confirmed is not None, missing_for_recommendation=draft.missing_for_recommendation())
