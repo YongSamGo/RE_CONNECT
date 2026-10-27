@@ -337,6 +337,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/auth/save-intents/{save_intent_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /**
+         * 현재 세션의 저장 대기 취소
+         * @description 비회원 또는 회원의 현재 세션에 결합된 정확한 대기만 폐기한다.
+         *     이미 취소·소비·만료됐거나 다른 세션의 ID여도 204이며 타인의 대기에는 영향이 없다.
+         *     회원 저장과 같은 소유자 잠금으로 직렬화한다. 먼저 끝난 저장본은 되돌리지 않는다.
+         *     저장 동의를 철회하거나 로그인·체험·이미 저장한 자료를 삭제하지 않는다.
+         *     쿼리와 본문은 허용하지 않는다.
+         */
+        delete: operations["cancelSaveIntent"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/consents": {
         parameters: {
             query?: never;
@@ -358,6 +382,28 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/consents/notices": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * 서버가 확정 게시한 현재 목적별 안내문
+         * @description 공개 텍스트만 제공한다. 게시되지 않은 목적은 null이며 버전만 설정된 경우에도 안내문을 만들지 않는다.
+         *     login_available은 저장/계정 안내문 게시와 제공자 구성이 모두 있을 때만 true다.
+         *     안내문 조회는 동의 수락이 아니며 수락 시 서버가 현재 버전을 다시 검사한다.
+         */
+        get: operations["getConsentNotices"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/consents/withdraw": {
         parameters: {
             query?: never;
@@ -373,6 +419,7 @@ export interface paths {
          *     - `storage` 철회: 저장 프로필 전 버전과 지원서를 지운다(회원만).
          *
          *     동의가 없던 목적을 철회해도 200이며 삭제 수는 0이다.
+         *     유효한 회원 철회는 다른 기기를 포함한 이전 세션·임시 체험도 정리하고 호출자를 새 회원 세션으로 전환한다. 익명 AI 철회는 새 익명 세션으로 전환한다. 저장 이력·실패 관리 재시도는 회원 삭제와 같은 경계를 사용한다. 이미 철회한 목적은 다른 목적의 자료·활성 체험을 지우지 않는다.
          */
         post: operations["withdrawConsent"];
         delete?: never;
@@ -424,7 +471,7 @@ export interface paths {
         post?: never;
         /**
          * 저장 지원서 삭제
-         * @description 그 문서의 모든 버전을 지운다. 없는 문서·다른 사람 문서는 404다.
+         * @description 그 문서의 모든 버전을 지운다. 없는 문서·다른 사람 문서는 404다. 다른 저장 문서·프로필은 유지하며 이전 회원 세션·임시 체험은 종료해 늦은 저장을 차단한다. 호출자는 새 회원 세션으로 전환한다. 삭제 이력·실패 재시도는 프로필 삭제와 같은 경계를 사용한다.
          */
         delete: operations["deleteSavedDraft"];
         options?: never;
@@ -526,12 +573,13 @@ export interface paths {
         put?: never;
         /**
          * 지원서 초안 만들기 (AI 생성·직접 작성·저장 문서 가져오기)
-         * @description - `generate`: 로컬 Qwen3가 확정 사실만으로 자기소개·지원동기를 쓴다. AI 처리 동의가 필요하고, 근거 없는 문장은 빼고 `warnings`로 알린다.
+         * @description - `generate`: 로컬 모델이 선택한 확정 사실을 서버가 자기소개 초안으로 조립한다. AI 처리 동의가 필요하다. 지원동기는 추정하지 않고 빈칸으로 두며 직접 작성 안내를 `warnings`로 알린다.
          *     - `manual`: 빈 초안. AI를 호출하지 않는다.
-         *     - `from_saved`: 회원이 자기 저장 문서를 가져온다. `saved_document`가 필수다.
+         *     - `from_saved`: 현재 회원과 AI 동의를 확인하고 `saved_document`의 자기 문서·정확한 버전을 복호화해 새 임시 초안으로 복사한다. 같은 공고의 현재 공개 버전과 현재 체험의 확정 프로필을 지정한다. 근거가 저장 당시와 다르면 경고하며 본문은 자동으로 바꾸지 않는다. 기존 승인 시각은 복사하지 않고 `revision: 1`, `approved_at: null`로 시작한다. 익명은 401, 다른 회원·없는 문서는 404다.
          *
          *     종료·비공개·재검수 중인 공고는 409 `OPPORTUNITY_NOT_AVAILABLE`, 확정본이 없으면 409 `PROFILE_NOT_CONFIRMED`.
-         *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다.
+         *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다. 최대 32개 초안·128회 생성 예약을 허용한다.
+         *     생성 실패·취소된 키는 새 키로 재시도한다. 같은 키의 완료 재생은 추론이나 체험 수명 연장을 반복하지 않는다.
          */
         post: operations["createJourneyDraft"];
         delete?: never;
@@ -547,7 +595,13 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 소유 체험 지원서와 현재 재검토 사유 조회
+         * @description 유효한 자기 체험 안의 특정 지원서만 조회한다. 목록·이전 세션·대화 복원 API가 아니다.
+         *     원래 profile_version/opportunity/본문/approved_at/revision은 보존하고 현재 근거 변화만 review_reasons/warnings로 알린다.
+         *     조회는 체험 유휴 수명을 연장하지 않는다. AI 동의나 모델 호출이 필요하지 않다.
+         */
+        get: operations["getJourneyDraft"];
         put?: never;
         post?: never;
         delete?: never;
@@ -556,6 +610,8 @@ export interface paths {
         /**
          * 지원서 초안 수정
          * @description 본문 전체를 바꾼다. 수정하면 승인이 풀리고(`approved_at=null`) 다시 승인해야 저장할 수 있다.
+         *     지원서 자체의 base_revision으로 CAS하며 프로필/체험 리비전과 구분한다.
+         *     근거가 변경되거나 공고가 닫혀도 직접 작성한 편집은 유지할 수 있으나 새 승인은 유효성 검사 뒤에만 가능하다.
          */
         patch: operations["updateJourneyDraft"];
         trace?: never;
@@ -572,6 +628,9 @@ export interface paths {
         /**
          * 지원서 초안 사용자 승인
          * @description 승인한 리비전만 복사·저장·저장 대기에 쓸 수 있다. 외부 신청은 하지 않는다.
+         *     현재 지원서 리비전과 원래 확정 프로필/공고 버전의 유효성을 다시 검사한다.
+         *     과거 편집/승인 요청, 재확정된 프로필, 바뀐 공개 공고 버전은 409이며 본문을 자동 갱신하지 않는다.
+         *     승인은 회원 저장을 수행하지 않는다. 저장 API 연결 시에도 승인 리비전과 근거를 다시 검사해야 한다.
          */
         post: operations["approveJourneyDraft"];
         delete?: never;
@@ -593,6 +652,9 @@ export interface paths {
          * 확인한 답변 보내기와 다음 질문·프로필 초안 받기
          * @description AI 처리 동의가 필요하다. 로컬 Qwen3가 프로필 초안을 추출하고 다음 질문을 하나 만든다.
          *     결과는 Pydantic 검증과 근거 참조 검사를 통과한 것만 돌려준다. 확정은 별도 요청이다.
+         *     직접 입력은 null 전사 참조를 쓴다. 전사 ID가 있으면 같은 세션/체험의 유효한 전사인지 확인하고 사용자가 확인·수정해 보낸 text만 추출에 사용한다. 전사 원문을 자동으로 덧붙이지 않는다.
+         *     경험은 원문 근거로 추가하고 기존 직접 편집 경험·다른 프로필 필드·확정본은 덮어쓰지 않는다.
+         *     실패/취소 시 본문과 초안은 반영하지 않는다. 완료 응답 재전송은 당시 리비전을 그대로 반환하므로 화면은 최신 편집과 구분해야 한다.
          */
         post: operations["createMessage"];
         delete?: never;
@@ -654,7 +716,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * 현재 체험의 전체 역할 제외 목록 조회
+         * @description 후보 목록에 표시되지 않는 역할도 포함한다. 전체 교체 PUT에서 기존 선택을 보존하기 위해 사용한다. 확정 프로필이 없으면 409이며 조회로 체험 수명을 연장하지 않는다.
+         */
+        get: operations["getRoleExclusions"];
         /**
          * 현재 체험의 추천에서 제외할 역할 지정
          * @description 제외 목록 전체를 바꾼다. 빈 배열이면 모두 복원한다. 프로필 사실은 바뀌지 않고 저장되지도 않는다.
@@ -703,6 +769,10 @@ export interface paths {
          * 녹음 전사 (로컬 STT)
          * @description AI 처리 동의가 필요하다. 원본 음성은 메모리·tmpfs에서만 처리하고 전사 후 바로 정리한다.
          *     전사 결과는 자동으로 프로필에 쓰이지 않는다. 사용자가 확인·수정한 텍스트를 `messages`로 보낸다.
+         *     같은 키/파일 해시의 완료 재생은 새 STT나 체험 수명 연장을 하지 않는다. 실패/취소된 키는 새 키로 재시도한다.
+         *     원본 음성/파일명은 Redis에 저장하지 않는다. 전사 결과와 참조는 같은 체험 해시 안에 두며 종료/만료 시 함께 폐기한다.
+         *     현재 단일 audio part만 받는 메모리 전용 업로드를 사용한다. 압축 codec/무음 검사는 내부 모델 서버 #31의 구현/실측을 기다린다.
+         *     실제 내부 모델 서비스가 준비되지 않으면 503이며 가상 전사로 대체하지 않는다.
          *     90초를 넘는 녹음은 422(`audio`, `out_of_range`), 6MiB를 넘으면 413이다.
          *
          *     - 서버는 Content-Type을 믿지 않고 파일 시그니처(WebM·Ogg·MP4·RIFF/WAVE)와 디코더 프로브(길이·코덱)로 형식을 확인한다.
@@ -736,6 +806,7 @@ export interface paths {
          * 회원 탈퇴
          * @description `GET /auth/kakao/start?purpose=reauth`로 5분 안에 재인증한 세션만 가능하다(아니면 403 `REAUTH_REQUIRED`).
          *     세션·체험·계정 연결·동의·저장 프로필·지원서를 지우고 세션을 폐기한다. 최소 삭제 이력만 30일 남는다.
+         *     삭제 요청을 영속화해 이전 인증을 차단한 뒤 DB 밖 최소 이력 저장·Redis 정리·SQL 삭제를 완료한다. 실패는 pending/failed 관리 재시도 대상이며 완료로 응답하지 않는다. 운영 이력 어댑터 미설정 시 실제 삭제 전에 503이다.
          */
         delete: operations["deleteAccount"];
         options?: never;
@@ -839,7 +910,7 @@ export interface paths {
         post?: never;
         /**
          * 저장 프로필 전체 삭제
-         * @description 모든 저장 버전과 그 프로필에서 나온 지원서를 함께 지운다. 저장본이 없어도 204다.
+         * @description 모든 저장 버전과 그 프로필에서 나온 지원서를 함께 지운다. 저장본이 없어도 204다. 이전 회원 세션·임시 체험도 정리해 늦은 저장을 차단하고 호출자는 새 회원 세션으로 전환한다. DB 밖 이력 저장이 실패하면 완료로 응답하지 않고 관리 재시도가 필요하다.
          */
         delete: operations["deleteSavedProfile"];
         options?: never;
@@ -1160,7 +1231,7 @@ export interface components {
                 review_reason: "missing_profile_value" | "unclear_requirement" | "age_boundary" | "reference_date_missing" | "unsupported_group" | null;
                 source_evidence: string;
                 /** @description 비교한 사용자 값. 프로필에 없으면 null */
-                user_value: components["schemas"]["RequirementValue"];
+                user_value: components["schemas"]["EligibilityUserValue"];
             }[];
             /** Format: date-time */
             evaluated_at: string;
@@ -1187,6 +1258,8 @@ export interface components {
             no_requirements: boolean;
             overall: components["schemas"]["EligibilityStatus"];
         };
+        /** @description 비교한 확정 프로필 값. null은 미확인, 빈 배열은 없음 확인이며 거주지는 단일 Region이다 */
+        EligibilityUserValue: null | number | components["schemas"]["Region"] | number[] | string[];
         /** @description 모든 오류의 공통 본문. 원본 입력·SQL·토큰·파일 경로·예외 추적을 넣지 않는다 */
         Error: {
             code: components["schemas"]["ErrorCode"];
@@ -1360,6 +1433,11 @@ export interface components {
         };
         MfaVerify: {
             otp: string;
+        };
+        NoticeCatalog: {
+            ai_processing: components["schemas"]["PublishedNotice"] | null;
+            login_available: boolean;
+            storage: components["schemas"]["PublishedNotice"] | null;
         };
         Operations: {
             /** Format: date-time */
@@ -1729,6 +1807,16 @@ export interface components {
         };
         /** @enum {string} */
         Province: "seoul" | "gyeonggi" | "incheon";
+        PublishedNotice: {
+            aws_region: string;
+            body: string;
+            contact: string;
+            controller: string;
+            deletion: string;
+            retention: string;
+            title: string;
+            version: string;
+        };
         Readiness: {
             checks: {
                 /** @enum {string} */
@@ -2794,6 +2882,32 @@ export interface operations {
             503: components["responses"]["ServiceUnavailable"];
         };
     };
+    cancelSaveIntent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                save_intent_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 세션의 일치하는 대기 폐기 또는 이미 없음 */
+            204: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            401: components["responses"]["Unauthorized"];
+            403: components["responses"]["Forbidden"];
+            422: components["responses"]["ValidationFailed"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
     createConsent: {
         parameters: {
             query?: never;
@@ -2832,6 +2946,28 @@ export interface operations {
             413: components["responses"]["PayloadTooLarge"];
             422: components["responses"]["ValidationFailed"];
             429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getConsentNotices: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 게시 상태 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NoticeCatalog"];
+                };
+            };
             503: components["responses"]["ServiceUnavailable"];
         };
     };
@@ -3169,6 +3305,38 @@ export interface operations {
             503: components["responses"]["ServiceUnavailable"];
         };
     };
+    getJourneyDraft: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 체험 안의 임시 지원서 ID */
+                draft_id: components["parameters"]["DraftId"];
+                /** @description 사적 자원 참조. 인증 수단이 아니며 서버가 세션 소유권을 함께 확인한다 */
+                journey_id: components["parameters"]["JourneyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 원래 지원서와 현재 재검토 안내 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    "X-Request-ID": components["headers"]["XRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["JourneyDraft"];
+                };
+            };
+            401: components["responses"]["Unauthorized"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
     updateJourneyDraft: {
         parameters: {
             query?: never;
@@ -3390,6 +3558,37 @@ export interface operations {
                     "application/json": components["schemas"]["Error"];
                 };
             };
+            429: components["responses"]["TooManyRequests"];
+            503: components["responses"]["ServiceUnavailable"];
+        };
+    };
+    getRoleExclusions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description 사적 자원 참조. 인증 수단이 아니며 서버가 세션 소유권을 함께 확인한다 */
+                journey_id: components["parameters"]["JourneyId"];
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description 현재 전체 제외 목록과 리비전 */
+            200: {
+                headers: {
+                    "Cache-Control": components["headers"]["NoStore"];
+                    "X-Request-ID": components["headers"]["XRequestId"];
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoleExclusions"];
+                };
+            };
+            403: components["responses"]["Forbidden"];
+            404: components["responses"]["NotFound"];
+            409: components["responses"]["Conflict"];
+            422: components["responses"]["ValidationFailed"];
             429: components["responses"]["TooManyRequests"];
             503: components["responses"]["ServiceUnavailable"];
         };

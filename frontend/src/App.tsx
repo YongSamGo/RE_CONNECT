@@ -8,13 +8,21 @@ import { useMemoryScope } from './state/useMemoryScope'
 import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
 import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
 import { ManualPreparation } from './features/preparation/ManualPreparation'
+import { OfficialPreparation } from './features/preparation/OfficialPreparation'
+import { JourneyDraftPreparationRoute } from './features/preparation/JourneyDraftEditor'
 import { emptyManualDraft } from './features/preparation/model'
 import type { ManualDraft } from './features/preparation/model'
 import { AccountPage } from './features/account/AccountPage'
+import { AuthResult } from './features/account/AuthResult'
+import { PendingSave } from './features/account/PendingSave'
+import { BeginSaveRoute } from './features/account/BeginSave'
 import { SavedMaterials } from './features/account/SavedMaterials'
 import { AdminPage } from './features/admin/AdminPage'
 import { VoicePreview } from './features/voice/VoicePreview'
 import { ProfilePreview } from './features/profile/ProfilePreview'
+import { JourneyConversationRoute } from './features/conversation/JourneyConversation'
+import { JourneyRecommendationsRoute } from './features/recommendations/JourneyRecommendations'
+import { JourneyProfileRoute } from './features/profile/JourneyProfile'
 import { emptyPreferences } from './features/profile/model'
 import type { ProfilePreferences } from './features/profile/model'
 import './App.css'
@@ -99,9 +107,17 @@ export default function App() {
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const current = screens.find((screen) => screen.path === location.pathname)
+      ?? (location.pathname.startsWith('/opportunities/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/opportunities/') ? screens[6] : undefined)
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/conversation') ? screens[2] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/recommendations') ? screens[5] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/profile') ? screens[4] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/save') ? screens[8] : undefined)
+      ?? (location.pathname.startsWith('/journeys/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/me/') ? screens[8] : undefined)
+      ?? (location.pathname === '/auth/result' ? screens[8] : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} · 다시잇다`
     if (previousPath.current !== location.pathname) {
       previousPath.current = location.pathname
@@ -123,7 +139,7 @@ export default function App() {
   const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={endingKey === location.key ? '/' : '/consent'} replace />
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
-    <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험은 가상 정보로 살펴보세요 · AI·로그인 미연결</span></div>
+    <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험 시작 준비 중 · 미리보기에는 가상 정보만 입력해 주세요</span></div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
     {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
     <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
@@ -133,11 +149,20 @@ export default function App() {
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/transcription" element={requirePreview(<VoicePreview onUseText={(experience) => { setPreview((previous) => ({ ...previous, experience, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } })); navigate('/conversation') }} />)} />
       <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />
+      <Route path="/journeys/:journeyId/conversation" element={<JourneyConversationRoute />} />
+      <Route path="/journeys/:journeyId/recommendations" element={<JourneyRecommendationsRoute />} />
+      <Route path="/journeys/:journeyId/opportunities/:opportunityId/preparation" element={<JourneyDraftPreparationRoute />} />
+      <Route path="/journeys/:journeyId/profile" element={<JourneyProfileRoute />} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
+      <Route path="/opportunities/:id/preparation" element={<OfficialPreparation />} />
       <Route path="/preparation" element={requirePreview(<ManualPreparation draft={preview.draft} onChange={(draft) => setPreview((previous) => ({ ...previous, draft }))} />)} />
-      <Route path="/me" element={<AccountPage onLogout={() => { clearPreview(); setNotice('로그아웃 후 미리보기 입력을 삭제했습니다.') }} />} />
-      <Route path="/me/saved" element={<SavedMaterials />} />
+      <Route path="/me" element={<AccountPage onSessionReset={clearPreview} onLogout={() => { clearPreview(); setNotice('현재 세션이 종료되어 미리보기 입력을 지웠습니다.') }} />} />
+      <Route path="/auth/result" element={<AuthResult />} />
+      <Route path="/me/save" element={<PendingSave />} />
+      <Route path="/journeys/:journeyId/save" element={<BeginSaveRoute />} />
+      <Route path="/journeys/:journeyId/drafts/:draftId/save" element={<BeginSaveRoute />} />
+      <Route path="/me/saved" element={<SavedMaterials onSessionReset={clearPreview} />} />
       <Route path="/my" element={<Navigate to="/me" replace />} />
       <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
       <Route path="/preparation/:legacyId" element={<div className="reading-width"><Heading step="이전 미리보기 주소" title="예시별 작성 화면을 정리했어요">가상 공고별 작성 화면은 기존 프론트의 직접 작성 연습 화면으로 통합했습니다. 이 주소를 실제 공고의 신청 준비로 사용하지 않습니다.</Heading><div className="actions"><Link className="button primary" to="/preparation">직접 작성 연습으로 이동</Link><Link className="text-link" to="/opportunities">공개 공고 살펴보기</Link></div></div>} />

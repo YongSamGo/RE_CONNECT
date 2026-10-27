@@ -53,6 +53,7 @@ worker/samples/
 # (backend 안의 DB 모델 파일·폴더와 겹치지 않게 경로를 한정한다)
 /models/
 /speech/models/
+/speech/runtime_vendor/
 *.gguf
 *.safetensors
 *.onnx
