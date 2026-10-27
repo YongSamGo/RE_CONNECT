@@ -100,9 +100,10 @@ def reviewed(opportunity: PublicOpportunity, fields: dict, key: str) -> PublicOp
     if tags and "requirements" in tags:
         # 검수자가 원문 조건을 구조화하면 "필수조건 미검수" 조건을 대신한다.
         update["requirements"] = [Requirement(
-            id=uuid5(NAMESPACE_URL, f"reconnect-eval:{key}:{index}"), field=item["field"], operator=item["operator"],
-            value=item["value"], group_id=None, group_operator=None, reference_date=item.get("reference_date"),
-            source_evidence=item["evidence"], clarity="clear") for index, item in enumerate(tags["requirements"])]
+            id=uuid5(NAMESPACE_URL, f"reconnect-eval:{key}:{index}"), field=item["field"], operator=item.get("operator"),
+            value=item.get("value"), group_id=None, group_operator=None, reference_date=item.get("reference_date"),
+            source_evidence=item["evidence"], clarity=item.get("clarity", "clear"))
+            for index, item in enumerate(tags["requirements"])]
     return opportunity.model_copy(update=update)
 
 

@@ -6,7 +6,7 @@
     "postings는 운영자가 공고마다 채울 skill_tags·role_tags다. 정규화기는 둘 다 빈 값으로 만든다(#263). 태그는 역할 사전(docs/data/role-catalog.json)의 확인된 태그만 쓴다.",
     "confirmations는 activity_types가 비어 있어 추천 전에 다시 묻는 페르소나의 가정 답변이다. 실제 답변이 아니다.",
     "known_missing은 기대값과 다르지만 원인을 docs/ai/recommendation-eval.md의 결함 번호로 기록한 항목이다. 고쳐지면 지운다.",
-    "postings의 requirements는 검수자가 원문 조건을 구조화한 값이다. 있으면 '필수조건 미검수' 조건을 대신한다(D5). 연령 기준일은 검수일(2026-10-27)로 두었다."
+    "postings의 requirements는 검수자가 원문 조건을 구조화한 값이다. 계약에 없는 조건(학생 신분 등)은 field=other, clarity=needs_review로 둔다. 있으면 '필수조건 미검수' 조건을 대신한다(D5). 연령 기준일은 검수일(2026-10-27)로 두었다."
   ],
   "region_codes": {
     "6110000:3030000": {
@@ -225,6 +225,13 @@
       ],
       "role_tags": [
         "learning_mentor"
+      ],
+      "requirements": [
+        {
+          "field": "other",
+          "clarity": "needs_review",
+          "evidence": "모집대상 : 인천 또는 부천 대학생"
+        }
       ]
     },
     "volunteer:3524244": {
@@ -338,6 +345,13 @@
       ],
       "role_tags": [
         "library_assistant"
+      ],
+      "requirements": [
+        {
+          "field": "other",
+          "clarity": "needs_review",
+          "evidence": "신청자격 : 대학생(2007년까지)만 신청"
+        }
       ]
     },
     "volunteer:3536400": {
@@ -346,6 +360,18 @@
       ],
       "role_tags": [
         "community_organizer"
+      ],
+      "requirements": [
+        {
+          "field": "age",
+          "operator": "between",
+          "value": [
+            19,
+            34
+          ],
+          "evidence": "대 상 : 대학생 및 청년(청년기본법 기준 만 19세~34세)",
+          "reference_date": "2026-10-27"
+        }
       ]
     },
     "volunteer:3536979": {
@@ -453,6 +479,18 @@
       ],
       "role_tags": [
         "community_organizer"
+      ],
+      "requirements": [
+        {
+          "field": "age",
+          "operator": "between",
+          "value": [
+            20,
+            49
+          ],
+          "evidence": "모집대상 및 인원: 성인(20세~49세)",
+          "reference_date": "2026-10-27"
+        }
       ]
     },
     "volunteer:3541184": {
