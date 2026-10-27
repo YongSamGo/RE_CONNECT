@@ -212,6 +212,21 @@ sequenceDiagram
 - 상태를 바꾸는 운영자 연산(등록·수정·승인·반려·비공개·종료·신고 처리)은 모두 감사 기록을 남긴다. 기록에는 행위자·대상·이전/이후 상태·사유 코드만 넣고, 개인 본문·OTP·토큰은 넣지 않는다.
 - OTP 실패는 운영자 계정 단위로 센다. 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After`)로 응답한다. 실패·잠금도 감사 기록에 남긴다.
 
+### 2.12 운영 상태 조회
+
+`GET /admin/operations`(W07-04)는 운영자가 수집 실패와 추론 혼잡을 확인하는 화면(UX10)용이다. 상태를 바꾸지 않으므로 감사 기록은 남기지 않는다.
+
+- 응답에는 고정 코드·시각·건수만 담는다. 오류 메시지·주소·비밀값·프로필·지원서 본문은 넣지 않는다.
+- DB나 Redis를 읽지 못해도 200으로 응답한다. 읽지 못한 부분(`sources`·`limits`)은 null이고, 해당 `stores` 값이 `fail`이다. 장애 중에 이 화면이 가장 필요하기 때문이다.
+- 출처는 사용 중(`enabled`)인 것만 보여 준다.
+  - `last_status`·`last_failure_code`·`last_run_at`은 마지막으로 끝난 실행 기준이다. 실행 중인 수집은 `running`으로 따로 표시한다.
+  - `partial`은 일부만 받고 멈춘 실패(`budget_exhausted`·`incomplete`)다. `consecutive_failures`에 들어간다.
+  - `stale`은 출처의 마지막 성공이 48시간을 넘었거나 성공한 적이 없다는 뜻이다. 추천 보류는 공고마다 마지막 확인 시각으로 판정하므로([공고 수명](../data/opportunity-lifecycle.md)) 출처 전체의 보류와 같지 않다.
+- 모델(`llm`·`stt`·`tts`)은 공유 추론 제어(Redis)와 런타임이 모두 준비돼야 `ok`다. STT와 TTS는 음성 서비스의 모델별 준비 값을 따로 보여 준다. `loading`은 런타임이 적재 중을 알려 줄 때만 쓰며, 지금은 나오지 않는다.
+- `limits`는 KST 하루 전체 추론 실행 수와 한도(500), 공유 슬롯 점유(전체 1개)다. 제어 상태를 믿을 수 없으면(세대·식별키 불일치) null이다.
+- 프로세스가 비정상 종료해 `running`으로 남은 실행은 아직 따로 찾아내지 않는다([#96](https://github.com/YongSamGo/RE_CONNECT/issues/96)).
+- 경로는 운영자 권한·MFA([#52](https://github.com/YongSamGo/RE_CONNECT/issues/52))와 함께 연다. 그 전에는 집계 서비스(`app.state.operations_service`)만 있고 경로는 없다.
+
 ## 3. 명세 반영
 
 - [02 Data Design](../../Plan/02_Data_Design.md) v1.2: 공고 `description_text`·`description_truncated`·`change_pending`, Requirement 연산 허용표, 중요 변경 필드

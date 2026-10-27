@@ -2671,7 +2671,9 @@ paths:
       tags: [운영자]
       operationId: getOperations
       summary: 수집·모델·제한 상태
-      description: 운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값은 넣지 않는다.
+      description: |
+        운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값·개인 본문은 넣지 않는다.
+        DB·Redis 장애에도 200으로 응답한다. 읽지 못한 부분(`sources`·`limits`)은 null이고, 해당 저장소 상태가 `fail`이다.
       security:
         - sessionCookie: []
       responses:
@@ -2692,15 +2694,34 @@ paths:
                         last_run_at: '2026-10-15T00:00:00Z'
                         last_success_at: '2026-10-15T00:00:00Z'
                         last_status: success
+                        last_failure_code: null
+                        running: false
                         consecutive_failures: 0
                         stale: false
-                    models: { llm: ok, stt: ok, tts: loading }
+                    models: { llm: ok, stt: ok, tts: fail }
                     stores: { db: ok, redis: ok }
                     limits:
                       inference_today: 132
                       inference_daily_limit: 500
                       slots_in_use: 1
                       slots_total: 1
+                    checked_at: '2026-10-15T04:20:00Z'
+                redis_down:
+                  summary: Redis 장애
+                  value:
+                    sources:
+                      - source_id: 0a1b2c3d-4e5f-4a6b-8c7d-9e0f1a2b3c4d
+                        name: 1365 봉사참여정보
+                        last_run_at: '2026-10-15T00:00:30Z'
+                        last_success_at: '2026-10-12T00:00:00Z'
+                        last_status: partial
+                        last_failure_code: budget_exhausted
+                        running: false
+                        consecutive_failures: 2
+                        stale: true
+                    models: { llm: fail, stt: fail, tts: fail }
+                    stores: { db: ok, redis: fail }
+                    limits: null
                     checked_at: '2026-10-15T04:20:00Z'
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/AdminForbidden' }
@@ -4975,21 +4996,42 @@ components:
       required: [sources, models, stores, limits, checked_at]
       properties:
         sources:
-          type: array
+          type: [array, 'null']
+          description: 사용 중인 출처. DB를 읽지 못하면 null이다.
           items:
             type: object
             additionalProperties: false
-            required: [source_id, name, last_run_at, last_success_at, last_status, consecutive_failures, stale]
+            required: [source_id, name, last_run_at, last_success_at, last_status, last_failure_code, running, consecutive_failures, stale]
             properties:
               source_id: { type: string, format: uuid }
-              name: { type: string, maxLength: 100 }
-              last_run_at: { type: [string, 'null'], format: date-time }
+              name: { type: string, minLength: 1, maxLength: 200 }
+              last_run_at:
+                type: [string, 'null']
+                format: date-time
+                description: 마지막으로 끝난 실행의 종료 시각. 실행 중인 것은 포함하지 않는다.
               last_success_at: { type: [string, 'null'], format: date-time }
-              last_status: { type: [string, 'null'], enum: [success, partial, failed, null] }
-              consecutive_failures: { type: integer, minimum: 0 }
+              last_status:
+                type: [string, 'null']
+                enum: [success, partial, failed, null]
+                description: |
+                  마지막으로 끝난 실행의 결과. `partial`은 일부만 받고 멈춘 실패(`budget_exhausted`·`incomplete`)다.
+                  실행 기록이 없으면 null이다.
+              last_failure_code:
+                type: [string, 'null']
+                enum: [network, parse, response_limit, source_unavailable, cancelled, invalid_payload, budget_exhausted, incomplete, configuration, null]
+                description: 마지막으로 끝난 실행이 실패했을 때의 고정 실패 코드. 성공했거나 기록이 없으면 null이다.
+              running:
+                type: boolean
+                description: 지금 실행 중인 수집이 있음
+              consecutive_failures:
+                type: integer
+                minimum: 0
+                description: 마지막 성공 이후 실패한 실행 수(`partial` 포함)
               stale:
                 type: boolean
-                description: 마지막 성공이 48시간을 넘어 이 출처 공고의 추천을 보류 중
+                description: |
+                  출처의 마지막 성공이 48시간을 넘었거나 성공한 적이 없음. 추천 보류는 출처가 아니라
+                  공고마다 마지막 확인 시각으로 판정하므로, 이 값이 곧 그 출처 공고 전체의 보류를 뜻하지는 않는다.
         models:
           type: object
           additionalProperties: false
@@ -5006,7 +5048,8 @@ components:
             db: { $ref: '#/components/schemas/ComponentState' }
             redis: { $ref: '#/components/schemas/ComponentState' }
         limits:
-          type: object
+          type: [object, 'null']
+          description: 공유 추론 제어 상태. Redis를 읽지 못했거나 제어 상태가 준비되지 않았으면 null이다.
           additionalProperties: false
           required: [inference_today, inference_daily_limit, slots_in_use, slots_total]
           properties:
@@ -5019,6 +5062,9 @@ components:
     ComponentState:
       type: string
       enum: [ok, loading, fail]
+      description: |
+        모델은 공유 추론 제어(Redis)와 런타임이 모두 준비돼야 `ok`다. `loading`은 런타임이 적재 중을
+        알려 줄 때만 쓰며, 지금 음성 서비스·Ollama는 알려 주지 않아 `ok`·`fail`만 나온다.
 
     AdminReport:
       type: object

@@ -10,7 +10,7 @@ from redis.asyncio import Redis
 from redis.exceptions import RedisError
 
 from app.core.business_errors import AppError
-from app.modules.admission.service import Lease
+from app.modules.admission.service import GLOBAL_DAILY_LIMIT, Lease
 
 _HTTP = """
 local t = redis.call('TIME')
@@ -41,14 +41,14 @@ local day = math.floor((tonumber(t[1]) + 32400) / 86400)
 local retry = (day + 1) * 86400 - 32400 - tonumber(t[1])
 if tonumber(v[2]) > day then return {'SERVICE_UNAVAILABLE'} end
 if tonumber(v[2]) < day then
-    -- 한 날에 최대 500개 실행: 과거 일별 식별자 필드도 유한한 크기로 정리한다.
+    -- 한 날에 실행 수가 전체 한도로 묶인다: 과거 일별 식별자 필드도 유한한 크기로 정리한다.
     for _, field in ipairs(redis.call('HKEYS', KEYS[1])) do
         if string.sub(field, 1, 6) == 'limit:' then redis.call('HDEL', KEYS[1], field) end
     end
     redis.call('HSET', KEYS[1], 'day', tostring(day), 'global', '0')
     v[3] = '0'
 end
-if tonumber(v[3]) >= 500 then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
+if tonumber(v[3]) >= __GLOBAL_DAILY_LIMIT__ then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
 for i = 5, #ARGV do
     local count = redis.call('HGET', KEYS[1], 'limit:' .. ARGV[i])
     if count and not string.match(count, '^%d+$') then return {'SERVICE_UNAVAILABLE'} end
@@ -59,7 +59,7 @@ redis.call('HINCRBY', KEYS[1], 'global', 1)
 for i = 5, #ARGV do redis.call('HINCRBY', KEYS[1], 'limit:' .. ARGV[i], 1) end
 redis.call('HSET', KEYS[1], 'active', ARGV[2], 'kind', ARGV[3])
 return {'ok'}
-"""
+""".replace("__GLOBAL_DAILY_LIMIT__", str(GLOBAL_DAILY_LIMIT))
 
 _RELEASE = """
 local v = redis.call('HMGET', KEYS[1], 'epoch', 'active')
