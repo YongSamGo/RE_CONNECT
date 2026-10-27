@@ -232,7 +232,7 @@ class AuditEvent(Base):
     __tablename__ = "audit_events"
     __table_args__ = (
         CheckConstraint("actor_role IN ('operator', 'user', 'system')", name="actor_role"),
-        CheckConstraint("action IN ('opportunity.create', 'opportunity.update', 'opportunity.approve', 'opportunity.reject', 'opportunity.hide', 'opportunity.close', 'report.update', 'mfa.verify', 'mfa.fail', 'mfa.lock', 'role.grant', 'role.revoke', 'access.denied')", name="action"),
+        CheckConstraint("action IN ('opportunity.create', 'opportunity.update', 'opportunity.approve', 'opportunity.reject', 'opportunity.hide', 'opportunity.close', 'report.update', 'mfa.verify', 'mfa.fail', 'mfa.lock', 'mfa.enroll', 'mfa.reset', 'role.grant', 'role.revoke', 'access.denied')", name="action"),
         CheckConstraint("target_type IS NULL OR target_type IN ('opportunity', 'report', 'user')", name="target_type"),
         CheckConstraint("(target_type IS NULL AND target_id IS NULL) OR (target_type IS NOT NULL AND target_id IS NOT NULL)", name="target_pair"),
         CheckConstraint("result IN ('success', 'denied', 'failed')", name="result"),

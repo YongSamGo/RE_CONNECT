@@ -6,7 +6,7 @@ export const auditActions = {
   'opportunity.create': '공고 등록', 'opportunity.update': '공고 수정', 'opportunity.approve': '공고 승인',
   'opportunity.reject': '공고 반려', 'opportunity.hide': '공고 비공개', 'opportunity.close': '모집 종료',
   'report.update': '신고 처리', 'mfa.verify': '추가 인증 성공', 'mfa.fail': '추가 인증 실패',
-  'mfa.lock': '추가 인증 잠금', 'role.grant': '권한 부여', 'role.revoke': '권한 회수', 'access.denied': '접근 거부',
+  'mfa.lock': '추가 인증 잠금', 'mfa.enroll': '추가 인증 등록', 'mfa.reset': '추가 인증 초기화', 'role.grant': '권한 부여', 'role.revoke': '권한 회수', 'access.denied': '접근 거부',
 } satisfies Record<Event['action'], string>
 export type AuditRange = { from: string; to: string }
 export type AuditRow = Pick<Event, 'event_id' | 'at' | 'action' | 'actor_role' | 'result' | 'target_type' | 'request_id'>
