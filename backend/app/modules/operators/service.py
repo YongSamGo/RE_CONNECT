@@ -25,7 +25,7 @@ class OperatorMfaService:
         result = await asyncio.to_thread(self.repository.verify, account.id, otp, self.clock(), request_id)
         if result.status == "forbidden":
             raise AppError("FORBIDDEN")
-        if result.status == "locked":
+        if result.status in ("locked", "blocked"):
             raise AppError("MFA_LOCKED", retry_after=result.retry_after)
         if result.status != "verified" or result.credential_id is None:
             raise AppError("MFA_INVALID")

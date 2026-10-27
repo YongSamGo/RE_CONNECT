@@ -17,7 +17,7 @@ from sqlalchemy.orm import sessionmaker
 import manage_operators
 from app.core.encryption import ContentCipher, EncryptionKeyRing
 from app.modules.operators import totp
-from app.modules.operators.repository import LOCK_SECONDS, OperatorProcedureError, SqlOperatorMfaRepository
+from app.modules.operators.repository import BLOCK_AFTER_LOCKS, FAILURE_LIMIT, LOCK_SECONDS, LOCK_STEPS_SECONDS, OperatorProcedureError, SqlOperatorMfaRepository
 from app.persistence import AuditEvent, DeletionRecord, OperatorMfaCredential, User
 from tests.ingestion_helpers import ingestion_database
 
@@ -109,6 +109,70 @@ def test_success_resets_failure_count(setup):
     assert repository.verify(user_id, code(NOW), NOW, REQUEST).status == "verified"
     with engine.connect() as db:
         assert db.scalar(select(OperatorMfaCredential.failed_count)) == 0
+
+
+def fail_until_locked(repository, user_id, at):
+    wrong = "000000" if code(at) != "000000" else "111111"
+    results = [repository.verify(user_id, wrong, at, REQUEST) for _ in range(FAILURE_LIMIT)]
+    assert [r.status for r in results[:-1]] == ["invalid"] * (FAILURE_LIMIT - 1)
+    return results[-1]
+
+
+def test_repeated_locks_grow_longer_and_block_until_reset(setup):
+    engine, repository, user_id = setup
+    enrolled(repository, user_id)
+    at, seen = NOW, []
+    for index in range(BLOCK_AFTER_LOCKS - 1):
+        result = fail_until_locked(repository, user_id, at)
+        assert result.status == "locked"
+        seen.append(result.retry_after)
+        at += timedelta(seconds=result.retry_after)
+    assert seen[:3] == list(LOCK_STEPS_SECONDS) and set(seen[3:]) == {LOCK_STEPS_SECONDS[-1]}
+    blocked = fail_until_locked(repository, user_id, at)
+    assert blocked.status == "blocked"
+    # 오래 기다려도, 정답이어도 reset-mfa 전에는 비교하지 않는다.
+    later = at + timedelta(days=30)
+    assert repository.verify(user_id, code(later), later, REQUEST).status == "blocked"
+    repository.reset(user_id, now=later, request_id=REQUEST)
+    repository.enroll(user_id, SECRET, totp.time_step(later.timestamp()) - 2, now=later, request_id=REQUEST)
+    assert repository.verify(user_id, code(later), later, REQUEST).status == "verified"
+
+
+def test_success_after_lock_restarts_lock_escalation(setup):
+    engine, repository, user_id = setup
+    enrolled(repository, user_id)
+    first = fail_until_locked(repository, user_id, NOW)
+    after = NOW + timedelta(seconds=first.retry_after)
+    assert repository.verify(user_id, code(after), after, REQUEST).status == "verified"
+    again = fail_until_locked(repository, user_id, after)
+    assert again.retry_after == LOCK_STEPS_SECONDS[0]
+    with engine.connect() as db:
+        assert db.scalar(select(OperatorMfaCredential.lock_count)) == 1
+
+
+def test_operator_before_enrollment_is_denied_with_one_audit_row_per_window(setup):
+    engine, repository, user_id = setup
+    repository.grant(user_id, now=NOW, request_id=REQUEST)
+    for _ in range(20):
+        assert repository.verify(user_id, code(NOW), NOW, REQUEST).status == "invalid"
+    later = NOW + timedelta(seconds=LOCK_SECONDS + 1)
+    assert repository.verify(user_id, code(later), later, REQUEST).status == "invalid"
+    with engine.connect() as db:
+        rows = db.execute(select(AuditEvent.action, AuditEvent.result).where(AuditEvent.action == "mfa.fail")).all()
+    assert rows == [("mfa.fail", "denied")] * 2
+
+
+def test_cli_enroll_checks_target_before_showing_secret(setup):
+    engine, repository, user_id = setup
+    shown = []
+    for reason in ("not_operator", "already_enrolled"):
+        if reason == "already_enrolled":
+            enrolled(repository, user_id)
+        with pytest.raises(OperatorProcedureError, match=reason):
+            manage_operators.execute("enroll", user_id, repository, clock=lambda: NOW, prompt=lambda: "000000", show=shown.append)
+    with pytest.raises(OperatorProcedureError, match="not_found"):
+        manage_operators.execute("enroll", uuid4(), repository, clock=lambda: NOW, prompt=lambda: "000000", show=shown.append)
+    assert shown == []
 
 
 def test_member_without_operator_role_cannot_verify_or_enroll(setup):

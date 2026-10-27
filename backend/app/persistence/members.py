@@ -146,6 +146,7 @@ class OperatorMfaCredential(EncryptedContent, Base):
     __tablename__ = "operator_mfa_credentials"
     __table_args__ = (
         CheckConstraint("failed_count BETWEEN 0 AND 4", name="failed_count"),
+        CheckConstraint("lock_count BETWEEN 0 AND 10", name="lock_count"),
         CheckConstraint("last_step IS NULL OR last_step > 0", name="last_step"),
         *encrypted_constraints(),
     )
@@ -154,6 +155,8 @@ class OperatorMfaCredential(EncryptedContent, Base):
     credential_id: Mapped[UUID] = mapped_column(Uuid, unique=True, default=uuid4)
     last_step: Mapped[int | None] = mapped_column(Integer)
     failed_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    # 연속 잠금 횟수. 잠금 시간을 늘리고 10번이면 reset-mfa 전까지 막는다.
+    lock_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
     locked_until: Mapped[datetime | None] = mapped_column(UTCDateTime())
     enrolled_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
 

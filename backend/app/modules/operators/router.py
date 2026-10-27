@@ -15,12 +15,12 @@ router = APIRouter()
 
 @router.post("/admin/mfa/verify", operation_id="verifyMfa")
 async def verify_mfa(request: Request, body: MfaVerify):
-    session = await require_session(request, user_activity=True)
+    # 회원·역할 확인은 서비스에서 한 번만 한다.
+    session = await require_session(request, user_activity=True, validate_member=False)
     await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
     issued, until_ms = await request.app.state.operator_mfa_service.verify(session, body.otp, get_request_id(request))
     status = MfaStatus(mfa_verified=True, expires_at=datetime.fromtimestamp(until_ms / 1000, UTC))
-    response = JSONResponse({"mfa_verified": True, "expires_at": status.expires_at.isoformat().replace("+00:00", "Z")},
-                            headers={"Cache-Control": "no-store"})
+    response = JSONResponse(status.model_dump(mode="json"), headers={"Cache-Control": "no-store"})
     write_session_cookie(request, response, issued)
     write_csrf_cookie(request, response, csrf_token(issued.session), issued.session)
     return response

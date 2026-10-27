@@ -20,14 +20,18 @@ from app.persistence.members import OperatorMfaCredential, User
 from app.persistence.operations import AuditEvent, DeletionRecord
 
 FAILURE_LIMIT = 5
-LOCK_SECONDS = 15 * 60
+# 잠길 때마다 길어진다(15분 → 1시간 → 24시간). 성공하면 처음으로 돌아간다.
+LOCK_STEPS_SECONDS = (15 * 60, 60 * 60, 24 * 60 * 60)
+LOCK_SECONDS = LOCK_STEPS_SECONDS[0]
+# 연속 10번 잠기면(연속 실패 50회) reset-mfa 전까지 막는다. 장기 추측 성공 확률을 약 1.5e-4 이하로 묶는다.
+BLOCK_AFTER_LOCKS = 10
 AUDIT_RETENTION = timedelta(days=30)
 _MAX_GENERATION = 2147483646
 
 
 @dataclass(frozen=True)
 class VerifyResult:
-    status: Literal["verified", "invalid", "locked", "forbidden"]
+    status: Literal["verified", "invalid", "locked", "blocked", "forbidden"]
     credential_id: UUID | None = None
     retry_after: int | None = None
 
@@ -71,14 +75,18 @@ class SqlOperatorMfaRepository:
         return None if pending else row
 
     def credential_id(self, user_id: UUID) -> UUID | None:
-        """현재 유효한 MFA 자격 ID. 역할 회수·정지·재등록이면 없음/다른 값이 된다."""
+        """현재 유효한 MFA 자격 ID. 역할 회수·정지·삭제 진행·재등록이면 없음/다른 값이 된다.
+
+        관리 API마다 부르므로 역할·상태·삭제 기록·자격을 한 쿼리로 읽는다.
+        """
+        pending = exists().where(DeletionRecord.owner_id == User.id, DeletionRecord.status.in_(["pending", "failed"]))
+        statement = (select(OperatorMfaCredential.credential_id)
+                     .join(User, User.id == OperatorMfaCredential.user_id)
+                     .where(User.id == user_id, User.role == "admin", User.status == "active", ~pending))
         try:
             with self.transaction() as db:
                 self._limits(db)
-                row = self._operator(db, user_id)
-                if row is None or row.role != "admin":
-                    return None
-                return db.scalar(select(OperatorMfaCredential.credential_id).where(OperatorMfaCredential.user_id == user_id))
+                return db.scalar(statement)
         except SQLAlchemyError:
             raise AppError("SERVICE_UNAVAILABLE") from None
 
@@ -93,8 +101,15 @@ class SqlOperatorMfaRepository:
                                         .with_for_update()).scalar_one_or_none()
                 audit = dict(now=now, actor_id=user_id, actor_role="operator", request_id=request_id, target_id=user_id)
                 if credential is None:
-                    _audit(db, action="mfa.fail", result="failed", **audit)
+                    # 비교할 비밀값이 없다. 등록 전 시도는 denied로 구분하고 15분에 한 번만 남겨 감사 기록이 쌓이지 않게 한다.
+                    recent = exists().where(AuditEvent.actor_id == user_id, AuditEvent.action == "mfa.fail",
+                                            AuditEvent.result == "denied", AuditEvent.at > now - timedelta(seconds=LOCK_SECONDS))
+                    if not db.scalar(select(recent)):
+                        _audit(db, action="mfa.fail", result="denied", **audit)
                     return VerifyResult("invalid")
+                if credential.lock_count >= BLOCK_AFTER_LOCKS:
+                    # reset-mfa로 다시 등록하기 전까지 OTP를 비교하지 않는다.
+                    return VerifyResult("blocked", retry_after=LOCK_STEPS_SECONDS[-1])
                 if credential.locked_until is not None and credential.locked_until > now:
                     # 잠금 중에는 OTP를 비교하지 않는다.
                     return VerifyResult("locked", retry_after=max(1, math.ceil((credential.locked_until - now).total_seconds())))
@@ -102,14 +117,19 @@ class SqlOperatorMfaRepository:
                 step = totp.matching_step(secret, otp, totp.time_step(now.timestamp()))
                 if step is not None and (credential.last_step is None or step > credential.last_step):
                     credential.last_step, credential.failed_count, credential.locked_until = step, 0, None
+                    credential.lock_count = 0
                     _audit(db, action="mfa.verify", result="success", **audit)
                     return VerifyResult("verified", credential.credential_id)
                 # 틀린 OTP와 이미 쓴 OTP를 같은 실패로 센다.
                 _audit(db, action="mfa.fail", result="failed", **audit)
                 if credential.failed_count + 1 >= FAILURE_LIMIT:
-                    credential.failed_count, credential.locked_until = 0, now + timedelta(seconds=LOCK_SECONDS)
+                    seconds = LOCK_STEPS_SECONDS[min(credential.lock_count, len(LOCK_STEPS_SECONDS) - 1)]
+                    credential.lock_count += 1
+                    credential.failed_count, credential.locked_until = 0, now + timedelta(seconds=seconds)
                     _audit(db, action="mfa.lock", result="denied", **audit)
-                    return VerifyResult("locked", retry_after=LOCK_SECONDS)
+                    if credential.lock_count >= BLOCK_AFTER_LOCKS:
+                        return VerifyResult("blocked", retry_after=LOCK_STEPS_SECONDS[-1])
+                    return VerifyResult("locked", retry_after=seconds)
                 credential.failed_count += 1
                 return VerifyResult("invalid")
         except (SQLAlchemyError, ProtectedContentError, EncryptionUnavailable):
@@ -169,6 +189,20 @@ class SqlOperatorMfaRepository:
                    request_id=request_id, target_id=user_id)
         self._procedure(work)
 
+    def check_enrollable(self, user_id: UUID) -> None:
+        """비밀값을 만들기 전 읽기 전용 사전 확인. 저장 시점의 같은 확인은 경합 방지로 남긴다."""
+        def work(db):
+            row = self._operator(db, user_id)
+            if row is None:
+                pending = db.scalar(select(exists().where(DeletionRecord.owner_id == user_id,
+                                                           DeletionRecord.status.in_(["pending", "failed"]))))
+                raise OperatorProcedureError("pending_deletion" if pending else "not_found")
+            if row.role != "admin":
+                raise OperatorProcedureError("not_operator")
+            if db.scalar(select(exists().where(OperatorMfaCredential.user_id == user_id))):
+                raise OperatorProcedureError("already_enrolled")
+        self._procedure(work)
+
     def enroll(self, user_id: UUID, secret: bytes, confirmed_step: int, *, now: datetime, request_id: str) -> UUID:
         """관리자가 인증 앱의 첫 코드를 확인한 비밀값만 저장한다. 그 코드는 다시 쓸 수 없다."""
         if type(secret) is not bytes or len(secret) != totp.SECRET_BYTES or type(confirmed_step) is not int or confirmed_step <= 0:
@@ -183,7 +217,7 @@ class SqlOperatorMfaRepository:
             credential_id = uuid4()
             envelope = self.cipher.encrypt(secret, _target(user_id, credential_id))
             db.execute(insert(OperatorMfaCredential).values(
-                user_id=user_id, credential_id=credential_id, last_step=confirmed_step, failed_count=0, locked_until=None,
+                user_id=user_id, credential_id=credential_id, last_step=confirmed_step, failed_count=0, lock_count=0, locked_until=None,
                 enrolled_at=now, ciphertext=envelope.ciphertext, nonce=envelope.nonce, key_id=envelope.key_id,
                 algorithm=envelope.algorithm, schema_version=envelope.schema_version))
             _audit(db, now=now, action="mfa.enroll", actor_id=None, actor_role="system", result="success",

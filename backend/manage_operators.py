@@ -47,6 +47,8 @@ def parse_args(argv=None):
 
 def enroll(repository, user_id, *, clock, prompt, show):
     """비밀값을 만들어 보여 주고, 인증 앱의 코드가 맞을 때만 저장한다. 실패하면 아무것도 남기지 않는다."""
+    # 인증 앱에 쓸 수 없는 항목이 남지 않도록, 비밀값을 보여 주기 전에 등록 가능한지 확인한다.
+    repository.check_enrollable(user_id)
     secret = totp.new_secret()
     show(totp.provisioning_uri(secret, "operator-" + user_id.hex[:8]))
     for _ in range(ENROLL_ATTEMPTS):
