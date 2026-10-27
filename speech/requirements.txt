@@ -505,9 +505,9 @@ pyyaml==6.0.3 \
     # via
     #   ctranslate2
     #   huggingface-hub
-starlette==1.8.0 \
-    --hash=sha256:1565dc0b35d5737a271ed1e0e04e949f4e81198799f216d2667b0a0fb9cf9522 \
-    --hash=sha256:dfdd6b29c26483288088d990eee59631dedadd66ce20d203402a7ca8e3c4656f
+starlette==1.9.0 \
+    --hash=sha256:3d931de246ed870e35ce605974440816ef895e592f255d1396cfdf191d4c4318 \
+    --hash=sha256:fd3f159936e882d06c1108f84688f7cda2cf85fc6a592a50edbd175e882c2ddc
     # via fastapi
 tokenizers==0.23.3 \
     --hash=sha256:114e2b55ed177179d59f4ab98200a4471e11e78f9e4b5a922d146740f96fcf52 \
