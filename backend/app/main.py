@@ -112,7 +112,14 @@ def create_app(
 ) -> FastAPI:
     settings = settings or get_settings()
     docs_enabled = settings.docs_enabled
+    deletion_journal = (FileDeletionJournal(settings.deletion_journal_directory)
+        if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal())
+    # 운영에서 삭제 이력 어댑터가 없으면 저장 동의와 회원 로그인을 열지 않는다.
+    # 저장은 되는데 탈퇴·삭제·동의 철회가 503인 상태를 만들지 않기 위해서다. 운영 어댑터를 연결하면 자동으로 열린다.
+    member_storage_enabled = settings.app_env != 'production' or not isinstance(deletion_journal, UnavailableDeletionJournal)
     notice_catalog = published_catalog(settings)
+    if not member_storage_enabled:
+        notice_catalog = notice_catalog.model_copy(update={'storage': None})
 
     engine = build_engine(settings) if settings.database_url is not None else None
     redis_client = build_redis(settings) if settings.redis_url is not None else None
@@ -158,9 +165,11 @@ def create_app(
     anonymous_consents = RedisConsentStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableConsentStore()
     member_consents = SQLConsentStore(engine) if engine is not None else UnavailableConsentStore()
     app.state.notice_catalog = notice_catalog
+    app.state.member_storage_enabled = member_storage_enabled
     app.state.consent_service = ConsentService(
         RoutedConsentStore(anonymous_consents, member_consents),
-        ai_version=settings.ai_notice_version, storage_version=settings.storage_notice_version,
+        ai_version=settings.ai_notice_version,
+        storage_version=settings.storage_notice_version if member_storage_enabled else None,
     )
     request_store = RedisRequestStore(redis_client, session_key=session_store.key) if redis_client is not None else UnavailableRequestStore()
     app.state.request_service = RequestService(request_store)
@@ -175,7 +184,7 @@ def create_app(
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     kakao = None
-    if (settings.public_origin is not None and settings.kakao_rest_api_key is not None
+    if (member_storage_enabled and settings.public_origin is not None and settings.kakao_rest_api_key is not None
             and settings.kakao_client_secret is not None and settings.kakao_app_id is not None
             and settings.kakao_rest_api_key.get_secret_value().strip() and settings.kakao_client_secret.get_secret_value().strip()):
         kakao = KakaoAdapter(settings.kakao_rest_api_key, settings.kakao_client_secret, settings.kakao_app_id,
@@ -219,8 +228,7 @@ def create_app(
     app.state.draft_service.stored_drafts = app.state.saved_draft_service
     app.state.deletion_service = DeletionService(
         SqlDeletionRepository(sessionmaker(engine).begin) if engine is not None else UnavailableDeletionRepository(),
-        FileDeletionJournal(settings.deletion_journal_directory)
-            if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal(),
+        deletion_journal,
         app.state.member_service, app.state.save_intent_service.policy,
         RedisMemberCleanup(app.state.member_service.store) if redis_client is not None else UnavailableMemberCleanup())
     app.state.speech_service = SpeechService(app.state.journey_service, app.state.draft_service, app.state.opportunity_service,
