@@ -35,6 +35,21 @@ function media() {
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); vi.useRealTimers(); delete (navigator as unknown as { mediaDevices?: unknown }).mediaDevices })
 
 describe('voice preview resource lifetime', () => {
+  it('offers the recorded blob to transcription only after explicit request and resets on cancellation', async () => {
+    const mocks = media(), onRequest = vi.fn(), onReset = vi.fn()
+    render(<MemoryRouter><VoicePreview transcription={{ pending: false, onRequest, onReset }} /></MemoryRouter>)
+    await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
+    fireEvent.click(screen.getByRole('button', { name: '녹음 마치기' }))
+    expect(onRequest).not.toHaveBeenCalled()
+    fireEvent.click(screen.getByRole('button', { name: '녹음 전사 요청 · 같은 요청 재확인' }))
+    expect(onRequest).toHaveBeenCalledTimes(1)
+    expect(onRequest.mock.calls[0][0]).toBeInstanceOf(Blob)
+    expect(onRequest.mock.calls[0][0].size).toBe(5)
+    fireEvent.click(screen.getByRole('button', { name: '녹음·입력 취소하고 삭제' }))
+    expect(onReset).toHaveBeenCalledTimes(2)
+    expect(mocks.revoke).toHaveBeenCalledWith('blob:voice-preview')
+    expect(screen.queryByRole('button', { name: '녹음 전사 요청 · 같은 요청 재확인' })).not.toBeInTheDocument()
+  })
   it('requests microphone only on click and releases tracks and object URL on unmount', async () => {
     const mocks = media()
     const view = mount()
