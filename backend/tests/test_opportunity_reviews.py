@@ -20,10 +20,15 @@ from app.main import create_app
 from app.modules.admission.service import AdmissionService
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.versions import snapshot_from_row
-from app.modules.opportunity_reviews.models import ApproveRequest, CloseRequest, HideRequest, RejectRequest, ReviewCommand
+from typing import get_args
+
+from app.modules.opportunity_reviews.models import (
+    ApproveRequest, CloseBasis, CloseRequest, HideRequest, RejectReason, RejectRequest, ReviewCommand,
+)
 from app.modules.opportunity_reviews.repository import AUDIT_RETENTION, SqlOpportunityReviewRepository
 from app.modules.opportunity_reviews.service import NotPublishable, OpportunityReviewService, check_publishable, publishability_problems
 from app.modules.sessions.service import SessionService
+from app.persistence.operations import CLOSE_BASES, REJECT_REASONS
 from app.persistence import AuditEvent, Base, OpportunityDocument, OpportunityPublication, OpportunityReview, OpportunityVersion, Source
 from tests.persistence_helpers import NOW, open_test_database, opportunity_values
 from tests.test_consents import csrf
@@ -125,6 +130,11 @@ def test_unpublishable_contents_name_the_field_without_values(changes, path, rea
 
 # ---- 요청 형식 ----
 
+def test_request_enums_match_database_checks():
+    # 한쪽에만 값을 추가하면 요청 검증은 통과하고 DB CHECK에서 503이 된다
+    assert get_args(RejectReason) == REJECT_REASONS and get_args(CloseBasis) == CLOSE_BASES
+
+
 def test_request_models_require_note_for_other_and_block_private_or_injected_notes():
     assert RejectRequest(base_version=1, reason_code="duplicate", note=None).note is None
     assert CloseRequest(base_version=1, basis="report_confirmed", note="신고 확인 후 기관 공지 확인").basis == "report_confirmed"
@@ -178,7 +188,6 @@ def test_approving_new_version_moves_public_pointer_and_reject_keeps_previous_pu
 @pytest.mark.parametrize(("versions", "action", "base", "code"), [
     # 더 새 수집 버전이 있으면 오래된 화면 기준의 결정을 받지 않는다
     ((("pending", False, {}), ("pending", False, {"schedule_text": "새 일정"})), "approve", 1, "VERSION_CONFLICT"),
-    ((("pending", False, {}), ("pending", False, {"schedule_text": "새 일정"})), "reject", 1, "VERSION_CONFLICT"),
     ((("pending", False, {}),), "approve", 9, "VERSION_CONFLICT"),
     # 끝난 상태·공개 중인 버전은 다시 승인·반려하지 않는다
     ((("approved", True, {}),), "approve", 1, "INVALID_STATE_TRANSITION"),
@@ -244,6 +253,32 @@ def test_hide_withdraws_public_copy_and_hidden_version_needs_a_new_version(backe
 
 
 @BACKENDS
+def test_hide_also_retires_pending_versions_that_arrived_before_it(backend):
+    with open_test_database(backend) as db:
+        opportunity_id = seed(db, ("approved", True, {}), ("rejected", False, {"schedule_text": "반려본"}),
+                              ("pending", False, {"schedule_text": "숨기기 전에 들어온 버전"}))
+        repository(db).apply(opportunity_id, command("hide", 1, note="부적절한 내용으로 비공개"))
+        reviewed = NOW - timedelta(days=1)
+        assert state(db, opportunity_id) == ([(1, "hidden", "open", NOW), (2, "rejected", "open", reviewed),
+                                             (3, "hidden", "open", NOW)], None)
+        # 다른 운영자가 대기 목록에서 승인해 다시 공개할 수 없다
+        with pytest.raises(AppError) as error:
+            repository(db).apply(opportunity_id, command("approve", 3), check_publishable)
+        assert error.value.code == "INVALID_STATE_TRANSITION"
+        assert SqlPublicOpportunityRepository(lambda: nullcontext(db)).get(opportunity_id, NOW) is None
+
+
+@BACKENDS
+def test_reject_cleans_up_pending_versions_overtaken_by_newer_ones(backend):
+    with open_test_database(backend) as db:
+        opportunity_id = seed(db, ("pending", False, {}), ("pending", False, {"schedule_text": "새 일정"}))
+        assert repository(db).apply(opportunity_id, command("reject", 1, reason_code="duplicate")).review_status == "rejected"
+        assert state(db, opportunity_id) == ([(1, "rejected", "open", NOW), (2, "pending", "open", None)], None)
+        # 최신 버전은 그대로 승인할 수 있다
+        assert repository(db).apply(opportunity_id, command("approve", 2), check_publishable).review_status == "approved"
+
+
+@BACKENDS
 def test_close_applies_to_public_and_later_pending_without_touching_review_time(backend):
     with open_test_database(backend) as db:
         opportunity_id = seed(db, ("approved", True, {}), ("rejected", False, {"schedule_text": "반려본"}),
@@ -260,6 +295,11 @@ def test_close_applies_to_public_and_later_pending_without_touching_review_time(
             repository(db).apply(opportunity_id, command("approve", 3), check_publishable)
         review = db.execute(select(OpportunityReview.reason_code, OpportunityReview.note)).one()
         assert tuple(review) == ("report_confirmed", "공식 원문 확인")
+        # 출처가 아직 모집 중이라 다음 수집이 "모집 중" 버전을 만들어도, 닫힌 버전과 함께 반려로 정리한다
+        db.execute(insert(OpportunityVersion), values(opportunity_id, 4, schedule_text="종료 전에 들어온 모집 중 버전"))
+        for version in (3, 4):
+            assert repository(db).apply(opportunity_id, command("reject", version, reason_code="recruitment_closed", note=None)).review_status == "rejected"
+        assert state(db, opportunity_id)[1] == 1
 
 
 @BACKENDS

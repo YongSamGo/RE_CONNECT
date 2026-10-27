@@ -153,7 +153,9 @@ export interface paths {
          * 모집 종료 처리
          * @description 추천에서 빼는 방향이라 재검수 없이 바로 반영한다. `basis=other`이면 `note`가 필수다.
          *     수집 실패나 일시 누락은 종료 근거가 아니다. `base_version`은 지금 공개 중인 버전이어야 한다.
-         *     공개본과 그 뒤의 `pending` 버전을 함께 닫아, 종료 전에 들어온 "모집 중" 버전을 나중에 승인해도 다시 열리지 않는다.
+         *     공개본과 그 뒤의 `pending` 버전을 함께 닫는다. 닫힌 `pending` 버전은 승인할 수 없고(422) 반려(`recruitment_closed`)로 정리한다.
+         *     출처가 아직 모집 중이면 다음 수집이 "모집 중" 새 `pending` 버전을 한 번 만든다. 닫힘→열림은 재검수 대상 변경이므로
+         *     운영자가 원문을 확인해 반려하거나, 실제로 다시 열렸으면 승인한다.
          *     검수 시각(`reviewed_at`)은 바꾸지 않는다. 이미 종료된 공개본이면 `INVALID_STATE_TRANSITION`이다.
          */
         post: operations["closeOpportunity"];
@@ -176,6 +178,7 @@ export interface paths {
          * 공고 비공개
          * @description 공개 목록·상세·추천에서 즉시 뺀다. 저장 지원서에는 `opportunity_closed` 재검토 표시가 붙는다.
          *     `base_version`은 지금 공개 중인 버전이어야 한다(공개본이 없으면 `INVALID_STATE_TRANSITION`, 다르면 `VERSION_CONFLICT`).
+         *     그 뒤의 `pending` 버전도 함께 `hidden`이 되어, 숨기기 전에 들어온 버전을 승인해 다시 공개하지 않는다.
          *     `hidden`은 그 버전에서 끝난다. 다시 공개하려면 새 `pending` 버전을 만들어 승인한다.
          */
         post: operations["hideOpportunity"];
@@ -197,7 +200,7 @@ export interface paths {
         /**
          * 검수 대기 공고 반려 (계획 §5 보완 계약)
          * @description `pending` → `rejected`만 허용한다. 운영자 역할과 MFA가 필요하고 감사 기록을 남긴다.
-         *     `base_version`은 그 공고의 최신 버전이어야 한다. 더 새 버전이 있으면 `VERSION_CONFLICT`다.
+         *     `pending`이면 최신 버전이 아니어도 반려할 수 있다. 더 새 버전에 밀린 버전이나 모집 종료로 닫힌 버전을 정리할 때 쓴다.
          *     `rejected`는 그 버전에서 끝나는 상태다. 다시 고치려면 PATCH로 새 `pending` 버전을 만든다.
          *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다. 연락처·주민번호 같은 형식이 보이면 422다.
          */
@@ -1549,7 +1552,7 @@ export interface components {
              * @enum {string}
              */
             basis: "source_closed" | "deadline_passed" | "organization_notice" | "report_confirmed" | "other";
-            /** @description basis=other이면 필수 */
+            /** @description basis=other이면 필수. 개인정보를 적지 않는다 */
             note: string | null;
         };
         OpportunityHideRequest: {
