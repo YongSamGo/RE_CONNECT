@@ -673,5 +673,5 @@ def test_upgrade_keeps_existing_reports_and_downgrade_drops_only_unrestorable_ro
         purged = uuid4()
         db.execute(insert(Report), {"id": purged, "opportunity_id": opportunity_id, "opportunity_version": 1, "type": "other",
                                     "status": "dismissed", "version": 3, "received_at": NOW, "updated_at": NOW, "purged_at": NOW})
-        command.downgrade(config, "0009_role_catalog_draft")
+        command.downgrade(config, "-1")
         assert db.execute(select(old.c.id)).scalars().all() == [report_id]

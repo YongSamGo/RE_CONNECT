@@ -29,7 +29,7 @@ const messages = {
   DAILY_QUOTA_EXCEEDED: [429, '오늘 이용 한도에 도달했습니다. 다음 날 다시 이용해 주세요.'],
   INFERENCE_BUSY: [429, 'AI가 다른 요청을 처리하고 있습니다. 잠시 후 다시 시도해 주세요.'],
   INTERNAL_ERROR: [500, '처리 중 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.'],
-  MODEL_UNAVAILABLE: [503, 'AI를 준비하고 있습니다. 직접 입력하거나 잠시 후 다시 시도해 주세요.'],
+  MODEL_UNAVAILABLE: [503, '지금은 AI를 사용할 수 없습니다. 직접 입력하거나 잠시 후 다시 시도해 주세요.'],
   AI_TIMEOUT: [503, 'AI 처리 시간이 초과되었습니다. 입력을 확인하고 다시 시도해 주세요.'],
   SERVICE_UNAVAILABLE: [503, '서비스 연결이 원활하지 않습니다. 잠시 후 다시 시도해 주세요.'],
 } as const satisfies Record<ServerCode, readonly [number, string]>
