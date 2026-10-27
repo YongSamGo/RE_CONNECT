@@ -1,5 +1,6 @@
 """빈 DB upgrade/downgrade·스키마 일치·실제 SQL 불변 트리거를 검증한다."""
 
+from datetime import timedelta
 from pathlib import Path
 from uuid import uuid4
 
@@ -92,14 +93,21 @@ def test_additional_revision_preserves_existing_rows_and_blocks_bulk_overwrite(e
     # 0001의 실제 열만 사용해 업그레이드 전 자료를 만든다. 최신 ORM 기본값은 아직 없는 열을 INSERT한다.
     legacy_users = table('users', column('id', Uuid()), column('kakao_subject', String()), column('role', String()),
         column('status', String()), column('created_at', UTCDateTime()))
-    owner, _, profile_id, document_id = seed(empty_db, users=legacy_users)
+    legacy_versions = table('opportunity_versions', *(column(c.name, c.type) for c in OpportunityVersion.__table__.columns if c.name not in ('created_at', 'observed_hash')))
+    owner, _, profile_id, document_id = seed(empty_db, users=legacy_users, versions=legacy_versions)
     empty_db.execute(insert(ApplicationDraft), saved_draft(owner, profile_id, document_id))
     command.upgrade(config, "head")
     assert empty_db.execute(select(ProfileVersion.version)).scalar_one() == 1
+    # 0010 이전 버전의 생성 시각은 그 버전의 관측 시각으로 채운다.
+    created, checked, observed, content = empty_db.execute(select(OpportunityVersion.created_at, OpportunityVersion.source_checked_at,
+        OpportunityVersion.observed_hash, OpportunityVersion.content_hash)).one()
+    assert created == checked and observed == content
     for statement in (
         update(ProfileVersion).values(ciphertext=b"changed" * 10),
         update(ApplicationDraft).values(profile_version=99),
         update(OpportunityVersion).values(title="내용 덮어쓰기"),
+        update(OpportunityVersion).values(created_at=NOW + timedelta(days=1)),
+        update(OpportunityVersion).values(observed_hash="0" * 64),
     ):
         with pytest.raises(IntegrityError), empty_db.begin_nested():
             empty_db.execute(statement)

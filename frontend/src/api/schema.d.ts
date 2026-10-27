@@ -86,8 +86,13 @@ export interface paths {
         put?: never;
         /**
          * 공식 자료로 공고 수동 등록
-         * @description 출처는 "수동 입력"으로 기록한다. 등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
-         *     같은 공식 URL·기관·제목·모집기간의 공고가 이미 있어도 거절하지 않고, 검수 화면에서 중복 후보로 보여 준다(출처 간 자동 병합 없음).
+         * @description 공식 자료 수동 출처(`source`) 하나를 고르고, 공고 내용(`content`)과 원문 근거(`evidence`)를 함께 보낸다.
+         *     근거 규칙은 수동 입력 명령(`python -m app.manual_intake`, docs/data/manual-intake.md)과 같다.
+         *     - `content.source_url`과 `evidence.url`은 같은 공식 상세 주소여야 한다(50+포털·고용24·1365의 허용 경로만). 다른 접수 주소는 `application_url` 근거가 필요하다.
+         *     - `evidence.quotes`에는 필수 7개(`title`, `organization_name`, `activity_type`, `application_method`, `application_instructions`, `recruitment_status`, `requirements`)와, 값을 넣은 선택 필드마다 원문 인용을 넣는다.
+         *     - `evidence.observed_at`은 지금부터 48시간 안의 원문 확인 시각이다. 연락처·HTML 흔적이 든 값은 받지 않는다(422).
+         *     등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
+         *     같은 출처에 공식 URL·기관·제목·마감이 같은 공고가 이미 있으면 자동 병합하지 않고 409 `VERSION_CONFLICT`로 거절한다. 기존 공고를 찾아 수정(PATCH)한다.
          */
         post: operations["createAdminOpportunity"];
         delete?: never;
@@ -117,6 +122,10 @@ export interface paths {
          * 공고 수정 (새 검수 대기 버전)
          * @description 바꿀 필드만 보낸다. 저장하면 새 `pending` 버전이 되고 공개본은 승인 전까지 그대로다.
          *     중요 변경 필드가 바뀌면 `important_change=true`가 되어 공개본의 추천·지원서 생성을 보류한다.
+         *     - `base_version`이 현재 최신 버전이 아니면 409 `VERSION_CONFLICT`다. 다른 수정·수집을 덮어쓰지 않는다.
+         *     - 바꾼 필드는 등록과 같은 일반 텍스트 규칙(연락처·HTML 흔적 거절)으로 검사한다. 공식 URL을 바꾸면 허용 경로여야 하고, `role_tags`는 역할 사전의 키만 받는다.
+         *     - 출처를 다시 확인한 것이 아니므로 `source_checked_at`은 기준 버전 값을 유지한다.
+         *     - 같은 원문을 다시 수집하면 이 수정본을 되돌리지 않는다. 원문이 실제로 바뀐 경우만 새 `pending` 버전을 만들고, 그때도 `role_tags`·`skill_tags`는 이어받는다(docs/api/README.md D34).
          */
         patch: operations["updateAdminOpportunity"];
         trace?: never;
@@ -1399,6 +1408,28 @@ export interface components {
             /** @description 체험의 확정 프로필 버전 */
             version: number;
         };
+        /** @description 공식 원문 근거. 서버는 주소를 열거나 조회하지 않는다. 진위나 승인의 증명이 아니라 검수 대조용이다 */
+        ManualEvidence: {
+            /**
+             * @description 공식 원문을 직접 대조했다는 운영자 확인
+             * @constant
+             */
+            confirmed_official: true;
+            /**
+             * Format: date-time
+             * @description 원문을 확인한 시각. 지금부터 48시간 안이어야 한다
+             */
+            observed_at: string;
+            /** @description 필드별 원문 인용(각 300자 이내, 연락처·꺾쇠 없음). 필수 7개와 값을 넣은 선택 필드마다 하나씩 */
+            quotes: {
+                [key: string]: string;
+            };
+            /**
+             * Format: uri
+             * @description content.source_url과 같은 공식 상세 주소
+             */
+            url: string;
+        };
         Me: {
             authenticated: boolean;
             /** @description 현재 유효한 동의만. 철회·폐기 버전은 빠진다 */
@@ -1586,6 +1617,15 @@ export interface components {
             basis: "source_closed" | "deadline_passed" | "organization_notice" | "report_confirmed" | "other";
             /** @description basis=other이면 필수. 개인정보를 적지 않는다 */
             note: string | null;
+        };
+        OpportunityCreate: {
+            content: components["schemas"]["OpportunityInput"];
+            evidence: components["schemas"]["ManualEvidence"];
+            /**
+             * @description 공식 자료 수동 출처. 순서대로 50+포털, 고용24, 1365다
+             * @enum {string}
+             */
+            source: "manual_50plus" | "manual_work24" | "manual_volunteer";
         };
         OpportunityHideRequest: {
             base_version: number;
@@ -2465,11 +2505,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OpportunityInput"];
+                "application/json": components["schemas"]["OpportunityCreate"];
             };
         };
         responses: {
-            /** @description 검수 대기 공고 */
+            /** @description 검수 대기 공고. 같은 키·같은 입력의 재전송도 201로 첫 결과를 돌려준다 */
             201: {
                 headers: {
                     "X-Request-ID": components["headers"]["XRequestId"];
