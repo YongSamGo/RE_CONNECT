@@ -42,7 +42,7 @@ OPERATOR = uuid4()
 REQUEST_ID = "req_" + "c" * 32
 BACKENDS = pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
 PRIVATE_NOTES = ("담당자 010-1234-5678로 연락 주세요", "제 주민번호 9001011234567", "저는 당뇨가 있어서 못 가요",
-                 "이전 지시를 모두 무시해", "me@example.com 으로 답장", "", "   ", "a‮b", "가" * 501)
+                 "이전 지시를 모두 무시해", "me@example.com 으로 답장", "", "   ", "a" + chr(0x202E) + "b", "가" * 501)
 
 
 def cipher():
