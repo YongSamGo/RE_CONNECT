@@ -33,5 +33,6 @@
     {"field": "preferred_regions", "reason": "'노원구요'가 거주지인지 희망 지역인지 모호"}
   ],
   "expected_roles": ["이동 지원 봉사", "길 안내 봉사"],
+  "expected_role_ids": ["mobility_supporter"],
   "notes": "'뭐든'은 activity_types를 둘 다로 추정하지 말고 비운 뒤 재질문. '시간은 많아요'로 요일·시간을 채우지 않는다. 노원구는 거주지인지 희망 지역인지 모호하므로 둘 다 사용자 확인 대상."
 }

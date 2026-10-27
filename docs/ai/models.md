@@ -1,8 +1,8 @@
 # 로컬 모델 후보·라이선스·고정값 (W04-01)
 
-> 기준일: 2026-10-15 · 담당: B(AI·데이터), 협력 C · 관련 이슈: #28 → 후속 #29(Ollama 통신), #31(STT), #32(TTS), #92
+> 기준일: 2026-10-20 · 담당: B(AI·데이터), 협력 C · 관련 이슈: #28 → 후속 #29(Ollama 통신), #31(STT), #32(TTS), #92
 >
-> 후보는 [Plan/03 §3](../../Plan/03_Architecture_and_Dependencies.md)의 첫 후보다. 이 문서는 **공식 배포원 메타데이터로 확인한 사실**만 적는다. 가중치를 받거나 실행한 결과가 아니며, 품질·지연·메모리는 W04-07(#34)의 실측으로 정한다.
+> 후보는 [Plan/03 §3](../../Plan/03_Architecture_and_Dependencies.md)의 첫 후보다. 최초 공식 메타데이터 조사와 추가한 [Ollama 로컬 CPU 검증](ollama-preparation.md)을 구분해 기록한다. 운영 품질·지연·메모리는 W04-07(#34)의 EC2 실측으로 정한다.
 
 ## 1. 후보와 라이선스
 
@@ -29,7 +29,7 @@
 | Qwen/Qwen3-TTS-12Hz-0.6B-CustomVoice | revision `85e237c12c027371202489a0ec509ded67b5e4b5` (2026-01-29) |
 | Qwen/Qwen3-4B (참고) | revision `1cfa9a7208912126459214e8b04321603b3df60c` (2025-07-26). Ollama `qwen3:4b`가 이 revision에서 변환됐는지는 **확인하지 못했다** |
 
-- Ollama 태그(`qwen3:4b`)는 바뀔 수 있으므로 태그가 아니라 model 레이어 digest로 확인한다. `ollama pull` 후 `ollama show --modelfile`·`/api/show`로 digest와 양자화 형식을 기록한다(양자화는 아직 미확인).
+- Ollama 태그(`qwen3:4b`)는 바뀔 수 있으므로 태그가 아니라 model 레이어 digest로 확인한다. [준비 CLI](ollama-preparation.md)로 고정 파일을 받은 뒤 `/api/tags`·`/api/show`를 대조한다. 2026-10-20 로컬 CPU 실증에서 Q4_K_M을 확인했다.
 - `params` 레이어의 기본값은 `temperature 0.6`, `top_k 20`, `top_p 0.95`다. 구조화 추출은 Plan/03대로 요청에서 `temperature=0`, `think=false`(모델이 허용할 때)로 덮어쓴다.
 - Hugging Face 모델은 `revision=<위 commit>`으로 받고, 운영 컨테이너에는 받은 폴더 경로만 넘긴다(`HF_HUB_OFFLINE=1`). 저장소 이름을 넘기면 실행 중에 내려받으려 하므로 쓰지 않는다.
 
@@ -63,6 +63,10 @@ GPU 종류·VRAM·동시 처리량은 이 문서에서 추정하지 않는다(Pl
 - STT·TTS를 한 이미지에서 실행하기 전에 의존성 해석, torch·CTranslate2의 CUDA/cuDNN 공존과 onnxruntime 설치 조합을 시험한다. 함께 실행할 수 없으면 서비스를 분리한다.
 
 - [x] 1단계: 후보·라이선스 확인 (이 문서 §1·§4)
-- [ ] 2단계: 공식 가중치·revision/digest 준비 — 고정값은 §2. 준비 스크립트(받기 → digest 확인)와 Compose 볼륨 위치는 #29·#31·#32와 함께
+- [ ] 2단계: 공식 가중치·revision/digest 준비 — STT/TTS 15개 파일은 고정 명세로 실제 준비 후 오프라인 재검증 완료([도구](../../speech/MODEL_PREPARATION.md)). Ollama도 [준비 CLI와 실제 파일 검증](ollama-preparation.md)을 추가했다. 운영 Compose 볼륨 연결은 남아 있다
 - [ ] 3단계: 런타임·드라이버·컨테이너 조합 기록 — EC2 사양(#6) 확정 후
-- [ ] Ollama `qwen3:4b`의 양자화 형식과 thinking 지원 여부 (`/api/show`)
+- [x] Ollama `qwen3:4b`의 양자화 형식과 thinking 지원 여부 (`/api/show`) — Ollama 0.40.3 로컬 CPU에서 Q4_K_M·thinking 지원 및 `think=false` 구조화 응답을 [실증](ollama-preparation.md). 운영/EC2 검증은 남음
+
+2026-10-18 로컬 CPU에서 faster-whisper1.2.1/CTranslate2 4.8.2/PyAV16.1.0 조합의 실제 오프라인 적재와 합성 한국어3문장 전사를 확인했다([측정 범위](../../speech/STT_RUNTIME.md)). 이는 GPU/EC2 조합 확정이나 실제 사용자 음성 품질 평가를 대신하지 않는다.
+
+같은 날 제한된12Hz 호환 source와 Torch2.14.1+cpu/Transformers5.19.0 조합으로 실제 Sohee 합성 및 같은 프로세스의 Whisper 교차 확인도 수행했다([TTS 범위와 불일치](../../speech/TTS_RUNTIME.md)). 숫자 문장의 재전사 불일치가 있어 품질 통과로 처리하지 않는다. 원본 qwen-tts의 오래된 dependency pins를 설치한 결과가 아니다.

@@ -1,0 +1,838 @@
+--- a/qwen_tts/core/__init__.py
++++ b/qwen_tts/core/__init__.py
+@@ -1,6 +1,7 @@
+ # coding=utf-8
+ # Copyright 2026 The Alibaba Qwen team.
+ # SPDX-License-Identifier: Apache-2.0
++# RE_CONNECT: modified for the fixed 12Hz compatibility build; see NOTICE.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+ # you may not use this file except in compliance with the License.
+@@ -13,7 +14,5 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+-from .tokenizer_25hz.configuration_qwen3_tts_tokenizer_v1 import Qwen3TTSTokenizerV1Config
+-from .tokenizer_25hz.modeling_qwen3_tts_tokenizer_v1 import Qwen3TTSTokenizerV1Model
+ from .tokenizer_12hz.configuration_qwen3_tts_tokenizer_v2 import Qwen3TTSTokenizerV2Config
+ from .tokenizer_12hz.modeling_qwen3_tts_tokenizer_v2 import Qwen3TTSTokenizerV2Model--- a/qwen_tts/core/models/modeling_qwen3_tts.py
++++ b/qwen_tts/core/models/modeling_qwen3_tts.py
+@@ -1,4 +1,5 @@
+ # coding=utf-8
++# RE_CONNECT: modified for the fixed 12Hz compatibility build; see NOTICE.
+ # Copyright 2026 The Qwen team, Alibaba Group and the HuggingFace Inc. team. All rights reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -21,6 +22,7 @@
+ 
+ import huggingface_hub
+ import torch
++from ...compat import default_rope_parameters, require_complete_generation
+ from huggingface_hub import snapshot_download
+ from librosa.filters import mel as librosa_mel_fn
+ from torch import nn
+@@ -29,7 +31,7 @@
+ from transformers.cache_utils import Cache, DynamicCache
+ from transformers.generation import GenerationMixin
+ from transformers.integrations import use_kernel_forward_from_hub
+-from transformers.masking_utils import (create_causal_mask,
++from ...compat import (create_causal_mask,
+                                         create_sliding_window_causal_mask)
+ from transformers.modeling_flash_attention_utils import FlashAttentionKwargs
+ from transformers.modeling_layers import GradientCheckpointingLayer
+@@ -535,7 +537,7 @@
+         self.original_max_seq_len = config.max_position_embeddings
+ 
+         self.config = config
+-        self.rope_init_fn = ROPE_INIT_FUNCTIONS[self.rope_type]
++        self.rope_init_fn = default_rope_parameters if self.rope_type == "default" else ROPE_INIT_FUNCTIONS[self.rope_type]
+ 
+         inv_freq, self.attention_scaling = self.rope_init_fn(self.config, device)
+         self.register_buffer("inv_freq", inv_freq, persistent=False)
+@@ -570,7 +572,7 @@
+         self.original_max_seq_len = config.max_position_embeddings
+ 
+         self.config = config
+-        self.rope_init_fn = ROPE_INIT_FUNCTIONS[self.rope_type]
++        self.rope_init_fn = default_rope_parameters if self.rope_type == "default" else ROPE_INIT_FUNCTIONS[self.rope_type]
+ 
+         inv_freq, self.attention_scaling = self.rope_init_fn(self.config, device)
+         self.register_buffer("inv_freq", inv_freq, persistent=False)
+@@ -1018,7 +1020,7 @@
+ 
+     def __init__(self, config: Qwen3TTSTalkerCodePredictorConfig, embedding_dim: int):
+         super().__init__(config)
+-        self.padding_idx = config.pad_token_id
++        self.padding_idx = getattr(config, 'pad_token_id', None)
+         self.vocab_size = config.vocab_size
+         self.layers = nn.ModuleList(
+             [Qwen3TTSDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)]
+@@ -1430,7 +1432,7 @@
+ 
+     def __init__(self, config):
+         super().__init__(config)
+-        self.padding_idx = config.pad_token_id
++        self.padding_idx = getattr(config, 'pad_token_id', None)
+         self.vocab_size = config.vocab_size
+         self.layers = nn.ModuleList(
+             [Qwen3TTSTalkerDecoderLayer(config, layer_idx) for layer_idx in range(config.num_hidden_layers)]
+@@ -2277,6 +2279,8 @@
+             **talker_kwargs,
+         )
+ 
++        require_complete_generation(talker_result.sequences, self.config.talker_config.codec_eos_token_id)
++
+         talker_codes = torch.stack([hid[-1] for hid in talker_result.hidden_states if hid[-1] is not None], dim=1)
+         talker_hidden_states = torch.cat([hid[0][-1][:, -1:] for hid in talker_result.hidden_states], dim=1)[:, :-1]
+         
+--- a/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py
++++ b/qwen_tts/core/tokenizer_12hz/modeling_qwen3_tts_tokenizer_v2.py
+@@ -1,4 +1,5 @@
+ # coding=utf-8
++# RE_CONNECT: modified for the fixed 12Hz compatibility build; see NOTICE.
+ # Copyright 2026 The Qwen team, Alibaba Group and the HuggingFace Inc. team. All rights reserved.
+ #
+ # Licensed under the Apache License, Version 2.0 (the "License");
+@@ -20,6 +21,7 @@
+ 
+ import numpy as np
+ import torch
++from ...compat import default_rope_parameters
+ from torch import nn
+ from torch.nn import Parameter
+ from torch.nn import functional as F
+@@ -27,7 +29,7 @@
+ from transformers.activations import ACT2FN
+ from transformers.cache_utils import Cache, DynamicCache
+ from transformers.integrations import use_kernel_forward_from_hub
+-from transformers.masking_utils import (
++from ...compat import (
+     create_causal_mask,
+     create_sliding_window_causal_mask,
+ )
+@@ -257,7 +259,7 @@
+         self.original_max_seq_len = config.max_position_embeddings
+ 
+         self.config = config
+-        self.rope_init_fn = ROPE_INIT_FUNCTIONS[self.rope_type]
++        self.rope_init_fn = default_rope_parameters if self.rope_type == "default" else ROPE_INIT_FUNCTIONS[self.rope_type]
+ 
+         inv_freq, self.attention_scaling = self.rope_init_fn(self.config, device)
+         self.register_buffer("inv_freq", inv_freq, persistent=False)
+@@ -496,7 +498,7 @@
+         # Initialize weights and apply final processing
+         self.post_init()
+ 
+-    @check_model_inputs()
++    @check_model_inputs
+     @auto_docstring
+     def forward(
+         self,
+--- a/qwen_tts/inference/qwen3_tts_model.py
++++ b/qwen_tts/inference/qwen3_tts_model.py
+@@ -1,4 +1,5 @@
+ # coding=utf-8
++# RE_CONNECT: modified for the fixed 12Hz compatibility build; see NOTICE.
+ # Copyright 2026 The Alibaba Qwen team.
+ # SPDX-License-Identifier: Apache-2.0
+ #
+@@ -13,12 +14,8 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+-import base64
+-import io
+-import urllib.request
+ from dataclasses import dataclass
+ from typing import Any, Dict, List, Optional, Tuple, Union
+-from urllib.parse import urlparse
+ 
+ import librosa
+ import numpy as np
+@@ -26,6 +23,7 @@
+ import torch
+ from transformers import AutoConfig, AutoModel, AutoProcessor
+ 
++from ..compat import restore_rotary_buffers
+ from ..core.models import Qwen3TTSConfig, Qwen3TTSForConditionalGeneration, Qwen3TTSProcessor
+ 
+ AudioLike = Union[
+@@ -115,6 +113,7 @@
+                 f"AutoModel returned {type(model)}, expected Qwen3TTSForConditionalGeneration. "
+             )
+ 
++        restore_rotary_buffers(model)
+         processor = AutoProcessor.from_pretrained(pretrained_model_name_or_path, fix_mistral_regex=True,)
+ 
+         generate_defaults = model.generate_config
+@@ -186,82 +185,19 @@
+             raise ValueError(f"Unsupported speakers: {bad}. Supported: {sorted(supported)}")
+ 
+     def _is_probably_base64(self, s: str) -> bool:
+-        if s.startswith("data:audio"):
+-            return True
+-        if ("/" not in s and "\\" not in s) and len(s) > 256:
+-            return True
+-        return False
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _is_url(self, s: str) -> bool:
+-        try:
+-            u = urlparse(s)
+-            return u.scheme in ("http", "https") and bool(u.netloc)
+-        except Exception:
+-            return False
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _decode_base64_to_wav_bytes(self, b64: str) -> bytes:
+-        if "," in b64 and b64.strip().startswith("data:"):
+-            b64 = b64.split(",", 1)[1]
+-        return base64.b64decode(b64)
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _load_audio_to_np(self, x: str) -> Tuple[np.ndarray, int]:
+-        if self._is_url(x):
+-            with urllib.request.urlopen(x) as resp:
+-                audio_bytes = resp.read()
+-            with io.BytesIO(audio_bytes) as f:
+-                audio, sr = sf.read(f, dtype="float32", always_2d=False)
+-        elif self._is_probably_base64(x):
+-            wav_bytes = self._decode_base64_to_wav_bytes(x)
+-            with io.BytesIO(wav_bytes) as f:
+-                audio, sr = sf.read(f, dtype="float32", always_2d=False)
+-        else:
+-            audio, sr = librosa.load(x, sr=None, mono=True)
+-
+-        if audio.ndim > 1:
+-            audio = np.mean(audio, axis=-1)
+-
+-        return audio.astype(np.float32), int(sr)
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _normalize_audio_inputs(self, audios: Union[AudioLike, List[AudioLike]]) -> List[Tuple[np.ndarray, int]]:
+-        """
+-        Normalize audio inputs into a list of (waveform, sr).
+-
+-        Supported forms:
+-          - str: wav path / URL / base64 audio string
+-          - (np.ndarray, sr): waveform + sampling rate
+-          - list of the above
+-
+-        Args:
+-            audios:
+-                Audio input(s).
+-
+-        Returns:
+-            List[Tuple[np.ndarray, int]]:
+-                List of (float32 waveform, original sr).
+-
+-        Raises:
+-            ValueError: If a numpy waveform is provided without sr.
+-        """
+-        if isinstance(audios, list):
+-            items = audios
+-        else:
+-            items = [audios]
+-
+-        out: List[Tuple[np.ndarray, int]] = []
+-        for a in items:
+-            if isinstance(a, str):
+-                out.append(self._load_audio_to_np(a))
+-            elif isinstance(a, tuple) and len(a) == 2 and isinstance(a[0], np.ndarray):
+-                out.append((a[0].astype(np.float32), int(a[1])))
+-            elif isinstance(a, np.ndarray):
+-                raise ValueError("For numpy waveform input, pass a tuple (audio, sr).")
+-            else:
+-                raise TypeError(f"Unsupported audio input type: {type(a)}")
+-        for i, a in enumerate(out):
+-            if a[0].ndim > 1:
+-                a[0] = np.mean(a[0], axis=-1).astype(np.float32)
+-                out[i] = (a[0], a[1])
+-        return out
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _ensure_list(self, x: MaybeList) -> List[Any]:
+         return x if isinstance(x, list) else [x]
+@@ -270,7 +206,7 @@
+         return f"<|im_start|>assistant\n{text}<|im_end|>\n<|im_start|>assistant\n"
+ 
+     def _build_ref_text(self, text: str) -> str:
+-        return f"<|im_start|>assistant\n{text}<|im_end|>\n"
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _build_instruct_text(self, instruct: str) -> str:
+         return f"<|im_start|>user\n{instruct}<|im_end|>\n"
+@@ -359,111 +295,10 @@
+         ref_text: Optional[Union[str, List[Optional[str]]]] = None,
+         x_vector_only_mode: Union[bool, List[bool]] = False,
+     ) -> List[VoiceClonePromptItem]:
+-        """
+-        Build voice-clone prompt items from reference audio (and optionally reference text) using Base model.
+-
+-        Modes:
+-          - x_vector_only_mode=True:
+-              Only speaker embedding is used to clone voice; ref_text/ref_code are ignored.
+-              This is mutually exclusive with ICL.
+-          - x_vector_only_mode=False:
+-              ICL mode is enabled automatically (icl_mode=True). In this case ref_text is required,
+-              because the model continues/conditions on the reference text + reference speech codes.
+-
+-        Batch behavior:
+-          - ref_audio can be a single item or a list.
+-          - ref_text and x_vector_only_mode can be scalars or lists.
+-          - If any of them are lists with length > 1, lengths must match.
+-
+-        Audio input:
+-          - str: local wav path / URL / base64
+-          - (np.ndarray, sr): waveform + sampling rate
+-
+-        Args:
+-            ref_audio:
+-                Reference audio(s) used to extract:
+-                  - ref_code via `model.speech_tokenizer.encode(...)`
+-                  - ref_spk_embedding via `model.extract_speaker_embedding(...)` (resampled to 24k)
+-            ref_text:
+-                Reference transcript(s). Required when x_vector_only_mode=False (ICL mode).
+-            x_vector_only_mode:
+-                Whether to use speaker embedding only. If False, ICL mode will be used.
+-
+-        Returns:
+-            List[VoiceClonePromptItem]:
+-                List of prompt items that can be converted into `voice_clone_prompt` dict.
+-
+-        Raises:
+-            ValueError:
+-                - If x_vector_only_mode=False but ref_text is missing.
+-                - If batch lengths mismatch.
+-        """
+-        if self.model.tts_model_type != "base":
+-            raise ValueError(
+-                f"model with \ntokenizer_type: {self.model.tokenizer_type}\n"
+-                f"tts_model_size: {self.model.tts_model_size}\n"
+-                f"tts_model_type: {self.model.tts_model_type}\n"
+-                "does not support create_voice_clone_prompt, Please check Model Card or Readme for more details."
+-            )
+-        
+-        ref_audio_list = self._ensure_list(ref_audio)
+-        ref_text_list = self._ensure_list(ref_text) if isinstance(ref_text, list) else ([ref_text] * len(ref_audio_list))
+-        xvec_list = self._ensure_list(x_vector_only_mode) if isinstance(x_vector_only_mode, list) else ([x_vector_only_mode] * len(ref_audio_list))
+-
+-        if len(ref_text_list) != len(ref_audio_list) or len(xvec_list) != len(ref_audio_list):
+-            raise ValueError(
+-                f"Batch size mismatch: ref_audio={len(ref_audio_list)}, ref_text={len(ref_text_list)}, x_vector_only_mode={len(xvec_list)}"
+-            )
+-
+-        normalized = self._normalize_audio_inputs(ref_audio_list)
+-
+-        ref_wavs_for_code: List[np.ndarray] = []
+-        ref_sr_for_code: List[int] = []
+-        for wav, sr in normalized:
+-            ref_wavs_for_code.append(wav)
+-            ref_sr_for_code.append(sr)
+-
+-        if len(set(ref_sr_for_code)) == 1:
+-            enc = self.model.speech_tokenizer.encode(ref_wavs_for_code, sr=ref_sr_for_code[0])
+-            ref_codes = enc.audio_codes
+-        else:
+-            ref_codes = []
+-            for wav, sr in normalized:
+-                ref_codes.append(self.model.speech_tokenizer.encode(wav, sr=sr).audio_codes[0])
+-
+-        items: List[VoiceClonePromptItem] = []
+-        for i, ((wav, sr), code, rtext, xvec_only) in enumerate(zip(normalized, ref_codes, ref_text_list, xvec_list)):
+-            if not xvec_only:
+-                if rtext is None or rtext == "":
+-                    raise ValueError(f"ref_text is required when x_vector_only_mode=False (ICL mode). Bad index={i}")
+-
+-            wav_resample = wav
+-            if sr != self.model.speaker_encoder_sample_rate:
+-                wav_resample = librosa.resample(y=wav_resample.astype(np.float32), 
+-                                           orig_sr=int(sr), 
+-                                           target_sr=self.model.speaker_encoder_sample_rate)
+-
+-            spk_emb = self.model.extract_speaker_embedding(audio=wav_resample,
+-                                                           sr=self.model.speaker_encoder_sample_rate)
+-
+-            items.append(
+-                VoiceClonePromptItem(
+-                    ref_code=None if xvec_only else code,
+-                    ref_spk_embedding=spk_emb,
+-                    x_vector_only_mode=bool(xvec_only),
+-                    icl_mode=bool(not xvec_only),
+-                    ref_text=rtext,
+-                )
+-            )
+-        return items
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _prompt_items_to_voice_clone_prompt(self, items: List[VoiceClonePromptItem]) -> Dict[str, Any]:
+-        return dict(
+-            ref_code=[it.ref_code for it in items],
+-            ref_spk_embedding=[it.ref_spk_embedding for it in items],
+-            x_vector_only_mode=[it.x_vector_only_mode for it in items],
+-            icl_mode=[it.icl_mode for it in items],
+-        )
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     # voice clone model
+     @torch.no_grad()
+@@ -478,159 +313,7 @@
+         non_streaming_mode: bool = False,
+         **kwargs,
+     ) -> Tuple[List[np.ndarray], int]:
+-        """
+-        Voice clone speech using the Base model.
+-
+-        You can provide either:
+-          - (ref_audio, ref_text, x_vector_only_mode) and let this method build the prompt, OR
+-          - `VoiceClonePromptItem` returned by `create_voice_clone_prompt`, OR
+-          - a list of `VoiceClonePromptItem` returned by `create_voice_clone_prompt`.
+-        
+-        `ref_audio` Supported forms:
+-        - str: wav path / URL / base64 audio string
+-        - (np.ndarray, sr): waveform + sampling rate
+-        - list of the above
+-
+-        Input flexibility:
+-          - text/language can be scalar or list.
+-          - prompt can be single or batch.
+-          - If batch mode (len(text)>1), lengths must match.
+-
+-        Args:
+-            text:
+-                Text(s) to synthesize.
+-            language:
+-                Language(s) for each sample.
+-            ref_audio:
+-                Reference audio(s) for prompt building. Required if voice_clone_prompt is not provided.
+-            ref_text:
+-                Reference text(s) used for ICL mode (required when x_vector_only_mode=False).
+-            x_vector_only_mode:
+-                If True, only speaker embedding is used (ignores ref_text/ref_code).
+-                If False, ICL mode is used automatically.
+-            voice_clone_prompt:
+-                list[VoiceClonePromptItem] from `create_voice_clone_prompt`.
+-            non_streaming_mode:
+-                Using non-streaming text input, this option currently only simulates streaming text input when set to `false`, 
+-                rather than enabling true streaming input or streaming generation.
+-            do_sample:
+-                Whether to use sampling, recommended to be set to `true` for most use cases.
+-            top_k:
+-                Top-k sampling parameter.
+-            top_p:
+-                Top-p sampling parameter.
+-            temperature:
+-                Sampling temperature; higher => more random.
+-            repetition_penalty:
+-                Penalty to reduce repeated tokens/codes.
+-            subtalker_dosample:
+-                Sampling switch for the sub-talker (only valid for qwen3-tts-tokenizer-v2) if applicable.
+-            subtalker_top_k:
+-                Top-k for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            subtalker_top_p:
+-                Top-p for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            subtalker_temperature:
+-                Temperature for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            max_new_tokens:
+-                Maximum number of new codec tokens to generate.
+-            **kwargs:
+-                Any other keyword arguments supported by HuggingFace Transformers `generate()` can be passed.
+-                They will be forwarded to the underlying `Qwen3TTSForConditionalGeneration.generate(...)`.
+-
+-        Returns:
+-            Tuple[List[np.ndarray], int]:
+-                (wavs, sample_rate)
+-
+-        Raises:
+-            ValueError:
+-                If batch sizes mismatch or required prompt inputs are missing.
+-        """
+-        if self.model.tts_model_type != "base":
+-            raise ValueError(
+-                f"model with \ntokenizer_type: {self.model.tokenizer_type}\n"
+-                f"tts_model_size: {self.model.tts_model_size}\n"
+-                f"tts_model_type: {self.model.tts_model_type}\n"
+-                "does not support generate_voice_clone, Please check Model Card or Readme for more details."
+-            )
+-        
+-        texts = self._ensure_list(text)
+-        languages = self._ensure_list(language) if isinstance(language, list) else ([language] * len(texts) if language is not None else ["Auto"] * len(texts))
+-        if len(languages) == 1 and len(texts) > 1:
+-            languages = languages * len(texts)
+-        if len(texts) != len(languages):
+-            raise ValueError(f"Batch size mismatch: text={len(texts)}, language={len(languages)}")
+-
+-        self._validate_languages(languages)
+-
+-        if voice_clone_prompt is None:
+-            if ref_audio is None:
+-                raise ValueError("Either `voice_clone_prompt` or `ref_audio` must be provided.")
+-            prompt_items = self.create_voice_clone_prompt(ref_audio=ref_audio, ref_text=ref_text, x_vector_only_mode=x_vector_only_mode)
+-            if len(prompt_items) == 1 and len(texts) > 1:
+-                prompt_items = prompt_items * len(texts)
+-            if len(prompt_items) != len(texts):
+-                raise ValueError(f"Batch size mismatch: prompt={len(prompt_items)}, text={len(texts)}")
+-            voice_clone_prompt_dict = self._prompt_items_to_voice_clone_prompt(prompt_items)
+-            ref_texts_for_ids = [it.ref_text for it in prompt_items]
+-        else:
+-            if isinstance(voice_clone_prompt, list):
+-                prompt_items = voice_clone_prompt
+-                if len(prompt_items) == 1 and len(texts) > 1:
+-                    prompt_items = prompt_items * len(texts)
+-                if len(prompt_items) != len(texts):
+-                    raise ValueError(f"Batch size mismatch: prompt={len(prompt_items)}, text={len(texts)}")
+-                voice_clone_prompt_dict = self._prompt_items_to_voice_clone_prompt(prompt_items)
+-                ref_texts_for_ids = [it.ref_text for it in prompt_items]
+-            else:
+-                voice_clone_prompt_dict = voice_clone_prompt
+-                ref_texts_for_ids = None
+-
+-        input_texts = [self._build_assistant_text(t) for t in texts]
+-        input_ids = self._tokenize_texts(input_texts)
+-
+-        ref_ids = None
+-        if ref_texts_for_ids is not None:
+-            ref_ids = []
+-            for i, rt in enumerate(ref_texts_for_ids):
+-                if rt is None or rt == "":
+-                    ref_ids.append(None)
+-                else:
+-                    ref_tok = self._tokenize_texts([self._build_ref_text(rt)])[0]
+-                    ref_ids.append(ref_tok)
+-
+-        gen_kwargs = self._merge_generate_kwargs(**kwargs)
+-
+-        talker_codes_list, _ = self.model.generate(
+-            input_ids=input_ids,
+-            ref_ids=ref_ids,
+-            voice_clone_prompt=voice_clone_prompt_dict,
+-            languages=languages,
+-            non_streaming_mode=non_streaming_mode,
+-            **gen_kwargs,
+-        )
+-
+-        codes_for_decode = []
+-        for i, codes in enumerate(talker_codes_list):
+-            ref_code_list = voice_clone_prompt_dict.get("ref_code", None)
+-            if ref_code_list is not None and ref_code_list[i] is not None:
+-                codes_for_decode.append(torch.cat([ref_code_list[i].to(codes.device), codes], dim=0))
+-            else:
+-                codes_for_decode.append(codes)
+-
+-        wavs_all, fs = self.model.speech_tokenizer.decode([{"audio_codes": c} for c in codes_for_decode])
+-
+-        wavs_out: List[np.ndarray] = []
+-        for i, wav in enumerate(wavs_all):
+-            ref_code_list = voice_clone_prompt_dict.get("ref_code", None)
+-            if ref_code_list is not None and ref_code_list[i] is not None:
+-                ref_len = int(ref_code_list[i].shape[0])
+-                total_len = int(codes_for_decode[i].shape[0])
+-                cut = int(ref_len / max(total_len, 1) * wav.shape[0])
+-                wavs_out.append(wav[cut:])
+-            else:
+-                wavs_out.append(wav)
+-
+-        return wavs_out, fs
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     # voice design model
+     @torch.no_grad()
+@@ -642,90 +325,7 @@
+         non_streaming_mode: bool = True,
+         **kwargs,
+     ) -> Tuple[List[np.ndarray], int]:
+-        """
+-        Generate speech with the VoiceDesign model using natural-language style instructions.
+-
+-        Args:
+-            text:
+-                Text(s) to synthesize.
+-            language:
+-                Language(s) for each sample.
+-            instruct:
+-                Instruction(s) describing desired voice/style. Empty string is allowed (treated as no instruction).
+-            non_streaming_mode:
+-                Using non-streaming text input, this option currently only simulates streaming text input when set to `false`, 
+-                rather than enabling true streaming input or streaming generation.
+-            do_sample:
+-                Whether to use sampling, recommended to be set to `true` for most use cases.
+-            top_k:
+-                Top-k sampling parameter.
+-            top_p:
+-                Top-p sampling parameter.
+-            temperature:
+-                Sampling temperature; higher => more random.
+-            repetition_penalty:
+-                Penalty to reduce repeated tokens/codes.
+-            subtalker_dosample:
+-                Sampling switch for the sub-talker (only valid for qwen3-tts-tokenizer-v2) if applicable.
+-            subtalker_top_k:
+-                Top-k for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            subtalker_top_p:
+-                Top-p for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            subtalker_temperature:
+-                Temperature for sub-talker sampling (only valid for qwen3-tts-tokenizer-v2).
+-            max_new_tokens:
+-                Maximum number of new codec tokens to generate.
+-            **kwargs:
+-                Any other keyword arguments supported by HuggingFace Transformers `generate()` can be passed.
+-                They will be forwarded to the underlying `Qwen3TTSForConditionalGeneration.generate(...)`.
+-
+-        Returns:
+-            Tuple[List[np.ndarray], int]:
+-                (wavs, sample_rate)
+-        """
+-        if self.model.tts_model_type != "voice_design":
+-            raise ValueError(
+-                f"model with \ntokenizer_type: {self.model.tokenizer_type}\n"
+-                f"tts_model_size: {self.model.tts_model_size}\n"
+-                f"tts_model_type: {self.model.tts_model_type}\n"
+-                "does not support generate_voice_design, Please check Model Card or Readme for more details."
+-            )
+-        
+-        texts = self._ensure_list(text)
+-        languages = self._ensure_list(language) if isinstance(language, list) else ([language] * len(texts) if language is not None else ["Auto"] * len(texts))
+-        instructs = self._ensure_list(instruct)
+-
+-        if len(languages) == 1 and len(texts) > 1:
+-            languages = languages * len(texts)
+-        if len(instructs) == 1 and len(texts) > 1:
+-            instructs = instructs * len(texts)
+-
+-        if not (len(texts) == len(languages) == len(instructs)):
+-            raise ValueError(f"Batch size mismatch: text={len(texts)}, language={len(languages)}, instruct={len(instructs)}")
+-
+-        self._validate_languages(languages)
+-
+-        input_ids = self._tokenize_texts([self._build_assistant_text(t) for t in texts])
+-
+-        instruct_ids: List[Optional[torch.Tensor]] = []
+-        for ins in instructs:
+-            if ins is None or ins == "":
+-                instruct_ids.append(None)
+-            else:
+-                instruct_ids.append(self._tokenize_texts([self._build_instruct_text(ins)])[0])
+-
+-        gen_kwargs = self._merge_generate_kwargs(**kwargs)
+-
+-        talker_codes_list, _ = self.model.generate(
+-            input_ids=input_ids,
+-            instruct_ids=instruct_ids,
+-            languages=languages,
+-            non_streaming_mode=non_streaming_mode,
+-            **gen_kwargs,
+-        )
+-
+-        wavs, fs = self.model.speech_tokenizer.decode([{"audio_codes": c} for c in talker_codes_list])
+-        return wavs, fs
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     # custom voice model
+     @torch.no_grad()
+--- a/qwen_tts/inference/qwen3_tts_tokenizer.py
++++ b/qwen_tts/inference/qwen3_tts_tokenizer.py
+@@ -1,4 +1,5 @@
+ # coding=utf-8
++# RE_CONNECT: modified for the fixed 12Hz compatibility build; see NOTICE.
+ # Copyright 2026 The Alibaba Qwen team.
+ # SPDX-License-Identifier: Apache-2.0
+ #
+@@ -13,11 +14,7 @@
+ # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ # See the License for the specific language governing permissions and
+ # limitations under the License.
+-import base64
+-import io
+-import urllib.request
+ from typing import List, Optional, Tuple, Union
+-from urllib.parse import urlparse
+ 
+ import librosa
+ import numpy as np
+@@ -27,8 +24,6 @@
+ from transformers import AutoConfig, AutoFeatureExtractor, AutoModel
+ 
+ from ..core import (
+-    Qwen3TTSTokenizerV1Config,
+-    Qwen3TTSTokenizerV1Model,
+     Qwen3TTSTokenizerV2Config,
+     Qwen3TTSTokenizerV2Model,
+ )
+@@ -78,8 +73,6 @@
+         """
+         inst = cls()
+ 
+-        AutoConfig.register("qwen3_tts_tokenizer_25hz", Qwen3TTSTokenizerV1Config)
+-        AutoModel.register(Qwen3TTSTokenizerV1Config, Qwen3TTSTokenizerV1Model)
+ 
+         AutoConfig.register("qwen3_tts_tokenizer_12hz", Qwen3TTSTokenizerV2Config)
+         AutoModel.register(Qwen3TTSTokenizerV2Config, Qwen3TTSTokenizerV2Model)
+@@ -99,111 +92,28 @@
+         return inst
+ 
+     def _is_probably_base64(self, s: str) -> bool:
+-        if s.startswith("data:audio"):
+-            return True
+-        # Heuristic: no filesystem path separators and long enough.
+-        if ("/" not in s and "\\" not in s) and len(s) > 256:
+-            return True
+-        return False
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+     
+     def _is_url(self, s: str) -> bool:
+-        try:
+-            u = urlparse(s)
+-            return u.scheme in ("http", "https") and bool(u.netloc)
+-        except Exception:
+-            return False
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _decode_base64_to_wav_bytes(self, b64: str) -> bytes:
+         # Accept both "data:audio/wav;base64,...." and raw base64
+-        if "," in b64 and b64.strip().startswith("data:"):
+-            b64 = b64.split(",", 1)[1]
+-        return base64.b64decode(b64)
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def load_audio(
+         self,
+         x: str,
+         target_sr: int,
+     ) -> np.ndarray:
+-        """
+-        Load audio from wav path or base64 string, then resample to target_sr.
+-
+-        Args:
+-            x (str):
+-                A wav file path, or a base64 audio string (raw or data URL).
+-            target_sr (int):
+-                Target sampling rate.
+-
+-        Returns:
+-            np.ndarray:
+-                1-D float32 waveform at target_sr.
+-        """
+-        if self._is_url(x):
+-            with urllib.request.urlopen(x) as resp:
+-                audio_bytes = resp.read()
+-            with io.BytesIO(audio_bytes) as f:
+-                audio, sr = sf.read(f, dtype="float32", always_2d=False)
+-        elif self._is_probably_base64(x):
+-            wav_bytes = self._decode_base64_to_wav_bytes(x)
+-            with io.BytesIO(wav_bytes) as f:
+-                audio, sr = sf.read(f, dtype="float32", always_2d=False)
+-        else:
+-            audio, sr = librosa.load(x, sr=None, mono=True)
+-
+-        if audio.ndim > 1:
+-            audio = np.mean(audio, axis=-1)
+-
+-        if sr != target_sr:
+-            audio = librosa.resample(y=audio, orig_sr=sr, target_sr=target_sr)
+-
+-        return audio.astype(np.float32)
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def _normalize_audio_inputs(
+         self,
+         audios: AudioInput,
+         sr: Optional[int],
+     ) -> List[np.ndarray]:
+-        """
+-        Normalize all supported input types into a list of 1-D numpy float32 waveforms
+-        at `self.feature_extractor.sampling_rate`.
+-
+-        Args:
+-            audios (AudioInput):
+-                - str: wav path OR base64 audio string
+-                - np.ndarray: raw waveform (sr must be provided)
+-                - list[str] / list[np.ndarray]
+-            sr (Optional[int]):
+-                Sampling rate for raw numpy input. Required if input is np.ndarray or list[np.ndarray].
+-
+-        Returns:
+-            List[np.ndarray]:
+-                List of float32 waveforms resampled to model input SR.
+-        """
+-        target_sr = int(self.feature_extractor.sampling_rate)
+-
+-        if isinstance(audios, (str, np.ndarray)):
+-            audios = [audios]
+-
+-        if len(audios) == 0:
+-            return []
+-
+-        if isinstance(audios[0], str):
+-            # wav path list or base64 list
+-            return [self.load_audio(x, target_sr=target_sr) for x in audios]  # type: ignore[arg-type]
+-
+-        # numpy list
+-        if sr is None:
+-            raise ValueError("For numpy waveform input, you must provide `sr` (original sampling rate).")
+-
+-        out: List[np.ndarray] = []
+-        for a in audios:  # type: ignore[assignment]
+-            if not isinstance(a, np.ndarray):
+-                raise TypeError("Mixed input types are not supported. Use all paths/base64 or all numpy arrays.")
+-            if a.ndim > 1:
+-                a = np.mean(a, axis=-1)
+-            if int(sr) != target_sr:
+-                a = librosa.resample(y=a.astype(np.float32), orig_sr=int(sr), target_sr=target_sr)
+-            out.append(a.astype(np.float32))
+-        return out
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def encode(
+         self,
+@@ -211,50 +121,7 @@
+         sr: Optional[int] = None,
+         return_dict: bool = True,
+     ):
+-        """
+-        Batch-encode audio into discrete codes (and optional conditioning, depending on 25Hz/12Hz).
+-
+-        Args:
+-            audios (AudioInput):
+-                Supported forms:
+-                - np.ndarray: waveform (requires sr)
+-                - list[np.ndarray]: waveforms (requires sr)
+-                - str: wav path OR base64 audio string
+-                - list[str]: wav paths and/or base64 strings
+-            sr (Optional[int], default=None):
+-                Original sampling rate for numpy waveform input.
+-            return_dict (bool, default=True):
+-                Forwarded to model.encode(...). If True, returns ModelOutput.
+-
+-        Returns:
+-            25Hz:
+-                Qwen3TTSTokenizerV1EncoderOutput (if return_dict=True) with fields:
+-                  - audio_codes: List[torch.LongTensor] each (codes_len,)
+-                  - xvectors:   List[torch.FloatTensor] each (xvector_dim,)
+-                  - ref_mels:   List[torch.FloatTensor] each (mel_len, mel_dim)
+-            12Hz:
+-                Qwen3TTSTokenizerV2EncoderOutput (if return_dict=True) with fields:
+-                  - audio_codes: List[torch.LongTensor] each (codes_len, num_quantizers)
+-
+-            If return_dict=False, returns the raw tuple from model.encode.
+-        """
+-        wavs = self._normalize_audio_inputs(audios, sr=sr)
+-
+-        inputs = self.feature_extractor(
+-            raw_audio=wavs,
+-            sampling_rate=int(self.feature_extractor.sampling_rate),
+-            return_tensors="pt",
+-        )
+-        inputs = inputs.to(self.device).to(self.model.dtype)
+-
+-        with torch.inference_mode():
+-            # model.encode expects (B, T) and (B, T)
+-            enc = self.model.encode(
+-                inputs["input_values"].squeeze(1),
+-                inputs["padding_mask"].squeeze(1),
+-                return_dict=return_dict,
+-            )
+-        return enc
++        raise NotImplementedError("Only fixed CustomVoice decoding is supported")
+ 
+     def decode(
+         self,
