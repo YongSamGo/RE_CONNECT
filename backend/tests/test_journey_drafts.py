@@ -263,11 +263,12 @@ def test_late_generation_after_journey_end_does_not_recreate_deleted_data():
             await journeys.end(issued.session, journey.journey_id)
             assert await leftovers() == []
             runtime.finish.set()
-            with pytest.raises(AppError):
+            # 다른 오류로 끝나는 회귀(일부 키를 쓴 뒤 503 등)를 통과시키지 않도록 기대 코드를 고정한다.
+            with pytest.raises(AppError, match='^NOT_FOUND$'):
                 await task
             # 늦은 완료·같은 키 재전송·새 요청 모두 삭제된 체험의 키를 다시 만들지 않는다.
             for mode, request_key in [('generate', key), ('generate', str(uuid4())), ('manual', str(uuid4()))]:
-                with pytest.raises(AppError):
+                with pytest.raises(AppError, match='^NOT_FOUND$'):
                     await service.create(issued.session, identity, journey.journey_id, request_key, body(mode))
             assert await leftovers() == [] and runtime.calls == 1
     with_redis(scenario)

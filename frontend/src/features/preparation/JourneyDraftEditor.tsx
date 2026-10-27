@@ -38,7 +38,9 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   const clear = scope.clear, clearAttempt = attempt.clear
   useEffect(() => {
     if (request.state.status === 'error' && ['SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND', 'CONSENT_REQUIRED'].includes(request.state.error.code)) { clear(); clearAttempt() }
-  }, [request.state, clear, clearAttempt])
+    // 생성 요청의 422는 확정된 실패다. 같은 키 재전송(409)으로 이어지지 않게 키를 버린다. 다음 생성은 최신 프로필로 새 키를 만든다.
+    else if (generating && request.state.status === 'error' && request.state.error.code === 'VALIDATION_FAILED') clearAttempt()
+  }, [request.state, generating, clear, clearAttempt])
   const accept = ({ draft }: Result) => {
     scope.setValue({ draft, introduction: draft.self_introduction, motivation: draft.motivation, dirty: false, reviewed: false, replace: false })
     clearAttempt()
@@ -138,7 +140,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
       <p>미승인 본문과 준비 체크는 회원 저장하지 않습니다. 화면을 나가면 화면 입력은 지워지며, 서버 임시 초안은 체험 수명을 따릅니다. 이미 복사한 내용은 클립보드에 남을 수 있습니다.</p>
     </section>}
     {noUsableFacts && <StatusNotice title="AI 초안을 만들지 못했어요">확정 프로필에 AI에 보낼 수 있는 경험·역량이 없을 수 있어요. 연락처·건강·가족 사정이 담긴 문장은 AI에 보내지 않습니다. 직접 작성하거나 프로필을 확인해 주세요.</StatusNotice>}
-    {request.state.status === 'error' && <><RequestError error={request.state.error} /><p>AI 실패 시 직접 작성을 선택할 수 있습니다. 응답 유실은 같은 생성 요청으로 재확인하고, 수정·승인 결과는 서버 편집본에서 확인해 주세요. 충돌 시 입력을 자동으로 덮어쓰지 않습니다.</p></>}
+    {request.state.status === 'error' && !noUsableFacts && <><RequestError error={request.state.error} /><p>AI 실패 시 직접 작성을 선택할 수 있습니다. 응답 유실은 같은 생성 요청으로 재확인하고, 수정·승인 결과는 서버 편집본에서 확인해 주세요. 충돌 시 입력을 자동으로 덮어쓰지 않습니다.</p></>}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
   </section>
 }
