@@ -31,7 +31,17 @@
 - `emplymShpNm`에 이름 대신 코드(`CM0105`)가 들어온다. 코드표를 따로 두어야 하고 화면에 코드를 그대로 쓰지 않는다.
 - 전국 공고가 섞여 있다. MVP(수도권)는 `workPlcNm`의 시·도(`서울`/`경기`/`인천`)로 거르고, 지역코드 매핑은 #46에서 확정한다. `전남광주`처럼 예상과 다른 시·도 표기가 있어 미확인 표기는 자동 확정하지 않는다.
 - 샘플 공고 대부분의 원 시스템이 `워크넷`(고용24)이다. 공식 상세 경로는 `https://www.work24.go.kr/wk/a/b/1500/empDetailAuthView.do?wantedAuthNo=<wantedAuthNo>&infoTypeCd=VALIDATION&infoTypeGroup=tb_workinfoworknet` (2026-10-14 브라우저로 확인). `empDetail.do`는 오류 페이지가 뜬다. 워크넷 외 원 시스템(`stmNm`)의 공고 링크 형식은 따로 확인해야 한다.
-- 목록 검색 조건(제목·지역)이 명세 표에 없어, 수집은 전체 페이지를 돌고 우리 쪽에서 거르는 방식을 기본으로 둔다. 일 한도 10,000건 안에서 마감일 기준 증분 수집 전략이 필요하다(#48, #49).
+- 목록 검색 조건은 명세 표에 없지만 2026-10-28에 실제 호출로 확인했다. 수집은 **`frDd`로 증분 수집**하고 지역·제목은 우리 쪽에서 거른다(#48, #49).
+
+  | 요청 변수 | 결과 |
+  |---|---|
+  | `frDd=YYYYMMDD` | **동작.** 접수 시작일이 그 날짜 이상인 공고만 준다(`20261001` → 240건, `20261026` → 32건). 다른 형식(`202610`)은 오류 |
+  | `emplymShp` | 동작. 값은 `CM0103`(137,742건)·`CM0105`(624,431건) 두 개뿐이고 합이 전체와 같다. `CM0101`·`CM0102`·`CM0104`·`CM0106`은 0건 |
+  | `workPlcNm` | 값을 넣으면 0건(`서울`, `서울 용산구` 모두). 형식 미확인이라 쓰지 않는다 |
+  | `toDd` | 제공기관 서버 오류(`resultCode` 99). **보내지 않는다** |
+  | `recrtTitle`·`oranNm`·`workPlc`·`jobcls`·`stmId`·`keyword`·`deadline` | 무시됨(전체 건수 그대로) |
+
+- 오류는 HTTP 200에 `resultCode` 99로 온다. 수집기는 HTTP 상태만 보지 말고 `resultCode`가 `00`인지 확인해야 하며, 오류 메시지(제공기관 DB 정보 포함)를 로그에 그대로 남기지 않는다.
 
 ## 3. 1365 봉사참여정보 (`apis.data.go.kr/1741000/volunteerPartcptnService`)
 
@@ -42,7 +52,7 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 | `getVltrSearchWordList` | 성공 (`totalCount` 11,215) |
 | `getVltrAreaList` | 성공. `schSido=6110000`(서울)로 2,785건 |
 | `getVltrCategoryList` | 성공 |
-| `getVltrPeriodList` | HTTP 400 — 기간 파라미터 필수로 추정, 미확인 |
+| `getVltrPeriodList` | HTTP 400. 2026-10-28에 `progrmBgnde`/`progrmEndde`·`schBgnde`/`schEndde`·`noticeBgnde`/`noticeEndde`·`bgnde`/`endde`(`YYYYMMDD`)를 넣어도 400. 지역·검색어 목록으로 충분해 더 찾지 않는다 |
 | `getVltrPartcptnItem` | 성공 (`progrmRegistNo` 필수) |
 
 **목록 필드:** `progrmRegistNo`, `progrmSj`(제목), `progrmSttusSe`(모집상태 코드, 샘플에 `2`·`3`), `progrmBgnde`/`progrmEndde`(봉사기간), `nanmmbyNm`(모집기관), `sidoCd`/`gugunCd`(행정 코드)
@@ -68,7 +78,23 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 **확인된 데이터 문제**
 - **공고 ID·공식 상세/신청 URL이 없다.** 계약의 `application_url`·`source_url`을 응답만으로 만들 수 없다. 중복 판정 키도 `(bizYear, orgNm, bizNm, 신청기간)` 같은 조합으로 만들어야 한다.
 - 포털의 공고 상세 경로는 2026-10-22에 확인했다: 가치동행일자리 `https://www.50plus.or.kr/appView.do?ANN_NO=<번호>`(예: `ANN_NO=1549`), 일자리(구 인턴십) `/in_appView.do?ANN_NO=<번호>`(2026-10-25 [공식 상세 페이지](https://www.50plus.or.kr/in_appView.do?ANN_NO=1271)에서 쿼리 키까지 확인). `/detail.do?id=`·`/life/detail.do?id=`는 공고가 아닌 안내 게시글이다. API 응답에 `ANN_NO`가 없어 응답과 상세 페이지를 자동으로 잇지는 못한다.
+- **포털 목록에는 `ANN_NO`가 있다**(2026-10-28 확인). 가치동행일자리 목록 화면이 부르는 `POST /appListAjax.do`(`pageIndex`)가 `ANN_NO`·`ANN_NM`(공고명)·`OPER_ORG_NM`(운영 기관)·`APPDURNG_STED`(신청기간)·`ANN_RCRT_STAT_NM`(모집 상태)을 JSON으로 준다. 공개 API가 아니라 화면용 내부 경로이므로 수집기에 넣지 않고, 운영자가 대조할 때만 참고한다. 일자리 목록(`/in_appListAjax`)은 같은 날 0건이었다.
+- API `job1/list` 2026년 99건을 포털 99건과 대조하면 **포털 공고 하나에 사업 여러 개가 묶인 경우가 많다**(예: "남부권 학교안전 2차 공동모집"). 사업명으로 한 건이 특정되는 것은 26건, 기관+신청 시작일로 특정되는 것은 17건, 나머지 56건은 후보가 여럿이다. 자동 연결은 하지 않고 운영자가 대조한다.
+- 2026-10-27 기준 포털의 가치동행일자리 99건은 모두 마감, 일자리 목록은 0건이다. 현재 신청 가능한 50플러스 공고가 없다(#51).
 - **지역 필드가 없다.** `orgNm`(예: `성동센터`, `동부캠퍼스`)으로만 추정할 수 있다. 센터는 이름의 자치구, 캠퍼스는 소재지 확인이 필요하다.
+- `orgNm` → 운영 기관 소재지 (2026-10-28 [위치 안내](https://www.50plus.or.kr/location_information.do)의 공식 주소로 확인)
+
+  | `orgNm` | 소재 자치구 |
+  |---|---|
+  | `<자치구>50플러스센터` (강동·강북·강서·관악·금천·노원·동작·서대문·서초·성동·성북·양천 등) | 이름의 자치구. 위 12곳은 주소로 확인 |
+  | 중부캠퍼스 | 마포구 |
+  | 서부캠퍼스 | 은평구 |
+  | 남부캠퍼스 | 구로구 |
+  | 북부캠퍼스 | **도봉구**(창동) |
+  | 동부캠퍼스 | 광진구 |
+  | 외부 기관(예: `(사)한국치매협회`) | 대응 없음 |
+
+  이 표는 **운영 기관의 소재지이지 활동 장소가 아니다.** 사업명에 다른 자치구가 나오거나(예: "지역복지사업단-금천,구로") 권역 단위로 모집하는 경우가 있어, `activity_region`으로 자동 확정하지 않고 검수에서 공고 원문으로 정한다.
 - 가치동행 일자리의 `annApprvStatView`는 샘플 199건 모두 `승인완료`로 **모집 상태가 아니다**. 모집 여부는 신청기간으로 판단한다. 일자리는 `annRcrtStatNm`(`마감`, `신청·접수중`), 교육은 `lctStatView`(샘플에 `마감`, `폐강`)가 있다.
 - 날짜는 매뉴얼의 `YYYYMMDD`가 아니라 실제로는 `YYYY-MM-DD`다. 일자리의 활동기간에는 `-`가 온다.
 - 교육 `lctCtt`에 담당자 이름·전화가, `rpstLctr`에 강사 이름이 들어 있다(개인정보).
@@ -82,10 +108,10 @@ data.go.kr 페이지에는 오퍼레이션명이 없지만 기존 1365 API와 �
 
 - [x] 서울50플러스 인증키 승인 → 세 데이터셋 2025·2026년 샘플 (§4)
 - [ ] 서울50플러스 이용 조건: 회원 약관의 제3자 제공·상업적 사용 금지와 데이터 페이지의 "이용허락범위 제한 없음" 중 어느 것이 API 데이터에 적용되는지 재단에 서면 확인
-- [x] 서울50플러스 공고 상세 URL 형식: `/appView.do?ANN_NO=` (§4). `/in_appView.do`의 쿼리 키는 실제 공고로 확인 필요
-- [ ] API 응답 항목과 포털 `ANN_NO`를 잇는 방법 (재단 문의 또는 운영자 수동 대조)
-- [ ] 서울50플러스 `orgNm` → 자치구 대응표 (캠퍼스 소재지)
+- [x] 서울50플러스 공고 상세 URL 형식: `/appView.do?ANN_NO=`, `/in_appView.do?ANN_NO=` (§4)
+- [x] API 응답 항목과 포털 `ANN_NO`를 잇는 방법: 자동 연결 불가, 운영자가 포털 목록과 대조 (§4, 사업 여러 개가 공고 하나에 묶임)
+- [x] 서울50플러스 `orgNm` → 자치구 대응표: 운영 기관 소재지만 (§4). 활동 지역은 검수에서 정함
 - [x] 고용24·1365 공식 상세 URL을 브라우저로 확인
-- [ ] `emplymShp`, `acptMthdCd`, `srvcClCode` 코드표 확보 (`progrmSttusSe`는 2·3만 확인)
-- [ ] `getVltrPeriodList` 요청 변수 확인
-- [ ] 노인 구인정보 목록의 검색 조건 지원 여부
+- [ ] `emplymShp`, `acptMthdCd`, `srvcClCode` 코드표 확보 (`progrmSttusSe`는 2·3만 확인. `emplymShp`는 `CM0103`·`CM0105` 두 값만 존재, 이름은 미확인)
+- [x] `getVltrPeriodList` 요청 변수 확인: 네 가지 기간 변수 모두 400. 필요 없어 중단 (§3)
+- [x] 노인 구인정보 목록의 검색 조건 지원 여부: `frDd`·`emplymShp`만 동작 (§2)
