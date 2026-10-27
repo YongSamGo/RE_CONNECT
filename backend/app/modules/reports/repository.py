@@ -6,6 +6,7 @@
 from collections.abc import Callable
 from contextlib import AbstractContextManager
 from datetime import datetime, timedelta
+import logging
 from uuid import UUID
 
 from pydantic import ValidationError
@@ -19,6 +20,7 @@ from app.core.encryption import ContentCipher, ContentTarget, EncryptedEnvelope,
 from app.modules.reports.models import TERMINAL, TRANSITIONS, AdminReport, AdminReportList, ReportCreate, ReportUpdate
 from app.persistence.operations import AuditEvent, OpportunityVersion as V, Report as R
 
+logger = logging.getLogger(__name__)
 AUDIT_RETENTION = timedelta(days=30)
 DETAIL_RETENTION = timedelta(days=30)
 SCHEMA_VERSION = 1
@@ -50,8 +52,15 @@ class SqlReportRepository:
     def _open(self, ciphertext, nonce, key_id, target: ContentTarget) -> str | None:
         if ciphertext is None:
             return None
-        envelope = EncryptedEnvelope(bytes(ciphertext), bytes(nonce), key_id, ALGORITHM, SCHEMA_VERSION)
-        return self._require_cipher().decrypt(envelope, target).decode("utf-8")
+        cipher = self._require_cipher()
+        try:
+            envelope = EncryptedEnvelope(bytes(ciphertext), bytes(nonce), key_id, ALGORITHM, SCHEMA_VERSION)
+            return cipher.decrypt(envelope, target).decode("utf-8")
+        except (ProtectedContentError, EncryptionUnavailable, UnicodeDecodeError, TypeError) as error:
+            # 손상된 행이나 너무 일찍 뺀 옛 키 때문에 다른 신고까지 못 보면 안 된다. 그 칸만 비우고
+            # 원문·키 ID 없이 예외 종류만 남긴다. 암호문은 그대로 두어 키를 되돌리면 다시 읽을 수 있다.
+            logger.warning("신고 본문 복호화 실패: type=%s", type(error).__name__)
+            return None
 
     def exists(self, report_id: UUID) -> bool:
         try:

@@ -227,11 +227,19 @@ def test_swapped_or_foreign_ciphertext_is_not_shown(backend):
         repository.create(second, NOW, body(opportunity_id, note="두 번째 신고 설명"))
         stolen = db.execute(select(Report.details_ciphertext, Report.details_nonce, Report.details_key_id).where(Report.id == second)).one()
         db.execute(update(Report).where(Report.id == first).values(details_ciphertext=stolen[0], details_nonce=stolen[1], details_key_id=stolen[2]))
+        # 바꿔 넣은 행은 설명만 비우고, 다른 신고는 그대로 보인다. 훔친 설명은 어디에도 나오지 않는다.
+        notes = {item.report_id: item.note for item in repository.listing(None, 1, 20).items}
+        assert notes == {first: None, second: "두 번째 신고 설명"}
+        # 처리 결과에서도 같은 행은 설명 없이 돌아온다.
+        started = repository.update(first, update_body(1, "in_progress", None), actor_id=OPERATOR, request_id=REQUEST_ID, at=NOW)
+        assert (started.status, started.note) == ("in_progress", None)
+        # 키를 아예 모르는 행(옛 키를 너무 일찍 뺀 경우)도 그 행만 비운다.
+        other_key = SqlReportRepository(savepoints(db), cipher())
+        assert [item.note for item in other_key.listing(None, 1, 20).items] == [None, None]
+        # 키 설정 자체가 없으면 목록 전체를 닫힌 쪽으로 둔다.
         with pytest.raises(AppError) as error:
-            repository.listing(None, 1, 20)
-        assert error.value.code == "SERVICE_UNAVAILABLE"
-        with pytest.raises(AppError):
             SqlReportRepository(savepoints(db), None).listing(None, 1, 20)
+        assert error.value.code == "SERVICE_UNAVAILABLE"
 
 
 @BACKENDS
