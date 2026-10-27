@@ -203,16 +203,37 @@ class OpportunityPublication(Base):
     review_status: Mapped[str] = mapped_column(String(16), default="approved", server_default="approved")
 
 
+def _envelope_check(prefix: str) -> str:
+    c, n, k = f"{prefix}_ciphertext", f"{prefix}_nonce", f"{prefix}_key_id"
+    return (f"({c} IS NULL AND {n} IS NULL AND {k} IS NULL) OR ({c} IS NOT NULL AND {n} IS NOT NULL AND {k} IS NOT NULL"
+            f" AND length({c}) BETWEEN 17 AND 16384 AND length({n}) = 12 AND length({k}) BETWEEN 1 AND 128)")
+
+
+REPORT_TERMINAL = "status IN ('resolved', 'dismissed')"
+
+
 class Report(Base):
+    """공고 오류 신고 (W07-05). 신고자 식별값을 두지 않는다.
+
+    신고 설명·처리 사유는 개인정보가 섞일 수 있어 암호화 봉투로만 둔다. 종결 후 30일이 지나면
+    두 봉투를 지우고 `purged_at`을 남긴다. 유형·상태·대상 공고 버전은 공고 품질 기록으로 남는다.
+    """
+
     __tablename__ = "reports"
     __table_args__ = (
         ForeignKeyConstraint(["opportunity_id", "opportunity_version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="RESTRICT"),
         CheckConstraint("type IN ('already_closed', 'wrong_requirements', 'wrong_schedule_or_location', 'wrong_application_method', 'broken_link', 'other')", name="type"),
         CheckConstraint("status IN ('received', 'in_progress', 'resolved', 'dismissed')", name="status"),
-        CheckConstraint("type <> 'other' OR details_ciphertext IS NOT NULL", name="other_details"),
+        CheckConstraint("type <> 'other' OR details_ciphertext IS NOT NULL OR purged_at IS NOT NULL", name="other_details"),
         CheckConstraint("version > 0", name="version"),
-        CheckConstraint("(details_ciphertext IS NULL AND details_nonce IS NULL AND details_key_id IS NULL) OR (details_ciphertext IS NOT NULL AND details_nonce IS NOT NULL AND details_key_id IS NOT NULL AND length(details_ciphertext) BETWEEN 17 AND 16384 AND length(details_nonce) = 12 AND length(details_key_id) BETWEEN 1 AND 128)", name="details_envelope"),
+        CheckConstraint(_envelope_check("details"), name="details_envelope"),
+        CheckConstraint(_envelope_check("resolution"), name="resolution_envelope"),
+        CheckConstraint(f"NOT ({REPORT_TERMINAL}) OR resolution_ciphertext IS NOT NULL OR purged_at IS NOT NULL", name="resolution_required"),
+        CheckConstraint("status <> 'received' OR resolution_ciphertext IS NULL", name="received_unhandled"),
+        CheckConstraint(f"purged_at IS NULL OR ({REPORT_TERMINAL} AND details_ciphertext IS NULL AND resolution_ciphertext IS NULL)", name="purged_terminal"),
+        CheckConstraint("updated_at >= received_at", name="updated_order"),
         Index("ix_reports_status_received", "status", "received_at"),
+        Index("ix_reports_status_updated", "status", "updated_at"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
@@ -222,10 +243,15 @@ class Report(Base):
     status: Mapped[str] = mapped_column(String(16), default="received")
     version: Mapped[int] = mapped_column(Integer, default=1)
     received_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
     # 임의 신고/처리 설명에 개인정보가 섞일 수 있어 평문 칸을 만들지 않는다.
     details_ciphertext: Mapped[bytes | None] = mapped_column(LargeBinary)
     details_nonce: Mapped[bytes | None] = mapped_column(LargeBinary)
     details_key_id: Mapped[str | None] = mapped_column(String(128))
+    resolution_ciphertext: Mapped[bytes | None] = mapped_column(LargeBinary)
+    resolution_nonce: Mapped[bytes | None] = mapped_column(LargeBinary)
+    resolution_key_id: Mapped[str | None] = mapped_column(String(128))
+    purged_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
 
 
 class AuditEvent(Base):

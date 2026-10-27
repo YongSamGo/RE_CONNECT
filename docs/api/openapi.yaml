@@ -2163,7 +2163,9 @@ paths:
       summary: 공고 오류 신고
       description: |
         비회원도 신고할 수 있다. 같은 멱등 키로 다시 보내면 첫 접수 결과를 돌려주고 중복 신고를 만들지 않는다. 공고 오류 유형 중심으로 받고, 설명에는 개인정보를 적지 않도록 화면에서 안내한다.
-        `type=other`이면 `note`가 필수(422 `required_with`).
+        `type=other`이면 `note`가 필수(422 `required_with`). 설명에 연락처·주민번호 같은 개인정보 형식이나 지시문이 보이면 저장하지 않는다(422 `invalid_value`). 저장하는 설명은 암호화한다.
+        현재 공개 중인 공고의 공개 버전만 받는다. 비공개·없는 공고는 404, 공개 버전이 바뀌었으면 409 `VERSION_CONFLICT`.
+        하루 한도(KST 날짜): 같은 주체·같은 공고 1건, 주체당 10건, IP당 30건. 넘으면 429 `DAILY_QUOTA_EXCEEDED`와 `Retry-After`. 신고자는 저장하지 않는다.
       security:
         - sessionCookie: []
           csrfToken: []
@@ -2705,6 +2707,8 @@ paths:
       tags: [운영자]
       operationId: listReports
       summary: 공고 오류 신고 목록
+      description: |
+        오래 기다린 신고부터 돌려준다. 종결 후 30일이 지난 신고는 설명·처리 사유를 지워 `note`·`resolution_note`가 null이다.
       security:
         - sessionCookie: []
       parameters:

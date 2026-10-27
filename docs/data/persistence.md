@@ -44,7 +44,7 @@ ApplicationDraft의 공고 ID/버전은 공고 모델의 복합 FK와 연결했�
 | IngestionRun | ingestion_runs | 출처 FK·실행/종료 시각·상태·건수·고정 실패 코드. 원문 예외 없음 |
 | RoleDefinition | role_definitions | 역할 ID·표시명·설명·태그·별칭·경험 연결 규칙. 실제 후보 경험은 체험에 보관 |
 | OpportunityVersion | opportunity_documents + opportunity_versions + opportunity_publications | 출처별 안정 ID, 검색 가능한 공고 버전/조건, 승인 공개 포인터 |
-| Report | reports | 대상 공고 버전·유형·상태·버전, 선택 설명/처리 문구는 암호화 봉투 |
+| Report | reports | 대상 공고 버전·유형·상태·버전·접수/변경 시각, 선택 설명과 처리 사유는 각각 암호화 봉투. 신고자 식별값 없음 |
 | AuditEvent | audit_events | 행위·결과 허용표·주체/대상 UUID·추적 ID·만료 시각. 임의 메시지 없음 |
 | DeletionRecord | deletion_records | 삭제 주체/대상 내부 UUID·범위·상태·시각·만료. 원문·외부 계정 식별자 없음 |
 
@@ -65,7 +65,11 @@ content_hash는 변경 감지용이며 공개 승인이나 콘텐츠의 진위�
 공개 포인터의 PK로 공고당 공개본 하나를 강제한다. `(공고 ID, 버전, approved)` 복합 FK로
 미승인·다른 공고 버전 공개를 거절한다. 승인본을 숨길 때는 같은 트랜잭션에서 먼저 공개 포인터를
 제거한다. 새 pending 버전은 이전 공개 포인터를 변경하지 않는다. 실제 승인·반려·동시성은 #54이다.
-신고 설명의 선택 암호화 봉투 형식은 AES-256-GCM(태그 포함)이며 키 원문은 두지 않는다.
+신고 설명과 처리 사유의 암호화 봉투 형식은 AES-256-GCM(태그 포함)이며 키 원문은 두지 않는다.
+설명은 접수 버전(1)에, 처리 사유는 그 사유를 쓴 처리 버전에 묶어 두 칸의 암호문을 바꿔 넣으면 복호화가 실패한다.
+신고 상태는 `received → in_progress → resolved·dismissed` 한 방향이고, 종결에는 처리 사유가 필요하다(DB 제약).
+종결 후 30일이 지나면 `python manage_reports.py purge`가 설명·처리 사유를 지우고 `purged_at`을 남긴다.
+유형·상태·대상 공고 버전은 공고 품질 기록으로 남는다. 처리마다 `report.update` 감사 기록(30일)을 같은 트랜잭션에 쓴다.
 
 운영 모델 시험은 출처 ID 중복, pending/다른 공고 공개, 공개 포인터 중복·숨김 순서,
 설명 길이·검수 시각, 신고 대상/암호화 봉투, 실행 종료 시각·음수 집계, 감사/삭제 기록의
