@@ -1,0 +1,408 @@
+{
+  "purpose": "실제 공고 추천 평가(#65)의 검수 값과 기대값. 공고 원문은 worker/samples/(커밋 제외)에 있고, 여기에는 공고 키와 검수 값만 둔다.",
+  "reference_time": "2026-10-27T10:00:00+00:00",
+  "notes": [
+    "region_codes는 운영자가 1365 공고의 지역을 채우는 검수 단계를 대신한다. 키는 목록 응답의 sidoCd:gugunCd다(#263).",
+    "postings는 운영자가 공고마다 채울 skill_tags·role_tags다. 정규화기는 둘 다 빈 값으로 만든다(#263). 태그는 역할 사전(docs/data/role-catalog.json)의 확인된 태그만 쓴다.",
+    "confirmations는 activity_types가 비어 있어 추천 전에 다시 묻는 페르소나의 가정 답변이다. 실제 답변이 아니다.",
+    "known_missing은 기대값과 다르지만 원인을 docs/ai/recommendation-eval.md의 결함 번호로 기록한 항목이다. 고쳐지면 지운다."
+  ],
+  "region_codes": {
+    "6110000:3030000": {
+      "province": "seoul",
+      "district": "seongdong"
+    },
+    "6110000:3040000": {
+      "province": "seoul",
+      "district": "gwangjin"
+    },
+    "6110000:3100000": {
+      "province": "seoul",
+      "district": "nowon"
+    },
+    "6410000:3780000": {
+      "province": "gyeonggi",
+      "district": "seongnam"
+    },
+    "6410000:3830000": {
+      "province": "gyeonggi",
+      "district": "anyang"
+    },
+    "6410000:3940000": {
+      "province": "gyeonggi",
+      "district": "goyang"
+    },
+    "6410000:4020000": {
+      "province": "gyeonggi",
+      "district": "gunpo"
+    },
+    "6280000:3520000": {
+      "province": "incheon",
+      "district": "yeonsu"
+    },
+    "6280000:3530000": {
+      "province": "incheon",
+      "district": "namdong"
+    }
+  },
+  "confirmations": {
+    "P03": {
+      "answers": {
+        "activity_types": [
+          "employment",
+          "volunteering"
+        ]
+      },
+      "assumption": "재질문에 '둘 다 괜찮다'고 답함"
+    },
+    "P06": {
+      "answers": {
+        "activity_types": [
+          "employment",
+          "volunteering"
+        ],
+        "preferred_regions": [
+          {
+            "province": "seoul",
+            "district": "nowon"
+          }
+        ]
+      },
+      "assumption": "재질문에 '둘 다', '노원구에서 하고 싶다'고 답함"
+    },
+    "P08": {
+      "answers": {
+        "activity_types": [
+          "employment",
+          "volunteering"
+        ]
+      },
+      "assumption": "재질문에 '둘 다 괜찮다'고 답함"
+    }
+  },
+  "postings": {
+    "senuri:K120122610210016": {
+      "skill_tags": [
+        "소프트웨어 개발"
+      ],
+      "role_tags": []
+    },
+    "senuri:K180412610210018": {
+      "skill_tags": [
+        "운전"
+      ],
+      "role_tags": [
+        "mobility_supporter"
+      ]
+    },
+    "senuri:KEC0042610260004": {
+      "skill_tags": [
+        "조리"
+      ],
+      "role_tags": [
+        "meal_assistant"
+      ]
+    },
+    "senuri:KJAP002610230011": {
+      "skill_tags": [
+        "시설 관리"
+      ],
+      "role_tags": [
+        "facility_manager"
+      ]
+    },
+    "volunteer:3490135": {
+      "skill_tags": [
+        "초등 교육",
+        "학습 지도"
+      ],
+      "role_tags": [
+        "learning_mentor"
+      ]
+    },
+    "volunteer:3502625": {
+      "skill_tags": [
+        "학습 지도"
+      ],
+      "role_tags": [
+        "learning_mentor"
+      ]
+    },
+    "volunteer:3510821": {
+      "skill_tags": [
+        "고객 응대",
+        "환자 돌봄"
+      ],
+      "role_tags": [
+        "visitor_guide",
+        "care_assistant"
+      ]
+    },
+    "volunteer:3510918": {
+      "skill_tags": [
+        "운전"
+      ],
+      "role_tags": [
+        "mobility_supporter"
+      ]
+    },
+    "volunteer:3516036": {
+      "skill_tags": [
+        "노인 돌봄"
+      ],
+      "role_tags": [
+        "care_assistant"
+      ]
+    },
+    "volunteer:3516911": {
+      "skill_tags": [
+        "고객 응대"
+      ],
+      "role_tags": [
+        "visitor_guide"
+      ]
+    },
+    "volunteer:3517044": {
+      "skill_tags": [
+        "고객 응대"
+      ],
+      "role_tags": []
+    },
+    "volunteer:3523949": {
+      "skill_tags": [
+        "학습 지도"
+      ],
+      "role_tags": [
+        "learning_mentor"
+      ]
+    },
+    "volunteer:3531760": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3533155": {
+      "skill_tags": [
+        "노인 돌봄"
+      ],
+      "role_tags": [
+        "care_assistant"
+      ]
+    },
+    "volunteer:3533715": {
+      "skill_tags": [
+        "초등 교육",
+        "학습 지도"
+      ],
+      "role_tags": [
+        "learning_mentor"
+      ]
+    },
+    "volunteer:3535041": {
+      "skill_tags": [
+        "학습 지도"
+      ],
+      "role_tags": [
+        "learning_mentor"
+      ]
+    },
+    "volunteer:3536351": {
+      "skill_tags": [
+        "자료 정리"
+      ],
+      "role_tags": [
+        "library_assistant"
+      ]
+    },
+    "volunteer:3536400": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3537380": {
+      "skill_tags": [
+        "고객 응대"
+      ],
+      "role_tags": [
+        "visitor_guide"
+      ]
+    },
+    "volunteer:3537381": {
+      "skill_tags": [
+        "고객 응대"
+      ],
+      "role_tags": [
+        "visitor_guide"
+      ]
+    },
+    "volunteer:3537382": {
+      "skill_tags": [
+        "자료 정리"
+      ],
+      "role_tags": [
+        "library_assistant"
+      ]
+    },
+    "volunteer:3537575": {
+      "skill_tags": [
+        "행사 진행",
+        "고객 응대"
+      ],
+      "role_tags": [
+        "community_organizer",
+        "visitor_guide"
+      ]
+    },
+    "volunteer:3537691": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3538249": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3538391": {
+      "skill_tags": [
+        "행사 진행",
+        "고객 응대"
+      ],
+      "role_tags": [
+        "community_organizer",
+        "visitor_guide"
+      ]
+    },
+    "volunteer:3539422": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3539814": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3541184": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    },
+    "volunteer:3541732": {
+      "skill_tags": [
+        "행사 진행"
+      ],
+      "role_tags": [
+        "community_organizer"
+      ]
+    }
+  },
+  "expectations": {
+    "P01": {
+      "must_include": [
+        "volunteer:3533715",
+        "volunteer:3535041"
+      ],
+      "must_not_include": [
+        "volunteer:3537382",
+        "volunteer:3531760"
+      ],
+      "count": 2,
+      "why": "성동·광진 무급 봉사 중 학습지도 2건. 서가 정리·축제 보조는 경험 근거가 없다"
+    },
+    "P02": {
+      "must_include": [],
+      "must_not_include": [
+        "senuri:K180412610210018",
+        "senuri:KJ21062610260030"
+      ],
+      "count": 0,
+      "why": "안양·군포·의왕 유급 일자리 표본은 택시 운전·미화뿐이라 시설관리 경력 근거가 없다(표본 부족)"
+    },
+    "P03": {
+      "must_include": [
+        "volunteer:3541732"
+      ],
+      "must_not_include": [
+        "senuri:KJ20542610210001",
+        "volunteer:3523949"
+      ],
+      "count": null,
+      "why": "'사람 만나는 일'을 원하는 전 부녀회장에게 남동구 나눔장터 행사 보조는 맞는 후보다. 대학생 한정·기계 조작은 아니다",
+      "known_missing": {
+        "volunteer:3541732": "D3"
+      }
+    },
+    "P04": {
+      "must_include": [],
+      "must_not_include": [
+        "senuri:K120122610210016"
+      ],
+      "count": 0,
+      "why": "서울 유급 일자리 표본에 회계 직무가 없다(표본 부족)"
+    },
+    "P05": {
+      "must_include": [],
+      "must_not_include": [
+        "volunteer:3539814",
+        "volunteer:3540167"
+      ],
+      "count": 0,
+      "why": "성남 봉사 표본 2건은 디지털 안내와 관련이 없다(표본 부족)"
+    },
+    "P06": {
+      "must_include": [
+        "volunteer:3510918"
+      ],
+      "must_not_include": [
+        "volunteer:3490135",
+        "volunteer:3514389"
+      ],
+      "count": 1,
+      "why": "노원 차량봉사는 운전 경력 근거가 있다"
+    },
+    "P07": {
+      "must_include": [],
+      "must_not_include": [
+        "volunteer:3536351",
+        "volunteer:3529883"
+      ],
+      "count": 0,
+      "why": "연수·남동 봉사 표본에 돌봄 활동이 없다(표본 부족)"
+    },
+    "P08": {
+      "must_include": [
+        "volunteer:3510821",
+        "volunteer:3516911"
+      ],
+      "must_not_include": [
+        "senuri:KJ20912610260002",
+        "senuri:KJ20842610230002",
+        "volunteer:3530780"
+      ],
+      "count": null,
+      "why": "고양 병원 안내·복지관 안내데스크는 고객 응대 경력 근거가 있다. 미화·동물보호센터 청결은 근거가 없다"
+    }
+  }
+}
