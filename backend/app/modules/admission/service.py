@@ -15,6 +15,10 @@ from app.core.business_errors import AppError
 Kind = Literal["llm", "stt", "tts"]
 T = TypeVar("T")
 
+# 모든 사용자를 합친 KST 하루 추론 실행 한도와 LLM·STT·TTS가 함께 쓰는 슬롯 수.
+GLOBAL_DAILY_LIMIT = 500
+SHARED_SLOTS = 1
+
 
 def normalize_ip(value: str) -> str:
     try:

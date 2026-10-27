@@ -26,6 +26,8 @@ from app.modules.operations.readiness import (
     ReadinessProbe,
     ReadinessService,
 )
+from app.modules.operations.repository import SqlSourceStatusRepository
+from app.modules.operations.status import BoundSlotReader, OperationsService
 from app.modules.regions import router as regions
 from app.modules.consents import router as consents
 from app.modules.consents.repository import RedisConsentStore, SQLConsentStore, RoutedConsentStore
@@ -40,6 +42,9 @@ from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberSto
 from app.modules.auth.members import MemberService
 from app.modules.auth.member_cleanup import RedisMemberCleanup, UnavailableMemberCleanup
 from app.modules.deletions import router as deletions
+from app.modules.operators import router as operators
+from app.modules.operators.repository import SqlOperatorMfaRepository, UnavailableOperatorMfaRepository
+from app.modules.operators.service import OperatorMfaService
 from app.modules.deletions.journal import FileDeletionJournal, UnavailableDeletionJournal
 from app.modules.deletions.repository import SqlDeletionRepository, UnavailableDeletionRepository
 from app.modules.deletions.service import DeletionService
@@ -159,9 +164,11 @@ def create_app(
             # 설정 원문·비밀키를 예외/로그로 내보내지 않고 기능만 중단한다.
             admission = UnavailableAdmissionService()
     app.state.admission_service = admission
-    llm_adapter = ControlledLLMAdapter(build_llm_adapter(settings), admission)
+    llm_runtime = build_llm_adapter(settings)
+    llm_adapter = ControlledLLMAdapter(llm_runtime, admission)
     app.state.llm_adapter = llm_adapter
-    speech_adapter = ControlledSpeechAdapter(InternalSpeechAdapter(), admission)
+    speech_runtime = InternalSpeechAdapter()
+    speech_adapter = ControlledSpeechAdapter(speech_runtime, admission)
     app.state.speech_adapter = speech_adapter
 
     app.state.db_engine = engine
@@ -223,6 +230,11 @@ def create_app(
         cipher = ContentCipher(EncryptionKeyRing.from_settings(settings))
     except EncryptionUnavailable:
         cipher = None
+    # MFA 비밀값은 DB와 분리한 암호화 키로만 읽는다. DB·키 중 하나라도 없으면 관리 기능을 닫는다.
+    operator_mfa = (SqlOperatorMfaRepository(sessionmaker(engine).begin, cipher)
+                    if engine is not None and cipher is not None else UnavailableOperatorMfaRepository())
+    app.state.member_service.mfa = operator_mfa
+    app.state.operator_mfa_service = OperatorMfaService(operator_mfa, app.state.member_service)
     app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
         app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
     app.state.journey_service.stored_profiles = app.state.saved_profile_service
@@ -253,6 +265,14 @@ def create_app(
     probes.update(readiness_probes or {})
     app.state.settings = settings
     app.state.readiness_service = ReadinessService(probes, settings.health_check_timeout_seconds)
+    # 운영자 상태 조회. 경로(`GET /admin/operations`)는 운영자 권한·MFA(#52)와 함께 연다.
+    app.state.operations_service = OperationsService(
+        db=probes["db"], redis=probes["redis"], inference_control=admission, llm=llm_runtime, speech=speech_runtime,
+        slots=BoundSlotReader(admission_store, admission.identity_key_id)
+            if admission_store is not None and isinstance(admission, AdmissionService) else None,
+        sources=SqlSourceStatusRepository(engine.connect) if engine is not None else None,
+        timeout_seconds=settings.health_check_timeout_seconds,
+    )
 
     register_error_handlers(app)
     # 나중에 더한 미들웨어가 바깥에 선다. 처리하지 못한 예외의 500 응답에도 X-Request-ID가 붙는다.
@@ -280,6 +300,7 @@ def create_app(
     app.include_router(recommendations.router, prefix=API_PREFIX)
     app.include_router(drafts.router, prefix=API_PREFIX)
     app.include_router(speech.router, prefix=API_PREFIX)
+    app.include_router(operators.router, prefix=API_PREFIX)
 
     return app
 

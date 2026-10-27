@@ -8,6 +8,7 @@ from fastapi.routing import iter_route_contexts
 
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.operators.models import MfaStatus
 
 REVIEW_RESULT = {"id", "version", "review_status", "reviewed_at"}
 AUDIT_LIST = {"items", "page", "page_size", "total",
@@ -18,7 +19,10 @@ REVIEWED = {
     ("POST", "/api/v1/admin/opportunities/{opportunity_id}/hide"): REVIEW_RESULT,
     ("POST", "/api/v1/admin/opportunities/{opportunity_id}/close"): REVIEW_RESULT,
     ("GET", "/api/v1/admin/audit"): AUDIT_LIST,
+    ("POST", "/api/v1/admin/mfa/verify"): {"mfa_verified", "expires_at"},
 }
+# response_model 없이 JSONResponse를 직접 만드는 경로는 실제로 쓰는 응답 모델로 본다.
+RESPONSE_MODELS = {("POST", "/api/v1/admin/mfa/verify"): MfaStatus}
 # 회원 개인 자료 계약에서 쓰는 본문 칸 이름. 운영자 응답에는 하나도 없어야 한다.
 PERSONAL = {"profile", "experiences", "self_introduction", "motivation", "transcript", "messages", "content",
             "answers", "details", "note", "resolution_note", "phone", "email", "name", "birth_date"}
@@ -57,6 +61,7 @@ def test_admin_routes_are_the_reviewed_set():
 
 def test_admin_responses_carry_only_reviewed_minimal_fields():
     for key, route in admin_routes().items():
-        names = property_names(route.response_model.model_json_schema())
+        model = route.response_model or RESPONSE_MODELS[key]
+        names = property_names(model.model_json_schema())
         assert names == REVIEWED[key], key
         assert not names & PERSONAL, key

@@ -117,7 +117,9 @@ def test_audit_rejects_arbitrary_messages_and_unpaired_target(db):
 def test_permanent_metadata_does_not_create_journey_or_secret_columns():
     from app.persistence import Base
 
-    assert len(Base.metadata.tables) == 21  # 기존15개 + 응답 기록2개 + 수집 상태/검수2개 + 수동 근거1개 + 운영자 검수 근거1개
+    assert len(Base.metadata.tables) == 22  # 기존15개 + 응답 기록2개 + 수집 상태/검수2개 + 수동 근거1개 + 운영자 MFA1개 + 운영자 검수 근거1개
+    # 운영자 MFA 비밀값은 암호문 열로만 저장한다.
+    assert not {"secret", "totp_secret", "seed"} & set(Base.metadata.tables["operator_mfa_credentials"].columns.keys())
     assert {"ingestion_states", "ingestion_reviews", "opportunity_reviews"} <= set(Base.metadata.tables)
     assert not any("journey" in name for name in Base.metadata.tables)
     for table in Base.metadata.tables.values():

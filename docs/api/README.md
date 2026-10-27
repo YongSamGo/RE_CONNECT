@@ -139,7 +139,7 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | 429 | `INFERENCE_BUSY` | 추론 슬롯이 모두 사용 중 |
 | 429 | `MFA_LOCKED` | OTP 연속 5회 실패로 운영자 계정 15분 잠금 |
 | 500 | `INTERNAL_ERROR` | 예상하지 못한 서버 오류 |
-| 503 | `MODEL_UNAVAILABLE` | 모델 준비 실패·메모리 부족 |
+| 503 | `MODEL_UNAVAILABLE` | 모델 준비 실패·메모리 부족·모델 출력의 근거 검증 실패 |
 | 503 | `AI_TIMEOUT` | AI 처리 60초 초과 |
 | 503 | `SERVICE_UNAVAILABLE` | Redis·DB 등 내부 서비스 장애 |
 
@@ -173,6 +173,7 @@ sequenceDiagram
 - 로그인 후 진행 중이던 체험은 새 세션으로 옮기지 않고 지운다(재진입 규칙과 같음, D27). 저장 대기만 옮긴다.
 - 대상이 모두 저장되거나 10분이 지나면 저장 대기를 지운다. 같은 회원의 저장본과 내용이 같으면 새 버전을 만들지 않고 그 버전을 연결한다.
 - 인증 성공만으로 저장하지 않는다. 화면이 확인 후 저장 요청을 보낸다.
+- 카카오 앱 설정(동의 항목·Redirect URI·Client Secret·PKCE·재인증 확인)은 [카카오 로그인 앱 설정](kakao-app.md)에 있다.
 
 ### 2.7 공고 변경과 재검수
 
@@ -212,6 +213,21 @@ sequenceDiagram
 - 상태를 바꾸는 운영자 연산(등록·수정·승인·반려·비공개·종료·신고 처리)은 모두 감사 기록을 남긴다. 감사 기록에는 행위자·행위·대상·결과·추적 ID만 넣고, 개인 본문·OTP·토큰은 넣지 않는다. 공고 검수의 사유 코드·메모는 같은 `request_id`의 검수 근거(`opportunity_reviews`)에 둔다.
 - 감사 기록은 30일 보관한다. `GET /admin/audit`는 `[from, to)` 기간(최대 30일)을 최신순으로 돌려주고, 보관기간이 지난 기록은 정리 전이라도 보여주지 않는다. 계약에 없는 쿼리는 422다.
 - OTP 실패는 운영자 계정 단위로 센다. 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After`)로 응답한다. 실패·잠금도 감사 기록에 남긴다.
+
+### 2.12 운영 상태 조회
+
+`GET /admin/operations`(W07-04)는 운영자가 수집 실패와 추론 혼잡을 확인하는 화면(UX10)용이다. 상태를 바꾸지 않으므로 감사 기록은 남기지 않는다.
+
+- 응답에는 고정 코드·시각·건수만 담는다. 오류 메시지·주소·비밀값·프로필·지원서 본문은 넣지 않는다.
+- DB나 Redis를 읽지 못해도 200으로 응답한다. 읽지 못한 부분(`sources`·`limits`)은 null이고, 해당 `stores` 값이 `fail`이다. 장애 중에 이 화면이 가장 필요하기 때문이다.
+- 출처는 사용 중(`enabled`)인 것만 보여 준다.
+  - `last_status`·`last_failure_code`·`last_run_at`은 마지막으로 끝난 실행 기준이다. 실행 중인 수집은 `running`으로 따로 표시한다.
+  - `partial`은 일부만 받고 멈춘 실패(`budget_exhausted`·`incomplete`)다. `consecutive_failures`에 들어간다.
+  - `stale`은 출처의 마지막 성공이 48시간을 넘었거나 성공한 적이 없다는 뜻이다. 추천 보류는 공고마다 마지막 확인 시각으로 판정하므로([공고 수명](../data/opportunity-lifecycle.md)) 출처 전체의 보류와 같지 않다.
+- 모델(`llm`·`stt`·`tts`)은 공유 추론 제어(Redis)와 런타임이 모두 준비돼야 `ok`다. STT와 TTS는 음성 서비스의 모델별 준비 값을 따로 보여 준다. `loading`은 런타임이 적재 중을 알려 줄 때만 쓰며, 지금은 나오지 않는다.
+- `limits`는 KST 하루 전체 추론 실행 수와 한도(500), 공유 슬롯 점유(전체 1개)다. 제어 상태를 믿을 수 없으면(세대·식별키 불일치) null이다.
+- 프로세스가 비정상 종료해 `running`으로 남은 실행은 아직 따로 찾아내지 않는다([#96](https://github.com/YongSamGo/RE_CONNECT/issues/96)).
+- 경로는 운영자 권한·MFA([#52](https://github.com/YongSamGo/RE_CONNECT/issues/52))와 함께 연다. 그 전에는 집계 서비스(`app.state.operations_service`)만 있고 경로는 없다.
 
 ## 3. 명세 반영
 

@@ -24,7 +24,7 @@ from app.core.config import Settings
 ALGORITHM = "AES-256-GCM"
 MAX_CIPHERTEXT_BYTES = 262144
 _KEY_ID = re.compile(r"[a-z0-9._-]{1,128}")
-ContentKind = Literal["profile", "application", "report"]
+ContentKind = Literal["profile", "application", "report", "operator_mfa"]
 
 
 class EncryptionUnavailable(Exception):
@@ -46,7 +46,7 @@ class ContentTarget:
     def __post_init__(self):
         if (
             not isinstance(self.owner_id, UUID) or not isinstance(self.document_id, UUID)
-            or self.kind not in ("profile", "application", "report")
+            or self.kind not in ("profile", "application", "report", "operator_mfa")
             or type(self.version) is not int or not 1 <= self.version <= 2**31 - 1
             or type(self.schema_version) is not int or not 1 <= self.schema_version <= 2**31 - 1
         ):

@@ -277,7 +277,7 @@ AUDIT_RETENTION = timedelta(days=30)
 AUDIT_ACTOR_ROLES = ("operator", "user", "system")
 AUDIT_ACTIONS = ("opportunity.create", "opportunity.update", "opportunity.approve", "opportunity.reject",
                  "opportunity.hide", "opportunity.close", "report.update", "mfa.verify", "mfa.fail", "mfa.lock",
-                 "role.grant", "role.revoke", "access.denied")
+                 "mfa.enroll", "mfa.reset", "role.grant", "role.revoke", "access.denied")
 AUDIT_TARGET_TYPES = ("opportunity", "report", "user")
 AUDIT_RESULTS = ("success", "denied", "failed")
 
