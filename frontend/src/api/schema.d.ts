@@ -35,8 +35,13 @@ export interface paths {
          *     같은 OTP는 다시 쓸 수 없다. OTP 값은 로그·감사 기록에 남기지 않는다.
          *
          *     - 실패는 세션이 아니라 **운영자 계정** 단위로 센다. 로그아웃·재로그인으로 초기화되지 않는다.
-         *     - 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After` 포함)로 응답한다. 잠금 중에는 OTP를 확인하지 않는다.
-         *     - 성공하면 실패 횟수를 0으로 되돌린다. 실패와 잠금은 감사 기록(`mfa.fail`, `mfa.lock`)에 남긴다.
+         *     - 연속 5회 실패하면 잠그고 429 `MFA_LOCKED`(`Retry-After` 포함)로 응답한다. 5번째 실패 응답부터 429다. 잠금 중에는 OTP를 확인하지 않는다.
+         *     - 잠금 시간은 연속 잠금마다 15분 → 1시간 → 24시간으로 늘어난다. 연속 10번 잠기면(연속 실패 50회) 관리 절차로 MFA를 다시 등록할 때까지 429 `MFA_LOCKED`다.
+         *     - 성공하면 실패 횟수와 연속 잠금 횟수를 0으로 되돌린다. 실패와 잠금은 감사 기록(`mfa.fail`, `mfa.lock`)에 남긴다.
+         *     - 아직 인증 앱을 등록하지 않은 운영자는 403 `MFA_INVALID`이고, 감사에는 `mfa.fail`(`denied`)을 15분에 한 번만 남긴다.
+         *     - 성공하면 권한 상승으로 보고 세션·CSRF 쿠키를 새로 발급하고 이전 세션을 폐기한다. MFA 확인은 새 세션에만 기록한다.
+         *     - 확인은 60분 동안 유효하다(`expires_at`). 세션 절대 만료보다 길지 않다. 로그아웃·재로그인·역할 회수·MFA 재등록 뒤에는 다시 확인해야 한다.
+         *     - 인증 앱(TOTP, 30초) 등록·복구와 운영자 역할 부여·회수는 이 API가 아니라 서버의 관리 절차로만 한다(`backend/manage_operators.py`).
          */
         post: operations["verifyMfa"];
         delete?: never;
@@ -54,7 +59,8 @@ export interface paths {
         };
         /**
          * 수집·모델·제한 상태
-         * @description 운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값은 넣지 않는다.
+         * @description 운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값·개인 본문은 넣지 않는다.
+         *     DB·Redis 장애에도 200으로 응답한다. 읽지 못한 부분(`sources`·`limits`)은 null이고, 해당 저장소 상태가 `fail`이다.
          */
         get: operations["getOperations"];
         put?: never;
@@ -80,8 +86,13 @@ export interface paths {
         put?: never;
         /**
          * 공식 자료로 공고 수동 등록
-         * @description 출처는 "수동 입력"으로 기록한다. 등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
-         *     같은 공식 URL·기관·제목·모집기간의 공고가 이미 있어도 거절하지 않고, 검수 화면에서 중복 후보로 보여 준다(출처 간 자동 병합 없음).
+         * @description 공식 자료 수동 출처(`source`) 하나를 고르고, 공고 내용(`content`)과 원문 근거(`evidence`)를 함께 보낸다.
+         *     근거 규칙은 수동 입력 명령(`python -m app.manual_intake`, docs/data/manual-intake.md)과 같다.
+         *     - `content.source_url`과 `evidence.url`은 같은 공식 상세 주소여야 한다(50+포털·고용24·1365의 허용 경로만). 다른 접수 주소는 `application_url` 근거가 필요하다.
+         *     - `evidence.quotes`에는 필수 7개(`title`, `organization_name`, `activity_type`, `application_method`, `application_instructions`, `recruitment_status`, `requirements`)와, 값을 넣은 선택 필드마다 원문 인용을 넣는다.
+         *     - `evidence.observed_at`은 지금부터 48시간 안의 원문 확인 시각이다. 연락처·HTML 흔적이 든 값은 받지 않는다(422).
+         *     등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
+         *     같은 출처에 공식 URL·기관·제목·마감이 같은 공고가 이미 있으면 자동 병합하지 않고 409 `VERSION_CONFLICT`로 거절한다. 기존 공고를 찾아 수정(PATCH)한다.
          */
         post: operations["createAdminOpportunity"];
         delete?: never;
@@ -111,6 +122,10 @@ export interface paths {
          * 공고 수정 (새 검수 대기 버전)
          * @description 바꿀 필드만 보낸다. 저장하면 새 `pending` 버전이 되고 공개본은 승인 전까지 그대로다.
          *     중요 변경 필드가 바뀌면 `important_change=true`가 되어 공개본의 추천·지원서 생성을 보류한다.
+         *     - `base_version`이 현재 최신 버전이 아니면 409 `VERSION_CONFLICT`다. 다른 수정·수집을 덮어쓰지 않는다.
+         *     - 바꾼 필드는 등록과 같은 일반 텍스트 규칙(연락처·HTML 흔적 거절)으로 검사한다. 공식 URL을 바꾸면 허용 경로여야 하고, `role_tags`는 역할 사전의 키만 받는다.
+         *     - 출처를 다시 확인한 것이 아니므로 `source_checked_at`은 기준 버전 값을 유지한다.
+         *     - 같은 원문을 다시 수집하면 이 수정본을 되돌리지 않는다. 원문이 실제로 바뀐 경우만 새 `pending` 버전을 만들고, 그때도 `role_tags`·`skill_tags`는 이어받는다(docs/api/README.md D34).
          */
         patch: operations["updateAdminOpportunity"];
         trace?: never;
@@ -126,8 +141,12 @@ export interface paths {
         put?: never;
         /**
          * 검수 대기 공고 승인·공개
-         * @description `pending` → `approved`만 허용한다. 공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이
-         *     빠졌으면 422로 빠진 필드를 알려 준다. 승인하면 이 버전이 공개본이 되고 감사 기록을 남긴다.
+         * @description `pending` → `approved`만 허용한다. `base_version`은 그 공고의 최신 버전이어야 한다.
+         *     공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이 빠졌거나,
+         *     원문 주소가 출처별 공식 상세 경로 허용표에 없거나, 마감이 지났거나 모집 종료면 422로 해당 필드를 알려 준다.
+         *     수집기가 넣은 "필수조건 미검수" 표식 조건(근거가 `정규화 상태:`로 시작하는 `other`)이 남아 있어도 422(`content.requirements`)다.
+         *     PATCH로 조건을 구조화하거나 "명시된 필수조건 없음"을 확인해 표식을 지운 새 버전을 승인한다.
+         *     승인하면 이 버전이 공개본이 되고 검수 메모와 감사 기록을 남긴다. `rejected`·`hidden` 버전은 다시 승인하지 않는다.
          */
         post: operations["approveOpportunity"];
         delete?: never;
@@ -148,7 +167,11 @@ export interface paths {
         /**
          * 모집 종료 처리
          * @description 추천에서 빼는 방향이라 재검수 없이 바로 반영한다. `basis=other`이면 `note`가 필수다.
-         *     수집 실패나 일시 누락은 종료 근거가 아니다.
+         *     수집 실패나 일시 누락은 종료 근거가 아니다. `base_version`은 지금 공개 중인 버전이어야 한다.
+         *     공개본과 그 뒤의 `pending` 버전을 함께 닫는다. 닫힌 `pending` 버전은 승인할 수 없고(422) 반려(`recruitment_closed`)로 정리한다.
+         *     출처가 아직 모집 중이면 다음 수집이 "모집 중" 새 `pending` 버전을 한 번 만든다. 닫힘→열림은 재검수 대상 변경이므로
+         *     운영자가 원문을 확인해 반려하거나, 실제로 다시 열렸으면 승인한다.
+         *     검수 시각(`reviewed_at`)은 바꾸지 않는다. 이미 종료된 공개본이면 `INVALID_STATE_TRANSITION`이다.
          */
         post: operations["closeOpportunity"];
         delete?: never;
@@ -169,6 +192,9 @@ export interface paths {
         /**
          * 공고 비공개
          * @description 공개 목록·상세·추천에서 즉시 뺀다. 저장 지원서에는 `opportunity_closed` 재검토 표시가 붙는다.
+         *     `base_version`은 지금 공개 중인 버전이어야 한다(공개본이 없으면 `INVALID_STATE_TRANSITION`, 다르면 `VERSION_CONFLICT`).
+         *     그 뒤의 `pending` 버전도 함께 `hidden`이 되어, 숨기기 전에 들어온 버전을 승인해 다시 공개하지 않는다.
+         *     `hidden`은 그 버전에서 끝난다. 다시 공개하려면 새 `pending` 버전을 만들어 승인한다.
          */
         post: operations["hideOpportunity"];
         delete?: never;
@@ -189,8 +215,9 @@ export interface paths {
         /**
          * 검수 대기 공고 반려 (계획 §5 보완 계약)
          * @description `pending` → `rejected`만 허용한다. 운영자 역할과 MFA가 필요하고 감사 기록을 남긴다.
+         *     `pending`이면 최신 버전이 아니어도 반려할 수 있다. 더 새 버전에 밀린 버전이나 모집 종료로 닫힌 버전을 정리할 때 쓴다.
          *     `rejected`는 그 버전에서 끝나는 상태다. 다시 고치려면 PATCH로 새 `pending` 버전을 만든다.
-         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다.
+         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다. 연락처·주민번호 같은 형식이 보이면 422다.
          */
         post: operations["rejectOpportunity"];
         delete?: never;
@@ -206,7 +233,10 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** 공고 오류 신고 목록 */
+        /**
+         * 공고 오류 신고 목록
+         * @description 오래 기다린 신고부터 돌려준다. 종결 후 30일이 지난 신고는 설명·처리 사유를 지워 `note`·`resolution_note`가 null이다.
+         */
         get: operations["listReports"];
         put?: never;
         post?: never;
@@ -580,6 +610,8 @@ export interface paths {
          *     종료·비공개·재검수 중인 공고는 409 `OPPORTUNITY_NOT_AVAILABLE`, 확정본이 없으면 409 `PROFILE_NOT_CONFIRMED`.
          *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다. 최대 32개 초안·128회 생성 예약을 허용한다.
          *     생성 실패·취소된 키는 새 키로 재시도한다. 같은 키의 완료 재생은 추론이나 체험 수명 연장을 반복하지 않는다.
+         *     `generate` 실패: 모델 장애나 확정 사실 밖을 가리킨 모델 출력은 503 `MODEL_UNAVAILABLE`, 60초 초과는 503 `AI_TIMEOUT`이다.
+         *     AI에 보낼 수 있는 확정 사실이 없으면 모델을 부르지 않고 422 `VALIDATION_FAILED`다. 어느 경우든 기존 초안은 바뀌지 않으며 `manual`로 직접 작성할 수 있다.
          */
         post: operations["createJourneyDraft"];
         delete?: never;
@@ -996,7 +1028,9 @@ export interface paths {
         /**
          * 공고 오류 신고
          * @description 비회원도 신고할 수 있다. 같은 멱등 키로 다시 보내면 첫 접수 결과를 돌려주고 중복 신고를 만들지 않는다. 공고 오류 유형 중심으로 받고, 설명에는 개인정보를 적지 않도록 화면에서 안내한다.
-         *     `type=other`이면 `note`가 필수(422 `required_with`).
+         *     `type=other`이면 `note`가 필수(422 `required_with`). 설명에 연락처·주민번호 같은 개인정보 형식이나 지시문이 보이면 저장하지 않는다(422 `invalid_value`). 저장하는 설명은 암호화한다.
+         *     현재 공개 중인 공고의 공개 버전만 받는다. 비공개·없는 공고는 404, 공개 버전이 바뀌었으면 409 `VERSION_CONFLICT`.
+         *     하루 한도(KST 날짜): 같은 주체·같은 공고 1건, 주체당 10건, IP당 30건. 넘으면 429 `DAILY_QUOTA_EXCEEDED`와 `Retry-After`. 신고자는 저장하지 않는다.
          */
         post: operations["createReport"];
         delete?: never;
@@ -1109,7 +1143,7 @@ export interface components {
         /** @description 최소 메타데이터만. 개인 프로필·지원서 본문, OTP, 토큰은 넣지 않는다 */
         AuditEvent: {
             /** @enum {string} */
-            action: "opportunity.create" | "opportunity.update" | "opportunity.approve" | "opportunity.reject" | "opportunity.hide" | "opportunity.close" | "report.update" | "mfa.verify" | "mfa.fail" | "mfa.lock" | "role.grant" | "role.revoke" | "access.denied";
+            action: "opportunity.create" | "opportunity.update" | "opportunity.approve" | "opportunity.reject" | "opportunity.hide" | "opportunity.close" | "report.update" | "mfa.verify" | "mfa.fail" | "mfa.lock" | "mfa.enroll" | "mfa.reset" | "role.grant" | "role.revoke" | "access.denied";
             /** Format: uuid */
             actor_id: string | null;
             /** @enum {string} */
@@ -1135,7 +1169,11 @@ export interface components {
         BaseRevision: {
             base_revision: number;
         };
-        /** @enum {string} */
+        /**
+         * @description 모델은 공유 추론 제어(Redis)와 런타임이 모두 준비돼야 `ok`다. `loading`은 런타임이 적재 중을
+         *     알려 줄 때만 쓰며, 지금 음성 서비스·Ollama는 알려 주지 않아 `ok`·`fail`만 나온다.
+         * @enum {string}
+         */
         ComponentState: "ok" | "loading" | "fail";
         ConfirmedVersion: {
             /** Format: date-time */
@@ -1375,6 +1413,28 @@ export interface components {
             /** @description 체험의 확정 프로필 버전 */
             version: number;
         };
+        /** @description 공식 원문 근거. 서버는 주소를 열거나 조회하지 않는다. 진위나 승인의 증명이 아니라 검수 대조용이다 */
+        ManualEvidence: {
+            /**
+             * @description 공식 원문을 직접 대조했다는 운영자 확인
+             * @constant
+             */
+            confirmed_official: true;
+            /**
+             * Format: date-time
+             * @description 원문을 확인한 시각. 지금부터 48시간 안이어야 한다
+             */
+            observed_at: string;
+            /** @description 필드별 원문 인용(각 300자 이내, 연락처·꺾쇠 없음). 필수 7개와 값을 넣은 선택 필드마다 하나씩 */
+            quotes: {
+                [key: string]: string;
+            };
+            /**
+             * Format: uri
+             * @description content.source_url과 같은 공식 상세 주소
+             */
+            url: string;
+        };
         Me: {
             authenticated: boolean;
             /** @description 현재 유효한 동의만. 철회·폐기 버전은 빠진다 */
@@ -1442,31 +1502,51 @@ export interface components {
         Operations: {
             /** Format: date-time */
             checked_at: string;
+            /** @description 공유 추론 제어 상태. Redis를 읽지 못했거나 제어 상태가 준비되지 않았으면 null이다. */
             limits: {
                 inference_daily_limit: number;
                 inference_today: number;
                 slots_in_use: number;
                 slots_total: number;
-            };
+            } | null;
             models: {
                 llm: components["schemas"]["ComponentState"];
                 stt: components["schemas"]["ComponentState"];
                 tts: components["schemas"]["ComponentState"];
             };
+            /** @description 사용 중인 출처. DB를 읽지 못하면 null이다. */
             sources: {
+                /** @description 마지막 성공 이후 실패한 실행 수(`partial` 포함) */
                 consecutive_failures: number;
-                /** Format: date-time */
+                /**
+                 * @description 마지막으로 끝난 실행이 실패했을 때의 고정 실패 코드. 성공했거나 기록이 없으면 null이다.
+                 * @enum {string|null}
+                 */
+                last_failure_code: "network" | "parse" | "response_limit" | "source_unavailable" | "cancelled" | "invalid_payload" | "budget_exhausted" | "incomplete" | "configuration" | null;
+                /**
+                 * Format: date-time
+                 * @description 마지막으로 끝난 실행의 종료 시각. 실행 중인 것은 포함하지 않는다.
+                 */
                 last_run_at: string | null;
-                /** @enum {string|null} */
+                /**
+                 * @description 마지막으로 끝난 실행의 결과. `partial`은 일부만 받고 멈춘 실패(`budget_exhausted`·`incomplete`)다.
+                 *     실행 기록이 없으면 null이다.
+                 * @enum {string|null}
+                 */
                 last_status: "success" | "partial" | "failed" | null;
                 /** Format: date-time */
                 last_success_at: string | null;
                 name: string;
+                /** @description 지금 실행 중인 수집이 있음 */
+                running: boolean;
                 /** Format: uuid */
                 source_id: string;
-                /** @description 마지막 성공이 48시간을 넘어 이 출처 공고의 추천을 보류 중 */
+                /**
+                 * @description 출처의 마지막 성공이 48시간을 넘었거나 성공한 적이 없음. 추천 보류는 출처가 아니라
+                 *     공고마다 마지막 확인 시각으로 판정하므로, 이 값이 곧 그 출처 공고 전체의 보류를 뜻하지는 않는다.
+                 */
                 stale: boolean;
-            }[];
+            }[] | null;
             stores: {
                 db: components["schemas"]["ComponentState"];
                 redis: components["schemas"]["ComponentState"];
@@ -1540,8 +1620,17 @@ export interface components {
              * @enum {string}
              */
             basis: "source_closed" | "deadline_passed" | "organization_notice" | "report_confirmed" | "other";
-            /** @description basis=other이면 필수 */
+            /** @description basis=other이면 필수. 개인정보를 적지 않는다 */
             note: string | null;
+        };
+        OpportunityCreate: {
+            content: components["schemas"]["OpportunityInput"];
+            evidence: components["schemas"]["ManualEvidence"];
+            /**
+             * @description 공식 자료 수동 출처. 순서대로 50+포털, 고용24, 1365다
+             * @enum {string}
+             */
+            source: "manual_50plus" | "manual_work24" | "manual_volunteer";
         };
         OpportunityHideRequest: {
             base_version: number;
@@ -2309,9 +2398,10 @@ export interface operations {
             };
         };
         responses: {
-            /** @description MFA 확인 완료 */
+            /** @description MFA 확인 완료. 새 세션·CSRF 쿠키를 함께 보낸다 */
             200: {
                 headers: {
+                    "Set-Cookie": components["headers"]["SetSessionCookies"];
                     "X-Request-ID": components["headers"]["XRequestId"];
                     [name: string]: unknown;
                 };
@@ -2420,11 +2510,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OpportunityInput"];
+                "application/json": components["schemas"]["OpportunityCreate"];
             };
         };
         responses: {
-            /** @description 검수 대기 공고 */
+            /** @description 검수 대기 공고. 같은 키·같은 입력의 재전송도 201로 첫 결과를 돌려준다 */
             201: {
                 headers: {
                     "X-Request-ID": components["headers"]["XRequestId"];

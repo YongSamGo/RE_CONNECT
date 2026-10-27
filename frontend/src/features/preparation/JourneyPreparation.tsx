@@ -192,7 +192,7 @@ export function JourneyPreparation({ journeyId, opportunityId }: { journeyId: st
         <p role="status">{copyRequest.state.data.copied ? '내용을 복사했습니다. 저장·신청 완료는 아닙니다.' : '자동 복사를 완료하지 못했습니다. 내용을 선택해 기기의 복사 기능을 사용해 주세요.'}</p>
         {!copyRequest.state.data.copied && <Button variant="secondary" onClick={() => { const field = document.getElementById('journey-copy') as HTMLTextAreaElement | null; field?.focus(); field?.select() }}>복사할 내용 전체 선택</Button>}</>}
       <p>복사 전에 서버의 승인 리비전·본문·확정 프로필·공고를 다시 조회합니다. 복사한 내용은 체험을 끝내도 기기 클립보드에 남을 수 있어요.</p>
-      <p>회원 저장은 연결 준비 중입니다. 화면을 떠나면 아직 반영하지 않은 입력은 사라집니다.</p>
+      <p>화면을 떠나면 아직 반영하지 않은 입력은 사라집니다.</p>
     </section>}
     {context && <Button variant="secondary" disabled={endRequest.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, ending: true }))}>종료하고 삭제</Button>}
     {state.ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험 임시 자료를 삭제할까요?</h2><p>대화·프로필·모든 임시 지원서를 삭제합니다.</p><Button pending={endRequest.state.status === 'pending'} onClick={end}>체험 임시 자료 삭제 확인</Button><Button variant="secondary" disabled={endRequest.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, ending: false }))}>계속 작성하기</Button></section>}
