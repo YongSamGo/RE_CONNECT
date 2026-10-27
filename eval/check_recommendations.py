@@ -5,7 +5,8 @@
 두 상태를 비교한다.
 
 - 수집 그대로: 정규화 결과를 그대로 공개본으로 본다.
-- 검수 후: `recommendation_review.json`의 검수 값(1365 지역 코드, 공고별 skill_tags·role_tags)을 덧씌운다.
+- 검수 후: `recommendation_review.json`의 검수 값(1365 지역 코드, 공고별 skill_tags·role_tags, 원문 조건을 구조화한
+  requirements)을 덧씌운다.
 
 기대값(`expectations`)과 다르거나(`known_missing`에 적은 알려진 결함 제외) 추천 근거가 프로필에 없으면 종료 코드 1이다.
 원본 샘플이 없으면 `worker/tools/fetch_source_samples.py`로 받는다(docs/ai/recommendation-eval.md).
@@ -30,6 +31,7 @@ sys.path.insert(0, str(ROOT / "backend"))
 from app.contracts.profile import ProfileContent  # noqa: E402
 from app.contracts.recommendation import RecommendationFilters  # noqa: E402
 from app.contracts.regions import Region  # noqa: E402
+from app.contracts.requirement import Requirement  # noqa: E402
 from app.contracts.roles import CatalogRole  # noqa: E402
 from app.core.business_errors import AppError  # noqa: E402
 from app.modules.ingestion.fetch import parse_xml  # noqa: E402
@@ -95,6 +97,12 @@ def reviewed(opportunity: PublicOpportunity, fields: dict, key: str) -> PublicOp
     tags = REVIEW["postings"].get(key)
     if tags:
         update["skill_tags"], update["role_tags"] = tags["skill_tags"], tags["role_tags"]
+    if tags and "requirements" in tags:
+        # 검수자가 원문 조건을 구조화하면 "필수조건 미검수" 조건을 대신한다.
+        update["requirements"] = [Requirement(
+            id=uuid5(NAMESPACE_URL, f"reconnect-eval:{key}:{index}"), field=item["field"], operator=item["operator"],
+            value=item["value"], group_id=None, group_operator=None, reference_date=item.get("reference_date"),
+            source_evidence=item["evidence"], clarity="clear") for index, item in enumerate(tags["requirements"])]
     return opportunity.model_copy(update=update)
 
 
