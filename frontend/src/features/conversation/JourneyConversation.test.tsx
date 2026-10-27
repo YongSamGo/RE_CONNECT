@@ -86,7 +86,7 @@ it('keeps editable input on definitive AI failure and uses a fresh key on retry'
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
   await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
-  await screen.findByText(/AI를 준비하고 있습니다/)
+  await screen.findByText(/지금은 AI를 사용할 수 없습니다/)
   expect(screen.getByLabelText('내가 해온 일')).toBeEnabled()
   await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
   await screen.findByRole('heading', { name: '어느 지역에서 활동하고 싶으세요?' })

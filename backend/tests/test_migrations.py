@@ -117,3 +117,23 @@ def test_additional_revision_preserves_existing_rows_and_blocks_bulk_overwrite(e
         empty_db.execute(update(OpportunityVersion).values(recruitment_status="open"))
     command.downgrade(config, "0001_persistent_schema")
     empty_db.execute(update(OpportunityVersion).values(title="추가 트리거 다운그레이드 확인"))
+
+
+def test_operator_mfa_revision_extends_audit_actions_and_downgrade_removes_only_new_actions(empty_db):
+    config = migration_config(empty_db)
+    command.upgrade(config, "head")
+    audit = table("audit_events", column("id", Uuid()), column("at", UTCDateTime()), column("actor_role", String()),
+                  column("action", String()), column("result", String()), column("request_id", String()),
+                  column("expires_at", UTCDateTime()))
+    row = {"at": NOW, "actor_role": "system", "result": "success", "request_id": "req_" + "c" * 32,
+           "expires_at": NOW.replace(year=NOW.year + 1)}
+    empty_db.execute(insert(audit), [{**row, "id": uuid4(), "action": "mfa.enroll"}, {**row, "id": uuid4(), "action": "mfa.verify"}])
+    with pytest.raises(IntegrityError), empty_db.begin_nested():
+        empty_db.execute(insert(audit), {**row, "id": uuid4(), "action": "mfa.disable"})
+    command.downgrade(config, "0009_role_catalog_draft")
+    assert "operator_mfa_credentials" not in inspect(empty_db).get_table_names()
+    assert empty_db.execute(select(audit.c.action)).scalars().all() == ["mfa.verify"]
+    with pytest.raises(IntegrityError), empty_db.begin_nested():
+        empty_db.execute(insert(audit), {**row, "id": uuid4(), "action": "mfa.reset"})
+    command.upgrade(config, "head")
+    assert compare_metadata(MigrationContext.configure(empty_db), Base.metadata) == []

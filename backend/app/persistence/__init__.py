@@ -3,13 +3,13 @@
 from app.persistence.base import Base
 from app.persistence.application_receipts import ApplicationWriteReceipt
 from app.persistence.profile_receipts import ProfileWriteReceipt
-from app.persistence.members import ApplicationDocument, ApplicationDraft, Consent, ProfileDocument, ProfileVersion, User
+from app.persistence.members import ApplicationDocument, ApplicationDraft, Consent, OperatorMfaCredential, ProfileDocument, ProfileVersion, User
 from app.persistence.operations import AuditEvent, DeletionRecord, IngestionReview, IngestionRun, IngestionState, ManualEvidence, OpportunityDocument, OpportunityPublication, OpportunityVersion, OpportunityWriteReceipt, Report, RoleDefinition, Source
 
 __all__ = [
     'ApplicationWriteReceipt',
     'ProfileWriteReceipt',
-    "Base", "User", "Consent", "ProfileDocument", "ProfileVersion", "ApplicationDocument", "ApplicationDraft",
+    "Base", "User", "Consent", "ProfileDocument", "ProfileVersion", "ApplicationDocument", "ApplicationDraft", "OperatorMfaCredential",
     "Source", "IngestionRun", "IngestionState", "IngestionReview", "ManualEvidence", "RoleDefinition", "OpportunityDocument", "OpportunityVersion", "OpportunityPublication", "OpportunityWriteReceipt",
     "Report", "AuditEvent", "DeletionRecord",
 ]

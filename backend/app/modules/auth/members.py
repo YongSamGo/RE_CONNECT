@@ -12,8 +12,10 @@ from app.modules.sessions.service import IssuedSession, StoreUnavailable, token_
 
 
 class MemberService:
-    def __init__(self, accounts, store, sessions, *, transition=None):
+    def __init__(self, accounts, store, sessions, *, transition=None, mfa=None):
         self.accounts, self.store, self.sessions, self.transition = accounts, store, sessions, transition
+        # 운영자 MFA 자격 조회. 연결 전이거나 없으면 관리 기능을 열지 않는다.
+        self.mfa = mfa
 
     async def _read(self, session):
         if session.user_id is None:
@@ -44,11 +46,40 @@ class MemberService:
         account, binding = record
         if operator and account.role != "admin":
             raise AppError("FORBIDDEN")
-        if operator:
-            raise AppError("MFA_REQUIRED")  # #52의 실제 세션 결합 MFA 검사 연결 전에는 허용하지 않는다.
+        if operator and not await self._mfa_active(account, binding):
+            raise AppError("MFA_REQUIRED")
         if reauth and binding.reauth_until_ms <= binding.now_ms:
             raise AppError("REAUTH_REQUIRED")
         return account
+
+    async def _mfa_active(self, account, binding):
+        """이 세션의 MFA 확인이 유효한지. 만료·역할 회수·재등록(자격 ID 변경)이면 거짓이다."""
+        if account.role != "admin" or binding.mfa_credential is None or binding.mfa_until_ms <= binding.now_ms or self.mfa is None:
+            return False
+        return await asyncio.to_thread(self.mfa.credential_id, account.id) == binding.mfa_credential
+
+    async def elevate(self, session, account, credential_id):
+        """MFA 성공 뒤 권한 상승. 새 세션·CSRF로 교체하고 새 세션에만 MFA 확인을 기록한다."""
+        issued = await self._switch(session, account.id, generation=account.generation)
+        try:
+            until = await self.store.mark_mfa(issued.session.digest, account.id, account.generation, credential_id)
+            latest = await asyncio.to_thread(self.accounts.get, account.id)
+        except StoreUnavailable:
+            await self._discard_quietly(issued)
+            raise AppError("SERVICE_UNAVAILABLE") from None
+        except AppError:
+            await self._discard_quietly(issued)
+            raise
+        if until is None or latest is None or latest.generation != account.generation or latest.role != "admin":
+            await self._discard_quietly(issued)
+            raise AppError("SESSION_EXPIRED")
+        return issued, until
+
+    async def _discard_quietly(self, issued):
+        try:
+            await self.store.discard(issued.session)
+        except (AppError, StoreUnavailable):
+            pass  # 새 쿠키를 응답하지 않으므로 남은 세션도 쓰이지 않는다.
 
     async def me(self, session):
         record = await self._read(session)
@@ -57,7 +88,7 @@ class MemberService:
         account, binding = record
         until = datetime.fromtimestamp(binding.reauth_until_ms / 1000, UTC).isoformat().replace("+00:00", "Z") if binding.reauth_until_ms > binding.now_ms else None
         return {"authenticated": True, "user": {"id": str(account.id), "roles": ["operator" if account.role == "admin" else "user"],
-            "mfa_verified": False, "reauth_until": until}, "consents": [], "pending_save_intent": None}
+            "mfa_verified": await self._mfa_active(account, binding), "reauth_until": until}, "consents": [], "pending_save_intent": None}
 
     async def eligible(self, session, purpose):
         if purpose == "save":
