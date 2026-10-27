@@ -119,3 +119,23 @@ export function parseEditable(value: unknown, expected?: { id: string; version: 
     || (expected && (id !== expected.id || item.version !== expected.version))) return invalid()
   return { id, version: item.version, status: enumeration(item.review_status, ['pending', 'approved', 'rejected', 'hidden']), input: parseOpportunityInput(item.content) }
 }
+export type ManualSource = components['schemas']['OpportunityCreate']['source']
+export const manualSources: Record<ManualSource, string> = { manual_volunteer: '1365 자원봉사포털', manual_50plus: '50+포털', manual_work24: '고용24' }
+const requiredQuotes = ['title', 'organization_name', 'activity_type', 'application_method', 'application_instructions', 'recruitment_status', 'requirements'] as const
+const optionalQuotes = ['activity_region', 'deadline_date', 'deadline_at', 'schedule_text', 'paid', 'compensation_text', 'required_documents', 'is_public_job', 'location_text', 'remote_allowed', 'hours_per_week', 'role_tags', 'skill_tags', 'description_text'] as const
+export const quoteLabels: Record<string, string> = {
+  title: '공고 제목', organization_name: '기관명', activity_type: '활동 유형', application_method: '접수 방법', application_instructions: '공식 접수 방법',
+  recruitment_status: '모집 상태', requirements: '필수조건', activity_region: '활동 지역', deadline_date: '마감일', deadline_at: '마감 시각',
+  schedule_text: '활동 일정', paid: '보수 여부', compensation_text: '보수 상세', required_documents: '필요 서류', application_url: '접수 안내 주소',
+  is_public_job: '공공일자리 여부', location_text: '상세 장소', remote_allowed: '원격 활동', hours_per_week: '주당 시간', role_tags: '역할', skill_tags: '기술', description_text: '원문 설명',
+}
+/** 서버 수동 입력 규칙과 같다: 필수 7개와 값을 넣은 선택 필드마다 원문 인용, 접수 주소가 다르면 그 근거도. */
+export function quoteFields(input: OpportunityInput): string[] {
+  const fields: string[] = [...requiredQuotes]
+  for (const field of optionalQuotes) {
+    const value = input[field]
+    if (value !== null && !(Array.isArray(value) && value.length === 0)) fields.push(field)
+  }
+  if (input.application_url !== input.source_url) fields.push('application_url')
+  return fields
+}

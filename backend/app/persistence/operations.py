@@ -187,6 +187,32 @@ class OpportunityVersion(Base):
     source_checked_at: Mapped[datetime] = mapped_column(UTCDateTime())
     reviewed_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
     content_hash: Mapped[str] = mapped_column(String(64))
+    # 버전을 만든 시각. 운영자 목록의 "최근 갱신" 정렬과 updated_at 응답에 쓴다.
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    # 이 버전의 근거가 된 원문 관측(수집·수동 입력 결과)의 해시. 운영자 수정은 기준 버전 값을 이어받는다.
+    # 다음 수집의 해시가 같으면 원문이 바뀌지 않은 것이므로 운영자 수정본을 덮어쓰지 않는다.
+    observed_hash: Mapped[str] = mapped_column(String(64), default=lambda context: context.get_current_parameters()["content_hash"])
+
+
+class OpportunityWriteReceipt(Base):
+    """운영자 수동 등록의 재전송 응답 기록. 공고 본문은 담지 않는다."""
+
+    __tablename__ = "opportunity_write_receipts"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("length(input_hash) = 64", name="input_hash"),
+        CheckConstraint("version > 0", name="version"),
+        CheckConstraint("expires_at > recorded_at", name="expiry"),
+        Index("ix_opportunity_receipts_operator_expiry", "operator_id", "expires_at"),
+    )
+
+    operator_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    key_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    input_hash: Mapped[str] = mapped_column(String(64))
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    recorded_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    expires_at: Mapped[datetime] = mapped_column(UTCDateTime())
 
 
 class OpportunityPublication(Base):
