@@ -54,7 +54,8 @@ export interface paths {
         };
         /**
          * 수집·모델·제한 상태
-         * @description 운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값은 넣지 않는다.
+         * @description 운영자 역할과 MFA가 필요하다. 오류 메시지·주소·비밀값·개인 본문은 넣지 않는다.
+         *     DB·Redis 장애에도 200으로 응답한다. 읽지 못한 부분(`sources`·`limits`)은 null이고, 해당 저장소 상태가 `fail`이다.
          */
         get: operations["getOperations"];
         put?: never;
@@ -1135,7 +1136,11 @@ export interface components {
         BaseRevision: {
             base_revision: number;
         };
-        /** @enum {string} */
+        /**
+         * @description 모델은 공유 추론 제어(Redis)와 런타임이 모두 준비돼야 `ok`다. `loading`은 런타임이 적재 중을
+         *     알려 줄 때만 쓰며, 지금 음성 서비스·Ollama는 알려 주지 않아 `ok`·`fail`만 나온다.
+         * @enum {string}
+         */
         ComponentState: "ok" | "loading" | "fail";
         ConfirmedVersion: {
             /** Format: date-time */
@@ -1442,31 +1447,51 @@ export interface components {
         Operations: {
             /** Format: date-time */
             checked_at: string;
+            /** @description 공유 추론 제어 상태. Redis를 읽지 못했거나 제어 상태가 준비되지 않았으면 null이다. */
             limits: {
                 inference_daily_limit: number;
                 inference_today: number;
                 slots_in_use: number;
                 slots_total: number;
-            };
+            } | null;
             models: {
                 llm: components["schemas"]["ComponentState"];
                 stt: components["schemas"]["ComponentState"];
                 tts: components["schemas"]["ComponentState"];
             };
+            /** @description 사용 중인 출처. DB를 읽지 못하면 null이다. */
             sources: {
+                /** @description 마지막 성공 이후 실패한 실행 수(`partial` 포함) */
                 consecutive_failures: number;
-                /** Format: date-time */
+                /**
+                 * @description 마지막으로 끝난 실행이 실패했을 때의 고정 실패 코드. 성공했거나 기록이 없으면 null이다.
+                 * @enum {string|null}
+                 */
+                last_failure_code: "network" | "parse" | "response_limit" | "source_unavailable" | "cancelled" | "invalid_payload" | "budget_exhausted" | "incomplete" | "configuration" | null;
+                /**
+                 * Format: date-time
+                 * @description 마지막으로 끝난 실행의 종료 시각. 실행 중인 것은 포함하지 않는다.
+                 */
                 last_run_at: string | null;
-                /** @enum {string|null} */
+                /**
+                 * @description 마지막으로 끝난 실행의 결과. `partial`은 일부만 받고 멈춘 실패(`budget_exhausted`·`incomplete`)다.
+                 *     실행 기록이 없으면 null이다.
+                 * @enum {string|null}
+                 */
                 last_status: "success" | "partial" | "failed" | null;
                 /** Format: date-time */
                 last_success_at: string | null;
                 name: string;
+                /** @description 지금 실행 중인 수집이 있음 */
+                running: boolean;
                 /** Format: uuid */
                 source_id: string;
-                /** @description 마지막 성공이 48시간을 넘어 이 출처 공고의 추천을 보류 중 */
+                /**
+                 * @description 출처의 마지막 성공이 48시간을 넘었거나 성공한 적이 없음. 추천 보류는 출처가 아니라
+                 *     공고마다 마지막 확인 시각으로 판정하므로, 이 값이 곧 그 출처 공고 전체의 보류를 뜻하지는 않는다.
+                 */
                 stale: boolean;
-            }[];
+            }[] | null;
             stores: {
                 db: components["schemas"]["ComponentState"];
                 redis: components["schemas"]["ComponentState"];

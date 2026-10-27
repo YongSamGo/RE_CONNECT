@@ -16,7 +16,7 @@ import type { ReportSnapshot } from './report'
 
 type Me = components['schemas']['Me']
 type Row = { id: string; version: number; title: string; status: string; report?: ReportSnapshot }
-type View = { kind: 'opportunities' | 'reports'; rows: Row[]; page: number; total: number } | { kind: 'operations'; models: { name: string; state: string }[]; sources: { name: string; stale: boolean }[] }
+type View = { kind: 'opportunities' | 'reports'; rows: Row[]; page: number; total: number } | { kind: 'operations'; models: { name: string; state: string }[]; sources: { name: string; stale: boolean }[] | null }
 const version = (value: unknown): number => typeof value === 'number' && Number.isSafeInteger(value) && value > 0 ? value : invalid()
 function parseRows(data: unknown, kind: 'opportunities' | 'reports'): View {
   const item = record(data)
@@ -58,12 +58,13 @@ function AdminWorkspace() {
     <section className="panel"><h2>운영 자료 조회</h2><form onSubmit={(event) => { event.preventDefault(); load('opportunities') }}><label htmlFor="admin-query">공고 제목 검색</label><input id="admin-query" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} /><div className="actions"><Button type="submit" disabled={pending}>공고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => load('reports')}>신고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => { setSelected(null); void request.run(async (api, signal) => {
       const item = record(required((await api.GET('/admin/operations', { signal })).data))
       const models = record(item.models)
-      if (!Array.isArray(item.sources)) return invalid()
-      return { kind: 'operations', models: ['llm', 'stt', 'tts'].map((name) => { const value = models[name]; if (value !== 'ok' && value !== 'loading' && value !== 'fail') return invalid(); return { name, state: value } }), sources: item.sources.map((value) => { const source = record(value); if (typeof source.stale !== 'boolean') return invalid(); return { name: text(source.name, 200), stale: source.stale } }) }
+      // DB를 읽지 못하면 sources는 null이다. 나머지 상태는 그대로 보여 준다.
+      if (item.sources !== null && !Array.isArray(item.sources)) return invalid()
+      return { kind: 'operations', models: ['llm', 'stt', 'tts'].map((name) => { const value = models[name]; if (value !== 'ok' && value !== 'loading' && value !== 'fail') return invalid(); return { name, state: value } }), sources: item.sources === null ? null : item.sources.map((value) => { const source = record(value); if (typeof source.stale !== 'boolean') return invalid(); return { name: text(source.name, 200), stale: source.stale } }) }
     }) }}>수집·모델 상태 조회</Button></div></form></section>
     {pending && <p role="status">서버에 요청하고 있어요.</p>}
     {state.status === 'error' && <RequestError error={state.error} />}
-    {state.status === 'success' && (state.data.kind === 'operations' ? <section className="panel"><h2>수집·모델 상태</h2><ul>{state.data.models.map((model) => <li key={model.name}>{model.name}: {model.state === 'ok' ? '정상' : model.state === 'loading' ? '준비 중' : '장애'}</li>)}</ul><ul>{state.data.sources.map((source, index) => <li key={index}>{source.name}: {source.stale ? '출처 갱신 지연 · 추천 보류' : '갱신 지연 없음'}</li>)}</ul></section> : <section className="panel"><h2>{state.data.kind === 'reports' ? '신고 목록' : '공고 목록'}</h2>
+    {state.status === 'success' && (state.data.kind === 'operations' ? <section className="panel"><h2>수집·모델 상태</h2><ul>{state.data.models.map((model) => <li key={model.name}>{model.name}: {model.state === 'ok' ? '정상' : model.state === 'loading' ? '준비 중' : '장애'}</li>)}</ul>{state.data.sources === null ? <p>출처 수집 상태를 읽지 못했습니다.</p> : <ul>{state.data.sources.map((source, index) => <li key={index}>{source.name}: {source.stale ? '48시간 넘게 수집 성공 없음' : '최근 48시간 안에 수집 성공'}</li>)}</ul>}</section> : <section className="panel"><h2>{state.data.kind === 'reports' ? '신고 목록' : '공고 목록'}</h2>
       {state.data.rows.length ? <ul>{state.data.rows.map((row) => <li key={row.id}><p>{row.title} · {statuses[row.status]} · 버전 {row.version}</p><Button variant="secondary" disabled={pending} onClick={() => setSelected(row)}>검토 선택 · {row.title}</Button></li>)}</ul> : <p>조회 결과가 없습니다.</p>}
       <div className="actions"><Button variant="secondary" disabled={pending || state.data.page <= 1} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page - 1) }}>이전 페이지</Button><p>{state.data.page}페이지 · 전체 {state.data.total}건</p><Button variant="secondary" disabled={pending || state.data.page * 10 >= state.data.total} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page + 1) }}>다음 페이지</Button></div>
     </section>)}
