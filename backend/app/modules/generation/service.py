@@ -78,9 +78,12 @@ class GroundedGenerationService:
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
         }, ExtractionPlan)
 
-        def quote_value(quote: Quote, turn_index: int) -> str:
+        def grounded(quote: Quote, turn_index: int) -> bool:
             source = turns.get(quote.turn_index)
-            if quote.turn_index != turn_index or source is None or quote.text not in source or safe_text(quote.text) is None:
+            return quote.turn_index == turn_index and source is not None and quote.text in source and safe_text(quote.text) is not None
+
+        def quote_value(quote: Quote, turn_index: int) -> str:
+            if not grounded(quote, turn_index):
                 raise _invalid()
             return quote.text
 
@@ -96,11 +99,13 @@ class GroundedGenerationService:
                         raise _invalid()
                     used_ids.add(item.existing_id)
                 index = item.description.turn_index
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기간·기술은 다른 턴에서 가져오는 일이
+                # 잦아(docs/ai/extraction-eval-2026-10-22.md) 근거 없는 인용만 버리고 같은 턴의 것만 남긴다.
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
                     description=quote_value(item.description, index),
-                    duration_note=quote_value(item.duration, index) if item.duration else None,
-                    skill_tags=[quote_value(skill, index) for skill in item.skills],
+                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) else None,
+                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index))),
                 ))
         except ValidationError:
             raise _invalid() from None
