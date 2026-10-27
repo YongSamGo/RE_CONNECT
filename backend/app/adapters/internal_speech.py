@@ -134,14 +134,8 @@ class InternalSpeechAdapter:
             raise SpeechUnavailableError('내부 음성 서비스에 연결하지 못했습니다') from None
 
     async def is_ready(self) -> bool:
-        try:
-            raw, media = await asyncio.wait_for(self._request('GET', '/health/ready', maximum=4096), self.ready_timeout)
-            if media != 'application/json':
-                return False
-            data = json.loads(raw)
-            return data == {'protocol_version': 1, 'status': 'ready', 'stt': True, 'tts': True} and type(data.get('protocol_version')) is int and type(data.get('stt')) is bool and type(data.get('tts')) is bool
-        except (SpeechUnavailableError, SpeechInvalidOutputError, SpeechTimeoutError, TimeoutError, ValueError, TypeError):
-            return False
+        # 준비 응답 해석은 model_readiness 한 곳에만 둔다. 둘 다 준비돼야 전체 준비다.
+        return all((await self.model_readiness()).values())
 
     async def model_readiness(self) -> dict[str, bool]:
         """운영 상태용 STT·TTS 개별 준비 여부. 응답이 프로토콜과 정확히 맞지 않으면 둘 다 준비 안 됨으로 본다.

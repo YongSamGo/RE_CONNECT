@@ -6,14 +6,14 @@
 
 import asyncio
 from collections.abc import Awaitable, Callable
-from datetime import datetime
+from datetime import date, datetime
 import logging
 from typing import Annotated, Literal, Protocol, TypeVar
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.contracts.time import to_utc, utc_now
+from app.contracts.time import kst_date, to_utc, utc_now
 from app.modules.admission.service import GLOBAL_DAILY_LIMIT, SHARED_SLOTS
 from app.modules.operations.readiness import ReadinessProbe
 from app.modules.operations.repository import SourceRunSummary
@@ -32,7 +32,7 @@ FailureCode = Literal[
 ]
 # 일부만 받은 뒤 멈춘 실패. 받은 공고는 저장됐지만 출처 전체를 다시 확인하지는 못했다.
 PARTIAL_FAILURES: frozenset[str] = frozenset({"budget_exhausted", "incomplete"})
-KST_OFFSET_SECONDS = 9 * 3600
+EPOCH_DATE = date(1970, 1, 1)
 
 
 class _Strict(BaseModel):
@@ -112,7 +112,7 @@ class BoundSlotReader:
 
 def kst_day_index(now: datetime) -> int:
     """Redis 제어 해시의 `day`와 같은 기준(1970-01-01 KST부터 센 날 수)."""
-    return (int(to_utc(now).timestamp()) + KST_OFFSET_SECONDS) // 86400
+    return (kst_date(now) - EPOCH_DATE).days
 
 
 def last_status(summary: SourceRunSummary) -> SourceRunStatus | None:
@@ -148,7 +148,7 @@ def inference_limits(reading: SlotReading, now: datetime) -> InferenceLimits | N
     return InferenceLimits(
         inference_today=today,
         inference_daily_limit=GLOBAL_DAILY_LIMIT,
-        slots_in_use=min(SHARED_SLOTS, 1 if reading.lease is not None else 0),
+        slots_in_use=1 if reading.lease is not None else 0,
         slots_total=SHARED_SLOTS,
     )
 

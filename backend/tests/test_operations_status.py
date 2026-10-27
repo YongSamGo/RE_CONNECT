@@ -14,7 +14,7 @@ from uuid import uuid4
 import httpx
 import pytest
 import re
-from sqlalchemy import delete, insert
+from sqlalchemy import delete, event, insert
 
 from app.adapters.internal_speech import InternalSpeechAdapter
 from app.contracts.time import utc_now
@@ -362,6 +362,27 @@ def test_repository_without_runs_and_without_success(engine):
 
     assert (rows[fresh].last_finished_status, rows[fresh].running, rows[fresh].consecutive_failures) == (None, False, 0)
     assert rows[failing].consecutive_failures == 2
+
+
+def test_repository_query_count_does_not_grow_with_sources(engine):
+    with engine.begin() as db:
+        for index in range(5):
+            source = add_source(db, f"q-{index}")
+            add_run(db, source, 30, "succeeded")
+            add_run(db, source, 10, "failed", "network")
+    statements = []
+
+    def count(*args):
+        statements.append(args)
+
+    event.listen(engine, "before_cursor_execute", count)
+    try:
+        rows = SqlSourceStatusRepository(engine.connect).list()
+    finally:
+        event.remove(engine, "before_cursor_execute", count)
+
+    assert [row.consecutive_failures for row in rows] == [1] * 5
+    assert len(statements) <= 4
 
 
 def test_repository_excludes_disabled_sources(engine):

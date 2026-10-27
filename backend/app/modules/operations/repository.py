@@ -1,10 +1,13 @@
-"""운영 상태용 출처별 수집 요약 조회. 공고·개인 본문은 읽지 않는다."""
+"""운영 상태용 출처별 수집 요약 조회. 공고·개인 본문은 읽지 않는다.
+
+출처 수와 관계없이 쿼리 4번으로 끝낸다. 장애 중에도 상태 확인 제한시간 안에 답하기 위해서다.
+"""
 
 from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import func, select
+from sqlalchemy import case, func, or_, select
 
 from app.persistence.operations import IngestionRun as Run, Source
 
@@ -40,29 +43,58 @@ class SqlSourceStatusRepository:
             ).all()
             if len(sources) > MAX_SOURCES:
                 raise ValueError("운영 상태로 보여 줄 출처 수를 넘었습니다")
-            return [self._summary(db, source) for source in sources]
+            if not sources:
+                return []
+            ids = [source.id for source in sources]
+            of_sources = Run.source_id.in_(ids)
 
-    @staticmethod
-    def _summary(db, source) -> SourceRunSummary:
-        of_source = Run.source_id == source.id
-        latest = db.execute(
-            select(Run.status, Run.failure_code, Run.finished_at)
-            .where(of_source, Run.status != "running")
-            .order_by(Run.started_at.desc(), Run.id.desc())
-            .limit(1)
-        ).one_or_none()
-        running = db.scalar(select(func.count()).select_from(Run).where(of_source, Run.status == "running")) > 0
-        last_succeeded = db.scalar(select(func.max(Run.started_at)).where(of_source, Run.status == "succeeded"))
-        failures = select(func.count()).select_from(Run).where(of_source, Run.status == "failed")
-        if last_succeeded is not None:
-            failures = failures.where(Run.started_at > last_succeeded)
-        return SourceRunSummary(
-            source_id=source.id,
-            name=source.name,
-            last_success_at=source.last_success_at,
-            last_finished_status=latest.status if latest is not None else None,
-            last_failure_code=latest.failure_code if latest is not None else None,
-            last_finished_at=latest.finished_at if latest is not None else None,
-            running=running,
-            consecutive_failures=db.scalar(failures),
-        )
+            totals = (
+                select(
+                    Run.source_id,
+                    func.max(case((Run.status == "succeeded", Run.started_at))).label("last_succeeded"),
+                    func.max(case((Run.status == "running", 1), else_=0)).label("running"),
+                )
+                .where(of_sources)
+                .group_by(Run.source_id)
+                .subquery()
+            )
+            running = {row.source_id: bool(row.running) for row in db.execute(select(totals.c.source_id, totals.c.running))}
+
+            failures = dict(db.execute(
+                select(Run.source_id, func.count())
+                .join(totals, totals.c.source_id == Run.source_id)
+                .where(of_sources, Run.status == "failed",
+                       or_(totals.c.last_succeeded.is_(None), Run.started_at > totals.c.last_succeeded))
+                .group_by(Run.source_id)
+            ).all())
+
+            ordered = (
+                select(
+                    Run.source_id, Run.status, Run.failure_code, Run.finished_at,
+                    func.row_number().over(partition_by=Run.source_id, order_by=(Run.started_at.desc(), Run.id.desc())).label("position"),
+                )
+                .where(of_sources, Run.status != "running")
+                .subquery()
+            )
+            latest = {
+                row.source_id: row
+                for row in db.execute(
+                    select(ordered.c.source_id, ordered.c.status, ordered.c.failure_code, ordered.c.finished_at)
+                    .where(ordered.c.position == 1)
+                )
+            }
+
+        summaries = []
+        for source in sources:
+            last = latest.get(source.id)
+            summaries.append(SourceRunSummary(
+                source_id=source.id,
+                name=source.name,
+                last_success_at=source.last_success_at,
+                last_finished_status=last.status if last is not None else None,
+                last_failure_code=last.failure_code if last is not None else None,
+                last_finished_at=last.finished_at if last is not None else None,
+                running=running.get(source.id, False),
+                consecutive_failures=failures.get(source.id, 0),
+            ))
+        return summaries
