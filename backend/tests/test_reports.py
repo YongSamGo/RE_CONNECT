@@ -656,7 +656,7 @@ def test_upgrade_keeps_existing_reports_and_downgrade_drops_only_unrestorable_ro
 
     with open_test_database(backend) as db:
         config = migration_config(db)
-        command.upgrade(config, "0009_role_catalog_draft")
+        command.upgrade(config, "0012_opportunity_reviews")
         opportunity_id = uuid4()
         source = uuid4()
         db.execute(insert(Source.__table__), {"id": source, "code": "fictional-old", "name": "가상 출처", "base_url": "https://example.org", "enabled": False})

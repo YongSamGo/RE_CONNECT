@@ -187,6 +187,32 @@ class OpportunityVersion(Base):
     source_checked_at: Mapped[datetime] = mapped_column(UTCDateTime())
     reviewed_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
     content_hash: Mapped[str] = mapped_column(String(64))
+    # 버전을 만든 시각. 운영자 목록의 "최근 갱신" 정렬과 updated_at 응답에 쓴다.
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    # 이 버전의 근거가 된 원문 관측(수집·수동 입력 결과)의 해시. 운영자 수정은 기준 버전 값을 이어받는다.
+    # 다음 수집의 해시가 같으면 원문이 바뀌지 않은 것이므로 운영자 수정본을 덮어쓰지 않는다.
+    observed_hash: Mapped[str] = mapped_column(String(64), default=lambda context: context.get_current_parameters()["content_hash"])
+
+
+class OpportunityWriteReceipt(Base):
+    """운영자 수동 등록의 재전송 응답 기록. 공고 본문은 담지 않는다."""
+
+    __tablename__ = "opportunity_write_receipts"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("length(input_hash) = 64", name="input_hash"),
+        CheckConstraint("version > 0", name="version"),
+        CheckConstraint("expires_at > recorded_at", name="expiry"),
+        Index("ix_opportunity_receipts_operator_expiry", "operator_id", "expires_at"),
+    )
+
+    operator_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    key_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    input_hash: Mapped[str] = mapped_column(String(64))
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    recorded_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    expires_at: Mapped[datetime] = mapped_column(UTCDateTime())
 
 
 class OpportunityPublication(Base):
@@ -201,6 +227,48 @@ class OpportunityPublication(Base):
     opportunity_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
     version: Mapped[int] = mapped_column(Integer)
     review_status: Mapped[str] = mapped_column(String(16), default="approved", server_default="approved")
+
+
+REJECT_REASONS = ("source_unverifiable", "out_of_scope", "recruitment_closed", "duplicate",
+                  "insufficient_information", "inappropriate_content", "other")
+CLOSE_BASES = ("source_closed", "deadline_passed", "organization_notice", "report_confirmed", "other")
+
+
+def _sql_values(values):
+    return ", ".join(f"'{value}'" for value in values)
+
+
+class OpportunityReview(Base):
+    """운영자 검수 결정의 근거 (W07-03). 공고 버전과 함께 남는 공고 자료다.
+
+    누가 했는지는 감사 기록(30일)에만 둔다. 같은 요청의 감사 기록과 request_id로 잇는다.
+    메모는 개인정보 필터를 통과한 공고 확인 내용만 받는다.
+    """
+
+    __tablename__ = "opportunity_reviews"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("action IN ('approve', 'reject', 'hide', 'close')", name="action"),
+        CheckConstraint(
+            "(action IN ('approve', 'hide') AND reason_code IS NULL AND note IS NOT NULL)"
+            f" OR (action = 'reject' AND reason_code IN ({_sql_values(REJECT_REASONS)}))"
+            f" OR (action = 'close' AND reason_code IN ({_sql_values(CLOSE_BASES)}))",
+            name="reason",
+        ),
+        CheckConstraint("reason_code IS NULL OR reason_code <> 'other' OR note IS NOT NULL", name="other_note"),
+        CheckConstraint("note IS NULL OR length(note) BETWEEN 1 AND 500", name="note"),
+        CheckConstraint("length(request_id) BETWEEN 14 AND 36", name="request_id"),
+        Index("ix_opportunity_reviews_target", "opportunity_id", "version"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    action: Mapped[str] = mapped_column(String(16))
+    reason_code: Mapped[str | None] = mapped_column(String(40))
+    note: Mapped[str | None] = mapped_column(String(500))
+    request_id: Mapped[str] = mapped_column(String(36))
+    at: Mapped[datetime] = mapped_column(UTCDateTime())
 
 
 def _envelope_check(prefix: str) -> str:

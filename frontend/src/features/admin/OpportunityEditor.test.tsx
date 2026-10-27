@@ -15,6 +15,7 @@ function fill() {
   change('공식 원문 HTTPS 주소 (필수)', sourceUrl)
   change('공식 접수 안내 HTTPS 주소 (필수)', sourceUrl)
   change('공식 접수 방법 (필수)', '공식 안내를 확인하고 직접 신청하세요.')
+  for (const label of ['공고 제목', '기관명', '활동 유형', '접수 방법', '공식 접수 방법', '모집 상태', '필수조건']) change(`원문 인용: ${label}`, `가상 원문 ${label}`)
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 describe('opportunity create and edit', () => {
@@ -66,7 +67,7 @@ describe('opportunity create and edit', () => {
     const fetch = vi.fn(async (request: Request) => {
       requests.push(request)
       if (requests.length === 1) throw new Error('private create transport')
-      return json({ id, version: 1, review_status: 'pending', content: await request.clone().json() }, 201)
+      return json({ id, version: 1, review_status: 'pending', content: (await request.clone().json()).content }, 201)
     })
     vi.stubGlobal('fetch', fetch)
     render(<OpportunityEditor onBack={vi.fn()} />)
@@ -83,11 +84,14 @@ describe('opportunity create and edit', () => {
     expect(requests[0]!.headers.get('Idempotency-Key')).toBe(requests[1]!.headers.get('Idempotency-Key'))
     const body = await requests[0]!.json()
     expect(body).toEqual(await requests[1]!.json())
-    expect(body.requirements).toEqual([
+    expect(body).toMatchObject({ source: 'manual_volunteer', evidence: { url: sourceUrl, confirmed_official: true, quotes: { title: '가상 원문 공고 제목', requirements: '가상 원문 필수조건' } } })
+    expect(Object.keys(body.evidence.quotes).sort()).toEqual(['activity_type', 'application_instructions', 'application_method', 'organization_name', 'recruitment_status', 'requirements', 'title'])
+    expect(Date.parse(body.evidence.observed_at)).not.toBeNaN()
+    expect(body.content.requirements).toEqual([
       expect.objectContaining({ field: 'other', operator: null, value: null, clarity: 'needs_review', source_evidence: '만 60세 이상' }),
       expect.objectContaining({ field: 'other', operator: null, value: null, clarity: 'needs_review', source_evidence: '주 2일 참여' }),
     ])
-    expect(body).toMatchObject({ paid: null, remote_allowed: null, required_documents: null, recruitment_status: 'unknown' })
+    expect(body.content).toMatchObject({ paid: null, remote_allowed: null, required_documents: null, recruitment_status: 'unknown' })
     expect(screen.getByRole('button', { name: '검수 대기 버전으로 저장' })).toBeDisabled()
   })
   it('edits only the changed field while preserving structured conditions and timestamp precision', async () => {
@@ -126,7 +130,7 @@ describe('opportunity create and edit', () => {
   })
   it('preserves multiline document editing and sends confirmed empty documents separately from unknown', async () => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
-    const fetch = vi.fn(async (request: Request) => json({ id, version: 1, review_status: 'pending', content: await request.clone().json() }, 201))
+    const fetch = vi.fn(async (request: Request) => json({ id, version: 1, review_status: 'pending', content: (await request.clone().json()).content }, 201))
     vi.stubGlobal('fetch', fetch)
     render(<OpportunityEditor onBack={vi.fn()} />)
     fill()
@@ -139,7 +143,23 @@ describe('opportunity create and edit', () => {
     await user.click(screen.getByRole('checkbox', { name: '공식 원문과 입력 내용을 비교해 확인했습니다.' }))
     await user.click(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }))
     expect(await screen.findByText(/검수 대기 버전 1을 저장했습니다/)).toBeVisible()
-    expect((await fetch.mock.calls[0]![0].json()).required_documents).toEqual([])
+    expect((await fetch.mock.calls[0]![0].json()).content.required_documents).toEqual([])
+  })
+  it('asks for a source quote for every filled field before creating', async () => {
+    document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    const fetch = vi.fn(); vi.stubGlobal('fetch', fetch)
+    render(<OpportunityEditor onBack={vi.fn()} />)
+    fill()
+    change('활동 일정', '매주 수요일')
+    change('원문 인용: 공고 제목', '')
+    const user = userEvent.setup()
+    await user.click(screen.getByRole('checkbox', { name: '공식 원문에 명시된 필수조건이 없는 것을 확인했어요.' }))
+    await user.click(screen.getByRole('checkbox', { name: '공식 원문과 입력 내용을 비교해 확인했습니다.' }))
+    await user.click(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }))
+    expect(screen.getByLabelText('원문 인용: 공고 제목')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('원문 인용: 활동 일정')).toHaveAttribute('aria-invalid', 'true')
+    expect(screen.getByLabelText('원문 인용: 기관명')).not.toHaveAttribute('aria-invalid')
+    expect(fetch).not.toHaveBeenCalled()
   })
   it('clears input and discards late creation responses on pagehide', async () => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
@@ -158,7 +178,7 @@ describe('opportunity create and edit', () => {
   })
   it('rejects a nonpending creation acknowledgement instead of claiming publication or success', async () => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
-    vi.stubGlobal('fetch', vi.fn(async (request: Request) => json({ id, version: 1, review_status: 'approved', content: await request.clone().json() }, 201)))
+    vi.stubGlobal('fetch', vi.fn(async (request: Request) => json({ id, version: 1, review_status: 'approved', content: (await request.clone().json()).content }, 201)))
     render(<OpportunityEditor onBack={vi.fn()} />)
     fill()
     const user = userEvent.setup()

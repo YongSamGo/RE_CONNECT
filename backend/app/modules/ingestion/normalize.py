@@ -17,6 +17,9 @@ from app.contracts.requirement import Requirement
 from app.contracts.time import UtcDatetime, kst_date
 
 
+# 수집 공고마다 넣는 "필수조건 미검수" 표식 조건의 근거 첫머리. 운영자가 원문을 읽고 조건을 구조화하거나
+# "명시된 필수조건 없음"을 확인해 이 조건을 지우기 전에는 승인하지 않는다(W07-03).
+UNREVIEWED_EVIDENCE_PREFIX = "정규화 상태:"
 _TIME = TypeAdapter(UtcDatetime)
 _ID = re.compile(r"[A-Z0-9]{1,30}")
 _VOLUNTEER_ID = re.compile(r"[0-9]{1,12}")
@@ -282,7 +285,7 @@ def normalize(source: str, listing: Mapping, detail: Mapping, *, checked_at: dat
         if deadline and deadline < today:
             state = "closed"
         # 조건 필드가 없다는 사실을 '필수조건 없음'으로 바꾸지 않는다.
-        evidence = "정규화 상태: 출처의 필수조건 전체 해석·검수가 완료되지 않았습니다."
+        evidence = UNREVIEWED_EVIDENCE_PREFIX + " 출처의 필수조건 전체 해석·검수가 완료되지 않았습니다."
         if description:
             evidence += "\n미해석 공식 설명(최대 900자): " + description[:900]
         requirements.append(_requirement(identity, "unreviewed", evidence))

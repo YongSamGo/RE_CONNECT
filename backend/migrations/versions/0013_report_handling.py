@@ -5,8 +5,7 @@ import sqlalchemy as sa
 
 
 revision = "0013_report_handling"
-# 정한 머지 순서는 #267 → #270 → #266 → #269다. 앞 PR이 머지되면 바로 앞 리비전으로 다시 잇는다.
-down_revision = "0010_operator_mfa"
+down_revision = "0012_opportunity_reviews"
 branch_labels = None
 depends_on = None
 

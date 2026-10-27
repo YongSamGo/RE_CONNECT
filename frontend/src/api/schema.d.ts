@@ -86,8 +86,13 @@ export interface paths {
         put?: never;
         /**
          * 공식 자료로 공고 수동 등록
-         * @description 출처는 "수동 입력"으로 기록한다. 등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
-         *     같은 공식 URL·기관·제목·모집기간의 공고가 이미 있어도 거절하지 않고, 검수 화면에서 중복 후보로 보여 준다(출처 간 자동 병합 없음).
+         * @description 공식 자료 수동 출처(`source`) 하나를 고르고, 공고 내용(`content`)과 원문 근거(`evidence`)를 함께 보낸다.
+         *     근거 규칙은 수동 입력 명령(`python -m app.manual_intake`, docs/data/manual-intake.md)과 같다.
+         *     - `content.source_url`과 `evidence.url`은 같은 공식 상세 주소여야 한다(50+포털·고용24·1365의 허용 경로만). 다른 접수 주소는 `application_url` 근거가 필요하다.
+         *     - `evidence.quotes`에는 필수 7개(`title`, `organization_name`, `activity_type`, `application_method`, `application_instructions`, `recruitment_status`, `requirements`)와, 값을 넣은 선택 필드마다 원문 인용을 넣는다.
+         *     - `evidence.observed_at`은 지금부터 48시간 안의 원문 확인 시각이다. 연락처·HTML 흔적이 든 값은 받지 않는다(422).
+         *     등록하면 `pending` 버전 1이 되고 승인 전에는 공개되지 않는다.
+         *     같은 출처에 공식 URL·기관·제목·마감이 같은 공고가 이미 있으면 자동 병합하지 않고 409 `VERSION_CONFLICT`로 거절한다. 기존 공고를 찾아 수정(PATCH)한다.
          */
         post: operations["createAdminOpportunity"];
         delete?: never;
@@ -117,6 +122,10 @@ export interface paths {
          * 공고 수정 (새 검수 대기 버전)
          * @description 바꿀 필드만 보낸다. 저장하면 새 `pending` 버전이 되고 공개본은 승인 전까지 그대로다.
          *     중요 변경 필드가 바뀌면 `important_change=true`가 되어 공개본의 추천·지원서 생성을 보류한다.
+         *     - `base_version`이 현재 최신 버전이 아니면 409 `VERSION_CONFLICT`다. 다른 수정·수집을 덮어쓰지 않는다.
+         *     - 바꾼 필드는 등록과 같은 일반 텍스트 규칙(연락처·HTML 흔적 거절)으로 검사한다. 공식 URL을 바꾸면 허용 경로여야 하고, `role_tags`는 역할 사전의 키만 받는다.
+         *     - 출처를 다시 확인한 것이 아니므로 `source_checked_at`은 기준 버전 값을 유지한다.
+         *     - 같은 원문을 다시 수집하면 이 수정본을 되돌리지 않는다. 원문이 실제로 바뀐 경우만 새 `pending` 버전을 만들고, 그때도 `role_tags`·`skill_tags`는 이어받는다(docs/api/README.md D34).
          */
         patch: operations["updateAdminOpportunity"];
         trace?: never;
@@ -132,8 +141,12 @@ export interface paths {
         put?: never;
         /**
          * 검수 대기 공고 승인·공개
-         * @description `pending` → `approved`만 허용한다. 공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이
-         *     빠졌으면 422로 빠진 필드를 알려 준다. 승인하면 이 버전이 공개본이 되고 감사 기록을 남긴다.
+         * @description `pending` → `approved`만 허용한다. `base_version`은 그 공고의 최신 버전이어야 한다.
+         *     공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이 빠졌거나,
+         *     원문 주소가 출처별 공식 상세 경로 허용표에 없거나, 마감이 지났거나 모집 종료면 422로 해당 필드를 알려 준다.
+         *     수집기가 넣은 "필수조건 미검수" 표식 조건(근거가 `정규화 상태:`로 시작하는 `other`)이 남아 있어도 422(`content.requirements`)다.
+         *     PATCH로 조건을 구조화하거나 "명시된 필수조건 없음"을 확인해 표식을 지운 새 버전을 승인한다.
+         *     승인하면 이 버전이 공개본이 되고 검수 메모와 감사 기록을 남긴다. `rejected`·`hidden` 버전은 다시 승인하지 않는다.
          */
         post: operations["approveOpportunity"];
         delete?: never;
@@ -154,7 +167,11 @@ export interface paths {
         /**
          * 모집 종료 처리
          * @description 추천에서 빼는 방향이라 재검수 없이 바로 반영한다. `basis=other`이면 `note`가 필수다.
-         *     수집 실패나 일시 누락은 종료 근거가 아니다.
+         *     수집 실패나 일시 누락은 종료 근거가 아니다. `base_version`은 지금 공개 중인 버전이어야 한다.
+         *     공개본과 그 뒤의 `pending` 버전을 함께 닫는다. 닫힌 `pending` 버전은 승인할 수 없고(422) 반려(`recruitment_closed`)로 정리한다.
+         *     출처가 아직 모집 중이면 다음 수집이 "모집 중" 새 `pending` 버전을 한 번 만든다. 닫힘→열림은 재검수 대상 변경이므로
+         *     운영자가 원문을 확인해 반려하거나, 실제로 다시 열렸으면 승인한다.
+         *     검수 시각(`reviewed_at`)은 바꾸지 않는다. 이미 종료된 공개본이면 `INVALID_STATE_TRANSITION`이다.
          */
         post: operations["closeOpportunity"];
         delete?: never;
@@ -175,6 +192,9 @@ export interface paths {
         /**
          * 공고 비공개
          * @description 공개 목록·상세·추천에서 즉시 뺀다. 저장 지원서에는 `opportunity_closed` 재검토 표시가 붙는다.
+         *     `base_version`은 지금 공개 중인 버전이어야 한다(공개본이 없으면 `INVALID_STATE_TRANSITION`, 다르면 `VERSION_CONFLICT`).
+         *     그 뒤의 `pending` 버전도 함께 `hidden`이 되어, 숨기기 전에 들어온 버전을 승인해 다시 공개하지 않는다.
+         *     `hidden`은 그 버전에서 끝난다. 다시 공개하려면 새 `pending` 버전을 만들어 승인한다.
          */
         post: operations["hideOpportunity"];
         delete?: never;
@@ -195,8 +215,9 @@ export interface paths {
         /**
          * 검수 대기 공고 반려 (계획 §5 보완 계약)
          * @description `pending` → `rejected`만 허용한다. 운영자 역할과 MFA가 필요하고 감사 기록을 남긴다.
+         *     `pending`이면 최신 버전이 아니어도 반려할 수 있다. 더 새 버전에 밀린 버전이나 모집 종료로 닫힌 버전을 정리할 때 쓴다.
          *     `rejected`는 그 버전에서 끝나는 상태다. 다시 고치려면 PATCH로 새 `pending` 버전을 만든다.
-         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다.
+         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다. 연락처·주민번호 같은 형식이 보이면 422다.
          */
         post: operations["rejectOpportunity"];
         delete?: never;
@@ -1392,6 +1413,28 @@ export interface components {
             /** @description 체험의 확정 프로필 버전 */
             version: number;
         };
+        /** @description 공식 원문 근거. 서버는 주소를 열거나 조회하지 않는다. 진위나 승인의 증명이 아니라 검수 대조용이다 */
+        ManualEvidence: {
+            /**
+             * @description 공식 원문을 직접 대조했다는 운영자 확인
+             * @constant
+             */
+            confirmed_official: true;
+            /**
+             * Format: date-time
+             * @description 원문을 확인한 시각. 지금부터 48시간 안이어야 한다
+             */
+            observed_at: string;
+            /** @description 필드별 원문 인용(각 300자 이내, 연락처·꺾쇠 없음). 필수 7개와 값을 넣은 선택 필드마다 하나씩 */
+            quotes: {
+                [key: string]: string;
+            };
+            /**
+             * Format: uri
+             * @description content.source_url과 같은 공식 상세 주소
+             */
+            url: string;
+        };
         Me: {
             authenticated: boolean;
             /** @description 현재 유효한 동의만. 철회·폐기 버전은 빠진다 */
@@ -1577,8 +1620,17 @@ export interface components {
              * @enum {string}
              */
             basis: "source_closed" | "deadline_passed" | "organization_notice" | "report_confirmed" | "other";
-            /** @description basis=other이면 필수 */
+            /** @description basis=other이면 필수. 개인정보를 적지 않는다 */
             note: string | null;
+        };
+        OpportunityCreate: {
+            content: components["schemas"]["OpportunityInput"];
+            evidence: components["schemas"]["ManualEvidence"];
+            /**
+             * @description 공식 자료 수동 출처. 순서대로 50+포털, 고용24, 1365다
+             * @enum {string}
+             */
+            source: "manual_50plus" | "manual_work24" | "manual_volunteer";
         };
         OpportunityHideRequest: {
             base_version: number;
@@ -2458,11 +2510,11 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["OpportunityInput"];
+                "application/json": components["schemas"]["OpportunityCreate"];
             };
         };
         responses: {
-            /** @description 검수 대기 공고 */
+            /** @description 검수 대기 공고. 같은 키·같은 입력의 재전송도 201로 첫 결과를 돌려준다 */
             201: {
                 headers: {
                     "X-Request-ID": components["headers"]["XRequestId"];
