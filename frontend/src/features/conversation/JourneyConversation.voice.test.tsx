@@ -38,7 +38,7 @@ it('sends only the explicitly imported corrected transcript with its server refe
   expect(screen.getByLabelText('내가 해온 일')).toHaveValue('내가 확인하고 수정한 가상 경험')
   expect(fetch.mock.calls.some(([request]) => request.url.endsWith('/messages'))).toBe(false)
   await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
-  await screen.findByText('AI를 준비하고 있습니다. 직접 입력하거나 잠시 후 다시 시도해 주세요.')
+  await screen.findByText('지금은 AI를 사용할 수 없습니다. 직접 입력하거나 잠시 후 다시 시도해 주세요.')
   const message = fetch.mock.calls.find(([request]) => request.url.endsWith('/messages'))![0]
   expect(await message.clone().json()).toEqual({ text: '내가 확인하고 수정한 가상 경험', transcription_id: transcriptId, base_revision: 1 })
 })

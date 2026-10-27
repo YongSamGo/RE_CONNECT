@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import type { components } from '../../api/schema'
 import { ApiError } from '../../api/errors'
@@ -32,6 +32,8 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   const request = useRequest<Result>()
   const copy = useRequest<string>()
   const fallback = useRef<HTMLDivElement>(null)
+  // 마지막 요청이 AI 생성이었는지. 편집·승인의 422와 구분해 생성 실패 안내만 보인다.
+  const [generating, setGenerating] = useState(false)
   const editor = scope.value, busy = request.state.status === 'pending'
   const clear = scope.clear, clearAttempt = attempt.clear
   useEffect(() => {
@@ -44,6 +46,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   const apply = (draft: JourneyDraft, message: string): Result => ({ draft, message })
   const create = (mode: 'manual' | 'generate', restart = false) => {
     if (busy || (editor && !editor.replace)) return
+    setGenerating(mode === 'generate')
     void request.run(async (api, signal) => {
       const me = parseSession(required((await api.GET('/me', { signal })).data))
       if (mode === 'generate' && !me.consents.some(value => value.purpose === 'ai_processing')) throw new ApiError('CONSENT_REQUIRED', 403)
@@ -72,6 +75,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   }
   const update = () => {
     if (!editor || busy || !editor.dirty) return
+    setGenerating(false)
     void request.run(async (api, signal) => {
       const draft = parseJourneyDraft(required((await api.PATCH('/journeys/{journey_id}/drafts/{draft_id}', { signal,
         params: { path: { journey_id: journeyId, draft_id: editor.draft.draft_id } }, body: {
@@ -84,6 +88,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   }
   const reload = () => {
     if (!editor || busy || (editor.dirty && !editor.replace)) return
+    setGenerating(false)
     void request.run(async (api, signal) => {
       const draft = parseJourneyDraft(required((await api.GET('/journeys/{journey_id}/drafts/{draft_id}', { signal, params: { path: { journey_id: journeyId, draft_id: editor.draft.draft_id } } })).data), editor.draft.opportunity, editor.draft.profile_version)
       if (draft.draft_id !== editor.draft.draft_id) return invalid()
@@ -92,6 +97,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   }
   const approve = () => {
     if (!editor || busy || editor.dirty || !editor.reviewed || !editor.introduction.trim() || !editor.motivation.trim() || editor.draft.review_reasons.length) return
+    setGenerating(false)
     void request.run(async (api, signal) => {
       const draft = parseJourneyDraft(required((await api.POST('/journeys/{journey_id}/drafts/{draft_id}/approve', { signal, params: { path: { journey_id: journeyId, draft_id: editor.draft.draft_id } }, body: { base_revision: editor.draft.revision } })).data), editor.draft.opportunity, editor.draft.profile_version)
       if (draft.draft_id !== editor.draft.draft_id || draft.revision !== editor.draft.revision + 1 || !draft.approved_at || draft.review_reasons.length) return invalid()
@@ -101,6 +107,8 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
   const approved = !!editor && !editor.dirty && !!editor.draft.approved_at && !editor.draft.review_reasons.length
   const canRestartAI = attempt.value?.body.mode === 'generate' && request.state.status === 'error'
     && ['MODEL_UNAVAILABLE', 'AI_TIMEOUT', 'REQUEST_ALREADY_COMPLETED'].includes(request.state.error.code)
+  // 서버는 AI에 보낼 수 있는 확정 사실이 없으면 모델을 부르지 않고 422로 거절한다. 다시 생성해도 같으므로 직접 작성을 안내한다.
+  const noUsableFacts = generating && request.state.status === 'error' && request.state.error.code === 'VALIDATION_FAILED'
   const body = editor ? `자기소개\n${editor.introduction}\n\n지원동기\n${editor.motivation}` : ''
   return <section className="reading-width" aria-label="확정 경험으로 신청 준비"><h2>내 경험으로 지원 내용을 준비해요</h2>
     <p>AI 초안은 확정한 사실만 사용합니다. 지원동기는 직접 작성하고, 수정·승인·회원 저장을 따로 선택합니다.</p>
@@ -129,6 +137,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId }: { journeyId: st
       {copy.state.status === 'success' && <p role="status">{copy.state.data}</p>}
       <p>미승인 본문과 준비 체크는 회원 저장하지 않습니다. 화면을 나가면 화면 입력은 지워지며, 서버 임시 초안은 체험 수명을 따릅니다. 이미 복사한 내용은 클립보드에 남을 수 있습니다.</p>
     </section>}
+    {noUsableFacts && <StatusNotice title="AI 초안을 만들지 못했어요">확정 프로필에 AI에 보낼 수 있는 경험·역량이 없을 수 있어요. 연락처·건강·가족 사정이 담긴 문장은 AI에 보내지 않습니다. 직접 작성하거나 프로필을 확인해 주세요.</StatusNotice>}
     {request.state.status === 'error' && <><RequestError error={request.state.error} /><p>AI 실패 시 직접 작성을 선택할 수 있습니다. 응답 유실은 같은 생성 요청으로 재확인하고, 수정·승인 결과는 서버 편집본에서 확인해 주세요. 충돌 시 입력을 자동으로 덮어쓰지 않습니다.</p></>}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
   </section>
