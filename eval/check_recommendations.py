@@ -40,9 +40,12 @@ from app.modules.recommendations.ranking import rank_candidates  # noqa: E402
 
 SAMPLES = ROOT / "worker/samples"
 REVIEW = json.loads((ROOT / "eval/recommendation_review.json").read_text(encoding="utf-8"))
-# 출처별 (목록 오퍼레이션, 상세 오퍼레이션, ID 필드)
-SOURCES = {"senuri": ("getJobList", "getJobInfo", "jobId"),
-           "volunteer": ("getVltrAreaList", "getVltrPartcptnItem", "progrmRegistNo")}
+# 출처별 (목록 오퍼레이션들, 상세 오퍼레이션, ID 필드)
+SOURCES = {"senuri": (("getJobList",), "getJobInfo", "jobId"),
+           "volunteer": (("getVltrAreaList", "getVltrSearchWordList"), "getVltrPartcptnItem", "progrmRegistNo")}
+# 수집기(runner)는 지역 목록만 쓴다. 키워드 검색 목록은 지역 목록에 있는 필드만 남겨 같은 입력으로 맞춘다.
+AREA_LISTING_FIELDS = {"gugunCd", "nanmmbyNm", "progrmBgnde", "progrmEndde", "progrmRegistNo", "progrmSj",
+                       "progrmSttusSe", "sidoCd"}
 # 0003 마이그레이션의 초기 역할 2개도 role-catalog.json에 들어 있다.
 CATALOG = [CatalogRole.model_validate(role) for role in
            json.loads((ROOT / "docs/data/role-catalog.json").read_text(encoding="utf-8"))]
@@ -56,10 +59,15 @@ def items(path: Path):
 def load_postings(now: datetime) -> dict[str, tuple[PublicOpportunity, dict]]:
     """key("출처:ID") → (수집 그대로의 공개본, 목록 필드). 같은 ID는 가장 최근 응답을 쓴다."""
     postings = {}
-    for source, (listing_op, detail_op, id_field) in SOURCES.items():
+    for source, (listing_ops, detail_op, id_field) in SOURCES.items():
         listings, details = {}, {}
-        for path in sorted((SAMPLES / source).glob(f"*-{listing_op}.xml")):
-            listings.update({item.findtext(id_field): item for item in items(path)})
+        for listing_op in listing_ops:
+            for path in sorted((SAMPLES / source).glob(f"*-{listing_op}.xml")):
+                for item in items(path):
+                    if listing_op == "getVltrSearchWordList":
+                        for child in [child for child in item if child.tag not in AREA_LISTING_FIELDS]:
+                            item.remove(child)
+                    listings[item.findtext(id_field)] = item
         for path in sorted((SAMPLES / source).glob(f"*-{detail_op}.xml")):
             details.update({item.findtext(id_field): item for item in items(path)})
         for external_id, detail in details.items():

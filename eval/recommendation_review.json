@@ -111,6 +111,14 @@
         "facility_manager"
       ]
     },
+    "senuri:KJKH002610010003": {
+      "skill_tags": [
+        "운전"
+      ],
+      "role_tags": [
+        "mobility_supporter"
+      ]
+    },
     "volunteer:3490135": {
       "skill_tags": [
         "초등 교육",
@@ -126,6 +134,14 @@
       ],
       "role_tags": [
         "learning_mentor"
+      ]
+    },
+    "volunteer:3507942": {
+      "skill_tags": [
+        "디지털 기기 교육"
+      ],
+      "role_tags": [
+        "digital_guide"
       ]
     },
     "volunteer:3510821": {
@@ -176,12 +192,60 @@
         "learning_mentor"
       ]
     },
+    "volunteer:3524244": {
+      "skill_tags": [
+        "디지털 기기 교육"
+      ],
+      "role_tags": [
+        "digital_guide"
+      ]
+    },
+    "volunteer:3524253": {
+      "skill_tags": [
+        "디지털 기기 교육"
+      ],
+      "role_tags": [
+        "digital_guide"
+      ]
+    },
+    "volunteer:3524259": {
+      "skill_tags": [
+        "디지털 기기 교육"
+      ],
+      "role_tags": [
+        "digital_guide"
+      ]
+    },
+    "volunteer:3526008": {
+      "skill_tags": [
+        "디지털 기기 교육"
+      ],
+      "role_tags": [
+        "digital_guide"
+      ]
+    },
+    "volunteer:3531185": {
+      "skill_tags": [
+        "조리"
+      ],
+      "role_tags": [
+        "meal_assistant"
+      ]
+    },
     "volunteer:3531760": {
       "skill_tags": [
         "행사 진행"
       ],
       "role_tags": [
         "community_organizer"
+      ]
+    },
+    "volunteer:3532844": {
+      "skill_tags": [
+        "초등 교육"
+      ],
+      "role_tags": [
+        "learning_mentor"
       ]
     },
     "volunteer:3533155": {
@@ -223,6 +287,16 @@
       ],
       "role_tags": [
         "community_organizer"
+      ]
+    },
+    "volunteer:3536979": {
+      "skill_tags": [
+        "고객 응대",
+        "환자 돌봄"
+      ],
+      "role_tags": [
+        "visitor_guide",
+        "care_assistant"
       ]
     },
     "volunteer:3537380": {
@@ -335,7 +409,8 @@
       "must_include": [],
       "must_not_include": [
         "senuri:K180412610210018",
-        "senuri:KJ21062610260030"
+        "senuri:KJ21062610260030",
+        "senuri:KJKH002610010003"
       ],
       "count": 0,
       "why": "안양·군포·의왕 유급 일자리 표본은 택시 운전·미화뿐이라 시설관리 경력 근거가 없다(표본 부족)"
@@ -363,13 +438,20 @@
       "why": "서울 유급 일자리 표본에 회계 직무가 없다(표본 부족)"
     },
     "P05": {
-      "must_include": [],
+      "must_include": [
+        "volunteer:3507942",
+        "volunteer:3524259"
+      ],
       "must_not_include": [
         "volunteer:3539814",
         "volunteer:3540167"
       ],
-      "count": 0,
-      "why": "성남 봉사 표본 2건은 디지털 안내와 관련이 없다(표본 부족)"
+      "count": null,
+      "why": "전직 개발자에게 성남 경로당·평생교육 스마트폰 수업 보조는 디지털 안내 역할의 맞는 후보다. 바자회·청년 프로그램은 근거가 없다",
+      "known_missing": {
+        "volunteer:3507942": "D3",
+        "volunteer:3524259": "D3"
+      }
     },
     "P06": {
       "must_include": [
@@ -383,13 +465,16 @@
       "why": "노원 차량봉사는 운전 경력 근거가 있다"
     },
     "P07": {
-      "must_include": [],
+      "must_include": [
+        "volunteer:3536979"
+      ],
       "must_not_include": [
         "volunteer:3536351",
-        "volunteer:3529883"
+        "volunteer:3529883",
+        "volunteer:3539096"
       ],
-      "count": 0,
-      "why": "연수·남동 봉사 표본에 돌봄 활동이 없다(표본 부족)"
+      "count": 1,
+      "why": "전직 간호조무사에게 연수구 병원 안내·동행 지원은 환자 돌봄 근거가 있다. 이미용·대학생 한정 도서관·장난감월드는 근거가 없다"
     },
     "P08": {
       "must_include": [
