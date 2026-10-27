@@ -126,8 +126,10 @@ export interface paths {
         put?: never;
         /**
          * 검수 대기 공고 승인·공개
-         * @description `pending` → `approved`만 허용한다. 공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이
-         *     빠졌으면 422로 빠진 필드를 알려 준다. 승인하면 이 버전이 공개본이 되고 감사 기록을 남긴다.
+         * @description `pending` → `approved`만 허용한다. `base_version`은 그 공고의 최신 버전이어야 한다.
+         *     공개 필수 항목(제목·기관·지역 또는 원격·모집 상태·HTTPS 공식 원문·접수 경로)이 빠졌거나,
+         *     원문 주소가 출처별 공식 상세 경로 허용표에 없거나, 마감이 지났거나 모집 종료면 422로 해당 필드를 알려 준다.
+         *     승인하면 이 버전이 공개본이 되고 검수 메모와 감사 기록을 남긴다. `rejected`·`hidden` 버전은 다시 승인하지 않는다.
          */
         post: operations["approveOpportunity"];
         delete?: never;
@@ -148,7 +150,9 @@ export interface paths {
         /**
          * 모집 종료 처리
          * @description 추천에서 빼는 방향이라 재검수 없이 바로 반영한다. `basis=other`이면 `note`가 필수다.
-         *     수집 실패나 일시 누락은 종료 근거가 아니다.
+         *     수집 실패나 일시 누락은 종료 근거가 아니다. `base_version`은 지금 공개 중인 버전이어야 한다.
+         *     공개본과 그 뒤의 `pending` 버전을 함께 닫아, 종료 전에 들어온 "모집 중" 버전을 나중에 승인해도 다시 열리지 않는다.
+         *     검수 시각(`reviewed_at`)은 바꾸지 않는다. 이미 종료된 공개본이면 `INVALID_STATE_TRANSITION`이다.
          */
         post: operations["closeOpportunity"];
         delete?: never;
@@ -169,6 +173,8 @@ export interface paths {
         /**
          * 공고 비공개
          * @description 공개 목록·상세·추천에서 즉시 뺀다. 저장 지원서에는 `opportunity_closed` 재검토 표시가 붙는다.
+         *     `base_version`은 지금 공개 중인 버전이어야 한다(공개본이 없으면 `INVALID_STATE_TRANSITION`, 다르면 `VERSION_CONFLICT`).
+         *     `hidden`은 그 버전에서 끝난다. 다시 공개하려면 새 `pending` 버전을 만들어 승인한다.
          */
         post: operations["hideOpportunity"];
         delete?: never;
@@ -189,8 +195,9 @@ export interface paths {
         /**
          * 검수 대기 공고 반려 (계획 §5 보완 계약)
          * @description `pending` → `rejected`만 허용한다. 운영자 역할과 MFA가 필요하고 감사 기록을 남긴다.
+         *     `base_version`은 그 공고의 최신 버전이어야 한다. 더 새 버전이 있으면 `VERSION_CONFLICT`다.
          *     `rejected`는 그 버전에서 끝나는 상태다. 다시 고치려면 PATCH로 새 `pending` 버전을 만든다.
-         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다.
+         *     `reason_code=other`이면 `note`가 필수다. 메모에 개인정보를 적지 않는다. 연락처·주민번호 같은 형식이 보이면 422다.
          */
         post: operations["rejectOpportunity"];
         delete?: never;
