@@ -31,6 +31,7 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.
+- `@types/node`도 Node 24 계열을 유지한다. TypeScript는 API 생성에 쓰는 `openapi-typescript` 7.13.0의 peer 요구(`^5.x`)에 맞춰 5 계열을 유지한다. Dependabot은 이 범위를 벗어난 버전 업데이트를 보류한다. Node 또는 TypeScript의 major 전환 시 실행 환경·CI·API 생성 도구의 호환성을 함께 검증하고 해당 보류 설정을 갱신한다.
 - 패키지 매니저는 npm이다. `package-lock.json`을 커밋하고, 설치는 `npm ci --ignore-scripts`로 한다. CI도 같은 명령으로 설치 스크립트 실행을 막는다.
 - `package.json`에 `lint`·`build` 스크립트를 둔다. CI가 `npm run lint`, `npm test --if-present`, `npm run build`를 실행한다.
 
