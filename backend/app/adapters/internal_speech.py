@@ -134,14 +134,42 @@ class InternalSpeechAdapter:
             raise SpeechUnavailableError('내부 음성 서비스에 연결하지 못했습니다') from None
 
     async def is_ready(self) -> bool:
+        # 준비 응답 해석은 model_readiness 한 곳에만 둔다. 둘 다 준비돼야 전체 준비다.
+        return all((await self.model_readiness()).values())
+
+    async def model_readiness(self) -> dict[str, bool]:
+        """운영 상태용 STT·TTS 개별 준비 여부. 응답이 프로토콜과 정확히 맞지 않으면 둘 다 준비 안 됨으로 본다.
+
+        음성 서비스는 둘 다 준비돼야 200 `ready`, 아니면 503 `not_ready`와 모델별 참/거짓을 준다.
+        """
+        unknown = {'stt': False, 'tts': False}
         try:
-            raw, media = await asyncio.wait_for(self._request('GET', '/health/ready', maximum=4096), self.ready_timeout)
-            if media != 'application/json':
-                return False
-            data = json.loads(raw)
-            return data == {'protocol_version': 1, 'status': 'ready', 'stt': True, 'tts': True} and type(data.get('protocol_version')) is int and type(data.get('stt')) is bool and type(data.get('tts')) is bool
-        except (SpeechUnavailableError, SpeechInvalidOutputError, SpeechTimeoutError, TimeoutError, ValueError, TypeError):
-            return False
+            status, body = await asyncio.wait_for(self._read_ready(), self.ready_timeout)
+            data = json.loads(body)
+        except (httpx.HTTPError, SpeechInvalidOutputError, TimeoutError, ValueError, TypeError):
+            return unknown
+        if not isinstance(data, dict) or set(data) != {'protocol_version', 'status', 'stt', 'tts'}:
+            return unknown
+        stt, tts = data['stt'], data['tts']
+        if type(data['protocol_version']) is not int or data['protocol_version'] != 1 or type(stt) is not bool or type(tts) is not bool:
+            return unknown
+        ready = stt and tts
+        if data['status'] != ('ready' if ready else 'not_ready') or status != (200 if ready else 503):
+            return unknown
+        return {'stt': stt, 'tts': tts}
+
+    async def _read_ready(self) -> tuple[int, bytes]:
+        async with self._client(self.ready_timeout) as client:
+            async with client.stream('GET', '/health/ready') as response:
+                media = response.headers.get('Content-Type', '').split(';', 1)[0].strip().lower()
+                if response.headers.get('Content-Encoding', 'identity').lower() != 'identity' or media != 'application/json':
+                    raise SpeechInvalidOutputError('음성 준비 응답 형식이 아닙니다')
+                body = bytearray()
+                async for chunk in response.aiter_bytes(chunk_size=4096):
+                    if len(body) + len(chunk) > 4096:
+                        raise SpeechInvalidOutputError('음성 준비 응답 크기를 초과했습니다')
+                    body.extend(chunk)
+                return response.status_code, bytes(body)
 
     async def transcribe(self, audio: bytes, *, content_type: str, on_runtime_ended: Callable[[], None] | None = None) -> SpeechTranscript:
         self.validate_transcription(audio, content_type=content_type)
