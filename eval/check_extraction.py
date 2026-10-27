@@ -7,6 +7,7 @@
 
     backend/.venv/bin/python -I eval/check_extraction.py --repeat 2 --out security-reports/extraction.json
     backend/.venv/bin/python -I eval/check_extraction.py --persona P04 --show   # 한 명의 추출 내용까지 출력
+    backend/.venv/bin/python -I eval/check_extraction.py --repeat 2 --prompt-file eval/prompts/extraction-v3.txt  # 후보 비교
 
 채점 항목(사람 검토를 대신하지 않는다. 문구의 의미 일치는 사람이 본다):
 - accepted: 서버 근거 검사를 통과해 결과가 남았는지
@@ -110,8 +111,14 @@ class Recording:
 async def run(args) -> list[dict]:
     sys.path.insert(0, str(ROOT / "backend"))
     from app.adapters.ollama import OllamaLLMAdapter
-    from app.modules.generation.prompts import PROMPT_VERSION
+    from app.modules.generation import prompts
     from app.modules.generation.service import GroundedGenerationService
+
+    prompt_version = prompts.PROMPT_VERSION
+    if args.prompt_file:
+        # 후보 비교용. 서비스는 호출 때 prompts.EXTRACTION을 읽으므로 이 실행 안에서만 바뀐다.
+        prompts.EXTRACTION = args.prompt_file.read_text(encoding="utf-8").strip()
+        prompt_version = args.prompt_file.stem
 
     recording = Recording(OllamaLLMAdapter(base_url=args.base_url, model=args.model, timeout_seconds=args.timeout,
                                            num_predict=2048, num_ctx=16384, think=False, max_response_bytes=1_048_576))
@@ -126,7 +133,7 @@ async def run(args) -> list[dict]:
             except Exception as exc:  # 측정 도구: 예외 종류만 남기고 원문은 출력하지 않는다
                 preview, error = None, type(exc).__name__
             latency = round(time.monotonic() - started, 2)
-            row = {"persona": persona_id, "attempt": attempt, "prompt": PROMPT_VERSION, "latency_s": latency,
+            row = {"persona": persona_id, "attempt": attempt, "prompt": prompt_version, "latency_s": latency,
                    "over_limit": latency > SERVICE_TIMEOUT, "error": error,
                    **score(persona, CASES[persona_id], recording.plan, preview)}
             if args.show and preview is not None:
@@ -153,6 +160,7 @@ def main() -> int:
     parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--persona", action="append", choices=sorted(CASES))
     parser.add_argument("--show", action="store_true", help="추출 내용까지 출력(가상 인물만)")
+    parser.add_argument("--prompt-file", type=Path, help="경험 추출 지시문 후보(eval/prompts/). 없으면 서비스의 현재 지시문")
     parser.add_argument("--out", type=Path, help="결과 JSON 저장 경로(security-reports/ 아래 권장)")
     args = parser.parse_args()
     rows = asyncio.run(run(args))
