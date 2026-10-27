@@ -5,6 +5,7 @@
 """
 
 import json
+import re
 from contextlib import contextmanager
 from datetime import timedelta
 from pathlib import Path
@@ -13,8 +14,9 @@ from typing import get_args
 from uuid import UUID, uuid4
 
 import pytest
+from alembic import command
 from pydantic import ValidationError
-from sqlalchemy import insert, select
+from sqlalchemy import insert, inspect, select
 
 import manage_audit
 from app.core.business_errors import AppError
@@ -28,6 +30,7 @@ from app.persistence import AuditEvent, Base
 from app.persistence.operations import AUDIT_RETENTION
 from tests.persistence_helpers import NOW, open_test_database
 from tests.test_consents import csrf
+from tests.test_migrations import migration_config
 from tests.test_opportunity_reviews import OPERATOR, PATHS, Members, client_for, repository as review_repository, seed
 
 BACKENDS = pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
@@ -87,6 +90,19 @@ def test_audit_view_enums_match_api_contract():
         line = next(line for line in block.splitlines() if line.strip().startswith(field + ":"))
         listed = {value.strip() for value in line.split("enum: [", 1)[1].split("]", 1)[0].split(",")} - {"null"}
         assert set(get_args(literal)) == listed, field
+
+
+@BACKENDS
+def test_audit_view_enums_match_migrated_check_constraints(backend):
+    """마이그레이션이 만든 실제 CHECK 허용표와 조회 모델이 같아야 한다.
+
+    한쪽에만 종류가 더해지면 그 기록이 들어간 기간의 조회 전체가 503으로 닫히므로 여기서 먼저 실패시킨다.
+    """
+    with open_test_database(backend) as db:
+        command.upgrade(migration_config(db), "head")
+        checks = {check["name"]: check["sqltext"] for check in inspect(db).get_check_constraints("audit_events")}
+        for field, literal in (("action", AuditAction), ("actor_role", ActorRole), ("target_type", TargetType), ("result", AuditResult)):
+            assert set(re.findall(r"'([^']+)'", checks["ck_audit_events_" + field])) == set(get_args(literal)), field
 
 
 # ---- 조회·정리 (실제 DB) ----

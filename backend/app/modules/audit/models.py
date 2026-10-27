@@ -12,16 +12,13 @@ from pydantic_core import PydanticCustomError
 
 from app.contracts.fields import CONTRACT_CONFIG
 from app.contracts.time import UtcDatetime
-from app.persistence.operations import AUDIT_RETENTION
+from app.persistence.operations import AUDIT_ACTIONS, AUDIT_ACTOR_ROLES, AUDIT_RESULTS, AUDIT_RETENTION, AUDIT_TARGET_TYPES
 
-ActorRole = Literal["operator", "user", "system"]
-AuditAction = Literal[
-    "opportunity.create", "opportunity.update", "opportunity.approve", "opportunity.reject", "opportunity.hide",
-    "opportunity.close", "report.update", "mfa.verify", "mfa.fail", "mfa.lock", "role.grant", "role.revoke",
-    "access.denied",
-]
-TargetType = Literal["opportunity", "report", "user"]
-AuditResult = Literal["success", "denied", "failed"]
+# DB CHECK와 같은 허용표 상수로 만든다. 한쪽에만 종류를 더해 조회가 실패로 닫히는 일을 막는다.
+ActorRole = Literal[AUDIT_ACTOR_ROLES]
+AuditAction = Literal[AUDIT_ACTIONS]
+TargetType = Literal[AUDIT_TARGET_TYPES]
+AuditResult = Literal[AUDIT_RESULTS]
 PAGE_SIZE = 20
 
 
