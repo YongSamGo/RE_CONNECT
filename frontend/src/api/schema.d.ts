@@ -35,8 +35,11 @@ export interface paths {
          *     같은 OTP는 다시 쓸 수 없다. OTP 값은 로그·감사 기록에 남기지 않는다.
          *
          *     - 실패는 세션이 아니라 **운영자 계정** 단위로 센다. 로그아웃·재로그인으로 초기화되지 않는다.
-         *     - 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After` 포함)로 응답한다. 잠금 중에는 OTP를 확인하지 않는다.
+         *     - 연속 5회 실패하면 15분 잠그고 429 `MFA_LOCKED`(`Retry-After` 포함)로 응답한다. 5번째 실패 응답부터 429다. 잠금 중에는 OTP를 확인하지 않는다.
          *     - 성공하면 실패 횟수를 0으로 되돌린다. 실패와 잠금은 감사 기록(`mfa.fail`, `mfa.lock`)에 남긴다.
+         *     - 성공하면 권한 상승으로 보고 세션·CSRF 쿠키를 새로 발급하고 이전 세션을 폐기한다. MFA 확인은 새 세션에만 기록한다.
+         *     - 확인은 60분 동안 유효하다(`expires_at`). 세션 절대 만료보다 길지 않다. 로그아웃·재로그인·역할 회수·MFA 재등록 뒤에는 다시 확인해야 한다.
+         *     - 인증 앱(TOTP, 30초) 등록·복구와 운영자 역할 부여·회수는 이 API가 아니라 서버의 관리 절차로만 한다(`backend/manage_operators.py`).
          */
         post: operations["verifyMfa"];
         delete?: never;
@@ -1109,7 +1112,7 @@ export interface components {
         /** @description 최소 메타데이터만. 개인 프로필·지원서 본문, OTP, 토큰은 넣지 않는다 */
         AuditEvent: {
             /** @enum {string} */
-            action: "opportunity.create" | "opportunity.update" | "opportunity.approve" | "opportunity.reject" | "opportunity.hide" | "opportunity.close" | "report.update" | "mfa.verify" | "mfa.fail" | "mfa.lock" | "role.grant" | "role.revoke" | "access.denied";
+            action: "opportunity.create" | "opportunity.update" | "opportunity.approve" | "opportunity.reject" | "opportunity.hide" | "opportunity.close" | "report.update" | "mfa.verify" | "mfa.fail" | "mfa.lock" | "mfa.enroll" | "mfa.reset" | "role.grant" | "role.revoke" | "access.denied";
             /** Format: uuid */
             actor_id: string | null;
             /** @enum {string} */
@@ -2309,9 +2312,10 @@ export interface operations {
             };
         };
         responses: {
-            /** @description MFA 확인 완료 */
+            /** @description MFA 확인 완료. 새 세션·CSRF 쿠키를 함께 보낸다 */
             200: {
                 headers: {
+                    "Set-Cookie": components["headers"]["SetSessionCookies"];
                     "X-Request-ID": components["headers"]["XRequestId"];
                     [name: string]: unknown;
                 };

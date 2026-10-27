@@ -40,6 +40,9 @@ from app.modules.auth.member_store import RedisMemberStore, UnavailableMemberSto
 from app.modules.auth.members import MemberService
 from app.modules.auth.member_cleanup import RedisMemberCleanup, UnavailableMemberCleanup
 from app.modules.deletions import router as deletions
+from app.modules.operators import router as operators
+from app.modules.operators.repository import SqlOperatorMfaRepository, UnavailableOperatorMfaRepository
+from app.modules.operators.service import OperatorMfaService
 from app.modules.deletions.journal import FileDeletionJournal, UnavailableDeletionJournal
 from app.modules.deletions.repository import SqlDeletionRepository, UnavailableDeletionRepository
 from app.modules.deletions.service import DeletionService
@@ -213,6 +216,11 @@ def create_app(
         cipher = ContentCipher(EncryptionKeyRing.from_settings(settings))
     except EncryptionUnavailable:
         cipher = None
+    # MFA 비밀값은 DB와 분리한 암호화 키로만 읽는다. DB·키 중 하나라도 없으면 관리 기능을 닫는다.
+    operator_mfa = (SqlOperatorMfaRepository(sessionmaker(engine).begin, cipher)
+                    if engine is not None and cipher is not None else UnavailableOperatorMfaRepository())
+    app.state.member_service.mfa = operator_mfa
+    app.state.operator_mfa_service = OperatorMfaService(operator_mfa, app.state.member_service)
     app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
         app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
     app.state.journey_service.stored_profiles = app.state.saved_profile_service
@@ -268,6 +276,7 @@ def create_app(
     app.include_router(recommendations.router, prefix=API_PREFIX)
     app.include_router(drafts.router, prefix=API_PREFIX)
     app.include_router(speech.router, prefix=API_PREFIX)
+    app.include_router(operators.router, prefix=API_PREFIX)
 
     return app
 

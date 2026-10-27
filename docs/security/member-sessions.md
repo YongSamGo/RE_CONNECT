@@ -4,7 +4,7 @@
 
 검증한 카카오 숫자 ID는 User.kakao_subject 고유 제약으로 내부 UUID 하나와 연결한다. 최초 생성은 role=user/status=active로 고정하며 브라우저가 역할·내부 계정 ID를 선택하지 않는다. 동시 첫 로그인은 ON CONFLICT와 행 잠금으로 한 User에 연결한다. 기존 운영자 역할이나 정지 상태를 덮어쓰지 않는다. 정지 계정의 로그인은 실패한다. 회원번호는 로그/응답에 반환하지 않는다.
 
-Redis 세션 해시에 내부 user_id·reauth_until_ms만 추가한다. 카카오 코드/토큰/회원번호/DB 역할은 넣지 않는다. 기존 임의 subject_id는 체험용 세션 주체이고 user_id와 구분한다. 같은 회원의 다른 세션도 다른 subject_id를 가져 이전 익명 자료나 다른 세션의 체험을 자동 상속하지 않는다. 회원 데이터의 소유권은 require_member가 반환한 내부 User ID로 검사해야 한다.
+Redis 세션 해시에 내부 user_id·reauth_until_ms만 추가한다(운영자는 MFA 확인 뒤 mfa_until_ms·mfa_credential도 기록한다. [운영자 MFA](operator-mfa.md)). 카카오 코드/토큰/회원번호/DB 역할은 넣지 않는다. 기존 임의 subject_id는 체험용 세션 주체이고 user_id와 구분한다. 같은 회원의 다른 세션도 다른 subject_id를 가져 이전 익명 자료나 다른 세션의 체험을 자동 상속하지 않는다. 회원 데이터의 소유권은 require_member가 반환한 내부 User ID로 검사해야 한다.
 
 SqlAccountRepository는 매 조회 새 트랜잭션에서 현재 상태·역할을 읽는다. PostgreSQL statement5초/lock1초 제한, SQL 값 바인딩과 고정 오류를 사용한다. Redis 확인 → DB 확인 → Redis 재확인으로 DB 대기 중 세션 회수를 검사한다. DB/Redis 장애를 익명 인증 성공이나 메모리 대체 인증으로 바꾸지 않는다.
 
