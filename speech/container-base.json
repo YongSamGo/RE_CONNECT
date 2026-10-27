@@ -1,0 +1,9 @@
+{
+  "checked_on": "2026-10-19",
+  "source": "https://hub.docker.com/v2/repositories/library/python/tags/3.12.15-slim-trixie",
+  "tag": "python:3.12.15-slim-trixie",
+  "index_digest": "sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1",
+  "linux_amd64_digest": "sha256:2b4f19dae3a777dfc3b76730bda1e82e1f66ab2a2686fa93ca78edbfb4f04ffe",
+  "last_updated": "2026-10-09T14:07:22.562282Z",
+  "linux_amd64_pushed": "2026-10-06T05:09:27.520602764Z"
+}

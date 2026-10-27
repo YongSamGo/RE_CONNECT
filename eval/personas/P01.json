@@ -30,5 +30,6 @@
     "activity_constraints": null
   },
   "must_not_extract": {"exact": [], "semantic": []},
-  "expected_roles": ["학습 지도 봉사", "독서 지도 봉사", "아동 멘토링"]
+  "expected_roles": ["학습 지도 봉사", "독서 지도 봉사", "아동 멘토링"],
+  "expected_role_ids": ["learning_mentor", "reading_mentor"]
 }

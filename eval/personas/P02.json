@@ -29,5 +29,6 @@
     "activity_constraints": null
   },
   "must_not_extract": {"exact": [], "semantic": []},
-  "expected_roles": ["시설 관리원", "아파트 경비원", "전기 설비 관리"]
+  "expected_roles": ["시설 관리원", "아파트 경비원", "전기 설비 관리"],
+  "expected_role_ids": ["facility_manager", "visitor_guide"]
 }

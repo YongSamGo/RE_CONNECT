@@ -31,5 +31,6 @@
   },
   "must_not_extract": {"exact": ["퇴행성 관절염"], "semantic": ["관절염 등 질환·진단 정보 (예: '관절이 안 좋음', '무릎 질환')"]},
   "needs_confirmation": [{"field": "activity_types", "reason": "'돈을 받든 안 받든 상관없어요'는 보수 조건(paid_preference=any)의 근거일 뿐 활동 유형을 둘 다로 정할 근거는 아니다"}],
-  "expected_roles": ["경로식당 조리 보조", "주민 모임 진행", "말벗 봉사"]
+  "expected_roles": ["경로식당 조리 보조", "주민 모임 진행", "말벗 봉사"],
+  "expected_role_ids": ["community_organizer", "meal_assistant"]
 }
