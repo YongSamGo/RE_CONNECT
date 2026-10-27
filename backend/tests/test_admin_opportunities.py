@@ -371,7 +371,8 @@ def test_http_operator_round_trip_on_real_database(backend, tmp_path):
 def test_contract_examples_match_backend_models():
     from pathlib import Path
     import json
-    import yaml
+    # PyYAML은 백엔드 의존성이 아니다. 백엔드 단위 잡(bandit이 설치)에서만 돌고, 해시 고정 통합 잡에서는 건너뛴다.
+    yaml = pytest.importorskip("yaml")
     from app.modules.admin_opportunities.models import AdminOpportunity
     from app.modules.ingestion.manual import ManualInput
     spec = yaml.safe_load((Path(__file__).resolve().parents[2] / "docs/api/openapi.yaml").read_text(encoding="utf-8"))
