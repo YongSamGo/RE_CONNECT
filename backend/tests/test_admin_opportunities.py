@@ -242,6 +242,29 @@ def test_source_closing_keeps_operator_edits_across_repeated_collection(backend,
 
 
 @pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_source_reopening_after_close_creates_pending_version_with_operator_edits(backend, tmp_path):
+    with ingestion_database(backend, tmp_path) as (engine, source):
+        repository, operator = prepare(engine, source)
+        raw, record = collector(engine, source)
+        first = record(raw, NOW)
+        edited = reviewed(engine, repository, operator, first.opportunity_id)
+        assert record(raw.model_copy(update={"recruitment_status": "closed"}), NOW + timedelta(hours=1)).outcome == "closed"
+
+        # 출처가 같은 내용으로 다시 열리면 닫힌 채 두지 않고 재검수 대기 버전을 만든다(닫힘→열림은 중요 변경).
+        reopened = record(raw, NOW + timedelta(hours=2))
+        assert (reopened.version, reopened.outcome) == (edited.version + 1, "changed")
+        with engine.connect() as db:
+            row = db.execute(select(V.recruitment_status, V.review_status, V.activity_province, V.requirements)
+                             .where(V.opportunity_id == first.opportunity_id, V.version == reopened.version)).one()
+        # 내용은 운영자 수정본(지역·검수한 조건)에 모집 상태만 바꾼 것이다.
+        assert (row[0], row[1], row[2], row[3][0]["clarity"]) == ("open", "pending", "seoul", "clear")
+        # 같은 원문을 다시 수집하면 그 버전 그대로다.
+        assert record(raw, NOW + timedelta(hours=3)).outcome == "unchanged"
+        with engine.connect() as db:
+            assert db.scalar(select(func.count()).select_from(V).where(V.opportunity_id == first.opportunity_id)) == reopened.version
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
 def test_patch_carries_observed_hash_of_base_version(backend, tmp_path):
     with ingestion_database(backend, tmp_path) as (engine, source):
         repository, operator = prepare(engine, source)

@@ -83,8 +83,18 @@ class SqlIngestionRepository:
                 # 원문 관측이 그대로면 운영자가 고친 최신 버전(지역·조건 등)을 수집 결과로 되돌리지 않는다.
                 observed = content_hash(command.snapshot)
                 if observed == latest["observed_hash"]:
-                    db.execute(update(V).where(V.opportunity_id == id, V.version == latest["version"]).values(source_checked_at=command.checked_at))
-                    return RecordResult(id, latest["version"], "unchanged")
+                    if latest["recruitment_status"] == command.snapshot.recruitment_status:
+                        db.execute(update(V).where(V.opportunity_id == id, V.version == latest["version"]).values(source_checked_at=command.checked_at))
+                        return RecordResult(id, latest["version"], "unchanged")
+                    if command.snapshot.recruitment_status != "closed":
+                        # 종료만 반영된 뒤 같은 원문으로 다시 열렸다. 닫힘→열림은 재검수 대상이므로 새 pending 버전을
+                        # 만들되, 내용은 운영자 수정본에 모집 상태만 바꾼다(수집 원문으로 되돌리지 않는다).
+                        if command.checked_at == latest["source_checked_at"]:
+                            raise AppError("VERSION_CONFLICT")
+                        reopened = before.model_copy(update={"recruitment_status": command.snapshot.recruitment_status})
+                        version = latest["version"] + 1
+                        db.execute(insert(V), pending_version_values(reopened, command.checked_at, id, version, observed_hash=observed))
+                        return RecordResult(id, version, "changed")
                 # 원문에서 모집 상태만 종료로 바뀌었으면 새 버전 없이 종료만 반영한다(운영자 수정본 유지).
                 # 종료를 반영한 뒤에도 관측 해시는 종료 전 원문 그대로라, 관측 당시 상태를 모두 대입해 비교한다.
                 status_only = command.snapshot.recruitment_status == "closed" and any(
