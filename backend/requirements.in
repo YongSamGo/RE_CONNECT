@@ -4,3 +4,18 @@ uvicorn
 pydantic-settings
 # 내부 Ollama 호출 (app/adapters/ollama.py)
 httpx
+# 2026-10-21 보안 수정: 알려진 CA 번들 문제의 수정 버전. 일반 7일 대기의 보안 예외.
+certifi>=2026.10.19
+# 영구 저장 모델·PostgreSQL 드라이버·마이그레이션 (W02-05/07).
+sqlalchemy
+alembic
+psycopg[binary]
+# psycopg의 Windows 전용 의존성도 Linux 대상 해시 잠금에 포함한다.
+tzdata
+redis
+# 개인 승인 본문의 AEAD 암호화와 목적/대상별 키 파생 (W03-06).
+cryptography
+
+# 공공 API의 검증한 IP 연결과 안전한 XML 파싱 (#45)
+httpcore[asyncio]
+defusedxml
