@@ -4,7 +4,7 @@
 같은 공고의 approved 버전만 참조할 수 있다. Journey는 영구 테이블/FK가 아니다.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from uuid import UUID, uuid4
 
 from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, ForeignKeyConstraint, Index, Integer, JSON, LargeBinary, String, UniqueConstraint, Uuid
@@ -270,7 +270,16 @@ class Report(Base):
     details_key_id: Mapped[str | None] = mapped_column(String(128))
 
 
+# 보안·운영자 감사 기록의 보관기간 (Plan/02 §5). 조회 기간의 최대 길이도 같다.
+AUDIT_RETENTION = timedelta(days=30)
+
+
 class AuditEvent(Base):
+    """최소 감사 메타데이터. 개인 본문·OTP·토큰·검수 메모는 넣지 않는다 (W07-06).
+
+    공고 검수의 사유 코드·메모는 같은 request_id의 opportunity_reviews에 둔다.
+    """
+
     __tablename__ = "audit_events"
     __table_args__ = (
         CheckConstraint("actor_role IN ('operator', 'user', 'system')", name="actor_role"),
