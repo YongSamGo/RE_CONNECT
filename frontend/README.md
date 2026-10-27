@@ -48,6 +48,7 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 ## 버전과 패키지 매니저
 
 - Node는 루트 [.nvmrc](../.nvmrc)의 버전(24)을 쓴다. CI도 같은 버전이다.
+- `npm run typecheck`는 `typescript-compiler` 별칭으로 설치한 TypeScript 7.0.2 컴파일러를 사용한다. `npm run build`도 이 명령을 실행한다. API 타입 생성기는 `openapi-typescript` 7.13.0의 peer 요구와 `ts.factory` API에 맞춰 `typescript` 5.9.3을 별도로 사용한다. 두 패키지가 제공하는 `tsc` 실행 파일 이름이 같으므로 컴파일러 경로를 명시한다. API 생성기가 새 컴파일러 API를 지원하면 이 분리를 재검토한다.
 - 패키지 매니저는 npm이다. `package-lock.json`을 커밋하고, 설치는 `npm ci --ignore-scripts`로 한다. CI도 같은 명령으로 설치 스크립트 실행을 막는다.
 - `package.json`에 `lint`·`build` 스크립트를 둔다. CI가 `npm run lint`, `npm test --if-present`, `npm run build`를 실행한다.
 
