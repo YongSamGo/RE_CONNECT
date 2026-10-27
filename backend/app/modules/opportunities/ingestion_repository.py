@@ -6,10 +6,25 @@ from pydantic import ValidationError
 from sqlalchemy import insert, select, update
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.opportunities.ingestion import RecordOpportunity, RecordResult
 from app.modules.opportunities.versions import changed_fields, content_hash, snapshot_from_row
 from app.persistence.operations import Source, OpportunityDocument as D, OpportunityVersion as V, OpportunityPublication as P
+
+
+def pending_version_values(snapshot, checked_at, opportunity_id, version):
+    """새 검수 대기 버전 행. 수집·수동 입력·운영자 수정이 같은 규칙으로 만든다."""
+    values = snapshot.model_dump(mode="json")
+    region = values.pop("activity_region")
+    return {
+        **values, "activity_province": region["province"] if region else None,
+        "activity_district": region["district"] if region else None,
+        "deadline_date": snapshot.deadline_date, "deadline_at": snapshot.deadline_at,
+        "opportunity_id": opportunity_id, "version": version, "review_status": "pending",
+        "reviewed_at": None, "source_checked_at": checked_at,
+        "content_hash": content_hash(snapshot), "created_at": utc_now(),
+    }
 
 
 class SqlIngestionRepository:
@@ -18,16 +33,7 @@ class SqlIngestionRepository:
 
     @staticmethod
     def _values(command, opportunity_id, version):
-        values = command.snapshot.model_dump(mode="json")
-        region = values.pop("activity_region")
-        return {
-            **values, "activity_province": region["province"] if region else None,
-            "activity_district": region["district"] if region else None,
-            "deadline_date": command.snapshot.deadline_date, "deadline_at": command.snapshot.deadline_at,
-            "opportunity_id": opportunity_id, "version": version, "review_status": "pending",
-            "reviewed_at": None, "source_checked_at": command.checked_at,
-            "content_hash": content_hash(command.snapshot),
-        }
+        return pending_version_values(command.snapshot, command.checked_at, opportunity_id, version)
 
     @staticmethod
     def _manual_candidates(db, command):
@@ -70,6 +76,11 @@ class SqlIngestionRepository:
                 if command.checked_at < latest["source_checked_at"]:
                     return RecordResult(id, latest["version"], "stale")
                 before = snapshot_from_row(latest)
+                if command.external_id is not None:
+                    # 수집기는 태그를 만들지 않는다(빈 목록). 운영자가 수정으로 붙인 태그를 이어받아
+                    # 다음 수집이 태그를 지우는 새 버전을 만들지 않게 한다. 수동 입력은 태그를 직접 정한다.
+                    inherited = command.snapshot.model_copy(update={"role_tags": before.role_tags, "skill_tags": before.skill_tags})
+                    command = command.model_copy(update={"snapshot": inherited})
                 changes = changed_fields(before, command.snapshot)
                 if changes and command.checked_at == latest["source_checked_at"]:
                     raise AppError("VERSION_CONFLICT")
