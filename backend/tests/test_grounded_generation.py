@@ -262,3 +262,13 @@ def test_ollama_adapter_and_service_keep_data_separate_and_use_schema():
 @pytest.mark.parametrize("model", [QuestionPlan, ConfirmedProfileSnapshot])
 def test_schemas_forbid_extra_fields(model: type[BaseModel]):
     assert model.model_config["extra"] == "forbid"
+
+
+def test_fallback_question_uses_fixed_order_and_fixed_sentences_without_model():
+    # 시간이 부족할 때의 대체 경로: 모델 없이 첫 누락 항목의 고정 질문만 돌려준다.
+    fallback = GroundedGenerationService.fallback_question
+    assert fallback(missing_fields=["activity_types", "experiences"]) == "취업과 봉사 중 어떤 활동을 원하세요?"
+    assert fallback(missing_fields=["preferred_regions", "preferred_regions"]) == "어느 지역에서 활동하고 싶으세요?"
+    assert fallback(missing_fields=[]) is None
+    with pytest.raises(GenerationInputError):
+        fallback(missing_fields=["phone"])

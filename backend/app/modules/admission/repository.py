@@ -1,5 +1,8 @@
 """KST 일일 집계와 슬롯을 같은 비만료 제어 해시에 둔다. 유실 시 자동 초기화 금지."""
 
+from dataclasses import dataclass
+import hashlib
+import hmac
 import re
 from uuid import UUID
 
@@ -67,6 +70,32 @@ return {'ok'}
 """
 
 
+# 운영자 복구 전용. 세대·식별키가 맞고 지정한 lease가 아직 그대로일 때만 슬롯을 비운다.
+# 일일 집계(`day`, `global`, `limit:*`)는 건드리지 않는다.
+_RECOVER = """
+local v = redis.call('HMGET', KEYS[1], 'epoch', 'key_id', 'active')
+if v[1] ~= ARGV[1] or v[2] ~= ARGV[2] or redis.call('PTTL', KEYS[1]) ~= -1 then return {'SERVICE_UNAVAILABLE'} end
+if not v[3] then return {'NOT_ACTIVE'} end
+if v[3] ~= ARGV[3] then return {'LEASE_CHANGED'} end
+redis.call('HDEL', KEYS[1], 'active', 'kind')
+return {'ok'}
+"""
+
+
+def lease_fingerprint(token: str) -> str:
+    """운영자 화면용 lease 지문. 원 token을 출력하지 않는다."""
+    return hashlib.sha256(token.encode("ascii")).hexdigest()[:16]
+
+
+@dataclass(frozen=True)
+class SlotStatus:
+    ready: bool
+    day: int | None
+    global_count: int | None
+    kind: str | None
+    lease: str | None
+
+
 class RedisAdmissionStore:
     def __init__(self, client: Redis, *, epoch: UUID, prefix: str = "rc:admission:v1:"):
         self.client = client
@@ -76,6 +105,7 @@ class RedisAdmissionStore:
         self._http = client.register_script(_HTTP)
         self._acquire = client.register_script(_ACQUIRE)
         self._release = client.register_script(_RELEASE)
+        self._recover = client.register_script(_RECOVER)
 
     async def _call(self, script, keys, args):
         try:
@@ -120,3 +150,38 @@ class RedisAdmissionStore:
             return epoch == str(self.epoch) and key_id == identity_key_id and day is not None and day.isdigit() and count is not None and count.isdigit() and await self.client.pttl(self.control_key) == -1
         except RedisError:
             return False
+
+    async def slot_status(self, identity_key_id) -> SlotStatus:
+        """운영자 확인용. 세대·키·집계 형식과 현재 슬롯 점유 여부만 돌려준다."""
+        try:
+            day, count, kind, active = await self.client.hmget(self.control_key, "day", "global", "kind", "active")
+            ready = await self.is_ready(identity_key_id)
+        except RedisError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
+        return SlotStatus(
+            ready=ready,
+            day=int(day) if day is not None and day.isdigit() else None,
+            global_count=int(count) if count is not None and count.isdigit() else None,
+            kind=kind if kind in {"llm", "stt", "tts"} else None,
+            lease=lease_fingerprint(active) if active is not None and active.isascii() else None,
+        )
+
+    async def recover(self, identity_key_id, fingerprint) -> str:
+        """모든 런타임 정지를 운영자가 확인한 뒤 호출한다. 지정한 lease가 바뀌었으면 비우지 않는다."""
+        if not isinstance(fingerprint, str) or not re.fullmatch(r"[0-9a-f]{16}", fingerprint):
+            raise ValueError("lease 지문 형식 오류")
+        if not isinstance(identity_key_id, str) or not re.fullmatch(r"[0-9a-f]{64}", identity_key_id):
+            raise ValueError("식별키 지문 형식 오류")
+        try:
+            active = await self.client.hget(self.control_key, "active")
+            if active is None:
+                return "not_active"
+            if not active.isascii() or not hmac.compare_digest(lease_fingerprint(active), fingerprint):
+                return "lease_changed"
+            values = await self._recover(keys=[self.control_key], args=[str(self.epoch), identity_key_id, active])
+        except RedisError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
+        result = {"ok": "released", "NOT_ACTIVE": "not_active", "LEASE_CHANGED": "lease_changed"}.get(values[0] if values else None)
+        if result is None:
+            raise AppError("SERVICE_UNAVAILABLE")
+        return result
