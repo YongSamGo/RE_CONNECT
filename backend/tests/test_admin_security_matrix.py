@@ -172,15 +172,15 @@ def test_every_admin_route_rejects_anonymous_member_and_unverified_expired_or_re
         revoked, revoked_id = await operator(ctx, "7701004")
         ctx["mfa"].revoke(revoked_id, now=datetime.now(UTC), request_id=REQUEST)
         # 다른 운영자 계정을 헤더로 주장해도 세션 주체만 쓴다.
-        _, real_operator = await operator(ctx, "7701005")
+        impersonated, real_operator = await operator(ctx, "7701005")
         before = state(ctx["engine"])
         cases = [
             ("anonymous", guest, {(401, "UNAUTHENTICATED")}),
             ("member", plain, {(403, "FORBIDDEN")}),
             ("unverified operator", unverified, {(403, "MFA_REQUIRED")}),
             ("expired MFA", expired, {(403, "MFA_REQUIRED")}),
-            # 회수 직후 첫 요청이 세션을 끝내고, 이후에는 비회원 세션으로 남는다.
-            ("revoked operator", revoked, {(401, "SESSION_EXPIRED"), (401, "UNAUTHENTICATED")}),
+            # 회수로 세션 세대가 바뀌어, 남은 쿠키는 어느 경로에서도 만료로 판정된다.
+            ("revoked operator", revoked, {(401, "SESSION_EXPIRED")}),
         ]
         try:
             for name, browser, allowed in cases:
@@ -193,7 +193,7 @@ def test_every_admin_route_rejects_anonymous_member_and_unverified_expired_or_re
             me = (await plain.get("/api/v1/me", headers=FORGED)).json()["user"]
             assert me["id"] == str(plain_id) and me["roles"] == ["user"] and me["mfa_verified"] is False
         finally:
-            for browser in (plain, unverified, expired, revoked):
+            for browser in (plain, unverified, expired, revoked, impersonated):
                 await browser.aclose()
     run(backend, tmp_path, scenario)
 
@@ -204,7 +204,7 @@ def test_verified_operator_cannot_inject_review_state_actor_or_sql_and_audit_rec
         wire(ctx)
         pending, report = seed(ctx["engine"])
         browser, actor = await operator(ctx, "7702001")
-        _, other = await operator(ctx, "7702002")
+        impersonated, other = await operator(ctx, "7702002")
         base = f"/api/v1/admin/opportunities/{pending}"
         injected = {"review_status": "approved", "actor_id": str(other), "reviewed_at": "2026-01-01T00:00:00Z", "version": 9}
         try:
@@ -231,10 +231,17 @@ def test_verified_operator_cannot_inject_review_state_actor_or_sql_and_audit_rec
                 assert (await browser.get("/api/v1/admin/reports", params=query)).status_code == 422, query
             literal = await browser.get("/api/v1/admin/opportunities", params={"q": "' OR 1=1 --"})
             assert literal.status_code == 200 and literal.json()["total"] == 0
-            for path in ("/api/v1/admin/opportunities/1%20OR%201=1", "/api/v1/admin/opportunities/' OR '1'='1/approve",
-                         "/api/v1/admin/reports/1;DROP TABLE reports"):
-                assert (await browser.request("PATCH" if "reports" in path else ("POST" if path.endswith("approve") else "GET"),
-                                              path, json=PATHS["approve"], headers=headers(browser))).status_code in (404, 422), path
+            # 본문은 경로마다 올바른 값을 보내, 422가 경로 변수 검증 때문인지 확인한다.
+            report_update = {"base_version": 1, "status": "in_progress", "resolution_note": None}
+            for method, path, body, name in (
+                ("GET", "/api/v1/admin/opportunities/1%20OR%201=1", None, "opportunity_id"),
+                ("PATCH", "/api/v1/admin/opportunities/' OR '1'='1", {"base_version": 1, "changes": {"title": "x"}}, "opportunity_id"),
+                ("POST", "/api/v1/admin/opportunities/' OR '1'='1/approve", PATHS["approve"], "opportunity_id"),
+                ("PATCH", "/api/v1/admin/reports/1;DROP TABLE reports", report_update, "report_id"),
+            ):
+                response = await browser.request(method, path, json=body, headers=headers(browser))
+                assert response.status_code == 422, (path, response.text)
+                assert response.json()["fields"] == [{"path": name, "reason": "invalid_type"}], (path, response.text)
             assert state(ctx["engine"]) == before
 
             # 정상 결정은 위조 헤더가 가리키는 다른 운영자가 아니라 세션 주체로 기록한다.
@@ -253,6 +260,7 @@ def test_verified_operator_cannot_inject_review_state_actor_or_sql_and_audit_rec
                 assert db.scalar(select(func.count()).select_from(AuditEvent).where(AuditEvent.action == "opportunity.approve")) == 1
         finally:
             await browser.aclose()
+            await impersonated.aclose()
     run(backend, tmp_path, scenario)
 
 
