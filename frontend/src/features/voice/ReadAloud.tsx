@@ -53,6 +53,6 @@ export function ReadAloud({ target, label }: { target: components['schemas']['Sp
     {state.status === 'error' && <RequestError error={state.error} />}
     {stale && <p>자료가 바뀌었어요. 최신 내용을 다시 불러온 뒤 읽어주기를 요청해 주세요.</p>}
     {blob && failed && <p role="alert">소리를 재생하지 못했어요. 화면의 글을 계속 읽거나 다시 시도해 주세요.</p>}
-    <p className="quiet">서버에서 AI 처리 동의가 확인된 경우에만 요청합니다. 현재 동의문·음성 서버 연결은 준비 중입니다.</p>
+    <p className="quiet">서버에서 AI 처리 동의와 자료 버전을 확인합니다. 음성 모델이 준비되지 않으면 화면의 글로 확인해 주세요.</p>
   </div>
 }

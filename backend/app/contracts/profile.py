@@ -81,3 +81,13 @@ class ProfileContent(_ProfileContentBase):
 
 class ProfileContentInput(_ProfileContentBase):
     experiences: Annotated[list[ExperienceInput], Field(max_length=20)]
+
+
+def empty_profile_content() -> ProfileContent:
+    """첫 체험의 미확인 초안. 빈 배열/없다고 확인함/null 의미를 구분한다."""
+    return ProfileContent(
+        schema_version=1, experiences=[], skills=[], preferred_regions=[], activity_types=[],
+        paid_preference=None, available_weekdays=None, hours_per_week=None, mobility_note=None,
+        residence_region=None, birth_year=None, certifications=None, completed_courses=None,
+        activity_constraints=None,
+    )
