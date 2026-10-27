@@ -139,7 +139,7 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | 429 | `INFERENCE_BUSY` | 추론 슬롯이 모두 사용 중 |
 | 429 | `MFA_LOCKED` | OTP 연속 5회 실패로 운영자 계정 15분 잠금 |
 | 500 | `INTERNAL_ERROR` | 예상하지 못한 서버 오류 |
-| 503 | `MODEL_UNAVAILABLE` | 모델 준비 실패·메모리 부족 |
+| 503 | `MODEL_UNAVAILABLE` | 모델 준비 실패·메모리 부족·모델 출력의 근거 검증 실패 |
 | 503 | `AI_TIMEOUT` | AI 처리 60초 초과 |
 | 503 | `SERVICE_UNAVAILABLE` | Redis·DB 등 내부 서비스 장애 |
 

@@ -586,6 +586,8 @@ export interface paths {
          *     종료·비공개·재검수 중인 공고는 409 `OPPORTUNITY_NOT_AVAILABLE`, 확정본이 없으면 409 `PROFILE_NOT_CONFIRMED`.
          *     초안은 체험 안에 임시로 있고, 승인과 저장은 별도 요청이다. 최대 32개 초안·128회 생성 예약을 허용한다.
          *     생성 실패·취소된 키는 새 키로 재시도한다. 같은 키의 완료 재생은 추론이나 체험 수명 연장을 반복하지 않는다.
+         *     `generate` 실패: 모델 장애나 확정 사실 밖을 가리킨 모델 출력은 503 `MODEL_UNAVAILABLE`, 60초 초과는 503 `AI_TIMEOUT`이다.
+         *     AI에 보낼 수 있는 확정 사실이 없으면 모델을 부르지 않고 422 `VALIDATION_FAILED`다. 어느 경우든 기존 초안은 바뀌지 않으며 `manual`로 직접 작성할 수 있다.
          */
         post: operations["createJourneyDraft"];
         delete?: never;
