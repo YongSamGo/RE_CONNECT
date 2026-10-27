@@ -63,9 +63,9 @@ updates:
     ignore:
       # Node 24 실행 환경·CI와 타입의 major를 맞춘다.
       - dependency-name: "@types/node"
-        versions: [">=25"]
+        update-types: ["version-update:semver-major"]
       # openapi-typescript 7.13.0의 peer 요구(^5.x). 도구 체인 전환 때 함께 해제한다.
       - dependency-name: "typescript"
-        versions: [">=6"]
+        update-types: ["version-update:semver-major"]
     commit-message:
       prefix: "sec"
