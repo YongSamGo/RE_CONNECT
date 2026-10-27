@@ -78,6 +78,9 @@ from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.service import PublicOpportunityService, UnavailableOpportunityRepository
 from app.modules.opportunities.ingestion import IngestionService, UnavailableIngestionRepository
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository
+from app.modules.opportunity_reviews import router as opportunity_reviews
+from app.modules.opportunity_reviews.repository import SqlOpportunityReviewRepository
+from app.modules.opportunity_reviews.service import OpportunityReviewService, UnavailableOpportunityReviewRepository
 from app.modules.journeys import router as journeys
 from app.modules.journeys.repository import RedisJourneyStore
 from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
@@ -193,6 +196,8 @@ def create_app(
     app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
+    app.state.opportunity_review_service = OpportunityReviewService(
+        SqlOpportunityReviewRepository(engine.begin) if engine is not None else UnavailableOpportunityReviewRepository())
     app.state.admin_opportunity_service = AdminOpportunityService(
         SqlAdminOpportunityRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAdminOpportunityRepository())
     kakao = None
@@ -287,6 +292,7 @@ def create_app(
     app.include_router(deletions.router, prefix=API_PREFIX)
     app.include_router(consents.router, prefix=API_PREFIX)
     app.include_router(opportunities.router, prefix=API_PREFIX)
+    app.include_router(opportunity_reviews.router, prefix=API_PREFIX)
     app.include_router(admin_opportunities.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)

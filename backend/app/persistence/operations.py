@@ -229,6 +229,48 @@ class OpportunityPublication(Base):
     review_status: Mapped[str] = mapped_column(String(16), default="approved", server_default="approved")
 
 
+REJECT_REASONS = ("source_unverifiable", "out_of_scope", "recruitment_closed", "duplicate",
+                  "insufficient_information", "inappropriate_content", "other")
+CLOSE_BASES = ("source_closed", "deadline_passed", "organization_notice", "report_confirmed", "other")
+
+
+def _sql_values(values):
+    return ", ".join(f"'{value}'" for value in values)
+
+
+class OpportunityReview(Base):
+    """운영자 검수 결정의 근거 (W07-03). 공고 버전과 함께 남는 공고 자료다.
+
+    누가 했는지는 감사 기록(30일)에만 둔다. 같은 요청의 감사 기록과 request_id로 잇는다.
+    메모는 개인정보 필터를 통과한 공고 확인 내용만 받는다.
+    """
+
+    __tablename__ = "opportunity_reviews"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("action IN ('approve', 'reject', 'hide', 'close')", name="action"),
+        CheckConstraint(
+            "(action IN ('approve', 'hide') AND reason_code IS NULL AND note IS NOT NULL)"
+            f" OR (action = 'reject' AND reason_code IN ({_sql_values(REJECT_REASONS)}))"
+            f" OR (action = 'close' AND reason_code IN ({_sql_values(CLOSE_BASES)}))",
+            name="reason",
+        ),
+        CheckConstraint("reason_code IS NULL OR reason_code <> 'other' OR note IS NOT NULL", name="other_note"),
+        CheckConstraint("note IS NULL OR length(note) BETWEEN 1 AND 500", name="note"),
+        CheckConstraint("length(request_id) BETWEEN 14 AND 36", name="request_id"),
+        Index("ix_opportunity_reviews_target", "opportunity_id", "version"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    action: Mapped[str] = mapped_column(String(16))
+    reason_code: Mapped[str | None] = mapped_column(String(40))
+    note: Mapped[str | None] = mapped_column(String(500))
+    request_id: Mapped[str] = mapped_column(String(36))
+    at: Mapped[datetime] = mapped_column(UTCDateTime())
+
+
 class Report(Base):
     __tablename__ = "reports"
     __table_args__ = (
