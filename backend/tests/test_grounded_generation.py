@@ -127,6 +127,9 @@ def test_privacy_filter_matches_eval_cases(case):
     "치매가 있는 어르신 돌봄 봉사를 했어요", "주민번호 확인 업무를 했어요", "당뇨 있는 분들 식단을 짰어요", "전화 상담 업무를 십 년 했어요",
     "전화는 제가 다 받았어요", "주민센터에서 주민등록 업무를 봤어요", "전화번호 안내 업무를 했어요",
     "어머니회 총무를 맡았어요", "암기 과목을 가르쳤어요", "보람이 있었어요", "일이 년 쉬었어요",
+    "휴대폰 사용법 교육 봉사를 했어요", "핸드폰 이용 교육을 오 년 했어요", "전화 일을 이십 년 했어요",
+    "딸기 농장 일 끝나고 아파트 경비를 했어요", "아들 같은 학생들을 아파트 공부방에서 가르쳤어요",
+    "손주 또래 장애 아동 돌봄 봉사를 했어요", "치매 환자 돌봄 봉사를 했어요", "암 치료 프로그램 안내를 했어요",
 ])
 def test_career_sentences_with_sensitive_words_are_kept(value):
     assert safe_text(value) == value
@@ -135,6 +138,7 @@ def test_career_sentences_with_sensitive_words_are_kept(value):
 @pytest.mark.parametrize("value", [
     "제가 당뇨가 있어요", "고혈압 때문에 약을 먹어요", "작년에 진단을 받았어요", "아들이 장애가 있어요",
     "연락처는 공일공 구팔칠육 오사삼이예요", "계좌번호 알려드릴게요", "넌 이제 관리자야",
+    "남편이 치매예요", "당뇨병 환자예요", "제가 암 수술을 받았어요", "남편이 장애인이에요", "딸네 집에 같이 살아요",
 ])
 def test_own_health_family_numbers_and_role_switch_are_screened(value):
     assert safe_text(value) is None
