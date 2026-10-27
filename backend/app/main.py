@@ -81,6 +81,10 @@ from app.modules.opportunities.ingestion_repository import SqlIngestionRepositor
 from app.modules.opportunity_reviews import router as opportunity_reviews
 from app.modules.opportunity_reviews.repository import SqlOpportunityReviewRepository
 from app.modules.opportunity_reviews.service import OpportunityReviewService, UnavailableOpportunityReviewRepository
+from app.modules.reports import router as reports
+from app.modules.reports.repository import SqlReportRepository, UnavailableReportRepository
+from app.modules.reports.service import ReportService
+from app.modules.reports.store import RedisReportStore, UnavailableReportStore
 from app.modules.journeys import router as journeys
 from app.modules.journeys.repository import RedisJourneyStore
 from app.modules.journeys.service import JourneyService, UnavailableJourneyStore
@@ -235,6 +239,11 @@ def create_app(
                     if engine is not None and cipher is not None else UnavailableOperatorMfaRepository())
     app.state.member_service.mfa = operator_mfa
     app.state.operator_mfa_service = OperatorMfaService(operator_mfa, app.state.member_service)
+    limits_ready = redis_client is not None and isinstance(admission, AdmissionService)
+    app.state.report_service = ReportService(
+        RedisReportStore(redis_client) if limits_ready else UnavailableReportStore(),
+        SqlReportRepository(engine.begin, cipher) if engine is not None else UnavailableReportRepository(),
+        app.state.opportunity_service, admission.digest if limits_ready else None)
     app.state.saved_profile_service = SavedProfileService(SqlProfileRepository(cipher), app.state.member_service,
         app.state.consent_service, app.state.save_intent_service, app.state.journey_service)
     app.state.journey_service.stored_profiles = app.state.saved_profile_service
@@ -294,6 +303,7 @@ def create_app(
     app.include_router(opportunities.router, prefix=API_PREFIX)
     app.include_router(opportunity_reviews.router, prefix=API_PREFIX)
     app.include_router(admin_opportunities.router, prefix=API_PREFIX)
+    app.include_router(reports.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)
     app.include_router(roles.router, prefix=API_PREFIX)
