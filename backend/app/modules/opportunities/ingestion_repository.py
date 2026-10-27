@@ -13,8 +13,11 @@ from app.modules.opportunities.versions import changed_fields, content_hash, sna
 from app.persistence.operations import Source, OpportunityDocument as D, OpportunityVersion as V, OpportunityPublication as P
 
 
-def pending_version_values(snapshot, checked_at, opportunity_id, version):
-    """새 검수 대기 버전 행. 수집·수동 입력·운영자 수정이 같은 규칙으로 만든다."""
+def pending_version_values(snapshot, checked_at, opportunity_id, version, *, observed_hash=None):
+    """새 검수 대기 버전 행. 수집·수동 입력·운영자 수정이 같은 규칙으로 만든다.
+
+    observed_hash는 이 버전의 근거가 된 원문 관측의 해시다. 생략하면 이 내용 자체가 관측 결과다.
+    """
     values = snapshot.model_dump(mode="json")
     region = values.pop("activity_region")
     return {
@@ -23,7 +26,8 @@ def pending_version_values(snapshot, checked_at, opportunity_id, version):
         "deadline_date": snapshot.deadline_date, "deadline_at": snapshot.deadline_at,
         "opportunity_id": opportunity_id, "version": version, "review_status": "pending",
         "reviewed_at": None, "source_checked_at": checked_at,
-        "content_hash": content_hash(snapshot), "created_at": utc_now(),
+        "content_hash": content_hash(snapshot), "observed_hash": observed_hash or content_hash(snapshot),
+        "created_at": utc_now(),
     }
 
 
@@ -32,8 +36,8 @@ class SqlIngestionRepository:
         self.transaction = transaction
 
     @staticmethod
-    def _values(command, opportunity_id, version):
-        return pending_version_values(command.snapshot, command.checked_at, opportunity_id, version)
+    def _values(command, opportunity_id, version, observed_hash=None):
+        return pending_version_values(command.snapshot, command.checked_at, opportunity_id, version, observed_hash=observed_hash)
 
     @staticmethod
     def _manual_candidates(db, command):
@@ -76,6 +80,16 @@ class SqlIngestionRepository:
                 if command.checked_at < latest["source_checked_at"]:
                     return RecordResult(id, latest["version"], "stale")
                 before = snapshot_from_row(latest)
+                # 원문 관측이 그대로면 운영자가 고친 최신 버전(지역·조건 등)을 수집 결과로 되돌리지 않는다.
+                observed = content_hash(command.snapshot)
+                if observed == latest["observed_hash"]:
+                    db.execute(update(V).where(V.opportunity_id == id, V.version == latest["version"]).values(source_checked_at=command.checked_at))
+                    return RecordResult(id, latest["version"], "unchanged")
+                # 원문에서 모집 상태만 종료로 바뀌었으면 새 버전 없이 종료만 반영한다(운영자 수정본 유지).
+                # 종료를 반영한 뒤에도 관측 해시는 종료 전 원문 그대로라, 관측 당시 상태를 모두 대입해 비교한다.
+                status_only = command.snapshot.recruitment_status == "closed" and any(
+                    content_hash(command.snapshot.model_copy(update={"recruitment_status": status})) == latest["observed_hash"]
+                    for status in ("open", "unknown"))
                 if command.external_id is not None:
                     # 수집기는 태그를 만들지 않는다(빈 목록). 운영자가 수정으로 붙인 태그를 이어받아
                     # 다음 수집이 태그를 지우는 새 버전을 만들지 않게 한다. 수동 입력은 태그를 직접 정한다.
@@ -91,11 +105,11 @@ class SqlIngestionRepository:
                     if public_version is not None:
                         versions.add(public_version)
                     db.execute(update(V).where(V.opportunity_id == id, V.version.in_(versions)).values(recruitment_status="closed", source_checked_at=command.checked_at))
-                if not changes or changes == {"recruitment_status"} and command.snapshot.recruitment_status == "closed":
+                if status_only or not changes or changes == {"recruitment_status"} and command.snapshot.recruitment_status == "closed":
                     db.execute(update(V).where(V.opportunity_id == id, V.version == latest["version"]).values(source_checked_at=command.checked_at))
-                    return RecordResult(id, latest["version"], "closed" if changes else "unchanged")
+                    return RecordResult(id, latest["version"], "closed" if changes or status_only else "unchanged")
                 version = latest["version"] + 1
-                db.execute(insert(V), self._values(command, id, version))
+                db.execute(insert(V), self._values(command, id, version, observed))
                 return RecordResult(id, version, "changed")
         except (SQLAlchemyError, ValidationError):
             raise AppError("SERVICE_UNAVAILABLE") from None

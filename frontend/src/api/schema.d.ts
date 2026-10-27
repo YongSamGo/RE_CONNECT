@@ -119,7 +119,7 @@ export interface paths {
          *     - `base_version`이 현재 최신 버전이 아니면 409 `VERSION_CONFLICT`다. 다른 수정·수집을 덮어쓰지 않는다.
          *     - 바꾼 필드는 등록과 같은 일반 텍스트 규칙(연락처·HTML 흔적 거절)으로 검사한다. 공식 URL을 바꾸면 허용 경로여야 하고, `role_tags`는 역할 사전의 키만 받는다.
          *     - 출처를 다시 확인한 것이 아니므로 `source_checked_at`은 기준 버전 값을 유지한다.
-         *     - `role_tags`와 `skill_tags`는 운영자가 정한다. 이후 수집은 최신 버전의 태그를 이어받고, 태그를 지우는 새 버전을 만들지 않는다.
+         *     - 같은 원문을 다시 수집하면 이 수정본을 되돌리지 않는다. 원문이 실제로 바뀐 경우만 새 `pending` 버전을 만들고, 그때도 `role_tags`·`skill_tags`는 이어받는다(docs/api/README.md D34).
          */
         patch: operations["updateAdminOpportunity"];
         trace?: never;

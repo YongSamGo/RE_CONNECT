@@ -61,7 +61,7 @@ npx -y @redocly/cli@2.56.1 lint --config docs/api/redocly.yaml
 | D31 | 경험·프로필 스키마를 요청용(`ExperienceInput`·`ProfileContentInput`, 새 경험 id는 null)과 응답용(`Experience`·`ProfileContent`, id 필수)으로 나눈다 | 계약에서 만든 화면 타입에서 응답의 경험 id가 null이 되지 않게 한다 |
 | D32 | 신고 등록에도 `Idempotency-Key`를 받는다 | 재전송·중복 클릭으로 같은 신고가 쌓이지 않게 한다 |
 | D33 | 운영자 수동 등록(`POST /admin/opportunities`)은 수동 출처 코드·공고 내용·원문 근거를 함께 받고, 수동 입력 명령과 같은 근거 규칙으로 검사한다 | API와 명령의 안전장치(공식 경로 허용표, 필드별 인용, 48시간 확인, 연락처 거절)가 달라지지 않게 한다 |
-| D34 | `role_tags`·`skill_tags`는 운영자가 정한다. 수집은 최신 버전의 태그를 이어받고 태그 차이로 새 버전을 만들지 않는다 | 수집기는 태그를 만들지 않으므로(빈 목록), 다음 수집이 운영자 태그를 지우면 승인 공고가 맞춤 추천에서 빠진다 |
+| D34 | 버전마다 근거가 된 원문 관측의 해시를 둔다. 운영자 수정은 기준 버전의 해시를 이어받고, 다음 수집의 해시가 같으면 새 버전 없이 확인 시각만 갱신한다. 원문이 실제로 바뀌면 새 `pending` 버전을 만들되 `role_tags`·`skill_tags`는 이어받는다. 원문이 모집 종료로만 바뀌면 새 버전 없이 종료만 반영한다 | 수집기는 태그를 만들지 않고 1365 지역·조건을 확정하지 못한다. 같은 원문의 재수집이 운영자가 고친 태그·지역·조건을 되돌리면 승인 공고가 수집 주기마다 추천에서 빠진다 |
 
 ## 2. 공통 규칙
 
@@ -186,7 +186,7 @@ sequenceDiagram
 - 그 밖의 필드(`title`, `organization_name`, `role_tags`, `skill_tags`, `location_text`, `compensation_text`, `description_text`, `is_public_job`)는 검수 전까지 이전 공개본이 그대로 추천에 남는다.
 - 안전 방향 변경은 검수 없이 바로 반영한다. 출처가 모집 종료를 알리거나 마감일이 지나면 `recruitment_status=closed`로 바꾸고 추천에서 뺀다.
 - `source_checked_at` 갱신만으로는 새 버전을 만들지 않는다.
-- 운영자 수정은 출처를 다시 확인한 것이 아니므로 기준 버전의 `source_checked_at`을 그대로 쓴다. 태그는 운영자가 정하고 수집은 이어받는다(D34).
+- 운영자 수정은 출처를 다시 확인한 것이 아니므로 기준 버전의 `source_checked_at`을 그대로 쓴다. 같은 원문을 다시 수집해도 운영자 수정본을 되돌리지 않는다(D34).
 
 ### 2.8 역할 제외
 

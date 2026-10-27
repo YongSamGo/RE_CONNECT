@@ -189,6 +189,9 @@ class OpportunityVersion(Base):
     content_hash: Mapped[str] = mapped_column(String(64))
     # 버전을 만든 시각. 운영자 목록의 "최근 갱신" 정렬과 updated_at 응답에 쓴다.
     created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    # 이 버전의 근거가 된 원문 관측(수집·수동 입력 결과)의 해시. 운영자 수정은 기준 버전 값을 이어받는다.
+    # 다음 수집의 해시가 같으면 원문이 바뀌지 않은 것이므로 운영자 수정본을 덮어쓰지 않는다.
+    observed_hash: Mapped[str] = mapped_column(String(64), default=lambda context: context.get_current_parameters()["content_hash"])
 
 
 class OpportunityWriteReceipt(Base):

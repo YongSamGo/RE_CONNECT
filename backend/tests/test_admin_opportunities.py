@@ -174,6 +174,84 @@ def test_stale_patch_is_409_and_important_change_holds_published_recommendation(
             assert db.scalars(select(AuditEvent.action).order_by(AuditEvent.at)).all() == ["opportunity.create", "opportunity.update"]
 
 
+UNREVIEWED = {"id": "8d1f2a3b-4c5d-4e6f-8a7b-9c0d1e2f3a4b", "field": "other", "operator": None, "value": None, "group_id": None,
+              "group_operator": None, "reference_date": None, "source_evidence": "정규화 상태: 필수조건 검수 전", "clarity": "needs_review"}
+REVIEWED = {**UNREVIEWED, "field": "weekday", "operator": "includes_all", "value": [3], "source_evidence": "매주 수요일 활동", "clarity": "clear"}
+
+
+def collector(engine, source):
+    """1365처럼 지역을 정하지 못하고 조건을 미검수로 남긴 수집 결과를 기록한다(#263 D2)."""
+    with engine.begin() as db:
+        db.execute(update(Source).where(Source.id == source).values(code="fictional-ingestion", base_url="https://example.org"))
+    ingestion = IngestionService(SqlIngestionRepository(engine.begin), clock=lambda: NOW + timedelta(days=1))
+    raw = OpportunitySnapshot.model_validate({**content(activity_region=None, requirements=[UNREVIEWED]), "description_truncated": False})
+
+    def record(snapshot, checked_at):
+        return ingestion.record(RecordOpportunity(source_id=source, external_id="fictional-id", snapshot=snapshot, checked_at=checked_at))
+    return raw, record
+
+
+def reviewed(engine, repository, operator, opportunity_id):
+    edited = patch(repository, operator, opportunity_id, 1, activity_region={"province": "seoul", "district": "yongsan"}, requirements=[REVIEWED])
+    approve(engine, opportunity_id, edited.version)
+    return edited
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_same_source_recollection_keeps_operator_region_and_requirements(backend, tmp_path):
+    with ingestion_database(backend, tmp_path) as (engine, source):
+        repository, operator = prepare(engine, source)
+        raw, record = collector(engine, source)
+        first = record(raw, NOW)
+        edited = reviewed(engine, repository, operator, first.opportunity_id)
+        public = SqlPublicOpportunityRepository(engine.connect)
+        assert public.get(first.opportunity_id, CLOCK).change_pending is False
+
+        # 같은 원문을 다시 수집해도 운영자가 고친 지역·조건을 되돌리지 않고, 공개본도 보류하지 않는다.
+        later = NOW + timedelta(hours=1)
+        again = record(raw, later)
+        assert (again.version, again.outcome) == (edited.version, "unchanged")
+        detail = public.get(first.opportunity_id, later)
+        assert detail.change_pending is False and detail.source_checked_at == later
+        assert detail.activity_region is not None and detail.requirements[0].clarity == "clear"
+
+        # 원문이 실제로 바뀌면 새 검수 대기 버전을 만든다. 지역이 다시 비므로 중요 변경으로 보류된다.
+        moved = raw.model_copy(update={"schedule_text": "매주 화요일"})
+        changed = record(moved, later + timedelta(hours=1))
+        assert (changed.version, changed.outcome) == (edited.version + 1, "changed")
+        assert public.get(first.opportunity_id, later + timedelta(hours=1)).change_pending is True
+        # 새 원문을 다시 수집하면 그 버전 그대로다.
+        assert record(moved, later + timedelta(hours=2)).outcome == "unchanged"
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_source_closing_keeps_operator_edits_across_repeated_collection(backend, tmp_path):
+    with ingestion_database(backend, tmp_path) as (engine, source):
+        repository, operator = prepare(engine, source)
+        raw, record = collector(engine, source)
+        first = record(raw, NOW)
+        edited = reviewed(engine, repository, operator, first.opportunity_id)
+        closed = raw.model_copy(update={"recruitment_status": "closed"})
+        for hours in (1, 2):
+            result = record(closed, NOW + timedelta(hours=hours))
+            assert (result.version, result.outcome) == (edited.version, "closed")
+        with engine.connect() as db:
+            rows = db.execute(select(V.version, V.recruitment_status, V.activity_province).where(V.opportunity_id == first.opportunity_id)
+                              .order_by(V.version)).all()
+        assert [tuple(row) for row in rows] == [(1, "open", None), (edited.version, "closed", "seoul")]
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_patch_carries_observed_hash_of_base_version(backend, tmp_path):
+    with ingestion_database(backend, tmp_path) as (engine, source):
+        repository, operator = prepare(engine, source)
+        created = create(repository, operator)
+        patch(repository, operator, created.id, 1, schedule_text="매주 수요일")
+        with engine.connect() as db:
+            rows = db.execute(select(V.observed_hash, V.content_hash).where(V.opportunity_id == created.id).order_by(V.version)).all()
+        assert rows[0][0] == rows[0][1] and rows[1][0] == rows[0][0] and rows[1][1] != rows[1][0]
+
+
 @pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
 def test_tag_patch_keeps_recommendation_and_collector_inherits_operator_tags(backend, tmp_path):
     with ingestion_database(backend, tmp_path) as (engine, collector_source):

@@ -1,4 +1,4 @@
-"""운영자 공고 등록·수정 (W07-02 · #53): 버전 생성 시각과 등록 재전송 기록."""
+"""운영자 공고 등록·수정 (W07-02 · #53): 버전 생성 시각·원문 관측 해시와 등록 재전송 기록."""
 
 from alembic import op
 import sqlalchemy as sa
@@ -28,20 +28,24 @@ def _sqlite_content_trigger(columns):
 def upgrade():
     dialect = op.get_bind().dialect.name
     # 기존 버전의 생성 시각은 남아 있지 않다. 그 버전을 만든 관측 시각으로 채운다.
+    # 기존 버전은 모두 수집·수동 입력이 만든 그대로이므로 원문 관측 해시는 내용 해시와 같다.
     # 내용 보호 트리거가 새 칸 채우기도 막으므로 이 한 번만 잠시 끈다.
     if dialect == "postgresql":
         op.add_column("opportunity_versions", sa.Column("created_at", sa.DateTime(timezone=True), nullable=True))
+        op.add_column("opportunity_versions", sa.Column("observed_hash", sa.String(64), nullable=True))
         op.execute("ALTER TABLE opportunity_versions DISABLE TRIGGER immutable_opportunity_content")
-        op.execute("UPDATE opportunity_versions SET created_at = source_checked_at WHERE created_at IS NULL")
+        op.execute("UPDATE opportunity_versions SET created_at = source_checked_at, observed_hash = content_hash")
         op.execute("ALTER TABLE opportunity_versions ENABLE TRIGGER immutable_opportunity_content")
         op.alter_column("opportunity_versions", "created_at", existing_type=sa.DateTime(timezone=True), nullable=False)
+        op.alter_column("opportunity_versions", "observed_hash", existing_type=sa.String(64), nullable=False)
     else:
         # 다른 표가 이 표를 외래키로 참조해 SQLite 표 재생성(batch)을 쓸 수 없다. NOT NULL 칸은 상수 기본값으로만
         # 더할 수 있으므로 임시값으로 추가한 뒤 곧바로 실제 관측 시각으로 바꾼다. 앱은 생성 시각을 항상 직접 넣는다.
         op.execute("DROP TRIGGER immutable_opportunity_content")
         op.execute("ALTER TABLE opportunity_versions ADD COLUMN created_at DATETIME NOT NULL DEFAULT '1970-01-01 00:00:00.000000'")
-        op.execute("UPDATE opportunity_versions SET created_at = source_checked_at")
-        _sqlite_content_trigger(_CONTENT_COLUMNS + ("created_at",))
+        op.execute("ALTER TABLE opportunity_versions ADD COLUMN observed_hash VARCHAR(64) NOT NULL DEFAULT ''")
+        op.execute("UPDATE opportunity_versions SET created_at = source_checked_at, observed_hash = content_hash")
+        _sqlite_content_trigger(_CONTENT_COLUMNS + ("created_at", "observed_hash"))
 
     op.create_table("opportunity_write_receipts",
         sa.Column("operator_id", sa.Uuid(), nullable=False),
@@ -68,8 +72,10 @@ def upgrade():
 def downgrade():
     op.drop_table("opportunity_write_receipts")
     if op.get_bind().dialect.name == "postgresql":
+        op.drop_column("opportunity_versions", "observed_hash")
         op.drop_column("opportunity_versions", "created_at")
     else:
         op.execute("DROP TRIGGER immutable_opportunity_content")
+        op.execute("ALTER TABLE opportunity_versions DROP COLUMN observed_hash")
         op.execute("ALTER TABLE opportunity_versions DROP COLUMN created_at")
         _sqlite_content_trigger(_CONTENT_COLUMNS)

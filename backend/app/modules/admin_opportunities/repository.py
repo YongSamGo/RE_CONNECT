@@ -216,8 +216,10 @@ class SqlAdminOpportunityRepository:
                 roles = set(after.role_tags)
                 if "role_tags" in changes and roles and set(db.scalars(select(RoleDefinition.id).where(RoleDefinition.id.in_(roles)))) != roles:
                     raise AppError("VALIDATION_FAILED")
-                # 공고 출처를 다시 확인한 것이 아니므로 기준 버전의 출처 확인 시각을 그대로 둔다.
-                db.execute(insert(V), pending_version_values(after, latest["source_checked_at"], opportunity_id, latest["version"] + 1))
+                # 공고 출처를 다시 확인한 것이 아니므로 기준 버전의 출처 확인 시각과 원문 관측 해시를 그대로 둔다.
+                # 같은 원문을 다시 수집하면 이 수정본을 되돌리지 않는다.
+                db.execute(insert(V), pending_version_values(after, latest["source_checked_at"], opportunity_id, latest["version"] + 1,
+                                                             observed_hash=latest["observed_hash"]))
                 self._audit(db, operator_id, "opportunity.update", opportunity_id, request_id, now)
                 return self._view(db, opportunity_id)
         except IntegrityError:
