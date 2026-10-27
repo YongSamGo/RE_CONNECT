@@ -17,6 +17,7 @@ from uuid import UUID
 from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.ingestion.manual import official_url
+from app.modules.ingestion.normalize import UNREVIEWED_EVIDENCE_PREFIX
 from app.modules.opportunities.lifecycle import assess_lifecycle
 from app.modules.opportunities.versions import OpportunitySnapshot
 from app.modules.opportunity_reviews.models import (
@@ -43,12 +44,19 @@ class NotPublishable(Exception):
 def publishability_problems(snapshot: OpportunitySnapshot, *, now: datetime) -> tuple[FieldProblem, ...]:
     """제목·기관·접수 경로·HTTPS 형식은 저장 계약이 이미 보장한다. 여기서는 공개 시점 조건만 본다.
 
+    수집기가 넣은 "필수조건 미검수" 표식 조건이 남아 있으면 승인하지 않는다. 운영자가 PATCH로 조건을 구조화하거나
+    "명시된 필수조건 없음"을 확인해 표식을 지운 새 버전을 만들어야 한다.
+
     원문 주소는 출처별 공식 상세 경로 허용표(수집기·수동 입력과 같은 표)에 맞아야 한다. 자동 수집 출처의
     base_url은 API 주소라 원문 호스트와 다르므로 출처 주소와의 비교로 대신하지 않는다.
     """
     problems = []
     if snapshot.activity_region is None and snapshot.remote_allowed is not True:
         problems.append(FieldProblem("content.activity_region", "required"))
+    # 수집기의 미검수 표식이 남아 있으면 원문 연령·자격 제한이 자격 판정에서 빠진 채 추천된다.
+    # 원문을 해석할 수 없어 남긴 다른 `other` 조건은 검수를 마친 최종 상태이므로 막지 않는다.
+    if any(r.field == "other" and r.source_evidence.startswith(UNREVIEWED_EVIDENCE_PREFIX) for r in snapshot.requirements):
+        problems.append(FieldProblem("content.requirements", "invalid_value"))
     try:
         official_url(snapshot.source_url)
     except ValueError:

@@ -27,12 +27,18 @@ from app.modules.sessions.service import SessionService
 from app.persistence import AuditEvent, Base, OpportunityDocument, OpportunityPublication, OpportunityReview, OpportunityVersion, Source
 from tests.persistence_helpers import NOW, open_test_database, opportunity_values
 from tests.test_consents import csrf
+from tests.test_contracts import requirement
 from tests.test_sessions import FakeStore
 
 OFFICIAL = "https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=1234"
 OPERATOR = uuid4()
 REQUEST_ID = "req_" + "b" * 32
 BACKENDS = pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+# 수집기가 공고마다 넣는 미검수 표식과, 원문을 해석할 수 없어 검수 뒤에도 남긴 조건
+UNREVIEWED = requirement(id=str(uuid4()), field="other", operator=None, value=None, clarity="needs_review",
+                         source_evidence="정규화 상태: 출처의 필수조건 전체 해석·검수가 완료되지 않았습니다.\n미해석 공식 설명(최대 900자): 만 65세 미만")
+UNSTRUCTURED = requirement(id=str(uuid4()), field="other", operator=None, value=None, clarity="needs_review",
+                           source_evidence="건강하고 성실하신 분")
 
 
 def values(opportunity_id, version, **changes):
@@ -91,6 +97,9 @@ def snapshot(**changes):
 
 def test_publishable_official_detail_path_with_region_or_remote():
     assert publishability_problems(snapshot(), now=NOW) == ()
+    # 구조화한 조건과, 원문을 해석할 수 없어 검수 뒤 남긴 `other` 조건은 승인을 막지 않는다
+    structured = snapshot(requirements=[requirement(), UNSTRUCTURED])
+    assert publishability_problems(structured, now=NOW) == ()
     remote = snapshot(activity_province=None, activity_district=None, remote_allowed=True)
     assert publishability_problems(remote, now=NOW) == ()
 
@@ -105,6 +114,9 @@ def test_publishable_official_detail_path_with_region_or_remote():
     ({"recruitment_status": "closed"}, "content.recruitment_status", "invalid_value"),
     ({"deadline_date": (NOW - timedelta(days=1)).date()}, "content.recruitment_status", "invalid_value"),
     ({"deadline_date": None, "deadline_at": NOW}, "content.recruitment_status", "invalid_value"),
+    # 미검수 표식이 남은 채 승인하면 원문 연령 제한이 자격 판정에서 빠진 채 추천된다
+    ({"requirements": [UNREVIEWED]}, "content.requirements", "invalid_value"),
+    ({"requirements": [requirement(), UNSTRUCTURED, UNREVIEWED]}, "content.requirements", "invalid_value"),
 ])
 def test_unpublishable_contents_name_the_field_without_values(changes, path, reason):
     problems = publishability_problems(snapshot(**changes), now=NOW)
@@ -205,7 +217,9 @@ def test_unpublishable_or_closed_pending_is_not_approved(backend):
     with open_test_database(backend) as db:
         unofficial = seed(db, ("pending", False, {"source_url": "https://example.org/notice/1"}))
         expired = seed(db, ("pending", False, {"deadline_date": (NOW - timedelta(days=1)).date()}))
-        for opportunity_id, path in ((unofficial, "content.source_url"), (expired, "content.recruitment_status")):
+        unreviewed = seed(db, ("pending", False, {"requirements": [UNREVIEWED]}))
+        for opportunity_id, path in ((unofficial, "content.source_url"), (expired, "content.recruitment_status"),
+                                     (unreviewed, "content.requirements")):
             with pytest.raises(NotPublishable) as error:
                 repository(db).apply(opportunity_id, command("approve", 1), check_publishable)
             assert [problem.path for problem in error.value.problems] == [path]
