@@ -63,6 +63,24 @@ def official_url(value):
     return parts._replace(query="&".join(f"{k}={query[k]}" for k in sorted(query))).geturl()
 
 
+def _strings(value):
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for child in value.values():
+            yield from _strings(child)
+    elif isinstance(value, list):
+        for child in value:
+            yield from _strings(child)
+
+
+def unsafe_text_fields(snapshot, fields):
+    """연락처나 꺾쇠(HTML 흔적)가 든 필드 이름. 공식 주소 두 칸은 주소 검사가 따로 맡는다."""
+    values = snapshot.model_dump(mode="json")
+    return {field for field in fields if field not in {"source_url", "application_url"}
+            and any(_CONTACT.search(v) or "<" in v or ">" in v for v in _strings(values[field]))}
+
+
 class Evidence(BaseModel):
     model_config = CONTRACT_CONFIG
     url: HttpsUrl = Field(repr=False)
@@ -91,21 +109,8 @@ class ManualInput(BaseModel):
         if official_url(snapshot.source_url) != official_url(self.evidence.url):
             raise ValueError("출처와 근거 불일치")
         official_url(snapshot.application_url)
-        def strings(value):
-            if isinstance(value, str):
-                yield value
-            elif isinstance(value, dict):
-                for child in value.values():
-                    yield from strings(child)
-            elif isinstance(value, list):
-                for child in value:
-                    yield from strings(child)
-
-        for field in OpportunitySnapshot.model_fields:
-            value = getattr(snapshot, field)
-            if field not in {"source_url", "application_url"}:
-                if any(_CONTACT.search(v) or "<" in v or ">" in v for v in strings(snapshot.model_dump(mode="json")[field])):
-                    raise ValueError("연락처 제외 및 일반 텍스트 확인 필요")
+        if unsafe_text_fields(snapshot, OpportunitySnapshot.model_fields):
+            raise ValueError("연락처 제외 및 일반 텍스트 확인 필요")
         for field in ("activity_region", "deadline_date", "deadline_at", "schedule_text", "paid", "compensation_text", "required_documents",
                       "is_public_job", "location_text", "remote_allowed", "hours_per_week", "role_tags", "skill_tags", "description_text"):
             value = getattr(snapshot, field)
@@ -165,36 +170,40 @@ class ManualIntake:
             db.execute(sql_text("SET LOCAL lock_timeout = 1000"))
 
     def record(self, material):
+        with self.transaction() as db:
+            self._limits(db)
+            return self.record_in(db, material)
+
+    def record_in(self, db, material):
+        """호출자의 트랜잭션 안에서 기록한다. 운영자 등록 API가 감사·재전송 기록과 함께 커밋하려고 쓴다."""
         # 호출자가 model_construct/model_copy를 써도 저장 전 전체 경계를 다시 검사한다.
         material = ManualInput.model_validate(material.model_dump())
         now = self.clock()
         if not now - MAX_CHECK_DELAY <= material.evidence.observed_at <= now:
             raise AppError("VALIDATION_FAILED")
-        with self.transaction() as db:
-            self._limits(db)
-            source = db.execute(select(Source.__table__).where(Source.id == material.source_id).with_for_update()).mappings().one_or_none()
-            if source is None or not source["enabled"] or MANUAL_SOURCES.get(source["code"]) != source["base_url"]:
-                raise AppError("VALIDATION_FAILED")
-            if urlsplit(material.evidence.url).hostname != urlsplit(source["base_url"]).hostname:
-                raise AppError("VALIDATION_FAILED")
-            roles = set(material.snapshot.role_tags)
-            if roles and set(db.scalars(select(RoleDefinition.id).where(RoleDefinition.id.in_(roles)))) != roles:
-                raise AppError("VALIDATION_FAILED")
-            result = self.store_factory(db).record(RecordOpportunity(source_id=material.source_id, external_id=None,
-                snapshot=material.snapshot, checked_at=material.evidence.observed_at, manual_target=material.manual_target))
-            if result.outcome == "stale":
-                raise AppError("VERSION_CONFLICT")
-            evidence = material.evidence.model_dump(mode="json")
-            canonical = json.dumps(evidence, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
-            digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-            exists = db.scalar(select(ManualEvidence.id).where(ManualEvidence.opportunity_id == result.opportunity_id,
-                ManualEvidence.version == result.version, ManualEvidence.evidence_hash == digest))
-            if exists is None:
-                db.execute(insert(ManualEvidence), {"id": uuid4(), "opportunity_id": result.opportunity_id,
-                    "version": result.version, "evidence_url": official_url(material.evidence.url),
-                    "observed_at": material.evidence.observed_at, "recorded_at": now,
-                    "quotes": dict(material.evidence.quotes), "evidence_hash": digest})
-            return result
+        source = db.execute(select(Source.__table__).where(Source.id == material.source_id).with_for_update()).mappings().one_or_none()
+        if source is None or not source["enabled"] or MANUAL_SOURCES.get(source["code"]) != source["base_url"]:
+            raise AppError("VALIDATION_FAILED")
+        if urlsplit(material.evidence.url).hostname != urlsplit(source["base_url"]).hostname:
+            raise AppError("VALIDATION_FAILED")
+        roles = set(material.snapshot.role_tags)
+        if roles and set(db.scalars(select(RoleDefinition.id).where(RoleDefinition.id.in_(roles)))) != roles:
+            raise AppError("VALIDATION_FAILED")
+        result = self.store_factory(db).record(RecordOpportunity(source_id=material.source_id, external_id=None,
+            snapshot=material.snapshot, checked_at=material.evidence.observed_at, manual_target=material.manual_target))
+        if result.outcome == "stale":
+            raise AppError("VERSION_CONFLICT")
+        evidence = material.evidence.model_dump(mode="json")
+        canonical = json.dumps(evidence, ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        exists = db.scalar(select(ManualEvidence.id).where(ManualEvidence.opportunity_id == result.opportunity_id,
+            ManualEvidence.version == result.version, ManualEvidence.evidence_hash == digest))
+        if exists is None:
+            db.execute(insert(ManualEvidence), {"id": uuid4(), "opportunity_id": result.opportunity_id,
+                "version": result.version, "evidence_url": official_url(material.evidence.url),
+                "observed_at": material.evidence.observed_at, "recorded_at": now,
+                "quotes": dict(material.evidence.quotes), "evidence_hash": digest})
+        return result
 
     def progress(self):
         """최신 버전만 검사하며 주소/기관·제목·마감 중복은 한 건으로 센다. 승인과 후보는 합산하지 않는다."""

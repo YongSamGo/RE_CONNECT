@@ -8,6 +8,7 @@
 | --- | --- |
 | `.github/workflows/ci.yml` | 테스트·보안약점·의존성·비밀값·워크플로 점검, 최종 판정 `CI 통과` |
 | `.github/workflows/codeql.yml` | CodeQL 정적 분석 (결과는 Security 탭 → Code scanning) |
+| `.github/workflows/release.yml` | 운영 이미지 빌드·Trivy 판정·SBOM. PR에서는 검사만, `main`의 `v*` 태그에서 ECR 게시·빌드 출처 증명·릴리스 manifest ([릴리스와 배포](../../infra/deploy/README.md)) |
 | `.github/dependabot.yml` | 의존성 업데이트 PR 자동 생성 |
 | `.github/scripts/check_hidden_text.py` | 숨은 문자 검사(실패)와 에이전트 지시 파일 의심 문구 검사(경고). 표준 라이브러리만 사용 |
 | `.github/scripts/check_required_checks.py` | 필수 매니페스트와 점검 잡 상태를 검증해 `CI 통과` 집계가 성공을 누락하지 않게 함 |

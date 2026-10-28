@@ -32,6 +32,7 @@ export function AccountPage({ onLogout, onSessionReset }: { onLogout?: () => voi
         <h2>현재 로그인 상태</h2><p>회원 세션이 확인되었습니다. 대화는 새로 시작하며 저장하지 않은 미리보기는 회원 자료에 포함되지 않습니다.</p>
         <h3>현재 동의</h3>{me.consents.length ? <ul>{me.consents.map((consent) => <li key={consent.purpose}>{consent.purpose === 'storage' ? '회원 저장' : 'AI 처리'} · 안내문 {consent.notice_version}</li>)}</ul> : <p>현재 유효한 동의가 없습니다.</p>}
         <Link className="button secondary" to="/me/saved">저장한 자료 조회</Link>
+        {me.user?.roles.includes('operator') && <Link className="button secondary" to="/admin">운영자 관리 화면</Link>}
         {me.pending_save_intent && <Link className="button secondary" to="/me/save">저장 대기 자료 확인</Link>}
         <div className="actions"><Button variant="secondary" onClick={() => void request.run(async (api, signal) => { await api.POST('/auth/logout', { signal }); const me = parseSession(required((await api.GET('/me', { signal })).data)); if (me.authenticated) throw new ApiError('INVALID_RESPONSE'); return { me, message: '로그아웃 요청이 완료되었습니다.' } }, onLogout)}>로그아웃</Button></div>
         <h3>회원 저장 동의 철회</h3><p>철회하면 저장 프로필의 모든 버전과 지원서가 삭제됩니다.</p>

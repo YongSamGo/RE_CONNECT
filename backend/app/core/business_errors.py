@@ -38,7 +38,7 @@ ERRORS = MappingProxyType({
     "DAILY_QUOTA_EXCEEDED": ErrorSpec(429, "오늘 이용 한도에 도달했습니다. 다음 날 다시 시도해 주세요."),
     "INFERENCE_BUSY": ErrorSpec(429, "다른 요청을 처리하고 있습니다. 잠시 후 다시 시도해 주세요."),
     "INTERNAL_ERROR": ErrorSpec(500, "일시적인 문제가 생겼습니다. 잠시 뒤 다시 시도해 주세요."),
-    "MODEL_UNAVAILABLE": ErrorSpec(503, "AI 기능을 준비하고 있습니다. 직접 작성하거나 잠시 후 다시 시도해 주세요."),
+    "MODEL_UNAVAILABLE": ErrorSpec(503, "지금은 AI 기능을 사용할 수 없습니다. 직접 작성하거나 잠시 후 다시 시도해 주세요."),
     "AI_TIMEOUT": ErrorSpec(503, "AI 처리 시간이 초과되었습니다. 직접 작성하거나 잠시 후 다시 시도해 주세요."),
     "SERVICE_UNAVAILABLE": ErrorSpec(503, "서비스를 일시적으로 이용할 수 없습니다. 잠시 후 다시 시도해 주세요."),
 })

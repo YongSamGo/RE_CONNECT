@@ -16,7 +16,7 @@ import type { ReportSnapshot } from './report'
 
 type Me = components['schemas']['Me']
 type Row = { id: string; version: number; title: string; status: string; report?: ReportSnapshot }
-type View = { kind: 'opportunities' | 'reports'; rows: Row[]; page: number; total: number } | { kind: 'operations'; models: { name: string; state: string }[]; sources: { name: string; stale: boolean }[] }
+type View = { kind: 'opportunities' | 'reports'; rows: Row[]; page: number; total: number } | { kind: 'operations'; models: { name: string; state: string }[]; sources: { name: string; stale: boolean }[] | null }
 const version = (value: unknown): number => typeof value === 'number' && Number.isSafeInteger(value) && value > 0 ? value : invalid()
 function parseRows(data: unknown, kind: 'opportunities' | 'reports'): View {
   const item = record(data)
@@ -58,18 +58,19 @@ function AdminWorkspace() {
     <section className="panel"><h2>운영 자료 조회</h2><form onSubmit={(event) => { event.preventDefault(); load('opportunities') }}><label htmlFor="admin-query">공고 제목 검색</label><input id="admin-query" value={query} maxLength={100} onChange={(event) => setQuery(event.target.value)} /><div className="actions"><Button type="submit" disabled={pending}>공고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => load('reports')}>신고 목록 조회</Button><Button variant="secondary" disabled={pending} onClick={() => { setSelected(null); void request.run(async (api, signal) => {
       const item = record(required((await api.GET('/admin/operations', { signal })).data))
       const models = record(item.models)
-      if (!Array.isArray(item.sources)) return invalid()
-      return { kind: 'operations', models: ['llm', 'stt', 'tts'].map((name) => { const value = models[name]; if (value !== 'ok' && value !== 'loading' && value !== 'fail') return invalid(); return { name, state: value } }), sources: item.sources.map((value) => { const source = record(value); if (typeof source.stale !== 'boolean') return invalid(); return { name: text(source.name, 200), stale: source.stale } }) }
+      // DB를 읽지 못하면 sources는 null이다. 나머지 상태는 그대로 보여 준다.
+      if (item.sources !== null && !Array.isArray(item.sources)) return invalid()
+      return { kind: 'operations', models: ['llm', 'stt', 'tts'].map((name) => { const value = models[name]; if (value !== 'ok' && value !== 'loading' && value !== 'fail') return invalid(); return { name, state: value } }), sources: item.sources === null ? null : item.sources.map((value) => { const source = record(value); if (typeof source.stale !== 'boolean') return invalid(); return { name: text(source.name, 200), stale: source.stale } }) }
     }) }}>수집·모델 상태 조회</Button></div></form></section>
     {pending && <p role="status">서버에 요청하고 있어요.</p>}
     {state.status === 'error' && <RequestError error={state.error} />}
-    {state.status === 'success' && (state.data.kind === 'operations' ? <section className="panel"><h2>수집·모델 상태</h2><ul>{state.data.models.map((model) => <li key={model.name}>{model.name}: {model.state === 'ok' ? '정상' : model.state === 'loading' ? '준비 중' : '장애'}</li>)}</ul><ul>{state.data.sources.map((source, index) => <li key={index}>{source.name}: {source.stale ? '출처 갱신 지연 · 추천 보류' : '갱신 지연 없음'}</li>)}</ul></section> : <section className="panel"><h2>{state.data.kind === 'reports' ? '신고 목록' : '공고 목록'}</h2>
+    {state.status === 'success' && (state.data.kind === 'operations' ? <section className="panel"><h2>수집·모델 상태</h2><ul>{state.data.models.map((model) => <li key={model.name}>{model.name}: {model.state === 'ok' ? '정상' : model.state === 'loading' ? '준비 중' : '장애'}</li>)}</ul>{state.data.sources === null ? <p>출처 수집 상태를 읽지 못했습니다.</p> : <ul>{state.data.sources.map((source, index) => <li key={index}>{source.name}: {source.stale ? '48시간 넘게 수집 성공 없음' : '최근 48시간 안에 수집 성공'}</li>)}</ul>}</section> : <section className="panel"><h2>{state.data.kind === 'reports' ? '신고 목록' : '공고 목록'}</h2>
       {state.data.rows.length ? <ul>{state.data.rows.map((row) => <li key={row.id}><p>{row.title} · {statuses[row.status]} · 버전 {row.version}</p><Button variant="secondary" disabled={pending} onClick={() => setSelected(row)}>검토 선택 · {row.title}</Button></li>)}</ul> : <p>조회 결과가 없습니다.</p>}
       <div className="actions"><Button variant="secondary" disabled={pending || state.data.page <= 1} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page - 1) }}>이전 페이지</Button><p>{state.data.page}페이지 · 전체 {state.data.total}건</p><Button variant="secondary" disabled={pending || state.data.page * 10 >= state.data.total} onClick={() => { if (state.data.kind !== 'operations') load(state.data.kind, state.data.page + 1) }}>다음 페이지</Button></div>
     </section>)}
     {selected && state.status === 'success' && state.data.kind === 'opportunities' && <><Button variant="secondary" onClick={() => { const target = { id: selected.id, version: selected.version }; request.clear(); setSelected(null); setEditor({ target }) }}>선택한 공고 수정</Button><OpportunityReview key={`${selected.id}:${selected.version}`} id={selected.id} version={selected.version} /></>}
     {selected?.report && state.status === 'success' && state.data.kind === 'reports' && <ReportReview key={`${selected.id}:${selected.version}`} report={selected.report} onRefresh={() => load('reports')} />}
-    <StatusNotice title="실제 운영 서버 검증이 남아 있어요">공고 등록·수정·검수·종료·신고 처리·감사 조회는 서버 권한·MFA·버전 검증을 통과해야 하며 현재 실제 서버 연결은 검증 전입니다.</StatusNotice>
+    <StatusNotice label="처리 전 확인" title="공식 원문과 최신 상태를 확인해 주세요">공고의 공개·비공개·종료와 신고 처리는 이용자에게 영향을 줍니다. 변경 사항과 처리 근거를 확인한 뒤 진행해 주세요.</StatusNotice>
   </>
 }
 
