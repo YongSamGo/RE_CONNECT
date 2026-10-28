@@ -10,6 +10,7 @@ import asyncio
 
 from fastapi import FastAPI
 
+from app.adapters.aws import build_client as build_aws_client
 from app.adapters.ollama import OllamaLLMAdapter
 from app.adapters.kakao import KakaoAdapter
 from app.adapters.internal_speech import InternalSpeechAdapter
@@ -45,7 +46,7 @@ from app.modules.deletions import router as deletions
 from app.modules.operators import router as operators
 from app.modules.operators.repository import SqlOperatorMfaRepository, UnavailableOperatorMfaRepository
 from app.modules.operators.service import OperatorMfaService
-from app.modules.deletions.journal import FileDeletionJournal, UnavailableDeletionJournal
+from app.modules.deletions.journal import UnavailableDeletionJournal, build_deletion_journal
 from app.modules.deletions.repository import SqlDeletionRepository, UnavailableDeletionRepository
 from app.modules.deletions.service import DeletionService
 from app.core.encryption import ContentCipher, EncryptionKeyRing, EncryptionUnavailable
@@ -130,8 +131,7 @@ def create_app(
 ) -> FastAPI:
     settings = settings or get_settings()
     docs_enabled = settings.docs_enabled
-    deletion_journal = (FileDeletionJournal(settings.deletion_journal_directory)
-        if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal())
+    deletion_journal = build_deletion_journal(settings, build_aws_client)
     # 운영에서 삭제 이력 어댑터가 없으면 저장 동의와 회원 로그인을 열지 않는다.
     # 저장은 되는데 탈퇴·삭제·동의 철회가 503인 상태를 만들지 않기 위해서다. 운영 어댑터를 연결하면 자동으로 열린다.
     member_storage_enabled = settings.app_env != 'production' or not isinstance(deletion_journal, UnavailableDeletionJournal)
