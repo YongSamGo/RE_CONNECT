@@ -9,6 +9,7 @@
 | `compose.dev.yaml` | 구현됨: 로컬 전용 PostgreSQL·Redis·내부 네트워크·tmpfs | [#18 W02-07](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | `compose.prod.yaml` | EC2용 Nginx·FastAPI·Redis·Ollama·음성 서비스. PostgreSQL은 외부 RDS | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92)·[#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
 | `nginx/` | `/`는 React 정적 파일, `/api/*`는 FastAPI로 전달 (접두사 유지) | [#91](https://github.com/YongSamGo/RE_CONNECT/issues/91) |
+| `backup/deletion-journal.json` | 구현됨: RDS 백업과 분리한 삭제 이력 S3 버킷(버전 관리·Object Lock 30일)과 백엔드 역할의 쓰기·읽기 전용 권한. [백업·복원 문서](../docs/security/backup-restore.md) | [#94 W12-05](https://github.com/YongSamGo/RE_CONNECT/issues/94) |
 
 ## 실행 방법
 

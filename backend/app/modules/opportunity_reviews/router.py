@@ -14,7 +14,7 @@ from app.core.business_errors import AppError
 from app.core.request_id import get_request_id
 from app.modules.opportunity_reviews.models import ApproveRequest, CloseRequest, HideRequest, RejectRequest, ReviewResult
 from app.modules.opportunity_reviews.service import NotPublishable
-from app.modules.sessions.http import require_session
+from app.modules.auth.http import require_operator
 
 router = APIRouter(tags=["운영자"])
 _PYDANTIC_TYPE = {"required": "missing", "invalid_value": "value_error"}
@@ -23,9 +23,7 @@ _PYDANTIC_TYPE = {"required": "missing", "invalid_value": "value_error"}
 async def _operator(request: Request):
     if request.query_params:
         raise AppError("VALIDATION_FAILED")
-    session = await require_session(request, user_activity=True, validate_member=False)
-    await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
-    return await request.app.state.member_service.require(session, operator=True)
+    return await require_operator(request)
 
 
 async def _run(request: Request, action: str, opportunity_id: UUID, body) -> JSONResponse:
