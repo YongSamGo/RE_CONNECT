@@ -131,7 +131,8 @@ class RenderEnvTest(unittest.TestCase):
                 self.assertEqual(self.run_main(document, role="redis", prefix=redis_prefix)[0], 1)
 
     def test_refuses_shared_writable_directory_and_symlink(self) -> None:
-        os.chmod(self.root, 0o777)
+        # 그룹 쓰기만 열어도 거절해야 한다. 기타 쓰기는 같은 검사 비트라 따로 열지 않는다.
+        os.chmod(self.root, 0o770)
         self.assertEqual(self.run_main(app_document())[0], 1)
         os.chmod(self.root, 0o700)
         target = self.root / "elsewhere"
