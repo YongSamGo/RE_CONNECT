@@ -19,7 +19,7 @@ describe('member and operator request boundaries', () => {
     mount(<AccountPage />)
     expect(screen.queryByRole('link', { name: '운영자 관리 화면' })).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: '내 로그인 상태 확인' }))
-    await screen.findByText('회원 세션이 확인되었습니다. 대화는 새로 시작하며 저장하지 않은 미리보기는 회원 자료에 포함되지 않습니다.')
+    await screen.findByText('회원 세션이 확인되었습니다. 대화는 새로 시작하며 저장하지 않은 입력은 회원 자료에 포함되지 않습니다.')
     if (operator) expect(screen.getByRole('link', { name: '운영자 관리 화면' })).toHaveAttribute('href', '/admin')
     else expect(screen.queryByRole('link', { name: '운영자 관리 화면' })).not.toBeInTheDocument()
   })
@@ -94,7 +94,7 @@ describe('member and operator request boundaries', () => {
     expect(await screen.findByRole('heading', { name: '저장 프로필의 경험' })).toHaveFocus()
     await user.click(screen.getByRole('button', { name: '내용 보기: 가상 공고' }))
     expect(await screen.findByRole('heading', { name: '가상 공고' })).toHaveFocus()
-    expect(fetch).toHaveBeenCalledTimes(4)
+    expect(fetch).toHaveBeenCalledTimes(5)
   })
   it('does not write consent or submit login based on preview state', async () => {
     const fetch = vi.fn(async () => json(anonymousSession)); vi.stubGlobal('fetch', fetch)

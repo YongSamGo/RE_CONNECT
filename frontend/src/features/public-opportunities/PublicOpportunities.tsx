@@ -7,8 +7,9 @@ import { Button } from '../../ui/Button'
 import { StatusNotice } from '../../ui/StatusNotice'
 import { deadlineLabel, parseList, provinces } from './catalog'
 import type { Opportunity, OpportunityList, Search } from './catalog'
-import { RegionSelectionMap, belongsToMap, clearWholeAreaSelection } from './RegionSelectionMap'
-import type { MapArea } from './RegionSelectionMap'
+import { RegionSelectionMap } from './RegionSelectionMap'
+import { belongsToMap, clearWholeAreaSelection } from './map-selection'
+import type { MapArea } from './map-selection'
 import './catalog.css'
 
 type State = { status: 'idle' }
@@ -105,7 +106,7 @@ export function PublicOpportunities() {
           }}><option value="">활동 유형 전체</option><option value="employment">취업 및 공공일자리</option><option value="volunteering">봉사</option></select></div>
           <div className="public-explore-footer">
             <div className="public-explore-actions"><Button type="submit" pending={loading} pendingLabel="공고를 불러오고 있어요">공고 검색하기</Button>{loading && <Button variant="secondary" onClick={cancel}>조회 취소하기</Button>}</div>
-            <Link className="text-link public-experience-link" to="/consent">내 경험 이야기하기</Link>
+            <Link className="text-link public-experience-link" to="/start">내 경험 이야기하기</Link>
           </div>
         </section>
       </form>
@@ -113,7 +114,7 @@ export function PublicOpportunities() {
     <div className="public-catalog-results" hidden={state.status === 'idle'}>
     <section className="catalog-results" ref={resultRef} tabIndex={-1} aria-label="공고 조회 결과">
       {state.status === 'loading' && <StatusNotice kind="loading" title="공고를 확인하고 있어요">조회가 끝나기 전에는 결과를 확정하지 않습니다. 원하면 조회를 취소할 수 있어요.</StatusNotice>}
-      {state.status === 'error' && <div className="catalog-error" role="alert"><p>{state.error.code === 'DAILY_QUOTA_EXCEEDED' ? '오늘은 공고를 더 불러올 수 없어요. 잠시 후 다시 시도해 주세요.' : '공고를 불러오지 못했어요. 다시 시도해 주세요.'}</p>{state.error.code !== 'DAILY_QUOTA_EXCEEDED' && <button type="button" className="catalog-browse-all" onClick={() => void load(state.query, state.page)}>다시 시도하기</button>}</div>}
+      {state.status === 'error' && <div className="catalog-error" role="alert"><p>{state.error.message}</p>{state.error.code !== 'DAILY_QUOTA_EXCEEDED' && <button type="button" className="catalog-browse-all" onClick={() => void load(state.query, state.page)}>다시 시도하기</button>}</div>}
       {state.status === 'loaded' && <>
         <h2>공개 공고 검색 결과</h2>
         <p role="status">검색 결과 {state.result.total.toLocaleString('ko-KR')}건 / {state.result.page}페이지</p>

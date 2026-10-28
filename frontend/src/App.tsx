@@ -1,8 +1,8 @@
-import { Component, lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { Component, Suspense, lazy, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, Navigate, Route, Routes, matchPath, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from './ui/Button'
-import { TextAreaField } from './ui/Fields'
+import { CheckboxField, TextAreaField } from './ui/Fields'
 import { useMemoryScope } from './state/useMemoryScope'
 import { Home } from './features/home/Home'
 import { consentNotices } from './features/consent/notice-content'
@@ -29,7 +29,7 @@ import { emptyPreferences } from './features/profile/model'
 import type { ProfilePreferences } from './features/profile/model'
 import './App.css'
 
-const AdminPage = lazy(() => import('./features/admin/AdminPage').then(module => ({ default: module.AdminPage })))
+const AdminPage = lazy(() => import('./features/admin/AdminPage').then(({ AdminPage }) => ({ default: AdminPage })))
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
 type Preview = { consent: boolean; experience: string; draft: ManualDraft; preferences: ProfilePreferences }
@@ -60,7 +60,8 @@ function Heading({ step, title, children }: { step: string; title: string; child
   return <header className="page-heading"><p className="eyebrow">{step}</p><h1>{title}</h1><p>{children}</p></header>
 }
 
-function Consent() {
+function Consent({ onStart }: { onStart: () => void }) {
+  const [checked, setChecked] = useState(false)
   const [selected, setSelected] = useState<number | null>(null)
   const dialogRef = useRef<HTMLDialogElement>(null)
   const notice = selected === null ? null : consentNotices[selected]
@@ -84,7 +85,7 @@ function Consent() {
         </div>
       </>}
     </dialog>
-    <div className="consent-start"><button type="button" className="button primary" disabled>동의하고 대화 시작하기</button><Link className="consent-browse" to="/opportunities">일단 둘러볼래요</Link></div>
+    <div className="consent-start"><p>가상 경험으로 화면을 살펴보는 미리보기입니다. 입력은 이 화면의 메모리에서만 사용하며 실제 AI 처리 동의로 기록되지 않습니다.</p><CheckboxField label="입력과 보관 안내를 확인하고 미리보기에 동의해요." checked={checked} onChange={event => setChecked(event.target.checked)} /><Button disabled={!checked} onClick={onStart}>미리보기 시작하기</Button><Link className="consent-browse" to="/opportunities">일단 둘러볼래요</Link></div>
   </div>
 }
 
@@ -144,15 +145,16 @@ export default function App() {
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
   const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={endingKey === location.key ? '/' : '/consent'} replace />
+  const previewPage = ['/consent', '/conversation', '/transcription', '/profile', '/preparation'].includes(location.pathname)
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면">다시잇다</Link><div className="header-actions">{location.pathname !== '/' && <Link className="text-size-toggle header-back" to="/">뒤로가기</Link>}<button type="button" className="text-size-toggle" aria-pressed={largeText} onClick={() => { const next = !largeText; setLargeText(next); try { localStorage.setItem('reconnect-large-text', next ? 'on' : 'off') } catch { /* Keep the choice for this visit. */ } }}>큰 글씨 보기</button><Link className="text-size-toggle header-login" to="/login">로그인</Link></div></header>
-    {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
+    {preview.consent && previewPage && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
     <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
     <main id="main" ref={mainRef} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
       <Route path="/start" element={<StartJourney onStart={clearPreview} />} />
-      <Route path="/consent" element={<Consent />} />
+      <Route path="/consent" element={<Consent onStart={() => { clearPreview(); setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/transcription" element={requirePreview(<VoicePreview onUseText={(experience) => { setPreview((previous) => ({ ...previous, experience, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } })); navigate('/conversation') }} />)} />
       <Route path="/profile" element={requirePreview(<ProfilePreview experience={preview.experience} preferences={preview.preferences} onChange={(preferences) => setPreview((previous) => ({ ...previous, preferences, draft: { ...previous.draft, reviewed: false } }))} />)} />

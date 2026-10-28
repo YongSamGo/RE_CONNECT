@@ -32,12 +32,12 @@ describe('public search without AI or login', () => {
     const user = userEvent.setup()
     mount()
     await user.type(screen.getByRole('searchbox'), '  도서&role=operator  ')
-    await user.selectOptions(screen.getByRole('combobox', { name: '활동 지역' }), 'seoul')
+    await user.click(screen.getByRole('button', { name: '서울 전체 선택/해제' }))
     await user.selectOptions(screen.getByRole('combobox', { name: '활동 유형' }), 'volunteering')
     await search()
     await screen.findByText('공개 공고 검색 결과')
     const query = new URL(fetch.mock.calls[0]![0].url).searchParams
-    expect(Object.fromEntries(query)).toEqual({ page: '1', page_size: '20', q: '도서&role=operator', province: 'seoul', activity_type: 'volunteering' })
+    expect(Object.fromEntries(query)).toEqual({ page: '1', page_size: '20', q: '도서&role=operator', regions: 'seoul', activity_type: 'volunteering' })
     expect(window.location.search).toBe('')
     expect(write).not.toHaveBeenCalled()
   })
@@ -100,7 +100,7 @@ describe('public search without AI or login', () => {
     expect(screen.queryByText('private-query-and-SQL')).not.toBeInTheDocument()
     expect(screen.getByRole('searchbox')).toHaveValue('시설관리')
     expect(fetch).toHaveBeenCalledTimes(1)
-    await userEvent.click(screen.getByRole('button', { name: '같은 조건으로 다시 조회' }))
+    await userEvent.click(screen.getByRole('button', { name: '다시 시도하기' }))
     await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
   })
   it('does not offer immediate retry for an exhausted daily quota', async () => {
@@ -108,7 +108,7 @@ describe('public search without AI or login', () => {
     mount()
     await search()
     expect(await screen.findByRole('alert')).toHaveTextContent('다음 날 다시 이용해 주세요.')
-    expect(screen.queryByRole('button', { name: '같은 조건으로 다시 조회' })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: '다시 시도하기' })).not.toBeInTheDocument()
   })
   it('blocks duplicate submits, cancels the request and cannot apply its result to a new search', async () => {
     let finishOld!: (response: Response) => void
@@ -154,7 +154,7 @@ describe('public search without AI or login', () => {
     expect(screen.getByRole('searchbox')).toHaveValue('')
     expect(fetch.mock.calls[0]![0].signal.aborted).toBe(true)
     await act(async () => { finish(json(sampleList())); await response })
-    expect(screen.getByText('검색 조건을 고르고 공고를 불러오세요')).toBeVisible()
+    expect(screen.getByRole('button', { name: '공고 검색하기' })).toBeVisible()
   })
   it('rejects a malformed response without rendering unsafe links or mixing it with valid cards', async () => {
     vi.stubGlobal('fetch', vi.fn(async () => json(sampleList({ items: [sampleOpportunity({ id: '../admin' })] }))))

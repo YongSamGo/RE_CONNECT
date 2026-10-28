@@ -32,7 +32,7 @@ export function Home() {
         <p className="hero-description">여러분의 이야기가 곧 새로운 기회가 됩니다</p>
       </div>
       <div className="hero-actions" aria-label="시작 메뉴">
-        <Link className="button primary home-start" to="/consent">시작하기</Link>
+        <Link className="button primary home-start" to="/start">시작하기</Link>
         <Link className="button secondary home-opportunities-button" to="/opportunities">모집 공고 살펴보기</Link>
       </div>
     </section>

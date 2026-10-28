@@ -43,7 +43,7 @@ it('audits an asynchronous request error while preserving the result focus and r
   await userEvent.click(screen.getByRole('button', { name: '공고 검색하기' }))
   expect(await screen.findByRole('alert')).toBeVisible()
   expect(screen.getByRole('region', { name: '공고 조회 결과' })).toHaveFocus()
-  expect(screen.getByRole('button', { name: '같은 조건으로 다시 조회' })).toBeVisible()
+  expect(screen.getByRole('button', { name: '다시 시도하기' })).toBeVisible()
   await audit()
 })
 

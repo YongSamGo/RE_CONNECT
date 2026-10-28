@@ -30,7 +30,7 @@ describe('public detail request and state', () => {
     expect(screen.getByText(/제공된 원문 설명이 없습니다/)).toBeVisible()
     expect(screen.getByText(/검수된 공고에 명시된 필수조건이 없습니다/)).toBeVisible()
     expect(screen.getByText(/내 지원 자격을 판정한 결과가 아닙니다/)).toBeVisible()
-    expect(screen.getByText(/실제 체험 시작은 준비 중이에요/)).toHaveTextContent('공개 공고 화면에서는 자격 판정이나 지원서 생성을 하지 않아요.')
+    expect(screen.getByRole('link', { name: 'AI 처리 안내를 확인하고 새 체험 시작' })).toHaveAttribute('href', '/start')
     expect(screen.getByText(/원문 확인:/)).toHaveTextContent('2026년 10월 15일 08:30')
     expect(screen.getByRole('region', { name: '공고 상세 조회 결과' })).toHaveFocus()
     const link = screen.getByRole('link', { name: /공식 원문 확인 / })

@@ -13,7 +13,7 @@ const stamp = '2026-10-18T00:00:00Z'
 const reference = { id: opportunityId, version: 1 }
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
 const empty = () => ({ draft_id: draftId, revision: 1, mode: 'manual', profile_version: 1, opportunity: reference, self_introduction: '', motivation: '', approved_at: null as string | null, review_reasons: [], warnings: [] })
-function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: boolean; consent?: boolean; loseApproval?: boolean; changedApproval?: boolean; reviewReasons?: string[]; invalid?: boolean } = {}) {
+function server(options: { loseFirst?: boolean; conflict?: boolean; aiFailure?: boolean; consent?: boolean; loseApproval?: boolean; reviewReasons?: string[]; changedApproval?: boolean; invalid?: boolean } = {}) {
   let current = empty(), creations = 0
   const fetch = vi.fn(async (request: Request) => {
     const path = new URL(request.url).pathname
@@ -120,11 +120,11 @@ it('explains a generation refused for lack of usable facts without offering a po
   const generations = () => fetch.mock.calls.map(([request]) => request).filter(request => request.method === 'POST' && request.url.endsWith('/drafts'))
   await user.click(manual()); await screen.findByLabelText('지원 자기소개')
   await user.click(screen.getByRole('checkbox', { name: '현재 화면 내용을 새 초안이나 서버 편집본으로 바꾸는 것을 확인했어요.' }))
-  const generate = () => screen.getByRole('button', { name: 'AI 초안 생성 · 같은 요청 재확인' })
+  const generate = () => screen.getByRole('button', { name: 'AI 초안 만들기' })
   await user.click(generate())
   expect(await screen.findByText('AI 초안을 만들지 못했어요')).toBeInTheDocument()
   // 안내는 하나만 보인다. 같은 요청을 다시 보내라는 일반 오류 문단은 숨긴다.
-  expect(screen.queryByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)).not.toBeInTheDocument()
+  expect(screen.queryByText(/생성 요청의 응답을 받지 못했다면/)).not.toBeInTheDocument()
   expect(screen.queryByRole('button', { name: 'AI 실패 후 새 요청으로 다시 생성' })).not.toBeInTheDocument()
   // 확정된 422 뒤에 다시 누르면 옛 키를 재전송하지 않고 새 키로 보낸다.
   await user.click(generate())
@@ -136,7 +136,7 @@ it('explains a generation refused for lack of usable facts without offering a po
   // 기존 편집기는 남고, 편집 저장의 422는 생성 실패 안내로 보이지 않는다.
   await user.type(screen.getByLabelText('지원 자기소개'), '사라지면 안 되는 입력')
   await user.click(screen.getByRole('button', { name: '수정 내용을 임시 초안에 반영' }))
-  await screen.findByText(/AI 실패 시 직접 작성을 선택할 수 있습니다/)
+  await screen.findByText(/생성 요청의 응답을 받지 못했다면/)
   expect(screen.getByLabelText('지원 자기소개')).toHaveValue('사라지면 안 되는 입력')
   expect(screen.queryByText('AI 초안을 만들지 못했어요')).not.toBeInTheDocument()
 })
