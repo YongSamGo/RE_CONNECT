@@ -66,6 +66,7 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 | 주기 수집 (활성 출처 전체) | `cd backend` 후 `python -m app.collect --all-due` | 사용 가능. 운영은 15분 systemd 타이머: [주기 실행 안내](../infra/scheduler/README.md) |
 | 보관기간 정리 묶음 | `cd backend` 후 `python manage_retention.py run` | 사용 가능. 삭제 이력·신고 설명·감사 기록 정리를 차례로 실행한다. 운영은 매일 systemd 타이머: [주기 실행 안내](../infra/scheduler/README.md) |
 | 신고 설명 보관 정리 | `cd backend` 후 `python manage_reports.py purge --limit 100` | 사용 가능. 종결 후 30일이 지난 공고 오류 신고의 설명·처리 사유를 지운다. DB·암호화 키 설정 필요: [영구 저장 안내](data/persistence.md) |
+| 만료 감사 기록 정리 | `cd backend` 후 `python manage_audit.py prune` | 사용 가능. DB 필요, 주기 실행은 #96: [감사 기록 안내](security/errors-and-logging.md#운영자-감사-기록-w07-06) |
 
 가상환경 활성화는 macOS·Linux에서 `source .venv/bin/activate`, PowerShell에서 `.venv\Scripts\Activate.ps1`이다.
 

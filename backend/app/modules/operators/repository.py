@@ -17,7 +17,7 @@ from app.core.business_errors import AppError
 from app.core.encryption import ContentTarget, EncryptedEnvelope, EncryptionUnavailable, ProtectedContentError
 from app.modules.operators import totp
 from app.persistence.members import OperatorMfaCredential, User
-from app.persistence.operations import AuditEvent, DeletionRecord
+from app.persistence.operations import AUDIT_RETENTION, AuditEvent, DeletionRecord
 
 FAILURE_LIMIT = 5
 # 잠길 때마다 길어진다(15분 → 1시간 → 24시간). 성공하면 처음으로 돌아간다.
@@ -25,7 +25,6 @@ LOCK_STEPS_SECONDS = (15 * 60, 60 * 60, 24 * 60 * 60)
 LOCK_SECONDS = LOCK_STEPS_SECONDS[0]
 # 연속 10번 잠기면(연속 실패 50회) reset-mfa 전까지 막는다. 장기 추측 성공 확률을 약 1.5e-4 이하로 묶는다.
 BLOCK_AFTER_LOCKS = 10
-AUDIT_RETENTION = timedelta(days=30)
 _MAX_GENERATION = 2147483646
 
 
