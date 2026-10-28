@@ -1,4 +1,26 @@
-:root { --ink: #182b38; --muted: #405665; --paper: #f4f7f9; --emphasis: #245a78; --emphasis-strong: #193f56; --line: #cfdce2; --surface: #e5f0f5; --accent: #f3d991; --control-border: #526b78; --large-panel-max: 1120px; --large-panel-radius: 24px; --large-panel-padding: clamp(20px, 3vw, 36px); }
+:root {
+  /* Re:Connect brand palette: keep the UI colors separate from the logo's gradients. */
+  --brand-deep-blue: #135bba;
+  --brand-primary-blue: #2172d1;
+  --brand-bright-blue: #358ee5;
+  --brand-sky-blue: #53adf6;
+  --brand-light-blue: #79baf1;
+  --brand-soft-blue: #b1d8fa;
+  --brand-pale-blue: #cce5fc;
+
+  --ink: #163a60;
+  --muted: #466581;
+  --paper: #f7fbff;
+  --emphasis: var(--brand-primary-blue);
+  --emphasis-strong: var(--brand-deep-blue);
+  --line: var(--brand-pale-blue);
+  --surface: #eaf5fe;
+  --accent: var(--brand-soft-blue);
+  --control-border: #6384a3;
+  --large-panel-max: 1120px;
+  --large-panel-radius: 24px;
+  --large-panel-padding: clamp(20px, 3vw, 36px);
+}
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream1.otf') format('opentype'); font-style: normal; font-weight: 100; font-display: swap; }
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream2.otf') format('opentype'); font-style: normal; font-weight: 200; font-display: swap; }
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream3.otf') format('opentype'); font-style: normal; font-weight: 300; font-display: swap; }

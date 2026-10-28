@@ -5,14 +5,15 @@ import { Home } from './features/home/Home'
 import { PublicOpportunities } from './features/public-opportunities/PublicOpportunities'
 import { PublicOpportunityDetail } from './features/public-opportunities/PublicOpportunityDetail'
 import { JourneyDraftApplicationRoute } from './features/preparation/JourneyDraftEditor'
-import { AccountPage } from './features/account/AccountPage'
+import { AccountHeaderActions } from './features/account/AccountHeaderActions'
 import { LoginPage } from './features/account/LoginPage'
 import { AuthResult } from './features/account/AuthResult'
 import { JourneyConversation, JourneyConversationRoute } from './features/conversation/JourneyConversation'
 import { JourneyRecommendations, JourneyRecommendationsRoute } from './features/recommendations/JourneyRecommendations'
 import { StartJourney } from './features/journeys/StartJourney'
 import { MemberProfile } from './features/account/MemberProfile'
-import { SavedMaterials } from './features/account/SavedMaterials'
+import { MemberInformationPage } from './features/account/MemberInformation'
+import { SavedOpportunities } from './features/account/SavedOpportunities'
 import { ServiceGuide } from './features/journeys/ServiceGuide'
 import { JourneyMap } from './features/journeys/JourneyMap'
 import { ConversationEntry } from './features/journeys/ServiceEntries'
@@ -43,16 +44,18 @@ const screens = [
   { path: '/profile', id: 'UX05', title: '프로필 확인' },
   { path: '/opportunities', id: 'UX06', title: '공고 살펴보기' },
   { path: '/opportunities/preview', id: 'UX07', title: '공고 상세' },
-  { path: '/me', id: 'UX08', title: '내 정보' },
+  { path: '/me', id: 'UX08', title: '나의 정보' },
+  { path: '/me/story', id: 'UX10', title: '나의 이야기' },
+  { path: '/me/saved', id: 'UX11', title: '저장한 공고' },
   { path: '/admin', id: 'UX09', title: '운영자' },
 ] as const
 
 const reviewScreens = [
   ['/', '첫 화면'], ['/start', '시작 전 안내'], ['/dev/conversation', '대화'],
   ['/recommendations', '추천 공고'],
-  ['/opportunities', '공고 탐색'], ['/opportunities/detail', '공고 상세'],
+  ['/opportunities', '공고 탐색'],
   ['/dev/recommendations', '추천 공고 미리보기'], ['/login', '로그인'],
-  ['/me', '내 정보'], ['/me/profile', '내 프로필'],
+  ['/me', '나의 정보'], ['/me/story', '나의 이야기'], ['/me/saved', '저장한 공고'],
   ['/guide', '이용 안내'], ['/journey-map', '흐름 지도'], ['/admin', '운영 화면'],
 ] as const
 
@@ -103,7 +106,7 @@ export default function App() {
       ?? (matchPath('/journeys/:journeyId/recommendations', location.pathname) || location.pathname === '/recommendations' ? screens[5] : undefined)
       ?? (matchPath('/journeys/:journeyId/opportunities/:opportunityId/application', location.pathname) ? { title: '지원서 작성' } : undefined)
       ?? (location.pathname === '/login' ? { title: '로그인' } : undefined)
-      ?? (location.pathname === '/me/profile' ? { title: '내 프로필' } : undefined)
+      ?? (location.pathname === '/me/profile' || location.pathname === '/me/story' ? { title: '나의 이야기' } : undefined)
       ?? (location.pathname === '/auth/result' ? { title: '로그인 결과' } : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} | 다시잇다`
     if (previousPath.current !== location.pathname) {
@@ -122,7 +125,7 @@ export default function App() {
   }, [])
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
-    <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면">다시잇다</Link><div className="header-actions">{location.pathname !== '/' && <Link className="text-size-toggle header-back" to="/">뒤로가기</Link>}<button type="button" className="text-size-toggle" aria-pressed={largeText} onClick={() => { const next = !largeText; setLargeText(next); try { localStorage.setItem('reconnect-large-text', next ? 'on' : 'off') } catch { /* Keep the choice for this visit. */ } }}>큰 글씨 보기</button><Link className="text-size-toggle header-login" to="/login">로그인</Link></div></header>
+    <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><img src="/brand/symbols/dasieitda-symbol.png" alt="" /><span className="brand-name">다시잇다</span></Link><div className="header-actions">{location.pathname !== '/' && <Link className="text-size-toggle header-back" to="/">뒤로가기</Link>}<button type="button" className="text-size-toggle" aria-pressed={largeText} onClick={() => { const next = !largeText; setLargeText(next); try { localStorage.setItem('reconnect-large-text', next ? 'on' : 'off') } catch { /* Keep the choice for this visit. */ } }}>큰 글씨 보기</button><AccountHeaderActions /></div></header>
     <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
     <main id="main" ref={mainRef} className={location.pathname === '/journey-map' ? 'journey-map-main' : undefined} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
@@ -141,7 +144,7 @@ export default function App() {
       <Route path="/application" element={<Navigate to="/recommendations" replace />} />
       <Route path="/save" element={<Navigate to="/recommendations" replace />} />
       <Route path="/save/result" element={<Navigate to="/recommendations" replace />} />
-      <Route path="/profile" element={<Navigate to="/me/profile" replace />} />
+      <Route path="/profile" element={<Navigate to="/me/story" replace />} />
       <Route path="/journeys/:journeyId/conversation" element={<JourneyConversationRoute />} />
       <Route path="/journeys/:journeyId/results" element={<LegacyJourneyProfileRedirect />} />
       <Route path="/journeys/:journeyId/recommendations" element={<JourneyRecommendationsRoute />} />
@@ -149,18 +152,19 @@ export default function App() {
       <Route path="/journeys/:journeyId/opportunities/:opportunityId/application" element={<JourneyDraftApplicationRoute />} />
       <Route path="/journeys/:journeyId/profile" element={<LegacyJourneyProfileRedirect />} />
       <Route path="/opportunities" element={<PublicOpportunities />} />
-      <Route path="/opportunities/detail" element={<PublicOpportunityDetail />} />
+      <Route path="/opportunities/detail" element={<Navigate to="/start" replace />} />
       <Route path="/opportunities/:id" element={<PublicOpportunityDetail />} />
       <Route path="/opportunities/:id/preparation" element={<LegacyOpportunityPreparationRedirect />} />
       <Route path="/preparation" element={<Navigate to="/opportunities" replace />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/me" element={<AccountPage onSessionReset={() => setNotice('')} onLogout={() => { setNotice('현재 세션이 종료되어 입력 내용을 지웠습니다.') }} />} />
-      <Route path="/me/profile" element={<MemberProfile />} />
+      <Route path="/me" element={<MemberInformationPage />} />
+      <Route path="/me/story" element={<MemberProfile />} />
+      <Route path="/me/profile" element={<Navigate to="/me/story" replace />} />
       <Route path="/auth/result" element={<AuthResult />} />
       <Route path="/me/save" element={<Navigate to="/recommendations" replace />} />
       <Route path="/journeys/:journeyId/save" element={<Navigate to="/recommendations" replace />} />
       <Route path="/journeys/:journeyId/drafts/:draftId/save" element={<Navigate to="/recommendations" replace />} />
-      <Route path="/me/saved" element={<SavedMaterials onSessionReset={() => setNotice('')} />} />
+      <Route path="/me/saved" element={<SavedOpportunities />} />
       <Route path="/my" element={<Navigate to="/me" replace />} />
       <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
       <Route path="/preparation/:legacyId" element={<Navigate to="/opportunities" replace />} />

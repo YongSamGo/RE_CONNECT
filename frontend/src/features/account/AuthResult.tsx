@@ -47,7 +47,7 @@ function Result({ search }: { search: string }) {
   const reauthenticated = me?.authenticated && me.user?.reauth_until
     && Date.parse(me.user.reauth_until) > checkedAt
   return <ServicePage title="현재 로그인 상태를 확인해요" description="로그인 결과를 확인하고 이용을 이어가세요.">
-    {!result ? <StatusNotice title="돌아온 주소를 확인할 수 없어요">내 정보 화면에서 현재 상태를 확인해 주세요.</StatusNotice> : <>
+    {!result ? <StatusNotice title="돌아온 주소를 확인할 수 없어요">나의 정보 화면에서 현재 상태를 확인해 주세요.</StatusNotice> : <>
       {result.status === 'cancelled' && <StatusNotice title="요청이 취소되어 돌아왔어요">필요하면 현재 로그인 상태를 확인해 주세요.</StatusNotice>}
       {result.status === 'failed' && <StatusNotice title="요청 결과를 확인해야 해요">현재 상태를 확인한 뒤 다시 진행해 주세요.</StatusNotice>}
       {result.status === 'expired' && <StatusNotice title="요청 시간이 지났어요">현재 로그인 상태를 확인해 주세요.</StatusNotice>}
@@ -57,12 +57,12 @@ function Result({ search }: { search: string }) {
         <p className="visually-hidden" role="status">{me ? me.authenticated ? '로그인 상태를 확인했어요.' : '현재 로그인하지 않은 상태입니다.' : ''}</p>
         {me && <div className="account-result">{me.authenticated ? <>
           <h2>로그인 상태를 확인했어요</h2>
-          {result.purpose === 'reauth' && <p>{reauthenticated ? '서버에서 유효한 재인증을 확인했습니다. 탈퇴는 내 정보에서 별도로 확인하고 요청해 주세요.' : '현재 유효한 재인증이 확인되지 않았습니다. 탈퇴하려면 내 정보에서 다시 재인증해 주세요.'}</p>}
+          {result.purpose === 'reauth' && <p>{reauthenticated ? '서버에서 유효한 재인증을 확인했습니다. 탈퇴는 나의 정보에서 별도로 확인하고 요청해 주세요.' : '현재 유효한 재인증이 확인되지 않았습니다. 탈퇴하려면 나의 정보에서 다시 재인증해 주세요.'}</p>}
           <p>대화는 새로 시작합니다. 이전 대화나 저장하지 않은 입력을 복원하지 않습니다.</p>
         </> : <p>현재 로그인하지 않은 상태입니다.</p>}</div>}
       </section>
     </>}
     <StatusNotice title="운영 안내문 게시를 확인해 주세요">운영 주체와 문의처, 보관 및 삭제 정책이 확정 게시되기 전에는 새 로그인과 동의를 제공하지 않아요.</StatusNotice>
-    <div className="actions"><Link className="button primary" to="/me">내 정보로 이동</Link><Link className="text-link" to="/">시작 화면으로</Link></div>
+    <div className="actions"><Link className="button primary" to="/me">나의 정보로 이동</Link><Link className="text-link" to="/">시작 화면으로</Link></div>
   </ServicePage>
 }

@@ -1,42 +1,27 @@
 import { Link } from 'react-router-dom'
-import type { components } from '../../api/schema'
-import { ApiError } from '../../api/errors'
-import { required, useRequest } from '../../state/useRequest'
-import { Button } from '../../ui/Button'
 import { ServicePage } from '../../ui/ServicePage'
-import { RequestError } from '../../ui/StatusNotice'
-import { ProfileSummary } from '../profile/ProfileSummary'
-import { parseRegionCatalog } from '../regions/catalog'
-import type { RegionCatalog } from '../regions/catalog'
-import { parseSession } from './session'
-import { parseSavedProfile } from './saved-profile-model'
 
-type Loaded = { profile: components['schemas']['SavedProfile'] | null; catalog: RegionCatalog }
+const story = {
+  title: '도서관 자료 정리와 방문객 안내',
+  description: '지역 도서관에서 자료를 정리하고 방문객이 필요한 곳을 찾도록 안내했습니다. 맡은 일을 꾸준히 살피며 이용하는 분들이 편하게 머물 수 있도록 도왔습니다.',
+  interests: ['서울특별시 마포구', '봉사', '주 8시간'],
+  skills: ['자료 정리', '방문객 안내', '꾸준한 업무 수행'],
+}
+
 export function MemberProfile() {
-  const request = useRequest<Loaded>()
-  const { state } = request
-  const pending = state.status === 'pending'
-  function load() {
-    void request.run(async (api, signal) => {
-      const owner = parseSession(required((await api.GET('/me', { signal })).data))
-      if (!owner.authenticated || !owner.user) throw new ApiError('UNAUTHENTICATED', 401)
-      const profile = parseSavedProfile(required((await api.GET('/profiles/me', { signal })).data))
-      const catalog = parseRegionCatalog(required((await api.GET('/regions', { signal })).data))
-      const current = parseSession(required((await api.GET('/me', { signal })).data))
-      if (!current.authenticated || current.user?.id !== owner.user.id) throw new ApiError('SESSION_EXPIRED', 401)
-      return { profile, catalog }
-    })
-  }
-  return <ServicePage member title="내 프로필" description="저장한 경험과 희망 활동을 확인합니다.">
-    <Button variant="secondary" pending={pending} onClick={load}>{state.status === 'success' ? '프로필 다시 불러오기' : '저장한 프로필 불러오기'}</Button>
-    {pending && <p role="status">저장한 프로필을 확인하고 있어요.</p>}
-    {state.status === 'error' && <><RequestError error={state.error} />{state.error.code === 'UNAUTHENTICATED' && <Link className="text-link" to="/login">로그인하기</Link>}</>}
-    {state.status === 'idle' && <div className="service-empty"><h2>저장한 프로필 확인</h2><p>로그인한 계정에 저장한 프로필을 불러옵니다. 저장하지 않은 내용은 포함되지 않습니다.</p></div>}
-    {state.status === 'success' && (state.data.profile ? <>
-      <p className="quiet">저장한 프로필 / {new Date(state.data.profile.saved_at).toLocaleDateString('ko-KR')} 저장</p>
-      <ProfileSummary content={state.data.profile.content} catalog={state.data.catalog} />
-      <div className="actions"><Link className="button primary" to="/me/saved">프로필 편집, 저장 자료 관리</Link><Link className="text-link" to="/opportunities">공고 살펴보기</Link></div>
-      <p className="quiet">프로필 편집은 저장한 자료 화면에서 새 체험을 시작해 진행해요. 변경한 내용은 다시 저장해야 반영됩니다.</p>
-    </> : <div className="service-empty"><h2>아직 저장한 프로필이 없어요</h2><p>경험을 이야기하고 정리한 내용을 확인한 뒤, 내 프로필로 저장해 보세요.</p><Link className="button primary" to="/start">내 경험 이야기하기</Link></div>)}
+  return <ServicePage member title="나의 이야기" className="member-story-page">
+    {story ? <article className="generated-profile-card member-story-card" tabIndex={0} aria-label="정리한 경험과 희망 활동">
+      <h2>{story.title}</h2>
+      <p>{story.description}</p>
+      <section><h3>앞으로 하고 싶은 활동</h3>
+        <ul className="generated-profile-tags">{story.interests.map(item => <li key={item}>{item}</li>)}</ul>
+      </section>
+      <section><h3>경험에서 찾은 역량</h3>
+        <ul className="generated-profile-tags">{story.skills.map(item => <li key={item}>{item}</li>)}</ul>
+      </section>
+    </article> : <section className="member-story-empty">
+      <h2>아직 정리한 이야기가 없어요</h2>
+    </section>}
+    <div className="member-story-cta"><Link className="button primary" to="/start">{story ? '나에게 맞는 공고 찾기' : '지금 경험 이야기하러 가기'}</Link></div>
   </ServicePage>
 }

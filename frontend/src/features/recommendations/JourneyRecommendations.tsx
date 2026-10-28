@@ -124,7 +124,6 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
   })) : []
 
   return <ServicePage title="다시잇다가 추천하는 공고입니다" className={`recommendation-page${preview ? ' recommendation-preview' : ''}`}>
-    {preview && <p className="recommendation-preview-label">화면 미리보기 · 아래 공고는 UI 확인용 예시입니다.</p>}
     {profileState.status === 'pending' && <StatusNotice kind="loading" title="경험을 확인하고 있어요">잠시만 기다려 주세요.</StatusNotice>}
     {profileState.status === 'error' && <RequestError error={profileState.error} />}
     {profileView && (!profileView.confirmed || profileView.has_unconfirmed_changes) && <section className="recommendation-profile-check">
@@ -147,11 +146,12 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
       </>}
       {(preview || state.status === 'success' && state.data.items.length > 0) && <>
         <ol className="recommendation-cards">{cards.map(item => <li key={`${item.id}:${item.version}`}><article className="recommendation-card">
-          <h2>{item.title}</h2><p>{item.organization} · {item.activity}</p>
-          <p>{item.region} · {item.deadline}</p>
-          <p>내 경험과 연결된 공고예요.</p>
-          <div className="actions">{preview ? <button className="button primary" type="button" disabled>공고 상세와 공식 원문 보기</button>
-            : <Link className="button primary" to={`/opportunities/${item.id}`} state={{ journeyId }}>공고 상세와 공식 원문 보기</Link>}</div>
+          <h2>{item.title}</h2>
+          <ul className="recommendation-tags" aria-label="공고 정보">
+            <li>{item.organization}</li><li>{item.activity}</li><li>{item.region}</li><li>{item.deadline}</li>
+          </ul>
+          <div className="actions">{preview ? <button className="button primary" type="button" disabled>자세히 보기</button>
+            : <Link className="button primary" to={`/opportunities/${item.id}${journeyId ? `?journeyId=${encodeURIComponent(journeyId)}` : ''}`} target="_blank" rel="noopener noreferrer" state={{ journeyId }}>자세히 보기</Link>}</div>
         </article></li>)}</ol>
         {!preview && <p className="recommendation-note">모집 상태와 조건은 바뀔 수 있으니 공고 상세와 공식 원문을 확인해 주세요.</p>}
       </>}

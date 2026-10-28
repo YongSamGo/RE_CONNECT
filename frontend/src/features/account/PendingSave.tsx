@@ -122,6 +122,6 @@ export function PendingSave({ input, resultView = false }: { input?: SaveInput; 
     </section>}
     {request.state.status === 'error' && <><RequestError error={request.state.error} /><p>응답을 받지 못해도 실제로는 저장됐을 수 있어요. 같은 요청으로 다시 확인하거나 저장한 자료를 조회해 주세요. 요청이 만료되거나 충돌했다면 현재 자료를 확인한 뒤 새로 시작해 주세요.</p></>}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
-    <div className="actions"><Link className="button secondary" to="/me/saved">저장한 자료 확인</Link><Link className="text-link" to="/me">내 정보로 이동</Link></div>
+    <div className="actions"><Link className="button secondary" to="/me/saved">저장한 자료 확인</Link><Link className="text-link" to="/me">나의 정보로 이동</Link></div>
   </ServicePage>
 }

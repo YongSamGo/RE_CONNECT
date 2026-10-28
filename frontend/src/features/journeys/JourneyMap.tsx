@@ -9,10 +9,11 @@ const nodes = [
   { id: 'conversation', x: 506, y: 90, title: '경험 이야기', detail: '대화로 경험 정리', path: '/conversation', lane: 'story' },
   { id: 'recommendations', x: 742, y: 90, title: '추천 공고', detail: '경험과 연결된 기회', path: '/recommendations', lane: 'opportunity' },
   { id: 'opportunities', x: 270, y: 334, title: '전체 공고 탐색', detail: '지역과 활동 유형으로 찾기', path: '/opportunities', lane: 'opportunity' },
-  { id: 'detail', x: 506, y: 334, title: '공고 상세', detail: '조건과 모집 안내 확인', path: '/opportunities/detail', lane: 'opportunity' },
-  { id: 'application', x: 742, y: 334, title: '지원서 작성', detail: '공고 상세에서 이어서 작성', path: '/opportunities/detail', lane: 'application' },
-  { id: 'me', x: 978, y: 604, title: '내 정보', detail: '동의와 계정 관리', path: '/me', lane: 'member' },
-  { id: 'myprofile', x: 1214, y: 604, title: '내 프로필', detail: '내 경험과 희망 활동', path: '/me/profile', lane: 'member' },
+  { id: 'detail', x: 506, y: 334, title: '공고 상세 보기', detail: '목록에서 공고 선택', path: '/opportunities', lane: 'opportunity' },
+  { id: 'application', x: 742, y: 334, title: '지원서 작성', detail: '상세 화면에서 이어서 작성', path: '/opportunities', lane: 'application' },
+  { id: 'me', x: 978, y: 604, title: '나의 정보', detail: '이름, 연락처와 거주 정보', path: '/me', lane: 'member' },
+  { id: 'myprofile', x: 1214, y: 604, title: '나의 이야기', detail: '정리한 경험과 희망 활동', path: '/me/story', lane: 'member' },
+  { id: 'saved', x: 1450, y: 604, title: '저장한 공고', detail: '관심 공고 다시 확인', path: '/me/saved', lane: 'member' },
 ] as const
 
 const byId = Object.fromEntries(nodes.map(node => [node.id, node]))
@@ -25,7 +26,8 @@ const edges = [
   { from: 'recommendations', to: 'detail', label: '추천 공고 선택' },
   { from: 'opportunities', to: 'detail', label: '공고 선택' },
   { from: 'detail', to: 'application', label: '지원서 작성하기' },
-  { from: 'me', to: 'myprofile', label: '프로필 확인' },
+  { from: 'me', to: 'myprofile', label: '이야기 확인' },
+  { from: 'myprofile', to: 'saved', label: '공고 확인' },
 ] as const
 
 function edgePath(from: string, to: string) {
@@ -67,7 +69,7 @@ export function JourneyMap() {
         <g className="journey-map-lanes" aria-hidden="true">
           <rect x="18" y="52" width="1460" height="172" rx="18" />
           <rect x="248" y="286" width="1190" height="178" rx="18" />
-          <rect x="952" y="562" width="430" height="170" rx="18" />
+          <rect x="952" y="562" width="700" height="170" rx="18" />
           <text x="34" y="75">이야기에서 기회로</text><text x="264" y="309">공고 상세에서 지원서 작성</text><text x="968" y="585">계정 관리</text>
         </g>
         <g className="journey-map-edges" aria-hidden="true">

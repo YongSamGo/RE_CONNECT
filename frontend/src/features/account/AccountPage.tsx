@@ -23,7 +23,7 @@ export function AccountPage({ onLogout, onSessionReset }: { onLogout?: () => voi
   const me = state.status === 'success' ? state.data.me : null
   const pending = state.status === 'pending'
   const check = () => request.run(async (api, signal) => ({ me: parseSession(required((await api.GET('/me', { signal })).data)) }))
-  return <ServicePage member title="내 정보" description="내 경험과 저장한 자료, 동의 내역을 관리해요."><div className="account-content">
+  return <ServicePage member title="나의 정보" description="내 경험과 저장한 자료, 동의 내역을 관리해요."><div className="account-content">
     {me?.authenticated && <AccountOverview />}
     {!me?.authenticated && <LoginEntry />}
     <StatusNotice title="로그인과 저장 동의는 별개예요">서버에 확정 안내문이 게시돼야 새 로그인과 동의를 제공해요. 아래 관리 기능은 서버에서 확인한 현재 회원에게만 적용돼요.</StatusNotice>

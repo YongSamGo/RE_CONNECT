@@ -1,0 +1,19 @@
+{
+  "brand": "Re:Connect",
+  "palette": {
+    "deepBlue": "#135BBA",
+    "primaryBlue": "#2172D1",
+    "brightBlue": "#358EE5",
+    "skyBlue": "#53ADF6",
+    "lightBlue": "#79BAF1",
+    "softBlue": "#B1D8FA",
+    "paleBlue": "#CCE5FC"
+  },
+  "ui": {
+    "ink": "#163A60",
+    "muted": "#466581",
+    "paper": "#F7FBFF",
+    "surface": "#EAF5FE",
+    "controlBorder": "#6384A3"
+  }
+}

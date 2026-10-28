@@ -3,19 +3,19 @@ import { Link, NavLink } from 'react-router-dom'
 import './service.css'
 
 export function MemberNavigation() {
-  return <nav className="member-navigation" aria-label="내 정보 메뉴">
-    <NavLink to="/me" end>내 정보</NavLink>
-    <NavLink to="/me/profile">내 프로필</NavLink>
-    <NavLink to="/me/saved">저장한 자료</NavLink>
+  return <nav className="member-navigation" aria-label="회원 메뉴">
+    <NavLink to="/me" end>나의 정보</NavLink>
+    <NavLink to="/me/story">나의 이야기</NavLink>
+    <NavLink to="/me/saved">저장한 공고</NavLink>
   </nav>
 }
 
 export function ServicePage({ title, description, children, member = false, className = '' }: {
   title: string; description?: string; children: ReactNode; member?: boolean; className?: string
 }) {
-  return <div className={`service-stage ${className}`}>
+  return <div className={`service-stage${member ? ' member-page' : ''} ${className}`}>
     {member && <MemberNavigation />}
-    <header className="service-heading"><h1>{title}</h1>{description && <p>{description}</p>}</header>
+    {!member && <header className="service-heading"><h1>{title}</h1>{description && <p>{description}</p>}</header>}
     {children}
   </div>
 }

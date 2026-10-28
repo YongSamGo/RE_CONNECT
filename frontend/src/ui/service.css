@@ -2,9 +2,41 @@
 .service-heading { margin-bottom: 32px; }
 .service-heading h1 { margin: 0 0 12px; font-size: calc(clamp(28px, 3.2vw, 38px) * var(--text-scale, 1)); letter-spacing: -.04em; }
 .service-heading p { margin: 0; max-width: 42em; color: var(--muted); }
-.member-navigation { display: flex; flex-wrap: wrap; gap: 8px 28px; border-bottom: 1px solid var(--line); margin-bottom: 32px; }
-.member-navigation a { display: inline-flex; align-items: center; min-height: 48px; padding: 8px 0 12px; color: var(--muted); text-decoration: none; border-bottom: 3px solid transparent; }
-.member-navigation a[aria-current='page'] { color: var(--emphasis); border-color: var(--emphasis); font-weight: 700; }
+.member-page { display: flex; flex-direction: column; }
+.member-navigation { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; width: min(100%, 960px); margin: 0 auto 18px; }
+.member-navigation a { display: inline-flex; align-items: center; justify-content: center; min-height: 52px; padding: 8px 12px; border: 1px solid var(--control-border); border-radius: 12px; background: #fff; color: var(--emphasis); text-align: center; text-decoration: none; }
+.member-navigation a[aria-current='page'] { border-color: var(--emphasis); background: var(--emphasis); color: #fff; font-weight: 700; }
+.member-information-page .service-heading, .member-story-page .service-heading, .saved-opportunities-page .service-heading { margin-bottom: 12px; }
+.member-info-panel { width: min(100%, 760px); margin: 0 auto; padding: 20px 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.member-info-panel > h2 { margin: 0 0 16px; font-size: calc(24px * var(--text-scale, 1)); }
+.member-information-list { display: grid; grid-template-columns: minmax(90px, .7fr) minmax(0, 1.3fr); gap: 14px 16px; margin: 0; }
+.member-information-list dt { color: var(--muted); }
+.member-information-list dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.member-info-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px 20px; }
+.member-info-form label { display: grid; gap: 8px; font-weight: 600; }
+.member-info-form input { width: 100%; min-height: 52px; padding: 12px 14px; border: 1px solid var(--control-border); border-radius: 10px; color: var(--ink); background: #fff; font: inherit; }
+.member-info-form .actions { grid-column: 1 / -1; margin-top: 4px; }
+.member-preview-status:empty { display: none; }
+.member-info-edit-action { display: flex; justify-content: center; gap: 12px; margin-top: auto; padding-top: 18px; }
+.generated-profile-card { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 28px; width: min(100%, 960px); margin: 0 auto; padding: 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+.member-story-card { max-height: min(54svh, 520px); overflow-y: auto; overscroll-behavior: contain; scrollbar-gutter: stable; }
+.generated-profile-card h2 { grid-column: 1 / -1; margin: 0; font-size: calc(24px * var(--text-scale, 1)); }
+.generated-profile-card > p { grid-column: 1 / -1; margin: -12px 0 0; white-space: pre-wrap; }
+.generated-profile-card h3 { margin: 0 0 10px; font-size: calc(18px * var(--text-scale, 1)); }
+.generated-profile-card section { min-width: 0; }
+.generated-profile-tags, .saved-opportunity-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.generated-profile-tags li, .saved-opportunity-tags li { padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: #fff; }
+.member-story-empty { display: grid; justify-items: center; gap: 12px; padding: 48px 24px; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); text-align: center; }
+.member-story-empty h2 { margin: 0; font-size: calc(23px * var(--text-scale, 1)); }
+.member-story-cta { width: min(100%, 960px); margin: auto auto 0; padding-top: 20px; text-align: center; }
+.saved-opportunity-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; gap: 14px; padding: 0; }
+.saved-opportunity-card { min-width: 0; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
+.saved-opportunity-example { display: inline-block; margin-bottom: 10px; color: var(--emphasis); font-size: calc(15px * var(--text-scale, 1)); font-weight: 700; }
+.saved-opportunity-card h2 { margin: 0 0 8px; font-size: calc(22px * var(--text-scale, 1)); }
+.saved-opportunity-organization { margin: 0 0 16px; color: var(--muted); }
+.saved-opportunities-action { margin: auto auto 0; padding-top: 18px; text-align: center; }
+.header-session-status, .header-session-error { color: var(--muted); font-size: calc(14px * var(--text-scale, 1)); }
+.header-session-error { flex-basis: 100%; text-align: right; }
 .member-overview { padding: 24px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .member-overview h2 { font-size: calc(24px * var(--text-scale, 1)); margin-bottom: 8px; }
 .member-overview > p { color: var(--muted); }
@@ -170,8 +202,16 @@
 .service-stage .preparation-writing { margin: 32px 0; padding: 32px; border: 1px solid var(--line); border-radius: 14px; }
 @media (max-width: 760px) {
   .service-stage { width: min(calc(100vw - 32px), var(--large-panel-max)); padding: 20px; min-height: 0; border-radius: 18px; }
+  .member-info-panel { padding: 18px; }
+  .member-info-form { grid-template-columns: 1fr; }
+  .member-info-form .actions { grid-column: 1; }
+  .generated-profile-card { grid-template-columns: 1fr; gap: 18px; padding: 18px; }
+  .generated-profile-card h2, .generated-profile-card > p { grid-column: 1; }
+  .generated-profile-card > p { margin-top: -10px; }
+  .saved-opportunity-list { grid-template-columns: 1fr; }
   .member-overview-links { grid-template-columns: 1fr; gap: 12px; }
-  .member-navigation { gap: 8px 20px; }
+  .member-navigation { gap: 8px; margin-bottom: 12px; }
+  .member-navigation a { min-height: 48px; padding: 6px; }
   .profile-facts { grid-template-columns: 1fr; gap: 4px; }
   .profile-facts dd + dt { margin-top: 16px; }
   .conversation-surface { padding: 20px 16px; }
@@ -186,3 +226,4 @@
   .preparation-steps { flex-direction: column; }
   .service-stage .preparation-writing { padding: 20px; }
 }
+@media (min-width: 761px) and (max-width: 1000px) { .saved-opportunity-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

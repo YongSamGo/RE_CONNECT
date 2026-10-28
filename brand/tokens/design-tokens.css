@@ -1,0 +1,14 @@
+@import './colors.css';
+@import './typography.css';
+
+:root {
+  --ink: #163a60;
+  --muted: #466581;
+  --paper: #f7fbff;
+  --emphasis: var(--brand-primary-blue);
+  --emphasis-strong: var(--brand-deep-blue);
+  --line: var(--brand-pale-blue);
+  --surface: #eaf5fe;
+  --accent: var(--brand-soft-blue);
+  --control-border: #6384a3;
+}

@@ -98,7 +98,7 @@ function DetailRequest({ id, journeyId }: { id: string; journeyId?: string }) {
 export function PublicOpportunityDetail() {
   const { id = '' } = useParams()
   const location = useLocation()
-  const candidate: unknown = location.state?.journeyId
+  const candidate: unknown = location.state?.journeyId ?? new URLSearchParams(location.search).get('journeyId')
   const journeyId = typeof candidate === 'string' && isOpportunityId(candidate) ? candidate : undefined
   return <ServicePage title="공고의 조건을 확인해 주세요" description="모집 상태와 원문 조건, 신청 방법을 살펴보세요."><div className="public-detail">
     {isOpportunityId(id) ? <DetailRequest key={id} id={id} journeyId={journeyId} /> : !id ?
