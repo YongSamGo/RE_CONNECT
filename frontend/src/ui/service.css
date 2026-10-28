@@ -8,6 +8,7 @@
 .member-navigation a[aria-current='page'] { border-color: var(--emphasis); background: var(--emphasis); color: #fff; font-weight: 700; }
 .member-information-page .service-heading, .member-story-page .service-heading, .saved-opportunities-page .service-heading { margin-bottom: 12px; }
 .member-info-panel { width: min(100%, 760px); margin: 0 auto; padding: 20px 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.member-information-page .member-info-panel { margin-top: clamp(36px, 6vh, 68px); }
 .member-info-panel > h2 { margin: 0 0 16px; font-size: calc(24px * var(--text-scale, 1)); }
 .member-information-list { display: grid; grid-template-columns: minmax(90px, .7fr) minmax(0, 1.3fr); gap: 14px 16px; margin: 0; }
 .member-information-list dt { color: var(--muted); }

@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
@@ -10,6 +9,7 @@ import type { ProfileView } from '../profile/server-model'
 import { ProfileSummary } from '../profile/ProfileSummary'
 import { deadlineLabel, provinces } from '../public-opportunities/catalog'
 import { checkedTime } from '../public-opportunities/detail'
+import { OpportunityListCard } from '../opportunities/OpportunityListCard'
 import { eligibilityLabels, parseEligibility, parseRecommendations } from './model'
 import type { Eligibility, ProfileRef, Recommendations } from './model'
 import { ServicePage } from '../../ui/ServicePage'
@@ -113,7 +113,7 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
   useEffect(() => { if (!preview) readProfile(false) }, [preview, readProfile])
   useEffect(() => { if (state.status === 'success' || state.status === 'error') resultRef.current?.focus() }, [state.status])
 
-  const cards = preview ? previewOpportunities : state.status === 'success' ? state.data.items.map(item => ({
+  const cards = preview ? previewOpportunities.map(item => ({ ...item, to: '/dev/opportunity-flow?source=recommendation' })) : state.status === 'success' ? state.data.items.map(item => ({
     id: item.opportunity.id,
     version: item.opportunity.version,
     title: item.opportunity.title,
@@ -121,6 +121,7 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
     activity: item.opportunity.activity_type === 'employment' ? '취업 및 공공일자리' : '봉사',
     region: item.opportunity.activity_region ? provinces[item.opportunity.activity_region.province] : '지역 확인 필요',
     deadline: deadlineLabel(item.opportunity),
+    to: `/opportunities/${item.opportunity.id}${journeyId ? `?journeyId=${encodeURIComponent(journeyId)}` : ''}`,
   })) : []
 
   return <ServicePage title="다시잇다가 추천하는 공고입니다" className={`recommendation-page${preview ? ' recommendation-preview' : ''}`}>
@@ -145,14 +146,8 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
         {state.data.items.length === 0 && <StatusNotice label="추천 결과" title="현재 조건에 연결되는 추천이 없어요">경험을 더 구체적으로 정리하거나 전체 공고를 살펴보세요.</StatusNotice>}
       </>}
       {(preview || state.status === 'success' && state.data.items.length > 0) && <>
-        <ol className="recommendation-cards">{cards.map(item => <li key={`${item.id}:${item.version}`}><article className="recommendation-card">
-          <h2>{item.title}</h2>
-          <ul className="recommendation-tags" aria-label="공고 정보">
-            <li>{item.organization}</li><li>{item.activity}</li><li>{item.region}</li><li>{item.deadline}</li>
-          </ul>
-          <div className="actions">{preview ? <button className="button primary" type="button" disabled>자세히 보기</button>
-            : <Link className="button primary" to={`/opportunities/${item.id}${journeyId ? `?journeyId=${encodeURIComponent(journeyId)}` : ''}`} target="_blank" rel="noopener noreferrer" state={{ journeyId }}>자세히 보기</Link>}</div>
-        </article></li>)}</ol>
+        <ol className="shared-opportunity-list">{cards.map(item => <OpportunityListCard key={`${item.id}:${item.version}`} title={item.title} organization={item.organization}
+          tags={[item.activity, item.region, item.deadline]} to={item.to} targetBlank={!preview} state={{ journeyId }} />)}</ol>
         {!preview && <p className="recommendation-note">모집 상태와 조건은 바뀔 수 있으니 공고 상세와 공식 원문을 확인해 주세요.</p>}
       </>}
     </section>

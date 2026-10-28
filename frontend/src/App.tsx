@@ -14,6 +14,7 @@ import { StartJourney } from './features/journeys/StartJourney'
 import { MemberProfile } from './features/account/MemberProfile'
 import { MemberInformationPage } from './features/account/MemberInformation'
 import { SavedOpportunities } from './features/account/SavedOpportunities'
+import { KakaoFlowPrototype, OpportunityApplicationFlowPrototype } from './features/development/FlowPrototypes'
 import { ServiceGuide } from './features/journeys/ServiceGuide'
 import { JourneyMap } from './features/journeys/JourneyMap'
 import { ConversationEntry } from './features/journeys/ServiceEntries'
@@ -51,18 +52,18 @@ const screens = [
 ] as const
 
 const reviewScreens = [
-  ['/', '첫 화면'], ['/start', '시작 전 안내'], ['/dev/conversation', '대화'],
-  ['/recommendations', '추천 공고'],
-  ['/opportunities', '공고 탐색'],
-  ['/dev/recommendations', '추천 공고 미리보기'], ['/login', '로그인'],
-  ['/me', '나의 정보'], ['/me/story', '나의 이야기'], ['/me/saved', '저장한 공고'],
-  ['/guide', '이용 안내'], ['/journey-map', '흐름 지도'], ['/admin', '운영 화면'],
+  ['/', '시작 화면'], ['/start', '시작 전 안내'], ['/dev/conversation', '경험 이야기'],
+  ['/dev/recommendations', '경험 기반 추천 공고'], ['/dev/opportunity-flow', '전체 공고 탐색'],
+  ['/opportunities', '전체 공고 탐색'], ['/dev/kakao-flow', '카카오 로그인과 회원가입'],
+  ['/login', '로그인'], ['/me', '나의 정보'], ['/me/story', '나의 이야기'],
+  ['/me/saved', '저장한 공고'], ['/guide', '이용 안내'], ['/journey-map', '서비스 흐름'],
+  ['/admin', '운영 화면'],
 ] as const
 
 function DevelopmentNavigation({ pathname }: { pathname: string }) {
   const index = reviewScreens.findIndex(([path]) => path === pathname)
   return <nav className="development-navigation" aria-label="개발용 화면 이동">
-    <span>개발용 화면 이동 {index >= 0 ? `${index + 1} / ${reviewScreens.length}` : ''}{pathname === '/dev/conversation' || pathname === '/dev/profile' || pathname === '/dev/recommendations' ? ' · 예시 데이터' : ''}</span>
+    <span>개발용 화면 이동 {index >= 0 ? `${index + 1} / ${reviewScreens.length}` : ''}{pathname === '/dev/conversation' || pathname === '/dev/profile' || pathname === '/dev/recommendations' ? ' 예시 데이터 화면' : ''}</span>
     {index > 0 && <Link to={reviewScreens[index - 1][0]}>이전 화면</Link>}
     {index >= 0 && index < reviewScreens.length - 1 && <Link to={reviewScreens[index + 1][0]}>다음 화면</Link>}
     <Link to="/guide">화면 목록</Link>
@@ -108,6 +109,9 @@ export default function App() {
       ?? (location.pathname === '/login' ? { title: '로그인' } : undefined)
       ?? (location.pathname === '/me/profile' || location.pathname === '/me/story' ? { title: '나의 이야기' } : undefined)
       ?? (location.pathname === '/auth/result' ? { title: '로그인 결과' } : undefined)
+      ?? (location.pathname === '/dev/kakao-flow' ? { title: '카카오 로그인 흐름' } : undefined)
+      ?? (location.pathname === '/dev/opportunity-flow' ? { title: '공고 신청 흐름' } : undefined)
+      ?? (location.pathname === '/dev/recommendations' ? { title: '경험 기반 추천 공고' } : undefined)
     document.title = `${current?.title ?? '페이지를 찾을 수 없어요'} | 다시잇다`
     if (previousPath.current !== location.pathname) {
       previousPath.current = location.pathname
@@ -135,7 +139,9 @@ export default function App() {
       {import.meta.env.DEV && <Route path="/journey-map" element={<JourneyMap />} />}
       <Route path="/conversation" element={<ConversationEntry />} />
       {import.meta.env.DEV && <Route path="/dev/conversation" element={<JourneyConversation journeyId="12345678-1234-1234-1234-123456789012" />} />}
-      {import.meta.env.DEV && <Route path="/dev/recommendations" element={<JourneyRecommendations preview />} />}
+      {import.meta.env.DEV && <Route path="/dev/recommendations" element={<OpportunityApplicationFlowPrototype recommended />} />}
+      {import.meta.env.DEV && <Route path="/dev/kakao-flow" element={<KakaoFlowPrototype />} />}
+      {import.meta.env.DEV && <Route path="/dev/opportunity-flow" element={<OpportunityApplicationFlowPrototype />} />}
       <Route path="/voice" element={<Navigate to="/conversation" replace />} />
       <Route path="/transcription" element={<Navigate to="/conversation" replace />} />
       <Route path="/results" element={<Navigate to="/recommendations" replace />} />

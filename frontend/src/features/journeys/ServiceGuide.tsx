@@ -24,7 +24,12 @@ export function ServiceGuide() {
     <div className="service-guide">{groups.map((group, index) => <section key={group.title} className="service-guide-group">
       <h2><span aria-hidden="true">{index + 1}</span>{group.title}</h2>
       <ul>{group.items.map(([to, title, description]) => <li key={to}><Link to={to}><strong>{title}</strong><span>{description}</span><span className="guide-open" aria-hidden="true">보기</span></Link></li>)}</ul>
-    </section>)}</div>
+    </section>)}
+    {import.meta.env.DEV && <section className="service-guide-group flow-prototype-guide"><h2>개발용 흐름 확인</h2><ul>
+      <li><Link to="/dev/kakao-flow"><strong>카카오 로그인과 회원가입</strong><span>인증 안내와 완료 화면까지 살펴봐요</span><span className="guide-open" aria-hidden="true">보기</span></Link></li>
+      <li><Link to="/dev/opportunity-flow"><strong>공고 확인과 신청 준비</strong><span>공고 선택부터 공식 신청 안내까지 이어서 봐요</span><span className="guide-open" aria-hidden="true">보기</span></Link></li>
+    </ul></section>}
+    </div>
     <p className="quiet">정리한 경험이나 선택한 공고가 있어야 다음 단계를 진행할 수 있어요. 자료가 없으면 해당 화면에서 시작 방법을 안내합니다.</p>
   </ServicePage>
 }
