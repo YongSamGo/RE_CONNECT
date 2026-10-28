@@ -58,12 +58,19 @@ class JourneyMessageService:
         # 역할 사전(RoleCatalog). 표준 기술 태그 선택지로만 쓴다. 없거나 읽지 못하면 원문 기술 구절만 남는다.
         self.catalog = catalog
 
-    def _standard_tags(self) -> list[str]:
+    def _standard_tags(self) -> dict[str, list[str]]:
+        """표준 기술 태그 → 검토된 별칭. 생성 서비스가 원문 근거와 대조할 때 쓴다."""
         try:
             roles = self.catalog.list() if self.catalog is not None else []
         except AppError:
-            return []
-        return list(dict.fromkeys(tag for role in roles for tag in role.skill_tags))
+            return {}
+        tags: dict[str, list[str]] = {}
+        for role in roles:
+            for tag in role.skill_tags:
+                tags.setdefault(tag, [])
+            for alias in role.aliases:
+                tags.setdefault(alias.skill_tag, []).append(alias.alias)
+        return tags
 
     async def send(self, session: Session, identity: InferenceIdentity, journey_id: UUID, key: str, body: MessageCreate) -> MessageResult:
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:

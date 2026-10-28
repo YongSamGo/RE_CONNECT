@@ -147,16 +147,27 @@ def test_ungrounded_summary_falls_back_to_quote(summary):
     assert result.experiences[0].description == "초등학교에서 삼십오 년 동안 담임을"
 
 
-def test_standard_tags_come_only_from_the_server_list_before_quoted_skills():
-    texts = ["아이들 공부 봐주는 일을 오 년 했어요."]
-    item = dict(existing_id=None, description=quote("아이들 공부 봐주는 일"), duration=None,
-                skills=[quote("공부 봐주는")], standard_tags=["학습 지도", " 학습  지도", "사회복지사 1급", "운전"])
-    result, adapter = extract(dict(experiences=[item]), texts=texts, standard_tags=["학습 지도", "초등 교육"])
-    assert result.experiences[0].skill_tags == ["학습 지도", "공부 봐주는"]
+def test_standard_tags_come_only_from_the_server_list_and_need_evidence_in_the_quotes():
+    texts = ["아이들 숙제 지도를 오 년 했어요. 택시도 몰았고요."]
+    catalog = {"학습 지도": ["숙제 지도", "공부 지도"], "운전": ["택시 운전"], "회계": ["경리"]}
+    item = dict(existing_id=None, description=quote("아이들 숙제 지도"), duration=None,
+                skills=[quote("숙제 지도")], standard_tags=["학습 지도", " 학습  지도", "사회복지사 1급", "운전", "회계"])
+    result, adapter = extract(dict(experiences=[item]), texts=texts, standard_tags=catalog)
+    # 학습 지도는 별칭(숙제 지도)이 인용에 있어 남고, 운전은 같은 턴에 "택시"가 있어도 이 경험의 인용에 없어 버린다.
+    assert result.experiences[0].skill_tags == ["학습 지도", "숙제 지도"]
     sent = json.loads(adapter.calls[0]["untrusted_turns"][0].text)
-    assert sent["standard_tags"] == ["학습 지도", "초등 교육"]
+    assert sent["standard_tags"] == ["학습 지도", "운전", "회계"]
     # 목록을 주지 않으면 표준 태그를 하나도 받지 않는다.
-    assert extract(dict(experiences=[item]), texts=texts)[0].experiences[0].skill_tags == ["공부 봐주는"]
+    assert extract(dict(experiences=[item]), texts=texts)[0].experiences[0].skill_tags == ["숙제 지도"]
+
+
+def test_unrelated_standard_tags_from_the_list_are_not_attached():
+    # 리뷰 재현: 목록에 있는 무관한 역량을 고르면 그대로 붙던 문제
+    item = dict(existing_id=None, description=quote("요리 봉사"), duration=None, skills=[],
+                standard_tags=["운전", "회계", "조리"])
+    catalog = {"운전": ["택시 운전"], "회계": ["경리"], "조리": ["요리"]}
+    result, _ = extract(dict(experiences=[item]), standard_tags=catalog)
+    assert result.experiences[0].skill_tags == ["조리"] and result.source_turns == [0]
 
 
 def test_owned_existing_id_is_preserved_but_not_reassigned():
@@ -385,8 +396,19 @@ def test_duration_label_only_rewrites_plain_periods(quote_text, label):
 
 def test_number_reading_does_not_turn_words_into_years():
     from app.modules.generation.wording import numbers_in
-    assert numbers_in("오래 일했어요. 이십 년 정도요.") == {20}
-    assert numbers_in("삼십오 년, 2020년") == {35, 2020}
+    assert numbers_in("오래 일했어요. 이십 년 정도요.") == {(20, "년")}
+    assert numbers_in("삼십오 년, 2020년, 육 개월, 주 6시간") == {(35, "년"), (2020, "년"), (6, "개월"), (6, "시간")}
+
+
+@pytest.mark.parametrize(("source", "summary", "ok"), [
+    ("복지관에서 요리 봉사를 6개월 했어요.", "요리 봉사 6년", False),     # 리뷰 재현: 단위 바꿔치기
+    ("복지관에서 요리 봉사를 육 개월 했어요.", "요리 봉사 6개월", True),
+    ("복지관에서 요리 봉사를 육 년 했어요.", "요리 봉사 6개월", False),
+    ("복지관에서 요리 봉사를 육 년 했어요.", "요리 봉사 6", True),       # 단위 없는 수는 값만 본다
+])
+def test_summary_numbers_must_keep_their_unit(source, summary, ok):
+    from app.modules.generation.wording import summary_grounded
+    assert summary_grounded(summary, source) is ok
 
 
 def test_enrich_adds_only_new_tags_and_missing_duration_without_rewriting():

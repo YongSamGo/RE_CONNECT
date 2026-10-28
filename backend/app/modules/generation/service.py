@@ -5,7 +5,7 @@
 """
 
 import json
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from pydantic import BaseModel, ValidationError
 
@@ -34,6 +34,10 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+def _squash(text: str) -> str:
+    return "".join(normalize_tag(text).split())
 
 
 def _unique(tags: list[str]) -> list[str]:
@@ -70,9 +74,10 @@ class GroundedGenerationService:
 
     async def extract_experiences(
         self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = (),
-        standard_tags: Sequence[str] = (),
+        standard_tags: Mapping[str, Sequence[str]] | None = None,
     ) -> ExperiencePreview:
-        """standard_tags: 역할 사전의 표준 기술 태그(서버 자료). 모델은 이 안에서만 고를 수 있다."""
+        """standard_tags: 역할 사전의 표준 기술 태그 → 검토된 별칭(서버 자료). 모델은 이 안에서만 고를 수 있고,
+        고른 태그는 그 경험의 원문 인용에 태그 이름이나 별칭이 있을 때만 남는다."""
         if isinstance(user_texts, (str, bytes)) or not 1 <= len(user_texts) <= 64 or len(existing_experiences) > 20:
             raise GenerationInputError("입력 개수를 확인해 주세요")
         # 별도 인덱스를 유지해 제외된 턴을 다른 턴의 근거로 바꾸지 않는다.
@@ -86,7 +91,11 @@ class GroundedGenerationService:
             raise GenerationInputError("기존 경험 목록을 확인해 주세요")
         # 기존 본문 전체·다른 개인정보는 전달하지 않는다. 안전한 설명만 비교 자료로 전달한다.
         allowed = {key: item for key, item in existing.items() if safe_text(item.description) is not None}
+        standard_tags = standard_tags or {}
         catalog = {normalize_tag(tag): tag for tag in standard_tags}
+        # 태그마다 원문에서 찾을 이름들. 공백을 빼고 비교해 "학습지도"·"학습 지도"를 같게 본다.
+        names = {key: {_squash(tag), *(_squash(alias) for alias in standard_tags[tag])} - {""}
+                 for key, tag in catalog.items()}
         if len(catalog) > 200:
             raise GenerationInputError("표준 태그 목록을 확인해 주세요")
         plan = await self._generate(prompts.EXTRACTION, {
@@ -115,8 +124,13 @@ class GroundedGenerationService:
                     used_ids.add(item.existing_id)
                 # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
-                tags = [catalog[normalize_tag(tag)] for tag in item.standard_tags if normalize_tag(tag) in catalog]
-                tags += [skill.text for skill in item.skills if grounded(skill)]
+                skills = [skill.text for skill in item.skills if grounded(skill)]
+                # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 인용에
+                # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
+                evidence = _squash(" ".join([quote, *skills]))
+                tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
+                        and any(name in evidence for name in names[key])]
+                tags += skills
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,

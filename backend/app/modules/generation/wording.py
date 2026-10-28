@@ -11,7 +11,13 @@ from app.modules.generation.privacy import safe_text
 SUMMARY_MAX_LENGTH = 40
 _DIGITS = {"일": 1, "이": 2, "삼": 3, "사": 4, "오": 5, "육": 6, "칠": 7, "팔": 8, "구": 9}
 # 단어 앞에서 시작하는 한자어 수 + 단위. "오래"·"일했어요"처럼 수가 아닌 글자는 단위가 없어 걸리지 않는다.
-_NUMBER = re.compile(r"(?<![가-힣])([일이삼사오육칠팔구]?십[일이삼사오육칠팔구]?|[일이삼사오육칠팔구])\s*(?=년|해|개월|달)")
+_SINO = r"[일이삼사오육칠팔구]?십[일이삼사오육칠팔구]?|[일이삼사오육칠팔구]"
+# 수와 바로 뒤의 단위. 같은 수라도 단위가 다르면 다른 사실이다(6개월 ≠ 6년).
+_UNITS = {"년": "년", "해": "년", "개월": "개월", "달": "개월", "시간": "시간", "살": "세", "세": "세", "명": "명", "회": "회", "급": "급"}
+_UNIT = "|".join(sorted(_UNITS, key=len, reverse=True))
+# 단어 앞에서 시작하는 한자어 수는 단위가 있을 때만 수로 읽는다. "오래"·"일했어요"는 수가 아니다.
+_NUMBER = re.compile(rf"(?<![가-힣])({_SINO})\s*({_UNIT})")
+_ARABIC = re.compile(rf"(\d+)\s*({_UNIT})?")
 _DURATION = re.compile(r"^(?:(한|약|대략)\s*)?(\d{1,2}|[일이삼사오육칠팔구]?십[일이삼사오육칠팔구]?|[일이삼사오육칠팔구])\s*"
                        r"(년|해|개월)\s*(정도|쯤|가량|넘게|남짓)?\s*[.?!]?$")
 # 요약에 새로 넣을 수 있는 일반어. 사실을 더하지 않는 말만 둔다.
@@ -29,11 +35,18 @@ def sino_number(word: str) -> int:
     return (_DIGITS[tens] if tens else 1) * 10 + (_DIGITS[ones] if ones else 0)
 
 
-def numbers_in(text: str) -> set[int]:
-    """원문에 나온 수. 아라비아 숫자와 단위 앞의 한자어 수(삼십오 년 → 35)를 모두 센다."""
-    found = {int(value) for value in re.findall(r"\d+", text)}
-    found.update(sino_number(match.group(1)) for match in _NUMBER.finditer(text))
+def numbers_in(text: str) -> set[tuple[int, str]]:
+    """원문에 나온 (수, 단위). 아라비아 숫자와 단위 앞의 한자어 수(삼십오 년 → (35, 년))를 모두 센다. 단위가 없으면 ''."""
+    found = {(int(value), _UNITS.get(unit or "", "")) for value, unit in _ARABIC.findall(text)}
+    found.update((sino_number(match.group(1)), _UNITS[match.group(2)]) for match in _NUMBER.finditer(text))
     return found
+
+
+def _numbers_match(summary: str, source: str) -> bool:
+    """요약의 수는 원문에 같은 단위로 있어야 한다. 단위 없는 수는 원문에 그 수가 어떤 단위로든 있으면 된다."""
+    known = numbers_in(source)
+    values = {value for value, _ in known}
+    return all((value, unit) in known if unit else value in values for value, unit in numbers_in(summary))
 
 
 def duration_label(quote: str) -> str:
@@ -50,7 +63,7 @@ def summary_grounded(summary: str | None, source: str) -> bool:
     """요약의 단어가 근거 턴에 있는지 본다. 단어마다 앞 두 글자가 원문에 있어야 한다(담임교사 ← 담임을)."""
     if summary is None or not 2 <= len(summary) <= SUMMARY_MAX_LENGTH or "\n" in summary or safe_text(summary) is None:
         return False
-    if _CREDENTIAL.search(summary) or not numbers_in(summary) <= numbers_in(source):
+    if _CREDENTIAL.search(summary) or not _numbers_match(summary, source):
         return False
     words = re.findall(r"[가-힣A-Za-z]+", summary)
     if not words:

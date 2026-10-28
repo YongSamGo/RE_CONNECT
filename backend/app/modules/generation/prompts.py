@@ -11,7 +11,7 @@ existing_experiences에 있는 경험의 세부 내용을 새로 말하면 exist
 description, duration, skills는 모두 원문에서 그대로 복사한 짧은 구절이고, 각 turn_index는 그 구절을 말한 턴이다. 문장 전체를 복사하지 않는다.
 description은 무슨 일을 했는지 나타내는 구절, duration은 기간 구절, skills는 같은 턴에 나온 구체적인 업무 구절 0~5개다. 자격증 이름은 skills에 넣지 않는다.
 summary는 description을 화면에 보여 줄 짧은 명사구(20자 안팎)로 다듬은 것이다. 같은 턴 원문의 단어만 쓰고 숫자는 원문과 같아야 한다. 기간·자격·기관명을 새로 넣지 않는다. 다듬기 어려우면 null이다.
-standard_tags는 user 메시지의 standard_tags 목록에서 이 경험이 뒷받침하는 것만 0~5개 고른다. 목록에 없는 말은 쓰지 않는다. 맞는 것이 없으면 []이다.
+standard_tags는 user 메시지의 standard_tags 목록에서 이 경험의 description·skills 인용에 그 역량이 직접 나오는 것만 0~5개 고른다. 목록에 없는 말은 쓰지 않는다. 맞는 것이 없으면 []이다.
 기간이나 역량을 추론·환산·합산하지 않는다. 모르면 duration=null, skills=[]로 둔다.
 사용자가 기간을 고쳐 말하면(예: "팔 년? 아니, 정규직은 육 년") 고친 뒤의 구절만 duration으로 쓴다. 무엇을 고친 것인지 불명확하면 duration=null이다.
 예: turns가 [0:"우체국 창구에서 오 년, 그 다음 집배원을 칠 년 했어요.", 1:"강서구 살아요."]이고 standard_tags에 "민원 처리"가 있으면 경험은 둘이다. 첫째는 description="우체국 창구", duration="오 년", summary="우체국 창구 업무", standard_tags=["민원 처리"]. 둘째는 description="집배원", duration="칠 년", summary="집배원", standard_tags=[]. 모두 turn_index=0이다. 1번 턴은 경험이 아니다.
