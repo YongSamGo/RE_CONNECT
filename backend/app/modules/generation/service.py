@@ -11,7 +11,8 @@ from pydantic import BaseModel, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
 from app.contracts.profile import Experience, ExperienceInput, RecommendationField
-from app.modules.generation import prompts
+from app.contracts.roles import normalize_tag
+from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
     ApplicationPlan,
     ApplicationContext,
@@ -33,6 +34,16 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+def _unique(tags: list[str]) -> list[str]:
+    """공백·대소문자만 다른 태그는 처음 것 하나만 남긴다."""
+    seen, result = set(), []
+    for tag in tags:
+        if normalize_tag(tag) not in seen:
+            seen.add(normalize_tag(tag))
+            result.append(tag)
+    return result
 
 
 def _invalid() -> LLMInvalidOutputError:
@@ -58,8 +69,10 @@ class GroundedGenerationService:
             raise _invalid() from None
 
     async def extract_experiences(
-        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = ()
+        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = (),
+        standard_tags: Sequence[str] = (),
     ) -> ExperiencePreview:
+        """standard_tags: 역할 사전의 표준 기술 태그(서버 자료). 모델은 이 안에서만 고를 수 있다."""
         if isinstance(user_texts, (str, bytes)) or not 1 <= len(user_texts) <= 64 or len(existing_experiences) > 20:
             raise GenerationInputError("입력 개수를 확인해 주세요")
         # 별도 인덱스를 유지해 제외된 턴을 다른 턴의 근거로 바꾸지 않는다.
@@ -73,9 +86,13 @@ class GroundedGenerationService:
             raise GenerationInputError("기존 경험 목록을 확인해 주세요")
         # 기존 본문 전체·다른 개인정보는 전달하지 않는다. 안전한 설명만 비교 자료로 전달한다.
         allowed = {key: item for key, item in existing.items() if safe_text(item.description) is not None}
+        catalog = {normalize_tag(tag): tag for tag in standard_tags}
+        if len(catalog) > 200:
+            raise GenerationInputError("표준 태그 목록을 확인해 주세요")
         plan = await self._generate(prompts.EXTRACTION, {
             "turns": [{"turn_index": index, "text": value} for index, value in turns.items()],
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
+            "standard_tags": list(catalog.values()),
         }, ExtractionPlan)
 
         def grounded(quote: Quote, turn_index: int) -> bool:
@@ -87,30 +104,37 @@ class GroundedGenerationService:
                 raise _invalid()
             return quote.text
 
-        proposals = []
+        proposals, source_turns = [], []
         used_ids = set()
         try:
             for item in plan.experiences:
+                index = item.description.turn_index
+                quote = quote_value(item.description, index)
+                summary = item.summary if wording.summary_grounded(item.summary, turns[index]) else None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
-                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 요약/수정은 직접 편집으로 넘긴다.
-                    if item.description.text != allowed[item.existing_id].description:
-                        raise _invalid()
                     used_ids.add(item.existing_id)
-                index = item.description.turn_index
+                    # 기존 경험은 다듬은 문구로 저장돼 있을 수 있다. 문구가 다르면 교체하지 않고 이 선택만 버린다.
+                    if allowed[item.existing_id].description not in {quote, summary}:
+                        continue
                 # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기간·기술은 다른 턴에서 가져오는 일이
                 # 잦아(docs/ai/extraction-eval-2026-10-22.md) 근거 없는 인용만 버리고 같은 턴의 것만 남긴다.
+                # 표준 태그를 먼저 두고, 사전에 없는 원문 기술 구절은 정보를 잃지 않게 뒤에 남긴다.
+                tags = [catalog[normalize_tag(tag)] for tag in item.standard_tags if normalize_tag(tag) in catalog]
+                tags += [skill.text for skill in item.skills if grounded(skill, index)]
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
-                    description=quote_value(item.description, index),
-                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) else None,
-                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index))),
+                    description=allowed[item.existing_id].description if item.existing_id else summary or quote,
+                    duration_note=wording.duration_label(item.duration.text) if item.duration and grounded(item.duration, index) else None,
+                    skill_tags=_unique(tags)[:20],
                 ))
+                source_turns.append(index)
         except ValidationError:
             raise _invalid() from None
         return ExperiencePreview(
             experiences=proposals,
+            source_turns=source_turns,
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
 

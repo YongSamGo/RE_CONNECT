@@ -180,7 +180,8 @@ def create_app(
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
     transcription_store = RedisTranscriptionStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableTranscriptionStore()
     app.state.transcription_service = TranscriptionService(transcription_store, app.state.journey_service, speech_adapter)
-    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service,
+        catalog=SQLRoleCatalog(engine.connect) if engine is not None else None)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     kakao = None

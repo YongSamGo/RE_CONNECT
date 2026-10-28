@@ -26,9 +26,19 @@ QUESTION_MIN_SECONDS = 20
 
 
 class JourneyMessageService:
-    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter, transcriptions=None):
+    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter, transcriptions=None,
+                 catalog=None):
         self.journeys, self.requests, self.llm = journeys, requests, llm
         self.transcriptions = transcriptions
+        # 역할 사전(RoleCatalog). 표준 기술 태그 선택지로만 쓴다. 없거나 읽지 못하면 원문 기술 구절만 남는다.
+        self.catalog = catalog
+
+    def _standard_tags(self) -> list[str]:
+        try:
+            roles = self.catalog.list() if self.catalog is not None else []
+        except AppError:
+            return []
+        return list(dict.fromkeys(tag for role in roles for tag in role.skill_tags))
 
     async def send(self, session: Session, identity: InferenceIdentity, journey_id: UUID, key: str, body: MessageCreate) -> MessageResult:
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
@@ -56,22 +66,21 @@ class JourneyMessageService:
             generation = GroundedGenerationService(self.llm.for_identity(identity))
             loop = asyncio.get_running_loop()
             deadline = loop.time() + MESSAGE_TIMEOUT_SECONDS
+            standard_tags = await asyncio.to_thread(self._standard_tags)
             async with asyncio.timeout_at(deadline):
                 preview = await generation.extract_experiences(user_texts=[turn.text for turn in turns],
-                    existing_experiences=current.draft.experiences)
+                    existing_experiences=current.draft.experiences, standard_tags=standard_tags)
                 experiences = list(current.draft.experiences)
                 evidence = list(current.evidence)
-                for proposal in preview.experiences:
+                for proposal, source in zip(preview.experiences, preview.source_turns, strict=True):
                     # 이미 사용자가 편집한 경험은 모델이 교체하지 않는다.
                     if proposal.id is not None or any(e.description == proposal.description for e in experiences):
                         continue
                     # 이전 턴만으로 삭제한 경험을 되살리지 않는다. 이번 확인 텍스트의 사실만 추가한다.
-                    matching = [turn.message_id for turn in turns[-1:] if proposal.description in turn.text
-                        and (proposal.duration_note is None or proposal.duration_note in turn.text)
-                        and all(tag in turn.text for tag in proposal.skill_tags)]
-                    if not matching:
+                    # 문구는 다듬어지고 태그는 표준 태그일 수 있어, 생성 서비스가 원문과 대조한 근거 턴 번호로 확인한다.
+                    if source != len(turns) - 1:
                         continue
-                    evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=matching))
+                    evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=[turns[-1].message_id]))
                     experiences.append(Experience(id=uuid4(), description=proposal.description,
                         duration_note=proposal.duration_note, skill_tags=proposal.skill_tags))
                 draft = ProfileContent.model_validate({**current.draft.model_dump(), 'experiences': experiences})
