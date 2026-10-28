@@ -18,10 +18,9 @@ from app.contracts.preparation import OpportunityRef
 from app.core.business_errors import AppError
 from app.core.encryption import ContentCipher, ContentTarget, EncryptedEnvelope, ALGORITHM, EncryptionUnavailable, ProtectedContentError
 from app.modules.reports.models import TERMINAL, TRANSITIONS, AdminReport, AdminReportList, ReportCreate, ReportUpdate
-from app.persistence.operations import AuditEvent, OpportunityVersion as V, Report as R
+from app.persistence.operations import AUDIT_RETENTION, AuditEvent, OpportunityVersion as V, Report as R
 
 logger = logging.getLogger(__name__)
-AUDIT_RETENTION = timedelta(days=30)
 DETAIL_RETENTION = timedelta(days=30)
 SCHEMA_VERSION = 1
 # 신고 설명은 접수 버전(1)에, 처리 사유는 그 사유를 쓴 처리 버전(2 이상)에 묶는다.

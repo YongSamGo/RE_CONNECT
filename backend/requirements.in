@@ -19,3 +19,5 @@ cryptography
 # 공공 API의 검증한 IP 연결과 안전한 XML 파싱 (#45)
 httpcore[asyncio]
 defusedxml
+# DB 밖 최신 최소 삭제 이력의 S3 저장과 RDS 수동 스냅샷 점검 (W12-05)
+boto3
