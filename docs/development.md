@@ -31,6 +31,8 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 ## 3. 폴더 구조
 
+작업 착수 전 [진행 기록·통합 게이트](progress.md)와 [이슈 기반 다음 작업 후보](progress/next-tasks.md)를 확인한다. 목록 갱신 명령은 [저장소 관리 도구](../tools/README.md)에 있다.
+
 | 폴더 | 내용 | 담당 |
 | --- | --- | --- |
 | [backend/](../backend/README.md) | FastAPI 서버. 공고 수집기도 이 안의 모듈 | C |
@@ -48,16 +50,20 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 | 작업 | 명령 | 준비 |
 | --- | --- | --- |
-| 개발 DB·Redis 시작 | `docker compose --env-file .env -f infra/compose.dev.yaml up -d` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
-| 개발 DB·Redis 종료 | `docker compose --env-file .env -f infra/compose.dev.yaml down` | 준비 중 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
+| 개발 DB·Redis 시작 | `docker compose --env-file .env -f infra/compose.dev.yaml up -d --wait` | 사용 가능. 비밀번호 설정과 휘발성 데이터 주의: [개발 DB 안내](data/development-db.md) |
+| 개발 DB·Redis 종료 | `docker compose --env-file .env -f infra/compose.dev.yaml down` | 사용 가능. tmpfs의 개발 데이터가 삭제됨 |
+| DB 마이그레이션 | `cd backend` 후 `python -m alembic upgrade head`, `python -m alembic check` | 사용 가능. DATABASE_URL 설정 필요 |
 | 백엔드 가상환경 | `cd backend` 후 `python -m venv .venv` | 사용 가능 |
 | 백엔드 의존성 설치 | `cd backend` 후 `pip install -r requirements.txt -r requirements-dev.txt` | 사용 가능 |
 | 백엔드 테스트 | `cd backend` 후 `python -m pytest` | 사용 가능 |
-| 백엔드 개발 서버 | `cd backend` 후 `uvicorn app.main:app --reload` (API 문서 화면은 `APP_ENV=development`일 때만 `/docs`에 열림, 2절) | 사용 가능. DB·Redis 연결은 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
-| 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
-| 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
-| 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 준비 중 [#13](https://github.com/YongSamGo/RE_CONNECT/issues/13) |
+| 백엔드 개발 서버 | `cd backend` 후 `python -m app` (안전한 JSON 로그, API 문서는 `APP_ENV=development`일 때만 `/docs`, 2절) | 사용 가능. DB·Redis 연결은 [#18](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
+| 프론트엔드 의존성 설치 | `cd frontend` 후 `npm ci --ignore-scripts` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
+| 프론트엔드 개발 서버 | `cd frontend` 후 `npm run dev` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
+| 프론트엔드 검사·빌드 | `cd frontend` 후 `npm run lint`, `npm run build` | 사용 가능 ([실행 안내](../frontend/DEVELOPMENT.md)) |
 | 공고 샘플 수집 | `python worker/tools/fetch_source_samples.py <source> --operation <op>` | 사용 가능 |
+| 제한 공고 수집 실행 | `cd backend` 후 `python -m app.collect --source <출처-UUID> --max-requests 25 --due` | 사용 가능. DB/활성 출처/키·선행 마이그레이션 필요: [실행 안내](data/ingestion-runs.md) |
+| 공식 자료 수동 입력·목표 집계 | `cd backend` 후 `python -m app.manual_intake --validate`, `--record`, `--progress` | 사용 가능. 입력 두 모드는 stdin UTF-8 JSON 한 건. 쓰기는 활성 수동 출처/DB 필요: [수동 입력 안내](data/manual-intake.md) |
+| 신고 설명 보관 정리 | `cd backend` 후 `python manage_reports.py purge --limit 100` | 사용 가능. 종결 후 30일이 지난 공고 오류 신고의 설명·처리 사유를 지운다. DB·암호화 키 설정 필요: [영구 저장 안내](data/persistence.md) |
 
 가상환경 활성화는 macOS·Linux에서 `source .venv/bin/activate`, PowerShell에서 `.venv\Scripts\Activate.ps1`이다.
 
@@ -74,6 +80,8 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 | 모델 가중치 | 공식 배포원 revision·digest 고정, 저장소에 넣지 않음 ([speech](../speech/README.md)) |
 
 Dependabot이 새 버전을 7일 기다린 뒤 업데이트 PR을 만든다. 직접 버전을 올릴 때도 배포된 지 7일이 지나지 않은 버전은 피한다.
+
+예외: 알려진 취약점(`pip-audit`·`npm audit`에 걸린 권고)의 수정판은 7일을 기다리지 않고 올릴 수 있다. PR에 권고 ID, 공식 배포물과의 해시 대조, 바뀐 패키지가 수정 대상 하나뿐인지를 적고 Code Owner 승인을 받는다. 7일이 지난 뒤 같은 버전에 새 경보가 없는지 다시 확인한다(첫 사례: certifi 2026.10.19, PYSEC-2026-4320, #212).
 
 ## 6. 줄바꿈·편집기
 

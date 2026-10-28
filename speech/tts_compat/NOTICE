@@ -1,0 +1,12 @@
+RE_CONNECT compatibility build of qwen-tts 0.1.1 (12Hz CustomVoice only)
+Original copyright 2026 The Alibaba Qwen team. Apache License 2.0.
+The original license and copyright headers are retained.
+
+RE_CONNECT modifications (2026-10-18):
+- Disable 25Hz imports, voice cloning/design and external audio input helpers.
+- Adapt the fixed model to Transformers 5.19 API names and defaults.
+- Restore nonpersistent rotary buffers, including the separate tokenizer model.
+- Reject generation that does not reach the codec end token.
+
+This is a local compatibility build, not an upstream qwen-tts release.
+See recipe.json, upstream.patch and compat.py in speech/tts_compat/.

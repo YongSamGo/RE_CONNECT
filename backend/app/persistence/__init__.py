@@ -1,0 +1,15 @@
+"""영구 저장 스키마. 세션·체험·대화·초안은 이 패키지의 저장 대상이 아니다."""
+
+from app.persistence.base import Base
+from app.persistence.application_receipts import ApplicationWriteReceipt
+from app.persistence.profile_receipts import ProfileWriteReceipt
+from app.persistence.members import ApplicationDocument, ApplicationDraft, Consent, OperatorMfaCredential, ProfileDocument, ProfileVersion, User
+from app.persistence.operations import AuditEvent, DeletionRecord, IngestionReview, IngestionRun, IngestionState, ManualEvidence, OpportunityDocument, OpportunityPublication, OpportunityReview, OpportunityVersion, OpportunityWriteReceipt, Report, RoleDefinition, Source
+
+__all__ = [
+    'ApplicationWriteReceipt',
+    'ProfileWriteReceipt',
+    "Base", "User", "Consent", "ProfileDocument", "ProfileVersion", "ApplicationDocument", "ApplicationDraft", "OperatorMfaCredential",
+    "Source", "IngestionRun", "IngestionState", "IngestionReview", "ManualEvidence", "RoleDefinition", "OpportunityDocument", "OpportunityVersion", "OpportunityPublication", "OpportunityReview", "OpportunityWriteReceipt",
+    "Report", "AuditEvent", "DeletionRecord",
+]

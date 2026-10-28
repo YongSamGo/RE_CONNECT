@@ -1,16 +1,19 @@
-# 이미지에 비밀값·로컬 환경·캐시가 들어가지 않게 한다.
-# .dockerignore는 컨텍스트 최상위 기준이라 어느 깊이든 막으려면 **/ 를 붙인다.
-**/.env
-**/.env.*
-**/*.pem
-**/*.key
-**/.venv/
-**/venv/
-**/__pycache__/
-**/*.py[cod]
-**/.pytest_cache/
-**/.mypy_cache/
-**/.coverage
-**/htmlcov/
-tests/
-.git/
+**
+!Dockerfile
+!.dockerignore
+!requirements.txt
+!requirements-build.txt
+!prepare_models.py
+!model-manifest.json
+!prepare_tts_code.py
+!check_ready.py
+!app
+app/**
+!app/*.py
+!tts_compat
+tts_compat/**
+!tts_compat/requirements.txt
+!tts_compat/recipe.json
+!tts_compat/compat.py
+!tts_compat/NOTICE
+!tts_compat/UPSTREAM_LICENSE

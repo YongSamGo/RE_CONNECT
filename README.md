@@ -228,3 +228,5 @@ PR을 열면 [`.github/pull_request_template.md`](.github/pull_request_template.
 - 행정안전부·한국인터넷진흥원, 「소프트웨어 보안약점 진단가이드」(2021)
 - 개인정보보호위원회, 생성형 AI 관련 개인정보 보호 안내서
 - KISA, 2026년 제13회 소프트웨어(SW) 개발보안 경진대회 안내
+
+체험 지원서의 생성·직접 작성과 남은 서버 연동 범위는 [지원서 구현 기록](docs/data/journey-drafts.md)을 참고합니다.
