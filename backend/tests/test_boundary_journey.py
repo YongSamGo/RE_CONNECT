@@ -17,6 +17,9 @@ from app.contracts.journey import ProfileUpdate
 from app.contracts.time import utc_now
 from app.core.config import Settings
 from app.main import create_app
+from app.modules.admission.service import InferenceIdentity
+from app.modules.consents.models import ConsentCreate
+from app.modules.consents.service import ConsentActor
 from app.modules.eligibility.service import EligibilityService
 from app.modules.opportunities.repository import SqlPublicOpportunityRepository
 from app.modules.opportunities.service import PublicOpportunityService
@@ -30,7 +33,7 @@ from app.persistence import OpportunityVersion
 from app.persistence.operations import RoleDefinition
 from tests.persistence_helpers import open_test_database, opportunity_values
 from tests.test_admission import with_redis
-from tests.test_consents import csrf
+from tests.test_consents import AI_VERSION, csrf
 from tests.test_journeys import BODY, real_services
 from tests.test_opportunity_reviews import OFFICIAL, REQUEST_ID
 from tests.test_profile_confirmation import ready_edit
@@ -111,17 +114,27 @@ def test_confirmation_review_and_exclusion_boundaries_hold_across_one_journey(ba
                 assert found[str(either)]["eligibility"] == {"overall": "satisfied", "needs_review_count": 0, "no_requirements": False}
                 assert found[str(unclear)]["eligibility"]["overall"] == "unknown"
                 assert found[str(unclear)]["eligibility"]["needs_review_count"] == 1
-                # 3. 모든 추천 근거는 확정본의 실제 경험이다.
+                # 모든 추천 근거는 확정본의 실제 경험이다.
                 assert all(item["matched"]["experience_ids"] == evidence for item in found.values())
                 assert (await eligibility(missing, first_ref, 1)).json()["overall"] == "not_satisfied"
                 # 개인 추천에서 빠진 공고도 공개 검색에서는 사라지지 않는다. 마감 공고는 마감으로 보인다.
                 assert (await client.get(f"/api/v1/opportunities/{ended}")).json()["recruitment_status"] == "closed"
                 # 소유권·버전: 다른 주체는 존재를 알 수 없고, 없는 확정 버전은 충돌이다.
+                # 다른 주체도 자기 체험을 확정해 자기 참조로는 추천을 받으므로, 아래 404는 "자료 없음"이 아니라 소유권 거절이다.
                 stranger = await sessions.issue()
+                await journeys.consents.grant(ConsentActor(stranger.session.subject_id, session_digest=stranger.session.digest),
+                                              ConsentCreate(purpose="ai_processing", notice_version=AI_VERSION))
+                own = await journeys.create(stranger.session, InferenceIdentity(stranger.session.subject_id, "192.0.2.2"), str(uuid4()), BODY)
+                await journeys.update_profile(stranger.session, own.journey_id, ready_edit())
+                own_ref = (await journeys.confirm_profile(stranger.session, own.journey_id, 2)).profile.model_dump(mode="json")
                 outsider = httpx.AsyncClient(transport=httpx.ASGITransport(app), base_url="https://testserver")
                 async with outsider:
                     outsider.cookies.set("__Host-rc_session", stranger.token)
                     await outsider.get("/api/v1/me")
+                    mine = await outsider.post("/api/v1/recommendations", json={"profile": own_ref, "filters": {}}, headers=csrf(outsider))
+                    assert mine.status_code == 200 and mine.json()["items"]
+                    assert (await outsider.post(f"/api/v1/opportunities/{either}/eligibility",
+                                                json={"profile": own_ref, "opportunity_version": 1}, headers=csrf(outsider))).status_code == 200
                     for response in [
                         await outsider.post("/api/v1/recommendations", json={"profile": first_ref, "filters": {}}, headers=csrf(outsider)),
                         await outsider.post(f"/api/v1/opportunities/{either}/eligibility",
