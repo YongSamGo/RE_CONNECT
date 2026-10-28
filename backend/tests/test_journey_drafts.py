@@ -1,9 +1,10 @@
 """실제 Redis 임시 지원서·SQL 공고·추론 한도와 삭제/버전 경합."""
 
 import asyncio
-from contextlib import nullcontext
+from contextlib import contextmanager
 from datetime import timedelta
 import json
+from threading import Lock
 from uuid import UUID, uuid4
 
 import httpx
@@ -67,7 +68,14 @@ async def setup(admission, admission_store, redis, db, *, confirmed=True, opport
         await journeys.confirm_profile(issued.session, journey.journey_id, 2)
     add = seeded(db)
     add(1, title='가상 도서관 자료 정리', requirements=[], source_checked_at=utc_now(), reviewed_at=utc_now(), **(opportunity or {}))
-    opportunities = PublicOpportunityService(SqlPublicOpportunityRepository(lambda: nullcontext(db)))
+    # _display는 worker thread에서 조회한다. 단일 시험 Connection은 동시에 공유하지 않는다.
+    # Redis의 초안 CAS는 이 잠금 밖에서 계속 실제로 경합한다.
+    database_read = Lock()
+    @contextmanager
+    def connection():
+        with database_read:
+            yield db
+    opportunities = PublicOpportunityService(SqlPublicOpportunityRepository(connection))
     runtime = Runtime()
     drafts = RedisDraftStore(redis, session_key=store.session_key, resource_key=requests.resource_key)
     service = DraftService(drafts, journeys, opportunities, ControlledLLMAdapter(runtime, admission))
