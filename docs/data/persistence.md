@@ -51,7 +51,7 @@ ApplicationDraft의 공고 ID/버전은 공고 모델의 복합 FK와 연결했�
 영구 논리 엔터티는 11개이며 Journey를 더한 12개 논리 엔터티의 저장 경계를 구분했다.
 Journey는 Redis 대상이라 RDS 테이블이나 FK가 없다. 물리 테이블은 안정 ID 3개와 공개
 포인터 1개를 더해 15개다. 감사·삭제 UUID는 User FK로 묶지 않아 회원 삭제로 함께 사라지지 않는다.
-30일 보관의 만료 시각은 쓰기 서비스가 정하고 #57/#96에서 실제 정리한다. DB에 만료 인덱스를 둔다.
+30일 보관의 만료 시각은 쓰기 서비스가 정한다. DB에 만료 인덱스를 두고 `python manage_retention.py run`이 매일 정리 명령을 차례로 실행한다([주기 실행 안내](../../infra/scheduler/README.md)).
 
 출처별 `(source_id, external_id)`는 유일하다. 외부 ID 없는 수동 공고는 서로 자동 병합하지 않고
 #47에서 공식 URL·기관·제목·모집기간을 대조한다. 출처 URL의 DB HTTPS 접두사 제약은 SSRF

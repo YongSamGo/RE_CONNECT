@@ -8,6 +8,8 @@
 | --- | --- | --- |
 | `compose.dev.yaml` | 구현됨: 로컬 전용 PostgreSQL·Redis·내부 네트워크·tmpfs | [#18 W02-07](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
 | `compose.prod.yaml` | EC2용 Nginx·FastAPI·Redis·Ollama·음성 서비스. PostgreSQL은 외부 RDS | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92)·[#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
+| `scheduler/` | 구현됨: 15분 주기 수집·매일 보관 정리 systemd timer ([안내](scheduler/README.md)) | [#96](https://github.com/YongSamGo/RE_CONNECT/issues/96) |
+| `logging/` | 로그 그룹 보관(14일/30일) CloudFormation, Docker `awslogs` 기본 드라이버 | [#26](https://github.com/YongSamGo/RE_CONNECT/issues/26)·[#96](https://github.com/YongSamGo/RE_CONNECT/issues/96) |
 | `nginx/` | `/`는 React 정적 파일, `/api/*`는 FastAPI로 전달 (접두사 유지) | [#91](https://github.com/YongSamGo/RE_CONNECT/issues/91) |
 
 ## 실행 방법

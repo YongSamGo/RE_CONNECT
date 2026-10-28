@@ -1,0 +1,14 @@
+# 보관기간이 지난 삭제 이력(30일)·종결 신고 설명(30일)·감사 기록(30일)을 정리한다(W12-07).
+# 일반 운영 로그 14일은 CloudWatch 로그 그룹 보관 설정이 맡는다(infra/logging).
+[Unit]
+Description=RE_CONNECT 보관 기간 정리
+Wants=network-online.target docker.service
+After=network-online.target docker.service
+
+[Service]
+Type=oneshot
+EnvironmentFile=/etc/re-connect/scheduler.env
+TimeoutStartSec=1800
+# systemd는 WorkingDirectory에 환경변수를 치환하지 않으므로 셸에서 이동한다. -f로 infra/ 파일을 쓰면
+# Compose가 .env를 infra/에서 찾으므로 --env-file을 붙인다(infra/README.md).
+ExecStart=/bin/sh -c 'cd "$RECONNECT_DIR" && exec /usr/bin/docker compose --env-file .env run --rm --no-deps -T "$BACKEND_SERVICE" python manage_retention.py run'

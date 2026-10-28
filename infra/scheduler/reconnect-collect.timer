@@ -1,0 +1,11 @@
+[Unit]
+Description=RE_CONNECT 공고 주기 수집 15분 확인
+
+[Timer]
+OnCalendar=*:0/15
+# 재부팅·중지 동안 놓친 실행을 부팅 뒤 한 번 이어서 실행한다.
+Persistent=true
+RandomizedDelaySec=60
+
+[Install]
+WantedBy=timers.target
