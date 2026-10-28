@@ -68,9 +68,10 @@ def postgres_tls(cert, key, accept_tls=True):
                         with context.wrap_socket(connection, server_side=True) as secured:
                             # Probe must close without sending database authentication.
                             assert secured.recv(1) == b''
-                    except (ssl.SSLError, ConnectionResetError, ConnectionAbortedError):
-                        # Windows can report a reset instead of a TLS alert when
-                        # the client rejects a certificate or closes after probing.
+                    except (ssl.SSLError, ConnectionResetError, ConnectionAbortedError, BrokenPipeError):
+                        # TLS alerts, reset/abort, or a broken pipe may follow the
+                        # probe's immediate close (including TLS 1.3 ticket writes).
+                        # Certificate/hostname failures still propagate at the client.
                         pass
 
         future = executor.submit(serve)
