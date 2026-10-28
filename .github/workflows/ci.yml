@@ -272,7 +272,8 @@ jobs:
             tests/test_draft_approval.py tests/test_draft_review.py tests/test_journey_end.py \
             tests/test_manual_profile.py tests/test_profile_confirmation.py tests/test_reconfirmed_results.py \
             tests/test_preparation.py tests/test_eligibility_api.py tests/test_roles.py \
-            tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py
+            tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py \
+            tests/test_boundary_journey.py
       - name: 개발 컨테이너 종료
         if: always()
         run: docker compose --env-file .env.example -f infra/compose.dev.yaml down
