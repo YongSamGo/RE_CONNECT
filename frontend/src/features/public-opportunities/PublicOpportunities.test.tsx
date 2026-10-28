@@ -48,7 +48,7 @@ describe('public search without AI or login', () => {
     expect(await screen.findByText('모집 여부 확인 필요')).toBeVisible()
     expect(screen.getByText('변경 내용 검수 중')).toBeVisible()
     expect(screen.getByText('보수 확인 필요')).toBeVisible()
-    expect(screen.getByText('2026-10-30 마감 · 정확한 마감 시각 확인 필요')).toBeVisible()
+    expect(screen.getByText('2026-10-30 마감 (정확한 마감 시각 확인 필요)')).toBeVisible()
     expect(screen.getByText(/맞춤 추천이나 자격 판정 결과가 아닙니다/)).toBeVisible()
   })
   it('renders hostile titles as text and creates only a validated internal detail link', async () => {
@@ -59,7 +59,7 @@ describe('public search without AI or login', () => {
     expect(await screen.findByRole('heading', { name: attack })).toBeVisible()
     expect(container.querySelector('img, script')).toBeNull()
     expect(screen.getByRole('link', { name: `${attack} 공고 상세 화면으로` })).toHaveAttribute('href', '/opportunities/12345678-1234-1234-1234-123456789001')
-    expect(screen.getByText(/상세에서 최신 모집 상태와 원문 조건/)).toBeVisible()
+    expect(screen.getByText(/상세 화면에서 최신 모집 상태와 원문 조건/)).toBeVisible()
   })
   it('uses the applied filter snapshot for pagination while leaving edited filters unapplied', async () => {
     const fetch = vi.fn(async (request: Request) => {

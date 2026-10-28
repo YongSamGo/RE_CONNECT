@@ -27,6 +27,7 @@ describe('report state transitions', () => {
     await user.click(screen.getByRole('button', { name: '운영자 접근 확인' }))
     await user.click(await screen.findByRole('button', { name: '신고 목록 조회' }))
     await user.click(await screen.findByRole('button', { name: '검토 선택 · 가상 공고' }))
+    expect(screen.getByRole('heading', { name: '가상 공고 신고 검토' })).toHaveFocus()
     expect(screen.getByText('지원 조건 오류 · 신고 접수 · 처리 버전 1')).toBeVisible()
     expect(document.body).not.toHaveTextContent('must-not-be-displayed')
     await user.click(screen.getByRole('checkbox'))

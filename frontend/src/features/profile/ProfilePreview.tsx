@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Button } from '../../ui/Button'
 import { CheckboxField } from '../../ui/Fields'
 import { FormErrorSummary } from '../../ui/FormErrorSummary'
 import type { FieldError } from '../../ui/FormErrorSummary'
-import { RequestError, StatusNotice } from '../../ui/StatusNotice'
+import { RequestError } from '../../ui/StatusNotice'
 import { required, useRequest } from '../../state/useRequest'
 import { provinces } from '../public-opportunities/catalog'
 import type { Province } from '../public-opportunities/catalog'
@@ -14,6 +14,14 @@ import type { Region, RegionCatalog } from '../regions/catalog'
 
 export function ProfilePreview({ experience, preferences, onChange }: { experience: string; preferences: ProfilePreferences; onChange: (value: ProfilePreferences) => void }) {
   const [errors, setErrors] = useState<FieldError[]>([])
+  const [choosing, setChoosing] = useState(false)
+  const heading = useRef<HTMLHeadingElement>(null)
+  const previousStep = useRef(choosing)
+  useEffect(() => {
+    if (previousStep.current === choosing) return
+    previousStep.current = choosing
+    heading.current?.focus()
+  }, [choosing])
   const request = useRequest<RegionCatalog>()
   const catalog = request.state.status === 'success' ? request.state.data : null
   const pending = request.state.status === 'pending'
@@ -31,20 +39,23 @@ export function ProfilePreview({ experience, preferences, onChange }: { experien
     const next: FieldError[] = []
     if (!experience.trim()) next.push({ fieldId: 'profile-experience-link', message: '경험을 한 가지 이상 적어 주세요.' })
     if (!preferences.regions.length) next.push({ fieldId: 'profile-region-seoul', message: '희망 활동 지역을 한 곳 이상 골라 주세요.' })
-    else if (!regionsMatchCatalog(preferences.regions, catalog)) next.push({ fieldId: 'profile-load-regions', message: '시·군·구 목록을 불러와 선택한 지역을 대조해 주세요. 목록에 없는 선택은 직접 변경하거나 제거해 주세요.' })
+    else if (!regionsMatchCatalog(preferences.regions, catalog)) next.push({ fieldId: 'profile-load-regions', message: '시군구 목록을 불러와 선택한 지역을 확인해 주세요. 목록에 없는 선택은 직접 변경하거나 제거해 주세요.' })
     if (!preferences.activities.length) next.push({ fieldId: 'profile-activity-employment', message: '희망 활동 유형을 한 가지 이상 골라 주세요.' })
     setErrors(next)
     onChange({ ...preferences, reviewed: next.length === 0 })
   }
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">02 · 프로필 확인 미리보기</p><h1>내 경험을 다시 살펴봐요</h1><p>직접 적은 경험과 희망 조건을 확인해 주세요. 아직 서버에서 확정된 프로필은 아닙니다.</p></header>
+  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">{choosing ? '활동 조건 선택' : '작성 내용 확인'}</p><h1 ref={heading} tabIndex={-1}>{choosing ? '어디에서 어떤 활동을 하고 싶으세요?' : '내 경험을 다시 살펴봐요'}</h1><p>{choosing ? '활동하고 싶은 지역과 활동 유형을 골라 주세요.' : '입력한 내용이 맞는지 읽어 주세요.'}</p></header>
+    {!choosing ? <>
+      <section className="panel profile-experience"><h2>내가 적은 경험</h2>{experience.trim() ? <p className="user-text">{experience}</p> : <p>아직 적은 경험이 없어요. 한 가지를 먼저 적어 주세요.</p>}</section>
+      <div className="actions"><Button disabled={!experience.trim()} onClick={() => setChoosing(true)}>활동 조건 고르기</Button><Link className="text-link" to="/conversation">경험 수정하기</Link></div>
+      <p className="quiet">이 화면에서는 서버에 확정하거나 저장하지 않아요.</p>
+    </> : <>
     <FormErrorSummary errors={errors} />
-    <section className="panel"><h2>내가 적은 경험</h2>{experience.trim() ? <p className="user-text">{experience}</p> : <p>아직 적은 경험이 없어요. 떠오르는 경험부터 한 가지 적어보세요.</p>}<Link id="profile-experience-link" className="button secondary" to="/conversation">경험 수정하기</Link></section>
-    <section className="panel"><h2>희망 활동 조건</h2><p>거주 자격을 판정하는 주소가 아닌, 활동하고 싶은 지역입니다. 시·도 전체 또는 시·군·구를 합계 10곳까지 고를 수 있어요.</p>
-      <Button id="profile-load-regions" variant="secondary" pending={pending} onClick={loadRegions}>{catalog ? '시·군·구 목록 새로 불러오기' : '시·군·구 목록 불러오기'}</Button>
+    <section className="panel"><h2>희망 활동 지역</h2><p>합계 10곳까지 고를 수 있어요. 거주 자격을 판정하는 데 쓰지 않아요.</p>
+      <Button id="profile-load-regions" variant="secondary" pending={pending} onClick={loadRegions}>{catalog ? '시군구 목록 새로 불러오기' : '시군구 목록 불러오기'}</Button>
       {pending && <Button variant="secondary" onClick={request.clear}>지역 목록 조회 취소</Button>}
       {request.state.status === 'error' && <RequestError error={request.state.error} />}
-      <p>목록 조회에는 로그인·AI 처리 동의가 필요하지 않아요. 실패해도 기존 지역을 유지하며, 시·도 전체로 임의 변경하지 않아요.</p>
-      {catalog && <p>지역 목록 버전: {catalog.version}</p>}
+      <details className="disclosure"><summary>지역 선택 안내</summary><p>시도 전체나 시군구를 고를 수 있어요. 지역 목록은 로그인이나 AI 처리 동의 없이 불러올 수 있어요. 조회에 실패해도 기존 선택을 유지해요. 시도 전체로 임의 변경하지 않아요.</p>{catalog && <p>지역 목록 버전: {catalog.version}</p>}</details>
       <fieldset disabled={pending}><legend>희망 활동 지역 (한 곳 이상)</legend>{(Object.keys(provinces) as Province[]).map((province) => {
         const selected = preferences.regions.filter((region) => region.province === province)
         const entry = catalog?.provinces.find((entry) => entry.id === province)
@@ -58,10 +69,11 @@ export function ProfilePreview({ experience, preferences, onChange }: { experien
         </div>
       })}</fieldset>
       <p>{preferences.regions.length} / 10곳 선택</p>
-      <fieldset><legend>희망 활동 유형 (한 가지 이상)</legend>{(['employment', 'volunteering'] as const).map((activity) => <CheckboxField key={activity} id={`profile-activity-${activity}`} label={activity === 'employment' ? '취업·공공일자리' : '봉사'} checked={preferences.activities.includes(activity)} onChange={(event) => { setErrors([]); onChange({ ...preferences, activities: event.target.checked ? [...preferences.activities, activity] : preferences.activities.filter((value) => value !== activity), reviewed: false }) }} />)}</fieldset>
-      <Button disabled={pending} onClick={review}>작성 항목 확인하기</Button><p role="status">{preferences.reviewed ? '경험과 희망 조건을 확인했습니다. 화면 미리보기에서만 유지하며 서버 확정·회원 저장은 진행하지 않았습니다.' : ''}</p>
+      <fieldset><legend>희망 활동 유형 (한 가지 이상)</legend>{(['employment', 'volunteering'] as const).map((activity) => <CheckboxField key={activity} id={`profile-activity-${activity}`} label={activity === 'employment' ? '취업 및 공공일자리' : '봉사'} checked={preferences.activities.includes(activity)} onChange={(event) => { setErrors([]); onChange({ ...preferences, activities: event.target.checked ? [...preferences.activities, activity] : preferences.activities.filter((value) => value !== activity), reviewed: false }) }} />)}</fieldset>
+      <Button disabled={pending} onClick={review}>작성 항목 확인하기</Button><p role="status">{preferences.reviewed ? '경험과 희망 조건을 확인했어요. 이 화면에서만 유지되며 서버에 확정하거나 회원 자료로 저장하지 않았어요.' : ''}</p>
     </section>
-    <StatusNotice title="프로필 확정과 역할 후보는 연결 준비 중이에요">서버에서 확정한 경험에 근거해 역할 후보와 추천을 제공할 예정입니다. 이 미리보기 선택만으로 역할·자격·추천 결과를 만들지 않습니다.</StatusNotice>
-    <div className="actions"><Link className="button secondary" to="/preparation">지원 내용 직접 작성해 보기</Link><Link className="text-link" to="/opportunities">공개 공고 화면 살펴보기 →</Link></div>
+    <div className="actions"><Button variant="secondary" onClick={() => { setErrors([]); setChoosing(false) }}>경험 다시 확인하기</Button><Link id="profile-experience-link" className="text-link" to="/conversation">경험 수정하기</Link></div>
+    </>}
+    <details className="disclosure"><summary>다른 화면 살펴보기</summary><div className="actions"><Link className="button secondary" to="/preparation">지원 내용 직접 작성해 보기</Link><Link className="text-link" to="/opportunities">공개 공고 살펴보기</Link></div><p className="quiet">여기서는 프로필 확정이나 추천을 제공하지 않아요.</p></details>
   </div>
 }
