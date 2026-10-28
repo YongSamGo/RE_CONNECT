@@ -1,0 +1,146 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "RE_CONNECT latest minimal deletion history outside RDS backups. Versioned, Object Lock 30 days, app write/read only.",
+  "Parameters": {
+    "BucketName": {
+      "Type": "String",
+      "AllowedPattern": "^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$"
+    },
+    "RuntimeRoleName": {
+      "Type": "String",
+      "Description": "EC2 instance role that runs the backend. Gets write/read only, never delete.",
+      "AllowedPattern": "^[A-Za-z0-9+=,.@_-]{1,64}$"
+    },
+    "LockMode": {
+      "Type": "String",
+      "AllowedValues": ["GOVERNANCE", "COMPLIANCE"],
+      "Default": "GOVERNANCE"
+    }
+  },
+  "Resources": {
+    "DeletionJournalBucket": {
+      "Type": "AWS::S3::Bucket",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "BucketName": {"Ref": "BucketName"},
+        "ObjectLockEnabled": true,
+        "ObjectLockConfiguration": {
+          "ObjectLockEnabled": "Enabled",
+          "Rule": {"DefaultRetention": {"Mode": {"Ref": "LockMode"}, "Days": 30}}
+        },
+        "VersioningConfiguration": {"Status": "Enabled"},
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [{"ServerSideEncryptionByDefault": {"SSEAlgorithm": "AES256"}}]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "OwnershipControls": {"Rules": [{"ObjectOwnership": "BucketOwnerEnforced"}]},
+        "LifecycleConfiguration": {
+          "Rules": [
+            {
+              "Id": "expire-deletion-events",
+              "Status": "Enabled",
+              "Prefix": "deletion-events/",
+              "ExpirationInDays": 31,
+              "NoncurrentVersionExpiration": {"NoncurrentDays": 1},
+              "AbortIncompleteMultipartUpload": {"DaysAfterInitiation": 1}
+            },
+            {
+              "Id": "remove-expired-delete-markers",
+              "Status": "Enabled",
+              "Prefix": "deletion-events/",
+              "ExpiredObjectDeleteMarker": true
+            }
+          ]
+        }
+      }
+    },
+    "DeletionJournalBucketPolicy": {
+      "Type": "AWS::S3::BucketPolicy",
+      "Properties": {
+        "Bucket": {"Ref": "DeletionJournalBucket"},
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "DenyInsecureTransport",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": "s3:*",
+              "Resource": [
+                {"Fn::GetAtt": ["DeletionJournalBucket", "Arn"]},
+                {"Fn::Sub": "${DeletionJournalBucket.Arn}/*"}
+              ],
+              "Condition": {"Bool": {"aws:SecureTransport": "false"}}
+            },
+            {
+              "Sid": "DenyRetentionBypassAndShortening",
+              "Effect": "Deny",
+              "Principal": "*",
+              "Action": ["s3:BypassGovernanceRetention", "s3:PutObjectRetention", "s3:PutObjectLegalHold"],
+              "Resource": {"Fn::Sub": "${DeletionJournalBucket.Arn}/*"}
+            },
+            {
+              "Sid": "DenyRuntimeDeleteAndReconfigure",
+              "Effect": "Deny",
+              "Principal": {"AWS": {"Fn::Sub": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/${RuntimeRoleName}"}},
+              "Action": [
+                "s3:DeleteObject",
+                "s3:DeleteObjectVersion",
+                "s3:PutLifecycleConfiguration",
+                "s3:PutBucketVersioning",
+                "s3:PutBucketObjectLockConfiguration",
+                "s3:PutBucketPolicy",
+                "s3:DeleteBucketPolicy"
+              ],
+              "Resource": [
+                {"Fn::GetAtt": ["DeletionJournalBucket", "Arn"]},
+                {"Fn::Sub": "${DeletionJournalBucket.Arn}/*"}
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "DeletionJournalRuntimePolicy": {
+      "Type": "AWS::IAM::ManagedPolicy",
+      "Properties": {
+        "Description": "Backend writes and reads minimal deletion events. No delete, no retention change.",
+        "Roles": [{"Ref": "RuntimeRoleName"}],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Sid": "WriteAndReadEvents",
+              "Effect": "Allow",
+              "Action": ["s3:PutObject", "s3:GetObject"],
+              "Resource": {"Fn::Sub": "${DeletionJournalBucket.Arn}/deletion-events/*"}
+            },
+            {
+              "Sid": "ListEventsOnly",
+              "Effect": "Allow",
+              "Action": "s3:ListBucket",
+              "Resource": {"Fn::GetAtt": ["DeletionJournalBucket", "Arn"]},
+              "Condition": {"StringEquals": {"s3:prefix": "deletion-events/"}}
+            },
+            {
+              "Sid": "VerifyProtection",
+              "Effect": "Allow",
+              "Action": ["s3:GetBucketVersioning", "s3:GetBucketObjectLockConfiguration"],
+              "Resource": {"Fn::GetAtt": ["DeletionJournalBucket", "Arn"]}
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "DeletionJournalBucket": {"Value": {"Ref": "DeletionJournalBucket"}},
+    "DeletionJournalRuntimePolicy": {"Value": {"Ref": "DeletionJournalRuntimePolicy"}}
+  }
+}

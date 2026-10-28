@@ -10,7 +10,7 @@ from typing import Literal
 from urllib.parse import urlsplit
 from uuid import UUID
 
-from pydantic import Field, IPvAnyAddress, SecretStr, ValidationInfo, field_validator
+from pydantic import Field, IPvAnyAddress, SecretStr, ValidationInfo, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -76,8 +76,12 @@ class Settings(BaseSettings):
     # DB·소스·DB 백업 밖에서 제공하는 키 버전 → base64 32바이트 master key의 JSON.
     data_encryption_keys: SecretStr | None = None
     data_encryption_active_key_id: str | None = None
-    # POSIX 개발 시험용. 운영 보관 위치/권한/백업 분리가 확정된 어댑터는 별도 연결한다.
+    # POSIX 개발 시험용. 운영은 아래 S3 버킷을 쓴다.
     deletion_journal_directory: Path | None = None
+    # 운영 삭제 이력: RDS와 분리한 Object Lock S3 버킷(infra/aws/deletion-journal.json). 셋을 함께 설정한다.
+    deletion_journal_bucket: str | None = Field(default=None, pattern=r"^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$")
+    deletion_journal_bucket_owner: str | None = Field(default=None, pattern=r"^[0-9]{12}$")
+    deletion_journal_region: str | None = Field(default=None, pattern=r"^[a-z]{2}(-[a-z]+)+-[0-9]$")
 
     # 상태 확인에서 구성 요소 하나를 기다리는 최대 시간(초).
     health_check_timeout_seconds: float = 2.0
@@ -119,6 +123,13 @@ class Settings(BaseSettings):
         if url.username or url.password or url.query or url.fragment or url.path not in ("", "/"):
             raise ValueError("ollama_base_url에는 출처(scheme://host:port)만 적습니다")
         return value.rstrip("/")
+
+    @model_validator(mode="after")
+    def _deletion_journal_bucket_complete(self) -> "Settings":
+        values = (self.deletion_journal_bucket, self.deletion_journal_bucket_owner, self.deletion_journal_region)
+        if any(value is not None for value in values) and any(value is None for value in values):
+            raise ValueError("삭제 이력 버킷·소유 계정·리전을 함께 설정합니다")
+        return self
 
     @property
     def docs_enabled(self) -> bool:
