@@ -54,7 +54,7 @@ function DetailContent({ item }: { item: PublicDetail }) {
     </article>
     <OpportunityReport key={`${item.id}:${item.version}`} id={item.id} version={item.version} />
     <Link className="button secondary" to={`/opportunities/${item.id}/preparation`}>공식 서류·접수 준비 안내 보기</Link>
-    <StatusNotice title="개인 자격은 확정 프로필로 대조해 주세요">체험 추천 화면에서 확정 프로필과 공고 조건을 대조할 수 있습니다. 실제 체험 시작 안내와 공고에 연결된 지원서 생성은 연결 준비 중입니다. 오류 신고는 실제 서버의 접수 응답을 받은 뒤에만 접수 완료로 표시합니다.</StatusNotice>
+    <StatusNotice title="개인 자격은 확정 프로필로 대조해 주세요">경험을 정리하고 프로필을 확정하면 추천 화면에서 공고 조건을 대조하고 지원서를 준비할 수 있습니다. <Link className="text-link" to="/start">AI 처리 안내를 확인하고 새 체험 시작</Link></StatusNotice>
   </>
 }
 
@@ -83,7 +83,7 @@ function DetailRequest({ id }: { id: string }) {
 
   return <>
     <section ref={result} tabIndex={-1} aria-label="공고 상세 조회 결과">
-      {state.status === 'idle' && <StatusNotice label="공개 상세" title="공고 정보를 불러와 주세요" actions={<Button onClick={() => void load()}>공고 정보 불러오기</Button>}>로그인·AI 동의 없이 조회합니다. 현재 서버는 연결 검증 전이며 응답이 없으면 오류를 안내합니다.</StatusNotice>}
+      {state.status === 'idle' && <StatusNotice label="공개 상세" title="공고 정보를 불러와 주세요" actions={<Button onClick={() => void load()}>공고 정보 불러오기</Button>}>로그인이나 AI 처리 동의 없이 공고의 공식 안내와 모집 상태를 확인할 수 있습니다.</StatusNotice>}
       {state.status === 'loading' && <StatusNotice kind="loading" title="공고 정보를 확인하고 있어요" actions={<Button variant="secondary" onClick={scope.clear}>조회 취소하기</Button>}>최신 공고의 모집 상태와 조건을 조회합니다.</StatusNotice>}
       {state.status === 'error' && (state.error.code === 'NOT_FOUND' || state.error.status === 404
         ? <StatusNotice kind="error" title="이 공고를 찾을 수 없어요">삭제되었거나 공개가 종료된 공고일 수 있어요. 공개 검색에서 다른 공고를 찾아보세요.</StatusNotice>

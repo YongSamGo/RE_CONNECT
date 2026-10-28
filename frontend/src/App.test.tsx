@@ -89,6 +89,7 @@ describe('화면 골격과 입력 경계', () => {
     await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
     expect(screen.getByRole('status')).toHaveTextContent('미리보기 입력을 삭제했습니다.')
     await user.click(screen.getByRole('link', { name: /내 경험 이야기하기/ }))
+    await user.click(screen.getByRole('link', { name: '가상 경험으로 화면 미리보기' }))
     await start()
     expect(screen.getByRole('textbox')).toHaveValue('')
   })
@@ -128,9 +129,9 @@ describe('화면 골격과 입력 경계', () => {
     await start()
     expect(screen.getByRole('textbox')).toHaveValue('')
   })
-  it.each(['/me', '/admin', '/opportunities/preview', '/missing'])('%s를 오류 없이 열고 실패·미연동 상태를 명시한다', (path) => {
+  it.each(['/me', '/admin', '/opportunities/preview', '/missing'])('%s를 비동기 화면을 포함해 오류 없이 연다', async (path) => {
     mount(path)
-    expect(screen.getByRole('heading', { level: 1 })).toBeVisible()
+    expect(await screen.findByRole('heading', { level: 1 })).toBeVisible()
     expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
   })
   it('렌더링 오류의 내부 메시지·입력을 사용자 오류 화면에 노출하지 않는다', () => {

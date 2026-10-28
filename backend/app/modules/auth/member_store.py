@@ -11,12 +11,18 @@ from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS, StoreUnavailable,
 from app.modules.auth.member_cleanup import RedisMemberCleanup
 
 
+MFA_MS = 60 * 60 * 1000
+
+
 @dataclass(frozen=True)
 class MemberBinding:
     user_id: UUID
     now_ms: int
     reauth_until_ms: int
     generation: int
+    # 이 세션에서만 유효한 운영자 MFA 확인. 세션 교체 시 복사하지 않는다.
+    mfa_until_ms: int = 0
+    mfa_credential: UUID | None = None
 
 
 _LIFETIME = """
@@ -31,12 +37,14 @@ if ttl <= 0 or redis.call('PTTL', KEYS[1]) <= 0 then return {} end
 """
 
 _READ = _LIFETIME + """
-local b = redis.call('HMGET', KEYS[1], 'user_id', 'reauth_until_ms', 'user_generation')
+local b = redis.call('HMGET', KEYS[1], 'user_id', 'reauth_until_ms', 'user_generation', 'mfa_until_ms', 'mfa_credential')
 if not b[1] or not b[3] then return {} end
 if redis.call('SISMEMBER', ARGV[3] .. b[1] .. ':sessions', ARGV[4]) ~= 1 then return {} end
 local until_ms = tonumber(b[2] or '0')
 if not until_ms or until_ms < 0 or until_ms > now + 300000 then return redis.error_reply('Invalid binding state') end
-return {b[1], tostring(now), tostring(until_ms), b[3]}
+local mfa_ms = tonumber(b[4] or '0')
+if not mfa_ms or mfa_ms < 0 or mfa_ms > now + tonumber(ARGV[5]) then return redis.error_reply('Invalid binding state') end
+return {b[1], tostring(now), tostring(until_ms), b[3], tostring(mfa_ms), b[5] or ''}
 """
 
 _SWITCH = _LIFETIME + _CLEANUP_PLAN + """
@@ -82,6 +90,16 @@ if ARGV[9] ~= '' then redis.call('SREM', KEYS[8], ARGV[7]) end
 return {ARGV[3], tostring(now), tostring(now), ARGV[4], tostring(now), ARGV[5], tostring(cleaned_journeys)}
 """
 
+# 같은 회원·세대·회원 색인에 있는 세션에만 MFA 확인을 기록한다. 세션 절대 만료를 넘기지 않는다.
+_MFA = _LIFETIME + """
+local b = redis.call('HMGET', KEYS[1], 'user_id', 'user_generation')
+if b[1] ~= ARGV[3] or b[2] ~= ARGV[4] then return {} end
+if redis.call('SISMEMBER', ARGV[6] .. ARGV[3] .. ':sessions', ARGV[7]) ~= 1 then return {} end
+local until_ms = now + math.min(tonumber(ARGV[8]), created + tonumber(ARGV[1]) - now)
+redis.call('HSET', KEYS[1], 'mfa_until_ms', until_ms, 'mfa_credential', ARGV[5])
+return {tostring(until_ms)}
+"""
+
 _REAUTH = _LIFETIME + """
 if redis.call('HGET', KEYS[1], 'user_id') ~= ARGV[3] then return {} end
 local until_ms = now + math.min(300000, ttl)
@@ -94,7 +112,7 @@ class RedisMemberStore:
     def __init__(self, client, *, session_prefix="rc:session:v1:", flow_prefix="rc:oauth:v1:"):
         self.client, self.session_prefix, self.flow_prefix = client, session_prefix, flow_prefix
         self.member_prefix = session_prefix + 'member:'
-        self._read, self._switch, self._reauth = (client.register_script(v) for v in (_READ, _SWITCH, _REAUTH))
+        self._read, self._switch, self._reauth, self._mfa = (client.register_script(v) for v in (_READ, _SWITCH, _REAUTH, _MFA))
 
     @staticmethod
     def _digest(digest):
@@ -111,16 +129,18 @@ class RedisMemberStore:
         if not values:
             return None
         try:
-            uid, now, until, generation = values
+            uid, now, until, generation, *mfa = values
             generation = int(generation)
-            if not 0 <= generation < 2147483647: raise ValueError
-            return MemberBinding(UUID(uid), int(now), int(until), generation)
+            if not 0 <= generation < 2147483647 or len(mfa) not in (0, 2): raise ValueError
+            mfa_until, credential = (int(mfa[0]), UUID(mfa[1]) if mfa[1] else None) if mfa else (0, None)
+            if mfa_until < 0 or (mfa_until > 0) != (credential is not None): raise ValueError
+            return MemberBinding(UUID(uid), int(now), int(until), generation, mfa_until, credential)
         except (ValueError, TypeError):
             raise StoreUnavailable from None
 
     async def read(self, digest):
         try:
-            return self._binding(await self._read(keys=[self.key(digest)], args=[ABSOLUTE_MS, IDLE_MS, self.member_prefix, digest]))
+            return self._binding(await self._read(keys=[self.key(digest)], args=[ABSOLUTE_MS, IDLE_MS, self.member_prefix, digest, MFA_MS]))
         except RedisError:
             raise StoreUnavailable from None
 
@@ -153,6 +173,22 @@ class RedisMemberStore:
         except RedisError:
             raise StoreUnavailable from None
 
+    async def mark_mfa(self, digest, user_id, generation, credential_id):
+        """MFA 만료 시각(ms). 세션이 바뀌었거나 다른 회원·세대면 None."""
+        if type(generation) is not int or not 0 <= generation < 2147483647 or not isinstance(credential_id, UUID):
+            raise StoreUnavailable
+        try:
+            values = await self._mfa(keys=[self.key(digest)], args=[ABSOLUTE_MS, IDLE_MS, str(user_id), str(generation),
+                                                                   str(credential_id), self.member_prefix, digest, MFA_MS])
+        except RedisError:
+            raise StoreUnavailable from None
+        if not values:
+            return None
+        try:
+            return int(values[0])
+        except (TypeError, ValueError):
+            raise StoreUnavailable from None
+
     async def discard(self, session):
         await RedisMemberCleanup(self).revoke_one(session.user_id, session.digest)
 
@@ -163,4 +199,5 @@ class UnavailableMemberStore:
 
     switch = read
     reauth = read
+    mark_mfa = read
     discard = read

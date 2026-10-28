@@ -1,4 +1,4 @@
-import { Component, useEffect, useRef, useState } from 'react'
+import { Component, lazy, Suspense, useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Link, NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from './ui/Button'
@@ -17,15 +17,17 @@ import { AuthResult } from './features/account/AuthResult'
 import { PendingSave } from './features/account/PendingSave'
 import { BeginSaveRoute } from './features/account/BeginSave'
 import { SavedMaterials } from './features/account/SavedMaterials'
-import { AdminPage } from './features/admin/AdminPage'
 import { VoicePreview } from './features/voice/VoicePreview'
 import { ProfilePreview } from './features/profile/ProfilePreview'
 import { JourneyConversationRoute } from './features/conversation/JourneyConversation'
 import { JourneyRecommendationsRoute } from './features/recommendations/JourneyRecommendations'
 import { JourneyProfileRoute } from './features/profile/JourneyProfile'
+import { StartJourney } from './features/journeys/StartJourney'
 import { emptyPreferences } from './features/profile/model'
 import type { ProfilePreferences } from './features/profile/model'
 import './App.css'
+
+const AdminPage = lazy(() => import('./features/admin/AdminPage').then(module => ({ default: module.AdminPage })))
 
 // Preview-only memory. Never represents server consent, identity or confirmation.
 type Preview = { consent: boolean; experience: string; draft: ManualDraft; preferences: ProfilePreferences }
@@ -64,7 +66,7 @@ function Home() {
     <section className="hero"><div className="hero-copy"><p className="eyebrow">경험은 이어지고, 기회는 새로워집니다</p>
       <h1>당신의 경험에<br />새로운 <span>쓰임을 잇다.</span></h1>
       <p className="hero-description">해온 일과 좋아하는 일을 이야기해 주세요.<br className="desktop-break" /> 나에게 맞는 일자리와 봉사 기회를 함께 찾아갑니다.</p>
-      <div className="actions"><Link className="button primary" to="/consent">내 경험 이야기하기 <span aria-hidden="true">↗</span></Link><Link className="text-link" to="/opportunities">공고부터 살펴보기 <span aria-hidden="true">→</span></Link></div>
+      <div className="actions"><Link className="button primary" to="/start">내 경험 이야기하기 <span aria-hidden="true">↗</span></Link><Link className="text-link" to="/opportunities">공고부터 살펴보기 <span aria-hidden="true">→</span></Link></div>
       <p className="quiet">회원가입 없이 시작할 수 있어요.</p></div>
       <aside className="journey-card" aria-label="서비스 이용 순서"><div className="card-topline"><span>나의 다음 걸음</span><span aria-hidden="true">✳</span></div>
         <ol><li><span className="step-number">01</span><div><strong>경험을 이야기해요</strong><p>작은 일도 소중한 경험이에요.</p></div></li><li><span className="step-number">02</span><div><strong>내가 직접 확인해요</strong><p>정리된 내용을 고치고 확정해요.</p></div></li><li><span className="step-number">03</span><div><strong>새로운 기회를 만나요</strong><p>조건을 비교하고 신청을 준비해요.</p></div></li></ol>
@@ -107,6 +109,7 @@ export default function App() {
   const mainRef = useRef<HTMLElement>(null)
   useEffect(() => {
     const current = screens.find((screen) => screen.path === location.pathname)
+      ?? (location.pathname === '/start' ? screens[1] : undefined)
       ?? (location.pathname.startsWith('/opportunities/') && location.pathname.endsWith('/preparation') ? screens[7] : undefined)
       ?? (location.pathname.startsWith('/opportunities/') ? screens[6] : undefined)
       ?? (location.pathname.startsWith('/admin/') ? screens[9] : undefined)
@@ -137,14 +140,16 @@ export default function App() {
   // End navigation may finish after state clears. Keep the guard pointed home
   // during that transition so an old route cannot redirect back to consent.
   const requirePreview = (children: ReactNode) => preview.consent ? children : <Navigate to={endingKey === location.key ? '/' : '/consent'} replace />
+  const previewPage = ['/consent', '/conversation', '/transcription', '/profile', '/preparation'].includes(location.pathname)
   return <>
     <a className="skip-link" href="#main">본문으로 바로가기</a>
-    <div className="preview-banner">개발 중인 서비스 <span>· 개인 체험 시작 준비 중 · 미리보기에는 가상 정보만 입력해 주세요</span></div>
+    <div className="preview-banner">{previewPage ? <>화면 미리보기 <span>· 가상 정보만 입력해 주세요. 이 화면의 선택은 실제 처리 동의로 기록되지 않습니다.</span></> : <>다시잇다 <span>· 실제 체험은 게시된 안내문 확인과 동의 후 시작합니다. 신청은 공식 신청처에서 진행해 주세요.</span></>}</div>
     <header className="site-header"><Link className="brand" to="/" aria-label="다시잇다 시작 화면"><span className="brand-symbol" aria-hidden="true">↗</span>다시잇다<span className="brand-subtitle">경험과 기회를 잇다</span></Link><nav aria-label="주요 메뉴"><NavLink to="/opportunities">공고 살펴보기</NavLink><NavLink to="/me">내 정보</NavLink></nav></header>
-    {preview.consent && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
+    {preview.consent && previewPage && <div className="preview-toolbar"><p>지금 적는 내용은 새로고침하면 사라져요.</p><Button variant="compact" onClick={endPreview}>종료하고 삭제</Button></div>}
     <div className="status-line" role="status">{location.pathname === '/' || location.pathname === '/me' ? notice : ''}</div>
     <main id="main" ref={mainRef} tabIndex={-1}><Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/start" element={<StartJourney onStart={clearPreview} />} />
       <Route path="/consent" element={<Consent onStart={() => { clearPreview(); setPreview({ ...emptyPreview(), consent: true }); setNotice(''); navigate('/conversation') }} />} />
       <Route path="/conversation" element={requirePreview(<Conversation preview={preview} onChange={(value) => setPreview((previous) => ({ ...previous, experience: value, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } }))} />)} />
       <Route path="/transcription" element={requirePreview(<VoicePreview onUseText={(experience) => { setPreview((previous) => ({ ...previous, experience, preferences: { ...previous.preferences, reviewed: false }, draft: { ...previous.draft, reviewed: false } })); navigate('/conversation') }} />)} />
@@ -167,9 +172,9 @@ export default function App() {
       <Route path="/transcript" element={<Navigate to="/transcription" replace />} />
       <Route path="/preparation/:legacyId" element={<div className="reading-width"><Heading step="이전 미리보기 주소" title="예시별 작성 화면을 정리했어요">가상 공고별 작성 화면은 기존 프론트의 직접 작성 연습 화면으로 통합했습니다. 이 주소를 실제 공고의 신청 준비로 사용하지 않습니다.</Heading><div className="actions"><Link className="button primary" to="/preparation">직접 작성 연습으로 이동</Link><Link className="text-link" to="/opportunities">공개 공고 살펴보기</Link></div></div>} />
       <Route path="/recommendations" element={<div className="reading-width"><Heading step="추천 연결 준비" title="추천은 실제 확정 프로필 연동 후 제공해요">이전 로컬 미리보기의 확인 표시는 서버 확정이나 추천 결과가 아닙니다. 공고 탐색과 프로필 화면을 이용해 주세요.</Heading><div className="actions"><Link className="button primary" to="/opportunities">공개 공고 살펴보기</Link><Link className="text-link" to="/profile">프로필 화면으로</Link></div></div>} />
-      <Route path="/admin/*" element={<AdminPage />} />
+      <Route path="/admin/*" element={<Suspense fallback={<StatusNotice kind="loading" title="운영자 화면을 여는 중이에요">잠시 기다려 주세요.</StatusNotice>}><AdminPage /></Suspense>} />
       <Route path="*" element={<div className="reading-width"><Heading step="주소 확인" title="페이지를 찾을 수 없어요">주소를 확인하거나 시작 화면으로 돌아가 주세요.</Heading><Link className="button primary" to="/">시작 화면으로</Link></div>} />
     </Routes></main>
-    <footer className="site-footer"><p><strong>다시잇다</strong><span>당신의 다음 걸음을 응원합니다.</span></p><p>신청은 공식 신청처에서 직접 진행합니다.</p><details className="screen-map"><summary>개발 화면 목록</summary><nav aria-label="개발 화면 목록">{screens.map((screen) => <Link key={screen.id} to={screen.path}>{screen.id} · {screen.title}</Link>)}</nav></details></footer>
+    <footer className="site-footer"><p><strong>다시잇다</strong><span>당신의 다음 걸음을 응원합니다.</span></p><p>신청은 공식 신청처에서 직접 진행합니다.</p>{import.meta.env.DEV && <details className="screen-map"><summary>개발 화면 목록</summary><nav aria-label="개발 화면 목록">{screens.map((screen) => <Link key={screen.id} to={screen.path}>{screen.id} · {screen.title}</Link>)}</nav></details>}</footer>
   </>
 }

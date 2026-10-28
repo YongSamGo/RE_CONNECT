@@ -1,8 +1,10 @@
 """역할 사전·실재 확정 경험·소유권·별칭/규칙의 정상·공격 경계."""
 
 import asyncio
+import json
 from contextlib import nullcontext
 from dataclasses import replace
+from pathlib import Path
 from uuid import uuid4
 
 from alembic import command
@@ -129,6 +131,18 @@ def test_service_rejects_unconfirmed_other_owner_and_unknown_snapshot():
     asyncio.run(scenario())
 
 
+CATALOG_DRAFT = json.loads((Path(__file__).resolve().parents[2] / "docs/data/role-catalog.json").read_text(encoding="utf-8"))
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_seeded_catalog_matches_reviewed_draft(backend):
+    # 마이그레이션은 문서를 읽지 않고 값을 고정하므로, 두 곳이 어긋나면 여기서 실패한다.
+    with open_test_database(backend) as db:
+        command.upgrade(migration_config(db), "head")
+        seeded = {entry.id: entry.model_dump(mode="json") for entry in SQLRoleCatalog(lambda: nullcontext(db)).list()}
+    assert seeded == {entry["id"]: CatalogRole.model_validate(entry).model_dump(mode="json") for entry in CATALOG_DRAFT}
+
+
 @pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
 def test_catalog_validation_and_initial_seed_preserve_existing_operator_rows(backend):
     with open_test_database(backend) as db:
@@ -138,11 +152,11 @@ def test_catalog_validation_and_initial_seed_preserve_existing_operator_rows(bac
         db.execute(insert(RoleDefinition), custom.model_dump())
         command.upgrade(config, "head")
         catalog = SQLRoleCatalog(lambda: nullcontext(db)).list()
-        assert {entry.id for entry in catalog} == {"reading_companion", "library_assistant"}
+        assert {entry.id for entry in catalog} == {entry["id"] for entry in CATALOG_DRAFT}
         assert next(r for r in catalog if r.id == "library_assistant").name == "운영자 확인 이름"
         command.downgrade(config, "0002_immutable_versions")
         command.upgrade(config, "head")
-        assert len(SQLRoleCatalog(lambda: nullcontext(db)).list()) == 2
+        assert len(SQLRoleCatalog(lambda: nullcontext(db)).list()) == len(CATALOG_DRAFT)
         db.execute(update(RoleDefinition).where(RoleDefinition.id == "reading_companion").values(aliases=["검증되지 않은 문자열 별칭"]))
         with pytest.raises(AppError, match="SERVICE_UNAVAILABLE"):
             SQLRoleCatalog(lambda: nullcontext(db)).list()

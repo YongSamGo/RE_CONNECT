@@ -136,6 +136,31 @@ class ApplicationDraft(EncryptedContent, Base):
     saved_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
 
 
+class OperatorMfaCredential(EncryptedContent, Base):
+    """운영자 TOTP 비밀값(암호문)과 계정 단위 실패·재사용 상태 (W07-01).
+
+    등록·복구는 앱 밖 관리 절차(manage_operators.py)로만 만든다. 다시 등록하면 credential_id가 바뀌어
+    이전 MFA 확인 세션이 효력을 잃는다. 실패 횟수는 세션이 아니라 이 행에 둔다.
+    """
+
+    __tablename__ = "operator_mfa_credentials"
+    __table_args__ = (
+        CheckConstraint("failed_count BETWEEN 0 AND 4", name="failed_count"),
+        CheckConstraint("lock_count BETWEEN 0 AND 10", name="lock_count"),
+        CheckConstraint("last_step IS NULL OR last_step > 0", name="last_step"),
+        *encrypted_constraints(),
+    )
+
+    user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    credential_id: Mapped[UUID] = mapped_column(Uuid, unique=True, default=uuid4)
+    last_step: Mapped[int | None] = mapped_column(Integer)
+    failed_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    # 연속 잠금 횟수. 잠금 시간을 늘리고 10번이면 reset-mfa 전까지 막는다.
+    lock_count: Mapped[int] = mapped_column(Integer, default=0, server_default="0")
+    locked_until: Mapped[datetime | None] = mapped_column(UTCDateTime())
+    enrolled_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+
+
 @event.listens_for(ProfileVersion, "before_update")
 @event.listens_for(ApplicationDraft, "before_update")
 def reject_saved_version_update(mapper, connection, target) -> None:

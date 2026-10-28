@@ -14,6 +14,15 @@ function mount(component: React.ReactNode) { return render(<MemoryRouter>{compon
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 
 describe('member and operator request boundaries', () => {
+  it.each([false, true])('shows the management entry only for a server-confirmed operator: %s', async operator => {
+    vi.stubGlobal('fetch', vi.fn(async () => json({ ...member, user: { ...member.user, roles: operator ? ['user', 'operator'] : ['user'] } })))
+    mount(<AccountPage />)
+    expect(screen.queryByRole('link', { name: '운영자 관리 화면' })).not.toBeInTheDocument()
+    await userEvent.click(screen.getByRole('button', { name: '내 로그인 상태 확인' }))
+    await screen.findByText('회원 세션이 확인되었습니다. 대화는 새로 시작하며 저장하지 않은 미리보기는 회원 자료에 포함되지 않습니다.')
+    if (operator) expect(screen.getByRole('link', { name: '운영자 관리 화면' })).toHaveAttribute('href', '/admin')
+    else expect(screen.queryByRole('link', { name: '운영자 관리 화면' })).not.toBeInTheDocument()
+  })
   it.each([anonymousSession, member])('never requests operator data without operator role', async (session) => {
     const fetch = vi.fn(async () => json(session)); vi.stubGlobal('fetch', fetch)
     mount(<AdminPage />)
