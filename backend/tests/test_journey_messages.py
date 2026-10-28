@@ -53,10 +53,8 @@ class Runtime:
         if output_model is ExtractionPlan:
             turns = data['turns'] if self.include_prior else data['turns'][-1:]
             return output_model.model_validate({'experiences': [{'existing_id': None,
-                'description': turn['text'],
-                'description_evidence': [{'turn_index': turn['turn_index'], 'text': '원문에 없는 경험' if self.corrupt else turn['text']}],
-                'duration_note': None, 'duration_evidence': [],
-                'skills': [{'tag': '자료 정리', 'evidence': [{'turn_index': turn['turn_index'], 'text': '자료 정리'}]}] if '자료 정리' in turn['text'] else []} for turn in turns]})
+                'description': {'turn_index': turn['turn_index'], 'text': '원문에 없는 경험' if self.corrupt else turn['text']},
+                'duration': None, 'skills': [{'turn_index': turn['turn_index'], 'text': '자료 정리'}] if '자료 정리' in turn['text'] else []} for turn in turns]})
         return output_model.model_validate({'field': data['allowed_fields'][0]})
 
 

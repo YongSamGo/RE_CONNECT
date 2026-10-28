@@ -78,22 +78,11 @@ class GroundedGenerationService:
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
         }, ExtractionPlan)
 
-        def verify_quotes(quotes: Sequence[Quote]) -> None:
-            if not quotes:
+        def quote_value(quote: Quote, turn_index: int) -> str:
+            source = turns.get(quote.turn_index)
+            if quote.turn_index != turn_index or source is None or quote.text not in source or safe_text(quote.text) is None:
                 raise _invalid()
-            for quote in quotes:
-                source = turns.get(quote.turn_index)
-                if source is None or quote.text not in source or safe_text(quote.text) is None:
-                    raise _invalid()
-
-        def grounded_value(value: str, quotes: Sequence[Quote]) -> str:
-            if safe_text(value) != value:
-                raise _invalid()
-            # 원문 구절의 공백 정리·연결만 허용한다. 인용 존재만으로 새 사실을 승인하지 않는다.
-            source = " ".join(" ".join(quote.text.split()) for quote in quotes)
-            if " ".join(value.split()) not in source:
-                raise _invalid()
-            return value
+            return quote.text
 
         proposals = []
         used_ids = set()
@@ -102,21 +91,16 @@ class GroundedGenerationService:
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
-                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 기존 설명은 이 경로에서 다시 쓰지 않는다.
-                    if item.description != allowed[item.existing_id].description:
+                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 요약/수정은 직접 편집으로 넘긴다.
+                    if item.description.text != allowed[item.existing_id].description:
                         raise _invalid()
                     used_ids.add(item.existing_id)
-                verify_quotes(item.description_evidence)
-                if item.duration_note is not None:
-                    verify_quotes(item.duration_evidence)
-                for skill in item.skills:
-                    verify_quotes(skill.evidence)
+                index = item.description.turn_index
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
-                    # 소유권이 확인된 기존 설명은 위에서 동일성을 검사했고 재작성하지 않는다.
-                    description=item.description if item.existing_id is not None else grounded_value(item.description, item.description_evidence),
-                    duration_note=grounded_value(item.duration_note, item.duration_evidence) if item.duration_note else None,
-                    skill_tags=[grounded_value(skill.tag, skill.evidence) for skill in item.skills],
+                    description=quote_value(item.description, index),
+                    duration_note=quote_value(item.duration, index) if item.duration else None,
+                    skill_tags=[quote_value(skill, index) for skill in item.skills],
                 ))
         except ValidationError:
             raise _invalid() from None
