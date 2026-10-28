@@ -45,7 +45,8 @@ Trivy 원본 결과(`*-scan.json`)는 미조치 취약점 목록이라 Release·
 
 backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS HIGH가 있다([CONTAINER_RUNTIME.md](../../speech/CONTAINER_RUNTIME.md)).
 2026-10-28에 8개 ID를 두 이미지에 대해 검토해 2027-01-26 만료로 수용 목록에 올렸다. 만료 전에 베이스 갱신 여부를 다시 검토한다.
-음성 이미지는 같은 베이스에 OS 패키지를 추가하지 않아 같은 목록을 적용했고, 실제 판정은 첫 릴리스 태그에서 확인한다.
+음성 이미지는 같은 베이스에 OS 패키지를 추가하지 않아 같은 목록을 적용했다. 음성 빌드 파일(`speech/Dockerfile`·잠금 파일·`tts_compat`)이나
+판정 도구·release 워크플로가 바뀐 PR에서는 `이미지 빌드·검사 (speech)`가 빌드·판정까지 확인한다.
 
 ## 4. 저장소·AWS 준비 (admin, 1회)
 
