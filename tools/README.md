@@ -1,5 +1,9 @@
 # 저장소 관리 도구
 
+## AWS GPU 사전 확인
+
+`python -X utf8 tools/aws_readiness.py --profile reconnect`는 인증된 AWS CLI로 GPU 후보의 리전 제공·사양·승인 할당량을 읽기 전용으로 조회한다. 계정 식별자·CLI 오류 원문은 출력하지 않는다. 종료코드 0도 배포 완료나 실제 시작 가능 용량을 뜻하지 않는다. 실행 조건과 남은 확인은 [10/29 이슈 확인](../docs/progress/triage-20261029.md)에 있다.
+
 ## 다음 작업 후보 조회
 
 `project_status.py`는 Python 3.12 표준 라이브러리와 로그인된 GitHub CLI(`gh`)를 사용한다. GitHub 읽기 권한이 필요하다. 이슈·PR을 페이지 끝까지 읽고 표준 출력에 Markdown을 쓴다. 이슈·댓글·브랜치·PR·작업 상태는 변경하지 않는다.
