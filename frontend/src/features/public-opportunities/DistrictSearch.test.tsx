@@ -3,121 +3,111 @@ import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { PublicOpportunities } from './PublicOpportunities'
-import { sampleList } from './test-fixtures'
+import { sampleList, sampleOpportunity } from './test-fixtures'
 
-const catalog = { version: 'test-v1', provinces: [{ id: 'seoul', name: '서울', districts: [{ id: 'test_first', name: '가상첫구' }, { id: 'test_second', name: '가상둘구' }] }] }
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
-async function mount() {
+function mount() {
   render(<MemoryRouter><PublicOpportunities /></MemoryRouter>)
-  const user = userEvent.setup()
-  await user.click(screen.getByText('시군구로 좁혀 찾기', { exact: true }))
-  return user
+  return userEvent.setup()
 }
-async function choose(user: ReturnType<typeof userEvent.setup>) {
-  await user.selectOptions(screen.getByLabelText('활동 지역'), 'seoul')
-  await user.click(screen.getByRole('button', { name: '시군구 목록 불러오기' }))
-  await screen.findByRole('option', { name: '가상첫구' })
-  await user.selectOptions(screen.getByLabelText('시군구'), 'test_first')
-}
+const search = (user: ReturnType<typeof userEvent.setup>) => user.click(screen.getByRole('button', { name: '공고 검색하기' }))
+
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals() })
-describe('district search and applied filter snapshots', () => {
-  it('sends only allowed public filters and retains applied district/name/version for pagination', async () => {
-    let regionCalls = 0
-    const fetch = vi.fn(async (request: Request) => {
-      const url = new URL(request.url)
-      return json(url.pathname.endsWith('/regions') ? ++regionCalls === 1 ? catalog : { ...catalog, version: 'test-v2', provinces: [{ ...catalog.provinces[0], districts: [{ id: 'test_first', name: '이름 변경구' }, catalog.provinces[0]!.districts[1]] }] } : sampleList({ page: Number(url.searchParams.get('page')), total: 21 }))
-    }); vi.stubGlobal('fetch', fetch)
+describe('map district search and applied filter snapshots', () => {
+  it('sends only selected public filters and preserves applied districts during pagination', async () => {
+    const fetch = vi.fn(async (request: Request) => json(sampleList({ page: Number(new URL(request.url).searchParams.get('page')), total: 21 })))
+    vi.stubGlobal('fetch', fetch)
     const write = vi.spyOn(Storage.prototype, 'setItem')
-    const user = await mount()
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await user.click(screen.getByRole('button', { name: '중구' }))
     expect(fetch).not.toHaveBeenCalled()
-    await choose(user)
-    expect(fetch).toHaveBeenCalledTimes(1)
-    expect(fetch.mock.calls[0]![0].url).toBe('https://reconnect.test/api/v1/regions')
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
-    expect(await screen.findByText('적용한 조건: 검색어 전체 / 서울 / 가상첫구 / 활동 유형 전체')).toBeVisible()
-    expect(screen.getByText('검색에 적용한 지역 목록 버전: test-v1')).toBeVisible()
-    expect(Object.fromEntries(new URL(fetch.mock.calls[1]![0].url).searchParams)).toEqual({ page: '1', page_size: '20', province: 'seoul', district: 'test_first' })
-    await user.selectOptions(screen.getByLabelText('시군구'), 'test_second')
-    await user.click(screen.getByRole('button', { name: '시군구 목록 새로 불러오기' }))
-    await screen.findByRole('option', { name: '이름 변경구' })
+    await search(user)
+    await screen.findByText('공개 공고 검색 결과')
+    const request = fetch.mock.calls[0]![0]
+    expect(new URL(request.url).pathname).toBe('/api/v1/opportunities')
+    expect([...new URL(request.url).searchParams]).toEqual([['page', '1'], ['page_size', '20'], ['regions', 'seoul:jongno'], ['regions', 'seoul:jung']])
+    await user.click(screen.getByRole('button', { name: '종로구 선택됨' }))
     await user.click(screen.getByRole('button', { name: '다음 페이지' }))
     await waitFor(() => expect(screen.getByRole('status')).toHaveTextContent('2페이지'))
-    expect(new URL(fetch.mock.calls[3]![0].url).searchParams.get('district')).toBe('test_first')
-    expect(screen.getByText(/적용한 조건:/)).toHaveTextContent('서울 / 가상첫구')
-    expect(screen.getByText('검색에 적용한 지역 목록 버전: test-v1')).toBeVisible()
+    expect(new URL(fetch.mock.calls[1]![0].url).searchParams.getAll('regions')).toEqual(['seoul:jongno', 'seoul:jung'])
     expect(write).not.toHaveBeenCalled()
     expect(window.location.search).toBe('')
     expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
   })
-  it('clears district only on an explicit province change and restarts the next search at page one', async () => {
-    const fetch = vi.fn(async (request: Request) => json(new URL(request.url).pathname.endsWith('/regions') ? catalog : sampleList()))
+
+  it('retains individual selections across maps and applies changed districts only to a new search', async () => {
+    const fetch = vi.fn(async (_request: Request) => json(sampleList()))
     vi.stubGlobal('fetch', fetch)
-    const user = await mount(); await choose(user)
-    await user.selectOptions(screen.getByLabelText('활동 지역'), 'incheon')
-    expect(screen.getByLabelText('시군구')).toHaveValue('')
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await search(user)
     await screen.findByText('공개 공고 검색 결과')
-    expect(Object.fromEntries(new URL(fetch.mock.calls[1]![0].url).searchParams)).toEqual({ page: '1', page_size: '20', province: 'incheon' })
+    await user.click(screen.getByRole('button', { name: '김포/인천 지도 보기' }))
+    await user.click(screen.getByRole('button', { name: '김포시' }))
+    expect(fetch).toHaveBeenCalledTimes(1)
+    await search(user)
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect([...new URL(fetch.mock.calls[1]![0].url).searchParams]).toEqual([['page', '1'], ['page_size', '20'], ['regions', 'seoul:jongno'], ['regions', 'gyeonggi:gimpo']])
   })
-  it.each(['failure', 'removed'])('preserves a district on catalog %s and blocks silently broader searches', async (kind) => {
-    let regionCalls = 0
-    const fetch = vi.fn(async (request: Request) => {
-      if (!new URL(request.url).pathname.endsWith('/regions')) return json(sampleList())
-      if (++regionCalls === 1) return json(catalog)
-      return kind === 'failure' ? json({ code: 'SERVICE_UNAVAILABLE', message: 'private catalog failure' }, 503) : json({ version: 'test-v2', provinces: [] })
-    }); vi.stubGlobal('fetch', fetch)
-    const user = await mount(); await choose(user)
-    await user.click(screen.getByRole('button', { name: '시군구 목록 새로 불러오기' }))
-    expect(await screen.findByRole('option', { name: '가상첫구 (목록 확인 필요)' })).toBeVisible()
-    expect(screen.getByLabelText('시군구')).toHaveValue('test_first')
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
-    expect(fetch).toHaveBeenCalledTimes(2)
-    await user.click(screen.getByRole('link', { name: /시군구 목록을 다시 불러와/ }))
-    expect(screen.getByLabelText('시군구')).toHaveFocus()
-    expect(screen.getByLabelText('시군구')).toHaveAccessibleDescription(/시군구 목록을 다시 불러와/)
-    expect(document.body).not.toHaveTextContent('private catalog failure')
-    await user.selectOptions(screen.getByLabelText('시군구'), '')
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
-    await screen.findByText('공개 공고 검색 결과')
-    expect(new URL(fetch.mock.calls[2]![0].url).searchParams.has('district')).toBe(false)
-  })
-  it('retries the failed applied district rather than newer draft filters', async () => {
-    let searches = 0
-    const fetch = vi.fn(async (request: Request) => new URL(request.url).pathname.endsWith('/regions') ? json(catalog) : ++searches === 1 ? json({ code: 'SERVICE_UNAVAILABLE' }, 503) : json(sampleList()))
+
+  it.each([503, 400])('preserves selected districts after a %s response without broadening the retry', async (status) => {
+    const fetch = vi.fn(async (_request: Request) => json({ code: status === 503 ? 'SERVICE_UNAVAILABLE' : 'INVALID_REQUEST', message: 'private district failure' }, status))
     vi.stubGlobal('fetch', fetch)
-    const user = await mount(); await choose(user)
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
-    await screen.findByRole('button', { name: '같은 조건으로 다시 조회' })
-    await user.selectOptions(screen.getByLabelText('활동 지역'), 'gyeonggi')
-    await user.click(screen.getByRole('button', { name: '같은 조건으로 다시 조회' }))
-    await screen.findByText('공개 공고 검색 결과')
-    expect(Object.fromEntries(new URL(fetch.mock.calls[2]![0].url).searchParams)).toEqual({ page: '1', page_size: '20', province: 'seoul', district: 'test_first' })
-    expect(screen.getByText(/적용한 조건:/)).toHaveTextContent('서울 / 가상첫구')
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await search(user)
+    await screen.findByRole('alert')
+    expect(screen.getByRole('button', { name: '종로구 선택됨' })).toHaveAttribute('aria-pressed', 'true')
+    expect(document.body).not.toHaveTextContent('private district failure')
+    await user.click(screen.getByRole('button', { name: '다시 시도하기' }))
+    await waitFor(() => expect(fetch).toHaveBeenCalledTimes(2))
+    expect(fetch.mock.calls[1]![0].url).toBe(fetch.mock.calls[0]![0].url)
+    expect(new URL(fetch.mock.calls[1]![0].url).searchParams.get('regions')).toBe('seoul:jongno')
   })
-  it.each(['cancel', 'pagehide'])('discards late region results after %s', async (kind) => {
+
+  it('retries applied districts rather than newer map selections', async () => {
+    const fetch = vi.fn(async (_request: Request) => json({ code: 'SERVICE_UNAVAILABLE' }, 503))
+      .mockImplementationOnce(async () => json({ code: 'SERVICE_UNAVAILABLE' }, 503))
+      .mockImplementationOnce(async () => json(sampleList()))
+    vi.stubGlobal('fetch', fetch)
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await search(user)
+    await screen.findByRole('alert')
+    await user.click(screen.getByRole('button', { name: '종로구 선택됨' }))
+    await user.click(screen.getByRole('button', { name: '중구' }))
+    await user.click(screen.getByRole('button', { name: '다시 시도하기' }))
+    await screen.findByText('공개 공고 검색 결과')
+    expect(new URL(fetch.mock.calls[1]![0].url).searchParams.get('regions')).toBe('seoul:jongno')
+    expect(screen.getByRole('button', { name: '중구 선택됨' })).toHaveAttribute('aria-pressed', 'true')
+  })
+
+  it.each(['cancel', 'pagehide'])('aborts district searches and discards late results after %s', async (kind) => {
     let finish!: (value: Response) => void
-    const fetch = vi.fn((_request: Request) => new Promise<Response>((resolve) => { finish = resolve })); vi.stubGlobal('fetch', fetch)
-    const user = await mount()
-    await user.click(screen.getByRole('button', { name: '시군구 목록 불러오기' }))
-    expect(screen.getByRole('button', { name: '공고 검색하기' })).toBeDisabled()
-    if (kind === 'cancel') await user.click(screen.getByRole('button', { name: '지역 목록 조회 취소' }))
+    const fetch = vi.fn((_request: Request) => new Promise<Response>((resolve) => { finish = resolve }))
+    vi.stubGlobal('fetch', fetch)
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await search(user)
+    expect(screen.getByRole('button', { name: '공고를 불러오고 있어요' })).toBeDisabled()
+    if (kind === 'cancel') await user.click(screen.getByRole('button', { name: '조회 취소하기' }))
     else act(() => window.dispatchEvent(new Event('pagehide')))
     expect(fetch.mock.calls[0]![0].signal.aborted).toBe(true)
-    await act(async () => finish(json(catalog)))
-    expect(screen.queryByText('지역 목록 버전: test-v1')).not.toBeInTheDocument()
+    await act(async () => finish(json(sampleList({ items: [sampleOpportunity({ title: '취소된 지역 검색 결과' })] }))))
+    expect(screen.queryByRole('heading', { name: '취소된 지역 검색 결과' })).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: '공고 검색하기' })).toBeEnabled()
   })
-  it('renders hostile district names literally in options and applied conditions', async () => {
-    const name = '<img src=x>'
-    const fetch = vi.fn(async (request: Request) => json(new URL(request.url).pathname.endsWith('/regions') ? { ...catalog, provinces: [{ ...catalog.provinces[0], districts: [{ id: 'test_first', name }] }] } : sampleList()))
+
+  it('rejects hostile district data without rendering HTML or clearing the selected filter', async () => {
+    const fetch = vi.fn(async (_request: Request) => json(sampleList({ items: [sampleOpportunity({ activity_region: { province: 'seoul', district: '<img src=x>' } })] })))
     vi.stubGlobal('fetch', fetch)
-    const user = await mount()
-    await user.selectOptions(screen.getByLabelText('활동 지역'), 'seoul')
-    await user.click(screen.getByRole('button', { name: '시군구 목록 불러오기' }))
-    await screen.findByRole('option', { name })
-    await user.selectOptions(screen.getByLabelText('시군구'), 'test_first')
-    await user.click(screen.getByRole('button', { name: '공고 검색하기' }))
-    expect(await screen.findByText(`적용한 조건: 검색어 전체 / 서울 / ${name} / 활동 유형 전체`)).toBeVisible()
+    const user = mount()
+    await user.click(screen.getByRole('button', { name: '종로구' }))
+    await search(user)
+    expect(await screen.findByRole('alert')).toHaveTextContent('응답을 확인하지 못했습니다.')
     expect(document.querySelector('img, script')).toBeNull()
+    expect(screen.getByRole('button', { name: '종로구 선택됨' })).toHaveAttribute('aria-pressed', 'true')
+    expect(new URL(fetch.mock.calls[0]![0].url).searchParams.get('regions')).toBe('seoul:jongno')
   })
 })
