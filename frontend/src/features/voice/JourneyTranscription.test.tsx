@@ -50,6 +50,7 @@ function mount() {
 async function recordAudio() {
   await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
   fireEvent.click(screen.getByRole('button', { name: '녹음 마치기' }))
+  expect(screen.getByText('녹음이 끝났어요. 아래에서 들어볼 수 있습니다.')).toHaveFocus()
 }
 
 it('requests mic only on click, sends exact multipart once, releases raw resources and requires explicit edited-text acceptance', async () => {
@@ -100,7 +101,7 @@ it('blocks duplicate uploads, aborts on cancel, and never applies a late transcr
   const view = mount(); await recordAudio()
   await userEvent.dblClick(screen.getByRole('button', { name: '이 녹음을 서버에 보내 전사' }))
   expect(fetch).toHaveBeenCalledTimes(1)
-  fireEvent.click(screen.getByRole('button', { name: '녹음·입력 취소하고 삭제' }))
+  fireEvent.click(screen.getByRole('button', { name: '녹음과 입력 취소하고 삭제' }))
   expect(fetch.mock.calls[0][0].signal.aborted).toBe(true)
   await act(async () => finish(json(transcript, 201)))
   expect(screen.getByLabelText('보내기 전에 고칠 전사 문장')).toHaveValue('')
@@ -112,12 +113,23 @@ it('does not stop a new recording when the old cancelled upload finally settles'
   vi.stubGlobal('fetch', vi.fn(async () => new Promise<Response>(resolve => { finish = resolve })))
   mount(); await recordAudio()
   await userEvent.click(screen.getByRole('button', { name: '이 녹음을 서버에 보내 전사' }))
-  fireEvent.click(screen.getByRole('button', { name: '녹음·입력 취소하고 삭제' }))
+  fireEvent.click(screen.getByRole('button', { name: '녹음과 입력 취소하고 삭제' }))
   await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
   const stops = mocks.track.stop.mock.calls.length
   await act(async () => finish(json(transcript, 201)))
   expect(Recorder.latest.state).toBe('recording')
   expect(mocks.track.stop).toHaveBeenCalledTimes(stops)
+})
+
+it('shows the timer outside the recording status announcement', async () => {
+  await media()
+  vi.useFakeTimers({ toFake: ['setInterval', 'clearInterval', 'performance'] })
+  mount()
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
+  act(() => vi.advanceTimersByTime(3000))
+  const timer = screen.getByText('녹음 시간 3 / 90초')
+  expect(timer.closest('[role="status"]')).toBeNull()
+  expect(screen.getByText('녹음 중이에요.')).toHaveAttribute('role', 'status')
 })
 
 it.each(['unmount', 'pagehide'])('discards pending permission/audio/text on %s', async leave => {
@@ -169,8 +181,8 @@ it('preserves the original conversation text on voice cancel and only sends acce
   await user.click(screen.getByRole('button', { name: '음성 입력 닫고 원래 글로 돌아가기' }))
   expect(screen.getByLabelText('내가 해온 일')).toHaveValue('기존 직접 입력')
   await user.click(screen.getByRole('button', { name: '말로 입력하고 전사 확인' }))
-  await recordAudio(); await user.click(screen.getByRole('button', { name: '녹음 전사 요청 · 같은 요청 재확인' }))
-  const field = await screen.findByLabelText('확인·수정할 전사 문장')
+  await recordAudio(); await user.click(screen.getByRole('button', { name: '녹음을 글로 바꾸기' }))
+  const field = await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
   fireEvent.change(field, { target: { value: '전사에서 고친 경험' } })
   expect(fetch.mock.calls.some(([request]) => request.url.endsWith('/messages'))).toBe(false)
   await user.click(screen.getByRole('checkbox', { name: '현재 경험 입력을 확인한 전사 문장으로 바꿀게요.' }))

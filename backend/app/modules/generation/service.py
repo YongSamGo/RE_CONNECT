@@ -78,11 +78,18 @@ class GroundedGenerationService:
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
         }, ExtractionPlan)
 
-        def quote_value(quote: Quote, turn_index: int) -> str:
-            source = turns.get(quote.turn_index)
-            if quote.turn_index != turn_index or source is None or quote.text not in source or safe_text(quote.text) is None:
+        def verify_quotes(quotes: Sequence[Quote]) -> None:
+            if not quotes:
                 raise _invalid()
-            return quote.text
+            for quote in quotes:
+                source = turns.get(quote.turn_index)
+                if source is None or quote.text not in source or safe_text(quote.text) is None:
+                    raise _invalid()
+
+        def normalized_value(value: str) -> str:
+            if safe_text(value) != value:
+                raise _invalid()
+            return value
 
         proposals = []
         used_ids = set()
@@ -91,16 +98,20 @@ class GroundedGenerationService:
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
-                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 요약/수정은 직접 편집으로 넘긴다.
-                    if item.description.text != allowed[item.existing_id].description:
+                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 기존 설명은 이 경로에서 다시 쓰지 않는다.
+                    if item.description != allowed[item.existing_id].description:
                         raise _invalid()
                     used_ids.add(item.existing_id)
-                index = item.description.turn_index
+                verify_quotes(item.description_evidence)
+                if item.duration_note is not None:
+                    verify_quotes(item.duration_evidence)
+                for skill in item.skills:
+                    verify_quotes(skill.evidence)
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
-                    description=quote_value(item.description, index),
-                    duration_note=quote_value(item.duration, index) if item.duration else None,
-                    skill_tags=[quote_value(skill, index) for skill in item.skills],
+                    description=normalized_value(item.description),
+                    duration_note=normalized_value(item.duration_note) if item.duration_note else None,
+                    skill_tags=[normalized_value(skill.tag) for skill in item.skills],
                 ))
         except ValidationError:
             raise _invalid() from None

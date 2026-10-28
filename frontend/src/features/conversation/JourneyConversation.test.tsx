@@ -30,7 +30,7 @@ function mount() {
 }
 async function prepare(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole('button', { name: '체험 대화 준비하기' }))
-  await screen.findByRole('heading', { name: firstQuestion })
+  expect(await screen.findByRole('heading', { name: firstQuestion })).toHaveFocus()
   await user.type(screen.getByLabelText('내가 해온 일'), '가상 도서관에서 책을 정리했어요.')
 }
 

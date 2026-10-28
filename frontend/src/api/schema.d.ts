@@ -3885,6 +3885,11 @@ export interface operations {
                 province?: components["schemas"]["Province"];
                 /** @description 제목·기관·역할·역량·설명 검색어 */
                 q?: string;
+                /**
+                 * @description 여러 활동 지역을 반복 파라미터로 전달한다(최대 67곳). 각 값은 `seoul`처럼 시·도 전체 또는 `gyeonggi:suwon`처럼 시·군·구다.
+                 *     같은 시·도 전체와 그 하위 지역은 함께 선택할 수 없으며, 기존 province/district와 동시에 사용할 수 없다.
+                 */
+                regions?: string[];
             };
             header?: never;
             path?: never;

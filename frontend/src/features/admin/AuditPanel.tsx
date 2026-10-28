@@ -2,29 +2,36 @@ import { useEffect, useRef, useState } from 'react'
 import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { FormErrorSummary } from '../../ui/FormErrorSummary'
+import type { FieldError } from '../../ui/FormErrorSummary'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { checkedTime } from '../public-opportunities/detail'
 import { auditActions, auditPageSize, auditRange, koreaDateTimeInput, parseAudit } from './audit'
 import type { AuditPage, AuditRange } from './audit'
 import './admin.css'
 
+const rangeError = '시작·종료 시간을 확인해 주세요. 종료는 시작 이후이며 조회 범위는 최대 30일입니다.'
+
 export function AuditPanel({ onBack }: { onBack: () => void }) {
   const [initialTime] = useState(() => Date.now())
   const [from, setFrom] = useState(() => koreaDateTimeInput(initialTime - 24 * 60 * 60 * 1000))
   const [to, setTo] = useState(() => koreaDateTimeInput(initialTime))
-  const [error, setError] = useState(false)
+  const [errors, setErrors] = useState<FieldError[]>([])
+  const error = errors.length > 0
   const request = useRequest<AuditPage>()
   const state = request.state
   const pending = state.status === 'pending'
   const result = useRef<HTMLElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { headingRef.current?.focus() }, [])
   useEffect(() => { if (state.status === 'success' || state.status === 'error') result.current?.focus() }, [state.status])
   const load = (range: AuditRange, page = 1) => request.run(async (api, signal) => parseAudit(required((await api.GET('/admin/audit', { signal, params: { query: { ...range, page, page_size: auditPageSize } } })).data), page, range))
   return <>
-    <section className="panel"><h2>최소 감사 기록 조회</h2><p>조회 범위는 최대 30일이며 아래 시간은 한국시간입니다. 개인 본문·인증 코드·토큰은 표시하지 않습니다.</p>
-      <form onSubmit={(event) => { event.preventDefault(); const range = auditRange(from, to); setError(!range); if (range) void load(range) }}>
-        <FormErrorSummary errors={error ? [{ fieldId: 'audit-from', message: '시작·종료 시간을 확인해 주세요. 종료는 시작 이후이며 조회 범위는 최대 30일입니다.' }] : []} />
-        <label htmlFor="audit-from">조회 시작 (한국시간)</label><input id="audit-from" type="datetime-local" value={from} required disabled={pending} aria-invalid={error || undefined} onChange={(event) => { setFrom(event.target.value); setError(false); request.clear() }} />
-        <label htmlFor="audit-to">조회 종료 (한국시간)</label><input id="audit-to" type="datetime-local" value={to} required disabled={pending} aria-invalid={error || undefined} onChange={(event) => { setTo(event.target.value); setError(false); request.clear() }} />
+    <section className="panel audit-panel"><h2 className="review-heading" ref={headingRef} tabIndex={-1}>최소 감사 기록 조회</h2><p>조회 범위는 최대 30일이며 아래 시간은 한국시간입니다. 개인 본문·인증 코드·토큰은 표시하지 않습니다.</p>
+      <form onSubmit={(event) => { event.preventDefault(); const range = auditRange(from, to); setErrors(range ? [] : [{ fieldId: 'audit-from', message: rangeError }]); if (range) void load(range) }}>
+        <FormErrorSummary errors={errors} />
+        <label htmlFor="audit-from">조회 시작 (한국시간)</label><input id="audit-from" type="datetime-local" value={from} required disabled={pending} aria-invalid={error || undefined} aria-describedby={error ? 'audit-range-error' : undefined} onChange={(event) => { setFrom(event.target.value); setErrors([]); request.clear() }} />
+        <label htmlFor="audit-to">조회 종료 (한국시간)</label><input id="audit-to" type="datetime-local" value={to} required disabled={pending} aria-invalid={error || undefined} aria-describedby={error ? 'audit-range-error' : undefined} onChange={(event) => { setTo(event.target.value); setErrors([]); request.clear() }} />
+        {error && <p className="field-error" id="audit-range-error">{rangeError}</p>}
         <div className="actions"><Button type="submit" pending={pending}>감사 기록 불러오기</Button>{pending && <Button variant="secondary" onClick={request.clear}>감사 조회 취소</Button>}</div>
       </form>
     </section>

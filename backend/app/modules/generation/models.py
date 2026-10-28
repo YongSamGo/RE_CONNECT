@@ -3,9 +3,9 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, StrictInt
+from pydantic import BaseModel, Field, StrictInt, model_validator
 
-from app.contracts.fields import CONTRACT_CONFIG, Unique, text
+from app.contracts.fields import CONTRACT_CONFIG, SkillTag, Unique, text
 from app.contracts.profile import ExperienceInput, ProfileContent, RecommendationField
 from app.contracts.preparation import OpportunityRef
 
@@ -17,13 +17,29 @@ class Quote(BaseModel):
     text: text(1000, multiline=True)
 
 
+class SupportedSkill(BaseModel):
+    model_config = CONTRACT_CONFIG
+
+    tag: SkillTag
+    evidence: Annotated[list[Quote], Field(min_length=1, max_length=8)]
+
+
 class ExperienceSelection(BaseModel):
     model_config = CONTRACT_CONFIG
 
     existing_id: UUID | None
-    description: Quote
-    duration: Quote | None
-    skills: Annotated[list[Quote], Field(max_length=20)]
+    # Profile values are concise normalizations; evidence remains separately tied to source turns.
+    description: text(200)
+    description_evidence: Annotated[list[Quote], Field(min_length=1, max_length=8)]
+    duration_note: text(200) | None
+    duration_evidence: Annotated[list[Quote], Field(max_length=8)]
+    skills: Annotated[list[SupportedSkill], Field(max_length=20)]
+
+    @model_validator(mode="after")
+    def duration_requires_evidence(self):
+        if (self.duration_note is None) != (len(self.duration_evidence) == 0):
+            raise ValueError("기간 값과 근거를 함께 제공해야 한다")
+        return self
 
 
 class ExtractionPlan(BaseModel):
