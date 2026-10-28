@@ -18,7 +18,7 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 ## 2. 릴리스 (CI)
 
 1. `develop → main` 릴리스 PR을 머지한 뒤 `main` 커밋에 `vX.Y.Z` 태그를 push한다.
-2. `Release` 워크플로가 태그 커밋이 `main` 이력에 있는지 확인하고 `release` 환경 승인을 기다린다.
+2. `Release` 워크플로가 `release` 환경 승인을 기다린다. 승인 뒤 첫 단계에서 태그 형식(`vX.Y.Z`, `-rc.N` 허용)과 태그 커밋이 `main` 이력에 있는지 확인하고, 아니면 아무것도 게시하지 않고 멈춘다.
 3. backend·frontend·speech를 빌드하고 Trivy로 검사한다. 기준은 아래 3절이다. 하나라도 실패하면 아무것도 게시하지 않는다.
 4. GitHub OIDC로 받은 임시 역할로 ECR에 올리고, 빌드 출처 증명(provenance)을 붙인다.
 5. `release-manifest.json`과 SBOM(CycloneDX)을 **초안** Release에 첨부한다. 사람이 확인한 뒤 공개한다.
@@ -65,7 +65,7 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 
 - `DATABASE_URL`은 `sslmode=verify-full&sslrootcert=/run/rds-ca.pem`이 없으면 거절한다.
 - `REDIS_URL`은 내부 `redis` 서비스만 가리킬 수 있다.
-- `APP_ENV`·`TRUSTED_PROXY_IPS`·`OLLAMA_BASE_URL`은 Compose에 고정돼 있어 SSM으로 바꿀 수 없다.
+- `APP_ENV`·`TRUSTED_PROXY_IPS`는 Compose `environment:`에 고정돼 있다. `OLLAMA_BASE_URL`은 코드 기본값(내부 `ollama` 서비스)을 쓴다. 세 값 모두 렌더러 허용 목록에 없어 SSM으로 바꿀 수 없다.
 - 값은 줄바꿈 없이 한 줄로 저장한다(JSON은 압축해서 저장). Compose는 env 파일을 `format: raw`로 읽어 `$`·따옴표를 해석하지 않는다.
 
 ## 6. 배포 (운영자, EC2)

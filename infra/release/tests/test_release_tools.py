@@ -122,6 +122,9 @@ class ImageScanJudgeTest(unittest.TestCase):
         self.assertTrue(self.judge(unfixed, accept(entry("CVE-2026-0005", recorded="2026-08-01", expires="2026-10-27"))))
         with self.assertRaises(check_image_scan.ScanError):
             self.judge(unfixed, accept(entry("CVE-2026-0005", recorded="2026-10-01", expires="2027-10-01")))
+        # 기록일을 미래로 적어 실제 수용 기간을 늘리는 경우
+        with self.assertRaises(check_image_scan.ScanError):
+            self.judge(unfixed, accept(entry("CVE-2026-0005", recorded="2027-06-01", expires="2027-08-30")))
         with self.assertRaises(check_image_scan.ScanError):
             self.judge(unfixed, accept({**entry("CVE-2026-0005"), "reason": "ok"}))
         with self.assertRaises(check_image_scan.ScanError):

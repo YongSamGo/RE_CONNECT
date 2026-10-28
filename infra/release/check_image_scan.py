@@ -71,6 +71,9 @@ def load_accepted(document: object, image: str, today: dt.date) -> tuple[set[str
             expires_on = dt.date.fromisoformat(str(expires))
         except ValueError:
             raise ScanError(f"{vid}: recorded·expires는 YYYY-MM-DD") from None
+        # 기록일을 미래로 적어 90일 상한을 늘리지 못하게 한다.
+        if recorded_on > today:
+            raise ScanError(f"{vid}: 기록일이 오늘보다 늦습니다")
         if not recorded_on <= expires_on <= recorded_on + dt.timedelta(days=MAX_ACCEPT_DAYS):
             raise ScanError(f"{vid}: 만료일은 기록일부터 {MAX_ACCEPT_DAYS}일 이내")
         if target != image:
