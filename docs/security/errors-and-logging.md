@@ -38,6 +38,12 @@ stdout은 로컬 파일로 복제하지 않으며, 운영 수집 경로에만 �
 14일, 보안·운영자 감사는 30일로 설정한다(Plan/02 §5). 이 기간은 프로젝트 정책이다.
 `RetentionInDays`는 [AWS 공식 문서](https://docs.aws.amazon.com/AWSCloudFormation/latest/TemplateReference/aws-resource-logs-loggroup.html#cfn-logs-loggroup-retentionindays)를 확인했다.
 
+`infra/logging/docker-daemon.json`은 EC2 Docker의 기본 로그 드라이버를 `awslogs`로 바꿔 컨테이너 stdout을
+운영 로그 그룹(14일)으로 보낸다. 로그 그룹을 자동 생성하지 않아(`awslogs-create-group: false`) 보관기간 없는
+그룹이 생기지 않고, 리전은 EC2 메타데이터에서 읽는다. 전송이 막혀도 앱이 멈추지 않도록 `non-blocking`으로 두고,
+`docker logs`용 호스트 사본은 10MB×2로 제한한다. 인스턴스 역할에 해당 그룹의 `logs:CreateLogStream`·`logs:PutLogEvents`가
+필요하다. staging에서는 그룹 이름의 환경을 바꾼다. 주기 작업 출력도 같은 경로를 탄다([주기 실행 안내](../../infra/scheduler/README.md)).
+
 아직 AWS에 적용하지 않았다. 이 템플릿은 로그 그룹만 정의하며 EC2 수집기·IAM 권한·
 stdout 전달·감사 기록 저장소는 구성하지 않는다. #57·#93·#96에서 수집과 삭제 작업을 연결하고
 실제 로그 그룹 보관 값, 오래된 이벤트 만료, Docker·호스트 중복본과 백업의 보관 경계를 확인한다.

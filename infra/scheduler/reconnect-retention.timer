@@ -1,0 +1,10 @@
+[Unit]
+Description=RE_CONNECT 보관 기간 정리 매일 실행
+
+[Timer]
+OnCalendar=*-*-* 03:30:00 Asia/Seoul
+Persistent=true
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target
