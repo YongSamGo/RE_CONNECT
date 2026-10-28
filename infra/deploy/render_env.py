@@ -112,10 +112,14 @@ def collect(document: object, role: str, prefix: str) -> dict[str, str]:
     return values
 
 
+def private_directory(mode: int) -> bool:
+    """그룹·기타 쓰기 권한이 없는 폴더인지."""
+    return stat.S_ISDIR(mode) and not mode & (stat.S_IWGRP | stat.S_IWOTH)
+
+
 def write_env(values: Mapping[str, str], output: Path) -> None:
     parent = output.parent
-    info = parent.stat()
-    if not stat.S_ISDIR(info.st_mode) or info.st_mode & (stat.S_IWGRP | stat.S_IWOTH):
+    if not private_directory(parent.stat().st_mode):
         raise EnvError("출력 폴더는 그룹·기타 쓰기 권한이 없어야 합니다")
     if output.is_symlink():
         raise EnvError("출력 경로가 심볼릭 링크입니다")
