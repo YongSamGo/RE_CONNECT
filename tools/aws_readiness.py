@@ -4,10 +4,16 @@ import argparse
 from datetime import datetime, timedelta, timezone
 import json
 import re
-import subprocess
+import subprocess  # nosec B404 -- 고정 AWS 읽기 명령만 argv로 호출하며 shell을 사용하지 않는다.
 
 
 QUOTA_CODE = "L-DB2E81BA"  # Running On-Demand G and VT instances (vCPU)
+READ_OPERATIONS = frozenset({
+    ("sts", "get-caller-identity"),
+    ("ec2", "describe-instance-types"),
+    ("ec2", "describe-instance-type-offerings"),
+    ("service-quotas", "get-service-quota"),
+})
 
 
 class ProbeError(Exception):
@@ -15,11 +21,14 @@ class ProbeError(Exception):
 
 
 def aws_json(arguments, *, region, profile=None):
+    if tuple(arguments[:2]) not in READ_OPERATIONS:
+        raise ProbeError("unsupported_operation")
     command = ["aws", *arguments, "--region", region, "--output", "json", "--no-cli-pager"]
     if profile:
         command += ["--profile", profile]
     try:
-        result = subprocess.run(command, capture_output=True, encoding="utf-8", timeout=30, check=True)
+        # argv를 그대로 전달한다. 프로필/리전 문자열은 셸 코드로 해석되지 않는다.
+        result = subprocess.run(command, capture_output=True, encoding="utf-8", timeout=30, check=True)  # nosec B603 -- 허용 목록의 읽기 작업만, shell=False.
         data = json.loads(result.stdout)
         if not isinstance(data, dict):
             raise ValueError

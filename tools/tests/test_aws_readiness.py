@@ -25,6 +25,13 @@ def response(arguments, **kwargs):
 
 
 class ReadinessTests(unittest.TestCase):
+    def test_mutating_or_unknown_operations_never_start_process(self):
+        for args in (["ec2", "run-instances"], ["service-quotas", "request-service-quota-increase"], []):
+            with self.subTest(args=args), patch.object(readiness.subprocess, "run") as run:
+                with self.assertRaises(readiness.ProbeError):
+                    readiness.aws_json(args, region="ap-northeast-2")
+                run.assert_not_called()
+
     def inspect(self, query=response):
         return readiness.inspect("ap-northeast-2", "g5.xlarge", query=query)
 
