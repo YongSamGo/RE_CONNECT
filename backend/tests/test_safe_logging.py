@@ -11,6 +11,7 @@ import time
 from unittest.mock import patch
 
 import httpx
+import pytest
 
 from app.core.safe_logging import LOGGING_CONFIG, SafeJsonFormatter
 from tests.test_errors import app_with_sample_routes
@@ -66,6 +67,20 @@ def test_safe_server_entry_disables_uvicorn_access_log():
         main()
     assert run.call_args.kwargs["access_log"] is False
     assert run.call_args.kwargs["log_config"] == LOGGING_CONFIG
+    assert run.call_args.kwargs["host"] == "127.0.0.1"
+
+
+def test_container_entry_accepts_only_ip_bind_host():
+    from app.__main__ import main
+
+    with patch("app.__main__.uvicorn.run") as run:
+        main(["--host", "0.0.0.0"])
+    assert run.call_args.kwargs["host"] == "0.0.0.0"
+    assert run.call_args.kwargs["port"] == 8000
+    for host in ("backend", "evil.example", "0.0.0.0 --reload", ""):
+        with patch("app.__main__.uvicorn.run") as run, pytest.raises(SystemExit):
+            main(["--host", host])
+        run.assert_not_called()
 
 
 def test_supplied_log_metadata_must_be_from_allowlist():

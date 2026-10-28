@@ -178,6 +178,12 @@ jobs:
           python -m pytest -q -c ../pyproject.toml ../tests
       - name: 테스트 (pytest — 정상 입력 + 공격 시나리오)
         run: python -m pytest
+      - name: Nginx 렌더러 정상 도메인·설정 삽입 회귀 시험
+        if: matrix.project == 'backend'
+        run: python -m unittest discover -s ../infra/nginx/tests -v
+      - name: Nginx 설정 생성기 보안약점 점검 (bandit)
+        if: matrix.project == 'backend'
+        run: bandit ../infra/nginx/render_config.py --severity-level low --confidence-level medium
       - name: 코드 보안약점 점검 (bandit)
         # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
         # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.

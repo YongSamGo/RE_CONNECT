@@ -32,3 +32,6 @@ GEMINI.md                  @SeungwonKwon @JBR-313
 # 점검 예외: 비밀값 탐지 예외, binary 지정(숨은 문자 검사를 건너뜀. 하위 폴더 파일도 적용됨)
 /.gitleaks.toml            @SeungwonKwon @JBR-313
 .gitattributes             @SeungwonKwon @JBR-313
+
+# 릴리스 이미지 판정: 수정판 없는 HIGH 취약점 수용 목록과 판정 기준 (infra/deploy/README.md 3절)
+/infra/release/            @SeungwonKwon @JBR-313
