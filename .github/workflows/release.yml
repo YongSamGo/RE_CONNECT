@@ -1,0 +1,196 @@
+# 다시잇다 릴리스 — 운영 이미지 빌드·검사·SBOM·ECR 게시와 릴리스 manifest (#93 W12-04).
+#
+# - PR: 이미지·배포 파일이 바뀌면 backend·frontend 이미지를 빌드하고 Trivy 판정만 한다 (게시 없음).
+#   음성 이미지는 무거워서 릴리스 태그에서만 빌드·검사한다.
+# - main의 v* 태그: release 환경 승인 뒤 세 이미지를 빌드·검사하고 ECR에 올린다.
+#   빌드 출처 증명(provenance)을 붙이고, manifest와 SBOM을 초안 GitHub Release에 첨부한다.
+# - EC2 반영은 이 워크플로가 하지 않는다. 운영자가 manifest의 digest로 직접 배포한다 (infra/deploy/README.md).
+#
+# 저장소 설정(admin)이 필요하다: release 환경(필수 승인자·v* 태그만 허용),
+# 변수 AWS_REGION·AWS_RELEASE_ROLE_ARN·ECR_REGISTRY. 장기 AWS 키는 두지 않고 OIDC 역할만 쓴다.
+# ci.yml과 같은 원칙: 액션 SHA 고정, 잡별 최소 권한, persist-credentials: false, 캐시 미사용, ${{ }}는 env로 전달.
+
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+    paths:
+      - ".github/workflows/release.yml"
+      - "backend/Dockerfile"
+      - "backend/.dockerignore"
+      - "backend/requirements.txt"
+      - "frontend/Dockerfile"
+      - "frontend/.dockerignore"
+      - "frontend/package-lock.json"
+      - "infra/compose.prod.yaml"
+      - "infra/deploy/**"
+      - "infra/release/**"
+
+permissions: {}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  PYTHON_VERSION: "3.12"
+  TRIVY_VERSION: "0.75.0"
+  TRIVY_SHA256: "c6e65abddb348e25f10549df887045629cf28cc72453cd1c63acb717316b3f3f"
+
+jobs:
+  tools:
+    name: 배포 도구 시험·Compose 구성 확인
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: 릴리스·배포 도구 시험 (정상 입력 + 공격 입력)
+        run: |
+          python -I -m unittest discover -s infra/release/tests
+          python -I -m unittest discover -s infra/deploy/tests
+      - name: 운영 Compose 구성 확인 (가짜 값)
+        run: |
+          dir="$RUNNER_TEMP/compose"
+          mkdir -m 700 "$dir"
+          digest="sha256:$(printf 'b%.0s' $(seq 64))"
+          printf 'DATABASE_URL=x\n' > "$dir/app.env"
+          printf 'REDIS_PASSWORD=%s\n' "$(printf 'a%.0s' $(seq 32))" > "$dir/redis.env"
+          cp "$dir/app.env" "$dir/migrate.env"
+          {
+            echo "BACKEND_IMAGE=registry.example/reconnect-backend@$digest"
+            echo "FRONTEND_IMAGE=registry.example/reconnect-frontend@$digest"
+            echo "AWS_REGION=ap-northeast-2"
+            echo "DEPLOY_ENV=staging"
+            echo "APP_ENV_FILE=$dir/app.env"
+            echo "REDIS_ENV_FILE=$dir/redis.env"
+            echo "MIGRATE_ENV_FILE=$dir/migrate.env"
+          } > "$dir/images.env"
+          docker compose --env-file "$dir/images.env" -f infra/compose.prod.yaml --profile migrate config --quiet
+
+  image-check:
+    name: 이미지 빌드·검사
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: read
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [backend, frontend]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Trivy 설치 (SHA-256 체크섬 검증)
+        run: |
+          url="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -sSfL -o "$RUNNER_TEMP/trivy.tar.gz" "$url"
+          echo "${TRIVY_SHA256}  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+      - name: 빌드·검사·판정
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh "$IMAGE" "$RUNNER_TEMP/out"
+
+  publish:
+    name: 릴리스 이미지 게시
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs: tools
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    environment: release
+    permissions:
+      contents: write # 초안 GitHub Release 생성
+      id-token: write # AWS OIDC 역할·빌드 출처 증명 서명
+      attestations: write
+    env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0 # 태그 커밋이 main 이력에 있는지 확인한다
+          persist-credentials: false
+      - name: main에 머지된 커밋의 태그인지 확인
+        run: |
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/main
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Trivy 설치 (SHA-256 체크섬 검증)
+        run: |
+          url="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          curl -sSfL -o "$RUNNER_TEMP/trivy.tar.gz" "$url"
+          echo "${TRIVY_SHA256}  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --strict
+          tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
+      - name: 세 이미지 빌드·검사·판정
+        run: |
+          for image in backend frontend speech; do
+            TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh "$image" "$RUNNER_TEMP/out"
+          done
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ vars.AWS_RELEASE_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-session-name: reconnect-release
+      - name: ECR 게시와 digest 기록
+        id: push
+        run: |
+          aws ecr get-login-password --region "$AWS_REGION" \
+            | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+          for image in backend frontend speech; do
+            repo="$ECR_REGISTRY/reconnect-$image"
+            docker tag "reconnect-$image:candidate" "$repo:$RELEASE_TAG"
+            docker push --quiet "$repo:$RELEASE_TAG"
+            ref="$(docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$repo:$RELEASE_TAG" | grep -m1 "^$repo@sha256:")"
+            echo "${image}_ref=$ref" >> "$GITHUB_OUTPUT"
+            echo "${image}_digest=${ref#*@}" >> "$GITHUB_OUTPUT"
+          done
+          docker logout "$ECR_REGISTRY"
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-backend
+          subject-digest: ${{ steps.push.outputs.backend_digest }}
+          push-to-registry: true
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-frontend
+          subject-digest: ${{ steps.push.outputs.frontend_digest }}
+          push-to-registry: true
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-speech
+          subject-digest: ${{ steps.push.outputs.speech_digest }}
+          push-to-registry: true
+      - name: 릴리스 manifest 생성과 초안 Release 첨부
+        env:
+          BACKEND_REF: ${{ steps.push.outputs.backend_ref }}
+          FRONTEND_REF: ${{ steps.push.outputs.frontend_ref }}
+          SPEECH_REF: ${{ steps.push.outputs.speech_ref }}
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          out="$RUNNER_TEMP/out"
+          python3 -I infra/release/release_manifest.py build \
+            --tag "$RELEASE_TAG" --commit "$GITHUB_SHA" \
+            --image "backend=$BACKEND_REF" --image "frontend=$FRONTEND_REF" --image "speech=$SPEECH_REF" \
+            --sbom "backend=$out/backend-sbom.cdx.json" --sbom "frontend=$out/frontend-sbom.cdx.json" \
+            --sbom "speech=$out/speech-sbom.cdx.json" \
+            --output "$out/release-manifest.json"
+          # 검사 결과(*-scan.json)는 미조치 취약점 목록이라 첨부하지 않는다. manifest와 SBOM만 올린다.
+          gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG" \
+            --notes "운영 이미지 digest와 버전 기록: release-manifest.json. 배포는 infra/deploy/README.md를 따른다." \
+            "$out/release-manifest.json" "$out/backend-sbom.cdx.json" \
+            "$out/frontend-sbom.cdx.json" "$out/speech-sbom.cdx.json"
