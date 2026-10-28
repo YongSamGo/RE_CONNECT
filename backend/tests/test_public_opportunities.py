@@ -168,3 +168,22 @@ def test_multi_region_filter_keeps_districts_paired_with_their_provinces(backend
         page = repository.list(OpportunitySearch(regions=["seoul", "gyeonggi:suwon"]), NOW)
         assert page.total == 2
         assert {item.id for item in page.items} == {seoul, suwon}
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_http_accepts_repeated_regions_from_map_search(backend):
+    """실제 라우터·입력 모델·SQL 연결로 지도 검색 계약의 422 회귀를 막는다."""
+    with open_test_database(backend) as db:
+        add = seeded(db)
+        selected = {add(1, activity_province="seoul", activity_district="yongsan"),
+                    add(2, activity_province="gyeonggi", activity_district="suwon")}
+        add(3, activity_province="seoul", activity_district="jongno")
+        app = create_app(Settings(_env_file=None))
+        app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(lambda: nullcontext(db)))
+        with TestClient(app) as client:
+            response = client.get("/api/v1/opportunities", params=[
+                ("regions", "seoul:yongsan"), ("regions", "gyeonggi:suwon"),
+            ])
+        assert response.status_code == 200
+        assert response.json()["total"] == 2
+        assert {UUID(item["id"]) for item in response.json()["items"]} == selected

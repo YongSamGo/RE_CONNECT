@@ -315,8 +315,36 @@ def test_fallback_question_uses_fixed_order_and_fixed_sentences_without_model():
 def test_normalized_experience_combines_evidence_from_separate_turns():
     plan = selection(description="복지관 요리 봉사", description_evidence="요리 봉사",
                      duration_note="삼 년", duration_evidence=[quote("삼 년", 1)],
-                     skills=[skill()])
-    result, _ = extract(dict(experiences=[plan]), texts=["복지관에서 요리 봉사를 했어요.", "기간은 삼 년이에요."])
+                     skills=[skill(index=1)])
+    plan["description_evidence"] = [quote("복지관"), quote("요리 봉사", 1)]
+    result, _ = extract(dict(experiences=[plan]), texts=["복지관에서 일했어요.", "요리 봉사를 삼 년 했어요."])
     assert result.experiences[0].description == "복지관 요리 봉사"
     assert result.experiences[0].duration_note == "삼 년"
     assert result.requires_confirmation
+
+
+@pytest.mark.parametrize("changes", [
+    {"description": "대학병원 전문 외과 수술"},
+    {"duration_note": "30년", "duration_evidence": [quote("삼 년")]},
+    {"skills": [skill("외과 수술", "요리 봉사")]},
+    {"description": "대학병원 전문 외과 수술", "duration_note": "30년",
+     "duration_evidence": [quote("삼 년")], "skills": [skill("외과 수술", "요리 봉사")]},
+    {"description": "요리 봉사", "description_evidence": [quote("삼 년")]},
+])
+def test_llm09_valid_quotes_cannot_authorize_unrelated_normalized_facts(changes):
+    """LLM-09: 올바른 인용문을 붙여도 그 인용과 무관한 설명·기간·역량은 거절한다."""
+    plan = {**selection(), **changes}
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[plan]))
+
+
+def test_existing_description_is_preserved_while_new_period_remains_grounded():
+    old = Experience(id=EXPERIENCE_ID, description="요리 봉사", duration_note=None, skill_tags=[])
+    plan = selection(existing_id=str(EXPERIENCE_ID), description_evidence="삼 년",
+                     duration_note="삼 년", duration_evidence=[quote("삼 년")])
+    result, _ = extract(dict(experiences=[plan]), texts=["기간은 삼 년이에요."], existing=[old])
+    assert result.experiences[0].description == old.description
+    assert result.experiences[0].duration_note == "삼 년"
+    plan["duration_note"] = "30년"
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[plan]), texts=["기간은 삼 년이에요."], existing=[old])

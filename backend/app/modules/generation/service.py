@@ -86,8 +86,12 @@ class GroundedGenerationService:
                 if source is None or quote.text not in source or safe_text(quote.text) is None:
                     raise _invalid()
 
-        def normalized_value(value: str) -> str:
+        def grounded_value(value: str, quotes: Sequence[Quote]) -> str:
             if safe_text(value) != value:
+                raise _invalid()
+            # 원문 구절의 공백 정리·연결만 허용한다. 인용 존재만으로 새 사실을 승인하지 않는다.
+            source = " ".join(" ".join(quote.text.split()) for quote in quotes)
+            if " ".join(value.split()) not in source:
                 raise _invalid()
             return value
 
@@ -109,9 +113,10 @@ class GroundedGenerationService:
                     verify_quotes(skill.evidence)
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
-                    description=normalized_value(item.description),
-                    duration_note=normalized_value(item.duration_note) if item.duration_note else None,
-                    skill_tags=[normalized_value(skill.tag) for skill in item.skills],
+                    # 소유권이 확인된 기존 설명은 위에서 동일성을 검사했고 재작성하지 않는다.
+                    description=item.description if item.existing_id is not None else grounded_value(item.description, item.description_evidence),
+                    duration_note=grounded_value(item.duration_note, item.duration_evidence) if item.duration_note else None,
+                    skill_tags=[grounded_value(skill.tag, skill.evidence) for skill in item.skills],
                 ))
         except ValidationError:
             raise _invalid() from None

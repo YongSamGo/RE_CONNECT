@@ -28,7 +28,7 @@ class ExperienceSelection(BaseModel):
     model_config = CONTRACT_CONFIG
 
     existing_id: UUID | None
-    # Profile values are concise normalizations; evidence remains separately tied to source turns.
+    # Profile values select or join literal evidence spans; free paraphrases are rejected.
     description: text(200)
     description_evidence: Annotated[list[Quote], Field(min_length=1, max_length=8)]
     duration_note: text(200) | None
