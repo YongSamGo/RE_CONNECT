@@ -39,8 +39,9 @@ Trivy 원본 결과(`*-scan.json`)는 미조치 취약점 목록이라 Release·
   수용 목록과 판정 기준을 바꾸려면 Code Owner 승인이 필요하다.
 - 수용 목록은 공개 저장소에 있다. ID와 사유만 적고 내부 경로·재현 방법은 적지 않는다.
 
-음성 이미지는 [CONTAINER_RUNTIME.md](../../speech/CONTAINER_RUNTIME.md)에 적은 대로 수정판 없는 OS HIGH가 있다.
-첫 릴리스 전에 이 항목을 검토해 수용 목록에 올리거나 베이스를 바꿔야 한다. 그 전에는 릴리스가 실패한다.
+backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS HIGH가 있다([CONTAINER_RUNTIME.md](../../speech/CONTAINER_RUNTIME.md)).
+2026-10-28에 8개 ID를 두 이미지에 대해 검토해 2027-01-26 만료로 수용 목록에 올렸다. 만료 전에 베이스 갱신 여부를 다시 검토한다.
+음성 이미지는 같은 베이스에 OS 패키지를 추가하지 않아 같은 목록을 적용했고, 실제 판정은 첫 릴리스 태그에서 확인한다.
 
 ## 4. 저장소·AWS 준비 (admin, 1회)
 
