@@ -2,14 +2,16 @@
 
     # CI: 빌드한 이미지 digest와 저장소 상태로 manifest를 만든다
     python3 -I infra/release/release_manifest.py build --tag v0.1.0 --commit <40자 SHA> \
-      --image backend=<registry>/reconnect-backend@sha256:<64hex> ... \
+      --image backend=reconnect-backend@sha256:<64hex> ... \
       --sbom backend=<경로> ... --output release-manifest.json
 
-    # EC2: manifest에서 Compose 치환용 이미지 변수만 뽑는다
-    python3 -I infra/release/release_manifest.py images-env release-manifest.json --output /run/reconnect/images.env
+    # EC2: manifest에서 Compose 치환용 이미지 변수만 뽑는다. 레지스트리 주소는 EC2가 자기 계정에서 만든다
+    python3 -I infra/release/release_manifest.py images-env release-manifest.json \
+      --registry <계정>.dkr.ecr.<리전>.amazonaws.com --output /run/reconnect/images.env
 
 manifest에는 비밀값·개인정보를 넣지 않는다. 라이브러리(잠금 파일)·모델(manifest)·프롬프트·마이그레이션 버전과
-이미지 digest를 같은 릴리스로 묶어 기록한다.
+이미지 digest를 같은 릴리스로 묶어 기록한다. manifest는 공개 Release에 첨부되므로 AWS 계정 ID가 든
+레지스트리 주소를 넣지 않고 저장소 이름과 digest만 기록한다.
 """
 
 from __future__ import annotations
@@ -23,11 +25,20 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
-SCHEMA = 1
+# 2: 이미지 참조에서 레지스트리 주소를 뺐다 (공개 Release에 AWS 계정 ID를 남기지 않는다).
+SCHEMA = 2
 IMAGES = ("backend", "frontend", "speech")
 IMAGE_ENV = {"backend": "BACKEND_IMAGE", "frontend": "FRONTEND_IMAGE", "speech": "SPEECH_IMAGE"}
-# 레지스트리/저장소 이름은 소문자·숫자·구분자만, 참조는 반드시 digest. 태그·공백·셸 문자를 받지 않는다.
-IMAGE_REF = re.compile(r"^[a-z0-9]+(?:[.-][a-z0-9]+)*(?::[0-9]{1,5})?(?:/[a-z0-9]+(?:[._-][a-z0-9]+)*)+@sha256:[0-9a-f]{64}$")
+DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
+# EC2가 붙이는 ECR 주소. 다른 레지스트리나 경로·포트·셸 문자를 받지 않는다.
+REGISTRY = re.compile(r"^[0-9]{12}\.dkr\.ecr\.[a-z]{2}(?:-[a-z]+)+-[0-9]\.amazonaws\.com$")
+
+
+def _check_image(name: str, ref: object) -> None:
+    """manifest의 이미지는 reconnect-<이름>@sha256:<64hex> 하나만 받는다. 레지스트리·태그를 거절한다."""
+    repository, sep, digest = ref.partition("@") if isinstance(ref, str) else ("", "", "")
+    if not sep or repository != f"reconnect-{name}" or not DIGEST.fullmatch(digest):
+        raise ManifestError(f"{name}: reconnect-{name}@sha256:<64hex> 형식이 아닙니다")
 TAG = re.compile(r"^v[0-9]+\.[0-9]+\.[0-9]+(?:-rc\.[0-9]+)?$")
 COMMIT = re.compile(r"^[0-9a-f]{40}$")
 
@@ -115,8 +126,7 @@ def build(root: Path, tag: str, commit: str, images: dict[str, str], sboms: dict
     if set(images) != set(IMAGES):
         raise ManifestError("backend·frontend·speech 이미지가 모두 필요합니다")
     for name, ref in images.items():
-        if not IMAGE_REF.fullmatch(ref):
-            raise ManifestError(f"{name}: digest 이미지 참조가 아닙니다")
+        _check_image(name, ref)
     return {
         "schema": SCHEMA,
         "tag": tag,
@@ -132,7 +142,9 @@ def build(root: Path, tag: str, commit: str, images: dict[str, str], sboms: dict
     }
 
 
-def images_env(manifest: object) -> str:
+def images_env(manifest: object, registry: str) -> str:
+    if not REGISTRY.fullmatch(registry):
+        raise ManifestError("--registry는 <12자리 계정>.dkr.ecr.<리전>.amazonaws.com 이어야 합니다")
     if not isinstance(manifest, dict) or manifest.get("schema") != SCHEMA or not isinstance(manifest.get("images"), dict):
         raise ManifestError("manifest 형식 오류")
     images = manifest["images"]
@@ -140,10 +152,8 @@ def images_env(manifest: object) -> str:
         raise ManifestError("manifest 이미지 목록 오류")
     lines = []
     for name in IMAGES:
-        ref = images[name]
-        if not isinstance(ref, str) or not IMAGE_REF.fullmatch(ref):
-            raise ManifestError(f"{name}: digest 이미지 참조가 아닙니다")
-        lines.append(f"{IMAGE_ENV[name]}={ref}")
+        _check_image(name, images[name])
+        lines.append(f"{IMAGE_ENV[name]}={registry}/{images[name]}")
     return "\n".join(lines) + "\n"
 
 
@@ -158,6 +168,7 @@ def main(argv: list[str] | None = None) -> int:
     make.add_argument("--output", required=True, type=Path)
     env = commands.add_parser("images-env")
     env.add_argument("manifest", type=Path)
+    env.add_argument("--registry", required=True)
     env.add_argument("--output", required=True, type=Path)
     args = parser.parse_args(argv)
     try:
@@ -165,7 +176,7 @@ def main(argv: list[str] | None = None) -> int:
             manifest = build(ROOT, args.tag, args.commit, parse_pairs(args.image, "--image"), parse_pairs(args.sbom, "--sbom"))
             args.output.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         else:
-            text = images_env(json.loads(args.manifest.read_text(encoding="utf-8")))
+            text = images_env(json.loads(args.manifest.read_text(encoding="utf-8")), args.registry)
             args.output.write_text(text, encoding="utf-8")
     except (ManifestError, OSError, ValueError, SyntaxError) as error:
         print(error if isinstance(error, ManifestError) else "manifest 처리 실패", file=sys.stderr)

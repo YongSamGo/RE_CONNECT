@@ -7,7 +7,9 @@
 # - EC2 반영은 이 워크플로가 하지 않는다. 운영자가 manifest의 digest로 직접 배포한다 (infra/deploy/README.md).
 #
 # 저장소 설정(admin)이 필요하다: release 환경(필수 승인자·v* 태그만 허용),
-# 변수 AWS_REGION·AWS_RELEASE_ROLE_ARN·ECR_REGISTRY. 장기 AWS 키는 두지 않고 OIDC 역할만 쓴다.
+# 환경 변수 AWS_REGION, 환경 시크릿 AWS_ACCOUNT_ID·AWS_RELEASE_ROLE_ARN·ECR_REGISTRY. 장기 AWS 키는 두지 않고 OIDC 역할만 쓴다.
+# 공개 저장소라 로그·증명·Release가 모두 공개된다. AWS 계정 ID는 시크릿으로 가리고, 빌드 출처 증명과
+# manifest에는 레지스트리 주소 없이 저장소 이름과 digest만 남긴다 (Sigstore 공개 로그는 지울 수 없다).
 # ci.yml과 같은 원칙: 액션 SHA 고정, 잡별 최소 권한, persist-credentials: false, 캐시 미사용, ${{ }}는 env로 전달.
 
 name: Release
@@ -115,9 +117,15 @@ jobs:
       attestations: write
     env:
       AWS_REGION: ${{ vars.AWS_REGION }}
-      ECR_REGISTRY: ${{ vars.ECR_REGISTRY }}
       RELEASE_TAG: ${{ github.ref_name }}
     steps:
+      - name: AWS 계정 ID 가리기
+        # 공개 로그에 계정 ID가 어떤 형태(ARN·레지스트리 주소)로 나와도 ***로 보이게 먼저 등록한다.
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+        run: |
+          [[ "$AWS_ACCOUNT_ID" =~ ^[0-9]{12}$ ]] || { echo "::error::release 환경 시크릿 AWS_ACCOUNT_ID(12자리)가 필요합니다"; exit 1; }
+          echo "::add-mask::$AWS_ACCOUNT_ID"
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # 태그 커밋이 main 이력에 있는지 확인한다
@@ -144,11 +152,14 @@ jobs:
           done
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
-          role-to-assume: ${{ vars.AWS_RELEASE_ROLE_ARN }}
+          role-to-assume: ${{ secrets.AWS_RELEASE_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-session-name: reconnect-release
+          mask-aws-account-id: true
       - name: ECR 게시와 digest 기록
         id: push
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
         run: |
           aws ecr get-login-password --region "$AWS_REGION" \
             | docker login --username AWS --password-stdin "$ECR_REGISTRY"
@@ -157,29 +168,33 @@ jobs:
             docker tag "reconnect-$image:candidate" "$repo:$RELEASE_TAG"
             docker push --quiet "$repo:$RELEASE_TAG"
             ref="$(docker inspect --format '{{range .RepoDigests}}{{println .}}{{end}}' "$repo:$RELEASE_TAG" | grep -m1 "^$repo@sha256:")"
-            echo "${image}_ref=$ref" >> "$GITHUB_OUTPUT"
-            echo "${image}_digest=${ref#*@}" >> "$GITHUB_OUTPUT"
+            digest="${ref#*@}"
+            [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "::error::$image digest를 읽지 못했습니다"; exit 1; }
+            # 이후 단계·manifest·증명에는 레지스트리 주소(계정 ID) 없이 저장소 이름과 digest만 넘긴다.
+            echo "${image}_ref=reconnect-$image@$digest" >> "$GITHUB_OUTPUT"
+            echo "${image}_digest=$digest" >> "$GITHUB_OUTPUT"
           done
-      # push-to-registry 증명은 러너의 ECR 로그인으로 올라가므로, 로그아웃은 마지막 증명 뒤에 한다.
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        with:
-          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-backend
-          subject-digest: ${{ steps.push.outputs.backend_digest }}
-          push-to-registry: true
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        with:
-          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-frontend
-          subject-digest: ${{ steps.push.outputs.frontend_digest }}
-          push-to-registry: true
-      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
-        with:
-          subject-name: ${{ vars.ECR_REGISTRY }}/reconnect-speech
-          subject-digest: ${{ steps.push.outputs.speech_digest }}
-          push-to-registry: true
       - name: ECR 로그아웃
         # 앞 단계가 실패해도 러너에 레지스트리 자격 증명을 남기지 않는다.
         if: always()
+        env:
+          ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
         run: docker logout "$ECR_REGISTRY" || true
+      # 공개 저장소의 증명은 Sigstore 공개 로그(Rekor)에 영구히 남는다. 대상 이름에 레지스트리 주소를 넣지 않고,
+      # 증명을 ECR에 다시 올리지도 않는다(push-to-registry는 대상 이름이 실제 레지스트리여야 한다).
+      # 검증은 digest로 한다: gh attestation verify oci://<ECR>/reconnect-<이름>@<digest> (infra/deploy/README.md 6절).
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: reconnect-backend
+          subject-digest: ${{ steps.push.outputs.backend_digest }}
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: reconnect-frontend
+          subject-digest: ${{ steps.push.outputs.frontend_digest }}
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: reconnect-speech
+          subject-digest: ${{ steps.push.outputs.speech_digest }}
       - name: 릴리스 manifest 생성과 초안 Release 첨부
         env:
           BACKEND_REF: ${{ steps.push.outputs.backend_ref }}

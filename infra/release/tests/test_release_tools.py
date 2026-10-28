@@ -16,10 +16,12 @@ import release_manifest  # noqa: E402
 
 COMMIT = "a" * 40
 DIGEST = "@sha256:" + "b" * 64
+# 가짜 계정 번호. manifest에는 들어가지 않고 images-env 인자로만 쓴다.
+REGISTRY = "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com"
 IMAGES = {
-    "backend": "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/reconnect-backend" + DIGEST,
-    "frontend": "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/reconnect-frontend" + DIGEST,
-    "speech": "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/reconnect-speech" + DIGEST,
+    "backend": "reconnect-backend" + DIGEST,
+    "frontend": "reconnect-frontend" + DIGEST,
+    "speech": "reconnect-speech" + DIGEST,
 }
 TODAY = dt.date(2026, 10, 28)
 
@@ -34,6 +36,9 @@ class ReleaseManifestTest(unittest.TestCase):
         for refs in manifest["base_images"].values():
             self.assertTrue(refs and all("@sha256:" in ref for ref in refs))
         self.assertNotIn("password", json.dumps(manifest).lower())
+        # 공개 Release에 첨부되므로 계정 번호·레지스트리 주소가 없어야 한다.
+        self.assertNotIn("dkr.ecr", json.dumps(manifest))
+        self.assertNotIn("123456789012", json.dumps(manifest))
 
     def test_build_rejects_tags_and_unpinned_references(self) -> None:
         bad_refs = (
@@ -41,6 +46,12 @@ class ReleaseManifestTest(unittest.TestCase):
             IMAGES["backend"].replace("b" * 64, "B" * 64),
             IMAGES["backend"] + "\nFRONTEND_IMAGE=evil/x" + DIGEST,
             "evil.example/x" + DIGEST + " ; rm -rf /",
+            # 레지스트리 주소(계정 ID)가 섞이면 공개 manifest에 남으므로 거절한다
+            REGISTRY + "/" + IMAGES["backend"],
+            # 이름과 다른 저장소를 가리키면 거절한다
+            "reconnect-frontend" + DIGEST,
+            "reconnect-backend-x" + DIGEST,
+            "reconnect-backend@sha512:" + "b" * 128,
         )
         for ref in bad_refs:
             with self.subTest(ref=ref), self.assertRaises(release_manifest.ManifestError):
@@ -53,14 +64,37 @@ class ReleaseManifestTest(unittest.TestCase):
 
     def test_images_env_round_trip_and_tampered_manifest(self) -> None:
         manifest = release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, IMAGES, {})
-        text = release_manifest.images_env(manifest)
-        self.assertEqual(text.splitlines()[0], "BACKEND_IMAGE=" + IMAGES["backend"])
+        text = release_manifest.images_env(manifest, REGISTRY)
+        self.assertEqual(text.splitlines()[0], "BACKEND_IMAGE=" + REGISTRY + "/" + IMAGES["backend"])
         self.assertEqual(len(text.splitlines()), 3)
-        for images in ({**IMAGES, "backend": "x:latest"}, {**IMAGES, "extra": IMAGES["backend"]}, {}):
+        tampered = (
+            {**IMAGES, "backend": "x:latest"},
+            {**IMAGES, "extra": IMAGES["backend"]},
+            {},
+            {**IMAGES, "backend": "evil.example/" + IMAGES["backend"]},
+            {**IMAGES, "backend": IMAGES["speech"]},
+        )
+        for images in tampered:
             with self.subTest(images=images), self.assertRaises(release_manifest.ManifestError):
-                release_manifest.images_env({**manifest, "images": images})
-        with self.assertRaises(release_manifest.ManifestError):
-            release_manifest.images_env({**manifest, "schema": 2})
+                release_manifest.images_env({**manifest, "images": images}, REGISTRY)
+        for schema in (1, 3, "2"):
+            with self.subTest(schema=schema), self.assertRaises(release_manifest.ManifestError):
+                release_manifest.images_env({**manifest, "schema": schema}, REGISTRY)
+
+    def test_images_env_rejects_forged_registry(self) -> None:
+        manifest = release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, IMAGES, {})
+        forged = (
+            "evil.example",
+            "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com.evil.example",
+            "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com/other",
+            "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com:443",
+            "12345678901.dkr.ecr.ap-northeast-2.amazonaws.com",
+            "123456789012.dkr.ecr.ap-northeast-2.amazonaws.com\nFRONTEND_IMAGE=evil",
+            "",
+        )
+        for registry in forged:
+            with self.subTest(registry=registry), self.assertRaises(release_manifest.ManifestError):
+                release_manifest.images_env(manifest, registry)
 
     def test_backend_image_includes_every_management_command(self) -> None:
         # 새 manage_*.py가 생겨도 이미지에서 빠지지 않도록 이름 나열 대신 glob으로 복사해야 한다.

@@ -26,6 +26,10 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 manifest에는 이미지 digest, 베이스 이미지 digest, 잠금 파일·모델 manifest·운영 Compose의 SHA-256,
 프롬프트 버전, Alembic head, SBOM 해시가 들어간다. 비밀값·개인정보는 넣지 않는다.
 
+공개 저장소라 Actions 로그·Release·빌드 출처 증명이 모두 공개되고, 증명은 Sigstore 공개 로그에 영구히 남는다.
+그래서 AWS 계정 ID가 든 값(역할 ARN·ECR 주소)은 환경 **시크릿**으로 받아 로그에서 가리고, manifest와 증명에는
+레지스트리 주소 없이 `reconnect-<이름>@sha256:<digest>`만 기록한다. 레지스트리 주소는 EC2가 자기 계정에서 만든다(6절).
+
 Trivy 원본 결과(`*-scan.json`)는 미조치 취약점 목록이라 Release·artifact에 올리지 않는다.
 
 ## 3. 이미지 검사 기준
@@ -45,12 +49,16 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 
 ## 4. 저장소·AWS 준비 (admin, 1회)
 
-- GitHub **Settings → Environments → `release`**: 필수 승인자, 배포 대상은 `v*` 태그만.
-- 저장소 변수(Variables, 비밀 아님): `AWS_REGION`, `AWS_RELEASE_ROLE_ARN`, `ECR_REGISTRY`(`<계정>.dkr.ecr.<리전>.amazonaws.com`).
-- IAM OIDC 역할 신뢰 조건: `token.actions.githubusercontent.com:aud = sts.amazonaws.com`,
-  `sub = repo:YongSamGo/RE_CONNECT:environment:release`. 권한은 세 ECR 저장소의 push만.
+- GitHub **Settings → Environments → `release`**: 필수 승인자(자기 승인 금지), 배포 대상은 `v*` 태그만.
+  - 환경 변수(Variables): `AWS_REGION`
+  - 환경 시크릿(Secrets): `AWS_ACCOUNT_ID`(12자리, 로그 가리기용), `AWS_RELEASE_ROLE_ARN`, `ECR_REGISTRY`(`<계정>.dkr.ecr.<리전>.amazonaws.com`).
+    셋 다 계정 ID가 들어 있어 Variables에 두지 않는다. Variables 값은 공개 로그에 그대로 찍힌다.
+- IAM OIDC 역할 신뢰 조건: `token.actions.githubusercontent.com:aud = sts.amazonaws.com`, `sub = <접두어>:environment:release`.
+  이 저장소는 변경 불가 주체 형식을 쓰므로 접두어는 `repo:YongSamGo/RE_CONNECT`가 아니라
+  `gh api repos/YongSamGo/RE_CONNECT/actions/oidc/customization/sub --jq .sub_claim_prefix`의 값(`repo:<owner>@<id>/<repo>@<id>`)이다.
+  옛 형식으로 두면 역할을 맡지 못해 릴리스가 실패한다. 권한은 세 ECR 저장소의 push만.
 - ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`: 태그 불변(IMMUTABLE), push 시 검사.
-- EC2 인스턴스 역할: 세 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`), 해당 KMS 키 복호화,
+- EC2 인스턴스 역할: 세 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`, 기본 `aws/ssm` 키면 KMS 권한 불필요),
   운영 로그 그룹 쓰기. 그 밖의 쓰기·삭제 권한은 주지 않는다.
   삭제 이력 버킷은 해당 접두어의 쓰기·읽기·목록과 보호 설정 조회만 준다(삭제·수명주기·정책 변경 없음, [백업·복원](../../docs/security/backup-restore.md), #94).
 - 관리 명령은 backend 이미지의 `manage_*.py`를 모두 담는다: `docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm --entrypoint /opt/venv/bin/python backend -B manage_<이름>.py ...`
@@ -73,17 +81,39 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 
 ## 6. 배포 (운영자, EC2)
 
-root 셸에서 저장소의 릴리스 태그 체크아웃을 기준으로 실행한다. `/run`은 tmpfs라 재부팅하면 env 파일이 사라진다.
+root 셸(Session Manager)에서 저장소의 릴리스 태그 체크아웃을 기준으로 실행한다. `/run`은 tmpfs라 재부팅하면 env 파일이 사라진다.
+초안 Release를 확인해 공개한 뒤 배포한다. 공개 Release의 manifest는 GitHub 로그인 없이 받는다.
 
 ```bash
 install -d -m 700 /run/reconnect
-gh release download vX.Y.Z -R YongSamGo/RE_CONNECT -p release-manifest.json -D /run/reconnect
-gh attestation verify oci://<ECR_REGISTRY>/reconnect-backend@<digest> -R YongSamGo/RE_CONNECT   # 세 이미지 모두
-python3 -I infra/release/release_manifest.py images-env /run/reconnect/release-manifest.json --output /run/reconnect/images.env
+curl -fsSL --proto '=https' -o /run/reconnect/release-manifest.json \
+  https://github.com/YongSamGo/RE_CONNECT/releases/download/vX.Y.Z/release-manifest.json
+# 레지스트리 주소는 manifest에 없다. 인스턴스 역할의 계정으로 만든다
+REGISTRY="$(aws sts get-caller-identity --query Account --output text).dkr.ecr.ap-northeast-2.amazonaws.com"
+aws ecr get-login-password --region ap-northeast-2 | docker login --username AWS --password-stdin "$REGISTRY"
+python3 -I infra/release/release_manifest.py images-env /run/reconnect/release-manifest.json \
+  --registry "$REGISTRY" --output /run/reconnect/images.env
 printf 'AWS_REGION=%s\nDEPLOY_ENV=%s\n' ap-northeast-2 production >> /run/reconnect/images.env
+```
 
+빌드 출처 증명은 digest로 검증한다(세 이미지 모두). gh는 GitHub 토큰이 있어야 동작하므로, 권한을 하나도 주지 않은
+fine-grained 토큰(공개 저장소 읽기만 가능)을 **그 셸에서만** `GH_TOKEN`으로 넣고 끝나면 지운다. 서버 파일·프로필에 저장하지 않는다.
+증명의 대상 이름은 레지스트리 없는 `reconnect-<이름>`이다. 첫 릴리스에서 digest만으로 통과하는지 확인하고 결과를 여기에 적는다.
+
+```bash
+read -rs GH_TOKEN && export GH_TOKEN
+for image in backend frontend speech; do
+  ref="$(grep -m1 "^$(echo "$image" | tr a-z A-Z)_IMAGE=" /run/reconnect/images.env | cut -d= -f2)"
+  gh attestation verify "oci://$ref" -R YongSamGo/RE_CONNECT
+done
+unset GH_TOKEN
+```
+
+SSM 비밀값으로 env 파일을 만든다.
+
+```bash
 for role in app redis migrate; do
-  aws ssm get-parameters-by-path --path "/re-connect/production/$role/" --with-decryption --output json \
+  aws ssm get-parameters-by-path --region ap-northeast-2 --path "/re-connect/production/$role/" --with-decryption --output json \
     | python3 -I infra/deploy/render_env.py --role "$role" --prefix "/re-connect/production/$role/" \
         --output "/run/reconnect/$role.env"
 done
