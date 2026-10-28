@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { ApiError } from '../../api/errors'
+import { JourneyRecommendations as ExistingRecommendations } from './ExistingRecommendations'
 import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
@@ -63,6 +64,12 @@ export function JourneyRecommendationsRoute() {
 }
 
 export function JourneyRecommendations({ journeyId, preview = false }: { journeyId?: string; preview?: boolean }) {
+  if (journeyId && !preview) return <ExistingRecommendations journeyId={journeyId} />
+  return <RecommendationPreview preview={preview} />
+}
+
+function RecommendationPreview({ preview = false }: { preview?: boolean }) {
+  const journeyId: string | undefined = undefined
   const request = useRequest<Recommendations>()
   const profileRequest = useRequest<{ view: ProfileView; missing: string[] }>()
   const [profileView, setProfileView] = useState<ProfileView | null>(null)
