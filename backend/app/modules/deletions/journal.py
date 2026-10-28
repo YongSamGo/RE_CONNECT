@@ -1,5 +1,6 @@
 """DB 밖 최신 최소 삭제 이력. 운영은 별도 S3 버킷, 개발은 POSIX 폴더. 어댑터가 없으면 삭제 완료를 꾸미지 않는다."""
 
+from datetime import timedelta
 import os
 from pathlib import Path
 import stat
@@ -11,6 +12,9 @@ from app.core.business_errors import AppError
 from app.modules.deletions.models import DeletionEvent
 
 MAX_EVENT_BYTES = 2048
+EVENT_RETENTION = timedelta(days=30)
+# 만료 객체가 수명주기 정리 전까지 남아도 목록 순회가 끝없이 늘지 않게 한다.
+MAX_LISTED_OBJECTS = 10000
 
 
 class UnavailableDeletionJournal:
@@ -198,14 +202,18 @@ class S3DeletionJournal:
     def events(self, now, *, limit=1000):
         try:
             if type(limit) is not int or not 1 <= limit <= 1000: raise ValueError
-            result = []; token = None
-            # 수명주기가 아직 지우지 않은 만료 이력까지 세어 조회 작업량을 제한한다.
+            result = []; token = None; scanned = 0
             while True:
                 page = self._call('list_objects_v2', Prefix=self.prefix, MaxKeys=1000,
                     **({'ContinuationToken': token} if token else {}))
                 for item in page.get('Contents', []):
+                    scanned += 1
+                    if scanned > MAX_LISTED_OBJECTS: raise ValueError
                     name = item['Key'][len(self.prefix):]
                     if not name.endswith('.json') or str(UUID(name[:-5])) + '.json' != name: raise ValueError
+                    # deleted_at <= 쓴 시각이므로 쓴 지 30일이 지난 객체는 이미 만료다. 수명주기가 늦게 지워도
+                    # 읽지 않고 한도에서 뺀다. 한도는 아직 유효한 이력에만 적용한다.
+                    if item['LastModified'] + EVENT_RETENTION <= now: continue
                     if item['Size'] > MAX_EVENT_BYTES or len(result) >= limit: raise ValueError
                     event = DeletionEvent.model_validate_json(self._read(item['Key']))
                     if self._key(event.id) != item['Key']: raise ValueError

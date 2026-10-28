@@ -78,7 +78,7 @@ class Settings(BaseSettings):
     data_encryption_active_key_id: str | None = None
     # POSIX 개발 시험용. 운영은 아래 S3 버킷을 쓴다.
     deletion_journal_directory: Path | None = None
-    # 운영 삭제 이력: RDS와 분리한 Object Lock S3 버킷(infra/aws/deletion-journal.json). 셋을 함께 설정한다.
+    # 운영 삭제 이력: RDS와 분리한 Object Lock S3 버킷(infra/backup/deletion-journal.json). 셋을 함께 설정한다.
     deletion_journal_bucket: str | None = Field(default=None, pattern=r"^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$")
     deletion_journal_bucket_owner: str | None = Field(default=None, pattern=r"^[0-9]{12}$")
     deletion_journal_region: str | None = Field(default=None, pattern=r"^[a-z]{2}(-[a-z]+)+-[0-9]$")

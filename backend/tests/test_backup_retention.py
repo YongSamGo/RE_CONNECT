@@ -52,7 +52,7 @@ def snapshot(name, age_days, expires_in=None, purpose='pre-migration', encrypted
     return {'DBSnapshotIdentifier': name, 'SnapshotCreateTime': created, 'Encrypted': encrypted, 'TagList': tags}
 
 
-def run(database, *pages):
+def run(database, *pages, now=TODAY):
     client = rds()
     with Stubber(client) as stub:
         stub.add_response('describe_db_instances', {'DBInstances': [database]}, {'DBInstanceIdentifier': 'reconnect-db'})
@@ -63,7 +63,7 @@ def run(database, *pages):
             stub.add_response('describe_db_snapshots', response, {'DBInstanceIdentifier': 'reconnect-db', 'SnapshotType': 'manual',
                 'MaxRecords': 100, **({'Marker': marker} if marker else {})})
             marker = response.get('Marker')
-        report = manage_backups.inspect(client, 'reconnect-db', TODAY.date())
+        report = manage_backups.inspect(client, 'reconnect-db', now)
         stub.assert_no_pending_responses()
     return report
 
@@ -72,7 +72,7 @@ HEALTHY = {'BackupRetentionPeriod': 7, 'StorageEncrypted': True}
 
 
 def test_tagged_recent_snapshots_pass_and_are_listed_across_pages():
-    report = run(HEALTHY, [snapshot('before-release', 3, expires_in=14)], [snapshot('before-migration', 10, expires_in=30)])
+    report = run(HEALTHY, [snapshot('before-release', 3, expires_in=14)], [snapshot('before-migration', 10, expires_in=29)])
     assert report['findings'] == []
     assert [item['snapshot'] for item in report['manual_snapshots']] == ['before-release', 'before-migration']
     assert all(item['restorable'] for item in report['manual_snapshots'])
@@ -84,13 +84,29 @@ def test_tagged_recent_snapshots_pass_and_are_listed_across_pages():
     # 스택 삭제 시 생기는 최종 스냅샷처럼 태그가 없는 경우
     (HEALTHY, snapshot('final', 1, expires_in=None, purpose=None), 'missing_expiry_or_purpose_tag'),
     (HEALTHY, snapshot('long', 1, expires_in=90), 'expiry_beyond_deletion_history'),
+    (HEALTHY, snapshot('edge', 1, expires_in=30), 'expiry_beyond_deletion_history'),
     (HEALTHY, snapshot('stale', 20, expires_in=14), 'expired_delete_after_review'),
-    (HEALTHY, snapshot('old', 31, expires_in=30), 'older_than_deletion_history_do_not_restore'),
+    (HEALTHY, snapshot('old', 31, expires_in=29), 'older_than_deletion_history_do_not_restore'),
     (HEALTHY, snapshot('plain', 1, expires_in=7, encrypted=False), 'snapshot_not_encrypted'),
 ])
 def test_unsafe_backup_state_is_reported(database, item, problem):
     report = run(database, [item] if item else [])
     assert problem in {finding['problem'] for finding in report['findings']}
+
+
+@pytest.mark.parametrize('age,restorable', [(timedelta(days=28, hours=23), True), (timedelta(days=29), False),
+    # 날짜 차이는 30일이지만 실제로는 30일 23시간 40분이 지난 경우
+    (timedelta(days=30, hours=23, minutes=40), False)])
+def test_restorable_uses_exact_time_with_recovery_margin(age, restorable):
+    item = {'DBSnapshotIdentifier': 'edge', 'SnapshotCreateTime': TODAY - age, 'Encrypted': True,
+        'TagList': [{'Key': 'expires-at', 'Value': (TODAY - age).date().isoformat()}, {'Key': 'purpose', 'Value': 'test'}]}
+    report = run(HEALTHY, [item])
+    assert report['manual_snapshots'][0]['restorable'] is restorable
+    assert ('older_than_deletion_history_do_not_restore' in {finding['problem'] for finding in report['findings']}) is not restorable
+
+
+def test_inspect_requires_aware_time():
+    with pytest.raises(ValueError): manage_backups.inspect(rds(), 'reconnect-db', TODAY.replace(tzinfo=None))
 
 
 def test_cli_reports_failure_without_error_details(capsys):

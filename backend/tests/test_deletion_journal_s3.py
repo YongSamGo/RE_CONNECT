@@ -99,7 +99,8 @@ def test_append_never_reports_success_for_unverified_history(stubbed, attack):
 
 
 def listing(*items, truncated=False, token=None):
-    page = {'Contents': [{'Key': key, 'Size': size} for key, size in items], 'IsTruncated': truncated}
+    page = {'Contents': [{'Key': key, 'Size': size, 'LastModified': written} for key, size, written in
+        ((item + (utc_now(),))[:3] for item in items)], 'IsTruncated': truncated}
     if token: page['NextContinuationToken'] = token
     return page
 
@@ -111,11 +112,27 @@ def test_events_pages_filters_expired_and_sorts(stubbed):
     keys = [PREFIX + str(value.id) + '.json' for value in values]; raws = [value.model_dump_json().encode() for value in values]
     stub.add_response('list_objects_v2', listing((keys[0], len(raws[0])), truncated=True, token='next'), scoped(Prefix=PREFIX, MaxKeys=1000))
     stub.add_response('get_object', body(raws[0]), scoped(Key=keys[0]))
-    stub.add_response('list_objects_v2', listing((keys[1], len(raws[1])), (keys[2], len(raws[2]))),
+    stub.add_response('list_objects_v2', listing((keys[1], len(raws[1]), old.deleted_at), (keys[2], len(raws[2]))),
         scoped(Prefix=PREFIX, MaxKeys=1000, ContinuationToken='next'))
-    stub.add_response('get_object', body(raws[1]), scoped(Key=keys[1]))
+    # 쓴 지 30일이 지난 객체(old)는 읽지 않는다.
     stub.add_response('get_object', body(raws[2]), scoped(Key=keys[2]))
     assert journal.events(utc_now()) == [first, second]
+
+
+def test_expired_objects_awaiting_lifecycle_do_not_consume_recovery_limit(stubbed):
+    journal, stub = stubbed; live = event(); key = PREFIX + str(live.id) + '.json'; raw = live.model_dump_json().encode()
+    expired = [(PREFIX + str(uuid4()) + '.json', 400, utc_now() - timedelta(days=31)) for _ in range(3)]
+    stub.add_response('list_objects_v2', listing(*expired, (key, len(raw))), scoped(Prefix=PREFIX, MaxKeys=1000))
+    stub.add_response('get_object', body(raw), scoped(Key=key))
+    assert journal.events(utc_now(), limit=1) == [live]
+
+
+def test_listing_scan_is_bounded_even_when_objects_are_expired(stubbed, monkeypatch):
+    from app.modules.deletions import journal as module
+    monkeypatch.setattr(module, 'MAX_LISTED_OBJECTS', 2)
+    journal, stub = stubbed; old = utc_now() - timedelta(days=31)
+    stub.add_response('list_objects_v2', listing(*[(PREFIX + str(uuid4()) + '.json', 400, old) for _ in range(3)]))
+    with pytest.raises(AppError): journal.events(utc_now())
 
 
 @pytest.mark.parametrize('attack', ['foreign_name', 'oversize', 'moved_object', 'unknown_field', 'limit'])

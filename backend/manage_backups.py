@@ -5,7 +5,7 @@
 """
 
 import argparse
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 import json
 import re
 
@@ -15,6 +15,9 @@ from app.contracts.time import utc_now
 
 AUTOMATED_RETENTION_DAYS = 7
 JOURNAL_RETENTION_DAYS = 30
+# 점검 뒤 복원·recover까지 걸리는 시간. 그 사이 스냅샷 직후의 삭제 이력이 만료되지 않게 여유를 둔다.
+RESTORE_MARGIN = timedelta(days=1)
+RESTORABLE_AGE = timedelta(days=JOURNAL_RETENTION_DAYS) - RESTORE_MARGIN
 MAX_SNAPSHOTS = 100
 _INSTANCE = re.compile(r'^[a-z][a-z0-9-]{0,62}$')
 _REGION = re.compile(r'^[a-z]{2}(-[a-z]+)+-[0-9]$')
@@ -30,8 +33,9 @@ def expiry(value):
     except ValueError: return None
 
 
-def inspect(client, instance, today):
-    findings = []
+def inspect(client, instance, now):
+    if not isinstance(now, datetime) or now.tzinfo is None: raise ValueError('now는 UTC 시각입니다')
+    findings = []; today = now.date()
     database = client.describe_db_instances(DBInstanceIdentifier=instance)['DBInstances'][0]
     if database.get('BackupRetentionPeriod') != AUTOMATED_RETENTION_DAYS:
         findings.append({'target': instance, 'problem': 'automated_retention_not_7_days'})
@@ -49,12 +53,13 @@ def inspect(client, instance, today):
     for snapshot in snapshots:
         name = snapshot['DBSnapshotIdentifier']; created = snapshot.get('SnapshotCreateTime')
         labels = tags(snapshot); expires = expiry(labels.get('expires-at'))
-        restorable = created is not None and today - created.date() <= timedelta(days=JOURNAL_RETENTION_DAYS)
+        # 날짜가 아니라 시각으로 비교한다. 날짜만 보면 30일을 하루 가까이 넘긴 스냅샷도 통과한다.
+        restorable = created is not None and now - created < RESTORABLE_AGE
         listed.append({'snapshot': name, 'created': created.date().isoformat() if created else None,
             'expires_at': expires.isoformat() if expires else None, 'purpose': labels.get('purpose'), 'restorable': restorable})
         if snapshot.get('Encrypted') is not True: findings.append({'target': name, 'problem': 'snapshot_not_encrypted'})
         if expires is None or not labels.get('purpose'): findings.append({'target': name, 'problem': 'missing_expiry_or_purpose_tag'})
-        elif created is not None and expires - created.date() > timedelta(days=JOURNAL_RETENTION_DAYS):
+        elif created is not None and expires - created.date() > RESTORABLE_AGE:
             findings.append({'target': name, 'problem': 'expiry_beyond_deletion_history'})
         if expires is not None and expires < today: findings.append({'target': name, 'problem': 'expired_delete_after_review'})
         if not restorable: findings.append({'target': name, 'problem': 'older_than_deletion_history_do_not_restore'})
@@ -70,7 +75,7 @@ def main(argv=None, client_factory=None):
     if client_factory is None:
         from app.adapters.aws import build_client as client_factory
     try:
-        report = inspect(client_factory('rds', args.region), args.db_instance, utc_now().date())
+        report = inspect(client_factory('rds', args.region), args.db_instance, utc_now())
     except (BotoCoreError, ClientError, KeyError, IndexError, TypeError, ValueError):
         # 오류 본문에는 계정·자원 정보가 섞일 수 있어 출력하지 않는다.
         print(json.dumps({'completed': False, 'code': 'SERVICE_UNAVAILABLE'}))
