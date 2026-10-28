@@ -22,6 +22,7 @@ from collections.abc import Iterable, Mapping
 from pathlib import Path
 
 MAX_ACCEPT_DAYS = 90
+KST = dt.timezone(dt.timedelta(hours=9), "KST")
 VULNERABILITY_ID = re.compile(r"^(CVE-\d{4}-\d{4,}|GHSA(-[23456789cfghjmpqrvwx]{4}){3})$")
 IMAGE = re.compile(r"^(backend|frontend|speech)$")
 
@@ -114,7 +115,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--accept", required=True, type=Path)
     parser.add_argument("--today", type=dt.date.fromisoformat, default=None, help="시험용 기준일")
     args = parser.parse_args(argv)
-    today = args.today or dt.datetime.now(dt.timezone.utc).date()
+    # 수용 목록의 기록일·만료일은 한국 날짜로 적으므로 기준일도 KST로 계산한다 (UTC면 오전 9시 전 하루 어긋남).
+    today = args.today or dt.datetime.now(KST).date()
     try:
         scan = json.loads(args.scan.read_text(encoding="utf-8"))
         accept = json.loads(args.accept.read_text(encoding="utf-8"))
