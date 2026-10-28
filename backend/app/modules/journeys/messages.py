@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from app.adapters.llm import LLMInvalidOutputError, LLMTimeoutError, LLMUnavailableError
 from app.contracts.journey import ConversationTurn, Message, MessageCommit, MessageCreate, MessageResult, ProfileDraftView, ProfileEvidence
 from app.contracts.profile import Experience, ProfileContent
+from app.contracts.roles import normalize_tag
 from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.admission.llm import ControlledLLMAdapter
@@ -23,6 +24,30 @@ MESSAGE_TIMEOUT_SECONDS = 60
 # 종료를 확인하지 못한 호출은 공유 슬롯을 계속 잡으므로, 끝낼 시간이 없는 두 번째 호출은 시작하지 않는다.
 # 실제 CPU 런타임 지연을 측정(#34/#92)한 뒤 조정한다.
 QUESTION_MIN_SECONDS = 20
+
+
+def _enrich(experiences: list[Experience], evidence: list[ProfileEvidence], proposal, message_id: UUID) -> None:
+    """기존 경험에 이번 턴의 세부 내용을 덧붙인다. 설명은 바꾸지 않고, 태그는 더하기만 하며 기간은 비어 있을 때만 채운다.
+
+    사용자가 고친 값을 모델이 지우거나 바꾸지 않게 하려는 규칙이다. 덧붙인 근거로 이번 메시지를 기록한다.
+    """
+    index = next((i for i, item in enumerate(experiences) if item.id == proposal.id), None)
+    if index is None:
+        return
+    current = experiences[index]
+    known = {normalize_tag(tag) for tag in current.skill_tags}
+    added = [tag for tag in proposal.skill_tags if normalize_tag(tag) not in known][:max(0, 20 - len(current.skill_tags))]
+    duration = current.duration_note or proposal.duration_note
+    if not added and duration == current.duration_note:
+        return
+    experiences[index] = current.model_copy(update={'skill_tags': [*current.skill_tags, *added], 'duration_note': duration})
+    path = f'experiences[{index}]'
+    for position, item in enumerate(evidence):
+        if item.path == path:
+            if message_id not in item.message_ids:
+                evidence[position] = item.model_copy(update={'message_ids': [*item.message_ids, message_id]})
+            return
+    evidence.append(ProfileEvidence(path=path, message_ids=[message_id]))
 
 
 class JourneyMessageService:
@@ -73,12 +98,14 @@ class JourneyMessageService:
                 experiences = list(current.draft.experiences)
                 evidence = list(current.evidence)
                 for proposal, source in zip(preview.experiences, preview.source_turns, strict=True):
-                    # 이미 사용자가 편집한 경험은 모델이 교체하지 않는다.
-                    if proposal.id is not None or any(e.description == proposal.description for e in experiences):
-                        continue
-                    # 이전 턴만으로 삭제한 경험을 되살리지 않는다. 이번 확인 텍스트의 사실만 추가한다.
+                    # 이전 턴만으로 삭제한 경험을 되살리지 않는다. 이번 확인 텍스트가 근거인 것만 반영한다.
                     # 문구는 다듬어지고 태그는 표준 태그일 수 있어, 생성 서비스가 원문과 대조한 근거 턴 번호로 확인한다.
                     if source != len(turns) - 1:
+                        continue
+                    if proposal.id is not None:
+                        _enrich(experiences, evidence, proposal, turns[-1].message_id)
+                        continue
+                    if any(e.description == proposal.description for e in experiences):
                         continue
                     evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=[turns[-1].message_id]))
                     experiences.append(Experience(id=uuid4(), description=proposal.description,

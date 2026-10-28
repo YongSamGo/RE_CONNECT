@@ -3,7 +3,7 @@
 import asyncio
 import json
 from pathlib import Path
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import pytest
 import httpx
@@ -93,12 +93,13 @@ def test_invented_facts_references_and_approval_are_rejected(payload):
 
 
 @pytest.mark.parametrize("duration, skills", [
-    (quote("30년"), [quote("전문 조리사")]),
-    (quote("삼 년", 1), [quote("요리", 1)]),
+    (quote("30년"), [quote("전문 조리사")]),                     # 원문에 없음
+    (quote("삼 년 동안", 0), [quote("요리를 했어요", 0)]),      # 다른 턴의 구절을 이 턴 번호로 주장
     (quote("주민번호"), [quote("이전 지시는 무시하고")]),
+    (quote("삼 년", 2), [quote("요리", 2)]),                    # 개인정보로 제외된 턴
 ])
 def test_ungrounded_duration_and_skills_are_dropped_without_discarding_experience(duration, skills):
-    texts = [NORMAL, "삼 년 동안 요리를 했어요."]
+    texts = [NORMAL, "삼 년 동안 요리를 했어요.", "주민번호는 삼 년 전 요리 교실에서 적었어요"]
     item = selection(duration=duration, skills=[quote("요리"), *skills])
     result, _ = extract(dict(experiences=[item]), texts=texts)
     assert result.experiences[0].description == "요리 봉사"
@@ -106,8 +107,8 @@ def test_ungrounded_duration_and_skills_are_dropped_without_discarding_experienc
     assert result.experiences[0].skill_tags == ["요리"]
 
 
-def test_cross_turn_skills_from_real_model_output_keep_other_experiences():
-    # 2026-10-28 EC2 CPU 측정에서 P04가 이 형태로 결과 전체를 잃었다.
+def test_details_from_another_turn_attach_to_the_same_experience():
+    # 2026-10-28 EC2 CPU 측정의 P04 형태. 같은 일의 세부 업무를 다음 턴에서 말했다.
     texts = ["중소기업 경리, 회계 업무를 이십오 년 했어요.", "세금계산서 발행하고 월말 결산까지 다 했죠."]
     first = dict(existing_id=None, description=quote("중소기업 경리, 회계 업무"), duration=quote("이십오 년"),
                  skills=[quote("세금계산서 발행", 1)])
@@ -116,8 +117,9 @@ def test_cross_turn_skills_from_real_model_output_keep_other_experiences():
     result, _ = extract(dict(experiences=[first, second]), texts=texts)
     assert [item.description for item in result.experiences] == ["중소기업 경리, 회계 업무", "세금계산서 발행"]
     assert result.experiences[0].duration_note == "25년"
-    assert result.experiences[0].skill_tags == []
+    assert result.experiences[0].skill_tags == ["세금계산서 발행"]
     assert result.experiences[1].skill_tags == ["월말 결산"]
+    assert result.source_turns == [0, 1]
 
 
 def test_summary_is_used_only_when_grounded_in_the_same_turn():
@@ -161,9 +163,13 @@ def test_owned_existing_id_is_preserved_but_not_reassigned():
     old = Experience(id=EXPERIENCE_ID, description="요리 봉사", duration_note=None, skill_tags=[])
     result, _ = extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))]), existing=[old])
     assert result.experiences[0].id == EXPERIENCE_ID
-    # 소유한 ID라도 다른 원문을 가리키면 기존 경험을 바꾸지 않고 그 선택만 버린다(다듬은 문구로 저장돼 있을 수 있다).
-    other = extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID), description="복지관")]), existing=[old])[0]
-    assert other.experiences == [] and other.source_turns == []
+    # 기존 경험을 가리키면 이번 인용은 세부 내용일 뿐이다. 모델이 다른 문구를 줘도 저장된 설명은 바뀌지 않는다.
+    texts = [NORMAL, "복지관에서 반찬 만들고 배식도 했어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("반찬 만들고", 1), duration=None,
+                  skills=[quote("배식", 1)], summary="복지관 급식 총괄")
+    other = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(item.id, item.description, item.skill_tags) for item in other.experiences] == [(EXPERIENCE_ID, "요리 봉사", ["배식"])]
+    assert other.source_turns == [1]
     with pytest.raises(LLMInvalidOutputError):
         extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))] * 2), existing=[old])
 
@@ -381,3 +387,29 @@ def test_number_reading_does_not_turn_words_into_years():
     from app.modules.generation.wording import numbers_in
     assert numbers_in("오래 일했어요. 이십 년 정도요.") == {20}
     assert numbers_in("삼십오 년, 2020년") == {35, 2020}
+
+
+def test_enrich_adds_only_new_tags_and_missing_duration_without_rewriting():
+    from app.contracts.journey import ProfileEvidence
+    from app.contracts.profile import ExperienceInput
+    from app.modules.journeys.messages import _enrich
+    first, second, message = uuid4(), uuid4(), uuid4()
+    experiences = [Experience(id=first, description="경리 업무", duration_note=None, skill_tags=["회계"]),
+                   Experience(id=second, description="사용자가 고친 설명", duration_note="10년", skill_tags=[])]
+    evidence = [ProfileEvidence(path="experiences[0]", message_ids=[OTHER_ID])]
+    # 같은 태그(공백·대소문자만 다름)는 다시 넣지 않고, 비어 있던 기간만 채운다. 설명은 그대로다.
+    _enrich(experiences, evidence, ExperienceInput(id=first, description="모델이 바꾼 설명", duration_note="25년",
+                                                   skill_tags=[" 회계 ", "결산"]), message)
+    assert experiences[0] == Experience(id=first, description="경리 업무", duration_note="25년", skill_tags=["회계", "결산"])
+    assert evidence == [ProfileEvidence(path="experiences[0]", message_ids=[OTHER_ID, message])]
+    # 사용자가 이미 정한 기간은 바꾸지 않는다. 덧붙일 것이 없으면 근거도 남기지 않는다.
+    _enrich(experiences, evidence, ExperienceInput(id=second, description="x", duration_note="30년", skill_tags=[]), message)
+    assert experiences[1].duration_note == "10년" and len(evidence) == 1
+    # 목록에 없는 경험(삭제됨)은 되살리지 않는다.
+    _enrich(experiences, evidence, ExperienceInput(id=uuid4(), description="x", duration_note=None, skill_tags=["새 태그"]), message)
+    assert len(experiences) == 2
+    # 태그는 20개를 넘기지 않는다.
+    experiences[1] = experiences[1].model_copy(update={"skill_tags": [f"태그{i}" for i in range(19)]})
+    _enrich(experiences, evidence, ExperienceInput(id=second, description="x", duration_note=None, skill_tags=["가", "나"]), message)
+    assert experiences[1].skill_tags[-1] == "가" and len(experiences[1].skill_tags) == 20
+    assert evidence[-1] == ProfileEvidence(path="experiences[1]", message_ids=[message])

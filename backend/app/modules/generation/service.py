@@ -95,38 +95,33 @@ class GroundedGenerationService:
             "standard_tags": list(catalog.values()),
         }, ExtractionPlan)
 
-        def grounded(quote: Quote, turn_index: int) -> bool:
+        def grounded(quote: Quote) -> bool:
+            """인용이 자기 턴 번호의 실제 원문에 있는지. 제외된 턴은 근거가 될 수 없다."""
             source = turns.get(quote.turn_index)
-            return quote.turn_index == turn_index and source is not None and quote.text in source and safe_text(quote.text) is not None
-
-        def quote_value(quote: Quote, turn_index: int) -> str:
-            if not grounded(quote, turn_index):
-                raise _invalid()
-            return quote.text
+            return source is not None and quote.text in source and safe_text(quote.text) is not None
 
         proposals, source_turns = [], []
         used_ids = set()
         try:
             for item in plan.experiences:
-                index = item.description.turn_index
-                quote = quote_value(item.description, index)
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다.
+                if not grounded(item.description):
+                    raise _invalid()
+                index, quote = item.description.turn_index, item.description.text
                 summary = item.summary if wording.summary_grounded(item.summary, turns[index]) else None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
                     used_ids.add(item.existing_id)
-                    # 기존 경험은 다듬은 문구로 저장돼 있을 수 있다. 문구가 다르면 교체하지 않고 이 선택만 버린다.
-                    if allowed[item.existing_id].description not in {quote, summary}:
-                        continue
-                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기간·기술은 다른 턴에서 가져오는 일이
-                # 잦아(docs/ai/extraction-eval-2026-10-22.md) 근거 없는 인용만 버리고 같은 턴의 것만 남긴다.
-                # 표준 태그를 먼저 두고, 사전에 없는 원문 기술 구절은 정보를 잃지 않게 뒤에 남긴다.
+                # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
+                # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
                 tags = [catalog[normalize_tag(tag)] for tag in item.standard_tags if normalize_tag(tag) in catalog]
-                tags += [skill.text for skill in item.skills if grounded(skill, index)]
+                tags += [skill.text for skill in item.skills if grounded(skill)]
                 proposals.append(ExperienceInput(
+                    # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
                     description=allowed[item.existing_id].description if item.existing_id else summary or quote,
-                    duration_note=wording.duration_label(item.duration.text) if item.duration and grounded(item.duration, index) else None,
+                    duration_note=wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None,
                     skill_tags=_unique(tags)[:20],
                 ))
                 source_turns.append(index)
