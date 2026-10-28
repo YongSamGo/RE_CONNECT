@@ -116,7 +116,7 @@ function RecommendationPreview({ preview = false }: { preview?: boolean }) {
   useEffect(() => { if (!preview) readProfile(false) }, [preview, readProfile])
   useEffect(() => { if (state.status === 'success' || state.status === 'error') resultRef.current?.focus() }, [state.status])
 
-  const cards = preview ? demoOpportunities.map(item => ({ id: item.id, version: 1, title: item.title, organization: item.organization, activity: item.activity, region: item.region, deadline: item.deadline, to: '/dev/opportunity-flow?source=recommendation' })) : state.status === 'success' ? state.data.items.map(item => ({
+  const cards = preview ? demoOpportunities.map(item => ({ id: item.id, version: 1, title: item.title, organization: item.organization, activity: item.activity, region: item.region, deadline: item.deadline, to: `/dev/opportunity-flow?source=recommendation&opportunity=${encodeURIComponent(item.id)}` })) : state.status === 'success' ? state.data.items.map(item => ({
     id: item.opportunity.id,
     version: item.opportunity.version,
     title: item.opportunity.title,

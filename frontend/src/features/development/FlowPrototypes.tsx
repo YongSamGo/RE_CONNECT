@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { ServicePage } from '../../ui/ServicePage'
 import { OpportunityListCard } from '../opportunities/OpportunityListCard'
 import { demoOpportunities } from './demo-opportunities'
@@ -52,8 +52,10 @@ export function KakaoFlowPrototype() {
 }
 
 export function OpportunityApplicationFlowPrototype({ recommended = false }: { recommended?: boolean }) {
-  const [step, setStep] = useState<OpportunityStep>('list')
-  const [selected, setSelected] = useState(0)
+  const [searchParams] = useSearchParams()
+  const selectedFromUrl = demoOpportunities.findIndex(item => item.id === searchParams.get('opportunity'))
+  const [step, setStep] = useState<OpportunityStep>(selectedFromUrl >= 0 ? 'detail' : 'list')
+  const [selected, setSelected] = useState(selectedFromUrl >= 0 ? selectedFromUrl : 0)
   const [name, setName] = useState('홍길동')
   const [phone, setPhone] = useState('010-0000-0000')
   const [introduction, setIntroduction] = useState('')

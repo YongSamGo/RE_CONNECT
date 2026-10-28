@@ -31,3 +31,8 @@ it('keeps the user-specified start screen free of screen-directory or draft cont
   expect(screen.getByRole('button', { name: '동의하고 대화 시작하기' })).toBeVisible()
   expect(screen.queryByRole('link', { name: '다시잇다 이용 안내' })).not.toBeInTheDocument()
 })
+
+it('opens the chosen example opportunity from the recommendation preview', () => {
+  render(<MemoryRouter initialEntries={['/dev/opportunity-flow?source=recommendation&opportunity=demo-digital']}><App /></MemoryRouter>)
+  expect(screen.getByRole('heading', { name: '디지털 생활 안내 도우미' })).toBeVisible()
+})
