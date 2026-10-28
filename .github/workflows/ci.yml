@@ -197,7 +197,7 @@ jobs:
           export PATH="/usr/lib/postgresql/16/bin:$PATH"
           cluster="$(mktemp -d /tmp/reconnect-db-roles-XXXXXXXX)"
           mkdir "$cluster/socket"
-          initdb -D "$cluster/postgres" --username=postgres --auth=trust --no-locale
+          initdb -D "$cluster/postgres" --username=postgres --auth=trust --no-locale --encoding=UTF8
           pg_ctl -D "$cluster/postgres" -o "-k $cluster/socket -h '' -p 55491" -w start
           trap 'pg_ctl -D "$cluster/postgres" -m fast -w stop' EXIT
           createdb --host "$cluster/socket" --port 55491 --username postgres reconnect
