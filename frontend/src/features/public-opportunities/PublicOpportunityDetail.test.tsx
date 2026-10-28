@@ -30,13 +30,20 @@ describe('public detail request and state', () => {
     expect(screen.getByText(/제공된 원문 설명이 없습니다/)).toBeVisible()
     expect(screen.getByText(/검수된 공고에 명시된 필수조건이 없습니다/)).toBeVisible()
     expect(screen.getByText(/내 지원 자격을 판정한 결과가 아닙니다/)).toBeVisible()
-    expect(screen.getByRole('link', { name: 'AI 처리 안내를 확인하고 새 체험 시작' })).toHaveAttribute('href', '/start')
+    expect(screen.getByRole('link', { name: 'AI 처리 안내를 확인하고 시작하기' })).toHaveAttribute('href', '/start')
     expect(screen.getByText(/원문 확인:/)).toHaveTextContent('2026년 10월 15일 08:30')
     expect(screen.getByRole('region', { name: '공고 상세 조회 결과' })).toHaveFocus()
     const link = screen.getByRole('link', { name: /공식 원문 확인 / })
     expect(link).toHaveAttribute('href', sourceUrl)
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     expect(link).toHaveAttribute('referrerpolicy', 'no-referrer')
+  })
+  it('continues from a recommended opportunity to preparation with the same journey', async () => {
+    const journeyId = '12345678-1234-1234-1234-123456789003'
+    vi.stubGlobal('fetch', vi.fn(async () => json(sampleDetail())))
+    render(<MemoryRouter initialEntries={[{ pathname: `/opportunities/${id}`, state: { journeyId } }]}><Routes><Route path="/opportunities/:id" element={<PublicOpportunityDetail />} /></Routes></MemoryRouter>)
+    await load()
+    expect(await screen.findByRole('link', { name: '참여 준비하기' })).toHaveAttribute('href', `/journeys/${journeyId}/opportunities/${id}/preparation`)
   })
   it.each(['preview', 'not-a-uuid'])('rejects invalid route %s before any request', (path) => {
     const fetch = vi.fn()

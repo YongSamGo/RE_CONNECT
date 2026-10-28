@@ -205,6 +205,9 @@
 .catalog-provinces .region-clear[aria-pressed='true'] { background: #fff; color: var(--emphasis-strong); font-weight: 600; box-shadow: 0 1px 4px rgba(0, 0, 0, .1); }
 .public-explore-pane, .public-catalog-stage { scrollbar-width: none; -ms-overflow-style: none; }
 .public-explore-pane::-webkit-scrollbar, .public-catalog-stage::-webkit-scrollbar { display: none; }
+@media (min-width: 1000px) {
+  .public-catalog-stage { width: min(calc(100vw - 48px), calc((100svh - 135px) * 16 / 9)); }
+}
 @media (max-width: 760px) {
   .public-map-pane { height: auto; }
   .public-map-pane .region-picker { height: auto; grid-template-rows: auto auto auto; }
@@ -214,4 +217,15 @@
 .region-map-controls { flex-wrap: wrap; gap: 8px 16px; }
 @media (min-width: 761px) {
   .public-explore-pane { top: -36px; bottom: 0; height: auto; max-height: none; transform: none; }
+}
+
+/* 모든 주요 화면의 바깥 패널 폭과 모서리를 홈 패널에 맞춘다. */
+.public-catalog-stage { width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 88px) * 16 / 9)); border-radius: var(--large-panel-radius); }
+.public-catalog-results { width: min(calc(100vw - 48px), var(--large-panel-max)); border-radius: var(--large-panel-radius); }
+@media (min-width: 1000px) {
+  .public-catalog-stage { width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 135px) * 16 / 9)); }
+}
+@media (max-width: 760px) {
+  .public-catalog-stage { width: calc(100vw - 32px); border-radius: 18px; }
+  .public-catalog-results { width: calc(100vw - 32px); border-radius: 18px; }
 }

@@ -45,7 +45,7 @@ it('makes the anonymous profile and approved draft bundle explicit before making
   await userEvent.click(screen.getByRole('button', { name: '서버에서 저장 대상 확인' }))
   const checked = await screen.findByLabelText('프로필도 포함된 묶음 저장 준비를 확인했어요.')
   expect(screen.getByRole('heading', { name: '확인된 저장 대상' })).toBeVisible()
-  expect(screen.getByText('확정 프로필 1번 · 승인한 지원서 수정본 3번')).toBeVisible()
+  expect(screen.getByText('확정 프로필 1번 / 승인한 지원서 수정본 3번')).toBeVisible()
   expect(writes).toHaveLength(0)
   expect(screen.getByRole('button', { name: '확인한 자료로 로그인 준비' })).toBeDisabled()
   await userEvent.click(checked)

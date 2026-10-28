@@ -28,9 +28,9 @@ const nullableText = (value: unknown, max: number) => value === null ? null : te
 const stringList = (value: unknown, max: number, length: number) => list(value, max, value => text(value, length))
 const nullableList = (value: unknown, max: number, length: number) => value === null ? null : stringList(value, max, length)
 
-export function parseProfileView(value: unknown): ProfileView {
-  const item = record(value), content = record(item.draft)
-  if (content.schema_version !== 1 || typeof item.has_unconfirmed_changes !== 'boolean') return invalid()
+export function parseProfileContent(value: unknown): ProfileView['draft'] {
+  const content = record(value)
+  if (content.schema_version !== 1) return invalid()
   const draft: ProfileView['draft'] = {
     schema_version: 1,
     experiences: list(content.experiences, 20, value => { const e = record(value); return {
@@ -47,6 +47,12 @@ export function parseProfileView(value: unknown): ProfileView {
     activity_constraints: nullableList(content.activity_constraints, 10, 200),
   }
   if (new Set(draft.experiences.map(e => e.id)).size !== draft.experiences.length) return invalid()
+  return draft
+}
+
+export function parseProfileView(value: unknown): ProfileView {
+  const item = record(value), draft = parseProfileContent(item.draft)
+  if (typeof item.has_unconfirmed_changes !== 'boolean') return invalid()
   let confirmed: ProfileView['confirmed'] = null
   if (item.confirmed !== null) {
     const c = record(item.confirmed)

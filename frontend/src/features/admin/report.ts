@@ -2,7 +2,7 @@ import type { components } from '../../api/schema'
 import { invalid, isOpportunityId, record, timestamp } from '../public-opportunities/catalog'
 
 export type ReportSnapshot = components['schemas']['AdminReport']
-export const reportTypes = { already_closed: '이미 모집 종료', wrong_requirements: '지원 조건 오류', wrong_schedule_or_location: '일정·장소 오류', wrong_application_method: '접수 방법 오류', broken_link: '링크 오류', other: '기타' } satisfies Record<ReportSnapshot['type'], string>
+export const reportTypes = { already_closed: '이미 모집 종료', wrong_requirements: '지원 조건 오류', wrong_schedule_or_location: '일정, 장소 오류', wrong_application_method: '접수 방법 오류', broken_link: '링크 오류', other: '기타' } satisfies Record<ReportSnapshot['type'], string>
 function version(value: unknown): number { return typeof value === 'number' && Number.isSafeInteger(value) && value > 0 ? value : invalid() }
 function text(value: unknown, max: number): string { return typeof value === 'string' && value.length <= max ? value : invalid() }
 const nullable = (value: unknown) => value === null ? null : text(value, 500)

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { Link, useLocation, useParams } from 'react-router-dom'
 import { createApiClient } from '../../api/client'
 import { ApiError } from '../../api/errors'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -10,6 +10,7 @@ import { checkedTime, officialLink, parseDetail } from './detail'
 import type { PublicDetail } from './detail'
 import { OpportunityReport } from './OpportunityReport'
 import { OpportunityReadAloud } from '../voice/OpportunityReadAloud'
+import { ServicePage } from '../../ui/ServicePage'
 import './catalog.css'
 
 type State = { status: 'idle' | 'loading' } | { status: 'loaded'; item: PublicDetail } | { status: 'error'; error: ApiError }
@@ -22,7 +23,7 @@ function OfficialReference({ value, label }: { value: string; label: string }) {
     : <p>{label}: 확인된 공식 상세 주소가 없어 링크를 제공하지 않습니다.</p>
 }
 
-function DetailContent({ item }: { item: PublicDetail }) {
+function DetailContent({ item, journeyId }: { item: PublicDetail; journeyId?: string }) {
   return <>
     <article className="panel opportunity-detail">
       <p className="eyebrow">{item.activity_type === 'employment' ? '취업 및 공공일자리' : '봉사'} / 공고 버전 {item.version}</p>
@@ -53,12 +54,12 @@ function DetailContent({ item }: { item: PublicDetail }) {
       <p className="catalog-note">원문 확인: {checkedTime(item.source_checked_at)} / 검수: {checkedTime(item.reviewed_at)} (한국시간). 현재 상태와 다를 수 있으므로 공식 원문도 확인해 주세요.</p>
     </article>
     <OpportunityReport key={`${item.id}:${item.version}`} id={item.id} version={item.version} />
-    <Link className="button secondary" to={`/opportunities/${item.id}/preparation`}>공식 서류·접수 준비 안내 보기</Link>
-    <StatusNotice title="개인 자격은 확정 프로필로 대조해 주세요">경험을 정리하고 프로필을 확정하면 추천 화면에서 공고 조건을 대조하고 지원서를 준비할 수 있습니다. <Link className="text-link" to="/start">AI 처리 안내를 확인하고 새 체험 시작</Link></StatusNotice>
+      {journeyId && item.recruitment_status === 'open' && !item.change_pending && <Link className="button primary" to={`/journeys/${journeyId}/opportunities/${item.id}/application`}>지원서 작성하기</Link>}
+    {!journeyId && <StatusNotice title="경험을 정리해 지원 준비에 활용할 수 있어요">경험을 이야기하면 관련 공고를 추천받고 지원 내용을 준비할 수 있습니다. <Link className="text-link" to="/start">AI 처리 안내를 확인하고 시작하기</Link></StatusNotice>}
   </>
 }
 
-function DetailRequest({ id }: { id: string }) {
+function DetailRequest({ id, journeyId }: { id: string; journeyId?: string }) {
   const [api] = useState(() => createApiClient())
   const scope = useMemoryScope(initial)
   const state = scope.value
@@ -88,7 +89,7 @@ function DetailRequest({ id }: { id: string }) {
       {state.status === 'error' && (state.error.code === 'NOT_FOUND' || state.error.status === 404
         ? <StatusNotice kind="error" title="이 공고를 찾을 수 없어요">삭제되었거나 공개가 종료된 공고일 수 있어요. 공개 검색에서 다른 공고를 찾아보세요.</StatusNotice>
         : <RequestError error={state.error} actions={state.error.code !== 'DAILY_QUOTA_EXCEEDED' ? <Button onClick={() => void load()}>공고 다시 조회</Button> : undefined} />)}
-      {state.status === 'loaded' && <DetailContent item={state.item} />}
+      {state.status === 'loaded' && <DetailContent item={state.item} journeyId={journeyId} />}
     </section>
     {state.status === 'loaded' && <Button variant="secondary" onClick={() => void load()}>최신 정보 다시 조회</Button>}
   </>
@@ -96,9 +97,13 @@ function DetailRequest({ id }: { id: string }) {
 
 export function PublicOpportunityDetail() {
   const { id = '' } = useParams()
-  return <div className="reading-width public-detail">
-    <header className="page-heading"><p className="eyebrow">공개 공고 상세</p><h1>공고의 조건을 확인해 주세요</h1><p>모집 상태와 원문 조건, 신청 방법을 살펴보세요.</p></header>
-    {isOpportunityId(id) ? <DetailRequest key={id} id={id} /> : <StatusNotice kind="error" title="공고 주소를 확인해 주세요">올바른 공고 주소가 아닙니다. 공개 검색에서 공고를 다시 선택해 주세요.</StatusNotice>}
-    <Link className="text-link" to="/opportunities">공개 공고 검색으로</Link>
-  </div>
+  const location = useLocation()
+  const candidate: unknown = location.state?.journeyId
+  const journeyId = typeof candidate === 'string' && isOpportunityId(candidate) ? candidate : undefined
+  return <ServicePage title="공고의 조건을 확인해 주세요" description="모집 상태와 원문 조건, 신청 방법을 살펴보세요."><div className="public-detail">
+    {isOpportunityId(id) ? <DetailRequest key={id} id={id} journeyId={journeyId} /> : !id ?
+      <div className="service-entry"><h2>공고를 선택해 주세요</h2><p>공고를 선택하면 모집 조건과 신청 방법을 확인할 수 있습니다.</p><Link className="button primary" to="/opportunities">공고 살펴보기</Link></div>
+      : <StatusNotice kind="error" title="공고 주소를 확인해 주세요">올바른 공고 주소가 아닙니다. 공개 검색에서 공고를 다시 선택해 주세요.</StatusNotice>}
+    {id && <Link className="text-link" to="/opportunities">공개 공고 검색으로</Link>}
+  </div></ServicePage>
 }

@@ -21,6 +21,7 @@ type ClientOptions = {
   /** Dependency injection for transport tests, not an API origin override. */
   fetch?: (request: Request) => Promise<Response>
   timeoutMs?: number
+  developmentPreview?: boolean
 }
 
 export function createApiClient(options: ClientOptions = {}): Pick<Client<BrowserPaths>, 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE'> {
@@ -42,8 +43,8 @@ export function createApiClient(options: ClientOptions = {}): Pick<Client<Browse
     if (request.method !== 'GET') {
       // Session rotation also rotates the cookie. Do not capture it at startup.
       const token = csrfToken(document.cookie, window.location.href)
-      if (!token) throw new ApiError('CSRF_MISSING')
-      headers.set('X-CSRF-Token', token)
+      if (!token && !(import.meta.env.DEV && options.developmentPreview)) throw new ApiError('CSRF_MISSING')
+      if (token) headers.set('X-CSRF-Token', token)
     }
     const controller = new AbortController()
     let timedOut = false

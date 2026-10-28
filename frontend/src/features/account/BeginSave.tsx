@@ -14,6 +14,7 @@ import { parseNotices } from './notices-model'
 import { NoticeText } from './notices'
 import { PendingSave } from './PendingSave'
 import type { SaveInput } from './PendingSave'
+import { EmptySection, ServicePage } from '../../ui/ServicePage'
 
 type Choice = { body: components['schemas']['SaveIntentCreate']; notices: components['schemas']['NoticeCatalog'];
   member: SaveInput | null; key: string; checked: boolean; started: boolean; intent: string | null; cancelled: boolean }
@@ -74,10 +75,11 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
     }, accept)
   }
   if (value?.member) return <PendingSave input={value.member} />
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">회원 저장 준비</p><h1>{draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'}</h1><p>서버에서 자료의 확정과 승인 상태를 확인해요. 로그인 후 저장 여부는 따로 선택해요.</p></header>
+  return <ServicePage title={draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'} description="확인한 자료를 내 계정에 보관할 수 있어요. 로그인 후 저장할 자료를 직접 선택해 주세요.">
+    {!value && <EmptySection title={draftId ? '프로필과 지원서' : '내 프로필'}><p>{draftId ? '확정한 프로필과 승인한 지원서를 함께 확인해요.' : '직접 확인하고 확정한 경험과 희망 활동을 저장해요.'}</p></EmptySection>}
     {!value && <Button pending={busy} onClick={() => void load()}>서버에서 저장 대상 확인</Button>}
     {value && !value.cancelled && <section className="panel">
-      <h2>확인된 저장 대상</h2><p>{value.body.profile && `확정 프로필 ${value.body.profile.version}번`}{value.body.draft ? ` · 승인한 지원서 수정본 ${value.body.draft.revision}번` : ''}</p><p>본문은 이전 화면에서 확인해 주세요. 이 화면에서는 저장 대상과 상태를 확인합니다.</p>
+      <h2>확인된 저장 대상</h2><p>{value.body.profile && `확정 프로필 ${value.body.profile.version}번`}{value.body.draft ? ` / 승인한 지원서 수정본 ${value.body.draft.revision}번` : ''}</p><p>본문은 이전 화면에서 확인해 주세요. 이 화면에서는 저장 대상과 상태를 확인합니다.</p>
       <p>{value.body.draft ? '지원서의 근거로 프로필도 함께 저장합니다. 로그인 후 두 자료를 명시적으로 선택하고 순서대로 저장합니다.' : '직접 확정한 프로필을 로그인 후 별도로 저장합니다.'}</p>
       {value.notices.storage && value.notices.login_available ? <>
         <NoticeText notice={value.notices.storage} />
@@ -90,5 +92,5 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
     <Link className="text-link" to={`/journeys/${journeyId}/profile`}>확정 프로필 확인 화면으로</Link>
-  </div>
+  </ServicePage>
 }

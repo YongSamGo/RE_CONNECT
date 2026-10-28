@@ -1,0 +1,36 @@
+.recommendation-page .service-heading { margin-bottom: 20px; }
+.recommendation-scroll-panel {
+  max-height: min(64svh, 620px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--paper);
+  scrollbar-gutter: stable;
+}
+.recommendation-cards { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.recommendation-card { padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.recommendation-card h2 { margin: 0 0 12px; font-size: calc(22px * var(--text-scale, 1)); }
+.recommendation-card p { margin: 8px 0; }
+.recommendation-card .actions { margin-top: 18px; }
+.recommendation-card-skeletons { margin-top: 8px; }
+.recommendation-card-skeleton { display: grid; gap: 14px; }
+.skeleton-line, .skeleton-action { display: block; border-radius: 8px; background: #e7edf0; }
+.skeleton-title { width: 62%; height: 28px; }
+.skeleton-meta { width: 42%; height: 16px; }
+.skeleton-description { width: 82%; height: 18px; }
+.skeleton-action { width: 168px; height: 44px; margin-top: 8px; border-radius: 12px; }
+.recommendation-note { margin: 20px 4px 0; color: var(--muted); }
+.recommendation-preview-label { margin: -8px 0 16px; color: var(--muted); font-size: calc(14px * var(--text-scale, 1)); }
+.recommendation-preview .recommendation-card .button:disabled { opacity: 1; cursor: default; }
+.recommendation-profile-check { max-height: 44svh; overflow-y: auto; margin-bottom: 20px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
+.recommendation-profile-check > h2 { margin-top: 0; }
+.recommendation-profile-check .profile-summary-section { padding: 16px 0; }
+.recommendation-profile-check .profile-optional { margin: 16px 0; }
+.recommendation-profile-check .actions { margin-top: 16px; }
+@media (max-width: 760px) {
+  .recommendation-scroll-panel { max-height: 62svh; padding: 12px; border-radius: 18px; }
+  .recommendation-card { padding: 18px; }
+  .recommendation-profile-check { max-height: 48svh; padding: 16px; }
+}

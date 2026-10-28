@@ -1,0 +1,16 @@
+.profile-task .profile-management { margin: 0 0 16px; gap: 8px 16px; }
+.profile-task .profile-review-layout { display: grid; grid-template-columns: minmax(0, 2fr) minmax(260px, 1fr); gap: 32px; align-items: start; }
+.profile-task .profile-review-content { min-width: 0; }
+.profile-task .profile-summary-section { padding: 16px 0; }
+.profile-task .profile-summary-section h2 { margin-bottom: 12px; }
+.profile-task .profile-decision { border-left: 1px solid var(--line); padding-left: 24px; }
+.profile-task .profile-decision .actions { display: grid; gap: 12px; margin: 0 0 16px; }
+.profile-task .profile-decision p { margin-bottom: 16px; }
+.profile-task .profile-editor { border: 0; padding: 0; }
+.profile-task .profile-editor > .panel { border: 0; padding: 24px 0; border-top: 1px solid var(--line); border-radius: 0; }
+.profile-task .profile-editor > .panel > .panel { background: transparent; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; padding: 0 0 24px; }
+.profile-task .profile-review-layout + .notice { margin-top: 24px; }
+@media (max-width: 900px) {
+  .profile-task .profile-review-layout { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .profile-task .profile-decision { border-left: 0; border-top: 1px solid var(--line); padding: 16px 0 0; }
+}

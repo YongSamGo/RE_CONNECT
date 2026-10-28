@@ -150,7 +150,7 @@ main { max-width: 1280px; padding: 0 48px 80px; margin: auto; min-height: 50vh; 
 .consent-action .actions .button, .consent-action .actions .text-link { font-size: calc((18px) * var(--text-scale, 1)); }
 
 /* 시작 안내와 경험 입력은 홈의 영상 영역과 같은 폭을 사용한다. */
-.consent-stage, .conversation-stage, .account-stage { position: relative; left: 50%; width: min(calc(100vw - 48px), calc((100svh - 88px) * 16 / 9)); min-height: min(calc((100vw - 48px) * 9 / 16), calc(100svh - 88px)); margin: 8px 0 0; padding: clamp(18px, 2.5vw, 36px); transform: translateX(-50%); border: 1px solid rgba(20, 20, 20, .07); border-radius: 24px; background: #fff; box-shadow: 0 12px 40px rgba(0, 0, 0, .06); }
+.consent-stage, .conversation-stage, .account-stage { position: relative; left: 50%; width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 88px) * 16 / 9)); min-height: min(630px, calc((100vw - 48px) * 9 / 16), calc(100svh - 88px)); margin: 8px 0 0; padding: var(--large-panel-padding); transform: translateX(-50%); border: 1px solid rgba(20, 20, 20, .07); border-radius: var(--large-panel-radius); background: #fff; box-shadow: 0 12px 40px rgba(0, 0, 0, .06); }
 .consent-stage { display: flex; flex-direction: column; }
 .consent-layout { display: flex; flex: 1; flex-direction: column; align-items: stretch; gap: 24px; margin-top: clamp(28px, 4vw, 48px); }
 .consent-information { max-width: 800px; }
@@ -202,12 +202,27 @@ main { max-width: 1280px; padding: 0 48px 80px; margin: auto; min-height: 50vh; 
 .consent-dialog-content h3 { margin: 0 0 8px; font-size: calc(21px * var(--text-scale, 1)); line-height: 1.5; }
 .consent-dialog p { margin: 0; font-size: calc(20px * var(--text-scale, 1)); line-height: 1.7; }
 .consent-dialog-content p + p { margin-top: 12px; }
+.consent-key-points p + p { margin-top: 16px; }
+.consent-full-details { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 12px; }
+.consent-full-details > summary { min-height: 48px; padding: 10px 0; color: var(--emphasis); font-weight: 600; cursor: pointer; }
+.consent-full-details[open] > summary { margin-bottom: 16px; }
 .consent-dialog-close { flex-shrink: 0; min-height: 48px; padding: 10px 24px; border: 1px solid var(--emphasis); border-radius: 10px; background: var(--emphasis); color: #fff; font-size: calc(18px * var(--text-scale, 1)); cursor: pointer; }
 .consent-start { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: min(100%, 680px); margin-top: 24px; padding-top: 0; }
 .consent-start .button { min-height: 56px; padding-inline: 24px; font-size: calc(18px * var(--text-scale, 1)); }
 .consent-browse { display: inline-flex; align-items: center; min-height: 44px; font-size: calc(17px * var(--text-scale, 1)); text-decoration: underline; text-underline-offset: 4px; }
+.development-navigation { position: sticky; bottom: 0; z-index: 100; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 8px 16px; padding: 10px 16px; background: #173c50; color: #fff; font-size: 15px; box-shadow: 0 -2px 12px #0002; }
+.development-navigation a { display: inline-flex; align-items: center; min-height: 40px; padding: 6px 12px; border: 1px solid #fff; border-radius: 8px; color: #fff; font-weight: 600; }
+.development-navigation a:hover, .development-navigation a:focus-visible { background: #fff; color: #173c50; }
+@media (min-width: 1000px) {
+  main { padding-bottom: 12px; }
+  .development-navigation { padding-block: 4px; }
+  .home-stage { min-height: 0; padding-bottom: 8px; }
+  .home-video { width: min(100%, var(--large-panel-max), calc((100svh - 135px) * 16 / 9)); }
+  .consent-stage, .conversation-stage, .account-stage { width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 135px) * 16 / 9)); min-height: min(630px, calc((100vw - 48px) * 9 / 16), calc(100svh - 135px)); padding: var(--large-panel-padding); }
+}
 @media (max-width: 760px) {
-  .consent-stage { width: min(calc(100vw - 32px), calc((100svh - 88px) * 16 / 9)); padding: 12px; }
+  .consent-stage, .conversation-stage, .account-stage { width: calc(100vw - 32px); padding: 20px; border-radius: 18px; }
+  .consent-stage { width: min(calc(100vw - 32px), calc((100svh - 88px) * 16 / 9)); }
   .consent-dialog { width: calc(100vw - 32px); height: min(76svh, 620px); }
   .consent-heading > .consent-introduction { margin-top: 16px; }
   .consent-topics { margin-top: 20px; }

@@ -21,6 +21,8 @@
 
 React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을 Nginx 컨테이너가 제공하고, Vite 개발 서버는 로컬 개발에서만 쓴다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)). 실행·검사 방법은 [개발 안내](DEVELOPMENT.md), 구현 범위와 연동 대기 사항은 [진행 기록](PROGRESS.md)을 따른다.
 
+사용자용 화면과 호환 주소의 이동 경로는 [서비스 화면 안내](SERVICE_SCREENS.md)를 따른다. 개발 서버의 `/guide`에서 실제 이용 화면을 열어 확인할 수 있다. 대화·내 경험 확인의 전면 개편 첫 구현과 미검증 범위는 [개편 진행 기록](REDESIGN_PROGRESS.md)에 정리했다.
+
 로컬 별도 구현과의 통합 기준·제외 범위·이전 주소 전환·검증 결과는 [중복 정리 기록](CONSOLIDATION.md)을 참고한다.
 
 다음 작업의 맥락은 [짧은 인계 요약](HANDOFF.md), 이슈별 현재 증거·남은 조건·검증 게이트·시간 기록은 [이슈 진행표](ISSUE_STATUS.md)에서 확인한다. GitHub 상태는 작업 착수 때 다시 조회한다.

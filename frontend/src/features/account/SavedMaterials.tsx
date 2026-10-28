@@ -10,6 +10,7 @@ import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { invalid, isOpportunityId, record, text } from '../public-opportunities/catalog'
 import { parseSession } from './session'
 import { SavedDraftEditor } from './SavedDraftEditor'
+import { ServicePage } from '../../ui/ServicePage'
 
 type Material = { id: string; title: string; version: number }
 type ImportAttempt = { owner: string; profileId: string; profileVersion: number; notice: string; csrf: string; key: string; body: { ai_notice_version: string; saved_profile: { profile_id: string; version: number } } }
@@ -88,7 +89,7 @@ export function SavedMaterials({ onSessionReset }: { onSessionReset?: () => void
     if (!confirmed.authenticated || confirmed.user?.id !== owner) throw new ApiError('SESSION_EXPIRED', 401)
     return { owner, experiences, profile: reference, ...documents }
   })
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">저장한 자료</p><h1>내가 저장한 자료를 확인해요</h1><p>조회와 삭제는 서버에서 현재 회원의 자료에만 적용돼요.</p></header>
+  return <ServicePage member title="저장한 자료" description="정리한 프로필과 공고별 지원서를 다시 확인해요.">
     <p>저장 자료 삭제 시 기존 임시 체험과 다른 기기의 로그인 세션도 종료합니다. 다른 저장 문서는 선택한 삭제 범위에 따라 유지합니다.</p>
     <Button pending={pending} onClick={() => { setDocumentConfirmed(false); setConfirmed(false); void load() }}>저장 자료 불러오기</Button>
     {state.status === 'error' && <RequestError error={state.error} />}
@@ -149,7 +150,7 @@ export function SavedMaterials({ onSessionReset }: { onSessionReset?: () => void
         if (!isOpportunityId(id) || record(result.confirmed).version !== 1) return invalid()
         await assertOwner(api, signal, saved.owner, attempt.csrf)
         return id
-      }, id => { importScope.clear(); importOutcomeUnknown.clear(); navigate(`/journeys/${id}/profile`, { state: { savedProfileBaseVersion: saved.profile?.version } }) })}>저장 프로필로 새 체험·편집 시작</Button>
+      }, id => { importScope.clear(); importOutcomeUnknown.clear(); navigate(`/journeys/${id}/profile`, { state: { savedProfileBaseVersion: saved.profile?.version } }) })}>저장 프로필로 새 체험, 편집 시작</Button>
       <p>새 체험에서 프로필을 수정하고 재확정할 수 있습니다. 기존 대화는 복원하지 않고 저장본은 명시적으로 저장하기 전까지 유지합니다.</p>
       <p>프로필 삭제는 모든 버전과 연결된 지원서를 함께 삭제합니다.</p><CheckboxField label="저장 프로필과 연결된 지원서를 모두 삭제할게요." checked={confirmed} onChange={(event) => setConfirmed(event.target.checked)} />
       <Button variant="secondary" disabled={!confirmed} onClick={() => { setConfirmed(false); void request.run(async (api, signal) => { await assertOwner(api, signal, saved.owner); await api.DELETE('/profiles/me', { signal }); return { owner: saved.owner, experiences: null, documents: [], page: 1, total: 0, message: '저장 프로필과 연결된 지원서를 삭제했습니다.' } }, onSessionReset) }}>저장 프로필과 지원서 삭제</Button>
@@ -164,9 +165,9 @@ export function SavedMaterials({ onSessionReset }: { onSessionReset?: () => void
         return { ...saved, message: undefined, selected: { id: document.id, version: document.version, opportunityId, title: document.title, introduction: result.self_introduction, motivation: result.motivation, review: result.review_reasons.length > 0 } }
       }) }}>내용 보기: {document.title}</Button>
     </div></li>)}</ul>}
-    <div className="actions"><Button variant="secondary" disabled={saved.page <= 1} onClick={() => void load(saved.page - 1)}>이전 페이지</Button><p>{saved.page}페이지 · 전체 {saved.total}건</p><Button variant="secondary" disabled={saved.page * 10 >= saved.total} onClick={() => void load(saved.page + 1)}>다음 페이지</Button></div></section>
+    <div className="actions"><Button variant="secondary" disabled={saved.page <= 1} onClick={() => void load(saved.page - 1)}>이전 페이지</Button><p>{saved.page}페이지 / 전체 {saved.total}건</p><Button variant="secondary" disabled={saved.page * 10 >= saved.total} onClick={() => void load(saved.page + 1)}>다음 페이지</Button></div></section>
     {saved.selected && <section className="panel"><h2 className="result-heading" ref={documentHeading} tabIndex={-1}>{saved.selected.title}</h2>{saved.selected.review && <StatusNotice label="재검토 필요" title="근거 정보가 변경되었습니다">프로필 또는 공고가 변경되었습니다. 공식 조건과 내용을 다시 확인해 주세요.</StatusNotice>}<h3>자기소개</h3><p className="user-text">{saved.selected.introduction}</p><h3>지원동기</h3><p className="user-text">{saved.selected.motivation}</p><CheckboxField label="이 지원서의 모든 저장 버전을 삭제할게요." checked={documentConfirmed} onChange={(event) => setDocumentConfirmed(event.target.checked)} /><Button variant="secondary" disabled={!documentConfirmed} onClick={() => { const id = saved.selected!.id; setDocumentConfirmed(false); void request.run(async (api, signal) => { await assertOwner(api, signal, saved.owner); await api.DELETE('/drafts/{document_id}', { signal, params: { path: { document_id: id } } }); return { ...saved, selected: undefined, documents: saved.documents.filter((document) => document.id !== id), total: Math.max(0, saved.total - 1), message: '선택한 지원서의 모든 저장 버전을 삭제했습니다.' } }, onSessionReset) }}>선택한 지원서 삭제</Button></section>}
     </>}
     <div>{saved?.selected && <SavedDraftEditor key={`${saved.selected.id}:${saved.selected.version}`} documentId={saved.selected.id} version={saved.selected.version} opportunityId={saved.selected.opportunityId} onUnavailable={request.clear} />}</div><p role="status">{saved?.message}</p><Link className="text-link" to="/me">내 정보로</Link>
-  </div>
+  </ServicePage>
 }

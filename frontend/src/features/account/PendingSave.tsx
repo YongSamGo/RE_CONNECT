@@ -10,6 +10,8 @@ import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { invalid, isOpportunityId, record, timestamp } from '../public-opportunities/catalog'
 import { parseSession } from './session'
 import { StorageConsent } from './notices'
+import { EmptySection, ServicePage } from '../../ui/ServicePage'
+import { SaveProgress } from './SaveProgress'
 
 type Intent = components['schemas']['PendingSaveIntent']
 export type SaveInput = { owner: string; profile: components['schemas']['JourneyProfileSource'];
@@ -20,7 +22,7 @@ type Pending = { owner: string; intent: Omit<Intent, 'expires_at' | 'save_intent
 type Result = { message: string; next: Pending | null }
 const positive = (value: unknown) => typeof value === 'number' && Number.isSafeInteger(value) && value >= 1 && value < 2 ** 31 ? value : invalid()
 
-export function PendingSave({ input }: { input?: SaveInput }) {
+export function PendingSave({ input, resultView = false }: { input?: SaveInput; resultView?: boolean }) {
   const scope = useMemoryScope<Pending | null>(() => null)
   const request = useRequest<Result>()
   const pending = scope.value
@@ -100,7 +102,9 @@ export function PendingSave({ input }: { input?: SaveInput }) {
     }, accept)
   }
   const finished = !!pending && (pending.cancelled || pending.document !== null || (!pending.intent.targets.draft && pending.profile !== null))
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">회원 저장</p><h1>저장할 자료를 직접 확인해요</h1><p>이 화면에서 저장 대상과 상태를 확인해요. 본문은 저장 준비 전 화면에서 확인해 주세요. {pending?.profile !== null && pending?.profile !== undefined ? '단계별 저장 결과는 아래에서 확인해 주세요.' : '저장 버튼을 누르기 전에는 자료를 저장하지 않아요.'}</p></header>
+  return <ServicePage title={finished && !pending?.cancelled ? '선택한 자료를 저장했어요' : resultView ? '저장 결과를 확인해요' : '저장할 자료를 직접 확인해요'} description={pending?.profile !== null && pending?.profile !== undefined ? '단계별 저장 결과는 아래에서 확인해 주세요.' : '내 계정에 보관할 자료를 확인하고 저장해 주세요. 저장 버튼을 누르기 전에는 자료를 저장하지 않아요.'}>
+    {!pending && <EmptySection title="저장 대기 자료"><p>프로필이나 지원서에서 저장을 선택한 뒤, 이곳에서 저장할 자료와 처리 결과를 확인해요.</p></EmptySection>}
+    {pending && <SaveProgress profileSaved={pending.profile !== null} draftSaved={pending.document !== null} includesDraft={pending.intent.targets.draft} finished={finished && !pending.cancelled} />}
     {!pending && <Button pending={busy} onClick={() => void load()}>현재 저장 대기 확인</Button>}
     {pending && <section className="panel"><h2>{pending.intent.targets.draft ? '프로필과 지원서 함께 저장' : '확정 프로필 저장'}</h2>
       <p>{pending.intent.targets.draft ? '지원서의 근거로 프로필도 저장합니다. 먼저 프로필을 저장하고, 다음 버튼으로 지원서를 저장합니다.' : '직접 확인한 확정 프로필만 저장합니다.'}</p>
@@ -119,5 +123,5 @@ export function PendingSave({ input }: { input?: SaveInput }) {
     {request.state.status === 'error' && <><RequestError error={request.state.error} /><p>응답을 받지 못해도 실제로는 저장됐을 수 있어요. 같은 요청으로 다시 확인하거나 저장한 자료를 조회해 주세요. 요청이 만료되거나 충돌했다면 현재 자료를 확인한 뒤 새로 시작해 주세요.</p></>}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}
     <div className="actions"><Link className="button secondary" to="/me/saved">저장한 자료 확인</Link><Link className="text-link" to="/me">내 정보로 이동</Link></div>
-  </div>
+  </ServicePage>
 }
