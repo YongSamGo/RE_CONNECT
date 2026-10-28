@@ -326,6 +326,32 @@ jobs:
       - name: 빌드 (타입 검사 포함)
         run: npm run build
 
+  browser-layout:
+    name: 브라우저 화면과 접근성 회귀
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
+    runs-on: windows-2022
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - name: 의존성 설치
+        run: npm ci --ignore-scripts
+      - name: 고정된 Chromium 설치
+        run: npx playwright install chromium
+      - name: 화면 크기와 큰 글씨 모드 확인
+        run: npm run test:browser
+
   dependency-review:
     name: 새 의존성 검토
     needs: detect
@@ -364,7 +390,7 @@ jobs:
   ci-ok:
     name: CI 통과
     if: always()
-    needs: [detect, secrets, workflow-audit, hidden-text, python, persistence, frontend, dependency-review]
+    needs: [detect, secrets, workflow-audit, hidden-text, python, persistence, frontend, browser-layout, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
     permissions: {}

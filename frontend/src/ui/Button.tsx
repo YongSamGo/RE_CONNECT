@@ -6,7 +6,7 @@ type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
   pendingLabel?: ReactNode
 }
 
-export function Button({ variant = 'primary', pending = false, pendingLabel = '처리 중입니다…', children, disabled, className = '', type = 'button', ...props }: Props) {
+export function Button({ variant = 'primary', pending = false, pendingLabel = '처리하고 있어요…', children, disabled, className = '', type = 'button', ...props }: Props) {
   return <button {...props} type={type} className={`button ${variant} ${className}`.trim()} disabled={disabled || pending} aria-busy={pending || undefined}>
     {pending ? pendingLabel : children}
   </button>

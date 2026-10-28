@@ -1,0 +1,11 @@
+S-Core Dream font files
+
+SCDream1.otf through SCDream9.otf are distributed by S-Core Co., Ltd.
+The official font-sharing page states that the fonts are free for personal and
+business use and may be redistributed. The font files may not be modified or
+sold as fonts.
+
+Official source and license information:
+https://s-core.co.kr/company/font/
+
+These font files are included unmodified.

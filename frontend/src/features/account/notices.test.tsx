@@ -33,6 +33,16 @@ it('renders published data as text and enables only the fixed login URL after ex
   expect(screen.queryByRole('link', { name: '카카오에서 로그인' })).not.toBeInTheDocument()
 })
 
+it('requires the published notice and explicit confirmation from the compact login screen', async () => {
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json(catalog)))
+  render(<LoginEntry compact />)
+  await userEvent.click(screen.getByRole('button', { name: '카카오로 로그인' }))
+  expect(await screen.findByText('가상 시험 주체')).toBeVisible()
+  expect(screen.queryByRole('link', { name: '카카오에서 로그인' })).not.toBeInTheDocument()
+  await userEvent.click(screen.getByLabelText('안내를 읽고 카카오 로그인을 진행할게요.'))
+  expect(screen.getByRole('link', { name: '카카오에서 로그인' })).toHaveAttribute('href', '/api/v1/auth/kakao/start?purpose=login')
+})
+
 it.each([{ ...catalog, storage: null }, { ...catalog, login_available: 'yes' }, { ...catalog, storage: { ...notice, contact: '' } }, { ...catalog, storage: { ...notice, version: 'invalid version' } }])('rejects inconsistent or incomplete notice data', value => {
   expect(() => parseNotices(value)).toThrow()
 })

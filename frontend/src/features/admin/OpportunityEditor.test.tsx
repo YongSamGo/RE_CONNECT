@@ -29,6 +29,8 @@ describe('opportunity create and edit', () => {
     const user = userEvent.setup()
     await user.click(screen.getByRole('button', { name: '편집할 공고 불러오기' }))
     await user.click(await screen.findByRole('button', { name: '조건 1 편집' }))
+    expect(screen.getByLabelText('활동 시·도')).toHaveAccessibleDescription(/시·도 전체로 변경/)
+    expect(screen.getByLabelText('조건 묶음')).toHaveAccessibleDescription(/다른 조건도 확인 필요/)
     change('조건 값 (한 줄에 하나)', '65')
     expect(screen.getByRole('button', { name: '검수 대기 버전으로 저장' })).toBeDisabled()
     fireEvent.submit(screen.getByRole('button', { name: '검수 대기 버전으로 저장' }).closest('form')!)

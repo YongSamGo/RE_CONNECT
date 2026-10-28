@@ -22,6 +22,7 @@ class OpportunitySearch(BaseModel):
     q: text(100) | None = None
     province: Province | None = None
     district: str | None = Field(default=None, pattern=r"^[a-z0-9_]{2,40}$")
+    regions: list[str] = Field(default_factory=list, max_length=67)
     activity_type: ActivityType | None = None
     page: int = Field(default=1, ge=1)
     page_size: int = Field(default=20, ge=1, le=20)
@@ -40,6 +41,34 @@ class OpportunitySearch(BaseModel):
         if value is not None and province is not None and not is_known_district(province, value):
             raise PydanticCustomError("unknown_district", "지역 목록에 없는 시·군·구")
         return value
+
+    @field_validator("regions")
+    @classmethod
+    def _regions_known(cls, values):
+        parsed: list[tuple[Province, str | None]] = []
+        for value in values:
+            parts = value.split(":")
+            if len(parts) not in (1, 2) or parts[0] not in ("seoul", "gyeonggi", "incheon"):
+                raise PydanticCustomError("invalid_region_filter", "지역 필터 형식이 올바르지 않습니다")
+            province = parts[0]
+            district = parts[1] if len(parts) == 2 else None
+            if district == "":
+                raise PydanticCustomError("invalid_region_filter", "지역 필터 형식이 올바르지 않습니다")
+            if district is not None and not is_known_district(province, district):
+                raise PydanticCustomError("unknown_district", "지역 목록에 없는 시·군·구")
+            parsed.append((province, district))
+        if len(set(parsed)) != len(parsed):
+            raise PydanticCustomError("duplicate_region_filter", "같은 지역을 중복 선택할 수 없습니다")
+        for province, district in parsed:
+            if district is None and any(other == province and other_district is not None for other, other_district in parsed):
+                raise PydanticCustomError("overlapping_region_filter", "시·도 전체와 그 안의 시·군·구를 함께 선택할 수 없습니다")
+        return values
+
+    @model_validator(mode="after")
+    def _region_filters_exclusive(self):
+        if self.regions and (self.province is not None or self.district is not None):
+            raise PydanticCustomError("conflicting_region_filter", "regions와 province/district 필터를 함께 사용할 수 없습니다")
+        return self
 
 
 class PublicOpportunity(OpportunityContent):

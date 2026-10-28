@@ -1,34 +1,52 @@
-:root { --ink: #263b2d; --muted: #586253; --paper: #fcfbf6; --green: #285c3d; --green-dark: #1d462d; --line: #d7ddd1; --surface: #f0f3e8; }
+:root { --ink: #182b38; --muted: #405665; --paper: #f4f7f9; --emphasis: #245a78; --emphasis-strong: #193f56; --line: #cfdce2; --surface: #e5f0f5; --accent: #f3d991; --control-border: #526b78; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream1.otf') format('opentype'); font-style: normal; font-weight: 100; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream2.otf') format('opentype'); font-style: normal; font-weight: 200; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream3.otf') format('opentype'); font-style: normal; font-weight: 300; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream4.otf') format('opentype'); font-style: normal; font-weight: 400; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream5.otf') format('opentype'); font-style: normal; font-weight: 500; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream6.otf') format('opentype'); font-style: normal; font-weight: 600; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream7.otf') format('opentype'); font-style: normal; font-weight: 700; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream8.otf') format('opentype'); font-style: normal; font-weight: 800; font-display: swap; }
+@font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream9.otf') format('opentype'); font-style: normal; font-weight: 900; font-display: swap; }
 * { box-sizing: border-box; }
-body { margin: 0; min-width: 320px; color: var(--ink); background: var(--paper); font-family: 'Noto Sans KR', 'Malgun Gothic', sans-serif; font-size: 18px; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+.visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
+body { margin: 0; min-width: 0; overflow-x: clip; color: var(--ink); background: var(--paper); font-family: 'S-Core Dream', sans-serif; font-size: calc((18px) * var(--text-scale, 1)); font-weight: 400; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
 button, input, textarea, select { font: inherit; }
-select { max-width: 100%; min-height: 44px; padding: 8px 12px; border-radius: 8px; }
+select { max-width: 100%; min-height: 52px; padding: 10px 12px; border: 1px solid var(--control-border); border-radius: 8px; color: var(--ink); background: #fff; }
 summary { cursor: pointer; min-height: 44px; }
-input:not([type='checkbox']) { max-width: 100%; min-height: 44px; border: 1px solid #7f8b7d; border-radius: 8px; padding: 8px 12px; }
-button, a, input, textarea, summary { -webkit-tap-highlight-color: transparent; }
+input:not([type='checkbox']) { max-width: 100%; min-height: 52px; border: 1px solid var(--control-border); border-radius: 8px; padding: 10px 12px; color: var(--ink); background: #fff; }
+button, a, input, textarea, select, summary { -webkit-tap-highlight-color: transparent; }
 button { cursor: pointer; }
-a { color: var(--green); text-underline-offset: 5px; }
-button:disabled { cursor: not-allowed; background: #e0e2dc; color: #50564f; border-color: #b5bcb2; }
-:focus-visible { outline: 3px solid #96531e; outline-offset: 5px; }
+a { color: var(--emphasis); text-underline-offset: 5px; }
+button:disabled { cursor: not-allowed; background: #eeeeee; color: #555555; border-color: #cccccc; }
+:focus-visible { outline: 3px solid var(--emphasis); outline-offset: 5px; }
+input:focus, textarea:focus, select:focus { outline: 3px solid var(--emphasis); outline-offset: 5px; }
 main:focus { outline: none; }
-input[type='checkbox'] { width: 24px; height: 24px; flex-shrink: 0; accent-color: var(--green); }
+input[type='checkbox'] { width: 24px; height: 24px; flex-shrink: 0; accent-color: var(--emphasis); }
 input, textarea, button { min-width: 0; }
-textarea[aria-invalid='true'] { border: 2px solid #9c3528; }
-.field-required { font-size: 18px; font-weight: 400; }
-.field-error { color: #9c3528 !important; margin: 8px 0 0; font-size: 18px; }
-.field-hint { font-size: 18px; color: var(--muted); }
+:root :is(textarea, input, select)[aria-invalid='true'] { border: 2px solid #9c3528; }
+.field-required { font-size: calc((18px) * var(--text-scale, 1)); font-weight: 400; }
+.field-error { color: #9c3528 !important; margin: 8px 0 0; font-size: calc((18px) * var(--text-scale, 1)); }
+.field-hint { font-size: calc((18px) * var(--text-scale, 1)); color: var(--muted); }
 .error-summary { border: 2px solid #9c3528; border-radius: 12px; padding: 24px; margin-bottom: 24px; background: #fff; }
-.error-summary h2 { font-size: 22px; }
+.error-summary:focus { outline: 3px solid var(--emphasis); outline-offset: 4px; }
+.error-summary h2 { font-size: calc((22px) * var(--text-scale, 1)); }
 .error-summary ul { margin-bottom: 0; padding-left: 24px; }
 .error-summary a { display: inline-block; min-height: 44px; padding: 8px 0; }
 .notice-error { border-color: #9c3528 !important; }
 .notice-error .badge { color: #9c3528; }
-textarea { width: 100%; resize: vertical; min-height: 160px; border: 1px solid #7f8b7d; border-radius: 12px; padding: 16px; color: var(--ink); background: #fff; }
-textarea::placeholder { color: #626b60; }
-fieldset { border: 1px solid var(--line); border-radius: 12px; margin: 0 0 24px; padding: 16px 24px; min-width: 0; }
+textarea { width: 100%; resize: vertical; min-height: 160px; border: 1px solid var(--control-border); border-radius: 8px; padding: 16px; color: var(--ink); background: #fff; }
+textarea::placeholder { color: #555555; }
+fieldset { border: 1px solid var(--line); border-radius: 10px; margin: 0 0 24px; padding: 16px 24px; min-width: 0; }
 legend { padding: 0 8px; font-weight: 600; }
 .voice-player { width: 100%; margin-top: 24px; }
 h1, h2, h3, p { margin-top: 0; }
-h1, h2, h3 { line-height: 1.4; }
+h1, h2, h3 { line-height: 1.4; text-wrap: balance; }
 label { display: block; font-weight: 600; margin-bottom: 12px; }
+.form-field + .form-field { margin-top: 20px; }
+.form-field .checkbox-label { margin-bottom: 0; }
+@media (max-width: 480px) { fieldset { padding: 12px 16px; } }
 @media (prefers-reduced-motion: no-preference) { a, button { transition: background-color .15s ease, color .15s ease; } }
+
+:root { --text-scale: 1; }
+:root.large-text { --text-scale: 1.2; }

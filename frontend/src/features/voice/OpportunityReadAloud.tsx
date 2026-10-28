@@ -8,7 +8,7 @@ const fields: Record<Field, string> = { title: '공고 제목', description_text
 export function OpportunityReadAloud({ item }: { item: Pick<components['schemas']['Opportunity'], 'id' | 'version' | Field> }) {
   const selected = useMemoryScope<Field>(() => 'title')
   const field = selected.value
-  return <section aria-label="공고 읽어주기">
+  return <section className="opportunity-speech" aria-label="공고 읽어주기"><h3>공고 읽어주기</h3>
     <label htmlFor="speech-opportunity-field">읽을 항목</label><select id="speech-opportunity-field" value={field} onChange={(event) => selected.setValue(event.target.value as Field)}>{(Object.keys(fields) as Field[]).filter((key) => !!item[key]?.trim()).map((key) => <option key={key} value={key}>{fields[key]}</option>)}</select>
     <ReadAloud key={`${item.id}:${item.version}:${field}`} target={{ kind: 'opportunity', opportunity_id: item.id, version: item.version, field }} label={`${fields[field]} 읽어주기`} />
   </section>

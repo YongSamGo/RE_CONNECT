@@ -37,6 +37,7 @@ describe('explicit condition editing', () => {
     expect(changed).not.toHaveBeenCalled()
     await user.click(screen.getByRole('link', { name: /조건 원문·값·기준일/ }))
     expect(screen.getByLabelText('조건 값 (한 줄에 하나)')).toHaveFocus()
+    expect(screen.getByLabelText('조건 값 (한 줄에 하나)')).toHaveAccessibleDescription(/오류: 조건 원문·값·기준일/)
     change('조건 값 (한 줄에 하나)', '60\n70')
     await user.click(screen.getByRole('checkbox'))
     change('조건 판정 기준일 (미확인은 비워두기)', '2026-10-16')
@@ -78,6 +79,18 @@ describe('explicit condition editing', () => {
     act(() => window.dispatchEvent(new Event('pagehide')))
     expect(screen.queryByLabelText('조건 원문 (필수)')).not.toBeInTheDocument()
     expect(document.body).not.toHaveTextContent('임시 편집 원문')
+  })
+  it('points invalid district codes to the specific editable field', async () => {
+    const regional: Requirement = { ...condition, field: 'residence_region', operator: 'in', value: [{ province: 'seoul', district: 'seongdong' }] }
+    const { changed, user } = setup([regional])
+    await user.click(screen.getByRole('button', { name: '조건 1 편집' }))
+    change('조건 지역 1 시·군·구 코드', '잘못된 코드')
+    await user.click(screen.getByRole('button', { name: '조건 편집 적용' }))
+    await user.click(screen.getByRole('link', { name: /시·군·구 코드는 영문/ }))
+    const field = screen.getByLabelText('조건 지역 1 시·군·구 코드')
+    expect(field).toHaveFocus()
+    expect(field).toHaveAccessibleDescription(/영문 소문자/)
+    expect(changed).not.toHaveBeenCalled()
   })
   it('shows full rule and group information in a review summary', () => {
     render(<RequirementSummary items={[{ ...condition, group_id: condition.id, group_operator: 'or' }]} />)
