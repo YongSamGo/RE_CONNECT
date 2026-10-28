@@ -153,11 +153,18 @@ def test_timers_survive_restart_and_call_existing_commands():
     for name in ("reconnect-collect.timer", "reconnect-retention.timer"):
         assert "Persistent=true" in unit(name)
     assert "OnCalendar=*:0/15" in unit("reconnect-collect.timer")
-    assert "python -m app.collect --all-due" in unit("reconnect-collect.service")
-    assert "python manage_retention.py run" in unit("reconnect-retention.service")
+    # 운영 이미지의 ENTRYPOINT는 API 서버라서 일회성 작업은 진입점을 python으로 바꿔야 한다.
+    entry = '--entrypoint /opt/venv/bin/python "$BACKEND_SERVICE"'
+    assert f"{entry} -B -m app.collect --all-due" in unit("reconnect-collect.service")
+    assert f"{entry} -B manage_retention.py run" in unit("reconnect-retention.service")
     for service in ("reconnect-collect.service", "reconnect-retention.service"):
         text = unit(service)
-        assert "Type=oneshot" in text and "--env-file .env" in text and "WorkingDirectory=$" not in text
+        assert "Type=oneshot" in text and "WorkingDirectory=$" not in text
+        # 배포 때 tmpfs에 만드는 이미지·앱 env 파일을 읽고, 재부팅으로 사라졌으면 Compose를 부르기 전에 실패한다.
+        assert '--env-file "$IMAGES_ENV_FILE"' in text
+        assert 'test -r "$IMAGES_ENV_FILE" && test -r "$APP_ENV_FILE"' in text
+    env = unit("scheduler.env.example")
+    assert "IMAGES_ENV_FILE=/run/reconnect/images.env" in env and "APP_ENV_FILE=/run/reconnect/app.env" in env
 
 
 def test_docker_logs_go_to_the_14_day_group_without_creating_unbounded_groups():

@@ -7,8 +7,10 @@ After=network-online.target docker.service
 
 [Service]
 Type=oneshot
-EnvironmentFile=/etc/re-connect/scheduler.env
+EnvironmentFile=/etc/reconnect/scheduler.env
 TimeoutStartSec=1800
-# systemd는 WorkingDirectory에 환경변수를 치환하지 않으므로 셸에서 이동한다. -f로 infra/ 파일을 쓰면
-# Compose가 .env를 infra/에서 찾으므로 --env-file을 붙인다(infra/README.md).
-ExecStart=/bin/sh -c 'cd "$RECONNECT_DIR" && exec /usr/bin/docker compose --env-file .env run --rm --no-deps -T "$BACKEND_SERVICE" python manage_retention.py run'
+# /run은 tmpfs라 재부팅하면 env 파일이 사라진다. 배포 절차 6절로 다시 만들기 전에는 실패로 남긴다.
+ExecStartPre=/bin/sh -c 'test -r "$IMAGES_ENV_FILE" && test -r "$APP_ENV_FILE" || { echo "env_files_missing" >&2; exit 1; }'
+# systemd는 WorkingDirectory에 환경변수를 치환하지 않으므로 셸에서 이동한다.
+# 운영 이미지의 ENTRYPOINT는 API 서버 실행이므로 일회성 작업은 진입점을 python으로 바꾼다.
+ExecStart=/bin/sh -c 'cd "$RECONNECT_DIR" && exec /usr/bin/docker compose --env-file "$IMAGES_ENV_FILE" run --rm --no-deps -T --entrypoint /opt/venv/bin/python "$BACKEND_SERVICE" -B manage_retention.py run'
