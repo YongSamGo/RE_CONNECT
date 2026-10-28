@@ -11,7 +11,7 @@ import sys
 from uuid import uuid4
 
 import pytest
-from sqlalchemy import create_engine, insert
+from sqlalchemy import create_engine, insert, update
 
 from app import collect
 from app.modules.ingestion.runs import BASE_URLS
@@ -34,17 +34,21 @@ class FakeCollector:
         return outcome
 
 
-def test_enabled_sources_reads_only_active_sources_in_code_order():
+def test_enabled_sources_reads_only_active_api_sources_in_code_order():
     engine = create_engine("sqlite://")
     Source.__table__.create(engine)
-    volunteer, senuri, disabled = uuid4(), uuid4(), uuid4()
+    volunteer, senuri = uuid4(), uuid4()
     with engine.begin() as db:
         db.execute(insert(Source), [
             {"id": volunteer, "code": "volunteer", "name": "봉사", "base_url": BASE_URLS["volunteer"], "enabled": True},
             {"id": senuri, "code": "senuri", "name": "노인 일자리", "base_url": BASE_URLS["senuri"], "enabled": True},
-            {"id": disabled, "code": "manual", "name": "중지된 출처", "base_url": BASE_URLS["senuri"], "enabled": False},
+            # 수동 입력 출처는 활성이어도 API 수집 대상이 아니다(docs/data/manual-intake.md).
+            {"id": uuid4(), "code": "manual_50plus", "name": "수동 입력", "base_url": "https://50plus.or.kr", "enabled": True},
         ])
     assert collect.enabled_sources(engine) == [senuri, volunteer]
+    with engine.begin() as db:
+        db.execute(update(Source).where(Source.id == senuri).values(enabled=False))
+    assert collect.enabled_sources(engine) == [volunteer]
     engine.dispose()
 
 

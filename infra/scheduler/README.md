@@ -4,7 +4,7 @@ EC2 호스트의 systemd timer가 운영 Compose의 FastAPI 이미지로 일회�
 
 | 타이머 | 주기 | 실행 명령 | 하는 일 |
 | --- | --- | --- | --- |
-| `reconnect-collect.timer` | 15분마다 | `python -m app.collect --all-due` | 활성 출처 전체를 차례로 `--due` 실행. 실제 수집 여부는 DB가 정한다(성공 후 6시간, 실패 후 15분) |
+| `reconnect-collect.timer` | 15분마다 | `python -m app.collect --all-due` | 활성 API 출처(`senuri`·`volunteer`)를 차례로 `--due` 실행. 수동 입력 출처는 제외. 실제 수집 여부는 DB가 정한다(성공 후 6시간, 실패 후 15분) |
 | `reconnect-retention.timer` | 매일 03:30 KST | `python manage_retention.py run` | 삭제 이력·종결 신고 설명·감사 기록의 30일 정리 |
 
 일반 운영 로그 14일은 이 타이머가 아니라 CloudWatch 로그 그룹 보관 설정이 맡는다([infra/logging](../logging/)).

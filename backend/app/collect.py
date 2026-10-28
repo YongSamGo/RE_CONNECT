@@ -13,6 +13,7 @@ from sqlalchemy.pool import NullPool
 from app.contracts.time import utc_now
 from app.core.config import get_settings
 from app.modules.ingestion.runner import Collector
+from app.modules.ingestion.runs import DAILY_LIMITS
 from app.modules.ingestion.runs import RunRepository
 from app.modules.opportunities.ingestion import IngestionService
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository
@@ -28,9 +29,13 @@ def store_factory(session):
 
 
 def enabled_sources(engine):
-    """주기 실행 대상. 출처 UUID를 스케줄 설정에 적지 않도록 DB의 활성 출처를 코드 순서로 읽는다."""
+    """주기 실행 대상. 출처 UUID를 스케줄 설정에 적지 않도록 DB의 활성 출처를 코드 순서로 읽는다.
+
+    수동 입력 출처(`manual_*`)도 활성이지만 API 수집 대상이 아니므로 수집기가 다루는 코드만 고른다.
+    """
     with engine.connect() as db:
-        return list(db.scalars(select(Source.id).where(Source.enabled.is_(True)).order_by(Source.code, Source.id)))
+        return list(db.scalars(select(Source.id).where(Source.enabled.is_(True), Source.code.in_(DAILY_LIMITS))
+                               .order_by(Source.code, Source.id)))
 
 
 async def run_due(collector, source_ids, **limits):
