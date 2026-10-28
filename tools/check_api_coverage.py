@@ -75,6 +75,16 @@ def failure_status(strict: bool, missing: list[tuple[str, str]]) -> int:
     return 1 if strict and missing else 0
 
 
+def print_operations(missing, extra, hidden) -> None:
+    for path, method in missing:
+        label = "미구현 admin" if path.startswith(BASE_PATH + "/admin/") else "미구현 계약"
+        print(f"{label}: {method} {path}")
+    for path, method in extra:
+        print(f"계약 외 실제 라우트: {method} {path}")
+    for path, method in sorted(hidden):
+        print(f"스키마 제외 분류: {method} {path}")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--strict", action="store_true", help="fail if any canonical operation is unimplemented")
@@ -99,13 +109,7 @@ def main() -> int:
     print(f"계약 작업: {len(canonical)}")
     print(f"실제 라우트 작업: {len(actual)}")
     print(f"스키마 제외 라우트: {len(hidden)}")
-    for method, path in missing:
-        label = "미구현 admin" if path.startswith(BASE_PATH + "/admin/") else "미구현 계약"
-        print(f"{label}: {method} {path}")
-    for method, path in extra:
-        print(f"계약 외 실제 라우트: {method} {path}")
-    for method, path in sorted(hidden):
-        print(f"스키마 제외 분류: {method} {path}")
+    print_operations(missing, extra, hidden)
     if failure_status(args.strict, missing):
         return failure_status(args.strict, missing)
     if not args.strict:

@@ -36,7 +36,7 @@
 
 backend, frontend, speech, speech/tts_compat의 점검 매니페스트는 필수다. 파일이 빠지면 `CI 통과`가 실패하므로 점검이 조용히 사라지지 않는다. worker 점검은 worker 의존성 파일이 있을 때 추가된다. Dependency review는 PR에서만 필수이며 push·schedule·dispatch의 `Skipped`는 정상이다.
 
-`tools/check_api_coverage.py`는 실제 마운트된 라우트와 저장된 `docs/api/openapi.yaml`의 `GET`·`POST`·`PATCH`·`DELETE` 경로를 비교한다. 문서의 API 경로에는 `/api/v1`을 붙이며, 내부 전용 `/health/*` 경로는 실제 앱 경로 그대로 비교한다. 문서에 선언된 경로가 구현되지 않으면 strict 실행이 실패한다. CI는 `--strict`로 실행한다. 보고 전용 로컬 실행은 현재 누락·추가 경로를 출력하되 실패하지 않는다.
+`tools/check_api_coverage.py`는 실제 마운트된 라우트와 저장된 `docs/api/openapi.yaml`의 `GET`·`POST`·`PATCH`·`DELETE` 경로를 비교한다. 문서의 API 경로에는 `/api/v1`을 붙이며, 내부 전용 `/health/*` 경로는 실제 앱 경로 그대로 비교한다. 현재 CI는 보고 모드로 실행하므로 누락·추가 경로를 출력하되 계약 누락만으로 실패하지 않는다. `--strict`는 누락 경로가 있으면 실패하는 선택 옵션이다. 관리 기능 연결(#53·#54·#55·#56) 등 남은 계약 경로 구현을 확인한 뒤 CI를 `--strict`로 전환해야 하며, 이 PR은 해당 전환을 완료했다고 보지 않는다.
 
 ## CI 자체에 적용한 보안 원칙
 

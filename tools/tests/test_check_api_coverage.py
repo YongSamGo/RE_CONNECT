@@ -1,6 +1,8 @@
 import unittest
+from contextlib import redirect_stdout
+from io import StringIO
 
-from tools.check_api_coverage import canonical_operations, compare_operations, failure_status
+from tools.check_api_coverage import canonical_operations, compare_operations, failure_status, print_operations
 
 
 class ApiCoverageTests(unittest.TestCase):
@@ -41,6 +43,20 @@ components:
 
     def test_report_only_does_not_fail_for_missing_canonical_route(self):
         self.assertEqual(failure_status(strict=False, missing=[("/api/v1/x", "GET")]), 0)
+
+    def test_output_keeps_methods_and_admin_paths_in_their_columns(self):
+        output = StringIO()
+        with redirect_stdout(output):
+            print_operations(
+                [("/api/v1/admin/reports", "GET"), ("/api/v1/reports", "POST")],
+                [("/api/v1/extra", "PATCH")], {("/health/live", "GET")},
+            )
+        self.assertEqual(output.getvalue().splitlines(), [
+            "미구현 admin: GET /api/v1/admin/reports",
+            "미구현 계약: POST /api/v1/reports",
+            "계약 외 실제 라우트: PATCH /api/v1/extra",
+            "스키마 제외 분류: GET /health/live",
+        ])
 
 
 if __name__ == "__main__":
