@@ -44,7 +44,9 @@ def deadline_key(scored: ScoredCandidate):
             precise or datetime.max.replace(tzinfo=UTC), opportunity.id.int)
 
 
-def rank_candidates(profile: ProfileContent, candidates: list[Candidate], catalog: list[CatalogRole]) -> list[ScoredCandidate]:
+def rank_candidates(profile: ProfileContent, candidates: list[Candidate], catalog: list[CatalogRole],
+                    excluded: frozenset[str] = frozenset()) -> list[ScoredCandidate]:
+    """excluded: 사용자가 제외한 역할. 명시 역할 태그는 후보 필터가 거르고, 태그로 찾은 역할은 여기서 거른다."""
     aliases = alias_map(catalog)
     def canonical(tag):
         value = normalize_tag(tag)
@@ -60,13 +62,17 @@ def rank_candidates(profile: ProfileContent, candidates: list[Candidate], catalo
     roles = {role.id: role for role in catalog}
     role_tags = {role.id: {normalize_tag(tag) for tag in role.skill_tags} for role in catalog}
     # 사전의 경험 연결 규칙을 통과한 역할만 같은 역할 근거로 쓴다. 역할별 근거 경험과 그 경험의 원래 태그를 둔다.
-    supported = {item.role_id: item.evidence for item in match_roles(profile, catalog, ())}
+    # match_roles는 화면 후보용으로 20개만 돌려주므로 역할마다 따로 불러 사전 크기와 상관없이 모두 본다.
+    supported = {item.role_id: item.evidence for role in catalog for item in match_roles(profile, [role], ())}
     ranked = []
     for candidate in candidates:
         opportunity = candidate.opportunity
         opportunity_tags = {canonical(tag) for tag in opportunity.skill_tags}
-        opportunity_roles = list(dict.fromkeys([*(id for id in opportunity.role_tags if id in roles),
-                                                *(id for id in roles if role_tags[id] & opportunity_tags)]))
+        # 운영자가 붙인 역할 태그가 있으면 그것을 따르고, 없을 때만 기술 태그가 속한 역할을 쓴다.
+        opportunity_roles = [id for id in opportunity.role_tags if id in roles] or \
+            [id for id in roles if role_tags[id] & opportunity_tags]
+        if not opportunity.role_tags and excluded.intersection(opportunity_roles):
+            continue
         opportunity_tokens = tokens(opportunity.title, opportunity.description_text, *opportunity.skill_tags,
                                     *opportunity.role_tags, *(roles[id].name for id in opportunity.role_tags if id in roles))
         shared_tags = profile_tags & opportunity_tags

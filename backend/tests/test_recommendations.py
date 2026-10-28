@@ -117,6 +117,40 @@ def test_same_role_evidence_needs_reviewed_role_support(tags, catalog):
     assert rank(person, [item], catalog) == []
 
 
+def test_same_role_evidence_is_not_cut_by_the_screen_candidate_limit():
+    # 화면 후보는 20개까지지만 추천 근거는 사전 전체를 본다. 21번째 역할만 공고 태그를 가진 경우.
+    person = experiences(["공통역량"])
+    catalog = [role(id=f"role_{index:02}", skill_tags=["공통역량"]) for index in range(20)]
+    catalog.append(role(id="role_20", skill_tags=["공통역량", "추가역량"]))
+    item = public(title="무관한활동", description_text=None, skill_tags=["추가역량"], role_tags=[])
+    result = rank(person, [item], catalog)
+    assert [value.matched.role_ids for value in result] == [["role_20"]]
+
+
+def test_excluded_role_found_from_skill_tags_removes_the_opportunity():
+    from app.contracts.recommendation import RecommendationFilters
+    person = experiences(["주민 모임 운영"])
+    item = public(title="무관한활동", description_text=None, skill_tags=["행사 진행"], role_tags=[])
+    candidates = filter_candidates(person, [item], RecommendationFilters(), frozenset({"community_organizer"}), NOW)
+    assert candidates  # 명시 역할 태그가 없어 후보 필터는 통과한다
+    assert rank_candidates(person, candidates, [organizer()], frozenset({"community_organizer"})) == []
+    assert rank_candidates(person, candidates, [organizer()], frozenset({"other_role"}))
+
+
+def test_explicit_role_tags_take_precedence_over_roles_found_from_tags():
+    # 같은 태그가 두 역할에 있어도, 운영자가 붙인 역할만 공고의 역할로 본다(W13-02 역할 제외 경계와 같은 규칙).
+    person = experiences(["주민 모임 운영"])
+    catalog = [organizer(), role(id="other_role", skill_tags=["행사 진행"])]
+    item = public(title="무관한활동", description_text=None, skill_tags=["행사 진행"], role_tags=["community_organizer"])
+    result = rank_candidates(person, rank_input(person, item), catalog, frozenset({"other_role"}))
+    assert [value.matched.role_ids for value in result] == [["community_organizer"]]
+
+
+def rank_input(person, item):
+    from app.contracts.recommendation import RecommendationFilters
+    return filter_candidates(person, [item], RecommendationFilters(), frozenset(), NOW)
+
+
 def test_role_tag_alone_without_skill_tags_is_not_evidence():
     person = experiences(["주민 모임 운영"])
     assert rank(person, [public(title="무관한활동", description_text=None, skill_tags=[],
