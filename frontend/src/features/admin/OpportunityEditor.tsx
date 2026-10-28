@@ -11,13 +11,13 @@ import type { FieldError } from '../../ui/FormErrorSummary'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { provinces } from '../public-opportunities/catalog'
 import { koreaDateTimeInput } from './audit'
-import { emptyOpportunity, isHttpsReference, opportunityChanges, parseEditable, parseOpportunityInput } from './editor'
-import type { OpportunityInput } from './editor'
+import { emptyOpportunity, isHttpsReference, manualSources, opportunityChanges, parseEditable, parseOpportunityInput, quoteFields, quoteLabels } from './editor'
+import type { ManualSource, OpportunityInput } from './editor'
 import { RequirementEditor } from './RequirementEditor'
 
-type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; noRequirements: boolean; editing: boolean; errors: FieldError[] }
+type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; checkedAt: string | null; source: ManualSource; quotes: Record<string, string>; noRequirements: boolean; editing: boolean; errors: FieldError[] }
 function initial(input: OpportunityInput | null, version: number | null = null): State {
-  return { input, original: version === null ? null : input, version, hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, noRequirements: !!version && input?.requirements.length === 0, editing: false, errors: [] }
+  return { input, original: version === null ? null : input, version, hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, checkedAt: null, source: 'manual_volunteer', quotes: {}, noRequirements: !!version && input?.requirements.length === 0, editing: false, errors: [] }
 }
 function InputField({ label, error, id, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; id: string }) {
   return <div className="form-field"><label htmlFor={id}>{label}</label><input {...props} id={id} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} />{error && <p className="field-error" id={`${id}-error`}>{error}</p>}</div>
@@ -82,13 +82,20 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     catch { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-deadline', message: '입력 길이·목록·날짜를 확인해 주세요. 마감일과 마감 시각의 한국 날짜가 같아야 합니다.' }] })); return }
     const changes = state.original ? opportunityChanges(state.original, parsed) : null
     if (changes && !Object.keys(changes).length) { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-title', message: '변경한 항목이 없습니다.' }] })); return }
-    const fingerprint = JSON.stringify(parsed)
+    const fields = quoteFields(parsed)
+    if (!target) {
+      const missing = fields.filter((field) => { const quote = state.quotes[field]?.trim() ?? ''; return !quote || [...quote].length > 300 })
+      if (missing.length || !state.checkedAt) { form.setValue((previous) => ({ ...previous, errors: missing.map((field) => ({ fieldId: `editor-quote-${field}`, message: `${quoteLabels[field]}의 원문 인용을 300자 이내로 적어 주세요.` })) })); return }
+    }
+    // 원문 확인 시각은 확인 선택 시점으로 고정한다. 같은 입력의 재시도는 같은 본문·같은 키가 된다.
+    const created = { source: state.source, content: parsed, evidence: { url: parsed.source_url, observed_at: state.checkedAt ?? '', confirmed_official: true as const, quotes: Object.fromEntries(fields.map((field) => [field, (state.quotes[field] ?? '').trim()])) } }
+    const fingerprint = JSON.stringify(target ? parsed : created)
     if (!attempt.current || attempt.current.fingerprint !== fingerprint) attempt.current = { fingerprint, key: crypto.randomUUID() }
     const key = attempt.current.key
     await save.run(async (api, signal) => {
       const response = target && changes && state.version !== null
         ? await api.PATCH('/admin/opportunities/{opportunity_id}', { signal, params: { path: { opportunity_id: target.id } }, body: { base_version: state.version, changes } })
-        : await api.POST('/admin/opportunities', { signal, params: { header: { 'Idempotency-Key': key } }, body: parsed })
+        : await api.POST('/admin/opportunities', { signal, params: { header: { 'Idempotency-Key': key } }, body: created })
       const result = parseEditable(required(response.data))
       if (result.status !== 'pending' || (target ? result.id !== target.id || result.version <= (state.version ?? 0) : result.version !== 1)) throw new ApiError('INVALID_RESPONSE')
       return { id: result.id, version: result.version }
@@ -132,8 +139,13 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <InputField id="editor-application" label="공식 접수 안내 HTTPS 주소 (필수)" type="url" value={input.application_url} maxLength={2000} error={error('editor-application')} onChange={(event) => update('application_url', event.target.value)} />
         <label htmlFor="editor-method">접수 방법</label><select id="editor-method" value={input.application_method} onChange={(event) => update('application_method', event.target.value as OpportunityInput['application_method'])}>{Object.entries({ online: '온라인', phone: '전화', visit: '방문', email: '이메일', mixed: '여러 방법' }).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
         <TextAreaField id="editor-instructions" label="공식 접수 방법 (필수)" value={input.application_instructions} maxLength={2000} error={error('editor-instructions')} onChange={(event) => update('application_instructions', event.target.value)} />
-        <CheckboxField id="editor-checked" label="공식 원문과 입력 내용을 비교해 확인했습니다." checked={state.checked} error={error('editor-checked')} onChange={(event) => form.setValue((previous) => ({ ...previous, checked: event.target.checked, errors: [] }))} />
+        <CheckboxField id="editor-checked" label="공식 원문과 입력 내용을 비교해 확인했습니다." checked={state.checked} error={error('editor-checked')} onChange={(event) => form.setValue((previous) => ({ ...previous, checked: event.target.checked, checkedAt: event.target.checked ? new Date().toISOString() : null, errors: [] }))} />
       </fieldset>
+      {!target && <fieldset disabled={locked}><legend>공식 원문 근거</legend>
+        <p>1365 자원봉사포털·50+포털·고용24의 공고 상세 주소만 등록할 수 있습니다. 입력한 항목마다 공식 원문의 해당 문장을 그대로 옮겨 주세요. 담당자 이름·전화·이메일은 옮기지 마세요.</p>
+        <label htmlFor="editor-manual-source">공식 자료 출처</label><select id="editor-manual-source" value={state.source} onChange={(event) => updateRaw({ source: event.target.value as ManualSource })}>{Object.entries(manualSources).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
+        {quoteFields({ ...input, hours_per_week: state.hours === '' ? null : 0, deadline_at: state.at || null, required_documents: input.required_documents === null ? null : lines(state.documents) }).map((field) => <TextAreaField key={field} id={`editor-quote-${field}`} label={`원문 인용: ${quoteLabels[field]}`} value={state.quotes[field] ?? ''} maxLength={300} rows={2} error={error(`editor-quote-${field}`)} onChange={(event) => updateRaw({ quotes: { ...state.quotes, [field]: event.target.value } })} />)}
+      </fieldset>}
       {state.editing && <p role="status">조건 편집을 적용하거나 취소한 뒤 공고를 저장해 주세요.</p>}
       <Button type="submit" pending={save.state.status === 'pending'} disabled={locked || state.editing}>검수 대기 버전으로 저장</Button>
     </form>}

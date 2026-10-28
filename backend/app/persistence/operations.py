@@ -4,7 +4,7 @@
 같은 공고의 approved 버전만 참조할 수 있다. Journey는 영구 테이블/FK가 아니다.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from uuid import UUID, uuid4
 
 from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, ForeignKeyConstraint, Index, Integer, JSON, LargeBinary, String, UniqueConstraint, Uuid
@@ -187,6 +187,32 @@ class OpportunityVersion(Base):
     source_checked_at: Mapped[datetime] = mapped_column(UTCDateTime())
     reviewed_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
     content_hash: Mapped[str] = mapped_column(String(64))
+    # 버전을 만든 시각. 운영자 목록의 "최근 갱신" 정렬과 updated_at 응답에 쓴다.
+    created_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    # 이 버전의 근거가 된 원문 관측(수집·수동 입력 결과)의 해시. 운영자 수정은 기준 버전 값을 이어받는다.
+    # 다음 수집의 해시가 같으면 원문이 바뀌지 않은 것이므로 운영자 수정본을 덮어쓰지 않는다.
+    observed_hash: Mapped[str] = mapped_column(String(64), default=lambda context: context.get_current_parameters()["content_hash"])
+
+
+class OpportunityWriteReceipt(Base):
+    """운영자 수동 등록의 재전송 응답 기록. 공고 본문은 담지 않는다."""
+
+    __tablename__ = "opportunity_write_receipts"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("length(input_hash) = 64", name="input_hash"),
+        CheckConstraint("version > 0", name="version"),
+        CheckConstraint("expires_at > recorded_at", name="expiry"),
+        Index("ix_opportunity_receipts_operator_expiry", "operator_id", "expires_at"),
+    )
+
+    operator_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), primary_key=True)
+    key_id: Mapped[UUID] = mapped_column(Uuid, primary_key=True)
+    input_hash: Mapped[str] = mapped_column(String(64))
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    recorded_at: Mapped[datetime] = mapped_column(UTCDateTime())
+    expires_at: Mapped[datetime] = mapped_column(UTCDateTime())
 
 
 class OpportunityPublication(Base):
@@ -203,16 +229,80 @@ class OpportunityPublication(Base):
     review_status: Mapped[str] = mapped_column(String(16), default="approved", server_default="approved")
 
 
+REJECT_REASONS = ("source_unverifiable", "out_of_scope", "recruitment_closed", "duplicate",
+                  "insufficient_information", "inappropriate_content", "other")
+CLOSE_BASES = ("source_closed", "deadline_passed", "organization_notice", "report_confirmed", "other")
+
+
+def _sql_values(values):
+    return ", ".join(f"'{value}'" for value in values)
+
+
+class OpportunityReview(Base):
+    """운영자 검수 결정의 근거 (W07-03). 공고 버전과 함께 남는 공고 자료다.
+
+    누가 했는지는 감사 기록(30일)에만 둔다. 같은 요청의 감사 기록과 request_id로 잇는다.
+    메모는 개인정보 필터를 통과한 공고 확인 내용만 받는다.
+    """
+
+    __tablename__ = "opportunity_reviews"
+    __table_args__ = (
+        ForeignKeyConstraint(["opportunity_id", "version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="CASCADE"),
+        CheckConstraint("action IN ('approve', 'reject', 'hide', 'close')", name="action"),
+        CheckConstraint(
+            "(action IN ('approve', 'hide') AND reason_code IS NULL AND note IS NOT NULL)"
+            f" OR (action = 'reject' AND reason_code IN ({_sql_values(REJECT_REASONS)}))"
+            f" OR (action = 'close' AND reason_code IN ({_sql_values(CLOSE_BASES)}))",
+            name="reason",
+        ),
+        CheckConstraint("reason_code IS NULL OR reason_code <> 'other' OR note IS NOT NULL", name="other_note"),
+        CheckConstraint("note IS NULL OR length(note) BETWEEN 1 AND 500", name="note"),
+        CheckConstraint("length(request_id) BETWEEN 14 AND 36", name="request_id"),
+        Index("ix_opportunity_reviews_target", "opportunity_id", "version"),
+    )
+
+    id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
+    opportunity_id: Mapped[UUID] = mapped_column(Uuid)
+    version: Mapped[int] = mapped_column(Integer)
+    action: Mapped[str] = mapped_column(String(16))
+    reason_code: Mapped[str | None] = mapped_column(String(40))
+    note: Mapped[str | None] = mapped_column(String(500))
+    request_id: Mapped[str] = mapped_column(String(36))
+    at: Mapped[datetime] = mapped_column(UTCDateTime())
+
+
+def _envelope_check(prefix: str) -> str:
+    c, n, k = f"{prefix}_ciphertext", f"{prefix}_nonce", f"{prefix}_key_id"
+    return (f"({c} IS NULL AND {n} IS NULL AND {k} IS NULL) OR ({c} IS NOT NULL AND {n} IS NOT NULL AND {k} IS NOT NULL"
+            f" AND length({c}) BETWEEN 17 AND 16384 AND length({n}) = 12 AND length({k}) BETWEEN 1 AND 128)")
+
+
+REPORT_TERMINAL = "status IN ('resolved', 'dismissed')"
+
+
 class Report(Base):
+    """공고 오류 신고 (W07-05). 신고자 식별값을 두지 않는다.
+
+    신고 설명·처리 사유는 개인정보가 섞일 수 있어 암호화 봉투로만 둔다. 종결 후 30일이 지나면
+    두 봉투를 지우고 `purged_at`을 남긴다. 접수·처리 중인 신고는 종결 전까지 보관한다.
+    유형·상태·대상 공고 버전은 공고 품질 기록으로 남는다.
+    """
+
     __tablename__ = "reports"
     __table_args__ = (
         ForeignKeyConstraint(["opportunity_id", "opportunity_version"], ["opportunity_versions.opportunity_id", "opportunity_versions.version"], ondelete="RESTRICT"),
         CheckConstraint("type IN ('already_closed', 'wrong_requirements', 'wrong_schedule_or_location', 'wrong_application_method', 'broken_link', 'other')", name="type"),
         CheckConstraint("status IN ('received', 'in_progress', 'resolved', 'dismissed')", name="status"),
-        CheckConstraint("type <> 'other' OR details_ciphertext IS NOT NULL", name="other_details"),
+        CheckConstraint("type <> 'other' OR details_ciphertext IS NOT NULL OR purged_at IS NOT NULL", name="other_details"),
         CheckConstraint("version > 0", name="version"),
-        CheckConstraint("(details_ciphertext IS NULL AND details_nonce IS NULL AND details_key_id IS NULL) OR (details_ciphertext IS NOT NULL AND details_nonce IS NOT NULL AND details_key_id IS NOT NULL AND length(details_ciphertext) BETWEEN 17 AND 16384 AND length(details_nonce) = 12 AND length(details_key_id) BETWEEN 1 AND 128)", name="details_envelope"),
+        CheckConstraint(_envelope_check("details"), name="details_envelope"),
+        CheckConstraint(_envelope_check("resolution"), name="resolution_envelope"),
+        CheckConstraint(f"NOT ({REPORT_TERMINAL}) OR resolution_ciphertext IS NOT NULL OR purged_at IS NOT NULL", name="resolution_required"),
+        CheckConstraint("status <> 'received' OR resolution_ciphertext IS NULL", name="received_unhandled"),
+        CheckConstraint(f"purged_at IS NULL OR ({REPORT_TERMINAL} AND details_ciphertext IS NULL AND resolution_ciphertext IS NULL)", name="purged_terminal"),
+        CheckConstraint("updated_at >= received_at", name="updated_order"),
         Index("ix_reports_status_received", "status", "received_at"),
+        Index("ix_reports_status_updated", "status", "updated_at"),
     )
 
     id: Mapped[UUID] = mapped_column(Uuid, primary_key=True, default=uuid4)
@@ -222,20 +312,42 @@ class Report(Base):
     status: Mapped[str] = mapped_column(String(16), default="received")
     version: Mapped[int] = mapped_column(Integer, default=1)
     received_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
+    updated_at: Mapped[datetime] = mapped_column(UTCDateTime(), default=utc_now)
     # 임의 신고/처리 설명에 개인정보가 섞일 수 있어 평문 칸을 만들지 않는다.
     details_ciphertext: Mapped[bytes | None] = mapped_column(LargeBinary)
     details_nonce: Mapped[bytes | None] = mapped_column(LargeBinary)
     details_key_id: Mapped[str | None] = mapped_column(String(128))
+    resolution_ciphertext: Mapped[bytes | None] = mapped_column(LargeBinary)
+    resolution_nonce: Mapped[bytes | None] = mapped_column(LargeBinary)
+    resolution_key_id: Mapped[str | None] = mapped_column(String(128))
+    purged_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
+
+
+# 보안·운영자 감사 기록의 보관기간 (Plan/02 §5). 조회 기간의 최대 길이도 같다.
+AUDIT_RETENTION = timedelta(days=30)
+# 감사 기록 허용표. DB CHECK와 조회 응답 모델(app.modules.audit.models)이 이 상수를 함께 쓴다.
+# 종류를 더할 때는 여기·마이그레이션·openapi `AuditEvent`를 같이 고친다 (시험이 셋을 대조한다).
+AUDIT_ACTOR_ROLES = ("operator", "user", "system")
+AUDIT_ACTIONS = ("opportunity.create", "opportunity.update", "opportunity.approve", "opportunity.reject",
+                 "opportunity.hide", "opportunity.close", "report.update", "mfa.verify", "mfa.fail", "mfa.lock",
+                 "mfa.enroll", "mfa.reset", "role.grant", "role.revoke", "access.denied")
+AUDIT_TARGET_TYPES = ("opportunity", "report", "user")
+AUDIT_RESULTS = ("success", "denied", "failed")
 
 
 class AuditEvent(Base):
+    """최소 감사 메타데이터. 개인 본문·OTP·토큰·검수 메모는 넣지 않는다 (W07-06).
+
+    공고 검수의 사유 코드·메모는 같은 request_id의 opportunity_reviews에 둔다.
+    """
+
     __tablename__ = "audit_events"
     __table_args__ = (
-        CheckConstraint("actor_role IN ('operator', 'user', 'system')", name="actor_role"),
-        CheckConstraint("action IN ('opportunity.create', 'opportunity.update', 'opportunity.approve', 'opportunity.reject', 'opportunity.hide', 'opportunity.close', 'report.update', 'mfa.verify', 'mfa.fail', 'mfa.lock', 'role.grant', 'role.revoke', 'access.denied')", name="action"),
-        CheckConstraint("target_type IS NULL OR target_type IN ('opportunity', 'report', 'user')", name="target_type"),
+        CheckConstraint(f"actor_role IN ({_sql_values(AUDIT_ACTOR_ROLES)})", name="actor_role"),
+        CheckConstraint(f"action IN ({_sql_values(AUDIT_ACTIONS)})", name="action"),
+        CheckConstraint(f"target_type IS NULL OR target_type IN ({_sql_values(AUDIT_TARGET_TYPES)})", name="target_type"),
         CheckConstraint("(target_type IS NULL AND target_id IS NULL) OR (target_type IS NOT NULL AND target_id IS NOT NULL)", name="target_pair"),
-        CheckConstraint("result IN ('success', 'denied', 'failed')", name="result"),
+        CheckConstraint(f"result IN ({_sql_values(AUDIT_RESULTS)})", name="result"),
         CheckConstraint("length(request_id) BETWEEN 14 AND 36", name="request_id"),
         CheckConstraint("expires_at > at", name="expiry"),
         Index("ix_audit_events_at", "at"),
