@@ -54,6 +54,7 @@
 .opportunity-card dd { margin: 0; }
 .catalog-note { font-size: calc((18px) * var(--text-scale, 1)); color: var(--muted); }
 .opportunity-card .catalog-note { margin-bottom: 0; }
+.public-catalog-results .opportunity-list.shared-opportunity-list { margin: 20px 0; border: 0; }
 .catalog-pagination { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; margin-bottom: 28px; }
 @media (max-width: 760px) { .public-catalog-stage { width: 100vw; aspect-ratio: auto; min-height: calc(100svh - 60px); margin-left: calc(50% - 50vw); padding: 20px 16px 28px; } .public-catalog-heading { margin-bottom: 18px; } .public-catalog-heading h1 { font-size: calc((clamp(24px, 5.5vw, 32px)) * var(--text-scale, 1)); } .public-catalog-partition { grid-template-columns: 1fr; gap: 16px; flex: none; } .public-map-pane, .public-explore-pane { padding: 18px; } .public-catalog-results { padding: 28px 20px; } .catalog-controls { padding: 20px; } }
 @media (max-width: 600px) { .panel.catalog-form { grid-template-columns: 1fr; gap: 20px; } .opportunity-card { padding: 24px 0; } .opportunity-card dl > div { grid-template-columns: 1fr; gap: 0; margin-top: 16px; } }
@@ -205,6 +206,9 @@
 .catalog-provinces .region-clear[aria-pressed='true'] { background: #fff; color: var(--emphasis-strong); font-weight: 600; box-shadow: 0 1px 4px rgba(0, 0, 0, .1); }
 .public-explore-pane, .public-catalog-stage { scrollbar-width: none; -ms-overflow-style: none; }
 .public-explore-pane::-webkit-scrollbar, .public-catalog-stage::-webkit-scrollbar { display: none; }
+@media (min-width: 1000px) {
+  .public-catalog-stage { width: min(calc(100vw - 48px), calc((100svh - 135px) * 16 / 9)); }
+}
 @media (max-width: 760px) {
   .public-map-pane { height: auto; }
   .public-map-pane .region-picker { height: auto; grid-template-rows: auto auto auto; }
@@ -214,4 +218,15 @@
 .region-map-controls { flex-wrap: wrap; gap: 8px 16px; }
 @media (min-width: 761px) {
   .public-explore-pane { top: -36px; bottom: 0; height: auto; max-height: none; transform: none; }
+}
+
+/* 모든 주요 화면의 바깥 패널 폭과 모서리를 홈 패널에 맞춘다. */
+.public-catalog-stage { width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 88px) * 16 / 9)); border-radius: var(--large-panel-radius); }
+.public-catalog-results { width: min(calc(100vw - 48px), var(--large-panel-max)); border-radius: var(--large-panel-radius); }
+@media (min-width: 1000px) {
+  .public-catalog-stage { width: min(calc(100vw - 48px), var(--large-panel-max), calc((100svh - 135px) * 16 / 9)); }
+}
+@media (max-width: 760px) {
+  .public-catalog-stage { width: calc(100vw - 32px); border-radius: 18px; }
+  .public-catalog-results { width: calc(100vw - 32px); border-radius: 18px; }
 }

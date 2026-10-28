@@ -1,0 +1,28 @@
+.recommendation-page .service-heading { margin-bottom: 20px; }
+.recommendation-scroll-panel {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.recommendation-cards { display: grid; gap: 16px; margin: 0; padding: 0; list-style: none; }
+.recommendation-card { padding: 24px; border: 1px solid var(--line); border-radius: 18px; background: #fff; }
+.recommendation-card h2 { margin: 0 0 12px; font-size: calc(22px * var(--text-scale, 1)); }
+.recommendation-tags { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 0; padding: 0; list-style: none; }
+.recommendation-tags li { padding: 8px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); font-size: calc(16px * var(--text-scale, 1)); line-height: 1.4; }
+.recommendation-card .actions { margin-top: 18px; }
+.recommendation-card-skeletons { margin-top: 8px; }
+.recommendation-card-skeleton { display: grid; gap: 14px; }
+.skeleton-line, .skeleton-action { display: block; border-radius: 8px; background: #e7edf0; }
+.skeleton-title { width: 62%; height: 28px; }
+.skeleton-meta { width: 42%; height: 16px; }
+.skeleton-description { width: 82%; height: 18px; }
+.skeleton-action { width: 168px; height: 44px; margin-top: 8px; border-radius: 12px; }
+.recommendation-note { margin: 20px 4px 0; color: var(--muted); }
+.recommendation-profile-check { max-height: 44svh; overflow-y: auto; margin-bottom: 20px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
+.recommendation-profile-check > h2 { margin-top: 0; }
+.recommendation-profile-check .profile-summary-section { padding: 16px 0; }
+.recommendation-profile-check .profile-optional { margin: 16px 0; }
+.recommendation-profile-check .actions { margin-top: 16px; }
+@media (max-width: 760px) {
+  .recommendation-profile-check { max-height: 48svh; padding: 16px; }
+}

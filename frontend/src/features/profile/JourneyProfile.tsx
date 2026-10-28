@@ -16,6 +16,9 @@ import { parseRegionCatalog } from '../regions/catalog'
 import type { Region, RegionCatalog } from '../regions/catalog'
 import { minimumErrors, parseExclusions, parseProfileView, parseRoles } from './server-model'
 import type { DraftInput, ProfileView, Roles } from './server-model'
+import { ServicePage } from '../../ui/ServicePage'
+import { ProfileSummary } from './ProfileSummary'
+import './profile-task.css'
 
 function profileCopy(draft: DraftInput, catalog: RegionCatalog | null): string {
   const items = (value: string[] | null) => value === null ? '미확인' : value.join(', ') || '없음'
@@ -71,6 +74,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
   const location = useLocation()
   const savedBase: unknown = location.state?.savedProfileBaseVersion
   const scope = useMemoryScope<Editor>(() => null)
+  const { value: editing, setValue: setEditing } = useMemoryScope(() => false)
   const request = useRequest<Loaded>()
   const regions = useRequest<RegionCatalog>()
   const endRequest = useRequest<boolean>()
@@ -81,6 +85,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
   const closeHeading = useRef<HTMLHeadingElement>(null)
   const editorGeneration = useRef(0)
   const returnFocusAfterClose = useRef(false)
+  const wasEditing = useRef(false)
   const navigate = useNavigate()
   const [errors, setErrors] = useState<FieldError[]>([])
   const [currentYear] = useState(() => new Date().getFullYear())
@@ -88,6 +93,11 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
   const pending = request.state.status === 'pending' || endRequest.state.status === 'pending'
   const catalog = regions.state.status === 'success' ? regions.state.data : null
   const clearEditor = scope.clear
+  useEffect(() => {
+    if (editing) document.getElementById('profile-editor')?.focus()
+    else if (wasEditing.current) document.getElementById('profile-edit')?.focus()
+    wasEditing.current = editing
+  }, [editing])
   useEffect(() => { if (confirmingReload) reloadHeading.current?.focus() }, [confirmingReload])
   useEffect(() => { if (confirmingClose) closeHeading.current?.focus() }, [confirmingClose])
   useEffect(() => {
@@ -115,7 +125,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
     }
     return { view, roles, excludedIds, roleError, message }
   }
-  const apply = (loaded: Loaded) => { setErrors([]); setConfirmingReload(false); setConfirmingClose(false); scope.setValue({ loaded, draft: structuredClone(loaded.view.draft), experienceKeys: loaded.view.draft.experiences.map(e => e.id), editorKey: ++editorGeneration.current, dirty: false }) }
+  const apply = (loaded: Loaded) => { setEditing(false); setErrors([]); setConfirmingReload(false); setConfirmingClose(false); scope.setValue({ loaded, draft: structuredClone(loaded.view.draft), experienceKeys: loaded.view.draft.experiences.map(e => e.id), editorKey: ++editorGeneration.current, dirty: false }) }
   const update = (draft: DraftInput, experienceKeys = state?.experienceKeys ?? []) => { if (state && !pending) { setErrors([]); scope.setValue({ ...state, draft, experienceKeys, dirty: true }) } }
   function load() { void request.run(async (api, signal) => { await api.GET('/me', { signal }); return read(api, signal) }, apply) }
   function closeEditor() { returnFocusAfterClose.current = true; request.clear(); regions.clear(); clearEditor(); setErrors([]); setConfirmingReload(false); setConfirmingClose(false) }
@@ -135,7 +145,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
     if (!state || pending || state.dirty) return
     const missing = minimumErrors(state.draft)
     setErrors(missing)
-    if (missing.length) return
+    if (missing.length) { setEditing(true); return }
     void request.run(async (api, signal) => {
       await api.POST('/journeys/{journey_id}/profile/confirm', { params: { path: { journey_id: journeyId } }, body: { base_revision: state.loaded.view.revision }, signal })
       return read(api, signal, '프로필을 확정했어요. 이전 추천과 자격 대조 결과는 새 확정본으로 다시 확인해 주세요.')
@@ -163,10 +173,8 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
       return true
     }, () => { clearEditor(); setErrors([]); setEnding(false); navigate('/', { replace: true }) })
   }
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">체험 프로필</p><h1>경험을 확인하고 확정해 주세요</h1><p>초안 반영과 프로필 확정, 회원 저장은 따로 진행해요. 여기서는 임시 체험의 프로필을 고칠 수 있어요.</p></header>
-    <div className="actions"><Button id="profile-reload" pending={pending} onClick={() => { setConfirmingClose(false); if (state?.dirty) setConfirmingReload(true); else load() }}>{state ? '서버 최신 내용 다시 불러오기' : '체험 프로필 불러오기'}</Button>
-    {state && <Button id="profile-close" variant="secondary" onClick={() => { setConfirmingReload(false); if (state.dirty) setConfirmingClose(true); else closeEditor() }}>이 화면의 입력 닫기</Button>}
-    {state && <Button variant="secondary" disabled={pending} onClick={() => setEnding(true)}>종료하고 삭제</Button>}</div>
+  return <ServicePage title="내 경험 확인" className="profile-task">
+    {!state && <Button id="profile-reload" pending={pending} onClick={load}>정리한 경험 불러오기</Button>}
     {confirmingReload && state && <section className="panel" aria-labelledby="reload-profile-heading"><h2 id="reload-profile-heading" className="result-heading" ref={reloadHeading} tabIndex={-1}>서버 내용을 다시 불러올까요?</h2><p>아직 초안에 반영하지 않은 편집 내용이 사라집니다. 서버에 반영된 초안은 유지됩니다.</p><div className="actions"><Button disabled={pending} onClick={() => { setConfirmingReload(false); load() }}>편집 내용을 버리고 다시 불러오기</Button><Button variant="secondary" onClick={() => { setConfirmingReload(false); document.getElementById('profile-reload')?.focus() }}>계속 편집하기</Button></div></section>}
     {confirmingClose && state && <section className="panel" aria-labelledby="close-profile-heading"><h2 id="close-profile-heading" className="result-heading" ref={closeHeading} tabIndex={-1}>입력 화면을 닫을까요?</h2><p>아직 초안에 반영하지 않은 편집 내용이 사라집니다. 서버에 반영된 초안과 체험은 삭제되지 않습니다.</p><div className="actions"><Button onClick={closeEditor}>편집 내용을 버리고 닫기</Button><Button variant="secondary" onClick={() => { setConfirmingClose(false); document.getElementById('profile-close')?.focus() }}>계속 편집하기</Button></div></section>}
     {ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험을 종료하고 임시 자료를 삭제할까요?</h2><p>이 체험의 초안과 확정본, 역할 선택 및 진행 결과가 삭제돼요. 아직 반영하지 않은 화면 입력도 사라져요.</p>
@@ -176,8 +184,21 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
     <FormErrorSummary errors={errors} />
     {state && <><p role="status">{state.loaded.message}</p>
+      <div className="profile-review-layout"><div className="profile-review-content">
+      {!editing && <ProfileSummary content={state.loaded.view.draft} catalog={catalog} />}
+      {editing && <p>경험과 희망 활동을 수정한 뒤 ‘변경 내용을 초안에 반영’을 눌러 주세요.</p>}
+      </div><aside className="profile-decision" aria-label="경험 확인과 확정">
+      <p>{state.dirty ? '아직 반영하지 않은 수정 내용이 있습니다.' : state.loaded.view.confirmed && !state.loaded.view.has_unconfirmed_changes ? '확정한 프로필입니다.' : '확인 중인 초안입니다.'}</p>
+      <div className="actions">
+        {!editing && <Button id="profile-edit" variant="secondary" disabled={pending} onClick={() => setEditing(true)}>경험·희망 활동 수정하기</Button>}
+        {editing && <Button pending={pending} disabled={!state.dirty} onClick={save}>변경 내용을 초안에 반영</Button>}
+        {editing && !state.dirty && <Button variant="secondary" onClick={() => setEditing(false)}>수정 닫고 내용 확인</Button>}
+        {(!state.loaded.view.confirmed || state.loaded.view.has_unconfirmed_changes || state.dirty) && <Button pending={pending} disabled={state.dirty} onClick={confirm}>{state.loaded.view.confirmed ? '수정한 프로필 재확정' : '이 내용으로 확정'}</Button>}
+        {state.loaded.view.confirmed && !state.dirty && !state.loaded.view.has_unconfirmed_changes && <Link className="button primary" to={`/journeys/${journeyId}/recommendations`}>추천 공고 확인하기</Link>}
+      </div><p>확정과 계정 저장은 별개입니다. 계정 저장은 확정 후 따로 선택해 주세요.</p>
+      </aside></div>
       {state.loaded.view.confirmed && <StatusNotice title={`확정 프로필 ${state.loaded.view.confirmed.version}번`}>{state.loaded.view.has_unconfirmed_changes || state.dirty ? '수정 중이에요. 다시 확정하기 전의 추천과 자격 대조 결과는 이전 확정 프로필 기준이에요.' : '사용자가 확인한 확정본입니다.'} 기존 지원서 내용은 자동으로 바뀌지 않습니다.</StatusNotice>}
-      <fieldset className="profile-editor" key={state.editorKey} disabled={pending}><legend>프로필 초안 편집</legend>
+      {editing && <fieldset className="profile-editor" id="profile-editor" tabIndex={-1} key={state.editorKey} disabled={pending}><legend>프로필 초안 편집</legend>
         <section className="panel" id="server-experiences" tabIndex={-1}><h2>경험</h2>{state.draft.experiences.map((e, index) => <div className="panel" key={state.experienceKeys[index]}>
           <TextAreaField id={`server-experience-${index}`} label={`경험 ${index + 1} 내용`} value={e.description} maxLength={1000} error={errors.find(error => error.fieldId === `server-experience-${index}`)?.message} onChange={event => update({ ...state.draft, experiences: state.draft.experiences.map((item, i) => i === index ? { ...item, description: event.target.value } : item) })} />
           <TextAreaField label={`경험 ${index + 1} 기간 (선택)`} value={e.duration_note ?? ''} maxLength={200} onChange={event => update({ ...state.draft, experiences: state.draft.experiences.map((item, i) => i === index ? { ...item, duration_note: event.target.value || null } : item) })} />
@@ -190,6 +211,7 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
           {regions.state.status === 'error' && <RequestError error={regions.state.error} />}
           <RegionPicker label="희망 지역" value={state.draft.preferred_regions} max={10} catalog={catalog} onChange={preferred_regions => update({ ...state.draft, preferred_regions })} /></section>
         <fieldset id="server-activities" tabIndex={-1}><legend>희망 활동 유형</legend>{(['employment', 'volunteering'] as const).map(type => <CheckboxField key={type} label={type === 'employment' ? '취업 및 공공일자리' : '봉사'} checked={state.draft.activity_types.includes(type)} onChange={event => update({ ...state.draft, activity_types: event.target.checked ? [...state.draft.activity_types, type] : state.draft.activity_types.filter(t => t !== type) })} />)}</fieldset>
+        <details className="disclosure profile-optional"><summary>활동 조건과 자격 정보 더 입력하기 (선택)</summary><p>입력한 정보는 공고 조건을 확인하는 데 도움이 돼요.</p>
         <label htmlFor="server-paid">유급 선호</label><select id="server-paid" value={state.draft.paid_preference ?? ''} onChange={event => update({ ...state.draft, paid_preference: (event.target.value || null) as DraftInput['paid_preference'] })}><option value="">미확인</option><option value="any">무관</option><option value="paid">유급</option><option value="unpaid">무급</option></select>
         <fieldset><legend>활동 가능한 요일</legend><CheckboxField label="가능 요일 미확인" checked={state.draft.available_weekdays === null} onChange={event => update({ ...state.draft, available_weekdays: event.target.checked ? null : [] })} />
           {state.draft.available_weekdays !== null && ['월', '화', '수', '목', '금', '토', '일'].map((day, i) => <CheckboxField key={day} label={`${day}요일`} checked={state.draft.available_weekdays!.includes(i + 1)} onChange={event => update({ ...state.draft, available_weekdays: event.target.checked ? [...state.draft.available_weekdays!, i + 1] : state.draft.available_weekdays!.filter(d => d !== i + 1) })} />)}</fieldset>
@@ -201,9 +223,9 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
         <OptionalList label="자격증" value={state.draft.certifications} length={100} onChange={certifications => update({ ...state.draft, certifications })} />
         <OptionalList label="수료 교육" value={state.draft.completed_courses} length={100} onChange={completed_courses => update({ ...state.draft, completed_courses })} />
         <OptionalList label="활동 수행 조건" value={state.draft.activity_constraints} max={10} length={200} onChange={activity_constraints => update({ ...state.draft, activity_constraints })} />
-      </fieldset>
-      <div className="actions"><Button pending={pending} disabled={!state.dirty} onClick={save}>변경 내용을 초안에 반영</Button><Button pending={pending} disabled={state.dirty} onClick={confirm}>{state.loaded.view.confirmed ? '수정한 프로필 재확정' : '이 프로필 확정'}</Button></div>
-      <p>초안 반영 후 내용을 확인하고 확정해 주세요.</p>
+        </details>
+      </fieldset>}
+      {editing && <div className="actions"><Button pending={pending} disabled={!state.dirty} onClick={save}>변경 내용을 초안에 반영</Button></div>}
       {state.loaded.view.confirmed && !state.dirty && !state.loaded.view.has_unconfirmed_changes && <Link className="button secondary" to={`/journeys/${journeyId}/save`}>확정 자료의 회원 저장 선택</Link>}
       {typeof savedBase === 'number' && Number.isSafeInteger(savedBase) && savedBase >= 1 && state.loaded.view.confirmed && <SavedProfileSave
         journeyId={journeyId} version={state.loaded.view.confirmed.version} baseVersion={savedBase}
@@ -218,8 +240,11 @@ export function JourneyProfile({ journeyId }: { journeyId: string }) {
         {state.loaded.roles?.items.length === 0 && <><p>연결할 경험 근거가 있는 역할이 아직 없습니다.</p><Link className="text-link" to="/opportunities">일반 공개 공고 살펴보기</Link></>}
       </section>}
     </>}
+    {state && <div className="actions profile-management"><Button id="profile-reload" variant="secondary" pending={pending} onClick={() => { setConfirmingClose(false); if (state.dirty) setConfirmingReload(true); else load() }}>최신 내용 다시 불러오기</Button>
+      <Button id="profile-close" variant="secondary" onClick={() => { setConfirmingReload(false); if (state.dirty) setConfirmingClose(true); else closeEditor() }}>이 화면의 입력 닫기</Button>
+      <Button variant="secondary" disabled={pending} onClick={() => setEnding(true)}>종료하고 삭제</Button></div>}
     <nav className="context-links" aria-label="관련 화면">{state?.loaded.view.confirmed && <Link to={`/journeys/${journeyId}/recommendations`}>확정 경험으로 추천 확인하기</Link>}
     <Link to={`/journeys/${journeyId}/conversation`}>경험 이야기로 이동</Link>
     <Link to="/opportunities">공개 공고 살펴보기</Link></nav>
-  </div>
+  </ServicePage>
 }

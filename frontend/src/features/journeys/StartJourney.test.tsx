@@ -4,6 +4,13 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
 import { StartJourney } from './StartJourney'
 
+// jsdom lacks the native dialog methods. These tests cover consent/request flow;
+// focus containment and the backdrop are checked in the browser separately.
+Object.defineProperties(HTMLDialogElement.prototype, {
+  showModal: { configurable: true, value(this: HTMLDialogElement) { this.setAttribute('open', '') } },
+  close: { configurable: true, value(this: HTMLDialogElement) { this.removeAttribute('open'); this.dispatchEvent(new Event('close')) } },
+})
+
 const id = '12345678-1234-4234-9234-123456789012'
 const notice = { version: 'fixture-ai', title: '가상 AI 처리 안내', controller: '가상 운영 주체', contact: '시험 문의처',
   aws_region: '시험 리전', body: '가상 시험 안내 본문', retention: '시험 보관', deletion: '시험 삭제' }
@@ -42,7 +49,7 @@ function mount(options: { published?: boolean; stale?: boolean; lost?: boolean; 
 }
 
 async function readAndAgree() {
-  await userEvent.click(screen.getByRole('button', { name: '현재 AI 처리 안내 확인' }))
+  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
   await userEvent.click(await screen.findByLabelText(checkbox))
 }
 
@@ -50,15 +57,36 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie =
 
 it('does not write or offer consent when no AI notice has been published', async () => {
   const { calls } = mount({ published: false })
-  await userEvent.click(screen.getByRole('button', { name: '현재 AI 처리 안내 확인' }))
+  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
   expect(await screen.findByText('AI 처리 안내가 아직 준비되지 않았어요')).toBeVisible()
   expect(screen.queryByLabelText(checkbox)).not.toBeInTheDocument()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
 })
 
+it('keeps the specified entry layout and closes the current notice without recording consent', async () => {
+  const { calls } = mount()
+  expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('시작하기 전에 확인해주세요')
+  expect(screen.getAllByRole('button', { name: /자세히 보기/ })).toHaveLength(3)
+  expect(screen.queryByText(/가상 경험|미리보기/)).not.toBeInTheDocument()
+  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
+  expect(await screen.findByRole('dialog', { name: 'AI 처리 동의' })).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: '닫기' }))
+  expect(screen.queryByRole('dialog', { name: 'AI 처리 동의' })).not.toBeInTheDocument()
+  expect(calls.every(request => request.method === 'GET')).toBe(true)
+})
+
+it('shows a short retention summary and offers further details without recording consent', async () => {
+  const { calls } = mount()
+  await userEvent.click(screen.getByRole('button', { name: '보관 및 삭제 자세히 보기' }))
+  expect(screen.getByText(/시작 후 최대 2시간 보관합니다/)).toHaveTextContent('30분 동안 활동이 없으면 더 일찍 만료됩니다')
+  await userEvent.click(screen.getByText('자세히 보기', { selector: 'summary' }))
+  expect(screen.getByText(/저장 대기 자료는 최대 10분 보관합니다/)).toBeVisible()
+  expect(calls).toHaveLength(0)
+})
+
 it('requires explicit consent and starts the existing server conversation with CSRF protection', async () => {
   const { calls, onStart } = mount()
-  await userEvent.click(screen.getByRole('button', { name: '현재 AI 처리 안내 확인' }))
+  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
   expect(await screen.findByRole('button', { name: '동의하고 새 체험 시작하기' })).toBeDisabled()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
   await userEvent.click(screen.getByLabelText(checkbox))

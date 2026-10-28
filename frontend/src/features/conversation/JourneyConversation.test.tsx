@@ -7,6 +7,22 @@ import { JourneyConversation, JourneyConversationRoute } from './JourneyConversa
 import { firstQuestion, parseMessageResult } from './model'
 import type { ProfileView } from './model'
 
+it('loads the first question after consent and explains the four controls', async () => {
+  Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value(this: HTMLDialogElement) { this.setAttribute('open', '') } })
+  Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() })
+  vi.stubGlobal('fetch', vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view())))
+  render(<MemoryRouter initialEntries={[{ pathname: '/', state: { newJourney: true } }]}><JourneyConversation journeyId={id} /></MemoryRouter>)
+  const user = userEvent.setup()
+  expect(await screen.findByRole('heading', { name: '질문을 확인해 주세요' })).toBeVisible()
+  for (const heading of ['질문을 다시 들을 수 있어요', '소리 크기를 조절해요', '말하기를 눌러 답해요']) {
+    await user.click(screen.getByRole('button', { name: '다음' }))
+    expect(screen.getByRole('heading', { name: heading })).toBeVisible()
+  }
+  await user.click(screen.getByRole('button', { name: '대화 시작하기' }))
+  expect(screen.getByRole('heading', { name: firstQuestion })).toHaveFocus()
+  expect(screen.getByRole('button', { name: '말하기' })).toBeVisible()
+})
+
 const id = '12345678-1234-1234-1234-123456789012'
 const userId = '22345678-1234-1234-1234-123456789012'
 const assistantId = '32345678-1234-1234-1234-123456789012'
@@ -124,7 +140,7 @@ it('allows profile navigation while pending and discards the late response on un
   const user = mount(); await prepare(user)
   await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
   const write = fetch.mock.calls.find(([req]) => req.method === 'POST')![0]
-  await user.click(screen.getByRole('link', { name: '언제든 프로필 확인하기' }))
+  await user.click(screen.getByRole('link', { name: '프로필 확인하기' }))
   expect(await screen.findByText('서버 프로필 화면')).toBeVisible()
   expect(write.signal.aborted).toBe(true)
   await act(async () => finish(json(result())))

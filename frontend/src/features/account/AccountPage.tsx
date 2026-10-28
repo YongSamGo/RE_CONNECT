@@ -8,6 +8,8 @@ import { CheckboxField } from '../../ui/Fields'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { parseSession } from './session'
 import { LoginEntry } from './notices'
+import { ServicePage } from '../../ui/ServicePage'
+import { AccountOverview } from './AccountOverview'
 
 type Me = components['schemas']['Me']
 type Result = { me: Me; message?: string }
@@ -21,8 +23,8 @@ export function AccountPage({ onLogout, onSessionReset }: { onLogout?: () => voi
   const me = state.status === 'success' ? state.data.me : null
   const pending = state.status === 'pending'
   const check = () => request.run(async (api, signal) => ({ me: parseSession(required((await api.GET('/me', { signal })).data)) }))
-  return <div className="account-stage"><div className="account-content">
-    <header className="account-heading"><h1>내 정보와 동의를 관리해요</h1><p>로그인 후 저장한 자료와 동의 내역을 확인할 수 있어요.</p></header>
+  return <ServicePage member title="나의 정보" description="내 경험과 저장한 자료, 동의 내역을 관리해요."><div className="account-content">
+    {me?.authenticated && <AccountOverview />}
     {!me?.authenticated && <LoginEntry />}
     <StatusNotice title="로그인과 저장 동의는 별개예요">서버에 확정 안내문이 게시돼야 새 로그인과 동의를 제공해요. 아래 관리 기능은 서버에서 확인한 현재 회원에게만 적용돼요.</StatusNotice>
     <div className="panel account-management"><Button variant="secondary" pending={pending} onClick={() => { setRemove(false); setWithdrawAI(false); setDeleteAccount(false); void check() }}>내 로그인 상태 확인</Button>
@@ -32,8 +34,7 @@ export function AccountPage({ onLogout, onSessionReset }: { onLogout?: () => voi
         <section className="account-section"><h2>현재 로그인 상태</h2><p>회원 세션이 확인되었습니다. 대화는 새로 시작하며 저장하지 않은 입력은 회원 자료에 포함되지 않습니다.</p>
         <h3>현재 동의</h3>{me.consents.length ? <ul>{me.consents.map((consent) => <li key={consent.purpose}>{consent.purpose === 'storage' ? '회원 저장' : 'AI 처리'} / 안내문 {consent.notice_version}</li>)}</ul> : <p>현재 유효한 동의가 없습니다.</p>}
         <div className="actions"><Link className="button secondary" to="/me/saved">저장한 자료 조회</Link>
-        {me.user?.roles.includes('operator') && <Link className="button secondary" to="/admin">운영자 관리 화면</Link>}
-        {me.pending_save_intent && <Link className="button secondary" to="/me/save">저장 대기 자료 확인</Link>}</div>
+        {me.user?.roles.includes('operator') && <Link className="button secondary" to="/admin">운영자 관리 화면</Link>}</div>
         <div className="actions"><Button variant="secondary" onClick={() => void request.run(async (api, signal) => { await api.POST('/auth/logout', { signal }); const me = parseSession(required((await api.GET('/me', { signal })).data)); if (me.authenticated) throw new ApiError('INVALID_RESPONSE'); return { me, message: '로그아웃 요청이 완료되었습니다.' } }, onLogout)}>로그아웃</Button></div></section>
         <section className="account-section"><h2>회원 저장 동의 철회</h2><p>철회하면 저장 프로필의 모든 버전과 지원서가 삭제됩니다.</p>
         <p>삭제하거나 동의를 철회하면 다른 기기를 포함한 기존 임시 체험과 로그인 세션을 종료해요. 이 화면은 새 회원 세션으로 전환하며 다른 기기는 다시 로그인해야 합니다.</p>
@@ -59,5 +60,5 @@ export function AccountPage({ onLogout, onSessionReset }: { onLogout?: () => voi
       </>)}
       <p role="status">{state.status === 'success' ? state.data.message : ''}</p>
     </div><Link className="text-link account-home-link" to="/">시작 화면으로</Link>
-  </div></div>
+  </div></ServicePage>
 }
