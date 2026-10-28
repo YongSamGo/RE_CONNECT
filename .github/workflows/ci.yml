@@ -247,7 +247,7 @@ jobs:
         run: python -m pytest tests/test_member_models.py tests/test_operational_models.py tests/test_migrations.py tests/test_persistence_connections.py tests/test_encryption.py -q
       - name: 실제 Redis 세션 수명과 원자 교체 시험
         working-directory: backend
-        run: python -m pytest tests/test_sessions.py tests/test_kakao_state.py tests/test_auth_accounts.py tests/test_member_auth.py tests/test_save_intents.py tests/test_saved_profiles.py tests/test_saved_drafts.py tests/test_saved_journey_import.py tests/test_saved_material_editing.py tests/test_deletions.py tests/test_deletion_journal.py tests/test_deletion_contracts.py tests/test_member_security_matrix.py tests/test_save_intent_cancel.py tests/test_operator_mfa.py tests/test_operator_mfa_http.py -q
+        run: python -m pytest tests/test_sessions.py tests/test_kakao_state.py tests/test_auth_accounts.py tests/test_member_auth.py tests/test_save_intents.py tests/test_saved_profiles.py tests/test_saved_drafts.py tests/test_saved_journey_import.py tests/test_saved_material_editing.py tests/test_deletions.py tests/test_deletion_journal.py tests/test_deletion_contracts.py tests/test_member_security_matrix.py tests/test_member_lifecycle_matrix.py tests/test_save_intent_cancel.py tests/test_operator_mfa.py tests/test_operator_mfa_http.py -q
       - name: 실제 Redis 중복 요청과 리비전 경합 시험
         working-directory: backend
         run: python -m pytest tests/test_request_coordination.py -q
