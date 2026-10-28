@@ -1,4 +1,5 @@
--- Run as reconnect_migrator after every successful migration; transaction is atomic.
+-- Run as reconnect_migrator before the first migration and after each migration.
+-- Function defaults and explicit grants are updated in one atomic transaction.
 \set ON_ERROR_STOP on
 BEGIN;
 DO $$
@@ -8,6 +9,18 @@ BEGIN
     IF current_database() <> 'reconnect' OR current_user <> 'reconnect_migrator' THEN
         RAISE EXCEPTION 'requires the reconnect migration account';
     END IF;
+    -- Change our own defaults; do not require the RDS administrator to SET ROLE.
+    EXECUTE 'ALTER DEFAULT PRIVILEGES REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC';
+    FOR relation IN
+        SELECT pg_get_userbyid(p.proowner) AS owner
+        FROM pg_proc p JOIN pg_namespace n ON n.oid = p.pronamespace
+        WHERE n.nspname = 'public'
+    LOOP
+        IF relation.owner <> current_user THEN
+            RAISE EXCEPTION 'unexpected routine owner; grants aborted';
+        END IF;
+    END LOOP;
+    EXECUTE 'REVOKE EXECUTE ON ALL FUNCTIONS IN SCHEMA public FROM PUBLIC';
     FOR relation IN
         SELECT c.relname, c.relkind, pg_get_userbyid(c.relowner) AS owner
         FROM pg_class c JOIN pg_namespace n ON n.oid = c.relnamespace

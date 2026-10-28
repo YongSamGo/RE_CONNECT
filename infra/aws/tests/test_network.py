@@ -20,12 +20,26 @@ def assert_isolated(test, resources):
                                  SourceSecurityGroupId={'Ref': 'AppSecurityGroup'})])
     for name in ('DatabaseSubnetA', 'DatabaseSubnetB'):
         test.assertIs(resources[name]['Properties']['MapPublicIpOnLaunch'], False)
+    for name in ('DatabaseRouteAssociationA', 'DatabaseRouteAssociationB'):
+        test.assertEqual(resources[name]['Properties']['RouteTableId'], {'Ref': 'DatabaseRoutes'})
+    test.assertEqual(resources['DatabaseSecurityGroup']['Properties'].get('SecurityGroupEgress'),
+                     [dict(IpProtocol='tcp', FromPort=9, ToPort=9, CidrIp='127.0.0.1/32')])
+    test.assertEqual(resources['AppSecurityGroup']['Properties'].get('SecurityGroupEgress'),
+                     [dict(IpProtocol='tcp', FromPort=443, ToPort=443, CidrIp='0.0.0.0/0')])
+    test.assertEqual(resources['AppDatabaseEgress']['Properties'], dict(
+        GroupId={'Ref': 'AppSecurityGroup'}, IpProtocol='tcp', FromPort=5432, ToPort=5432,
+        DestinationSecurityGroupId={'Ref': 'DatabaseSecurityGroup'}))
     for resource in resources.values():
         if resource['Type'] == 'AWS::EC2::Route':
             test.assertNotEqual(resource['Properties']['RouteTableId'], {'Ref': 'DatabaseRoutes'})
     ingress = resources['AppSecurityGroup']['Properties']['SecurityGroupIngress']
     test.assertEqual(ingress, [dict(IpProtocol='tcp', FromPort=443, ToPort=443, CidrIp='0.0.0.0/0')])
     test.assertEqual(resources['Application']['Properties']['MetadataOptions']['HttpTokens'], 'required')
+    test.assertEqual(resources['Application']['Properties']['MetadataOptions']['HttpPutResponseHopLimit'], 2)
+    test.assertEqual(resources['Application']['Properties']['IamInstanceProfile'], {'Ref': 'InstanceProfileName'})
+    test.assertEqual(resources['ApplicationAddress']['Properties'],
+                     dict(Domain='vpc', InstanceId={'Ref': 'Application'}))
+    test.assertEqual(resources['ApplicationAddress']['DependsOn'], 'GatewayAttachment')
 
 
 class NetworkTests(unittest.TestCase):
@@ -57,4 +71,39 @@ class NetworkTests(unittest.TestCase):
         changed['LeakedRoute'] = copy.deepcopy(changed['AppInternetRoute'])
         changed['LeakedRoute']['Properties']['RouteTableId'] = {'Ref': 'DatabaseRoutes'}
         with self.assertRaises(AssertionError):
+            assert_isolated(self, changed)
+
+    def test_reject_database_subnet_on_application_routes(self):
+        for name in ('DatabaseRouteAssociationA', 'DatabaseRouteAssociationB'):
+            with self.subTest(name=name):
+                changed = copy.deepcopy(self.resources)
+                changed[name]['Properties']['RouteTableId'] = {'Ref': 'AppRoutes'}
+                with self.assertRaises(AssertionError):
+                    assert_isolated(self, changed)
+
+    def test_reject_implicit_or_unrestricted_egress(self):
+        for name in ('DatabaseSecurityGroup', 'AppSecurityGroup'):
+            for replacement in (None, [dict(IpProtocol='-1', CidrIp='0.0.0.0/0')]):
+                with self.subTest(name=name, replacement=replacement):
+                    changed = copy.deepcopy(self.resources)
+                    if replacement is None:
+                        del changed[name]['Properties']['SecurityGroupEgress']
+                    else:
+                        changed[name]['Properties']['SecurityGroupEgress'] = replacement
+                    with self.assertRaises(AssertionError):
+                        assert_isolated(self, changed)
+
+    def test_reject_missing_management_profile_static_address_or_container_imds(self):
+        for field in ('IamInstanceProfile', 'MetadataOptions'):
+            changed = copy.deepcopy(self.resources)
+            del changed['Application']['Properties'][field]
+            with self.assertRaises((AssertionError, KeyError)):
+                assert_isolated(self, changed)
+        changed = copy.deepcopy(self.resources)
+        changed['Application']['Properties']['MetadataOptions']['HttpPutResponseHopLimit'] = 1
+        with self.assertRaises(AssertionError):
+            assert_isolated(self, changed)
+        changed = copy.deepcopy(self.resources)
+        del changed['ApplicationAddress']
+        with self.assertRaises(KeyError):
             assert_isolated(self, changed)

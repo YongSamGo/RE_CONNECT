@@ -21,7 +21,7 @@ GRANT USAGE, CREATE ON SCHEMA public TO reconnect_migrator;
 GRANT USAGE ON SCHEMA public TO reconnect_runtime;
 ALTER ROLE reconnect_migrator IN DATABASE reconnect SET search_path = public;
 ALTER ROLE reconnect_runtime IN DATABASE reconnect SET search_path = public;
-ALTER DEFAULT PRIVILEGES FOR ROLE reconnect_migrator
-    REVOKE EXECUTE ON FUNCTIONS FROM PUBLIC;
+-- The non-superuser RDS administrator cannot assume the new role on PG16.
+-- The migrator sets its own function defaults in grant_runtime.sql.
 -- No membership in the migration/owner role and no automatic grants to future tables.
 COMMIT;

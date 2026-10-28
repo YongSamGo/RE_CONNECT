@@ -3,6 +3,18 @@
 
 version: 2
 updates:
+  # AWS 회귀 시험의 추가 의존성도 같은 7일 대기 기준으로 갱신한다.
+  - package-ecosystem: pip
+    directory: /infra/aws
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: Asia/Seoul
+    cooldown:
+      default-days: 7
+    commit-message:
+      prefix: "sec"
+
   # CI 액션 (커밋 SHA 고정값과 버전 주석을 함께 갱신)
   - package-ecosystem: github-actions
     directory: /

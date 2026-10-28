@@ -8,6 +8,10 @@ Parameters:
     Type: String
     Default: t3.small
     AllowedValues: [t3.small, t3.medium, g4dn.xlarge]
+  InstanceProfileName:
+    Type: String
+    AllowedPattern: '[A-Za-z0-9+=,.@_-]{1,128}'
+    Description: Reviewed existing instance profile for SSM, ECR, application secrets, logs and deletion journal
   DatabaseClass:
     Type: String
     Default: db.t4g.micro
@@ -146,10 +150,12 @@ Resources:
     Properties:
       ImageId: {Ref: ImageId}
       InstanceType: {Ref: InstanceType}
+      IamInstanceProfile: {Ref: InstanceProfileName}
       MetadataOptions:
         HttpEndpoint: enabled
         HttpTokens: required
-        HttpPutResponseHopLimit: 1
+        # Docker bridge containers need the IMDSv2 token response to cross two hops.
+        HttpPutResponseHopLimit: 2
       BlockDeviceMappings:
         - DeviceName: /dev/xvda
           Ebs: {Encrypted: true, VolumeType: gp3, VolumeSize: 30, DeleteOnTermination: true}
@@ -158,8 +164,16 @@ Resources:
           AssociatePublicIpAddress: true
           SubnetId: {Ref: AppSubnet}
           GroupSet: [{Ref: AppSecurityGroup}]
+  ApplicationAddress:
+    Type: AWS::EC2::EIP
+    DependsOn: GatewayAttachment
+    Properties:
+      Domain: vpc
+      InstanceId: {Ref: Application}
 Outputs:
   DatabaseHost:
     Value: {Fn::GetAtt: [Database, Endpoint.Address]}
   ApplicationId:
     Value: {Ref: Application}
+  PublicAddress:
+    Value: {Ref: ApplicationAddress}

@@ -45,7 +45,11 @@ class DatabaseRoleTests(unittest.TestCase):
             raise AssertionError('다른 DB 초기화가 허용되었습니다')
         with cls.connect(database='postgres') as admin:
             assert admin.execute("SELECT count(*) FROM pg_roles WHERE rolname IN ('reconnect_migrator','reconnect_runtime')").fetchone()[0] == 0
-        if cls.script('bootstrap_database.sql').returncode != 0:
+        # Model PG16 RDS administration without granting superuser or SET/INHERIT.
+        with cls.connect() as admin:
+            admin.execute('CREATE ROLE rds_like_admin LOGIN CREATEROLE NOSUPERUSER NOINHERIT')
+            admin.execute('ALTER DATABASE reconnect OWNER TO rds_like_admin')
+        if cls.script('bootstrap_database.sql', user='rds_like_admin').returncode != 0:
             raise AssertionError('초기 역할 적용 실패')
         with cls.connect() as admin:
             cls.initial_flags = admin.execute("SELECT rolname,rolcanlogin,rolsuper,rolcreatedb,rolcreaterole,rolreplication,rolbypassrls,rolinherit FROM pg_roles WHERE rolname IN ('reconnect_migrator','reconnect_runtime') ORDER BY rolname").fetchall()
@@ -120,6 +124,19 @@ class DatabaseRoleTests(unittest.TestCase):
         with self.connect(user='reconnect_runtime') as runtime:
             runtime.execute('INSERT INTO public.future_rows VALUES (1)')
             self.assertEqual(runtime.execute('SELECT * FROM public.future_rows').fetchall(), [(1,)])
+
+    def test_existing_and_future_functions_are_not_executable_by_public(self):
+        self.grant()
+        with self.connect(user='reconnect_migrator') as migrator:
+            migrator.execute("CREATE FUNCTION public.future_owner_function() RETURNS int LANGUAGE sql AS 'SELECT 1'")
+        self.denied('SELECT public.hidden_owner_function()')
+        self.denied('SELECT public.future_owner_function()')
+
+    def test_foreign_function_owner_aborts_grants(self):
+        with self.connect() as admin:
+            admin.execute("CREATE FUNCTION public.foreign_owner_function() RETURNS int LANGUAGE sql AS 'SELECT 1'")
+        self.assertNotEqual(self.script('grant_runtime.sql', user='reconnect_migrator').returncode, 0)
+        self.denied('SELECT * FROM public.app_rows')
 
     def test_foreign_owner_aborts_all_grants_without_partial_authority(self):
         with self.connect() as admin: admin.execute('CREATE TABLE public.foreign_rows(id int)')

@@ -7,8 +7,15 @@ RDS 비밀번호는 RDS가 Secrets Manager에서 관리하며 템플릿·출력�
 
 AWS 계정·할당량·비용 승인이 준비된 뒤 사람이 change set을 검토하고 배포한다.
 `ImageId`는 대상 리전에서 검증한 x86_64 AMI를 지정해야 한다. AMI의 루트 장치는
-`/dev/xvda`여야 하며 애플리케이션·TLS 인증서·업데이트·복구 접근은 별도로 구성한다.
-이 구성에는 관리 IAM 역할이나 마스터 비밀번호 조회 권한을 부여하지 않는다.
+`/dev/xvda`이고 패키지 저장소가 HTTPS여야 한다. 애플리케이션·TLS 인증서·업데이트는
+별도로 구성한다. 검토한 기존 인스턴스 프로파일 이름을 `InstanceProfileName`으로 받는다.
+프로파일에는 Session Manager, ECR pull, 앱용 비밀값 읽기, 로그 쓰기, 삭제 이력 S3의
+최소 범위 권한만 부여한다([배포 권한 기준](../deploy/README.md)). 관리용 DB 마스터
+비밀번호 조회 권한은 부여하지 않는다. SSH는 열지 않고 Session Manager를 사용한다.
+컨테이너의 IMDSv2 응답을 위해 hop limit은 2, 토큰은 필수다. 배포 시 호스트 방화벽에서
+backend만 메타데이터에 접근하게 제한하고 nginx·모델·음성 컨테이너의 차단을 확인해야 한다.
+탄력적 IP를 EC2에 연결하고 `PublicAddress`로 반환한다. 도메인의 A 레코드는 이 주소로
+연결하며 실제 운영 스택에 적용하기 전 운영 사본과 change set 차이를 사람이 확인한다.
 DB 계정 초기화는 아래 SQL로 분리한다. EC2에 마스터 계정을 제공하지 않는다.
 EC2·RDS·스토리지·백업·Secrets Manager·공인 IPv4는 배포 시 비용이 발생한다.
 
@@ -24,7 +31,12 @@ CloudFormation 스키마 검사는 `cfn-lint infra/aws/network.yaml`을 사용�
 
 ## DB 계정과 TLS 사전 검사
 
-이 폴더의 도구는 Python 3.12를 사용한다. 로컬 테스트에는 PyYAML·cryptography가 필요하다.
+이 폴더의 도구는 Python 3.12를 사용한다. 테스트의 cryptography·psycopg는
+해시 고정 `backend/requirements.txt`를 사용하고 PyYAML은 이 폴더의
+`requirements-dev.txt`로 버전·배포물 해시를 고정한다. PyYAML 해시는 공식 PyPI
+6.0.3 릴리스 JSON의 SHA-256 목록이며 입력 버전은 `requirements-dev.in`에 둔다.
+CI backend 잡에서 AWS 테스트·TLS 도구 Bandit·추가 의존성 pip-audit를 실행한다.
+별도 PostgreSQL 16 Unix socket 클러스터를 만들어 비슈퍼유저 초기화·SQL 권한 시험도 실행한다.
 운영 도구 `check_database_tls.py` 자체는 표준 라이브러리만 사용한다.
 
 ```bash
@@ -43,14 +55,16 @@ python infra/aws/check_database_tls.py --host <RDS-DNS-endpoint> --ca-file <AWS-
 2. 두 계정의 비밀번호를 비밀 관리 경로에서 준비한다. 대화형 psql의 `\password`로
    설정하고 각 역할을 `LOGIN`으로 전환한다. 저장소에는 비밀번호를 기록하지 않는다.
    초기화 스크립트는 비밀번호 없는 로그인 역할을 자동으로 열지 않는다.
-3. `reconnect_migrator`로 마이그레이션을 실행한 뒤 같은 계정으로
-   `grant_runtime.sql`을 실행한다. 소유자가 다른 테이블이 있으면 권한 적용을 중단한다.
+3. 첫 마이그레이션 전에 `reconnect_migrator` 본인으로 `grant_runtime.sql`을 실행해
+   함수의 PUBLIC 기본 실행 권한을 제거한다. 마이그레이션 뒤에도 같은 계정으로
+   `grant_runtime.sql`을 실행한다. 기존 함수의 PUBLIC 실행 권한도 회수하고,
+   소유자가 다른 테이블·함수가 있으면 권한 적용을 중단한다.
    신규 테이블에는 자동 권한을 부여하지 않으므로 매 마이그레이션 후 다시 실행한다.
 4. 애플리케이션은 `reconnect_runtime`만 사용한다. 실행 계정은 마이그레이션 역할의
    멤버가 아니며 CREATE·TRUNCATE·GRANT 권한 및 `alembic_version` 접근 권한이 없다.
    TLS 연결로 정상 DML 성공과 DDL·마이그레이션 테이블 변경 거절을 실제 확인한다.
 
-전용 Unix socket PostgreSQL 16에서 역할 시험 5개를 실행했다. 초기 NOLOGIN·상승 권한 없음,
+기존 전용 Unix socket PostgreSQL 16 시험은 초기 NOLOGIN·상승 권한 없음,
 실제 실행 계정의 DML/시퀀스 사용, DDL·TRUNCATE·마이그레이션 테이블·소유자 함수 접근과
 역할 승격 거절을 확인했다. 새 테이블의 자동 권한 부여 없음, 명시적 재적용, 다른 소유자
 객체가 있을 때 권한 전체 롤백, 초기화 재실행 시 기존 역할 보존도 확인했다.
@@ -60,6 +74,10 @@ python infra/aws/check_database_tls.py --host <RDS-DNS-endpoint> --ca-file <AWS-
 없음을 검사하며 `reconnect` DB/역할을 만들거나 수정하므로 운영 DB에는 사용할 수 없다.
 psycopg와 psql이 필요하고, 시험 클러스터는 별도로 준비·종료해야 한다.
 변수 없이 일반 오프라인 시험을 돌리면 역할 시험은 제외된다.
+
+추가 회귀는 DB 소유자인 `CREATEROLE NOSUPERUSER NOINHERIT` 관리자로 초기화하고,
+기존·미래 함수의 PUBLIC 실행 거절 및 다른 함수 소유자의 원자적 실패도 확인한다.
+로컬 Windows에서는 Unix socket 역할 시험을 건너뛰며 실제 실행 결과는 해당 CI 단계를 확인한다.
 
 이 증거는 로컬 trust 인증의 별도 클러스터에서 얻었다. RDS 배포·실제 자격 증명·TLS를
 사용한 역할 접속은 검증하지 않았다. 기존 DB 적용·공개 스키마 내 추가 테이블/시퀀스·
