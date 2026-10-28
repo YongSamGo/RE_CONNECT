@@ -19,7 +19,8 @@ it('redirects results without inventing a profile or sending a request', () => {
   const fetch = vi.fn(async (_request: Request) => new Response('{}', { headers: { 'Content-Type': 'application/json' } })); vi.stubGlobal('fetch', fetch)
   render(<MemoryRouter initialEntries={['/results']}><App /></MemoryRouter>)
   expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('다시잇다가 추천하는 공고입니다')
-  expect(screen.queryByRole('button', { name: '추천 다시 확인하기' })).not.toBeInTheDocument()
+  expect(screen.getByRole('link', { name: '대화 시작하기' })).toHaveAttribute('href', '/start')
+  expect(screen.getByRole('link', { name: '전체 공고 보기' })).toHaveAttribute('href', '/opportunities')
   expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
 })
 

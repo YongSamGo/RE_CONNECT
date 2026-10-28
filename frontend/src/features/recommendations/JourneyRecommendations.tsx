@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { JourneyRecommendations as ExistingRecommendations } from './ExistingRecommendations'
 import { required, useRequest } from '../../state/useRequest'
@@ -65,7 +66,8 @@ export function JourneyRecommendationsRoute() {
 
 export function JourneyRecommendations({ journeyId, preview = false }: { journeyId?: string; preview?: boolean }) {
   if (journeyId && !preview) return <ExistingRecommendations journeyId={journeyId} />
-  return <RecommendationPreview preview={preview} />
+  if (!preview) return <ServicePage title="다시잇다가 추천하는 공고입니다"><StatusNotice label="경험 확인" title="경험을 정리한 후 추천을 볼 수 있어요">대화를 시작하거나 전체 공고를 먼저 살펴보세요.</StatusNotice><div className="actions"><Link className="button primary" to="/start">대화 시작하기</Link><Link className="button secondary" to="/opportunities">전체 공고 보기</Link></div></ServicePage>
+  return <RecommendationPreview preview />
 }
 
 function RecommendationPreview({ preview = false }: { preview?: boolean }) {
