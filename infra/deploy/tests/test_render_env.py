@@ -119,6 +119,25 @@ class RenderEnvTest(unittest.TestCase):
             with self.subTest(url=url):
                 self.assertEqual(self.run_main(app_document(DATABASE_URL=url))[0], 1)
 
+    def test_deletion_journal_bucket_set_together(self) -> None:
+        bucket = {
+            "DELETION_JOURNAL_BUCKET": "reconnect-deletion-journal",
+            "DELETION_JOURNAL_BUCKET_OWNER": "123456789012",
+            "DELETION_JOURNAL_REGION": "ap-northeast-2",
+        }
+        self.assertEqual(self.run_main(app_document(**bucket))[0], 0)
+        self.assertIn("DELETION_JOURNAL_REGION=ap-northeast-2", self.output.read_text(encoding="utf-8").splitlines())
+        self.output.unlink()
+        for missing in bucket:
+            with self.subTest(missing=missing):
+                partial = {key: value for key, value in bucket.items() if key != missing}
+                self.assertEqual(self.run_main(app_document(**partial))[0], 1)
+                self.assertFalse(self.output.exists())
+        for key, bad in (("DELETION_JOURNAL_BUCKET", "Evil_Bucket"), ("DELETION_JOURNAL_BUCKET_OWNER", "12345"),
+                         ("DELETION_JOURNAL_REGION", "ap-northeast-2 x")):
+            with self.subTest(key=key):
+                self.assertEqual(self.run_main(app_document(**{**bucket, key: bad}))[0], 1)
+
     def test_redis_values(self) -> None:
         self.assertEqual(self.run_main(app_document(REDIS_URL="redis://:pw@evil.example:6379/0"))[0], 1)
         redis_prefix = "/re-connect/production/redis/"

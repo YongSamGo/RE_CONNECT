@@ -51,7 +51,9 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
   `sub = repo:YongSamGo/RE_CONNECT:environment:release`. 권한은 세 ECR 저장소의 push만.
 - ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`: 태그 불변(IMMUTABLE), push 시 검사.
 - EC2 인스턴스 역할: 세 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`), 해당 KMS 키 복호화,
-  운영 로그 그룹 쓰기. 쓰기·삭제 권한은 주지 않는다.
+  운영 로그 그룹 쓰기. 그 밖의 쓰기·삭제 권한은 주지 않는다.
+  삭제 이력 버킷은 해당 접두어의 쓰기·읽기·목록과 보호 설정 조회만 준다(삭제·수명주기·정책 변경 없음, [백업·복원](../../docs/security/backup-restore.md), #94).
+- 관리 명령은 backend 이미지의 `manage_*.py`를 모두 담는다: `docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm --entrypoint /opt/venv/bin/python backend -B manage_<이름>.py ...`
 
 ## 5. 비밀값 (SSM Parameter Store)
 
@@ -59,12 +61,13 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 
 | 경로 | 필수 | 선택 |
 | --- | --- | --- |
-| `/re-connect/<env>/app/` | `DATABASE_URL`(reconnect_runtime), `REDIS_URL`, `REQUEST_LIMIT_KEY`, `PUBLIC_ORIGIN`, `DATA_ENCRYPTION_KEYS`, `DATA_ENCRYPTION_ACTIVE_KEY_ID` | 카카오 3종, `DATA_GO_KR_SERVICE_KEY`, `INFERENCE_CONTROL_EPOCH`, 안내문 버전·본문, `OLLAMA_MODEL` |
+| `/re-connect/<env>/app/` | `DATABASE_URL`(reconnect_runtime), `REDIS_URL`, `REQUEST_LIMIT_KEY`, `PUBLIC_ORIGIN`, `DATA_ENCRYPTION_KEYS`, `DATA_ENCRYPTION_ACTIVE_KEY_ID` | 카카오 3종, `DATA_GO_KR_SERVICE_KEY`, `INFERENCE_CONTROL_EPOCH`, 안내문 버전·본문, `OLLAMA_MODEL`, 삭제 이력 버킷 3종(`DELETION_JOURNAL_BUCKET`·`_BUCKET_OWNER`·`_REGION`, 함께 설정, #94) |
 | `/re-connect/<env>/redis/` | `REDIS_PASSWORD`(hex 32자 이상) | — |
 | `/re-connect/<env>/migrate/` | `DATABASE_URL`(reconnect_migrator) | — |
 
 - `DATABASE_URL`은 `sslmode=verify-full&sslrootcert=/run/rds-ca.pem`이 없으면 거절한다.
 - `REDIS_URL`은 내부 `redis` 서비스만 가리킬 수 있다.
+- 삭제 이력 버킷 3종은 backend 설정과 같은 형식만 받고, 일부만 있으면 거절한다. 셋이 없으면 운영 회원 저장은 비활성이다.
 - `APP_ENV`·`TRUSTED_PROXY_IPS`는 Compose `environment:`에 고정돼 있다. `OLLAMA_BASE_URL`은 코드 기본값(내부 `ollama` 서비스)을 쓴다. 세 값 모두 렌더러 허용 목록에 없어 SSM으로 바꿀 수 없다.
 - 값은 줄바꿈 없이 한 줄로 저장한다(JSON은 압축해서 저장). Compose는 env 파일을 `format: raw`로 읽어 `$`·따옴표를 해석하지 않는다.
 

@@ -62,6 +62,13 @@ class ReleaseManifestTest(unittest.TestCase):
         with self.assertRaises(release_manifest.ManifestError):
             release_manifest.images_env({**manifest, "schema": 2})
 
+    def test_backend_image_includes_every_management_command(self) -> None:
+        # 새 manage_*.py가 생겨도 이미지에서 빠지지 않도록 이름 나열 대신 glob으로 복사해야 한다.
+        dockerfile = (release_manifest.ROOT / "backend/Dockerfile").read_text(encoding="utf-8")
+        copies = [line.split()[1:-1] for line in dockerfile.splitlines() if line.startswith("COPY ") and "--from" not in line]
+        self.assertTrue(any("manage_*.py" in sources for sources in copies))
+        self.assertTrue(list((release_manifest.ROOT / "backend").glob("manage_*.py")))
+
     def test_dockerfile_without_digest_is_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "Dockerfile"

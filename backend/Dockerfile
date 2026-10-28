@@ -15,7 +15,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1 PATH=/opt/ve
 COPY --from=build /opt/venv /opt/venv
 COPY app ./app
 COPY migrations ./migrations
-COPY alembic.ini manage_deletions.py manage_inference.py manage_operators.py manage_reports.py ./
+# 운영 관리 명령(manage_*.py)은 이름을 나열하지 않고 모두 담는다. 새 명령(보관 정리·감사·백업 등)이 이미지에서 빠지지 않게 한다.
+COPY alembic.ini manage_*.py ./
 USER 10001:10001
 EXPOSE 8000
 # 내부 전용 /health/ready (DB·Redis 확인). 503이면 urlopen이 예외를 내 unhealthy가 된다.

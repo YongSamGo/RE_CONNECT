@@ -37,6 +37,8 @@ ROLES: dict[str, dict[str, frozenset[str]]] = {
             "KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "KAKAO_APP_ID", "DATA_GO_KR_SERVICE_KEY",
             "INFERENCE_CONTROL_EPOCH", "AI_NOTICE_VERSION", "STORAGE_NOTICE_VERSION",
             "CONSENT_NOTICES_JSON", "OLLAMA_MODEL",
+            # 운영 삭제 이력 S3 버킷 (#94). 셋을 함께 설정한다.
+            "DELETION_JOURNAL_BUCKET", "DELETION_JOURNAL_BUCKET_OWNER", "DELETION_JOURNAL_REGION",
         }),
     },
     "redis": {"required": frozenset({"REDIS_PASSWORD"}), "optional": frozenset()},
@@ -71,11 +73,24 @@ def _check_redis_url(value: str) -> None:
         raise EnvError("REDIS_URL은 내부 redis 서비스와 비밀번호를 가리켜야 합니다")
 
 
+def _pattern(name: str, pattern: str):
+    def check(value: str) -> None:
+        if not re.fullmatch(pattern, value):
+            raise EnvError(f"{name} 형식 오류")
+    return check
+
+
 VALUE_CHECKS = {
     "DATABASE_URL": _check_database_url,
     "REDIS_PASSWORD": _check_redis_password,
     "REDIS_URL": _check_redis_url,
+    # backend 설정(Settings)과 같은 형식
+    "DELETION_JOURNAL_BUCKET": _pattern("DELETION_JOURNAL_BUCKET", r"[a-z0-9][a-z0-9-]{1,61}[a-z0-9]"),
+    "DELETION_JOURNAL_BUCKET_OWNER": _pattern("DELETION_JOURNAL_BUCKET_OWNER", r"[0-9]{12}"),
+    "DELETION_JOURNAL_REGION": _pattern("DELETION_JOURNAL_REGION", r"[a-z]{2}(-[a-z]+)+-[0-9]"),
 }
+# 일부만 설정하면 backend가 시작하지 못하므로 렌더 단계에서 먼저 거절한다.
+TOGETHER = (frozenset({"DELETION_JOURNAL_BUCKET", "DELETION_JOURNAL_BUCKET_OWNER", "DELETION_JOURNAL_REGION"}),)
 
 
 def collect(document: object, role: str, prefix: str) -> dict[str, str]:
@@ -109,6 +124,10 @@ def collect(document: object, role: str, prefix: str) -> dict[str, str]:
     missing = sorted(ROLES[role]["required"] - values.keys())
     if missing:
         raise EnvError("필수 값 없음: " + ", ".join(missing))
+    for group in TOGETHER:
+        present = group & values.keys()
+        if present and present != group:
+            raise EnvError("함께 설정해야 하는 값이 빠짐: " + ", ".join(sorted(group - present)))
     return values
 
 
