@@ -79,6 +79,9 @@ from app.modules.opportunities.service import PublicOpportunityService, Unavaila
 from app.modules.opportunities.ingestion import IngestionService, UnavailableIngestionRepository
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository
 from app.modules.opportunity_reviews import router as opportunity_reviews
+from app.modules.audit import router as audit
+from app.modules.audit.repository import SqlAuditRepository, UnavailableAuditRepository
+from app.modules.audit.service import AuditService
 from app.modules.opportunity_reviews.repository import SqlOpportunityReviewRepository
 from app.modules.opportunity_reviews.service import OpportunityReviewService, UnavailableOpportunityReviewRepository
 from app.modules.reports import router as reports
@@ -204,6 +207,8 @@ def create_app(
         SqlOpportunityReviewRepository(engine.begin) if engine is not None else UnavailableOpportunityReviewRepository())
     app.state.admin_opportunity_service = AdminOpportunityService(
         SqlAdminOpportunityRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAdminOpportunityRepository())
+    app.state.audit_service = AuditService(
+        SqlAuditRepository(engine.connect, engine.begin) if engine is not None else UnavailableAuditRepository())
     kakao = None
     if (member_storage_enabled and settings.public_origin is not None and settings.kakao_rest_api_key is not None
             and settings.kakao_client_secret is not None and settings.kakao_app_id is not None
@@ -304,6 +309,7 @@ def create_app(
     app.include_router(opportunity_reviews.router, prefix=API_PREFIX)
     app.include_router(admin_opportunities.router, prefix=API_PREFIX)
     app.include_router(reports.router, prefix=API_PREFIX)
+    app.include_router(audit.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)
     app.include_router(roles.router, prefix=API_PREFIX)

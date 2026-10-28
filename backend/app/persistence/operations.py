@@ -4,7 +4,7 @@
 같은 공고의 approved 버전만 참조할 수 있다. Journey는 영구 테이블/FK가 아니다.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from uuid import UUID, uuid4
 
 from sqlalchemy import Boolean, CheckConstraint, Date, Float, ForeignKey, ForeignKeyConstraint, Index, Integer, JSON, LargeBinary, String, UniqueConstraint, Uuid
@@ -323,14 +323,31 @@ class Report(Base):
     purged_at: Mapped[datetime | None] = mapped_column(UTCDateTime())
 
 
+# 보안·운영자 감사 기록의 보관기간 (Plan/02 §5). 조회 기간의 최대 길이도 같다.
+AUDIT_RETENTION = timedelta(days=30)
+# 감사 기록 허용표. DB CHECK와 조회 응답 모델(app.modules.audit.models)이 이 상수를 함께 쓴다.
+# 종류를 더할 때는 여기·마이그레이션·openapi `AuditEvent`를 같이 고친다 (시험이 셋을 대조한다).
+AUDIT_ACTOR_ROLES = ("operator", "user", "system")
+AUDIT_ACTIONS = ("opportunity.create", "opportunity.update", "opportunity.approve", "opportunity.reject",
+                 "opportunity.hide", "opportunity.close", "report.update", "mfa.verify", "mfa.fail", "mfa.lock",
+                 "mfa.enroll", "mfa.reset", "role.grant", "role.revoke", "access.denied")
+AUDIT_TARGET_TYPES = ("opportunity", "report", "user")
+AUDIT_RESULTS = ("success", "denied", "failed")
+
+
 class AuditEvent(Base):
+    """최소 감사 메타데이터. 개인 본문·OTP·토큰·검수 메모는 넣지 않는다 (W07-06).
+
+    공고 검수의 사유 코드·메모는 같은 request_id의 opportunity_reviews에 둔다.
+    """
+
     __tablename__ = "audit_events"
     __table_args__ = (
-        CheckConstraint("actor_role IN ('operator', 'user', 'system')", name="actor_role"),
-        CheckConstraint("action IN ('opportunity.create', 'opportunity.update', 'opportunity.approve', 'opportunity.reject', 'opportunity.hide', 'opportunity.close', 'report.update', 'mfa.verify', 'mfa.fail', 'mfa.lock', 'mfa.enroll', 'mfa.reset', 'role.grant', 'role.revoke', 'access.denied')", name="action"),
-        CheckConstraint("target_type IS NULL OR target_type IN ('opportunity', 'report', 'user')", name="target_type"),
+        CheckConstraint(f"actor_role IN ({_sql_values(AUDIT_ACTOR_ROLES)})", name="actor_role"),
+        CheckConstraint(f"action IN ({_sql_values(AUDIT_ACTIONS)})", name="action"),
+        CheckConstraint(f"target_type IS NULL OR target_type IN ({_sql_values(AUDIT_TARGET_TYPES)})", name="target_type"),
         CheckConstraint("(target_type IS NULL AND target_id IS NULL) OR (target_type IS NOT NULL AND target_id IS NOT NULL)", name="target_pair"),
-        CheckConstraint("result IN ('success', 'denied', 'failed')", name="result"),
+        CheckConstraint(f"result IN ({_sql_values(AUDIT_RESULTS)})", name="result"),
         CheckConstraint("length(request_id) BETWEEN 14 AND 36", name="request_id"),
         CheckConstraint("expires_at > at", name="expiry"),
         Index("ix_audit_events_at", "at"),
