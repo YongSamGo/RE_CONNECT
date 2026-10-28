@@ -3,13 +3,14 @@ from datetime import datetime, timedelta, timezone
 from contextlib import ExitStack
 import http.client
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+import json
 import os
 from pathlib import Path
 import socket
 import ssl
 import subprocess
 import tempfile
-from threading import Thread
+from threading import Event, Thread
 import time
 import unittest
 
@@ -25,8 +26,14 @@ class ProxyRuntimeTests(unittest.TestCase):
         from cryptography.x509.oid import NameOID
 
         received = []
+        upload_started = Event()
 
         class Backend(BaseHTTPRequestHandler):
+            def do_POST(self):
+                upload_started.set()
+                self.rfile.read(int(self.headers['Content-Length']))
+                self.do_GET()
+
             def do_GET(self):
                 received.append((self.path, dict(self.headers)))
                 self.send_response(200)
@@ -43,6 +50,8 @@ class ProxyRuntimeTests(unittest.TestCase):
             root = Path(temporary)
             (root / 'html').mkdir()
             (root / 'html' / 'index.html').write_text('SPA fixture', encoding='utf-8')
+            (root / 'html' / 'assets').mkdir()
+            (root / 'html' / 'assets' / 'index-f1a2b3c4.js').write_text('fixture', encoding='utf-8')
             (root / 'body').mkdir()
             (root / 'logs').mkdir()
             (root / 'mime.types').write_text('types { text/html html; }', encoding='utf-8')
@@ -80,6 +89,7 @@ class ProxyRuntimeTests(unittest.TestCase):
                     '/run/secrets/tls-fullchain.pem': (root / 'cert.pem').as_posix(),
                     '/run/secrets/tls-key.pem': (root / 'key.pem').as_posix(),
                     '/dev/null': (root / 'error.log').as_posix(),
+                    '/dev/stdout': (root / 'access.log').as_posix(),
                     'backend:8000': f'127.0.0.1:{backend.server_port}',
                 }
                 for source, target in replacements.items():
@@ -104,13 +114,13 @@ class ProxyRuntimeTests(unittest.TestCase):
                                     self.fail('Nginx did not start')
                                 time.sleep(.05)
 
-                        def request(path, host='app.example.test', method='GET', headers=None):
+                        def request(path, host='app.example.test', method='GET', headers=None, body=None):
                             connection = http.client.HTTPConnection('127.0.0.1', port, timeout=5)
                             connection.sock = context.wrap_socket(
                                 socket.create_connection(('127.0.0.1', port), timeout=5),
                                 server_hostname='app.example.test')
                             try:
-                                connection.request(method, path, headers={'Host': host, **(headers or {})})
+                                connection.request(method, path, body=body, headers={'Host': host, **(headers or {})})
                                 response = connection.getresponse()
                                 return response.status, dict(response.getheaders()), response.read()
                             finally:
@@ -119,9 +129,27 @@ class ProxyRuntimeTests(unittest.TestCase):
                         status, headers, body = request('/profile/edit')
                         self.assertEqual((status, body), (200, b'SPA fixture'))
                         self.assertEqual(headers['Cache-Control'], 'no-store')
+
+                        def assert_security_headers(headers):
+                            self.assertEqual(headers['Strict-Transport-Security'], 'max-age=31536000')
+                            self.assertEqual(headers['X-Content-Type-Options'], 'nosniff')
+                            self.assertEqual(headers['Referrer-Policy'], 'no-referrer')
+                            self.assertEqual(headers['X-Frame-Options'], 'DENY')
+                            self.assertIn("script-src 'self'", headers['Content-Security-Policy-Report-Only'])
+
+                        assert_security_headers(headers)
+                        status, headers, body = request('/assets/index-f1a2b3c4.js')
+                        self.assertEqual((status, body), (200, b'fixture'))
+                        self.assertEqual(headers['Cache-Control'], 'public, max-age=31536000, immutable')
+                        assert_security_headers(headers)
+                        status, headers, body = request('/assets/missing.js')
+                        self.assertEqual(status, 404)
+                        self.assertEqual(headers['Cache-Control'], 'no-store')
+                        assert_security_headers(headers)
                         path = '/api/v1/auth/kakao/callback?code=synthetic&state=synthetic'
                         status, headers, body = request(path, headers={
-                            'X-Forwarded-For': 'spoofed', 'Forwarded': 'spoofed', 'X-Request-ID': 'spoofed'})
+                            'X-Forwarded-For': 'spoofed', 'Forwarded': 'spoofed', 'X-Request-ID': 'spoofed',
+                            'Cookie': 'session=synthetic', 'Authorization': 'Bearer synthetic'})
                         self.assertEqual((status, body), (200, b'fixture'))
                         self.assertEqual(headers['Cache-Control'], 'no-store')
                         self.assertEqual(received[-1][0], path)
@@ -131,10 +159,53 @@ class ProxyRuntimeTests(unittest.TestCase):
                         self.assertNotIn('forwarded', forwarded)
                         self.assertNotIn('x-request-id', forwarded)
                         self.assertEqual(request('/api/v1/audio')[1]['Content-Type'], 'audio/wav')
-                        self.assertEqual(request('/assets/missing.js')[0], 404)
+                        self.assertEqual(request('/api/preserve?value=synthetic')[0], 200)
+                        self.assertEqual(received[-1][0], '/api/preserve?value=synthetic')
+                        self.assertEqual(request('/api/v1/messages', method='POST', body=b'x' * (64 * 1024))[0], 200)
+                        upload_started.clear()
                         self.assertEqual(request('/.env')[0], 404)
-                        self.assertEqual(request('/api/v1/upload', method='POST', headers={
-                            'Content-Length': str(8 * 1024 * 1024), 'Expect': '100-continue'})[0], 413)
+                        upload_path = '/api/v1/journeys/00000000-0000-4000-8000-000000000001/transcriptions'
+                        before = len(received)
+                        # JSON and lookalike paths must not inherit the recording limit.
+                        for route in ('/api/v1/messages', upload_path + '/other'):
+                            self.assertEqual(request(route, method='POST', headers={
+                                'Content-Length': str(64 * 1024 + 1), 'Expect': '100-continue'})[0], 413)
+                        self.assertEqual(request(upload_path, method='POST', headers={
+                            'Content-Length': str(7 * 1024 * 1024 + 1), 'Expect': '100-continue'})[0], 413)
+                        self.assertEqual(len(received), before)
+                        # Slow client: no backend request until the entire >1 MiB body is buffered.
+                        with context.wrap_socket(socket.create_connection(('127.0.0.1', port), timeout=5),
+                                                 server_hostname='app.example.test') as slow:
+                            payload = b'x' * (7 * 1024 * 1024)
+                            slow.sendall((f'POST {upload_path} HTTP/1.1\r\nHost: app.example.test\r\n'
+                                          f'Content-Length: {len(payload)}\r\nConnection: close\r\n\r\n').encode())
+                            slow.sendall(payload[:1024])
+                            self.assertFalse(upload_started.wait(.3), 'Incomplete upload reached backend')
+                            slow.sendall(payload[1024:])
+                            response = http.client.HTTPResponse(slow)
+                            response.begin()
+                            self.assertEqual((response.status, response.read()), (200, b'fixture'))
+                        self.assertTrue(upload_started.is_set())
+                        self.assertEqual(received[-1][0], upload_path)
+                        upload_headers = {key.lower(): value for key, value in received[-1][1].items()}
+                        self.assertEqual(upload_headers['x-forwarded-proto'], 'https')
+                        self.assertEqual(upload_headers['host'], 'app.example.test')
+                        self.assertEqual(upload_headers['x-forwarded-for'], '127.0.0.1')
+                        modern = ssl.create_default_context(cafile=str(root / 'cert.pem'))
+                        modern.minimum_version = ssl.TLSVersion.TLSv1_2
+                        modern.maximum_version = ssl.TLSVersion.TLSv1_2
+                        modern.set_ciphers('ECDHE-RSA-AES128-GCM-SHA256')
+                        with modern.wrap_socket(socket.create_connection(('127.0.0.1', port), timeout=5),
+                                                server_hostname='app.example.test') as connection:
+                            self.assertEqual(connection.cipher()[0], 'ECDHE-RSA-AES128-GCM-SHA256')
+                        # SEC-04: TLS 1.2 with RSA key exchange/CBC must not negotiate.
+                        legacy = ssl.create_default_context(cafile=str(root / 'cert.pem'))
+                        legacy.minimum_version = ssl.TLSVersion.TLSv1_2
+                        legacy.maximum_version = ssl.TLSVersion.TLSv1_2
+                        legacy.set_ciphers('AES128-SHA')
+                        with socket.create_connection(('127.0.0.1', port), timeout=5) as raw:
+                            with self.assertRaises(ssl.SSLError):
+                                legacy.wrap_socket(raw, server_hostname='app.example.test')
                         before = len(received)
                         try:
                             rejected = request('/api/v1/host-check', host='wrong.example.test')
@@ -158,4 +229,13 @@ class ProxyRuntimeTests(unittest.TestCase):
                                 process.kill()
                             process.wait(timeout=5)
                 self.assertNotIn('synthetic', (root / 'error.log').read_text(encoding='utf-8'))
-                self.assertFalse((root / 'logs' / 'access.log').exists())
+                access = (root / 'access.log').read_text(encoding='utf-8')
+                for private in ('synthetic', 'spoofed', '127.0.0.1', upload_path, '/profile/edit', 'callback'):
+                    self.assertNotIn(private, access)
+                records = [json.loads(line) for line in access.splitlines()]
+                self.assertTrue({200, 404, 413, 444} <= {record['status'] for record in records})
+                self.assertTrue(all(set(record) == {'route', 'status', 'bytes', 'duration'} for record in records))
+                self.assertTrue(all(record['route'] in {'page', 'api', 'asset'} for record in records))
+                # The callback is the only successful backend request omitted from access logs.
+                self.assertEqual(sum(record['route'] == 'api' and record['status'] == 200 for record in records),
+                                 len(received) - 1)

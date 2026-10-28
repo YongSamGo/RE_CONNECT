@@ -6,7 +6,24 @@ http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
     server_tokens off;
-    access_log off;
+    map_hash_bucket_size 64;
+    # Only bounded route labels: no query, raw path, IP, cookie or authorization.
+    map $uri $log_route {
+        default page;
+        ~^/api/ api;
+        ~^/assets/ asset;
+    }
+    map $uri $loggable {
+        default 1;
+        /api/v1/auth/kakao/callback 0;
+    }
+    log_format safe escape=json '{"route":"$log_route","status":$status,"bytes":$body_bytes_sent,"duration":$request_time}';
+    access_log /dev/stdout safe if=$loggable;
+    # Only successful build assets are immutable; errors and all other routes are private.
+    map "$status:$uri" $cache_control {
+        default "no-store";
+        ~^(200|206|304):/assets/ "public, max-age=31536000, immutable";
+    }
     sendfile on;
     client_max_body_size 64k;
     client_header_timeout 15s;
@@ -30,6 +47,8 @@ http {
         ssl_certificate /run/secrets/tls-fullchain.pem;
         ssl_certificate_key /run/secrets/tls-key.pem;
         ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_ciphers ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305;
+        ssl_prefer_server_ciphers off;
         ssl_session_tickets off;
         # A valid SNI with a different HTTP Host must not reach the application.
         if ($host != @@DOMAIN@@) { return 444; }
@@ -40,8 +59,10 @@ http {
         add_header X-Content-Type-Options nosniff always;
         add_header Referrer-Policy no-referrer always;
         add_header X-Frame-Options DENY always;
-        # Includes callbacks, API errors and HTML; no authenticated material cache.
-        add_header Cache-Control "no-store" always;
+        # Observe production build compatibility before enforcing this policy.
+        add_header Content-Security-Policy-Report-Only "default-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; frame-ancestors 'none'; form-action 'self'" always;
+        # Keeping headers at one level also preserves them on asset responses.
+        add_header Cache-Control $cache_control always;
 
         location = /api { return 404; }
         location ^~ /api/ {
@@ -67,10 +88,14 @@ http {
             proxy_hide_header Expires;
             proxy_hide_header Pragma;
             proxy_buffering off;
-            proxy_request_buffering off;
-            # Backend enforces 6 MiB audio; allow bounded multipart overhead here.
-            client_max_body_size 7m;
-            client_body_buffer_size 7m;
+            # Absorb slow clients before opening a backend connection.
+            proxy_request_buffering on;
+            client_body_buffer_size 1m;
+            # Other API routes inherit 64 KiB. Backend also enforces 6 MiB audio.
+            location ~ ^/api/v1/journeys/[^/]+/transcriptions$ {
+                proxy_pass http://backend:8000;
+                client_max_body_size 7m;
+            }
         }
         location ~ (^|/)\. { return 404; }
         location /assets/ { try_files $uri =404; }
