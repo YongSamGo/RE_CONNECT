@@ -215,6 +215,13 @@ jobs:
           trap 'pg_ctl -D "$cluster/postgres" -m fast -w stop' EXIT
           createdb --host "$cluster/socket" --port 55491 --username postgres reconnect
           DB_ROLE_TEST_SOCKET="$cluster/socket" python -m unittest discover -s ../infra/aws/tests -p test_database_roles.py -v
+      - name: 평가 도구 채점·판정 회귀 시험
+        # eval/의 채점 기준이 조용히 바뀌면 측정 결과를 서로 비교할 수 없게 된다 (#276 리뷰).
+        if: matrix.project == 'backend'
+        run: python -m unittest discover -s ../eval -p 'test_*.py' -v
+      - name: 평가 도구 보안약점 점검 (bandit)
+        if: matrix.project == 'backend'
+        run: bandit $(ls ../eval/*.py | grep -v '/test_') --severity-level low --confidence-level medium
       - name: 코드 보안약점 점검 (bandit)
         # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
         # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.
