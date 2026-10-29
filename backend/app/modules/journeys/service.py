@@ -13,7 +13,6 @@ from app.contracts.roles import RoleExclusions
 from app.core.business_errors import AppError
 from app.modules.admission.service import AdmissionService, InferenceIdentity
 from app.modules.consents.service import ConsentActor, ConsentService
-from app.modules.generation.questions import FIRST_QUESTION  # noqa: F401 - 저장소·시험이 이 경로로 가져온다
 from app.modules.requests.service import CompletionGuard, ResultReference, input_fingerprint
 from app.modules.sessions.service import Session
 

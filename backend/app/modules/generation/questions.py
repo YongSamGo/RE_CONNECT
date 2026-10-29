@@ -44,8 +44,9 @@ _BANK = {q.id: q for q in (
 _PER_EXPERIENCE = ("exp.duration", "exp.tasks")
 QUESTION_IDS = frozenset(_BANK)
 
-_NONE = re.compile(r"(없어요|없습니다|없었|없네|없음|안\s*해\s*봤|해\s*본\s*적\s*(이\s*)?없|다닌\s*적\s*(이\s*)?없|^\s*아니(요|오)?\s*[.!]?\s*$)")
-_UNSURE = re.compile(r"(모르겠|잘\s*몰라|글쎄|기억(이|이\s*잘)?\s*안\s*나|생각이\s*안\s*나)")
+# 짧은 반말·구어 답도 잡도록 어간 기준으로 둔다(없어·없다·없는데, 몰라·모름, 생각 안 나요).
+_NONE = re.compile(r"(없(어|다|는데|네|음|습니다|었)|안\s*해\s*봤|해\s*본\s*(적|거)\s*(이\s*|도\s*)?없|다닌\s*적\s*(이\s*)?없|일\s*안\s*했|^\s*아니(요|오)?\s*[.!]?\s*$)")
+_UNSURE = re.compile(r"(모르겠|몰라|모름|글쎄|(기억|생각)\s*(이\s*)?(잘\s*)?안\s*나)")
 
 
 def answer_state(text: str) -> str:

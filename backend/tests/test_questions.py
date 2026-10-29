@@ -22,6 +22,9 @@ def profile(*experiences, regions=(), types=()):
 @pytest.mark.parametrize(("text", "state"), [
     ("직장에 다닌 적은 없어요.", "none"), ("일해 본 적이 없습니다", "none"), ("아니요.", "none"),
     ("잘 모르겠어요.", "unsure"), ("기억이 잘 안 나네요", "unsure"),
+    # 짧은 반말·구어 답(리뷰 #312)
+    ("없어", "none"), ("없다", "none"), ("그런 거 없는데", "none"), ("해본 거 없어", "none"), ("일 안 했어요", "none"),
+    ("몰라요", "unsure"), ("몰라", "unsure"), ("모름", "unsure"), ("생각 안 나요", "unsure"),
     ("식당에서 일했어요.", "answer"), ("아니요 저는 식당에서 일했어요", "answer"),
 ])
 def test_answer_state(text, state):
