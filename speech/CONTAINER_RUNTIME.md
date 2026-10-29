@@ -47,6 +47,14 @@ CTranslate2 cu12 라이브러리를 설치하며 `SPEECH_DEVICE=cuda`를 고정�
 STT float16, TTS float32/eager를 사용한다. `cuda`가 준비되지 않으면 readiness 실패이며 CPU로 전환하지 않는다.
 [GPU 운영 구성/검증](../infra/models/README.md)을 따른다. CPU 이미지 digest를 GPU로 지정하지 않는다.
 
+GPU 런타임은 `TORCH_DISABLE_NATIVE_JIT=1`로 Torch native 연산의 Triton JIT 전환을 막는다.
+`TORCHDYNAMO_DISABLE`만으로는 이 경로가 꺼지지 않으며 런타임 C 컴파일러를 추가하지 않는다.
+`HOME=/tmp`는 홈 디렉터리 없는 UID 10001의 기본 캐시 경로를 쓰기 가능한 tmpfs로 돌리는 방어 설정이다.
+`LD_LIBRARY_PATH`는 `/opt/venv/lib/python3.12/site-packages/nvidia/cudnn/lib` 다음에
+`/opt/ct2/nvidia/cublas/lib`를 둔다. CT2용 cuDNN 경로를 제외해 Torch cu130의 cuDNN과 충돌하지 않게 하고,
+CT2용 cuBLAS 12는 유지한다. 빌드 중 `libcudnn.so.9` 존재를 검사해 venv의 `lib` 경로를 확인한다.
+읽기 전용 root·모델, 제한된 `/tmp`, 비특권 UID와 파일 로그 없음은 그대로 유지한다.
+
 준비 도구가 모델 파일을 0600으로 저장하므로 Linux에서는 컨테이너 UID 10001에 읽기·상위 경로 탐색 권한이
 필요하다. 운영 모델 전용 디렉터리의 소유자/그룹이나 ACL로 최소 권한을 부여하고 다른 사용자의 쓰기는 막는다.
 기존 작업자의 모델 권한을 임의로 넓히지 않는다. 이번 시험은 별도 복사본만 UID 10001 소유로 설정했다.
