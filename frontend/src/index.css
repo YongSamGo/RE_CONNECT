@@ -1,4 +1,27 @@
-:root { --ink: #182b38; --muted: #405665; --paper: #f4f7f9; --emphasis: #245a78; --emphasis-strong: #193f56; --line: #cfdce2; --surface: #e5f0f5; --accent: #f3d991; --control-border: #526b78; }
+:root {
+  /* Re:Connect brand palette: keep the UI colors separate from the logo's gradients. */
+  --brand-deep-blue: #124f94;
+  --brand-primary-blue: #1b64b5;
+  --brand-bright-blue: #358ee5;
+  --brand-sky-blue: #53adf6;
+  --brand-light-blue: #79baf1;
+  --brand-soft-blue: #b1d8fa;
+  --brand-pale-blue: #cce5fc;
+
+  --ink: #163a60;
+  --muted: #385773;
+  --paper: #f7fbff;
+  --emphasis: var(--brand-primary-blue);
+  --emphasis-strong: var(--brand-deep-blue);
+  --line: #7692ae;
+  --surface: #e5eff8;
+  --accent: #b8d2e9;
+  --control-border: #526f8b;
+  --large-panel-max: 1120px;
+  --large-panel-radius: 24px;
+  --large-panel-padding: clamp(20px, 3vw, 36px);
+  --panel-available-height: calc(100svh - 88px);
+}
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream1.otf') format('opentype'); font-style: normal; font-weight: 100; font-display: swap; }
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream2.otf') format('opentype'); font-style: normal; font-weight: 200; font-display: swap; }
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream3.otf') format('opentype'); font-style: normal; font-weight: 300; font-display: swap; }
@@ -9,8 +32,15 @@
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream8.otf') format('opentype'); font-style: normal; font-weight: 800; font-display: swap; }
 @font-face { font-family: 'S-Core Dream'; src: url('/S-Core_Dream_OTF/SCDream9.otf') format('opentype'); font-style: normal; font-weight: 900; font-display: swap; }
 * { box-sizing: border-box; }
+* { scrollbar-color: #91abc2 transparent; scrollbar-width: thin; }
+*::-webkit-scrollbar { width: 12px; height: 12px; }
+*::-webkit-scrollbar-track { margin: 10px; border-radius: 999px; background: transparent; }
+*::-webkit-scrollbar-thumb { border: 3px solid transparent; border-radius: 999px; background: #91abc2; background-clip: padding-box; }
+*::-webkit-scrollbar-thumb:hover { background: #587c9b; background-clip: padding-box; }
+/* Use the numbered S-Core Dream faces above without synthetic bold or italic. */
+html { min-height: 100%; font-synthesis: none; background: radial-gradient(ellipse at 12% 72%, rgb(121 186 241 / 26%), transparent 48%) fixed, linear-gradient(180deg, #f7fbff 0%, #eef7fe 22%, #dceefe 68%, #cce5fc 100%) fixed; }
 .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
-body { margin: 0; min-width: 0; overflow-x: clip; color: var(--ink); background: var(--paper); font-family: 'S-Core Dream', sans-serif; font-size: calc((18px) * var(--text-scale, 1)); font-weight: 400; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
+body { margin: 0; min-width: 0; min-height: 100vh; overflow-x: clip; color: var(--ink); background: transparent; font-family: 'S-Core Dream', sans-serif; font-size: calc((18px) * var(--text-scale, 1)); font-weight: 400; line-height: 1.7; word-break: keep-all; overflow-wrap: anywhere; }
 button, input, textarea, select { font: inherit; }
 select { max-width: 100%; min-height: 52px; padding: 10px 12px; border: 1px solid var(--control-border); border-radius: 8px; color: var(--ink); background: #fff; }
 summary { cursor: pointer; min-height: 44px; }
@@ -42,6 +72,7 @@ legend { padding: 0 8px; font-weight: 600; }
 .voice-player { width: 100%; margin-top: 24px; }
 h1, h2, h3, p { margin-top: 0; }
 h1, h2, h3 { line-height: 1.4; text-wrap: balance; }
+h1 { font-weight: 700; }
 label { display: block; font-weight: 600; margin-bottom: 12px; }
 .form-field + .form-field { margin-top: 20px; }
 .form-field .checkbox-label { margin-bottom: 0; }
@@ -50,3 +81,24 @@ label { display: block; font-weight: 600; margin-bottom: 12px; }
 
 :root { --text-scale: 1; }
 :root.large-text { --text-scale: 1.2; }
+
+/* 사용자가 켜는 고대비 보기 */
+:root.high-contrast {
+  color-scheme: light;
+  --ink: #071a2b;
+  --muted: #263746;
+  --paper: #fff;
+  --emphasis: #004db3;
+  --emphasis-strong: #003478;
+  --line: #52677a;
+  --surface: #e8f0f8;
+  --accent: #7396b5;
+  --control-border: #263746;
+}
+:root.high-contrast :is(.service-stage, .panel, .notice, .profile-summary-section, .profile-review-content, input, textarea, select, fieldset, .text-size-toggle, .button) {
+  border-width: 2px;
+}
+:root.high-contrast :is(button, .button, a) { text-decoration-thickness: 2px; }
+:root.high-contrast :focus-visible { outline: 4px solid #111; outline-offset: 4px; box-shadow: 0 0 0 3px #ffdf00; }
+:root.high-contrast button:disabled { background: #e2e2e2; color: #292929; border-color: #555; opacity: 1; }
+:root.high-contrast ::selection { background: #003478; color: #fff; }

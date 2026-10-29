@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
 import { UnavailablePage } from '../../ui/UnavailablePage'
 import { isOpportunityId } from '../public-opportunities/catalog'
+import { EndJourneyAction } from './EndJourneyAction'
 
 /** Reentry UX applies to both journey pages; ownership always stays on the server. */
 export function JourneyRoute({ page, children }: { page: string; children: (id: string) => ReactNode }) {
@@ -19,6 +20,6 @@ export function JourneyRoute({ page, children }: { page: string; children: (id: 
     return () => window.removeEventListener('pageshow', restore)
   }, [navigate])
   if (reentry) return <Navigate to="/" replace />
-  return journeyId && isOpportunityId(journeyId) ? children(journeyId)
+  return journeyId && isOpportunityId(journeyId) ? <>{children(journeyId)}<EndJourneyAction key={journeyId} journeyId={journeyId} /></>
     : <UnavailablePage title="체험 주소를 확인해 주세요">올바른 체험 화면에서 다시 이동해 주세요.</UnavailablePage>
 }

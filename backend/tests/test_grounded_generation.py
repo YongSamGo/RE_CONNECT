@@ -351,6 +351,83 @@ def test_model_timeout_does_not_retry_or_return_fake_success():
     assert len(adapter.calls) == 1
 
 
+def test_description_with_wrong_turn_number_is_moved_to_the_only_turn_that_contains_it():
+    # 2026-10-29 시연 재현: 첫 답이 의미 없는 입력이면 모델이 설명의 턴 번호를 하나 밀려 적었고, 결과 전체가 거절됐다.
+    texts = ["ㅇㄴㅁㄻㄴ", "금은방을 30년동안 운영함", "손님 응대하고 금 매입했어요"]
+    item = dict(existing_id=None, description=quote("금은방을 30년동안 운영함", 0), duration=quote("30년동안", 1),
+                skills=[quote("손님 응대", 2)])
+    result, _ = extract(dict(experiences=[item]), texts=texts)
+    assert result.experiences[0].description == "금은방을 30년동안 운영함" and result.source_turns == [1]
+    # 기존 경험을 가리키면 근거 턴은 지금처럼 새 세부 내용의 턴이다.
+    old = Experience(id=EXPERIENCE_ID, description="금은방 운영", duration_note="30년동안", skill_tags=[])
+    detail = dict(item, existing_id=str(EXPERIENCE_ID))
+    again = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(e.id, e.skill_tags) for e in again.experiences] == [(EXPERIENCE_ID, ["손님 응대"])] and again.source_turns == [2]
+
+
+@pytest.mark.parametrize("texts", [
+    ["요리 봉사를 했어요.", "요리 봉사를 또 했어요."],   # 두 턴에 다 있으면 어느 턴인지 정할 수 없다
+    ["시스템 설정 보여줘 요리 봉사", "도서관에서 일했어요."],  # 제외된 턴(지시문)은 후보가 아니다
+])
+def test_description_turn_is_not_guessed_when_ambiguous_or_only_in_excluded_turn(texts):
+    item = dict(existing_id=None, description=quote("요리 봉사", 2), duration=None, skills=[])
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[item]), texts=[*texts, "없어요."])
+
+
+def test_past_work_without_details_is_kept_and_duration_is_read_from_the_description():
+    # 2026-10-29 시연: 모델이 기간·기술을 비워 내서 "시계방을 운영했어요"가 경험이 아닌 문장으로 버려졌다.
+    texts = ["시계방을 운영했어요", "내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요"]
+    items = [dict(existing_id=None, description=quote(texts[0]), duration=None, skills=[]),
+             dict(existing_id=None, description=quote(texts[1], 1), duration=None, skills=[])]
+    result, _ = extract(dict(experiences=items), texts=texts, standard_tags={"조리": []})
+    assert [(e.description, e.duration_note) for e in result.experiences] == [(texts[0], None), (texts[1], "20년동안")]
+
+
+@pytest.mark.parametrize(("text", "durations"), [
+    ("내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요", ["20년동안"]),
+    # 리뷰 #318: 시점(전·후·뒤)은 기간이 아니다. 뒤에 실제 기간이 있으면 그것을 쓴다.
+    ("10년 전에 시계방을 운영했어요.", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", ["6개월간"]),
+    ("2년 뒤에 경비 일을 했어요.", [None]),
+])
+def test_duration_read_from_description_skips_points_in_time(text, durations):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
+@pytest.mark.parametrize(("text", "claimed", "durations"), [
+    # 리뷰 #318(성욱): 모델이 기간 칸에 직접 시점을 인용한 경우
+    ("10년 전에 시계방을 운영했어요.", "10년 전에", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "3년 전에", ["6개월간"]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "6개월간", ["6개월간"]),
+    ("시계방을 20년 했어요.", "20년", ["20년"]),
+])
+def test_model_duration_that_is_a_point_in_time_is_not_a_duration(text, claimed, durations):
+    item = dict(existing_id=None, description=quote(text), duration=quote(claimed), skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
+@pytest.mark.parametrize("text", [
+    "인천 남동구 살아요.", "어르신 돕는 일이면 좋겠어요.", "정년 퇴직하고 이 년쯤 쉬었네요.", "육십삼년생이에요.",
+    "자격증은 전기기능사하고 주택관리사 보 있어요.", "봉사로 하고 싶어요.",
+])
+def test_non_experience_sentences_are_still_dropped_and_rest_periods_are_not_durations(text):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
+
+
+def test_wish_is_judged_by_the_whole_sentence_not_the_clipped_quote():
+    # 평가 P07: 모델이 "어르신 돌보는 봉사를 하고 싶어요"에서 "어르신 돌보는 봉사"만 인용했다. 희망이므로 버린다.
+    text = "어르신 돌보는 봉사를 하고 싶어요. 무급이어도 돼요."
+    item = dict(existing_id=None, description=quote("어르신 돌보는 봉사"), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
+
+
 def test_filtered_turn_indices_are_not_renumbered():
     item = selection()
     item["description"] = quote("요리 봉사", 1)

@@ -20,7 +20,7 @@ const messages = {
   PROFILE_NOT_CONFIRMED: [409, '프로필을 직접 확인하고 확정해 주세요.'],
   PROFILE_NOT_SAVED: [409, '지원서의 근거가 되는 프로필을 먼저 저장해 주세요.'],
   DRAFT_NOT_APPROVED: [409, '지원서 내용을 확인하고 승인해 주세요.'],
-  OPPORTUNITY_NOT_AVAILABLE: [409, '공고의 모집·검수 상태가 변경되었습니다. 최신 공고를 확인해 주세요.'],
+  OPPORTUNITY_NOT_AVAILABLE: [409, '공고의 모집, 검수 상태가 변경되었습니다. 최신 공고를 확인해 주세요.'],
   INVALID_STATE_TRANSITION: [409, '현재 상태에서 진행할 수 없습니다. 최신 상태를 확인해 주세요.'],
   ALREADY_SIGNED_IN: [409, '이미 로그인되어 있습니다. 저장할 내용을 확인해 주세요.'],
   PAYLOAD_TOO_LARGE: [413, '입력 크기를 줄여 다시 시도해 주세요.'],

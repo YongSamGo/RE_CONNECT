@@ -1,7 +1,9 @@
 import { expect, test } from '@playwright/test'
+import { mockServiceApi } from './service-fixtures'
 
 for (const width of [320, 390, 1280]) test(`${width}px 지도 이름 겹침과 경기 남부 해안 표시`, async ({ page }) => {
   await page.setViewportSize({ width, height: 900 })
+  await mockServiceApi(page)
   await page.goto('/opportunities')
   await page.getByRole('button', { name: '경기 남부 지도 보기' }).click()
   const coast = page.getByRole('button', { name: '화성시', exact: true })

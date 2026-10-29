@@ -101,6 +101,15 @@ backend/nginx의 시작을 모델 healthy에 종속시키지 않는다. 모델 �
 공유 실행 슬롯은 기존 Redis 기반 전역 1개를 사용한다. Ollama 병렬/적재 모델 수도 1개다.
 GPU 음성은 `SPEECH_DEVICE=cuda`, STT float16·TTS float32로 고정한다. CUDA 실패 시 CPU로 자동 전환하지 않는다.
 Torch cu130과 CTranslate2 cu12 라이브러리는 별도 설치 prefix로 분리해 파일 덮어쓰기를 막는다.
+`speech/Dockerfile.gpu`는 `TORCH_DISABLE_NATIVE_JIT=1`로 Torch native 연산의 Triton JIT 전환을 막아
+컴파일러 없는 런타임에서 실행한다. `TORCHDYNAMO_DISABLE`만으로는 해결되지 않는다.
+`HOME=/tmp`는 홈 없는 UID 10001이 읽기 전용 root 아래에 캐시를 만들지 않도록 하는 방어 설정이다.
+`LD_LIBRARY_PATH=/opt/venv/lib/python3.12/site-packages/nvidia/cudnn/lib:/opt/ct2/nvidia/cublas/lib`로
+Torch cuDNN을 먼저 로드하고 CT2 cuBLAS 12는 유지한다. CT2 cuDNN 경로는 제외해
+`CUDNN_STATUS_SUBLIBRARY_LOADING_FAILED` 충돌을 방지한다. 빌드에서 해당 `lib` 경로의 라이브러리 존재를 확인한다.
+읽기 전용 root·가중치, 컴파일러 없음, logging none 등 운영 격리는 유지한다.
+GPU 없는 CI의 이미지 빌드·검사와 ENV 회귀 시험은 실제 합성을 검증하지 않는다.
+readiness 성공 후에도 배포한 GPU 이미지에서 TTS 합성과 STT 전사를 직접 확인해야 한다.
 T4의 기존 수동 측정에서 TTS 긴 입력 244자는 여전히 시간 제한을 넘었다. 전체 문장을 한 요청으로
 합성해도 안전하다고 해석하지 않는다. GPU 공존/실제 컨테이너 수치는 검증 기록을 따른다.
 호스트 포트·Nginx 경로·모델 관리 API는 게시하지 않는다. 모델 컨테이너는 internal 네트워크에만 연결하고

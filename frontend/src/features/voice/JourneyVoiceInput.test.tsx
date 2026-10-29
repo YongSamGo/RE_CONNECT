@@ -33,77 +33,40 @@ function mount(options: { consent?: boolean; loseFirst?: boolean; replace?: bool
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 
-it('uploads multipart audio only explicitly and requires corrected text plus replacement confirmation', async () => {
-  const { user, fetch, onUseText } = mount({ replace: true })
-  expect(fetch).not.toHaveBeenCalled()
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' }))
-  const text = await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
-  expect(onUseText).not.toHaveBeenCalled()
-  await user.clear(text); await user.type(text, '직접 수정한 전사')
-  const use = screen.getByRole('button', { name: '확인한 전사 문장을 입력란으로 가져오기' })
-  expect(use).toBeDisabled()
-  await user.click(screen.getByRole('checkbox', { name: '현재 경험 입력을 확인한 전사 문장으로 바꿀게요.' }))
-  await user.click(use)
-  expect(onUseText).toHaveBeenCalledExactlyOnceWith('직접 수정한 전사', id)
-  expect(screen.queryByLabelText('글로 바꾼 내용 확인과 수정')).not.toBeInTheDocument()
-  const request = fetch.mock.calls.find(([request]) => request.method === 'POST')![0]
-  expect(request.url).toContain(`/journeys/${id}/transcriptions`)
-  expect(request.headers.get('Content-Type')).toContain('multipart/form-data; boundary=')
-  const body = await request.clone().text()
-  expect(body).toContain('Content-Type: audio/webm'); expect(body).toContain('fixture-audio')
+it('uploads only explicit audio as multipart and imports a validated transcript without sending a conversation answer',async()=>{
+  const {user,fetch,onUseText}=mount();expect(fetch).not.toHaveBeenCalled()
+  await user.click(screen.getByRole('button',{name:'시험 녹음 전사'}))
+  expect(onUseText).toHaveBeenCalledWith(result.text,result.transcription_id)
+  const request=fetch.mock.calls.find(([request])=>request.method==='POST')![0]
+  expect(request.headers.get('content-type')).toMatch(/^multipart\/form-data; boundary=/)
+  expect(request.headers.get('X-CSRF-Token')).toBe('token')
+  const data=await request.clone().formData();expect([...data.keys()]).toEqual(['audio'])
+  expect((data.get('audio') as File).size).toBeGreaterThan(0)
+  expect(fetch.mock.calls.some(([request])=>request.url.endsWith('/messages'))).toBe(false)
 })
-
-it('does not upload recording when processing consent is absent', async () => {
-  const { user, fetch } = mount({ consent: false })
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' }))
-  await screen.findByText('처리 안내와 동의 상태를 확인해 주세요.')
-  expect(fetch.mock.calls.some(([request]) => request.method === 'POST')).toBe(false)
-})
-
-it('retries a lost response using the same key and original audio', async () => {
-  const { user, fetch } = mount({ loseFirst: true })
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' }))
-  await screen.findByText('연결하지 못했습니다. 연결 상태를 확인해 주세요.')
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' }))
-  await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
-  const posts = fetch.mock.calls.map(([request]) => request).filter(request => request.method === 'POST')
-  expect(posts).toHaveLength(2)
-  expect(posts[1].headers.get('Idempotency-Key')).toBe(posts[0].headers.get('Idempotency-Key'))
-  for (const request of posts) expect(await request.clone().text()).toContain('fixture-audio')
-})
-
-it('clears transcription text on cancellation and pagehide without importing it', async () => {
-  const { user, onUseText } = mount()
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' })); await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
-  await user.click(screen.getByRole('button', { name: '시험 녹음 취소' }))
-  expect(screen.queryByLabelText('글로 바꾼 내용 확인과 수정')).not.toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' })); await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
-  act(() => window.dispatchEvent(new Event('pagehide')))
-  expect(screen.queryByLabelText('글로 바꾼 내용 확인과 수정')).not.toBeInTheDocument()
+it('does not upload without current AI consent',async()=>{
+  const {user,fetch,onUseText}=mount({consent:false});await user.click(screen.getByRole('button',{name:'시험 녹음 전사'}))
+  expect(await screen.findByRole('alert')).toBeVisible();expect(fetch.mock.calls.every(([request])=>request.method==='GET')).toBe(true)
   expect(onUseText).not.toHaveBeenCalled()
 })
-
-it('rejects malformed transcription IDs, long text and invalid duration', () => {
-  expect(parseTranscription(result)).toEqual(result)
-  for (const changed of [{ transcription_id: '../other' }, { duration_seconds: 91 }, { duration_seconds: 0 }, { duration_seconds: Infinity }, { text: '가'.repeat(2001) }]) {
-    expect(() => parseTranscription({ ...result, ...changed })).toThrow()
-  }
+it('reuses the same key and original audio after response loss',async()=>{
+  const {user,fetch,onUseText}=mount({loseFirst:true});await user.click(screen.getByRole('button',{name:'시험 녹음 전사'}))
+  await screen.findByRole('alert');await user.click(screen.getByRole('button',{name:'시험 녹음 전사'}))
+  expect(onUseText).toHaveBeenCalledOnce()
+  const posts=fetch.mock.calls.map(([request])=>request).filter(request=>request.method==='POST')
+  expect(posts).toHaveLength(2);expect(posts[0].headers.get('Idempotency-Key')).toBe(posts[1].headers.get('Idempotency-Key'))
+  const bodies=await Promise.all(posts.map(request=>request.clone().formData()))
+  expect(await (bodies[0].get('audio') as File).text()).toBe(await (bodies[1].get('audio') as File).text())
 })
-
-it('discards late parsed transcription after the user cancels waiting', async () => {
-  const { user, onUseText } = mount()
-  const original = Response.prototype.text
-  let release!: () => void, arrived!: () => void
-  const waiting = new Promise<void>(resolve => { release = resolve })
-  const parsing = new Promise<void>(resolve => { arrived = resolve })
-  vi.spyOn(Response.prototype, 'text').mockImplementation(async function (this: Response) {
-    const body = await original.call(this)
-    if (body.includes('"transcription_id"')) { arrived(); await waiting }
-    return body
-  })
-  await user.click(screen.getByRole('button', { name: '시험 녹음 전사' })); await parsing
-  await user.click(screen.getByRole('button', { name: '전사 응답 기다리기 중지' }))
-  await act(async () => { release(); await waiting })
-  expect(screen.queryByLabelText('글로 바꾼 내용 확인과 수정')).not.toBeInTheDocument()
-  expect(onUseText).not.toHaveBeenCalled()
+it.each(['cancel','pagehide'])('never imports a late transcript after %s',async kind=>{
+  let finish!:(response:Response)=>void
+  const onUseText=vi.fn();const fetch=vi.fn(async(request:Request):Promise<Response>=>request.method==='GET'?json({authenticated:false,user:null,pending_save_intent:null,consents:[{purpose:'ai_processing',notice_version:'fixture-ai',granted_at:'2026-10-18T00:00:00Z'}]}):new Promise(resolve=>{finish=resolve}))
+  vi.stubGlobal('fetch',fetch);document.cookie='__Host-rc_csrf=token; Secure; Path=/'
+  render(<JourneyVoiceInput journeyId={id} onUseText={onUseText}/>);await userEvent.click(screen.getByRole('button',{name:'시험 녹음 전사'}))
+  if(kind==='cancel')await userEvent.click(screen.getByRole('button',{name:'시험 녹음 취소'}));else act(()=>window.dispatchEvent(new Event('pagehide')))
+  await act(async()=>finish(json(result)));expect(onUseText).not.toHaveBeenCalled()
+  expect(fetch.mock.calls.find(([request])=>request.method==='POST')![0].signal.aborted).toBe(true)
+})
+it('rejects invalid transcript references, durations, and oversized text',()=>{
+  for(const change of [{transcription_id:'forged'},{duration_seconds:91},{duration_seconds:true},{text:'x'.repeat(2001)}])expect(()=>parseTranscription({...result,...change})).toThrow()
 })

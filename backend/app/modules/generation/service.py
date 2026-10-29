@@ -5,6 +5,7 @@
 """
 
 import json
+import re
 from collections.abc import Mapping, Sequence
 
 from pydantic import BaseModel, TypeAdapter, ValidationError
@@ -16,12 +17,14 @@ from app.contracts.roles import normalize_tag
 from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
     ApplicationPlan,
+    ApplicationWritingPlan,
     ApplicationContext,
     ApplicationPreview,
     ConfirmedProfileSnapshot,
     ExperiencePreview,
     ExtractionPlan,
     Quote,
+    WrittenApplicationPreview,
 )
 from app.modules.generation.privacy import safe_text
 
@@ -31,6 +34,88 @@ class GenerationInputError(ValueError):
 
 _SKILL = TypeAdapter(SkillTag)
 _DURATION = TypeAdapter(text(200))
+# 지원서 문단의 수치는 그 문단이 인용한 확정 사실의 "숫자+단위"로만 허용한다.
+_QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|회|번|명|권|곳|개|세|살|%|퍼센트|급)?")
+# 자격·교육 주장 = "자격·교육 명사 + 보유·완료 동사". 보유 주장은 인용한 자격 사실에,
+# 이수 주장은 인용한 이수 교육 사실에만 묶고, 명사 바로 앞(또는 명사까지)이 그 이름 전체와
+# 단어 경계부터 일치해야 한다. 종류를 바꾼 주장("과정 자격증", "자격증 교육 수료")과
+# 앞에 다른 말이 붙은 다른 이름("특수교원 자격증")은 거절한다.
+_POSSESSION_NOUNS = "자격증|자격|면허증|면허|학위"
+_COMPLETION_NOUNS = "과정|교육|강좌|연수|훈련"
+_COMPLETION_VERBS = {"마쳤", "마치", "마친", "끝냈", "끝마", "끝낸", "완료", "수강", "들었", "들은", "밟", "수료", "이수"}
+# 꾸미는 말은 두 단어까지. 연결 어미로 끝나는 단어와 다른 자격·교육 명사는 넘지 않는다.
+_CREDENTIAL_CLAIM = re.compile(
+    rf"({_POSSESSION_NOUNS}|{_COMPLETION_NOUNS})(?:[을를이가도은는]\s*|\s+)"
+    rf"(?:(?![^\s,.!?]*(?:고|며|서|면|지만|는데)\s)(?![^\s,.!?]*(?:{_POSSESSION_NOUNS}|{_COMPLETION_NOUNS}))[^\s,.!?]+\s+){{0,2}}"
+    r"(보유|취득|소지|갖|가지|가졌|땄|받|있|마쳤|마치|마친|끝냈|끝마|끝낸|완료|수강|들었|들은|밟|수료|이수)")
+# 명사 없이 쓴 수료·이수·졸업은 이수 교육 이름 바로 뒤에서만 허용한다.
+_CREDENTIAL_VERB = re.compile(r"수료|이수|졸업")
+# "~하고 싶다·~하겠다·~할 예정" 같은 앞으로의 계획은 이수 이력 주장이 아니다.
+_INTENT_AFTER = re.compile(r"(?:하|해)?(?:고\s*싶|고자|려고|려는|겠|기를)|(?:하)?(?:할|을)\s*(?:예정|계획|생각|수\s*있|것)")
+# 공백을 지운 문장에서 찾는다. "자격 조건·요건·기준"은 공고 설명에 흔한 일반 표현이라 제외한다.
+# "과정·교육"은 일상 표현("활동 과정에서")에도 쓰여 여기서 빼고, 위의 이수 주장 검사로만 본다.
+_CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|수료증|졸업장|자격(?!조건|요건|기준)")
+_WORD = re.compile(r"[가-힣A-Za-z0-9]")
+
+
+def _quantities(value: str) -> set[tuple[str, str]]:
+    return {(number, unit or "") for number, unit in _QUANTITY.findall(value)}
+
+
+def _compact(value: str) -> str:
+    return re.sub(r"\s+", "", value)
+
+
+def _ends_with_name(prefix: str, name: str) -> bool:
+    """prefix가 name 전체로 끝나고, 그 앞이 글자가 아닌(단어 경계) 경우만 참."""
+    text, target = prefix.rstrip(), _compact(name)
+    if not target or not _compact(text).endswith(target):
+        return False
+    index, count = len(text), 0
+    while index > 0 and count < len(target):
+        index -= 1
+        if not text[index].isspace():
+            count += 1
+    return index == 0 or not _WORD.match(text[index - 1])
+
+
+def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_values: Mapping[str, str]) -> bool:
+    cited = [facts[key] for key in fact_ids]
+    allowed = set().union(*(_quantities(text) for text in cited))
+    numbers = {number for number, _ in allowed}
+    for number, unit in _quantities(value):
+        grounded = (number, unit) in allowed if unit else number in numbers
+        if not grounded:
+            return False
+    certifications = [fact_values[key] for key in fact_ids if key.startswith("certification:") and fact_values[key].strip()]
+    courses = [fact_values[key] for key in fact_ids if key.startswith("course:") and fact_values[key].strip()]
+    claims = list(_CREDENTIAL_CLAIM.finditer(value))
+    for claim in claims:
+        noun, verb = claim.group(1), claim.group(2)
+        completion = verb in _COMPLETION_VERBS or (verb not in {"보유", "소지", "있", "갖", "가지", "가졌"} and re.fullmatch(_COMPLETION_NOUNS, noun))
+        if completion and _INTENT_AFTER.match(value, claim.end()):
+            continue
+        names = courses if completion else certifications
+        # 이름이 명사를 포함("독서지도 과정")하거나, 이름 뒤에 명사를 붙인 경우("사서 2급" 자격증)
+        if not any(_ends_with_name(value[:claim.end(1)], name) or _ends_with_name(value[:claim.start(1)], name) for name in names):
+            return False
+    for verb in _CREDENTIAL_VERB.finditer(value):
+        if any(claim.start() <= verb.start() < claim.end() for claim in claims):
+            continue
+        if _INTENT_AFTER.match(value, verb.end()):
+            continue
+        before = re.sub(r"[을를]\s*$", "", value[:verb.start()])
+        if not any(_ends_with_name(before, name) for name in courses):
+            return False
+    # "자격증이 있습니다"처럼 주장 형태가 아니어도 자격 명사가 남으면 근거 없는 자격이다.
+    rest = value
+    for name in sorted(certifications, key=len, reverse=True):
+        rest = re.sub(r"(?<![가-힣A-Za-z0-9])" + r"\s*".join(map(re.escape, _compact(name))) + rf"\s*(?:{_POSSESSION_NOUNS})?", " ", rest)
+    for name in sorted(courses, key=len, reverse=True):
+        rest = re.sub(r"(?<![가-힣A-Za-z0-9])" + r"\s*".join(map(re.escape, _compact(name))) + rf"\s*(?:{_COMPLETION_NOUNS}|수료증)?", " ", rest)
+    if _CREDENTIAL_NOUN.search(_compact(rest)):
+        return False
+    return True
 
 
 def _fits(adapter: TypeAdapter, value: str) -> bool:
@@ -130,9 +215,17 @@ class GroundedGenerationService:
                 # 저장값과 같을 때만(양끝 공백·마침표 차이는 무시) 근거 대신 받는다. 이 경우 설명은 원문이 아니므로
                 # 아래 표준 태그의 근거로 쓰지 않는다.
                 reused = current is not None and item.description.text.strip(" .") == current.description.strip(" .")
-                if not grounded(item.description) and not reused:
+                description = item.description
+                if not grounded(description):
+                    # 모델이 설명의 턴 번호만 잘못 적는 일이 있다(2026-10-29 시연: 첫 답이 의미 없는 입력이면 번호가 하나씩
+                    # 밀렸다). 인용 문장이 허용된 다른 턴 하나에만 그대로 있으면 그 턴으로 바로잡는다. 제외된 턴은 turns에
+                    # 없으므로 후보가 되지 않는다. 기간·기술 인용은 지금처럼 자기 턴 번호가 맞아야 한다.
+                    holders = [key for key, source in turns.items() if description.text in source]
+                    if len(holders) == 1:
+                        description = description.model_copy(update={"turn_index": holders[0]})
+                if not grounded(description) and not reused:
                     raise _invalid()
-                index, quote = item.description.turn_index, item.description.text
+                index, quote = description.turn_index, description.text
                 summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
                 # 기존 경험에는 한 턴에서 새로 말한 세부 내용만 덧붙인다. 기간·기술 인용이 나온 가장 늦은 턴을 근거 턴으로
                 # 삼고 그 턴의 인용만 쓴다. 앞 턴의 인용까지 받으면 사용자가 프로필에서 지운 기간·태그가 이번 턴 결과에
@@ -140,7 +233,7 @@ class GroundedGenerationService:
                 anchor = None
                 if current is not None:
                     details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
-                    anchor = max(details, default=index if grounded(item.description) else -1)
+                    anchor = max(details, default=index if grounded(description) else -1)
 
                 def usable(quote: Quote) -> bool:
                     return grounded(quote) and (anchor is None or quote.turn_index == anchor)
@@ -151,17 +244,25 @@ class GroundedGenerationService:
                           if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
-                evidence = _squash(" ".join([quote if usable(item.description) else "", *skills]))
+                evidence = _squash(" ".join([quote if usable(description) else "", *skills]))
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills
-                duration = wording.duration_label(item.duration.text) if item.duration and usable(item.duration) else None
+                # 모델이 기간 칸에 "10년 전에" 같은 시점을 인용해도 근무 기간으로 받지 않는다. 그러면 아래에서 설명 원문의
+                # 실제 기간("6개월간")을 다시 찾는다.
+                duration = (wording.duration_label(item.duration.text)
+                            if item.duration and usable(item.duration) and not wording.point_in_time(item.duration.text) else None)
+                # 모델이 기간 칸을 비웠어도 새 경험의 설명 원문에 기간이 있으면 꺼낸다(시연: "20년동안 … 운영했어요").
+                if (duration is None and current is None and usable(description) and wording.did_work(turns[index], quote)
+                        and (found := wording.duration_in(quote))):
+                    duration = wording.duration_label(found)
                 if duration is not None and not _fits(_DURATION, duration):
                     duration = None
                 # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
                 # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
-                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
-                if catalog and duration is None and not tags:
+                # 추가할 수 있게 버린다. 다만 과거에 한 일을 말하는 새 경험("시계방을 운영했어요")은 남긴다. 모델이 기술을
+                # 비워 내는 일이 있어 진짜 경험까지 버려졌다(시연). 목록이 없으면(사전 읽기 실패) 이 검사를 하지 않는다.
+                if catalog and duration is None and not tags and (current is not None or not usable(description) or not wording.did_work(turns[index], quote)):
                     continue
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
@@ -212,3 +313,49 @@ class GroundedGenerationService:
             profile_version=snapshot.version,
             paragraphs=[facts[key] for key in plan.fact_ids],
         )
+
+    async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
+        profile = snapshot.content
+        facts: dict[str, str] = {}
+        fact_values: dict[str, str] = {}
+        for item in profile.experiences:
+            if safe_text(item.description) is not None:
+                facts[f"experience:{item.id}"] = f"경험: {item.description}"
+            if item.duration_note and safe_text(item.description) is not None and safe_text(item.duration_note) is not None:
+                facts[f"duration:{item.id}"] = f"경험 기간 ({item.description}): {item.duration_note}"
+        for kind, values, label in (
+            ("skill", profile.skills, "역량"),
+            ("certification", profile.certifications or [], "자격"),
+            ("course", profile.completed_courses or [], "이수 교육"),
+        ):
+            for index, value in enumerate(values):
+                if safe_text(value) is not None:
+                    facts[f"{kind}:{index}"] = f"{label}: {value}"
+                    fact_values[f"{kind}:{index}"] = value
+        if not facts:
+            raise GenerationInputError("확정한 경험을 확인해 주세요")
+        data = {"facts": facts}
+        if context is not None:
+            data["opportunity_context"] = {
+                "opportunity": context.opportunity.model_dump(mode="json"),
+                "title": safe_text(context.title),
+                "description": safe_text(context.description) if context.description else None,
+            }
+        plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
+
+        def verify(paragraphs) -> str:
+            for paragraph in paragraphs:
+                if any(key not in facts for key in paragraph.fact_ids):
+                    raise _invalid()
+                value = paragraph.text
+                if safe_text(value) != value or re.search(r"https?://|[<>\u00b7\u318d\u30fb]", value, re.IGNORECASE):
+                    raise _invalid()
+                # \uacf5\uace0 \uae00\uc758 \uc218\uce58\u00b7\ub2e4\ub978 \uc0ac\uc2e4\uc758 \uc218\uce58\ub294 \uac1c\uc778 \uacbd\ub825 \uadfc\uac70\uac00 \uc544\ub2c8\ub2e4(LLM-09).
+                if not _paragraph_grounded(value, paragraph.fact_ids, facts, fact_values):
+                    raise _invalid()
+            result = "\n\n".join(paragraph.text for paragraph in paragraphs)
+            if len(result) > 2000:
+                raise _invalid()
+            return result
+
+        return WrittenApplicationPreview(self_introduction=verify(plan.self_introduction), motivation=verify(plan.motivation))
