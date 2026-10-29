@@ -5,14 +5,15 @@
 """
 
 import json
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
 from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
-from app.contracts.profile import Experience, ExperienceInput, RecommendationField
 from app.contracts.fields import SkillTag, text
-from app.modules.generation import prompts
+from app.contracts.profile import Experience, ExperienceInput
+from app.contracts.roles import normalize_tag
+from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
     ApplicationPlan,
     ApplicationContext,
@@ -20,17 +21,9 @@ from app.modules.generation.models import (
     ConfirmedProfileSnapshot,
     ExperiencePreview,
     ExtractionPlan,
-    QuestionPlan,
     Quote,
 )
 from app.modules.generation.privacy import safe_text
-
-_QUESTIONS: dict[RecommendationField, str] = {
-    "experiences": "지금까지 해 보신 일이나 활동 한 가지를 말씀해 주시겠어요?",
-    "preferred_regions": "어느 지역에서 활동하고 싶으세요?",
-    "activity_types": "취업과 봉사 중 어떤 활동을 원하세요?",
-}
-
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
@@ -47,6 +40,20 @@ def _fits(adapter: TypeAdapter, value: str) -> bool:
     except ValidationError:
         return False
     return True
+
+
+def _squash(text: str) -> str:
+    return "".join(normalize_tag(text).split())
+
+
+def _unique(tags: list[str]) -> list[str]:
+    """공백·대소문자만 다른 태그는 처음 것 하나만 남긴다."""
+    seen, result = set(), []
+    for tag in tags:
+        if normalize_tag(tag) not in seen:
+            seen.add(normalize_tag(tag))
+            result.append(tag)
+    return result
 
 
 def _invalid() -> LLMInvalidOutputError:
@@ -72,8 +79,11 @@ class GroundedGenerationService:
             raise _invalid() from None
 
     async def extract_experiences(
-        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = ()
+        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = (),
+        standard_tags: Mapping[str, Sequence[str]] | None = None,
     ) -> ExperiencePreview:
+        """standard_tags: 역할 사전의 표준 기술 태그 → 검토된 별칭(서버 자료). 모델은 이 안에서만 고를 수 있고,
+        고른 태그는 그 경험의 원문 인용에 태그 이름이나 별칭이 있을 때만 남는다."""
         if isinstance(user_texts, (str, bytes)) or not 1 <= len(user_texts) <= 64 or len(existing_experiences) > 20:
             raise GenerationInputError("입력 개수를 확인해 주세요")
         # 별도 인덱스를 유지해 제외된 턴을 다른 턴의 근거로 바꾸지 않는다.
@@ -87,68 +97,87 @@ class GroundedGenerationService:
             raise GenerationInputError("기존 경험 목록을 확인해 주세요")
         # 기존 본문 전체·다른 개인정보는 전달하지 않는다. 안전한 설명만 비교 자료로 전달한다.
         allowed = {key: item for key, item in existing.items() if safe_text(item.description) is not None}
+        standard_tags = standard_tags or {}
+        catalog = {normalize_tag(tag): tag for tag in standard_tags}
+        # 태그마다 원문에서 찾을 이름들. 공백을 빼고 비교해 "학습지도"·"학습 지도"를 같게 본다.
+        names = {key: {_squash(tag), *(_squash(alias) for alias in standard_tags[tag])} - {""}
+                 for key, tag in catalog.items()}
+        if len(catalog) > 200:
+            raise GenerationInputError("표준 태그 목록을 확인해 주세요")
         plan = await self._generate(prompts.EXTRACTION, {
             "turns": [{"turn_index": index, "text": value} for index, value in turns.items()],
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
+            "standard_tags": list(catalog.values()),
         }, ExtractionPlan)
 
-        def grounded(quote: Quote, turn_index: int) -> bool:
+        def grounded(quote: Quote) -> bool:
+            """인용이 자기 턴 번호의 실제 원문에 있는지. 제외된 턴은 근거가 될 수 없다."""
             source = turns.get(quote.turn_index)
-            return quote.turn_index == turn_index and source is not None and quote.text in source and safe_text(quote.text) is not None
+            return source is not None and quote.text in source and safe_text(quote.text) is not None
 
-        def quote_value(quote: Quote, turn_index: int) -> str:
-            if not grounded(quote, turn_index):
-                raise _invalid()
-            return quote.text
-
-        proposals = []
+        proposals, source_turns = [], []
         used_ids = set()
         try:
             for item in plan.experiences:
+                current = None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
-                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 요약/수정은 직접 편집으로 넘긴다.
-                    if item.description.text != allowed[item.existing_id].description:
-                        raise _invalid()
                     used_ids.add(item.existing_id)
-                index = item.description.turn_index
-                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기간·기술은 다른 턴에서 가져오는 일이
-                # 잦아(docs/ai/extraction-eval-2026-10-22.md) 근거 없는 인용만 버리고 같은 턴의 것만 남긴다.
+                    current = allowed[item.existing_id]
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기존 경험을 가리킬 때 모델은 저장된 설명(다듬은
+                # 요약이라 원문에 그대로 없을 수 있다)을 옮겨 적는 일이 많다. 저장된 설명은 바꾸지 않으므로 같은 경험의
+                # 저장값과 같을 때만(양끝 공백·마침표 차이는 무시) 근거 대신 받는다. 이 경우 설명은 원문이 아니므로
+                # 아래 표준 태그의 근거로 쓰지 않는다.
+                reused = current is not None and item.description.text.strip(" .") == current.description.strip(" .")
+                if not grounded(item.description) and not reused:
+                    raise _invalid()
+                index, quote = item.description.turn_index, item.description.text
+                summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
+                # 기존 경험에는 한 턴에서 새로 말한 세부 내용만 덧붙인다. 기간·기술 인용이 나온 가장 늦은 턴을 근거 턴으로
+                # 삼고 그 턴의 인용만 쓴다. 앞 턴의 인용까지 받으면 사용자가 프로필에서 지운 기간·태그가 이번 턴 결과에
+                # 실려 되살아난다(메시지 서비스는 근거 턴이 이번 턴인 결과만 반영한다).
+                anchor = None
+                if current is not None:
+                    details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
+                    anchor = max(details, default=index if grounded(item.description) else -1)
+
+                def usable(quote: Quote) -> bool:
+                    return grounded(quote) and (anchor is None or quote.turn_index == anchor)
+
+                # 새 경험은 같은 일의 세부 업무·기간을 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
+                # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
+                skills = [skill.text for skill in item.skills
+                          if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
+                # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
+                # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
+                evidence = _squash(" ".join([quote if usable(item.description) else "", *skills]))
+                tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
+                        and any(name in evidence for name in names[key])]
+                tags += skills
+                duration = wording.duration_label(item.duration.text) if item.duration and usable(item.duration) else None
+                if duration is not None and not _fits(_DURATION, duration):
+                    duration = None
+                # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
+                # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
+                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
+                if catalog and duration is None and not tags:
+                    continue
                 proposals.append(ExperienceInput(
+                    # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
-                    description=quote_value(item.description, index),
-                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) and _fits(_DURATION, item.duration.text) else None,
-                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index) and _fits(_SKILL, skill.text))),
+                    description=current.description if current is not None else summary or quote,
+                    duration_note=duration,
+                    skill_tags=_unique(tags)[:20],
                 ))
+                source_turns.append(index if anchor is None else anchor)
         except ValidationError:
             raise _invalid() from None
         return ExperiencePreview(
             experiences=proposals,
+            source_turns=source_turns,
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
-
-    @staticmethod
-    def _question_fields(missing_fields: Sequence[RecommendationField]) -> list[RecommendationField]:
-        fields = list(dict.fromkeys(missing_fields))
-        if any(field not in _QUESTIONS for field in fields):
-            raise GenerationInputError("질문 항목을 확인해 주세요")
-        return fields
-
-    @classmethod
-    def fallback_question(cls, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        """모델 없이 누락 항목의 고정 순서로 고른다. 모델 경로와 같은 고정 질문 문장만 쓴다."""
-        fields = cls._question_fields(missing_fields)
-        return _QUESTIONS[fields[0]] if fields else None
-
-    async def next_question(self, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        fields = self._question_fields(missing_fields)
-        if not fields:
-            return None
-        plan = await self._generate(prompts.QUESTION, {"allowed_fields": fields}, QuestionPlan)
-        if plan.field not in fields:
-            raise _invalid()
-        return _QUESTIONS[plan.field]
 
     async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
         # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.

@@ -48,8 +48,9 @@ class RecommendationService:
         opportunities = await asyncio.to_thread(self.opportunities.recommendation_candidates, now)
         catalog = await self.roles.catalog_entries()
         try:
-            candidates = filter_candidates(snapshot.content, opportunities, body.filters, frozenset(state.role_ids), now)
-            ranked = await asyncio.to_thread(rank_candidates, snapshot.content, candidates, catalog)
+            excluded = frozenset(state.role_ids)
+            candidates = filter_candidates(snapshot.content, opportunities, body.filters, excluded, now)
+            ranked = await asyncio.to_thread(rank_candidates, snapshot.content, candidates, catalog, excluded)
         except ValueError:
             raise AppError("SERVICE_UNAVAILABLE") from None
         # DB/Redis의 분산 트랜잭션은 아니다. 반환 직전 현재 소유권·수명·버전·제외 선택을 다시 읽는다.

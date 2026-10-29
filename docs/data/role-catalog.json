@@ -43,6 +43,10 @@
       {
         "alias": "초등교육",
         "skill_tag": "초등 교육"
+      },
+      {
+        "alias": "담임",
+        "skill_tag": "학습 지도"
       }
     ],
     "experience_rules": []
@@ -90,6 +94,14 @@
       {
         "alias": "설비 점검",
         "skill_tag": "전기 설비 점검"
+      },
+      {
+        "alias": "관리사무소",
+        "skill_tag": "시설 관리"
+      },
+      {
+        "alias": "관리소장",
+        "skill_tag": "시설 관리"
       }
     ],
     "experience_rules": []
@@ -113,6 +125,10 @@
       },
       {
         "alias": "고객 상담",
+        "skill_tag": "고객 응대"
+      },
+      {
+        "alias": "은행 창구",
         "skill_tag": "고객 응대"
       }
     ],
@@ -138,6 +154,14 @@
       {
         "alias": "요리",
         "skill_tag": "조리"
+      },
+      {
+        "alias": "경로식당",
+        "skill_tag": "단체 급식 조리"
+      },
+      {
+        "alias": "반찬 만드는",
+        "skill_tag": "조리"
       }
     ],
     "experience_rules": []
@@ -162,6 +186,10 @@
       {
         "alias": "행사 운영",
         "skill_tag": "행사 진행"
+      },
+      {
+        "alias": "부녀회장",
+        "skill_tag": "주민 모임 운영"
       }
     ],
     "experience_rules": []
@@ -216,6 +244,10 @@
       {
         "alias": "프로그램 개발",
         "skill_tag": "소프트웨어 개발"
+      },
+      {
+        "alias": "개발자",
+        "skill_tag": "소프트웨어 개발"
       }
     ],
     "experience_rules": []
@@ -234,6 +266,10 @@
       },
       {
         "alias": "택시 운전",
+        "skill_tag": "운전"
+      },
+      {
+        "alias": "택시",
         "skill_tag": "운전"
       }
     ],
@@ -259,6 +295,10 @@
       {
         "alias": "요양 보조",
         "skill_tag": "노인 돌봄"
+      },
+      {
+        "alias": "간호조무사",
+        "skill_tag": "환자 돌봄"
       }
     ],
     "experience_rules": []

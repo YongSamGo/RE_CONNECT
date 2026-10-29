@@ -71,6 +71,92 @@ def test_aliases_match_only_reviewed_equivalence_and_preserve_original_tags():
     assert result.matched.experience_ids == [person.experiences[0].id]
 
 
+def organizer(**changes):
+    return role(id="community_organizer", name="주민 모임 진행자", skill_tags=["주민 모임 운영", "행사 진행"], **changes)
+
+
+def experiences(*tag_groups):
+    from app.contracts.profile import ProfileContent
+    value = profile().model_dump()
+    value["experiences"] = [{"id": uuid4(), "description": "가상 경험", "duration_note": None, "skill_tags": tags}
+                            for tags in tag_groups]
+    return ProfileContent.model_validate(value)
+
+
+def test_same_role_other_tag_is_half_weight_evidence_with_original_tags():
+    # 2026-10-27 실제 공고 평가의 D3: 전 부녀회장(주민 모임 운영)에게 행사 진행 공고가 0점으로 빠졌다.
+    person = experiences(["주민 모임 운영"], ["무관한역량"])
+    item = public(title="무관한활동", description_text=None, skill_tags=["행사 진행"], role_tags=["community_organizer"])
+    result = rank(person, [item], [organizer()])[0]
+    # tags={주민 모임 운영, 무관한역량, 행사 진행}; 같은 역할 태그 하나 = ½.
+    # tokens={가상, 경험, 주민, 모임, 운영, 무관한역량} 중 역할 이름의 주민·모임이 겹친다.
+    assert result.score == Fraction(7, 10) * Fraction(1, 2) / 3 + Fraction(3, 10) * Fraction(2, 6)
+    assert result.matched.experience_ids == [person.experiences[0].id]
+    assert result.matched.skill_tags == ["주민 모임 운영"] and result.matched.role_ids == ["community_organizer"]
+
+
+def test_exact_tag_outranks_same_role_tag_and_role_is_derived_from_tags():
+    person = experiences(["주민 모임 운영"])
+    common = dict(title="무관한활동", description_text=None, role_tags=[])
+    exact, related = public(skill_tags=["주민 모임 운영"], **common), public(skill_tags=["행사 진행"], **common)
+    result = rank(person, [related, exact], [organizer()])
+    assert [item.candidate.opportunity.id for item in result] == [exact.id, related.id]
+    # 공고에 역할 태그가 없어도 기술 태그가 속한 역할로 같은 역할을 판단한다.
+    assert result[1].matched.role_ids == ["community_organizer"]
+
+
+@pytest.mark.parametrize(("tags", "catalog"), [
+    (["무관한역량"], [organizer()]),                                    # 경험이 그 역할을 뒷받침하지 않음
+    (["주민 모임 운영"], [organizer(), role(id="other_role", skill_tags=["정리"])]),  # 다른 역할의 태그
+    (["주민 모임 운영"], [organizer(experience_rules=[{"operator": "all", "skill_tags": ["주민 모임 운영", "행사 진행"]}])]),
+])
+def test_same_role_evidence_needs_reviewed_role_support(tags, catalog):
+    person = experiences(tags)
+    item = public(title="무관한활동", description_text=None, skill_tags=["정리" if len(catalog) == 2 else "행사 진행"],
+                  role_tags=["community_organizer"])
+    assert rank(person, [item], catalog) == []
+
+
+def test_same_role_evidence_is_not_cut_by_the_screen_candidate_limit():
+    # 화면 후보는 20개까지지만 추천 근거는 사전 전체를 본다. 21번째 역할만 공고 태그를 가진 경우.
+    person = experiences(["공통역량"])
+    catalog = [role(id=f"role_{index:02}", skill_tags=["공통역량"]) for index in range(20)]
+    catalog.append(role(id="role_20", skill_tags=["공통역량", "추가역량"]))
+    item = public(title="무관한활동", description_text=None, skill_tags=["추가역량"], role_tags=[])
+    result = rank(person, [item], catalog)
+    assert [value.matched.role_ids for value in result] == [["role_20"]]
+
+
+def test_excluded_role_found_from_skill_tags_removes_the_opportunity():
+    from app.contracts.recommendation import RecommendationFilters
+    person = experiences(["주민 모임 운영"])
+    item = public(title="무관한활동", description_text=None, skill_tags=["행사 진행"], role_tags=[])
+    candidates = filter_candidates(person, [item], RecommendationFilters(), frozenset({"community_organizer"}), NOW)
+    assert candidates  # 명시 역할 태그가 없어 후보 필터는 통과한다
+    assert rank_candidates(person, candidates, [organizer()], frozenset({"community_organizer"})) == []
+    assert rank_candidates(person, candidates, [organizer()], frozenset({"other_role"}))
+
+
+def test_explicit_role_tags_take_precedence_over_roles_found_from_tags():
+    # 같은 태그가 두 역할에 있어도, 운영자가 붙인 역할만 공고의 역할로 본다(W13-02 역할 제외 경계와 같은 규칙).
+    person = experiences(["주민 모임 운영"])
+    catalog = [organizer(), role(id="other_role", skill_tags=["행사 진행"])]
+    item = public(title="무관한활동", description_text=None, skill_tags=["행사 진행"], role_tags=["community_organizer"])
+    result = rank_candidates(person, rank_input(person, item), catalog, frozenset({"other_role"}))
+    assert [value.matched.role_ids for value in result] == [["community_organizer"]]
+
+
+def rank_input(person, item):
+    from app.contracts.recommendation import RecommendationFilters
+    return filter_candidates(person, [item], RecommendationFilters(), frozenset(), NOW)
+
+
+def test_role_tag_alone_without_skill_tags_is_not_evidence():
+    person = experiences(["주민 모임 운영"])
+    assert rank(person, [public(title="무관한활동", description_text=None, skill_tags=[],
+                                role_tags=["community_organizer"])], [organizer()]) == []
+
+
 def test_conflicting_cross_role_aliases_cannot_change_score_equivalence():
     catalog = [role(aliases=[{"alias": "shared", "skill_tag": "낭독"}]),
                role(id="other_role", skill_tags=["정리"], aliases=[{"alias": "shared", "skill_tag": "정리"}])]

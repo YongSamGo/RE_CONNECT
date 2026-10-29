@@ -22,7 +22,7 @@ it('routes the server return address and never trusts success without checking t
   expect(fetch).not.toHaveBeenCalled()
   await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
   expect(await screen.findByText('현재 로그인하지 않은 상태입니다. 로그인이나 저장 완료를 확인할 수 없습니다.')).toBeVisible()
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
   const request = fetch.mock.calls[0]![0] as Request
   expect(new URL(request.url).pathname).toBe('/api/v1/me')
   expect(request.method).toBe('GET')
@@ -43,7 +43,7 @@ it.each(['cancelled', 'failed', 'expired'])('allows a server state check after %
   const fetch = vi.fn().mockResolvedValue(json(member)); vi.stubGlobal('fetch', fetch)
   mount(`?purpose=save&status=${status}`)
   await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
-  expect(await screen.findByText('회원 세션이 확인되었습니다')).toBeVisible()
+  expect(await screen.findByText('로그인 상태를 확인했어요')).toBeVisible()
   expect(screen.getByText('계속할 수 있는 저장 대기 요청이 없습니다. 저장된 자료는 내 정보에서 따로 조회해 주세요.')).toBeVisible()
   expect(fetch).toHaveBeenCalledTimes(1)
 })
@@ -54,7 +54,9 @@ it('makes a live profile and draft bundle explicit and never writes consent or s
   await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
   expect(await screen.findByText('프로필과 지원서를 함께 저장하는 요청입니다. 프로필도 저장 대상에 포함됩니다.')).toBeVisible()
   expect(screen.getByText('기존 저장 프로필이 있습니다. 교체 여부를 직접 확인해야 합니다.')).toBeVisible()
-  expect(screen.getByText(/로그인만으로 자료를 저장하지 않았습니다/)).toBeVisible()
+  expect(screen.getByText(/로그인만으로 자료를 저장하지는 않았어요/)).toBeVisible()
+  expect(screen.getByRole('status')).toHaveTextContent('로그인 상태를 확인했어요.')
+  expect(screen.getByRole('link', { name: '저장 대기 자료 확인' }).closest('[role="status"]')).toBeNull()
   expect(document.body).not.toHaveTextContent(id)
   expect(fetch).toHaveBeenCalledTimes(1)
 })
@@ -80,14 +82,14 @@ it('hides backend failure details and never reports a member after a failed chec
   mount(); await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
   expect(await screen.findByRole('alert')).toBeVisible()
   expect(document.body).not.toHaveTextContent('private internal path')
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
 })
 
 it('rejects a successful HTTP response whose authenticated flag disagrees with its user', async () => {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json({ ...anonymousSession, authenticated: true })))
   mount(); await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
   expect(await screen.findByRole('alert')).toBeVisible()
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
 })
 
 it('discards a late member response after the page has been hidden', async () => {
@@ -96,16 +98,16 @@ it('discards a late member response after the page has been hidden', async () =>
   mount(); await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
   act(() => window.dispatchEvent(new Event('pagehide')))
   await act(async () => { finish(json(member)) })
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: '서버에서 현재 상태 확인' })).toBeEnabled()
 })
 
 it('clears a previously checked member when restoring a cached page', async () => {
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json(member)))
   mount(); await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
-  expect(await screen.findByText('회원 세션이 확인되었습니다')).toBeVisible()
+  expect(await screen.findByText('로그인 상태를 확인했어요')).toBeVisible()
   act(() => window.dispatchEvent(new PageTransitionEvent('pageshow', { persisted: true })))
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: '서버에서 현재 상태 확인' })).toBeEnabled()
 })
 
@@ -113,10 +115,10 @@ it('clears verified session display when navigating to a different callback URL'
   vi.stubGlobal('fetch', vi.fn().mockResolvedValue(json(member)))
   render(<MemoryRouter initialEntries={['/auth/result?purpose=login&status=success']}><Routes><Route path="/auth/result" element={<><AuthResult /><Link to="/auth/result?purpose=reauth&status=expired">다른 요청</Link></>} /></Routes></MemoryRouter>)
   await userEvent.click(screen.getByRole('button', { name: '서버에서 현재 상태 확인' }))
-  expect(await screen.findByText('회원 세션이 확인되었습니다')).toBeVisible()
+  expect(await screen.findByText('로그인 상태를 확인했어요')).toBeVisible()
   await userEvent.click(screen.getByRole('link', { name: '다른 요청' }))
   expect(screen.getByText('요청 시간이 지났어요')).toBeVisible()
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
 })
 
 it('clears a verified result when its pending request expires and requires a fresh server check', async () => {
@@ -129,7 +131,7 @@ it('clears a verified result when its pending request expires and requires a fre
   expect(expiry).toBeDefined()
   act(() => { if (typeof expiry?.[0] === 'function') expiry[0]() })
   expect(screen.queryByText('저장 대기 자료가 있어요')).not.toBeInTheDocument()
-  expect(screen.queryByText('회원 세션이 확인되었습니다')).not.toBeInTheDocument()
+  expect(screen.queryByText('로그인 상태를 확인했어요')).not.toBeInTheDocument()
   expect(screen.getByRole('button', { name: '서버에서 현재 상태 확인' })).toBeEnabled()
   expect(fetch).toHaveBeenCalledTimes(1)
 })

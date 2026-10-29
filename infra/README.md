@@ -7,13 +7,14 @@
 | 파일 | 내용 | 이슈 |
 | --- | --- | --- |
 | `compose.dev.yaml` | 구현됨: 로컬 전용 PostgreSQL·Redis·내부 네트워크·tmpfs | [#18 W02-07](https://github.com/YongSamGo/RE_CONNECT/issues/18) |
-| `compose.prod.yaml` | 구현됨: EC2용 Nginx(443만 공개)·FastAPI·Redis(비영속)·1회성 마이그레이션. PostgreSQL은 외부 RDS. Ollama·음성 서비스는 #92에서 추가 | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92)·[#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
+| `compose.prod.yaml` | 구현됨: EC2용 Nginx(443만 공개)·FastAPI·Redis(비영속)·1회성 마이그레이션. PostgreSQL은 외부 RDS. Ollama·음성 서비스는 별도 `compose.models.yaml` overlay로 연결 | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92)·[#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
 | `deploy/` | 구현됨: SSM → tmpfs env 파일 렌더러와 [릴리스·배포 절차](deploy/README.md). 실제 AWS 연결은 미검증 | [#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
 | `release/` | 구현됨: 이미지 검사 판정·수정판 없는 HIGH 수용 목록(Code Owner 승인)·릴리스 manifest 생성 | [#93](https://github.com/YongSamGo/RE_CONNECT/issues/93) |
 | `scheduler/` | 구현됨: 15분 주기 수집·매일 보관 정리 systemd timer ([안내](scheduler/README.md)) | [#96](https://github.com/YongSamGo/RE_CONNECT/issues/96) |
 | `logging/` | 로그 그룹 보관(14일/30일) CloudFormation, Docker `awslogs` 기본 드라이버 | [#26](https://github.com/YongSamGo/RE_CONNECT/issues/26)·[#96](https://github.com/YongSamGo/RE_CONNECT/issues/96) |
 | `nginx/` | `/`는 React 정적 파일, `/api/*`는 FastAPI로 전달 (접두사 유지) | [#91](https://github.com/YongSamGo/RE_CONNECT/issues/91) |
 | `backup/deletion-journal.json` | 구현됨: RDS 백업과 분리한 삭제 이력 S3 버킷(버전 관리·Object Lock 30일)과 백엔드 역할의 쓰기·읽기 전용 권한. [백업·복원 문서](../docs/security/backup-restore.md) | [#94 W12-05](https://github.com/YongSamGo/RE_CONNECT/issues/94) |
+| `compose.models.yaml` · `models/` | GPU Ollama + 별도 GPU 음성 서비스 운영 연결·사전 적재·호스트 검사. [실행과 미검증 범위](models/README.md) | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92) |
 
 ## 실행 방법
 

@@ -30,6 +30,7 @@ import json
 import re
 import sys
 import time
+from types import SimpleNamespace as N
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,12 +81,18 @@ def score(persona: dict, case: dict, plan, preview) -> dict:
         return result
     # 서버는 경험을 통째로 버리지 않으면 순서를 유지한다. 원본 선택과 결과를 짝지어 턴 번호를 얻는다.
     # 서버가 경험 하나를 통째로 뺐다면(예: 소유하지 않은 기존 ID) 짝이 맞지 않으므로 그 행만 표시하고 넘어간다.
-    if len(plan.experiences) != len(preview.experiences):
+    # 서비스가 경험마다 근거 턴 번호(source_turns, #285)를 돌려주면 그것으로 짝을 짓는다.
+    source_turns = getattr(preview, "source_turns", None)
+    if source_turns is not None:
+        pairs = [(N(description=N(turn_index=turn), skills=[], duration=None), item)
+                 for turn, item in zip(source_turns, preview.experiences, strict=True)]
+    elif len(plan.experiences) != len(preview.experiences):
         texts = [text for item in preview.experiences for text in (item.description, item.duration_note or "", *item.skill_tags)]
         result.update(experiences=len(preview.experiences), pairing_mismatch=True,
                       leaks=sum(value in text for value in persona["must_not_extract"]["exact"] for text in texts))
         return result
-    pairs = list(zip(plan.experiences, preview.experiences, strict=True))
+    else:
+        pairs = list(zip(plan.experiences, preview.experiences, strict=True))
     used_turns = {selected.description.turn_index for selected, _ in pairs}
     experience_turns = set(case["experience_turns"])
     skills = [skill for _, item in pairs for skill in item.skill_tags]
@@ -102,7 +109,9 @@ def score(persona: dict, case: dict, plan, preview) -> dict:
         duration_recall=round(sum(year in durations for year in expected_years) / len(expected_years), 2) if expected_years else 1.0,
         whole_turn=sum(squash(item.description) == squash(turns[selected.description.turn_index]) for selected, item in pairs),
         cert_as_skill=sum(any(squash(cert) in squash(skill) for cert in case["certifications"]) for skill in skills),
-        dropped=sum(len(selected.skills) + (selected.duration is not None) for selected, _ in pairs)
+        # 표준 태그가 더해지는 서비스(#285)에서는 인용 수와 결과 태그 수를 비교할 수 없어 0으로 둔다.
+        dropped=0 if source_turns is not None else
+        sum(len(selected.skills) + (selected.duration is not None) for selected, _ in pairs)
         - sum(len(item.skill_tags) + (item.duration_note is not None) for _, item in pairs),
         leaks=sum(value in text for value in persona["must_not_extract"]["exact"] for text in texts),
     )
@@ -136,13 +145,14 @@ async def run(args) -> list[dict]:
     recording = Recording(OllamaLLMAdapter(base_url=args.base_url, model=args.model, timeout_seconds=args.timeout,
                                            num_predict=2048, num_ctx=16384, think=False, max_response_bytes=1_048_576))
     service = GroundedGenerationService(recording)
+    standard = standard_tags(args.catalog)
     rows = []
     for attempt in range(1, args.repeat + 1):
         for persona_id in args.persona or sorted(CASES):
             persona = json.loads((ROOT / f"eval/personas/{persona_id}.json").read_text(encoding="utf-8"))
             started = time.monotonic()
             try:
-                preview, error = await service.extract_experiences(user_texts=persona["interview"]), None
+                preview, error = await service.extract_experiences(user_texts=persona["interview"], standard_tags=standard), None
             except Exception as exc:  # 측정 도구: 예외 종류만 남기고 원문은 출력하지 않는다
                 preview, error = None, type(exc).__name__
             latency = round(time.monotonic() - started, 2)
@@ -172,6 +182,19 @@ def save(path: Path | None, rows: list[dict]) -> None:
         path.write_text(json.dumps({"summary": summary(rows), "rows": rows}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
+def standard_tags(path: Path | None) -> dict[str, list[str]]:
+    """역할 사전 JSON → 표준 태그와 검토된 별칭. 메시지 서비스가 운영 DB 사전에서 만드는 값과 같은 모양이다."""
+    if path is None:
+        return {}
+    tags: dict[str, list[str]] = {}
+    for role in json.loads(path.read_text(encoding="utf-8")):
+        for tag in role["skill_tags"]:
+            tags.setdefault(tag, [])
+        for alias in role["aliases"]:
+            tags.setdefault(alias["skill_tag"], []).append(alias["alias"])
+    return tags
+
+
 def positive(value: str) -> int:
     number = int(value)
     if number < 1:
@@ -188,8 +211,12 @@ def main() -> int:
     parser.add_argument("--persona", action="append", choices=sorted(CASES))
     parser.add_argument("--show", action="store_true", help="추출 내용까지 출력(가상 인물만)")
     parser.add_argument("--prompt-file", type=Path, help="경험 추출 지시문 후보(eval/prompts/). 없으면 서비스의 현재 지시문")
+    parser.add_argument("--catalog", type=Path, default=ROOT / "docs/data/role-catalog.json",
+                        help="표준 태그 선택지로 보낼 역할 사전 JSON. 'none'이면 보내지 않는다")
     parser.add_argument("--out", type=Path, help="결과 JSON 저장 경로(security-reports/ 아래 권장)")
     args = parser.parse_args()
+    if args.catalog is not None and str(args.catalog) == "none":
+        args.catalog = None
     rows = asyncio.run(run(args))
     print("SUMMARY " + json.dumps(summary(rows), ensure_ascii=False))
     # 근거 검사 실패·개인정보 누출·경험 아닌 턴 추출은 실패로 본다.

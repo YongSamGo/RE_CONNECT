@@ -16,7 +16,6 @@ from app.modules.consents.service import ConsentActor, ConsentService
 from app.modules.requests.service import CompletionGuard, ResultReference, input_fingerprint
 from app.modules.sessions.service import Session
 
-FIRST_QUESTION = "지금까지 해 오신 일 가운데 기억에 남는 일을 한 가지 들려주세요."
 
 
 @dataclass(frozen=True)

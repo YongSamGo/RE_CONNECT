@@ -50,6 +50,10 @@ updates:
       timezone: Asia/Seoul
     cooldown:
       default-days: 7
+    # httpx2는 httpcore2의 같은 버전을 정확히 요구하므로 함께 갱신한다.
+    groups:
+      http-client:
+        patterns: ["httpx2", "httpcore2"]
     commit-message:
       prefix: "sec"
 
@@ -61,6 +65,9 @@ updates:
       timezone: Asia/Seoul
     cooldown:
       default-days: 7
+    groups:
+      http-client:
+        patterns: ["httpx2", "httpcore2"]
     commit-message:
       prefix: "sec"
 

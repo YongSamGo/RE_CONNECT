@@ -34,16 +34,16 @@ export function JourneyTranscription({ journeyId, onUseText, onClose, onAccessLo
       } finally { cleanup() }
     }, result => text.setValue({ value: result.text, transcriptionId: result.transcription_id }))
   }
-  return <section aria-label="녹음·전사 확인"><h2>말로 입력하고 글로 확인해요</h2>
-    <p>최대 90초·6MiB입니다. 마이크는 녹음 시작을 누를 때만 켜집니다. 연락처·주민등록번호·상세 병력은 말하지 마세요.</p>
+  return <section aria-label="녹음과 전사 확인"><h2>말로 입력하고 글로 확인해요</h2>
+    <p>녹음은 90초 이내로 해 주세요. 파일 크기는 6MiB 이하여야 해요. 마이크는 녹음 시작을 누를 때만 켜져요. 연락처나 주민등록번호, 상세 병력은 말하지 마세요.</p>
     <AudioRecorderControls recorder={recorder} onReset={reset} disabled={pending} />
     <Button pending={pending} disabled={!recorder.blob || recorder.status !== 'ready'} onClick={upload}>이 녹음을 서버에 보내 전사</Button>
-    <p>이 버튼을 눌러야 내부 음성 서비스로 보냅니다. 원본은 전사 성공·실패·취소 뒤 기기에서 정리합니다. 새 전사를 받으면 아래 확인 문장이 바뀝니다.</p>
+    <p>이 버튼을 눌러야 내부 음성 서비스로 보냅니다. 전사가 성공하거나 실패했을 때, 취소했을 때 원본을 기기에서 정리해요. 새 전사를 받으면 아래 확인 문장이 바뀝니다.</p>
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
     <TextAreaField label="보내기 전에 고칠 전사 문장" value={text.value.value} onChange={event => text.setValue(previous => ({ ...previous, value: event.target.value }))} disabled={pending} maxLength={2000} rows={6}
       hint="전사는 자동으로 프로필에 쓰지 않습니다. 잘못 인식한 말을 고치거나 직접 작성한 뒤 사용해 주세요." />
-    <Button disabled={pending || !text.value.value.trim()} onClick={() => { const confirmed = text.value; reset(); onUseText(confirmed.value, confirmed.transcriptionId) }}>이 수정 문장을 입력칸에 사용하기</Button>
-    <Button variant="secondary" onClick={() => { reset(); onClose() }}>음성 입력 닫고 원래 글로 돌아가기</Button>
+    <div className="actions"><Button disabled={pending || !text.value.value.trim()} onClick={() => { const confirmed = text.value; reset(); onUseText(confirmed.value, confirmed.transcriptionId) }}>이 수정 문장을 입력칸에 사용하기</Button>
+    <Button variant="secondary" onClick={() => { reset(); onClose() }}>음성 입력 닫고 원래 글로 돌아가기</Button></div>
     <p>전사에 실패하면 원본은 다시 보내지 않습니다. 새로 녹음하거나 직접 적을 수 있어요. 기다리기 중지가 서버 처리 종료를 보장하지는 않습니다.</p>
   </section>
 }

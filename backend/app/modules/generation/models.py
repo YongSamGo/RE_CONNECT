@@ -3,10 +3,10 @@
 from typing import Annotated, Literal
 from uuid import UUID
 
-from pydantic import BaseModel, Field, StrictInt
+from pydantic import BaseModel, Field, StrictInt, StrictStr
 
 from app.contracts.fields import CONTRACT_CONFIG, Unique, text
-from app.contracts.profile import ExperienceInput, ProfileContent, RecommendationField
+from app.contracts.profile import ExperienceInput, ProfileContent
 from app.contracts.preparation import OpportunityRef
 
 
@@ -24,6 +24,11 @@ class ExperienceSelection(BaseModel):
     description: Quote
     duration: Quote | None
     skills: Annotated[list[Quote], Field(max_length=20)]
+    # 근거 인용을 짧게 다듬은 표시 문구. 서버가 근거 턴과 대조해 통과할 때만 쓴다(wording.summary_grounded).
+    # 형식이 이상해도 경험 전체를 버리지 않도록 길이만 막고, 나머지 검사는 서버 대조에서 한다.
+    summary: Annotated[StrictStr, Field(max_length=200)] | None = None
+    # 역할 사전의 표준 기술 태그 중에서 고른 것. 서버가 요청에 보낸 목록에 있는 것만 남긴다.
+    standard_tags: Annotated[list[text(50)], Field(max_length=10)] = []
 
 
 class ExtractionPlan(BaseModel):
@@ -36,15 +41,11 @@ class ExperiencePreview(BaseModel):
     model_config = CONTRACT_CONFIG
 
     experiences: Annotated[list[ExperienceInput], Field(max_length=20)]
+    # experiences와 같은 순서의 근거 턴 번호. 호출자는 이번 턴의 근거인지 이것으로 확인한다.
+    source_turns: Annotated[list[StrictInt], Field(max_length=20)]
     excluded_turn_indices: Annotated[list[StrictInt], Field(max_length=64)]
     # 원문 근거가 있다는 것과 사실 승인은 다르다. 서버가 정하는 고정값이다.
     requires_confirmation: Literal[True] = True
-
-
-class QuestionPlan(BaseModel):
-    model_config = CONTRACT_CONFIG
-
-    field: RecommendationField
 
 
 class ApplicationPlan(BaseModel):

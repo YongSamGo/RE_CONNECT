@@ -44,9 +44,9 @@ export function JourneyVoiceInput({ journeyId, replaceRequired, onUseText, onAcc
   return <section aria-label="체험 음성 전사"><VoicePreview key={recorder.value} transcription={{ pending, onRequest: transcribe, onReset: cancel }} />
     {pending && <Button variant="secondary" onClick={request.clear}>전사 응답 기다리기 중지</Button>}
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
-    <p>응답 유실이나 대기 중지 후에는 같은 녹음과 요청 번호로 확인합니다. 새 녹음을 선택하면 대기 참조를 지웁니다.</p>
+    <p>응답을 받지 못했거나 기다리기를 중지한 뒤에는 같은 녹음과 요청 번호로 확인해요. 새 녹음을 선택하면 기다리던 요청의 참조를 지워요.</p>
     {result.value.transcript && <section className="panel"><h3>전사 내용을 직접 확인해 주세요</h3>
-      <TextAreaField label="확인·수정할 전사 문장" value={result.value.text} maxLength={2000} disabled={pending} onChange={event => result.setValue({ ...result.value, text: event.target.value })} />
+      <TextAreaField label="글로 바꾼 내용 확인과 수정" value={result.value.text} maxLength={2000} disabled={pending} onChange={event => result.setValue({ ...result.value, text: event.target.value })} />
       {replaceRequired && <CheckboxField label="현재 경험 입력을 확인한 전사 문장으로 바꿀게요." checked={result.value.replace} onChange={event => result.setValue({ ...result.value, replace: event.target.checked })} />}
       <Button disabled={pending || !result.value.text.trim() || (replaceRequired && !result.value.replace)} onClick={() => { const value = result.value; if (value.transcript) { cancel(); setRecorderKey(key => key + 1); onUseText(value.text, value.transcript.transcription_id) } }}>확인한 전사 문장을 입력란으로 가져오기</Button>
       <p>입력란으로 가져와도 대화를 보내거나 프로필을 확정하지 않습니다.</p>

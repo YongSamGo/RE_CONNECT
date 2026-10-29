@@ -191,3 +191,25 @@ def test_real_http_uses_confirmed_redis_experience_and_sql_catalog(backend):
                 assert response.json()["items"][0]["evidence"][0]["experience_id"] == str(snapshot.content.experiences[0].id)
                 assert (await client.get(path + "?profile_version=99")).status_code == 409
     with_redis(scenario)
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_alias_migration_updates_deployed_seed_rows_but_not_operator_edits(backend):
+    # 0009를 이미 적용한 DB(스테이징·운영)에서 0014가 시드 그대로인 행만 고치는지 본다(docs/data/role-catalog.md).
+    with open_test_database(backend) as db:
+        config = migration_config(db)
+        command.upgrade(config, "0013_report_handling")
+        edited = [{"alias": "운영자 확인 별칭", "skill_tag": "운전"}]
+        db.execute(update(RoleDefinition).where(RoleDefinition.id == "mobility_supporter").values(aliases=edited))
+        before = {entry.id: entry.aliases for entry in SQLRoleCatalog(lambda: nullcontext(db)).list()}
+        command.upgrade(config, "head")
+        after = {entry.id: entry for entry in SQLRoleCatalog(lambda: nullcontext(db)).list()}
+        draft = {entry["id"]: CatalogRole.model_validate(entry) for entry in CATALOG_DRAFT}
+        assert after["mobility_supporter"].model_dump()["aliases"] == edited
+        assert after["learning_mentor"].aliases == draft["learning_mentor"].aliases
+        assert {alias.alias for alias in after["mobility_supporter"].aliases} == {"운영자 확인 별칭"}
+        assert {role_id for role_id in after if after[role_id].aliases != before[role_id]} == {
+            "learning_mentor", "facility_manager", "community_organizer", "meal_assistant", "digital_guide",
+            "care_assistant", "visitor_guide"}
+        command.downgrade(config, "0013_report_handling")
+        assert {entry.id: entry.aliases for entry in SQLRoleCatalog(lambda: nullcontext(db)).list()} == before

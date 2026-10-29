@@ -22,3 +22,5 @@ TTS의 새 의존성 조합과 제한된12Hz source 준비는 [호환 빌드](tt
 ## 의존성
 
 Python 3.12와 [backend](../backend/README.md#의존성-고정)와 같은 해시 고정 방식을 쓴다. 기본 STT/내부 HTTP와 `tts_compat`의 잠금을 함께 설치하며 CI detect와 Dependabot에도 연결했다. 실제 로컬 CPU 공존을 확인했으며 CUDA/운영 컨테이너의 공존은 후속 검증이다.
+
+GPU 실행은 별도 [Dockerfile.gpu](Dockerfile.gpu)·[CUDA 잠금](gpu/requirements.txt)과 [운영 overlay](../infra/models/README.md)를 따른다. CPU 빌드와 GPU 이미지는 구분하며 기본 CPU 동작은 유지한다.

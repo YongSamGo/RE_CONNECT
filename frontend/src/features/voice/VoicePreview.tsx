@@ -16,6 +16,7 @@ export function VoicePreview({ onUseText, transcription }: { onUseText?: (text: 
   const [error, setError] = useState('')
   const [seconds, setSeconds] = useState(0)
   const [audioUrl, setAudioUrl] = useState<string | null>(null)
+  const recordingStatus = useRef<HTMLParagraphElement>(null)
   const resources = useRef<Resources>({ generation: 0, mounted: true, busy: false, recorder: null, stream: null, timer: null, url: null, chunks: [], size: 0, player: null, blob: null })
 
   const release = useCallback(() => {
@@ -110,15 +111,16 @@ export function VoicePreview({ onUseText, transcription }: { onUseText?: (text: 
       release(); setError('마이크 권한이 없거나 녹음을 시작하지 못했어요. 권한을 확인하거나 글로 작성해 주세요.'); setStatus('error')
     }
   }
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">{transcription ? '체험 음성 입력' : '음성 입력 미리보기'}</p>{transcription ? <h2>말로 경험을 입력해요</h2> : <h1>말로 경험을 연습해 봐요</h1>}<p>녹음 시작을 누르면 브라우저에 마이크 권한을 요청합니다.</p></header>
-    {transcription ? <StatusNotice title="녹음 후 직접 전사를 요청해 주세요">최대 90초·6MiB입니다. 전사를 요청할 때만 음성을 서버로 보내며 AI 처리 동의를 확인합니다. 전사 결과를 수정하고 입력란으로 가져온 뒤 별도로 보내 주세요. 화면을 떠나면 기기 내 녹음을 지웁니다.</StatusNotice> : <StatusNotice label="기기 내 녹음 연습" title="음성 인식은 아직 연결되지 않았어요">녹음은 현재 화면에서만 재생하며 서버에 보내지 않습니다. 자동 전사 결과는 제공하지 않습니다. 가상의 경험만 녹음해 주세요. 최대 90초·6MiB이며 화면을 떠나면 녹음이 삭제됩니다.</StatusNotice>}
-    <section className="panel"><h2>녹음하고 들어보기</h2><p role="status">{status === 'permission' ? '마이크 권한을 확인하고 있어요.' : status === 'recording' ? `녹음 중 · ${seconds} / 90초` : status === 'ready' ? '녹음이 끝났어요. 아래에서 들어볼 수 있습니다.' : '녹음은 시작 버튼을 누른 뒤에만 진행합니다.'}</p>
-      <div className="actions"><Button disabled={status === 'permission' || status === 'recording'} onClick={() => void start()}>{audioUrl ? '다시 녹음하기' : '녹음 시작하기'}</Button>{status === 'recording' && <Button variant="secondary" onClick={() => { const recorder = resources.current.recorder; if (recorder?.state === 'recording') recorder.stop() }}>녹음 마치기</Button>}<Button variant="secondary" onClick={reset}>녹음·입력 취소하고 삭제</Button></div>
+  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">음성 입력</p>{transcription ? <h2>말로 경험을 입력해요</h2> : <h1>말로 경험을 입력해요</h1>}<p>녹음 시작을 누르면 브라우저에 마이크 권한을 요청합니다.</p></header>
+    {transcription ? <StatusNotice title="녹음 후 직접 전사를 요청해 주세요">녹음은 90초 이내로 해 주세요. 파일 크기는 6MiB 이하여야 해요. 전사를 요청할 때만 음성을 서버로 보내며 AI 처리 동의를 확인합니다. 전사 결과를 수정하고 입력란으로 가져온 뒤 별도로 보내 주세요. 화면을 떠나면 기기 내 녹음을 지웁니다.</StatusNotice> : <StatusNotice label="기기 내 녹음" title="음성 인식은 아직 연결되지 않았어요">녹음은 현재 화면에서만 재생하며 서버에 보내지 않습니다. 자동 전사 결과는 제공하지 않습니다. 개인정보는 녹음하지 마세요. 녹음은 90초 이내로 해 주세요. 파일 크기는 6MiB 이하여야 해요. 화면을 떠나면 녹음이 삭제돼요.</StatusNotice>}
+    <section className="panel voice-recorder"><h2>녹음하고 들어보기</h2><p ref={recordingStatus} tabIndex={-1} role="status">{status === 'permission' ? '마이크 권한을 확인하고 있어요.' : status === 'recording' ? '녹음 중이에요.' : status === 'ready' ? '녹음이 끝났어요. 아래에서 들어볼 수 있습니다.' : '녹음은 시작 버튼을 누른 뒤에만 진행합니다.'}</p>
+      {status === 'recording' && <p>녹음 시간 {seconds} / 90초</p>}
+      <div className="actions"><Button disabled={status === 'permission' || status === 'recording'} onClick={() => void start()}>{audioUrl ? '다시 녹음하기' : '녹음 시작하기'}</Button>{status === 'recording' && <Button variant="secondary" onClick={() => { const recorder = resources.current.recorder; if (recorder?.state === 'recording') { recordingStatus.current?.focus(); recorder.stop() } }}>녹음 마치기</Button>}<Button variant="secondary" onClick={reset}>녹음과 입력 취소하고 삭제</Button></div>
       {audioUrl && <audio ref={(element) => { if (element) resources.current.player = element }} className="voice-player" src={audioUrl} controls aria-label="내 녹음 들어보기" />}
-      {transcription && audioUrl && <Button pending={transcription.pending} onClick={() => { const blob = resources.current.blob; if (blob) { resources.current.player?.pause(); transcription.onRequest(blob) } }}>녹음 전사 요청 · 같은 요청 재확인</Button>}
+      {transcription && audioUrl && <Button pending={transcription.pending} onClick={() => { const blob = resources.current.blob; if (blob) { resources.current.player?.pause(); transcription.onRequest(blob) } }}>녹음을 글로 바꾸기</Button>}
       {status === 'error' && <StatusNotice kind="error" title="녹음을 사용할 수 없어요">{error}</StatusNotice>}
     </section>
     {!transcription && <><section className="panel"><h2>직접 글로 확인하기</h2><TextAreaField label="확인한 경험 문장" value={text.value} onChange={(event) => text.setValue(event.target.value)} maxLength={2000} hint="자동 전사가 아닙니다. 녹음한 내용을 직접 적거나 글로 입력해 주세요. 기존 경험 입력을 이 문장으로 바꿉니다." /><Button disabled={!text.value.trim()} onClick={() => { const confirmed = text.value; reset(); onUseText?.(confirmed) }}>이 문장을 경험 입력에 사용하기</Button></section>
-    <Link className="text-link" to="/conversation">글로 작성하는 화면으로 →</Link></>}
+    <Link className="text-link" to="/conversation">글로 작성하는 화면으로</Link></>}
   </div>
 }

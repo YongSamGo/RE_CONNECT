@@ -1,0 +1,17 @@
+-c constraints.in
+-r ../requirements.txt
+--extra-index-url https://download.pytorch.org/whl/cu130
+# 공식 cu130 배포만 선택한다. 잠금 생성은 모든 의존성 제약/해시를 검증한다.
+torch==2.14.1+cu130
+transformers==5.20.1
+accelerate==1.15.0
+librosa
+soundfile
+einops
+numpy
+colorama
+certifi>=2026.10.19
+setuptools>=84.2.1
+
+# 1.8.4는 7일 출시 대기 전이므로 이전 안정판을 고정한다.
+cuda-pathfinder==1.8.3

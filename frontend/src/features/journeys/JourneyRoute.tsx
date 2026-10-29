@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { StatusNotice } from '../../ui/StatusNotice'
+import { UnavailablePage } from '../../ui/UnavailablePage'
 import { isOpportunityId } from '../public-opportunities/catalog'
 
 /** Reentry UX applies to both journey pages; ownership always stays on the server. */
@@ -20,5 +20,5 @@ export function JourneyRoute({ page, children }: { page: string; children: (id: 
   }, [navigate])
   if (reentry) return <Navigate to="/" replace />
   return journeyId && isOpportunityId(journeyId) ? children(journeyId)
-    : <StatusNotice title="체험 주소를 확인해 주세요">올바른 체험 화면에서 다시 이동해 주세요.</StatusNotice>
+    : <UnavailablePage title="체험 주소를 확인해 주세요">올바른 체험 화면에서 다시 이동해 주세요.</UnavailablePage>
 }

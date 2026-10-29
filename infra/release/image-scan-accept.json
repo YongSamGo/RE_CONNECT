@@ -111,6 +111,62 @@
       "reason": "Debian 13 베이스 OS 패키지(perl-base), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
       "recorded": "2026-10-28",
       "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2025-69720",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(ncurses), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-16742",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(systemd·udev 라이브러리), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-54369",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(acl), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-76642",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(util-linux), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-78408",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(util-linux), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-78409",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(util-linux), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-78410",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(util-linux), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
+    },
+    {
+      "id": "CVE-2026-9538",
+      "image": "speech-gpu",
+      "reason": "CPU speech와 같은 Debian 13 베이스 OS 패키지(perl-base), 검토일 기준 수정판 없음. 앱이 호출하지 않으며 비루트·읽기 전용·권한 제거 컨테이너로 실행. 수정판이 나오면 베이스 갱신",
+      "recorded": "2026-10-29",
+      "expires": "2027-01-26"
     }
   ]
 }

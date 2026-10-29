@@ -1,16 +1,20 @@
 import { act, render, screen } from '@testing-library/react'
+import { useEffect } from 'react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter } from 'react-router-dom'
+import { MemoryRouter, useNavigate } from 'react-router-dom'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import App from '../../App'
 
+let navigateForTest: (path: string) => void
+function NavigationHarness() { const navigate = useNavigate(); useEffect(() => { navigateForTest = navigate }, [navigate]); return null }
 async function open() {
   const user = userEvent.setup()
-  render(<MemoryRouter initialEntries={['/consent']}><App /></MemoryRouter>)
+  render(<MemoryRouter initialEntries={['/consent']}><NavigationHarness /><App /></MemoryRouter>)
   await user.click(screen.getByRole('checkbox'))
-  await user.click(screen.getByRole('button', { name: /미리보기 시작하기/ }))
+  await user.click(screen.getByRole('button', { name: /시작하기/ }))
   await user.click(screen.getByRole('link', { name: /작성한 내용 확인하기/ }))
-  await user.click(screen.getByRole('link', { name: '지원 내용 직접 작성해 보기' }))
+  await user.click(screen.getByText('다른 화면 살펴보기', { exact: true }))
+    await user.click(screen.getByRole('link', { name: '지원 내용 직접 작성해 보기' }))
   return user
 }
 async function fill(user: ReturnType<typeof userEvent.setup>) {
@@ -55,16 +59,17 @@ describe('manual preparation preview', () => {
     vi.stubGlobal('fetch', fetch)
     await fill(user)
     await user.click(screen.getByRole('link', { name: '내 경험 다시 보기' }))
+    await user.click(screen.getByText('다른 화면 살펴보기', { exact: true }))
     await user.click(screen.getByRole('link', { name: '지원 내용 직접 작성해 보기' }))
     expect(screen.getByRole('textbox', { name: '자기소개' })).toHaveValue('도서관에서 책 정리를 도왔어요.')
     expect(store).not.toHaveBeenCalled()
     expect(fetch).not.toHaveBeenCalled()
     await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
-    await user.click(screen.getByRole('link', { name: /내 경험 이야기하기/ }))
-    await user.click(screen.getByRole('link', { name: '가상 경험으로 화면 미리보기' }))
+    act(() => navigateForTest('/consent'))
     await user.click(screen.getByRole('checkbox'))
-    await user.click(screen.getByRole('button', { name: /미리보기 시작하기/ }))
+    await user.click(screen.getByRole('button', { name: /시작하기/ }))
     await user.click(screen.getByRole('link', { name: /작성한 내용 확인하기/ }))
+    await user.click(screen.getByText('다른 화면 살펴보기', { exact: true }))
     await user.click(screen.getByRole('link', { name: '지원 내용 직접 작성해 보기' }))
     expect(screen.getByRole('textbox', { name: '자기소개' })).toHaveValue('')
     expect(screen.getByRole('checkbox')).not.toBeChecked()
@@ -85,6 +90,11 @@ describe('manual preparation preview', () => {
     expect(screen.getByRole('button', { name: '복사하고 있어요…' })).toBeDisabled()
     expect(write).toHaveBeenCalledTimes(1)
     await user.click(screen.getByRole('button', { name: '작성 내용 지우기' }))
+    expect(screen.getByRole('heading', { name: '작성 내용을 지울까요?' })).toHaveFocus()
+    await user.click(screen.getByRole('button', { name: '계속 작성하기' }))
+    expect(screen.getByRole('textbox', { name: '자기소개' })).not.toHaveValue('')
+    await user.click(screen.getByRole('button', { name: '작성 내용 지우기' }))
+    await user.click(screen.getByRole('button', { name: '내용 지우기' }))
     await act(async () => resolve())
     expect(screen.queryByText(/작성한 내용을 복사했습니다/)).not.toBeInTheDocument()
     expect(screen.getByRole('textbox', { name: '자기소개' })).toHaveValue('')

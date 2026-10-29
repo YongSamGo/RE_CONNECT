@@ -36,6 +36,9 @@ BEGIN
             EXECUTE format('REVOKE ALL ON TABLE public.%I FROM reconnect_runtime', relation.relname);
             IF relation.relname <> 'alembic_version' THEN
                 EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.%I TO reconnect_runtime', relation.relname);
+            ELSE
+                -- Read-only: restore-check (manage_restore.py) compares the restored head. Writes stay denied.
+                EXECUTE 'GRANT SELECT ON TABLE public.alembic_version TO reconnect_runtime';
             END IF;
         END IF;
     END LOOP;
