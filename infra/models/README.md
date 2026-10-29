@@ -22,7 +22,8 @@
   다른 사용자/서비스의 쓰기를 허용하지 않는다. 가중치 디렉터리에 음성·본문·캐시를 넣지 않는다.
 - [기존 배포 절차](../deploy/README.md)의 backend/frontend/speech 릴리스 이미지를 사용한다.
   Ollama 0.40.3의 공식 registry digest·배포일은 [runtime-images.json](runtime-images.json)에 기록했고
-  Compose 기본값으로 고정했다. 음성은 CPU용 `SPEECH_IMAGE`와 구분한 `SPEECH_GPU_IMAGE`를 지정한다.
+  Compose 기본값으로 고정했다. 음성은 CPU용 `SPEECH_IMAGE`와 구분한 `SPEECH_GPU_IMAGE`를 쓴다.
+  두 값 모두 릴리스 manifest(schema 3)에서 `images-env`가 images.env에 만든다.
   두 모델 이미지의 스캔·실제 컨테이너 검증 결과는 [GPU 검증 기록](../../docs/progress/issue-92-model-runtime.md)을 따른다.
 
 ## 호스트 개인정보 잔류 방지
@@ -42,13 +43,12 @@ python3 -I infra/models/check_host.py
 
 ## 설정과 시작
 
-`/run/reconnect/images.env`는 기존 릴리스 도구가 만드는 이미지 치환 파일이다.
+`/run/reconnect/images.env`는 기존 릴리스 도구가 만드는 이미지 치환 파일이다. `SPEECH_GPU_IMAGE`도 여기서 온다.
 추가 운영 설정을 `/run/reconnect/models.env`에 둔다(호스트 tmpfs, 운영자 전용 권한).
 다음 키의 실제 값이 필요하다. 예시 사양을 운영 기본값으로 제공하지 않는다.
 
 ```text
 # OLLAMA_IMAGE는 Compose의 고정 0.40.3 digest 사용. 바꾸면 별도 검증
-SPEECH_GPU_IMAGE=<Dockerfile.gpu로 빌드·검사·게시한 이미지@sha256:digest>
 OLLAMA_MODELS_DIR=<검증한 Ollama 가중치 절대경로>
 SPEECH_MODELS_DIR=<검증한 STT/TTS 가중치 절대경로>
 OLLAMA_MEMORY_LIMIT=<실측용 메모리 상한, 예: 정수와 g 단위>
@@ -145,7 +145,7 @@ TRIVY=<SHA 확인한 실행 파일> infra/release/build_and_scan.sh speech-gpu <
 ```
 
 GPU 이미지는 별도 이름으로 스캔하며 기존 speech 취약점 수용을 자동 상속하지 않는다.
-현재 릴리스 태그가 게시하는 CPU speech 이미지를 GPU 이미지로 오인해 연결하면 안 된다.
-GPU 이미지는 별도 검사/게시한 manifest digest로 공급하며 기존 ECR 릴리스 자동 게시 범위를 임의로 바꾸지 않는다.
+릴리스는 CPU speech와 GPU speech-gpu를 각각의 ECR 저장소(`reconnect-speech`·`reconnect-speech-gpu`)에 게시한다.
+manifest 도구는 GPU 자리에 CPU 이미지를 넣거나 GPU 이미지가 빠진 manifest를 거절한다.
 이번 EC2 시험은 레지스트리에 게시하지 않은 로컬 불변 이미지 ID를 사용한다. 이때만 도구의
 `validate(config, allow_local_images=True)`로 검사하며 운영 CLI는 계속 repository@sha256만 허용한다.

@@ -19,7 +19,7 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 
 1. `develop → main` 릴리스 PR을 머지한 뒤 `main` 커밋에 `vX.Y.Z` 태그를 push한다.
 2. `Release` 워크플로가 `release` 환경 승인을 기다린다. 승인 뒤 첫 단계에서 태그 형식(`vX.Y.Z`, `-rc.N` 허용)과 태그 커밋이 `main` 이력에 있는지 확인하고, 아니면 아무것도 게시하지 않고 멈춘다.
-3. backend·frontend·speech를 빌드하고 Trivy로 검사한다. 기준은 아래 3절이다. 하나라도 실패하면 아무것도 게시하지 않는다.
+3. backend·frontend·speech·speech-gpu(GPU 음성, `speech/Dockerfile.gpu`)를 빌드하고 Trivy로 검사한다. 기준은 아래 3절이다. 하나라도 실패하면 아무것도 게시하지 않는다.
 4. GitHub OIDC로 받은 임시 역할로 ECR에 올리고, 빌드 출처 증명(provenance)을 붙인다.
 5. `release-manifest.json`과 SBOM(CycloneDX)을 **초안** Release에 첨부한다. 사람이 확인한 뒤 공개한다.
 
@@ -46,7 +46,8 @@ Trivy 원본 결과(`*-scan.json`)는 미조치 취약점 목록이라 Release·
 backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS HIGH가 있다([CONTAINER_RUNTIME.md](../../speech/CONTAINER_RUNTIME.md)).
 2026-10-28에 8개 ID를 두 이미지에 대해 검토해 2027-01-26 만료로 수용 목록에 올렸다. 만료 전에 베이스 갱신 여부를 다시 검토한다.
 음성 이미지는 같은 베이스에 OS 패키지를 추가하지 않아 같은 목록을 적용했다. 음성 빌드 파일(`speech/Dockerfile`·잠금 파일·`tts_compat`)이나
-판정 도구·release 워크플로가 바뀐 PR에서는 `이미지 빌드·검사 (speech)`가 빌드·판정까지 확인한다.
+판정 도구·release 워크플로가 바뀐 PR에서는 `이미지 빌드·검사 (speech)`·`(speech-gpu)`가 빌드·판정까지 확인한다.
+GPU 음성 이미지는 별도 이름(`speech-gpu`)으로 판정하며 CPU 음성 이미지의 수용 항목을 이어받지 않는다.
 
 ## 4. 저장소·AWS 준비 (admin, 1회)
 
@@ -57,9 +58,9 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 - IAM OIDC 역할 신뢰 조건: `token.actions.githubusercontent.com:aud = sts.amazonaws.com`, `sub = <접두어>:environment:release`.
   이 저장소는 변경 불가 주체 형식을 쓰므로 접두어는 `repo:YongSamGo/RE_CONNECT`가 아니라
   `gh api repos/YongSamGo/RE_CONNECT/actions/oidc/customization/sub --jq .sub_claim_prefix`의 값(`repo:<owner>@<id>/<repo>@<id>`)이다.
-  옛 형식으로 두면 역할을 맡지 못해 릴리스가 실패한다. 권한은 세 ECR 저장소의 push만.
-- ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`: 태그 불변(IMMUTABLE), push 시 검사.
-- EC2 인스턴스 역할: 세 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`, 기본 `aws/ssm` 키면 KMS 권한 불필요),
+  옛 형식으로 두면 역할을 맡지 못해 릴리스가 실패한다. 권한은 네 ECR 저장소의 push만.
+- ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`·`reconnect-speech-gpu`: 태그 불변(IMMUTABLE), push 시 검사.
+- EC2 인스턴스 역할: 네 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`, 기본 `aws/ssm` 키면 KMS 권한 불필요),
   운영 로그 그룹 쓰기. 그 밖의 쓰기·삭제 권한은 주지 않는다.
   삭제 이력 버킷은 해당 접두어의 쓰기·읽기·목록과 보호 설정 조회만 준다(삭제·수명주기·정책 변경 없음, [백업·복원](../../docs/security/backup-restore.md), #94).
 - 관리 명령은 backend 이미지의 `manage_*.py`를 모두 담는다: `docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm --entrypoint /opt/venv/bin/python backend -B manage_<이름>.py ...`
@@ -97,14 +98,14 @@ python3 -I infra/release/release_manifest.py images-env /run/reconnect/release-m
 printf 'AWS_REGION=%s\nDEPLOY_ENV=%s\n' ap-northeast-2 production >> /run/reconnect/images.env
 ```
 
-빌드 출처 증명은 digest로 검증한다(세 이미지 모두). gh는 GitHub 토큰이 있어야 동작하므로, 권한을 하나도 주지 않은
+빌드 출처 증명은 digest로 검증한다(네 이미지 모두). gh는 GitHub 토큰이 있어야 동작하므로, 권한을 하나도 주지 않은
 fine-grained 토큰(공개 저장소 읽기만 가능)을 **그 셸에서만** `GH_TOKEN`으로 넣고 끝나면 지운다. 서버 파일·프로필에 저장하지 않는다.
 증명의 대상 이름은 레지스트리 없는 `reconnect-<이름>`이다. 첫 릴리스에서 digest만으로 통과하는지 확인하고 결과를 여기에 적는다.
 
 ```bash
 read -rs GH_TOKEN && export GH_TOKEN
-for image in backend frontend speech; do
-  ref="$(grep -m1 "^$(echo "$image" | tr a-z A-Z)_IMAGE=" /run/reconnect/images.env | cut -d= -f2)"
+for image in backend frontend speech speech-gpu; do
+  ref="$(grep -m1 "^$(echo "$image" | tr a-z- A-Z_)_IMAGE=" /run/reconnect/images.env | cut -d= -f2)"
   gh attestation verify "oci://$ref" -R YongSamGo/RE_CONNECT
 done
 unset GH_TOKEN
@@ -144,6 +145,6 @@ python -I -m unittest discover -s infra/deploy/tests   # POSIX 권한 검사라 
 ## 모델 서비스 연결 (#92)
 
 GPU Ollama·GPU STT/TTS는 [모델 실행 절차](../models/README.md)의 운영 overlay를 추가한다.
-기존 images.env의 CPU SPEECH_IMAGE와 구분하여, 별도 빌드/스캔한 SPEECH_GPU_IMAGE와 실측 자원 상한을 지정한다. Ollama 공식 digest는 overlay 기본값에 고정돼 있다.
+GPU 음성 이미지는 릴리스가 함께 게시하며, images.env에 CPU용 SPEECH_IMAGE와 구분된 SPEECH_GPU_IMAGE로 들어간다. models.env에는 실측 자원 상한만 지정한다. Ollama 공식 digest는 overlay 기본값에 고정돼 있다.
 Ollama 외부 이미지는 현재 Release 자동 빌드/검사 대상이 아니므로 별도 공급망 검증 기록이 필요하다.
 모델 준비·host/config 검사·warmup 후 공개 진입점을 시작하며, 실제 EC2 검증 전 이슈를 종료하지 않는다.

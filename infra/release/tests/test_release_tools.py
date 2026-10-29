@@ -23,6 +23,7 @@ IMAGES = {
     "backend": "reconnect-backend" + DIGEST,
     "frontend": "reconnect-frontend" + DIGEST,
     "speech": "reconnect-speech" + DIGEST,
+    "speech-gpu": "reconnect-speech-gpu" + DIGEST,
 }
 TODAY = dt.date(2026, 10, 28)
 
@@ -64,23 +65,34 @@ class ReleaseManifestTest(unittest.TestCase):
                 release_manifest.build(release_manifest.ROOT, tag, commit, IMAGES, {})
         with self.assertRaises(release_manifest.ManifestError):
             release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, {"backend": IMAGES["backend"]}, {})
+        # GPU 음성 이미지가 빠진 릴리스는 만들지 않는다
+        with self.assertRaises(release_manifest.ManifestError):
+            release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT,
+                                   {name: ref for name, ref in IMAGES.items() if name != "speech-gpu"}, {})
+        with self.assertRaises(release_manifest.ManifestError):
+            release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT,
+                                   {**IMAGES, "speech-gpu": "reconnect-speech" + DIGEST}, {})
 
     def test_images_env_round_trip_and_tampered_manifest(self) -> None:
         manifest = release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, IMAGES, {})
         text = release_manifest.images_env(manifest, REGISTRY)
         self.assertEqual(text.splitlines()[0], "BACKEND_IMAGE=" + REGISTRY + "/" + IMAGES["backend"])
-        self.assertEqual(len(text.splitlines()), 3)
+        self.assertEqual(len(text.splitlines()), 4)
+        self.assertIn("SPEECH_GPU_IMAGE=" + REGISTRY + "/" + IMAGES["speech-gpu"], text.splitlines())
         tampered = (
             {**IMAGES, "backend": "x:latest"},
             {**IMAGES, "extra": IMAGES["backend"]},
             {},
             {**IMAGES, "backend": "evil.example/" + IMAGES["backend"]},
             {**IMAGES, "backend": IMAGES["speech"]},
+            # CPU 음성 이미지를 GPU 자리에 넣거나 GPU 이미지를 빼면 거절한다
+            {**IMAGES, "speech-gpu": IMAGES["speech"]},
+            {name: ref for name, ref in IMAGES.items() if name != "speech-gpu"},
         )
         for images in tampered:
             with self.subTest(images=images), self.assertRaises(release_manifest.ManifestError):
                 release_manifest.images_env({**manifest, "images": images}, REGISTRY)
-        for schema in (1, 3, "2"):
+        for schema in (1, 2, 4, "3"):
             with self.subTest(schema=schema), self.assertRaises(release_manifest.ManifestError):
                 release_manifest.images_env({**manifest, "schema": schema}, REGISTRY)
 
