@@ -1,7 +1,8 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
-import { MemoryRouter, Route, Routes } from 'react-router-dom'
+import { Link, MemoryRouter, Route, RouterProvider, Routes, createMemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
+import { UnsavedChangesGuard } from '../../ui/UnsavedChangesGuard'
 import { EndJourneyAction } from './EndJourneyAction'
 
 const id = '12345678-1234-4234-9234-123456789012'
@@ -60,4 +61,53 @@ it.each([
   await user.click(retry)
   await screen.findByText('시작 화면')
   await waitFor(() => expect(calls).toHaveLength(2))
+})
+
+// 실제 앱처럼 data router와 작성 중 입력 보호를 함께 올린다(리뷰 회귀).
+Object.defineProperties(HTMLDialogElement.prototype, {
+  showModal: { configurable: true, value(this: HTMLDialogElement) { this.setAttribute('open', '') } },
+  close: { configurable: true, value(this: HTMLDialogElement) { this.removeAttribute('open'); this.dispatchEvent(new Event('close')) } },
+})
+
+function mountGuarded(responses: Array<() => Response>) {
+  const calls: Request[] = []
+  vi.stubGlobal('fetch', vi.fn(async (request: Request) => {
+    calls.push(request)
+    const next = responses.shift()
+    if (!next) throw new Error('Unexpected request')
+    return next()
+  }))
+  document.cookie = '__Host-rc_csrf=fixture; Secure; Path=/'
+  const router = createMemoryRouter([
+    { path: '/', element: <p>시작 화면</p> },
+    { path: '/other', element: <p>다른 화면</p> },
+    { path: '/journeys/:journeyId/conversation', element: <><UnsavedChangesGuard dirty /><label>보낼 글<input defaultValue="아직 보내지 않은 글" /></label>
+      <Link to="/other">다른 화면으로</Link><EndJourneyAction journeyId={id} /></> },
+  ], { initialEntries: [`/journeys/${id}/conversation`] })
+  render(<RouterProvider router={router} />)
+  return { calls, router }
+}
+
+it('작성 중 입력이 있어도 삭제 204 뒤에는 이탈 확인 없이 시작 화면으로 이동한다', async () => {
+  const user = userEvent.setup()
+  const { calls, router } = mountGuarded([() => new Response(null, { status: 204 })])
+  await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
+  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
+  await screen.findByText('시작 화면')
+  expect(router.state.location.pathname).toBe('/')
+  expect(screen.queryByText('작성 중인 내용이 있어요')).toBeNull()
+  expect(screen.queryByDisplayValue('아직 보내지 않은 글')).toBeNull()
+  expect(calls).toHaveLength(1)
+})
+
+it('삭제가 실패하면 입력 보호와 입력을 유지하고, 일반 이동은 계속 확인을 받는다', async () => {
+  const user = userEvent.setup()
+  const { router } = mountGuarded([() => new Response(JSON.stringify({ code: 'SERVICE_UNAVAILABLE', message: 'private detail' }), { status: 503, headers: { 'Content-Type': 'application/json' } })])
+  await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
+  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
+  await screen.findByRole('button', { name: '삭제 다시 시도' })
+  expect(screen.getByDisplayValue('아직 보내지 않은 글')).toBeTruthy()
+  await user.click(screen.getByRole('link', { name: '다른 화면으로' }))
+  await waitFor(() => expect(router.state.location.pathname).toBe(`/journeys/${id}/conversation`))
+  expect(screen.getByText('작성 중인 내용이 있어요')).toBeTruthy()
 })

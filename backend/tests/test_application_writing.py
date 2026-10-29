@@ -119,3 +119,36 @@ def test_rejects_quantities_and_credentials_not_in_cited_facts(text, fact_ids):
     context = ApplicationContext(opportunity={'id': uuid4(), 'version': 1}, title='경력 20년 이상 사서 모집', description='사서 자격증 소지자 우대')
     with pytest.raises(LLMInvalidOutputError):
         draft_with(text, fact_ids, context)
+
+
+def snapshot_with(certifications, courses):
+    base = snapshot()
+    content = base.content.model_copy(update={'certifications': certifications, 'completed_courses': courses})
+    return base.model_copy(update={'content': content})
+
+
+def draft_on(profile, text, fact_ids):
+    payload = response()
+    payload['motivation'][0] = {'text': text, 'fact_ids': fact_ids}
+    return asyncio.run(GroundedGenerationService(StubAdapter(payload)).application_draft(snapshot=profile))
+
+
+@pytest.mark.parametrize('text', [
+    '교원 자격증을 보유하고 있으며 사서 자격증도 보유하고 있습니다.',
+    '교원 자격증을 보유하고 사회복지사 과정을 수료했습니다.',
+    '교원 자격증과 사서 자격증을 보유하고 있습니다.',
+    '교원 자격증을 보유했고 대학원 학위도 취득했습니다.',
+])
+def test_rejects_unsupported_claim_mixed_with_a_grounded_one(text):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot(), text, [FIRST, 'certification:0'])
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('교원 자격증을 보유하고 있으며 사서 2급 자격증도 취득했습니다.', [FIRST, 'certification:0', 'certification:1']),
+    ('교원 자격증을 보유하고 독서지도 과정을 수료했습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('공고의 자격 조건을 확인하고 성실히 참여하고 싶습니다.', [FIRST]),
+])
+def test_accepts_each_claim_grounded_in_its_own_cited_fact(text, fact_ids):
+    profile = snapshot_with(['교원 자격증', '사서 2급'], ['독서지도 과정'])
+    assert draft_on(profile, text, fact_ids).motivation == text

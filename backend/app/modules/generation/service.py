@@ -39,6 +39,8 @@ _QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|
 # 자격·교육 보유 주장은 인용한 자격·이수 교육 사실의 이름이 문장에 있을 때만 허용한다.
 _CREDENTIAL_CLAIM = re.compile(r"(자격증?|면허|학위)\s*[을를이가도은는]?\s*(보유|취득|소지|갖|가지|가졌|땄|받)|수료|이수|졸업")
 _CREDENTIAL_KINDS = ("certification:", "course:")
+# 공백을 지운 문장에서 찾는다. "자격 조건·요건·기준"은 공고 설명에 흔한 일반 표현이라 제외한다.
+_CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|과정|수료증|졸업장|자격(?!조건|요건|기준)")
 
 
 def _quantities(value: str) -> set[tuple[str, str]]:
@@ -57,10 +59,23 @@ def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_val
         grounded = (number, unit) in allowed if unit else number in numbers
         if not grounded:
             return False
-    if _CREDENTIAL_CLAIM.search(value):
-        compact = _compact(value)
-        names = [fact_values[key] for key in fact_ids if key.startswith(_CREDENTIAL_KINDS)]
-        if not any(_compact(name) and _compact(name) in compact for name in names):
+    claims = list(_CREDENTIAL_CLAIM.finditer(value))
+    if claims:
+        names = [_compact(fact_values[key]) for key in fact_ids if key.startswith(_CREDENTIAL_KINDS)]
+        names = [name for name in names if name]
+        # 주장마다 바로 앞 주장 뒤부터 그 주장까지의 구간에 인용한 자격·교육 이름이 있어야 한다.
+        start = 0
+        for claim in claims:
+            window = _compact(value[start:claim.end()])
+            if not any(name in window for name in names):
+                return False
+            start = claim.end()
+        # 인용한 이름을 지운 뒤에도 자격 명사가 남으면 근거 없는 자격이 섞인 것이다.
+        rest = _compact(value)
+        for name in sorted(names, key=len, reverse=True):
+            # "사서 2급 자격증"처럼 이름 바로 뒤에 붙은 자격 명사는 그 이름의 일부로 본다.
+            rest = re.sub(re.escape(name) + r"(?:자격증|자격|면허증?|학위|과정|수료증)?", "", rest)
+        if _CREDENTIAL_NOUN.search(rest):
             return False
     return True
 
