@@ -7,7 +7,7 @@
 1. `backend/`의 해시 잠금 의존성을 설치하고 DB 마이그레이션을 `head`까지 적용한다. 새 `0003_ingestion_state`는 일일 요청 수·재개 페이지·검수 메타데이터와 실행별 요청/거절 사유 집계를 추가한다.
 2. 운영 DB는 기존 설정대로 CA·호스트 검증 TLS를 사용한다. 개발/시험 이외에는 검증을 끄지 않는다.
 3. DB의 `sources`에 해당 출처가 등록·활성화되어 있어야 한다. `code`는 `senuri` 또는 `volunteer`, `base_url`은 [확인된 공식 API](field-mapping.md#1-출처-설정)와 정확히 일치해야 한다. 명령은 URL을 받지 않는다.
-   등록·활성화는 `backend/`에서 `python manage_sources.py register` → `enable senuri`·`enable volunteer`로 한다. 코드·이름·URL은 수집기(`BASE_URLS`)와 같은 고정 허용 목록에서만 가져오며, `register`는 새 출처를 **비활성**으로 만들고 이미 있으면 값만 확인한다(멱등). 기존 행의 URL·이름이 허용 목록과 다르면 고치지 않고 `SOURCE_MISMATCH`로 실패한다. `list`는 등록·일치·활성 여부와 마지막 성공 시각만 출력한다. 운영 EC2에서는 [배포 절차](../../infra/deploy/README.md) 4절의 관리 명령 방식으로 실행한다.
+   등록·활성화는 `backend/`에서 `python manage_sources.py register` → `enable senuri`·`enable volunteer`로 한다. 코드·이름·URL은 수집기(`BASE_URLS`)와 같은 고정 허용 목록에서만 가져오며, `register`는 새 출처를 **비활성**으로 만들고 이미 있으면 값만 확인한다(멱등). 기존 행의 URL·이름이 허용 목록과 다르면 고치지 않고 `register`·`enable`은 `SOURCE_MISMATCH`로 실패한다. `disable`은 수집을 멈추는 쪽이라 값이 달라진 행도 값은 그대로 둔 채 끈다. `list`는 등록·일치·활성 여부와 마지막 성공 시각만 출력한다. 운영 EC2에서는 [배포 절차](../../infra/deploy/README.md) 4절의 관리 명령 방식으로 실행한다.
 4. `DATABASE_URL`, `DATA_GO_KR_SERVICE_KEY`는 루트 `.env` 또는 실행 환경에서 읽는다. 인증키는 `SecretStr`로 다루고 인자/출력/실행 테이블에 넣지 않는다. 실제 유효 키·기관별 승인 한도는 운영자가 확인한다.
 
 ```bash

@@ -87,7 +87,9 @@ def set_enabled(engine, code, enabled):
         row = db.execute(select(Source.code, Source.name, Source.base_url, Source.terms_url).where(Source.code == code).with_for_update()).one_or_none()
         if row is None:
             raise SourceError("SOURCE_NOT_REGISTERED")
-        if not _matches(row, code):
+        # 켜기만 허용 목록과 같아야 한다. 끄기는 수집을 멈추는 안전한 쪽이라, 값이 달라진(변조 의심) 행도
+        # 메타데이터는 그대로 둔 채 바로 끌 수 있어야 한다. 수집기는 요청마다 enabled를 다시 확인한다.
+        if enabled and not _matches(row, code):
             raise SourceError("SOURCE_MISMATCH")
         db.execute(update(Source).where(Source.code == code).values(enabled=enabled))
 

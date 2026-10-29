@@ -84,6 +84,24 @@ def test_tampered_row_is_not_enabled_or_overwritten(engine, capsys, tampered):
     assert listed["senuri"]["official"] is False
 
 
+@pytest.mark.parametrize("field,value", [
+    ("base_url", "https://evil.example/B552474/SenuriService"),
+    ("name", "오래된 이름"),
+    ("terms_url", "https://www.data.go.kr/data/00000000/openapi.do"),
+])
+def test_enabled_mismatched_row_can_still_be_disabled(engine, capsys, field, value):
+    run(engine, "register", capsys=capsys)
+    run(engine, "enable", "senuri", capsys=capsys)
+    with engine.begin() as db:
+        db.execute(update(Source).where(Source.code == "senuri").values(**{field: value}))
+    assert run(engine, "disable", "senuri", capsys=capsys) == (0, {"completed": True, "code": "senuri", "enabled": False})
+    with engine.connect() as db:
+        row = db.execute(select(Source.enabled, getattr(Source, field)).where(Source.code == "senuri")).one()
+    # 끄기만 하고 달라진 값은 고치지 않는다 (운영자가 원인을 확인할 수 있게)
+    assert row.enabled is False and row[1] == value
+    assert run(engine, "enable", "senuri", capsys=capsys) == (1, {"completed": False, "code": "SOURCE_MISMATCH"})
+
+
 @pytest.mark.parametrize("argv", [
     ["enable", "manual_seoul"],
     ["enable", "https://evil.example"],
