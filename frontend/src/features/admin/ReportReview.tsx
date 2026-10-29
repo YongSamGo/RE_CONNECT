@@ -39,14 +39,14 @@ export function ReportReview({ report, onRefresh }: { report: ReportSnapshot; on
     }, (result) => { latest.setValue(result); form.clear() })
   }
   return <section className="panel"><h2 className="review-heading" ref={headingRef} tabIndex={-1}>{current.opportunity_title} 신고 검토</h2>
-    <p>{reportTypes[current.type]} / {statuses[current.status]} / 처리 버전 {current.version}</p>
-    <p>신고 대상 공고 버전 {current.opportunity.version} / 접수: {checkedTime(current.created_at)} (한국시간)</p>
+    <p>{reportTypes[current.type]} · {statuses[current.status]} · 처리 버전 {current.version}</p>
+    <p>신고 대상 공고 버전 {current.opportunity.version} · 접수: {checkedTime(current.created_at)} (한국시간)</p>
     <h3>신고 설명</h3><p className="user-text">{current.note || '추가 설명 없음'}</p>
     <Link className="text-link" to={`/opportunities/${current.opportunity.id}`}>현재 공개 공고 살펴보기 →</Link>
-    <p>신고 종결은 공고 수정, 모집 종료를 대신하지 않습니다. 필요한 공고 변경은 별도로 검수해 주세요.</p>
+    <p>신고 종결은 공고 수정·모집 종료를 대신하지 않습니다. 필요한 공고 변경은 별도로 검수해 주세요.</p>
     {current.resolution_note && <><h3>기록된 처리 메모</h3><p className="user-text">{current.resolution_note}</p></>}
     {!terminal && <><FormErrorSummary errors={form.value.errors} />
-      <TextAreaField id="report-resolution" label="신고 처리 근거와 종결 사유" value={form.value.note} maxLength={500} disabled={locked} error={form.value.errors.find((error) => error.fieldId === 'report-resolution')?.message} hint="해결, 조치 없이 종결에는 사유가 필요합니다. 개인정보, 인증 코드, 비밀값은 적지 마세요." onChange={(event) => form.setValue((previous) => ({ ...previous, note: event.target.value, checked: false, errors: [] }))} />
+      <TextAreaField id="report-resolution" label="신고 처리 근거와 종결 사유" value={form.value.note} maxLength={500} disabled={locked} error={form.value.errors.find((error) => error.fieldId === 'report-resolution')?.message} hint="해결·조치 없이 종결에는 사유가 필요합니다. 개인정보·인증 코드·비밀값은 적지 마세요." onChange={(event) => form.setValue((previous) => ({ ...previous, note: event.target.value, checked: false, errors: [] }))} />
       <CheckboxField id="report-reviewed" label="신고 내용과 처리 근거를 확인했습니다." checked={form.value.checked} disabled={locked} error={form.value.errors.find((error) => error.fieldId === 'report-reviewed')?.message} onChange={(event) => form.setValue((previous) => ({ ...previous, checked: event.target.checked, errors: [] }))} />
       <div className="actions">{current.status === 'received' ? <Button pending={pending} disabled={locked} onClick={() => void submit('in_progress')}>처리 시작</Button> : <><Button pending={pending} disabled={locked} onClick={() => void submit('resolved')}>해결로 종결</Button><Button variant="secondary" disabled={locked} onClick={() => void submit('dismissed')}>조치 없이 종결</Button></>}</div>
     </>}

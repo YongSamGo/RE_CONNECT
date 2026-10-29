@@ -8,6 +8,7 @@ import pytest
 from alembic import command
 from alembic.autogenerate import compare_metadata
 from alembic.config import Config
+from alembic.script import ScriptDirectory
 from alembic.migration import MigrationContext
 from sqlalchemy import Date, Integer, Uuid, String, column, inspect, insert, select, table, update
 from sqlalchemy.exc import IntegrityError
@@ -22,6 +23,11 @@ def migration_config(connection):
     config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
     config.attributes["connection"] = connection
     return config
+
+
+def test_migration_graph_has_a_single_head():
+    config = Config(str(Path(__file__).resolve().parents[1] / "alembic.ini"))
+    assert len(ScriptDirectory.from_config(config).get_heads()) == 1
 
 
 @pytest.fixture(params=["sqlite", "postgresql"])

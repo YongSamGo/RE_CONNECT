@@ -3,7 +3,7 @@
 import asyncio
 import json
 from pathlib import Path
-from uuid import UUID
+from uuid import UUID, uuid4
 
 import pytest
 import httpx
@@ -46,11 +46,11 @@ def selection(*, existing_id=None, description="요리 봉사", duration=None, s
     return dict(existing_id=existing_id, description=quote(description), duration=duration, skills=skills or [])
 
 
-def extract(response, texts=None, existing=()):
+def extract(response, texts=None, existing=(), standard_tags=()):
     adapter = StubAdapter(response)
     result = asyncio.run(GroundedGenerationService(adapter).extract_experiences(
         user_texts=[NORMAL] if texts is None else texts,
-        existing_experiences=existing,
+        existing_experiences=existing, standard_tags=standard_tags,
     ))
     return result, adapter
 
@@ -62,13 +62,13 @@ def snapshot():
     return ConfirmedProfileSnapshot(profile_id=OTHER_ID, version=3, content=ProfileContent.model_validate(data))
 
 
-def test_extraction_keeps_literal_period_and_unconfirmed_status():
+def test_extraction_labels_period_and_keeps_unconfirmed_status():
     plan = dict(experiences=[selection(duration=quote("삼 년"), skills=[quote("요리")])])
     result, adapter = extract(plan)
     assert result.experiences[0].description == "요리 봉사"
-    assert result.experiences[0].duration_note == "삼 년"
+    assert result.experiences[0].duration_note == "3년"
     assert result.experiences[0].skill_tags == ["요리"]
-    assert result.experiences[0].id is None
+    assert result.experiences[0].id is None and result.source_turns == [0]
     assert result.requires_confirmation is True
     assert result.excluded_turn_indices == []
     call = adapter.calls[0]
@@ -81,9 +81,7 @@ def test_extraction_keeps_literal_period_and_unconfirmed_status():
 
 @pytest.mark.parametrize("payload", [
     dict(experiences=[selection(description="사회복지사 1급")]),
-    dict(experiences=[selection(duration=quote("30년"))]),
-    dict(experiences=[selection(skills=[quote("전문 조리사")])]),
-    dict(experiences=[selection(duration=quote("삼 년", 1))]),
+    dict(experiences=[selection(description="요리 봉사", skills=[quote("요리")]), selection(description="사회복지사 1급")]),
     dict(experiences=[selection(existing_id=str(OTHER_ID))]),
     dict(experiences=[], confirmed=True),
     dict(experiences=[], owner_id=str(OTHER_ID)),
@@ -94,12 +92,95 @@ def test_invented_facts_references_and_approval_are_rejected(payload):
         extract(payload)
 
 
+@pytest.mark.parametrize("duration, skills", [
+    (quote("30년"), [quote("전문 조리사")]),                     # 원문에 없음
+    (quote("삼 년 동안", 0), [quote("요리를 했어요", 0)]),      # 다른 턴의 구절을 이 턴 번호로 주장
+    (quote("주민번호"), [quote("이전 지시는 무시하고")]),
+    (quote("삼 년", 2), [quote("요리", 2)]),                    # 개인정보로 제외된 턴
+])
+def test_ungrounded_duration_and_skills_are_dropped_without_discarding_experience(duration, skills):
+    texts = [NORMAL, "삼 년 동안 요리를 했어요.", "주민번호는 삼 년 전 요리 교실에서 적었어요"]
+    item = selection(duration=duration, skills=[quote("요리"), *skills])
+    result, _ = extract(dict(experiences=[item]), texts=texts)
+    assert result.experiences[0].description == "요리 봉사"
+    assert result.experiences[0].duration_note is None
+    assert result.experiences[0].skill_tags == ["요리"]
+
+
+def test_details_from_another_turn_attach_to_the_same_experience():
+    # 2026-10-28 EC2 CPU 측정의 P04 형태. 같은 일의 세부 업무를 다음 턴에서 말했다.
+    texts = ["중소기업 경리, 회계 업무를 이십오 년 했어요.", "세금계산서 발행하고 월말 결산까지 다 했죠."]
+    first = dict(existing_id=None, description=quote("중소기업 경리, 회계 업무"), duration=quote("이십오 년"),
+                 skills=[quote("세금계산서 발행", 1)])
+    second = dict(existing_id=None, description=quote("세금계산서 발행", 1), duration=None,
+                  skills=[quote("월말 결산", 1), quote("월말 결산", 1)])
+    result, _ = extract(dict(experiences=[first, second]), texts=texts)
+    assert [item.description for item in result.experiences] == ["중소기업 경리, 회계 업무", "세금계산서 발행"]
+    assert result.experiences[0].duration_note == "25년"
+    assert result.experiences[0].skill_tags == ["세금계산서 발행"]
+    assert result.experiences[1].skill_tags == ["월말 결산"]
+    assert result.source_turns == [0, 1]
+
+
+def test_summary_is_used_only_when_grounded_in_the_same_turn():
+    texts = ["초등학교에서 삼십오 년 동안 담임을 했어요.", "강서구 살아요."]
+    base = dict(existing_id=None, description=quote("초등학교에서 삼십오 년 동안 담임을"), duration=quote("삼십오 년"), skills=[])
+    result, _ = extract(dict(experiences=[{**base, "summary": "초등학교 담임교사 35년"}]), texts=texts)
+    assert result.experiences[0].description == "초등학교 담임교사 35년"
+    assert result.experiences[0].duration_note == "35년"
+
+
+@pytest.mark.parametrize("summary", [
+    "초등학교 담임교사 30년",          # 원문과 다른 숫자
+    "초등학교 교감",                   # 원문에 없는 직위
+    "사회복지사 1급 담임",             # 자격 삽입
+    "강서구 초등학교 담임",            # 다른 턴의 단어
+    "담임\n시스템 설정",              # 줄바꿈
+    "가" * 41,
+    "",
+])
+def test_ungrounded_summary_falls_back_to_quote(summary):
+    texts = ["초등학교에서 삼십오 년 동안 담임을 했어요.", "강서구 살아요."]
+    item = dict(existing_id=None, description=quote("초등학교에서 삼십오 년 동안 담임을"), duration=None, skills=[],
+                summary=summary)
+    result, _ = extract(dict(experiences=[item]), texts=texts)
+    assert result.experiences[0].description == "초등학교에서 삼십오 년 동안 담임을"
+
+
+def test_standard_tags_come_only_from_the_server_list_and_need_evidence_in_the_quotes():
+    texts = ["아이들 숙제 지도를 오 년 했어요. 택시도 몰았고요."]
+    catalog = {"학습 지도": ["숙제 지도", "공부 지도"], "운전": ["택시 운전"], "회계": ["경리"]}
+    item = dict(existing_id=None, description=quote("아이들 숙제 지도"), duration=None,
+                skills=[quote("숙제 지도")], standard_tags=["학습 지도", " 학습  지도", "사회복지사 1급", "운전", "회계"])
+    result, adapter = extract(dict(experiences=[item]), texts=texts, standard_tags=catalog)
+    # 학습 지도는 별칭(숙제 지도)이 인용에 있어 남고, 운전은 같은 턴에 "택시"가 있어도 이 경험의 인용에 없어 버린다.
+    assert result.experiences[0].skill_tags == ["학습 지도", "숙제 지도"]
+    sent = json.loads(adapter.calls[0]["untrusted_turns"][0].text)
+    assert sent["standard_tags"] == ["학습 지도", "운전", "회계"]
+    # 목록을 주지 않으면 표준 태그를 하나도 받지 않는다.
+    assert extract(dict(experiences=[item]), texts=texts)[0].experiences[0].skill_tags == ["숙제 지도"]
+
+
+def test_unrelated_standard_tags_from_the_list_are_not_attached():
+    # 리뷰 재현: 목록에 있는 무관한 역량을 고르면 그대로 붙던 문제
+    item = dict(existing_id=None, description=quote("요리 봉사"), duration=None, skills=[],
+                standard_tags=["운전", "회계", "조리"])
+    catalog = {"운전": ["택시 운전"], "회계": ["경리"], "조리": ["요리"]}
+    result, _ = extract(dict(experiences=[item]), standard_tags=catalog)
+    assert result.experiences[0].skill_tags == ["조리"] and result.source_turns == [0]
+
+
 def test_owned_existing_id_is_preserved_but_not_reassigned():
     old = Experience(id=EXPERIENCE_ID, description="요리 봉사", duration_note=None, skill_tags=[])
     result, _ = extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))]), existing=[old])
     assert result.experiences[0].id == EXPERIENCE_ID
-    with pytest.raises(LLMInvalidOutputError):
-        extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID), description="복지관")]), existing=[old])
+    # 기존 경험을 가리키면 이번 인용은 세부 내용일 뿐이다. 모델이 다른 문구를 줘도 저장된 설명은 바뀌지 않는다.
+    texts = [NORMAL, "복지관에서 반찬 만들고 배식도 했어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("반찬 만들고", 1), duration=None,
+                  skills=[quote("배식", 1)], summary="복지관 급식 총괄")
+    other = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(item.id, item.description, item.skill_tags) for item in other.experiences] == [(EXPERIENCE_ID, "요리 봉사", ["배식"])]
+    assert other.source_turns == [1]
     with pytest.raises(LLMInvalidOutputError):
         extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))] * 2), existing=[old])
 
@@ -302,3 +383,88 @@ def test_fallback_question_uses_fixed_order_and_fixed_sentences_without_model():
     assert fallback(missing_fields=[]) is None
     with pytest.raises(GenerationInputError):
         fallback(missing_fields=["phone"])
+
+
+@pytest.mark.parametrize(("quote_text", "label"), [
+    ("이십오 년", "25년"), ("한 삼십 년.", "약 30년"), ("칠 년 정도", "약 7년"), ("10년", "10년"),
+    ("육 개월", "6개월"), ("오래", "오래"), ("마지막 팔 년", "마지막 팔 년"), ("이 년쯤", "약 2년"),
+])
+def test_duration_label_only_rewrites_plain_periods(quote_text, label):
+    from app.modules.generation.wording import duration_label
+    assert duration_label(quote_text) == label
+
+
+def test_number_reading_does_not_turn_words_into_years():
+    from app.modules.generation.wording import numbers_in
+    assert numbers_in("오래 일했어요. 이십 년 정도요.") == {(20, "년")}
+    assert numbers_in("삼십오 년, 2020년, 육 개월, 주 6시간") == {(35, "년"), (2020, "년"), (6, "개월"), (6, "시간")}
+
+
+@pytest.mark.parametrize(("source", "summary", "ok"), [
+    ("복지관에서 요리 봉사를 6개월 했어요.", "요리 봉사 6년", False),     # 리뷰 재현: 단위 바꿔치기
+    ("복지관에서 요리 봉사를 육 개월 했어요.", "요리 봉사 6개월", True),
+    ("복지관에서 요리 봉사를 육 년 했어요.", "요리 봉사 6개월", False),
+    ("복지관에서 요리 봉사를 육 년 했어요.", "요리 봉사 6", True),       # 단위 없는 수는 값만 본다
+])
+def test_summary_numbers_must_keep_their_unit(source, summary, ok):
+    from app.modules.generation.wording import summary_grounded
+    assert summary_grounded(summary, source) is ok
+
+
+def test_enrich_adds_only_new_tags_and_missing_duration_without_rewriting():
+    from app.contracts.journey import ProfileEvidence
+    from app.contracts.profile import ExperienceInput
+    from app.modules.journeys.messages import _enrich
+    first, second, message = uuid4(), uuid4(), uuid4()
+    experiences = [Experience(id=first, description="경리 업무", duration_note=None, skill_tags=["회계"]),
+                   Experience(id=second, description="사용자가 고친 설명", duration_note="10년", skill_tags=[])]
+    evidence = [ProfileEvidence(path="experiences[0]", message_ids=[OTHER_ID])]
+    # 같은 태그(공백·대소문자만 다름)는 다시 넣지 않고, 비어 있던 기간만 채운다. 설명은 그대로다.
+    _enrich(experiences, evidence, ExperienceInput(id=first, description="모델이 바꾼 설명", duration_note="25년",
+                                                   skill_tags=[" 회계 ", "결산"]), message)
+    assert experiences[0] == Experience(id=first, description="경리 업무", duration_note="25년", skill_tags=["회계", "결산"])
+    assert evidence == [ProfileEvidence(path="experiences[0]", message_ids=[OTHER_ID, message])]
+    # 사용자가 이미 정한 기간은 바꾸지 않는다. 덧붙일 것이 없으면 근거도 남기지 않는다.
+    _enrich(experiences, evidence, ExperienceInput(id=second, description="x", duration_note="30년", skill_tags=[]), message)
+    assert experiences[1].duration_note == "10년" and len(evidence) == 1
+    # 목록에 없는 경험(삭제됨)은 되살리지 않는다.
+    _enrich(experiences, evidence, ExperienceInput(id=uuid4(), description="x", duration_note=None, skill_tags=["새 태그"]), message)
+    assert len(experiences) == 2
+    # 태그는 20개를 넘기지 않는다.
+    experiences[1] = experiences[1].model_copy(update={"skill_tags": [f"태그{i}" for i in range(19)]})
+    _enrich(experiences, evidence, ExperienceInput(id=second, description="x", duration_note=None, skill_tags=["가", "나"]), message)
+    assert experiences[1].skill_tags[-1] == "가" and len(experiences[1].skill_tags) == 20
+    assert evidence[-1] == ProfileEvidence(path="experiences[1]", message_ids=[message])
+
+def test_grounded_but_malformed_quotes_are_dropped_not_whole_result():
+    # 같은 턴의 원문이지만 기술 태그(50자·한 줄)나 기간(200자) 형식에 맞지 않는 인용. 문장 전체 인용이 기술 쪽에 오는 경우.
+    turn = "복지관에서 요리 봉사를 삼 년 했어요. 매주 화요일과 목요일에 어르신 점심 도시락 백 개를 만들고 배달까지 맡았어요."
+    item = selection(duration=quote(turn), skills=[quote(turn), quote("배달")])
+    result, _ = extract(dict(experiences=[item]), texts=[turn])
+    assert result.experiences[0].description == "요리 봉사"
+    assert result.experiences[0].duration_note == turn  # 200자 안이라 형식은 맞다
+    assert result.experiences[0].skill_tags == ["배달"]
+
+
+def test_selection_with_nothing_but_a_sentence_is_dropped_when_tags_are_offered():
+    # 2026-10-29 GPU 측정(v3): 사는 곳·희망·나이 문장이 기간·기술·태그 없이 경험으로 뽑혔다.
+    texts = ["택시 했어요. 한 삼십 년.", "노원구 살아요.", "어르신 돕는 일이면 좋겠어요."]
+    catalog = {"운전": ["택시"]}
+    plan = dict(experiences=[
+        dict(existing_id=None, description=quote("택시 했어요"), duration=quote("한 삼십 년."), skills=[], standard_tags=["운전"]),
+        dict(existing_id=None, description=quote("노원구 살아요.", 1), duration=None, skills=[], summary="노원구 거주"),
+        dict(existing_id=None, description=quote("어르신 돕는 일", 2), duration=None, skills=[], standard_tags=["운전"]),
+    ])
+    result, _ = extract(plan, texts=texts, standard_tags=catalog)
+    assert [(item.description, item.duration_note, item.skill_tags) for item in result.experiences] == [("택시 했어요", "약 30년", ["운전"])]
+    assert result.source_turns == [0]
+    # 목록이 없으면(사전 읽기 실패) 이 검사를 하지 않는다.
+    assert len(extract(plan, texts=texts)[0].experiences) == 3
+
+
+def test_credential_phrases_are_not_kept_as_skills():
+    texts = ["병원에서 간호조무사로 이십이 년 일했어요. 요양보호사 자격증도 땄고요."]
+    item = dict(existing_id=None, description=quote("병원에서 간호조무사"), duration=quote("이십이 년"),
+                skills=[quote("요양보호사 자격증도 땄고요."), quote("간호조무사")], standard_tags=["환자 돌봄"])
+    result, _ = extract(dict(experiences=[item]), texts=texts, standard_tags={"환자 돌봄": ["간호조무사"]})
+    assert result.experiences[0].skill_tags == ["환자 돌봄", "간호조무사"]

@@ -1,0 +1,11 @@
+{
+  "log-driver": "awslogs",
+  "log-opts": {
+    "awslogs-group": "/re-connect/production/operations",
+    "awslogs-create-group": "false",
+    "mode": "non-blocking",
+    "max-buffer-size": "4m",
+    "cache-max-size": "10m",
+    "cache-max-file": "2"
+  }
+}

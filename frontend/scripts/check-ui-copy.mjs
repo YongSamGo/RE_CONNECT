@@ -16,7 +16,9 @@ async function visitDirectory(directory) {
   for (const entry of entries.sort((a, b) => a.name.localeCompare(b.name))) {
     const absolute = path.join(directory, entry.name)
     if (entry.isDirectory()) {
-      if (entry.name !== 'test') await visitDirectory(absolute)
+      // Operator tooling and developer-only prototypes are outside this
+      // check's end-user copy scope.
+      if (!['test', 'admin', 'development'].includes(entry.name)) await visitDirectory(absolute)
       continue
     }
     if (!/\.(?:ts|tsx)$/.test(entry.name) || /(?:\.test\.|\.d\.ts$|^test-fixtures\.)/.test(entry.name)) continue

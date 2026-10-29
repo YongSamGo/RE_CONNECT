@@ -81,7 +81,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     const candidate = { ...input, hours_per_week: hours, required_documents: documents, deadline_at: unchangedTime ? state.original!.deadline_at : state.at ? `${state.at}:00+09:00` : null, requirements: [...input.requirements, ...state.additions] }
     let parsed: OpportunityInput
     try { parsed = parseOpportunityInput(candidate) }
-    catch { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-deadline', message: '입력 길이, 목록, 날짜를 확인해 주세요. 마감일과 마감 시각의 한국 날짜가 같아야 합니다.' }] })); return }
+    catch { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-deadline', message: '입력 길이·목록·날짜를 확인해 주세요. 마감일과 마감 시각의 한국 날짜가 같아야 합니다.' }] })); return }
     const changes = state.original ? opportunityChanges(state.original, parsed) : null
     if (changes && !Object.keys(changes).length) { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-title', message: '변경한 항목이 없습니다.' }] })); return }
     const fields = quoteFields(parsed)
@@ -89,7 +89,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
       const missing = fields.filter((field) => { const quote = state.quotes[field]?.trim() ?? ''; return !quote || [...quote].length > 300 })
       if (missing.length || !state.checkedAt) { form.setValue((previous) => ({ ...previous, errors: missing.map((field) => ({ fieldId: `editor-quote-${field}`, message: `${quoteLabels[field]}의 원문 인용을 300자 이내로 적어 주세요.` })) })); return }
     }
-    // 원문 확인 시각은 확인 선택 시점으로 고정한다. 같은 입력의 재시도는 같은 본문, 같은 키가 된다.
+    // 원문 확인 시각은 확인 선택 시점으로 고정한다. 같은 입력의 재시도는 같은 본문·같은 키가 된다.
     const created = { source: state.source, content: parsed, evidence: { url: parsed.source_url, observed_at: state.checkedAt ?? '', confirmed_official: true as const, quotes: Object.fromEntries(fields.map((field) => [field, (state.quotes[field] ?? '').trim()])) } }
     const fingerprint = JSON.stringify(target ? parsed : created)
     if (!attempt.current || attempt.current.fingerprint !== fingerprint) attempt.current = { fingerprint, key: crypto.randomUUID() }
@@ -112,13 +112,13 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
       <fieldset disabled={locked}><legend>기본 정보</legend>
         <InputField id="editor-title" label="공고 제목 (필수)" value={input.title} maxLength={200} error={error('editor-title')} onChange={(event) => update('title', event.target.value)} />
         <InputField id="editor-organization" label="기관명 (필수)" value={input.organization_name} maxLength={200} error={error('editor-organization')} onChange={(event) => update('organization_name', event.target.value)} />
-        <label htmlFor="editor-type">활동 유형</label><select id="editor-type" value={input.activity_type} onChange={(event) => update('activity_type', event.target.value as OpportunityInput['activity_type'])}><option value="employment">취업, 공공일자리</option><option value="volunteering">봉사</option></select>
+        <label htmlFor="editor-type">활동 유형</label><select id="editor-type" value={input.activity_type} onChange={(event) => update('activity_type', event.target.value as OpportunityInput['activity_type'])}><option value="employment">취업·공공일자리</option><option value="volunteering">봉사</option></select>
         <label htmlFor="editor-status">원문의 모집 상태</label><select id="editor-status" value={input.recruitment_status} onChange={(event) => update('recruitment_status', event.target.value as OpportunityInput['recruitment_status'])}><option value="unknown">확인 필요</option><option value="open">모집 중</option><option value="closed">모집 종료</option></select>
         <label htmlFor="editor-public-job">공공일자리 여부</label><select id="editor-public-job" value={triValue(input.is_public_job)} onChange={(event) => update('is_public_job', tri(event.target.value))}><option value="">확인 필요</option><option value="yes">공공일자리</option><option value="no">공공일자리 아님</option></select>
         <TextAreaField id="editor-description" label="공식 원문 설명" value={input.description_text ?? ''} maxLength={5000} rows={6} onChange={(event) => update('description_text', event.target.value || null)} />
       </fieldset>
-      <fieldset disabled={locked}><legend>지역, 일정, 보수</legend>
-        <label htmlFor="editor-region">활동 시, 도</label><select id="editor-region" aria-describedby="editor-region-help" value={input.activity_region?.province ?? ''} onChange={(event) => update('activity_region', event.target.value ? { province: event.target.value as components['schemas']['Province'], district: null } : null)}><option value="">확인 필요</option>{Object.entries(provinces).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p id="editor-region-help">기존 시, 군, 구 범위는 지역을 바꾸지 않으면 유지됩니다. 지역을 바꾸면 선택한 시, 도 전체로 변경됩니다.</p>
+      <fieldset disabled={locked}><legend>지역·일정·보수</legend>
+        <label htmlFor="editor-region">활동 시·도</label><select id="editor-region" aria-describedby="editor-region-help" value={input.activity_region?.province ?? ''} onChange={(event) => update('activity_region', event.target.value ? { province: event.target.value as components['schemas']['Province'], district: null } : null)}><option value="">확인 필요</option>{Object.entries(provinces).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p id="editor-region-help">기존 시·군·구 범위는 지역을 바꾸지 않으면 유지됩니다. 지역을 바꾸면 선택한 시·도 전체로 변경됩니다.</p>
         <InputField id="editor-location" label="상세 장소" value={input.location_text ?? ''} maxLength={500} onChange={(event) => update('location_text', event.target.value || null)} />
         <label htmlFor="editor-remote">원격 활동</label><select id="editor-remote" value={triValue(input.remote_allowed)} onChange={(event) => update('remote_allowed', tri(event.target.value))}><option value="">확인 필요</option><option value="yes">가능</option><option value="no">불가</option></select>
         <InputField id="editor-schedule" label="활동 일정" value={input.schedule_text ?? ''} maxLength={500} onChange={(event) => update('schedule_text', event.target.value || null)} />
@@ -128,15 +128,15 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <InputField id="editor-deadline" label="마감일 (한국시간, 모르면 비워두기)" type="date" value={input.deadline_date ?? ''} onChange={(event) => update('deadline_date', event.target.value || null)} />
         <InputField id="editor-deadline-time" label="마감 시각 (한국시간, 모르면 비워두기)" type="datetime-local" value={state.at} onChange={(event) => updateRaw({ at: event.target.value })} />
       </fieldset>
-      <fieldset disabled={locked}><legend>원문 조건, 필요 서류</legend>
+      <fieldset disabled={locked}><legend>원문 조건·필요 서류</legend>
         <RequirementEditor key={load.state.status === 'success' ? load.state.data.version : 'new'} items={input.requirements} disabled={locked} onEditingChange={(editing) => updateRaw({ editing })} onChange={(requirements) => { update('requirements', requirements); updateRaw({ noRequirements: false }) }} />
         <TextAreaField id="editor-extra" label="추가 필수조건 원문 (한 줄에 하나)" value={state.extraText} maxLength={30029} error={error('editor-extra')} hint="추가 조건은 해석하지 않고 확인 필요로 등록합니다. 검수 전까지 지원 가능으로 판정하지 않습니다." onChange={(event) => updateRaw({ extraText: event.target.value, noRequirements: false, additions: lines(event.target.value).slice(0, 31).map((source_evidence) => ({ id: crypto.randomUUID(), source_evidence, field: 'other', operator: null, value: null, group_id: null, group_operator: null, reference_date: null, clarity: 'needs_review' })) })} />
         {input.requirements.length === 0 && <CheckboxField id="editor-no-requirements" label="공식 원문에 명시된 필수조건이 없는 것을 확인했어요." checked={state.noRequirements} disabled={state.additions.length > 0 || state.editing} error={error('editor-no-requirements')} onChange={(event) => updateRaw({ noRequirements: event.target.checked })} />}
         <CheckboxField label="공식 원문에서 필요 서류 안내를 확인했어요." checked={input.required_documents !== null} onChange={(event) => update('required_documents', event.target.checked ? [] : null)} />
         {input.required_documents !== null && <TextAreaField id="editor-documents" label="필요 서류 (한 줄에 하나)" value={state.documents} maxLength={4019} error={error('editor-documents')} hint="원문에 명시된 서류가 없으면 비워두세요. 미확인은 위 확인 선택을 해제해 구분합니다." onChange={(event) => updateRaw({ documents: event.target.value })} />}
       </fieldset>
-      <fieldset disabled={locked}><legend>공식 원문, 접수 안내</legend>
-        <p>전화, 방문, 이메일 접수도 공식 접수 안내가 있는 HTTPS 주소를 적어 주세요. 입력한 주소를 자동으로 열거나 조회하지 않습니다.</p>
+      <fieldset disabled={locked}><legend>공식 원문·접수 안내</legend>
+        <p>전화·방문·이메일 접수도 공식 접수 안내가 있는 HTTPS 주소를 적어 주세요. 입력한 주소를 자동으로 열거나 조회하지 않습니다.</p>
         <InputField id="editor-source" label="공식 원문 HTTPS 주소 (필수)" type="url" value={input.source_url} maxLength={2000} error={error('editor-source')} onChange={(event) => update('source_url', event.target.value)} />
         <InputField id="editor-application" label="공식 접수 안내 HTTPS 주소 (필수)" type="url" value={input.application_url} maxLength={2000} error={error('editor-application')} onChange={(event) => update('application_url', event.target.value)} />
         <label htmlFor="editor-method">접수 방법</label><select id="editor-method" value={input.application_method} onChange={(event) => update('application_method', event.target.value as OpportunityInput['application_method'])}>{Object.entries({ online: '온라인', phone: '전화', visit: '방문', email: '이메일', mixed: '여러 방법' }).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
@@ -144,7 +144,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <CheckboxField id="editor-checked" label="공식 원문과 입력 내용을 비교해 확인했습니다." checked={state.checked} error={error('editor-checked')} onChange={(event) => form.setValue((previous) => ({ ...previous, checked: event.target.checked, checkedAt: event.target.checked ? new Date().toISOString() : null, errors: [] }))} />
       </fieldset>
       {!target && <fieldset disabled={locked}><legend>공식 원문 근거</legend>
-        <p>1365 자원봉사포털, 50+포털, 고용24의 공고 상세 주소만 등록할 수 있습니다. 입력한 항목마다 공식 원문의 해당 문장을 그대로 옮겨 주세요. 담당자 이름, 전화, 이메일은 옮기지 마세요.</p>
+        <p>1365 자원봉사포털·50+포털·고용24의 공고 상세 주소만 등록할 수 있습니다. 입력한 항목마다 공식 원문의 해당 문장을 그대로 옮겨 주세요. 담당자 이름·전화·이메일은 옮기지 마세요.</p>
         <label htmlFor="editor-manual-source">공식 자료 출처</label><select id="editor-manual-source" value={state.source} onChange={(event) => updateRaw({ source: event.target.value as ManualSource })}>{Object.entries(manualSources).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
         {quoteFields({ ...input, hours_per_week: state.hours === '' ? null : 0, deadline_at: state.at || null, required_documents: input.required_documents === null ? null : lines(state.documents) }).map((field) => <TextAreaField key={field} id={`editor-quote-${field}`} label={`원문 인용: ${quoteLabels[field]}`} value={state.quotes[field] ?? ''} maxLength={300} rows={2} error={error(`editor-quote-${field}`)} onChange={(event) => updateRaw({ quotes: { ...state.quotes, [field]: event.target.value } })} />)}
       </fieldset>}
