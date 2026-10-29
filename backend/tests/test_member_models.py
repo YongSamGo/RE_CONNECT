@@ -31,8 +31,8 @@ def encrypted(**updates):
     return {"ciphertext": b"x" * 32, "nonce": b"n" * 12, "key_id": "test-key-reference", "algorithm": "AES-256-GCM", "schema_version": 1, **updates}
 
 
-def seed(db, *, users=User):
-    seed_opportunity(db)
+def seed(db, *, users=User, versions=None):
+    seed_opportunity(db) if versions is None else seed_opportunity(db, versions=versions)
     owner, other, profile_id, document_id = uuid4(), uuid4(), uuid4(), uuid4()
     db.execute(insert(users), [{"id": owner, "kakao_subject": "fictional-owner", 'role': 'user', 'status': 'active', 'created_at': NOW},
         {"id": other, "kakao_subject": "fictional-other", 'role': 'user', 'status': 'active', 'created_at': NOW}])

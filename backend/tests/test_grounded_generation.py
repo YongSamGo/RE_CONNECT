@@ -435,3 +435,12 @@ def test_enrich_adds_only_new_tags_and_missing_duration_without_rewriting():
     _enrich(experiences, evidence, ExperienceInput(id=second, description="x", duration_note=None, skill_tags=["가", "나"]), message)
     assert experiences[1].skill_tags[-1] == "가" and len(experiences[1].skill_tags) == 20
     assert evidence[-1] == ProfileEvidence(path="experiences[1]", message_ids=[message])
+
+def test_grounded_but_malformed_quotes_are_dropped_not_whole_result():
+    # 같은 턴의 원문이지만 기술 태그(50자·한 줄)나 기간(200자) 형식에 맞지 않는 인용. 문장 전체 인용이 기술 쪽에 오는 경우.
+    turn = "복지관에서 요리 봉사를 삼 년 했어요. 매주 화요일과 목요일에 어르신 점심 도시락 백 개를 만들고 배달까지 맡았어요."
+    item = selection(duration=quote(turn), skills=[quote(turn), quote("배달")])
+    result, _ = extract(dict(experiences=[item]), texts=[turn])
+    assert result.experiences[0].description == "요리 봉사"
+    assert result.experiences[0].duration_note == turn  # 200자 안이라 형식은 맞다
+    assert result.experiences[0].skill_tags == ["배달"]

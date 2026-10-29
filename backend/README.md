@@ -116,7 +116,7 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 
 ## 설정
 
-카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. [회원 세션](../docs/security/member-sessions.md)은 실제 User 연결·세션 교체·현재 역할 조회·로그아웃/재인증을 연결한다. [승인 자료의 일회 전달](../docs/data/save-intents.md)은 정확한 대기/state 결합·새 회원 세션 이전·명시 동의/교체 기준 뒤의 소비를 연결한다. [프로필 암호화 저장](../docs/data/saved-profiles.md)은 현재 회원·동의·교체 기준과 SQL 응답 재전송을 연결한다. [지원서 암호화 저장](../docs/data/saved-drafts.md)은 명시적 프로필 선행 저장·승인 지원서 소비·목록/상세·문서 갱신을 연결한다. MFA(#52)·카카오 정상 승인은 후속이다.
+카카오 왕복은 [보안 계약](../docs/security/kakao-roundtrip.md)에 따라 세션 결합 state/PKCE와 고정 HTTPS 코드 교환·앱/신원 대조를 수행한다. [회원 세션](../docs/security/member-sessions.md)은 실제 User 연결·세션 교체·현재 역할 조회·로그아웃/재인증을 연결한다. [승인 자료의 일회 전달](../docs/data/save-intents.md)은 정확한 대기/state 결합·새 회원 세션 이전·명시 동의/교체 기준 뒤의 소비를 연결한다. [프로필 암호화 저장](../docs/data/saved-profiles.md)은 현재 회원·동의·교체 기준과 SQL 응답 재전송을 연결한다. [지원서 암호화 저장](../docs/data/saved-drafts.md)은 명시적 프로필 선행 저장·승인 지원서 소비·목록/상세·문서 갱신을 연결한다. [운영자 권한과 MFA](../docs/security/operator-mfa.md)는 관리 절차(`manage_operators.py`)로만 역할·인증 앱을 부여·회수하고, 관리 API마다 현재 역할·세션 결합 MFA·자격 ID를 확인한다. 카카오 정상 승인은 후속이다.
 연결 미성립 및 종료가 확인된 명시적 일시 오류는 같은 추론 예산/슬롯과 전체 60초 안에서 한 번 재시도한다. [장애·재시도 경계](../docs/ai/retry-boundaries.md)에 재시도하지 않는 오류와 실제 런타임의 남은 검증을 구분했다.
 
 자료 버전 참조만 받는 `POST /api/speech`와 읽기 전용 완료 경계는 [읽어주기 안내](../docs/data/speech.md)를 따른다. 실제 모델 서버·음질·GPU 성능 검증과 회원 저장본 읽기는 남아 있다.
@@ -137,5 +137,7 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 - 자기 자료 전 버전 삭제·목적별 철회·재인증 탈퇴와 외부 최소 이력/관리 재시도: [설명](../docs/data/member-deletion.md)
 
 - 두 회원·익명·운영자 및 저장·삭제 경합 검증: [행렬](../docs/security/member-save-matrix.md)
+
+- 로그인 취소·대기 만료, 동시 탈퇴·철회, 늦은 결과, 복원 뒤 재삭제와 탈퇴 흔적 검사(W13-03): [대응표](../docs/security/member-lifecycle-tests.md)
 
 - 확정 안내문 게시·로그인 복귀·명시적 묶음 저장·현재 세션의 저장 대기 취소: [회원 화면 연결](../frontend/src/features/account/SERVER.md). 실제 안내문과 제공자 설정은 기본 비활성이다.

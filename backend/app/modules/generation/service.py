@@ -7,9 +7,10 @@
 import json
 from collections.abc import Mapping, Sequence
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
+from app.contracts.fields import SkillTag, text
 from app.contracts.profile import Experience, ExperienceInput, RecommendationField
 from app.contracts.roles import normalize_tag
 from app.modules.generation import prompts, wording
@@ -34,6 +35,19 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+_SKILL = TypeAdapter(SkillTag)
+_DURATION = TypeAdapter(text(200))
+
+
+def _fits(adapter: TypeAdapter, value: str) -> bool:
+    """근거는 맞지만 계약 형식(길이·줄바꿈)에 맞지 않는 기간·기술 인용은 그 인용만 버린다."""
+    try:
+        adapter.validate_python(value)
+    except ValidationError:
+        return False
+    return True
 
 
 def _squash(text: str) -> str:
@@ -124,18 +138,21 @@ class GroundedGenerationService:
                     used_ids.add(item.existing_id)
                 # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
-                skills = [skill.text for skill in item.skills if grounded(skill)]
+                skills = [skill.text for skill in item.skills if grounded(skill) and _fits(_SKILL, skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
                 evidence = _squash(" ".join([quote, *skills]))
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills
+                duration = wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None
+                if duration is not None and not _fits(_DURATION, duration):
+                    duration = None
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
                     description=allowed[item.existing_id].description if item.existing_id else summary or quote,
-                    duration_note=wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None,
+                    duration_note=duration,
                     skill_tags=_unique(tags)[:20],
                 ))
                 source_turns.append(index)

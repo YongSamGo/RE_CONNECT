@@ -15,8 +15,12 @@ from app.contracts.opportunity import OpportunityContent
 from app.contracts.regions import DISTRICTS, Region
 from app.contracts.requirement import Requirement
 from app.contracts.time import UtcDatetime, kst_date
+from app.modules.ingestion.volunteer_regions import VERIFIED_REGIONS
 
 
+# 수집 공고마다 넣는 "필수조건 미검수" 표식 조건의 근거 첫머리. 운영자가 원문을 읽고 조건을 구조화하거나
+# "명시된 필수조건 없음"을 확인해 이 조건을 지우기 전에는 승인하지 않는다(W07-03).
+UNREVIEWED_EVIDENCE_PREFIX = "정규화 상태:"
 _TIME = TypeAdapter(UtcDatetime)
 _ID = re.compile(r"[A-Z0-9]{1,30}")
 _VOLUNTEER_ID = re.compile(r"[0-9]{1,12}")
@@ -144,6 +148,22 @@ def _region(place: str | None, reasons: set[str]) -> Region | None:
     return None
 
 
+def _volunteer_region(listing: Mapping, detail: Mapping, reasons: set[str]) -> Region | None:
+    codes = []
+    for name in ("sidoCd", "gugunCd"):
+        listed, detailed = _value(listing, name), _value(detail, name)
+        if listed is not None and detailed is not None and listed != detailed:
+            reasons.update({"region_mapping_unknown", "region_mapping_conflict"})
+            return None
+        codes.append(detailed or listed)
+    mapped = VERIFIED_REGIONS.get(tuple(codes))
+    if mapped is None:
+        reasons.add("region_mapping_unknown")
+        return None
+    province, district = mapped
+    return Region(province=province, district=district)
+
+
 def _requirement(external_id: str, key: str, evidence: str, *, group=None, op=None, field_name="other", value=None):
     return Requirement(id=uuid5(NAMESPACE_URL, external_id + ":" + key), field=field_name,
         operator=op, value=value, group_id=group[0] if group else None,
@@ -259,9 +279,8 @@ def normalize(source: str, listing: Mapping, detail: Mapping, *, checked_at: dat
             title = _value(detail, "progrmSj") or _value(listing, "progrmSj")
             organization = _value(detail, "mnnstNm")
             reasons.add("organization_mapping_not_reviewed")
-            # 구/군 코드표·인천 개편 매핑은 미검증이다. 숫자 코드를 추측해 지역을 만들지 않는다.
-            region = None
-            reasons.add("region_mapping_unknown")
+            # 표본에서 검수한 코드 쌍만 변환한다. 미등록/상충 코드·인천 개편 전 코드는 보류한다.
+            region = _volunteer_region(listing, detail, reasons)
             place = _value(detail, "actPlace")
             url = "https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=" + external_id
             method = "online"
@@ -282,7 +301,7 @@ def normalize(source: str, listing: Mapping, detail: Mapping, *, checked_at: dat
         if deadline and deadline < today:
             state = "closed"
         # 조건 필드가 없다는 사실을 '필수조건 없음'으로 바꾸지 않는다.
-        evidence = "정규화 상태: 출처의 필수조건 전체 해석·검수가 완료되지 않았습니다."
+        evidence = UNREVIEWED_EVIDENCE_PREFIX + " 출처의 필수조건 전체 해석·검수가 완료되지 않았습니다."
         if description:
             evidence += "\n미해석 공식 설명(최대 900자): " + description[:900]
         requirements.append(_requirement(identity, "unreviewed", evidence))
