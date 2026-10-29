@@ -52,7 +52,7 @@ export function MemberHome() {
       <Link className="button primary" to="/login">로그인하기</Link>
     </div> : <>
       {!profile ? <div className="service-entry"><p>아직 정보가 없습니다.</p><Link className="button primary" to="/start">나의 경험 이야기하기</Link></div> : <section className="panel member-profile-overview">
-        <header className="member-profile-heading"><h2>저장한 프로필</h2><SavedMaterials view="profile" embedded actionOnly resumeLabel="수정하기" /></header>
+        <header className="member-profile-heading"><h2>저장한 프로필</h2><SavedMaterials resumeLabel="수정하기" /></header>
           {profileNarrative(profile) && <p className="member-profile-narrative">{profileNarrative(profile)}</p>}
           {(profile.birth_year !== null || profile.residence_region) && <dl className="member-profile-facts">
             {profile.birth_year !== null && <div><dt>출생 연도</dt><dd>{profile.birth_year}년</dd></div>}

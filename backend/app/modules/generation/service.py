@@ -6,17 +6,18 @@
 
 import json
 import re
-from collections.abc import Sequence
+from collections.abc import Mapping, Sequence
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
+from app.contracts.fields import SkillTag, text
 from app.contracts.profile import Experience, ExperienceInput, RecommendationField
-from app.modules.generation import prompts
+from app.contracts.roles import normalize_tag
+from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
     ApplicationPlan,
     ApplicationWritingPlan,
-    WrittenApplicationPreview,
     ApplicationContext,
     ApplicationPreview,
     ConfirmedProfileSnapshot,
@@ -24,6 +25,7 @@ from app.modules.generation.models import (
     ExtractionPlan,
     QuestionPlan,
     Quote,
+    WrittenApplicationPreview,
 )
 from app.modules.generation.privacy import safe_text
 
@@ -36,6 +38,33 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+_SKILL = TypeAdapter(SkillTag)
+_DURATION = TypeAdapter(text(200))
+
+
+def _fits(adapter: TypeAdapter, value: str) -> bool:
+    """근거는 맞지만 계약 형식(길이·줄바꿈)에 맞지 않는 기간·기술 인용은 그 인용만 버린다."""
+    try:
+        adapter.validate_python(value)
+    except ValidationError:
+        return False
+    return True
+
+
+def _squash(text: str) -> str:
+    return "".join(normalize_tag(text).split())
+
+
+def _unique(tags: list[str]) -> list[str]:
+    """공백·대소문자만 다른 태그는 처음 것 하나만 남긴다."""
+    seen, result = set(), []
+    for tag in tags:
+        if normalize_tag(tag) not in seen:
+            seen.add(normalize_tag(tag))
+            result.append(tag)
+    return result
 
 
 def _invalid() -> LLMInvalidOutputError:
@@ -61,8 +90,11 @@ class GroundedGenerationService:
             raise _invalid() from None
 
     async def extract_experiences(
-        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = ()
+        self, *, user_texts: Sequence[str], existing_experiences: Sequence[Experience] = (),
+        standard_tags: Mapping[str, Sequence[str]] | None = None,
     ) -> ExperiencePreview:
+        """standard_tags: 역할 사전의 표준 기술 태그 → 검토된 별칭(서버 자료). 모델은 이 안에서만 고를 수 있고,
+        고른 태그는 그 경험의 원문 인용에 태그 이름이나 별칭이 있을 때만 남는다."""
         if isinstance(user_texts, (str, bytes)) or not 1 <= len(user_texts) <= 64 or len(existing_experiences) > 20:
             raise GenerationInputError("입력 개수를 확인해 주세요")
         # 별도 인덱스를 유지해 제외된 턴을 다른 턴의 근거로 바꾸지 않는다.
@@ -76,39 +108,68 @@ class GroundedGenerationService:
             raise GenerationInputError("기존 경험 목록을 확인해 주세요")
         # 기존 본문 전체·다른 개인정보는 전달하지 않는다. 안전한 설명만 비교 자료로 전달한다.
         allowed = {key: item for key, item in existing.items() if safe_text(item.description) is not None}
+        standard_tags = standard_tags or {}
+        catalog = {normalize_tag(tag): tag for tag in standard_tags}
+        # 태그마다 원문에서 찾을 이름들. 공백을 빼고 비교해 "학습지도"·"학습 지도"를 같게 본다.
+        names = {key: {_squash(tag), *(_squash(alias) for alias in standard_tags[tag])} - {""}
+                 for key, tag in catalog.items()}
+        if len(catalog) > 200:
+            raise GenerationInputError("표준 태그 목록을 확인해 주세요")
         plan = await self._generate(prompts.EXTRACTION, {
             "turns": [{"turn_index": index, "text": value} for index, value in turns.items()],
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
+            "standard_tags": list(catalog.values()),
         }, ExtractionPlan)
 
-        def quote_value(quote: Quote, turn_index: int) -> str:
+        def grounded(quote: Quote) -> bool:
+            """인용이 자기 턴 번호의 실제 원문에 있는지. 제외된 턴은 근거가 될 수 없다."""
             source = turns.get(quote.turn_index)
-            if quote.turn_index != turn_index or source is None or quote.text not in source or safe_text(quote.text) is None:
-                raise _invalid()
-            return quote.text
+            return source is not None and quote.text in source and safe_text(quote.text) is not None
 
-        proposals = []
+        proposals, source_turns = [], []
         used_ids = set()
         try:
             for item in plan.experiences:
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다.
+                if not grounded(item.description):
+                    raise _invalid()
+                index, quote = item.description.turn_index, item.description.text
+                summary = item.summary if wording.summary_grounded(item.summary, turns[index]) else None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
-                    # 다른 경험에 속한 ID로 바꿔 끼우지 않는다. 요약/수정은 직접 편집으로 넘긴다.
-                    if item.description.text != allowed[item.existing_id].description:
-                        raise _invalid()
                     used_ids.add(item.existing_id)
-                index = item.description.turn_index
+                # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
+                # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
+                skills = [skill.text for skill in item.skills
+                          if grounded(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
+                # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 인용에
+                # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
+                evidence = _squash(" ".join([quote, *skills]))
+                tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
+                        and any(name in evidence for name in names[key])]
+                tags += skills
+                duration = wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None
+                if duration is not None and not _fits(_DURATION, duration):
+                    duration = None
+                # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
+                # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
+                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
+                if catalog and duration is None and not tags:
+                    continue
                 proposals.append(ExperienceInput(
+                    # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
-                    description=quote_value(item.description, index),
-                    duration_note=quote_value(item.duration, index) if item.duration else None,
-                    skill_tags=[quote_value(skill, index) for skill in item.skills],
+                    description=allowed[item.existing_id].description if item.existing_id else summary or quote,
+                    duration_note=duration,
+                    skill_tags=_unique(tags)[:20],
                 ))
+                source_turns.append(index)
         except ValidationError:
             raise _invalid() from None
         return ExperiencePreview(
             experiences=proposals,
+            source_turns=source_turns,
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
 
@@ -134,8 +195,8 @@ class GroundedGenerationService:
             raise _invalid()
         return _QUESTIONS[plan.field]
 
-    @staticmethod
-    def _application_facts(snapshot: ConfirmedProfileSnapshot) -> dict[str, str]:
+    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
+        # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.
         profile = snapshot.content
         ids = [item.id for item in profile.experiences]
         if len(set(ids)) != len(ids):
@@ -156,11 +217,6 @@ class GroundedGenerationService:
                     facts[f"{kind}:{index}"] = f"{label}: {value}"
         if not facts:
             raise GenerationInputError("확정한 경험을 확인해 주세요")
-        return facts
-
-    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
-        # 기존 사실 선택 미리보기는 문장 작성 경로와 구분해 유지한다.
-        facts = self._application_facts(snapshot)
         data = {"facts": facts}
         if context is not None:
             data['opportunity_context'] = context.model_dump(mode='json')
@@ -174,16 +230,32 @@ class GroundedGenerationService:
         )
 
     async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
-        facts = self._application_facts(snapshot)
+        profile = snapshot.content
+        facts: dict[str, str] = {}
+        for item in profile.experiences:
+            if safe_text(item.description) is not None:
+                facts[f"experience:{item.id}"] = f"경험: {item.description}"
+            if item.duration_note and safe_text(item.description) is not None and safe_text(item.duration_note) is not None:
+                facts[f"duration:{item.id}"] = f"경험 기간 ({item.description}): {item.duration_note}"
+        for kind, values, label in (
+            ("skill", profile.skills, "역량"),
+            ("certification", profile.certifications or [], "자격"),
+            ("course", profile.completed_courses or [], "이수 교육"),
+        ):
+            for index, value in enumerate(values):
+                if safe_text(value) is not None:
+                    facts[f"{kind}:{index}"] = f"{label}: {value}"
+        if not facts:
+            raise GenerationInputError("확정한 경험을 확인해 주세요")
         data = {"facts": facts}
         if context is not None:
-            # 기관 연락처와 개인 정보가 섞인 원문은 제외한다. 식별자와 버전도 모델에 보내지 않는다.
-            title = safe_text(context.title)
-            description = safe_text(context.description) if context.description else None
-            data["opportunity_context"] = {"title": title, "description": description}
+            data["opportunity_context"] = {
+                "title": safe_text(context.title),
+                "description": safe_text(context.description) if context.description else None,
+            }
         plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
-        context_values = data.get('opportunity_context', {}).values()
-        source_text = '\n'.join([*facts.values(), *(value for value in context_values if value)])
+        context_values = data.get("opportunity_context", {}).values()
+        source_text = "\n".join([*facts.values(), *(value for value in context_values if value)])
         allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
 
         def verify(paragraphs) -> str:
@@ -195,10 +267,9 @@ class GroundedGenerationService:
                     raise _invalid()
                 if not set(re.findall(r"\d+(?:[.,]\d+)*", value)).issubset(allowed_numbers):
                     raise _invalid()
-            result = '\n\n'.join(paragraph.text for paragraph in paragraphs)
+            result = "\n\n".join(paragraph.text for paragraph in paragraphs)
             if len(result) > 2000:
                 raise _invalid()
             return result
 
-        # 참조와 표본 필터는 의미 전체의 사실성을 보장하지 않는다. 결과는 여전히 미승인 초안이다.
         return WrittenApplicationPreview(self_introduction=verify(plan.self_introduction), motivation=verify(plan.motivation))

@@ -95,7 +95,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
         },
       })).data), editor.draft.opportunity, editor.draft.profile_version)
       if (draft.draft_id !== editor.draft.draft_id || draft.revision !== editor.draft.revision + 1 || draft.approved_at !== null) return invalid()
-      return apply(draft, '수정 내용을 서버 임시 초안에 반영했습니다. 다시 읽고 승인해 주세요.')
+      return apply(draft, '수정한 내용을 확인해 주세요.')
     }, result => { accept(result); if (review) reviewDialog.current?.showModal() })
   }
   const approve = () => {
@@ -135,7 +135,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
       {approved && <p role="status">확인한 내용을 승인했어요. 공식 신청처로 이동해 제출해 주세요.</p>}
     </section>}
     {noUsableFacts && <StatusNotice title="AI 초안을 만들지 못했어요">확정 프로필에 AI에 보낼 수 있는 경험, 역량이 없을 수 있어요. 연락처, 건강, 가족 사정이 담긴 문장은 AI에 보내지 않습니다. 직접 작성하거나 프로필을 확인해 주세요.</StatusNotice>}
-    {request.state.status === 'error' && !noUsableFacts && <><RequestError error={request.state.error} /><p>생성 요청의 응답을 받지 못했다면 같은 요청으로 다시 확인해 주세요. 수정과 승인 결과는 서버 편집본에서 확인해 주세요. 충돌이 생겨도 입력을 자동으로 덮어쓰지 않아요.</p></>}
+    {request.state.status === 'error' && !noUsableFacts && <><RequestError error={request.state.error} /><p>응답을 받지 못했다면 같은 요청으로 다시 확인해 주세요. 충돌이 생겨도 작성한 내용은 자동으로 덮어쓰지 않아요.</p></>}
     {request.state.status === 'success' && !editor && <p role="status">{request.state.data.message}</p>}
   </section>
 }
