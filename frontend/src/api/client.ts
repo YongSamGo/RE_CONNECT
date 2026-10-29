@@ -48,11 +48,15 @@ export function createApiClient(options: ClientOptions = {}): Pick<Client<Browse
     }
     const controller = new AbortController()
     let timedOut = false
-    const cancel = () => controller.abort()
+    let rejectWaiting!: (reason: ApiError) => void
+    const interrupted = new Promise<never>((_, reject) => { rejectWaiting = reject })
+    // A transport/body reader can ignore AbortSignal. End UI waiting independently.
+    const cancel = () => { rejectWaiting(new ApiError('CANCELLED')); controller.abort() }
     request.signal.addEventListener('abort', cancel, { once: true })
     if (request.signal.aborted) cancel()
-    const timer = setTimeout(() => { timedOut = true; controller.abort() }, timeoutMs)
+    const timer = setTimeout(() => { timedOut = true; rejectWaiting(new ApiError('TIMEOUT')); controller.abort() }, timeoutMs)
     try {
+      return await Promise.race([interrupted, (async () => {
       if (request.signal.aborted) throw new ApiError('CANCELLED')
       const secured = new Request(request, { headers, credentials: 'same-origin', cache: 'no-store', redirect: 'error', mode: 'same-origin', signal: controller.signal })
       let response = await send(secured)
@@ -69,11 +73,16 @@ export function createApiClient(options: ClientOptions = {}): Pick<Client<Browse
           if (contentType !== 'application/json') throw new ApiError('INVALID_RESPONSE', response.status)
           // Reject invalid success JSON here so a parser exception cannot reveal
           // a server body. This is syntax checking, not runtime schema validation.
-          await response.clone().json()
+          const body = await response.text()
+          JSON.parse(body)
+          // Return buffered bytes: downstream parsing cannot restart a network read
+          // after the request deadline has been removed.
+          response = new Response(body, { status: response.status, statusText: response.statusText, headers: response.headers })
         }
       }
       if (controller.signal.aborted) throw new ApiError(request.signal.aborted ? 'CANCELLED' : 'TIMEOUT')
       return response
+      })()])
     } catch (error) {
       if (request.signal.aborted) throw new ApiError('CANCELLED')
       if (timedOut) throw new ApiError('TIMEOUT')

@@ -23,5 +23,8 @@ export function RequestError({ error, actions }: { error: unknown; actions?: Rea
     : ['SESSION_EXPIRED', 'NOT_FOUND'].includes(code) ? <a className="button primary" href="/start">새로 시작하기</a>
       : code === 'SAVE_INTENT_NOT_FOUND' ? <a className="button secondary" href="/me">저장한 자료 확인</a>
         : code === 'OPPORTUNITY_NOT_AVAILABLE' ? <a className="button secondary" href="/opportunities?browse=all">다른 공고 살펴보기</a> : null
-  return <StatusNotice kind="error" title={code === 'SESSION_EXPIRED' ? '이용 시간이 지났어요' : '요청을 완료하지 못했어요'} actions={next ?? actions}>{message}</StatusNotice>
+  const wait = error instanceof ApiError && error.retryAfterSeconds !== undefined
+    && Number.isInteger(error.retryAfterSeconds) && error.retryAfterSeconds > 0 && error.retryAfterSeconds <= 86400
+    ? ` ${error.retryAfterSeconds}초 후 다시 시도해 주세요.` : ''
+  return <StatusNotice kind="error" title={code === 'SESSION_EXPIRED' ? '이용 시간이 지났어요' : '요청을 완료하지 못했어요'} actions={next ?? actions}>{message + wait}</StatusNotice>
 }
