@@ -53,7 +53,7 @@ function Catalog() {
   }, browseOnEntry)
 
   useEffect(() => {
-    if (state.status === 'error') resultRef.current?.focus({ preventScroll: true })
+    if (state.status === 'error' || state.status === 'loaded') resultRef.current?.focus({ preventScroll: true })
   }, [state.status])
 
   async function load(query: Search, page = 1) {

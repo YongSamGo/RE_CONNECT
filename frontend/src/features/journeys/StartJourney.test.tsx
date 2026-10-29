@@ -14,7 +14,7 @@ Object.defineProperties(HTMLDialogElement.prototype, {
 const id = '12345678-1234-4234-9234-123456789012'
 const notice = { version: 'fixture-ai', title: '가상 AI 처리 안내', controller: '가상 운영 주체', contact: '시험 문의처',
   aws_region: '시험 리전', body: '가상 시험 안내 본문', retention: '시험 보관', deletion: '시험 삭제' }
-const checkbox = '위 안내문을 읽고 AI 처리에 동의하며 새 체험을 시작할게요.'
+const checkbox = '위 안내문을 읽고 AI 처리에 동의합니다.'
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
 const journey = () => ({ journey_id: id, revision: 1, confirmed: null,
   expires_at: new Date(Date.now() + 7200000).toISOString(), idle_expires_at: new Date(Date.now() + 1800000).toISOString() })
@@ -49,7 +49,7 @@ function mount(options: { published?: boolean; stale?: boolean; lost?: boolean; 
 }
 
 async function readAndAgree() {
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
+  await userEvent.click(screen.getByRole('button', { name: '시작하기' }))
   await userEvent.click(await screen.findByLabelText(checkbox))
 }
 
@@ -57,7 +57,7 @@ afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie =
 
 it('does not write or offer consent when no AI notice has been published', async () => {
   const { calls } = mount({ published: false })
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
+  await userEvent.click(screen.getByRole('button', { name: '시작하기' }))
   expect(await screen.findByText('AI 처리 안내가 아직 준비되지 않았어요')).toBeVisible()
   expect(screen.queryByLabelText(checkbox)).not.toBeInTheDocument()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
@@ -68,10 +68,10 @@ it('keeps the specified entry layout and closes the current notice without recor
   expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('시작하기 전에 확인해주세요')
   expect(screen.getAllByRole('button', { name: /자세히 보기/ })).toHaveLength(3)
   expect(screen.queryByText(/가상 경험|미리보기/)).not.toBeInTheDocument()
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
-  expect(await screen.findByRole('dialog', { name: 'AI 처리 동의' })).toBeVisible()
+  await userEvent.click(screen.getByRole('button', { name: '시작하기' }))
+  expect(await screen.findByRole('dialog', { name: 'AI 처리 안내와 동의' })).toBeVisible()
   await userEvent.click(screen.getByRole('button', { name: '닫기' }))
-  expect(screen.queryByRole('dialog', { name: 'AI 처리 동의' })).not.toBeInTheDocument()
+  expect(screen.queryByRole('dialog', { name: 'AI 처리 안내와 동의' })).not.toBeInTheDocument()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
 })
 
@@ -79,18 +79,16 @@ it('shows a short retention summary and offers further details without recording
   const { calls } = mount()
   await userEvent.click(screen.getByRole('button', { name: '보관 및 삭제 자세히 보기' }))
   expect(screen.getByText(/시작 후 최대 2시간 보관합니다/)).toHaveTextContent('30분 동안 활동이 없으면 더 일찍 만료됩니다')
-  await userEvent.click(screen.getByText('자세히 보기', { selector: 'summary' }))
   expect(screen.getByText(/저장 대기 자료는 최대 10분 보관합니다/)).toBeVisible()
   expect(calls).toHaveLength(0)
 })
 
 it('requires explicit consent and starts the existing server conversation with CSRF protection', async () => {
   const { calls, onStart } = mount()
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 대화 시작하기' }))
-  expect(await screen.findByRole('button', { name: '동의하고 새 체험 시작하기' })).toBeDisabled()
+  await userEvent.click(screen.getByRole('button', { name: '시작하기' }))
+  expect(await screen.findByRole('checkbox', { name: checkbox })).not.toBeChecked()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
   await userEvent.click(screen.getByLabelText(checkbox))
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 새 체험 시작하기' }))
   expect(await screen.findByRole('heading', { name: '체험 대화 연결됨' })).toBeVisible()
   expect(onStart).toHaveBeenCalledOnce()
   const writes = calls.filter(request => request.method === 'POST')
@@ -104,7 +102,6 @@ it('requires explicit consent and starts the existing server conversation with C
 it('requires reading again after a rejected notice and never starts a journey', async () => {
   const { calls } = mount({ stale: true })
   await readAndAgree()
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 새 체험 시작하기' }))
   expect(await screen.findByRole('alert')).toBeVisible()
   expect(screen.queryByLabelText(checkbox)).not.toBeInTheDocument()
   expect(calls.some(request => new URL(request.url).pathname.endsWith('/journeys'))).toBe(false)
@@ -114,9 +111,8 @@ it('requires reading again after a rejected notice and never starts a journey', 
 it('reuses the creation key and body when a creation response is lost', async () => {
   const { calls } = mount({ lost: true })
   await readAndAgree()
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 새 체험 시작하기' }))
   await screen.findByRole('alert')
-  await userEvent.click(screen.getByRole('button', { name: '같은 요청으로 시작 결과 다시 확인' }))
+  await userEvent.click(screen.getByRole('button', { name: '같은 요청으로 다시 확인하기' }))
   await screen.findByRole('heading', { name: '체험 대화 연결됨' })
   const attempts = calls.filter(request => new URL(request.url).pathname.endsWith('/journeys'))
   expect(attempts).toHaveLength(2)
@@ -127,9 +123,10 @@ it('reuses the creation key and body when a creation response is lost', async ()
 
 it('rejects a changed session before submitting consent', async () => {
   const { calls } = mount()
-  await readAndAgree()
+  await userEvent.click(screen.getByRole('button', { name: '시작하기' }))
+  await screen.findByLabelText(checkbox)
   document.cookie = '__Host-rc_csrf=rotated; Secure; Path=/'
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 새 체험 시작하기' }))
+  await userEvent.click(screen.getByLabelText(checkbox))
   expect(await screen.findByRole('alert')).toBeVisible()
   expect(calls.every(request => request.method === 'GET')).toBe(true)
 })
@@ -138,7 +135,6 @@ it('discards a late creation result after leaving the page', async () => {
   let finish!: (response: Response) => void
   const { onStart, calls } = mount({ deferred: () => new Promise(resolve => { finish = resolve }) })
   await readAndAgree()
-  await userEvent.click(screen.getByRole('button', { name: '동의하고 새 체험 시작하기' }))
   await waitFor(() => expect(finish).toBeTypeOf('function'))
   await act(async () => { window.dispatchEvent(new Event('pagehide')); finish(json(journey(), 201)) })
   expect(calls.at(-1)!.signal.aborted).toBe(true)

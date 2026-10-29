@@ -250,11 +250,12 @@ class GroundedGenerationService:
         data = {"facts": facts}
         if context is not None:
             data["opportunity_context"] = {
+                "opportunity": context.opportunity.model_dump(mode="json"),
                 "title": safe_text(context.title),
                 "description": safe_text(context.description) if context.description else None,
             }
         plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
-        context_values = data.get("opportunity_context", {}).values()
+        context_values = (value for value in data.get("opportunity_context", {}).values() if isinstance(value, str))
         source_text = "\n".join([*facts.values(), *(value for value in context_values if value)])
         allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
 

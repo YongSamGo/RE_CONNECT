@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { useMemoryScope } from '../../state/useMemoryScope'
+import { useEntryAction } from '../../state/useEntryAction'
 import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { TextAreaField } from '../../ui/Fields'
@@ -37,10 +38,10 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   const location = useLocation()
   const [newJourney] = useState(() => location.state?.newJourney === true || (import.meta.env.DEV && location.pathname === '/dev/conversation'))
   const [showGuide, setShowGuide] = useState(newJourney)
-  const initialLoad = useRef(false)
   const questionRef = useRef<HTMLHeadingElement>(null)
   const confirmDialog = useRef<HTMLDialogElement>(null)
   const previousReadStatus = useRef(read.state.status)
+  const presentedQuestion = useRef(false)
   const submitLock = useRef<symbol | null>(null)
   const state = scope.value
   const sending = send.state.status === 'pending'
@@ -61,7 +62,8 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   useEffect(() => {
     const justLoaded = previousReadStatus.current !== 'success' && read.state.status === 'success'
     previousReadStatus.current = read.state.status
-    if (justLoaded && !state.voice) questionRef.current?.focus()
+    if (justLoaded && (!state.voice || !presentedQuestion.current)) questionRef.current?.focus()
+    if (justLoaded && questionRef.current) presentedQuestion.current = true
   }, [read.state.status, state.voice])
   useEffect(() => {
     const resetLock = () => { submitLock.current = null }
@@ -78,12 +80,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       return parseProfileView(required((await api.GET('/journeys/{journey_id}/profile', { params: { path: { journey_id: journeyId } }, signal })).data))
     }, view => scope.setValue(previous => ({ ...previous, view, question: profileQuestion(view), questionId: null, notices: [], conflict: false, ended: false })))
   }
-  useEffect(() => {
-    if (newJourney && !initialLoad.current) { initialLoad.current = true; load() }
-    return () => { if (import.meta.env.DEV && location.pathname === '/dev/conversation') initialLoad.current = false }
-  // Loading is triggered only by the transition from the consent screen.
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [newJourney])
+  useEntryAction(load, newJourney, journeyId)
   function submit() {
     if (!state.view || pending || submitLock.current || state.conflict || state.ended || !state.text.trim()) return
     const token = Symbol()
@@ -116,7 +113,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     {accessFailure.value && <RequestError error={accessFailure.value} />}
     {read.state.status === 'error' && <RequestError error={read.state.error} />}
     {send.state.status === 'error' && <RequestError error={send.state.error} />}
-    {state.conflict && <StatusNotice title="최신 프로필을 확인해 주세요">적은 내용은 유지했습니다. 최신 프로필 상태를 확인한 뒤 다시 보낼 수 있어요.</StatusNotice>}
+    {state.conflict && <StatusNotice title="최신 프로필을 확인해 주세요" actions={<Button disabled={pending} onClick={load}>최신 프로필 상태 확인</Button>}>적은 내용은 유지했습니다. 최신 프로필 상태를 확인한 뒤 다시 보낼 수 있어요.</StatusNotice>}
     {state.view && <>
       {state.view.confirmed && <p>수정한 초안은 아직 확정하지 않았습니다. 다시 확정하기 전의 추천은 이전 확정 프로필 기준이에요.</p>}
       <ConversationSurface><section className="conversation-question"><h2 id="conversation-question" ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
@@ -125,8 +122,10 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
         {state.ended && <div className="actions"><Link className="button primary" to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link></div>}
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}
+        {state.attempt && !sending && <Button disabled={pending} onClick={submit}>같은 요청 결과 다시 확인</Button>}
         {sending && <Button variant="secondary" onClick={() => { send.clear(); submitLock.current = null }}>응답 기다리기 중지</Button>}
         {sending && <p>응답 기다리기를 중지해도 서버 처리가 끝났을 수 있습니다. 초안은 자동 확정되지 않습니다.</p>}
+        {sending && <Link className="button secondary" to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link>}
       </section></ConversationSurface>
       {!state.ended && <JourneyVoiceInput key={state.questionId ?? state.question ?? 'question'} journeyId={journeyId} voiceSelected={state.voice} hasAnswer={!!state.text.trim()} disabled={requestPending || !!state.attempt}
         retryAllowed={!!state.attempt && !requestPending}
@@ -137,7 +136,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       {!state.ended && <section className="conversation-answer" aria-label="답변 입력">
         <form onSubmit={event => { event.preventDefault(); confirmDialog.current?.showModal() }}>
           <TextAreaField id="conversation-message-input" label={state.transcriptionId ? '말씀하신 내용 확인' : '내 답변'} value={state.text} rows={4} maxLength={2000} disabled={pending || !!state.attempt}
-            onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value, transcriptionId: null }))} />
+            onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} />
           {!(state.voice && state.transcriptionId) && <Button type="submit" pending={sending} disabled={pending || state.conflict || !state.text.trim()}>완료하기</Button>}
         </form>
         <dialog ref={confirmDialog} className="conversation-confirm-dialog" aria-labelledby="conversation-confirm-title" onCancel={event => { if (sending) event.preventDefault() }}>

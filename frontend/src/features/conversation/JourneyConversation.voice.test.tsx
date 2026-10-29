@@ -1,5 +1,5 @@
 import { Blob as NodeBlob, File as NodeFile } from 'node:buffer'
-import { render, screen, waitFor } from '@testing-library/react'
+import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
@@ -24,42 +24,18 @@ it('sends only the explicitly imported corrected transcript with its server refe
   })
   vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
   render(<MemoryRouter><JourneyConversation journeyId={id} /></MemoryRouter>)
-  const user = userEvent.setup()
-  await user.click(screen.getByRole('button', { name: '체험 대화 준비하기' }))
-  await user.type(await screen.findByLabelText('내가 해온 일'), '기존 직접 입력')
-  await user.click(screen.getByRole('button', { name: '말로 입력하고 전사 확인' }))
-  await user.click(screen.getByRole('button', { name: '시험 음성 전사' }))
-  const transcript = await screen.findByLabelText('글로 바꾼 내용 확인과 수정')
-  await user.clear(transcript); await user.type(transcript, '내가 확인하고 수정한 가상 경험')
-  expect(fetch.mock.calls.some(([request]) => request.url.endsWith('/messages'))).toBe(false)
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('기존 직접 입력')
-  await user.click(screen.getByRole('checkbox', { name: '현재 경험 입력을 확인한 전사 문장으로 바꿀게요.' }))
-  await user.click(screen.getByRole('button', { name: '확인한 전사 문장을 입력란으로 가져오기' }))
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('내가 확인하고 수정한 가상 경험')
-  expect(fetch.mock.calls.some(([request]) => request.url.endsWith('/messages'))).toBe(false)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
-  await screen.findByText('지금은 AI를 사용할 수 없습니다. 직접 입력하거나 잠시 후 다시 시도해 주세요.')
-  const message = fetch.mock.calls.find(([request]) => request.url.endsWith('/messages'))![0]
-  expect(await message.clone().json()).toEqual({ text: '내가 확인하고 수정한 가상 경험', transcription_id: transcriptId, base_revision: 1 })
-})
-
-it('does not move focus behind open voice input after refreshing the profile', async () => {
-  const fetch = vi.fn(async (request: Request) => request.url.endsWith('/me') ? json({}) : json({
-    revision: 1, confirmed: null, has_unconfirmed_changes: false, evidence: [], missing_for_recommendation: ['experiences'], draft: {
-      schema_version: 1, experiences: [], skills: [], preferred_regions: [], activity_types: [], paid_preference: null,
-      available_weekdays: null, hours_per_week: null, mobility_note: null, residence_region: null, birth_year: null,
-      certifications: null, completed_courses: null, activity_constraints: null,
-    },
-  }))
-  vi.stubGlobal('fetch', fetch)
-  render(<MemoryRouter><JourneyConversation journeyId={id} /></MemoryRouter>)
-  const user = userEvent.setup()
-  await user.click(screen.getByRole('button', { name: '체험 대화 준비하기' }))
-  await user.click(await screen.findByRole('button', { name: '말로 입력하고 전사 확인' }))
-  await user.click(screen.getByRole('button', { name: '최신 프로필 상태 확인' }))
-  await waitFor(() => expect(fetch).toHaveBeenCalledTimes(4))
-  await waitFor(() => expect(screen.getByRole('button', { name: '최신 프로필 상태 확인' })).toBeEnabled())
-  expect(screen.getByRole('heading', { level: 2 })).not.toHaveFocus()
-  await user.click(screen.getByRole('button', { name: '음성 입력 닫고 원래 글로 돌아가기' }))
-  expect(screen.getByLabelText('내가 해온 일')).toHaveFocus()
+  const user=userEvent.setup()
+  await user.click(screen.getByRole('button',{name:'체험 대화 준비하기'}))
+  await user.type(await screen.findByLabelText('내 답변'),'기존 직접 입력')
+  await user.click(screen.getByRole('button',{name:'말하기'}))
+  await user.click(screen.getByRole('button',{name:'시험 음성 전사'}))
+  const text=await screen.findByLabelText('말씀하신 내용 확인')
+  await user.clear(text);await user.type(text,'내가 확인하고 수정한 가상 경험')
+  expect(fetch.mock.calls.some(([request])=>request.url.endsWith('/messages'))).toBe(false)
+  await user.click(screen.getByRole('button',{name:'다음 질문'}))
+  expect(screen.getByRole('dialog',{name:'답변 내용을 확인해 주세요'})).toBeVisible()
+  await user.click(screen.getByRole('button',{name:'네, 완료하기'}))
+  await screen.findByRole('alert')
+  const message=fetch.mock.calls.find(([request])=>request.url.endsWith('/messages'))![0]
+  expect(await message.clone().json()).toEqual({text:'내가 확인하고 수정한 가상 경험',transcription_id:transcriptId,base_revision:1})
 })

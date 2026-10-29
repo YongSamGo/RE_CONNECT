@@ -1,9 +1,8 @@
 import { act, render, screen } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
 import { anonymousSession } from '../../api/fixtures'
-import { MemberProfile } from './MemberProfile'
+import { MemberHome } from './MemberHome'
 import { parseSavedProfile } from './saved-profile-model'
 
 const id = '12345678-1234-4234-8234-123456789012'
@@ -21,25 +20,21 @@ afterEach(() => { vi.unstubAllGlobals(); vi.restoreAllMocks() })
 it('shows only validated saved content after rechecking the owner, renders HTML as text, and clears it on departure', async () => {
   const fetch = vi.fn(async (request: Request) => json(request.url.endsWith('/profiles/me') ? { saved: profile } : request.url.endsWith('/regions') ? regions : member))
   vi.stubGlobal('fetch', fetch)
-  const { container } = render(<MemoryRouter><MemberProfile /></MemoryRouter>)
-  expect(fetch).not.toHaveBeenCalled()
-  await userEvent.click(screen.getByRole('button', { name: '저장한 프로필 불러오기' }))
-  expect(await screen.findByText(profile.content.experiences[0].description)).toBeVisible()
-  expect(screen.getByText('서울 마포구')).toBeVisible()
+  const { container } = render(<MemoryRouter><MemberHome /></MemoryRouter>)
+  expect((await screen.findAllByText(profile.content.experiences[0].description))[0]).toBeVisible()
+  expect(screen.getByText('희망 지역')).toBeVisible()
   expect(container.querySelector('img, script')).toBeNull()
-  expect(fetch).toHaveBeenCalledTimes(4)
   expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
   act(() => window.dispatchEvent(new Event('pagehide')))
-  expect(screen.queryByText(profile.content.experiences[0].description)).not.toBeInTheDocument()
+  expect(screen.queryAllByText(profile.content.experiences[0].description)).toHaveLength(0)
 })
 
 it('does not fetch private profiles for an anonymous session', async () => {
   const fetch = vi.fn(async () => json(anonymousSession)); vi.stubGlobal('fetch', fetch)
-  render(<MemoryRouter><MemberProfile /></MemoryRouter>)
-  await userEvent.click(screen.getByRole('button', { name: '저장한 프로필 불러오기' }))
-  expect(await screen.findByRole('alert')).toBeVisible()
+  render(<MemoryRouter><MemberHome /></MemoryRouter>)
+  expect(await screen.findByText('회원 정보를 보려면 로그인해 주세요.')).toBeVisible()
   expect(fetch).toHaveBeenCalledTimes(1)
-  expect(screen.queryByText(profile.content.experiences[0].description)).not.toBeInTheDocument()
+  expect(screen.queryAllByText(profile.content.experiences[0].description)).toHaveLength(0)
 })
 
 it('discards the profile if the owner changes during loading', async () => {
@@ -49,10 +44,9 @@ it('discards the profile if the owner changes during loading', async () => {
     if (request.url.endsWith('/regions')) return json(regions)
     return json(++checks === 1 ? member : anonymousSession)
   }))
-  render(<MemoryRouter><MemberProfile /></MemoryRouter>)
-  await userEvent.click(screen.getByRole('button', { name: '저장한 프로필 불러오기' }))
+  render(<MemoryRouter><MemberHome /></MemoryRouter>)
   expect(await screen.findByRole('alert')).toBeVisible()
-  expect(screen.queryByText(profile.content.experiences[0].description)).not.toBeInTheDocument()
+  expect(screen.queryAllByText(profile.content.experiences[0].description)).toHaveLength(0)
 })
 
 it('rejects malformed saved-profile content instead of treating it as display data', () => {

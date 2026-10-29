@@ -42,6 +42,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
   const reviewTrigger = useRef<HTMLButtonElement>(null)
   // 마지막 요청이 AI 생성이었는지. 편집, 승인의 422와 구분해 생성 실패 안내만 보인다.
   const [generating, setGenerating] = useState(false)
+  const [confirmReload, setConfirmReload] = useState(false)
   const editor = scope.value, busy = request.state.status === 'pending'
   const officialApplication = officialLink(applicationUrl)
   const clear = scope.clear, clearAttempt = attempt.clear
@@ -55,6 +56,18 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
     clearAttempt()
   }
   const apply = (draft: JourneyDraft, message: string): Result => ({ draft, message })
+  const recover = (replace = false) => {
+    if (!editor || busy) return
+    if (editor.dirty && !replace) { setConfirmReload(true); return }
+    void request.run(async (api, signal) => {
+      const draft = parseJourneyDraft(required((await api.GET('/journeys/{journey_id}/drafts/{draft_id}', {
+        signal, params: { path: { journey_id: journeyId, draft_id: editor.draft.draft_id } },
+      })).data), editor.draft.opportunity, editor.draft.profile_version)
+      if (draft.draft_id !== editor.draft.draft_id || draft.revision < editor.draft.revision
+        || !replace && (draft.self_introduction !== editor.introduction || draft.motivation !== editor.motivation)) return invalid()
+      return apply(draft, '지원 내용을 다시 확인했습니다.')
+    }, result => { accept(result); setConfirmReload(false); reviewDialog.current?.close() })
+  }
   const create = (mode: 'manual' | 'generate', restart = false) => {
     if (busy) return
     setGenerating(mode === 'generate')
@@ -136,6 +149,8 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
     </section>}
     {noUsableFacts && <StatusNotice title="AI 초안을 만들지 못했어요">확정 프로필에 AI에 보낼 수 있는 경험, 역량이 없을 수 있어요. 연락처, 건강, 가족 사정이 담긴 문장은 AI에 보내지 않습니다. 직접 작성하거나 프로필을 확인해 주세요.</StatusNotice>}
     {request.state.status === 'error' && !noUsableFacts && <><RequestError error={request.state.error} /><p>응답을 받지 못했다면 같은 요청으로 다시 확인해 주세요. 충돌이 생겨도 작성한 내용은 자동으로 덮어쓰지 않아요.</p></>}
+    {request.state.status === 'error' && editor && <Button variant="secondary" pending={busy} onClick={() => recover()}>현재 내용 다시 확인</Button>}
+    {confirmReload && <section role="alert" className="panel"><h2>작성 중인 내용을 바꿀까요?</h2><p>아직 반영하지 않은 수정 내용을 버리고 서버의 현재 내용을 불러옵니다.</p><div className="actions"><Button onClick={() => recover(true)}>현재 내용으로 바꾸기</Button><Button variant="secondary" onClick={() => setConfirmReload(false)}>작성한 내용 유지</Button></div></section>}
     {request.state.status === 'success' && !editor && <p role="status">{request.state.data.message}</p>}
   </section>
 }

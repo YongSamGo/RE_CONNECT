@@ -6,6 +6,7 @@ import { ServicePage } from '../../ui/ServicePage'
 import { RequestError } from '../../ui/StatusNotice'
 import { required, useRequest } from '../../state/useRequest'
 import { parseSession } from './session'
+import { ApiError } from '../../api/errors'
 import { parseSavedProfile } from './saved-profile-model'
 import { provinces } from '../public-opportunities/catalog'
 import { AccountPage } from './AccountPage'
@@ -39,6 +40,10 @@ export function MemberHome() {
     const profile = session.authenticated
       ? parseSavedProfile(required((await api.GET('/profiles/me', { signal })).data))
       : null
+    if (session.authenticated) {
+      const current = parseSession(required((await api.GET('/me', { signal })).data))
+      if (!current.authenticated || current.user?.id !== session.user?.id) throw new ApiError('SESSION_EXPIRED', 401)
+    }
     return { session, profile }
   })
   useEntryAction(load)

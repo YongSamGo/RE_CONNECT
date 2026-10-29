@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { required, useRequest } from '../../state/useRequest'
+import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { JourneyRoute } from '../journeys/JourneyRoute'
@@ -66,8 +67,8 @@ export function JourneyRecommendationsRoute() {
 export function JourneyRecommendations({ journeyId, preview = false }: { journeyId?: string; preview?: boolean }) {
   const request = useRequest<Recommendations>()
   const profileRequest = useRequest<{ view: ProfileView; missing: string[] }>()
-  const [profileView, setProfileView] = useState<ProfileView | null>(null)
-  const [missing, setMissing] = useState<string[]>([])
+  const { value: profileView, setValue: setProfileView } = useMemoryScope<ProfileView | null>(() => null)
+  const { value: missing, setValue: setMissing } = useMemoryScope<string[]>(() => [])
   const resultRef = useRef<HTMLElement>(null)
   const state = request.state
   const profileState = profileRequest.state

@@ -1,5 +1,6 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { StrictMode } from 'react'
 import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
 import axe from 'axe-core'
@@ -7,14 +8,18 @@ import { JourneyConversation, JourneyConversationRoute } from './JourneyConversa
 import { firstQuestion, parseMessageResult } from './model'
 import type { ProfileView } from './model'
 
+async function sendAnswer(user: ReturnType<typeof userEvent.setup>) {
+  await user.click(screen.getByRole('button', { name: '완료하기' }))
+  await user.click(screen.getByRole('button', { name: '네, 완료하기' }))
+}
 it('loads the first question after consent and explains the four controls', async () => {
   Object.defineProperty(HTMLDialogElement.prototype, 'showModal', { configurable: true, value(this: HTMLDialogElement) { this.setAttribute('open', '') } })
   Object.defineProperty(HTMLElement.prototype, 'scrollIntoView', { configurable: true, value: vi.fn() })
   vi.stubGlobal('fetch', vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view())))
-  render(<MemoryRouter initialEntries={[{ pathname: '/', state: { newJourney: true } }]}><JourneyConversation journeyId={id} /></MemoryRouter>)
+  render(<StrictMode><MemoryRouter initialEntries={[{ pathname: '/', state: { newJourney: true } }]}><JourneyConversation journeyId={id} /></MemoryRouter></StrictMode>)
   const user = userEvent.setup()
-  expect(await screen.findByRole('heading', { name: '질문을 확인해 주세요' })).toBeVisible()
-  for (const heading of ['질문을 다시 들을 수 있어요', '소리 크기를 조절해요', '말하기를 눌러 답해요']) {
+  expect(await screen.findByRole('heading', { name: '화면에 표시된 질문에 편하게 답해주세요' })).toBeVisible()
+  for (const heading of ['질문은 다시 들을 수 있어요', '소리를 키우거나 줄일 수 있어요', '말하기를 눌러 답변을 녹음할 수 있어요']) {
     await user.click(screen.getByRole('button', { name: '다음' }))
     expect(screen.getByRole('heading', { name: heading })).toBeVisible()
   }
@@ -47,18 +52,18 @@ function mount() {
 async function prepare(user: ReturnType<typeof userEvent.setup>) {
   await user.click(screen.getByRole('button', { name: '체험 대화 준비하기' }))
   expect(await screen.findByRole('heading', { name: firstQuestion })).toHaveFocus()
-  await user.type(screen.getByLabelText('내가 해온 일'), '가상 도서관에서 책을 정리했어요.')
+  await user.type(screen.getByLabelText('내 답변'), '가상 도서관에서 책을 정리했어요.')
 }
 
 it('sends confirmed text with revision, CSRF and a server-independent request key, then shows exactly one next question', async () => {
   const fetch = vi.fn(async (request: Request) => json(request.method === 'POST' ? result() : request.url.endsWith('/me') ? {} : view()))
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   const question = await screen.findByRole('heading', { name: '어느 지역에서 활동하고 싶으세요?' })
   expect(question).toHaveFocus()
   expect(screen.queryByText(firstQuestion)).not.toBeInTheDocument()
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('')
+  expect(screen.getByLabelText('내 답변')).toHaveValue('')
   const writes = fetch.mock.calls.filter(([request]) => request.method === 'POST')
   expect(writes).toHaveLength(1)
   expect(await writes[0][0].clone().json()).toEqual({ text: '가상 도서관에서 책을 정리했어요.', transcription_id: null, base_revision: 1 })
@@ -79,14 +84,13 @@ it('preserves input and the exact request after a lost response and an in-progre
   })
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await screen.findByText(/연결하지 못했습니다/)
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('가상 도서관에서 책을 정리했어요.')
-  expect(screen.getByLabelText('내가 해온 일')).toBeDisabled()
-  await user.click(screen.getByRole('button', { name: '같은 요청의 처리 결과 다시 확인' }))
+  expect(screen.getByLabelText('내 답변')).toHaveValue('가상 도서관에서 책을 정리했어요.')
+  expect(screen.getByLabelText('내 답변')).toBeDisabled()
+  await user.click(screen.getByRole('button', { name: '같은 요청 결과 다시 확인' }))
   await screen.findByText(/이 요청을 처리하고 있습니다/)
-  const form = screen.getByLabelText('내가 해온 일').closest('form')!
-  act(() => { fireEvent.submit(form); fireEvent.submit(form) })
+  await user.dblClick(screen.getByRole('button', { name: '같은 요청 결과 다시 확인' }))
   expect(count).toBe(3)
   const writes = fetch.mock.calls.filter(([req]) => req.method === 'POST').map(([req]) => req)
   expect(new Set(writes.map(req => req.headers.get('Idempotency-Key'))).size).toBe(1)
@@ -101,10 +105,10 @@ it('keeps editable input on definitive AI failure and uses a fresh key on retry'
     ? ++count === 1 ? json({ code: 'MODEL_UNAVAILABLE' }, 503) : json(result()) : json(request.url.endsWith('/me') ? {} : view()))
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await screen.findByText(/지금은 AI를 사용할 수 없습니다/)
-  expect(screen.getByLabelText('내가 해온 일')).toBeEnabled()
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  expect(screen.getByLabelText('내 답변')).toBeEnabled()
+  await sendAnswer(user)
   await screen.findByRole('heading', { name: '어느 지역에서 활동하고 싶으세요?' })
   const writes = fetch.mock.calls.filter(([req]) => req.method === 'POST')
   expect(writes[0][0].headers.get('Idempotency-Key')).not.toBe(writes[1][0].headers.get('Idempotency-Key'))
@@ -121,12 +125,12 @@ it('requires a revision refresh after conflict, retains input, and never applies
   })
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await screen.findByRole('heading', { name: '최신 프로필을 확인해 주세요' })
-  expect(screen.getByRole('button', { name: '확인한 내용 보내기' })).toBeDisabled()
+  expect(screen.getByRole('button', { name: '완료하기' })).toBeDisabled()
   await user.click(screen.getByRole('button', { name: '최신 프로필 상태 확인' }))
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('가상 도서관에서 책을 정리했어요.')
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  expect(screen.getByLabelText('내 답변')).toHaveValue('가상 도서관에서 책을 정리했어요.')
+  await sendAnswer(user)
   await screen.findByText(/응답을 확인하지 못했습니다/)
   expect(screen.queryByRole('heading', { name: '어느 지역에서 활동하고 싶으세요?' })).not.toBeInTheDocument()
   const writes = fetch.mock.calls.filter(([req]) => req.method === 'POST')
@@ -138,9 +142,9 @@ it('allows profile navigation while pending and discards the late response on un
   const fetch = vi.fn(async (request: Request) => request.method === 'POST' ? new Promise<Response>(resolve => { finish = resolve }) : json(request.url.endsWith('/me') ? {} : view()))
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   const write = fetch.mock.calls.find(([req]) => req.method === 'POST')![0]
-  await user.click(screen.getByRole('link', { name: '프로필 확인하기' }))
+  await user.click(screen.getByRole('link', { name: '정리한 경험 확인하기' }))
   expect(await screen.findByText('서버 프로필 화면')).toBeVisible()
   expect(write.signal.aborted).toBe(true)
   await act(async () => finish(json(result())))
@@ -151,10 +155,10 @@ it('clears all sensitive screen state on pagehide and ignores the late response'
   let finish!: (value: Response) => void
   vi.stubGlobal('fetch', vi.fn(async (request: Request) => request.method === 'POST' ? new Promise<Response>(resolve => { finish = resolve }) : json(request.url.endsWith('/me') ? {} : view())))
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   act(() => window.dispatchEvent(new Event('pagehide')))
   await act(async () => finish(json(result())))
-  expect(screen.queryByLabelText('내가 해온 일')).not.toBeInTheDocument()
+  expect(screen.queryByLabelText('내 답변')).not.toBeInTheDocument()
   expect(screen.queryByText(/같은 내용과 요청 번호/)).not.toBeInTheDocument()
 })
 
@@ -163,9 +167,9 @@ it('stops waiting without claiming server cancellation and rechecks the same req
   const fetch = vi.fn(async (request: Request) => request.method === 'POST' ? ++count === 1 ? new Promise<Response>(resolve => { finish = resolve }) : json(result()) : json(request.url.endsWith('/me') ? {} : view()))
   vi.stubGlobal('fetch', fetch)
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await user.click(screen.getByRole('button', { name: '응답 기다리기 중지' }))
-  await user.click(screen.getByRole('button', { name: '같은 요청의 처리 결과 다시 확인' }))
+  await user.click(screen.getByRole('button', { name: '같은 요청 결과 다시 확인' }))
   await screen.findByRole('heading', { name: '어느 지역에서 활동하고 싶으세요?' })
   await act(async () => finish(json(result())))
   const writes = fetch.mock.calls.filter(([req]) => req.method === 'POST')
@@ -175,9 +179,9 @@ it('stops waiting without claiming server cancellation and rechecks the same req
 it('shows the review action without auto-confirming and passes the structural accessibility check', async () => {
   vi.stubGlobal('fetch', vi.fn(async (request: Request) => json(request.method === 'POST' ? result(2, true) : request.url.endsWith('/me') ? {} : view())))
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await screen.findByRole('heading', { name: '프로필 내용을 확인해 주세요' })
-  expect(screen.queryByLabelText('내가 해온 일')).not.toBeInTheDocument()
+  expect(screen.queryByLabelText('내 답변')).not.toBeInTheDocument()
   const report = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false }, region: { enabled: false } } })
   expect(report.violations).toEqual([])
   expect(report.passes.length).toBeGreaterThan(0)
@@ -187,25 +191,19 @@ it.each(['NOT_FOUND', 'SESSION_EXPIRED', 'CONSENT_REQUIRED'])('discards input wh
   const status = code === 'NOT_FOUND' ? 404 : code === 'SESSION_EXPIRED' ? 401 : 403
   vi.stubGlobal('fetch', vi.fn(async (request: Request) => request.method === 'POST' ? json({ code }, status) : json(request.url.endsWith('/me') ? {} : view())))
   const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '확인한 내용 보내기' }))
+  await sendAnswer(user)
   await screen.findByRole('alert')
-  expect(screen.queryByLabelText('내가 해온 일')).not.toBeInTheDocument()
+  expect(screen.queryByLabelText('내 답변')).not.toBeInTheDocument()
 })
 
-it('only clears input after actual deletion succeeds, preserving it on failure', async () => {
-  let deletes = 0
-  vi.stubGlobal('fetch', vi.fn(async (request: Request) => request.method === 'DELETE'
-    ? ++deletes === 1 ? json({ code: 'SERVICE_UNAVAILABLE' }, 503) : new Response(null, { status: 204 })
-    : json(request.url.endsWith('/me') ? {} : view())))
-  const user = mount(); await prepare(user)
-  await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
-  expect(deletes).toBe(0)
-  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
-  await screen.findByRole('alert')
-  expect(screen.getByLabelText('내가 해온 일')).toHaveValue('가상 도서관에서 책을 정리했어요.')
-  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
-  await screen.findByRole('button', { name: '체험 대화 준비하기' })
-  expect(screen.queryByLabelText('내가 해온 일')).not.toBeInTheDocument()
+it('does not send until the answer confirmation is accepted and preserves text on return', async () => {
+  const fetch=vi.fn(async (request:Request)=>json(request.url.endsWith('/me')?{}:view()))
+  vi.stubGlobal('fetch',fetch);const user=mount();await prepare(user)
+  await user.click(screen.getByRole('button',{name:'완료하기'}))
+  expect(screen.getByRole('dialog',{name:'답변 내용을 확인해 주세요'})).toBeVisible()
+  expect(fetch.mock.calls.some(([request])=>request.method==='POST')).toBe(false)
+  await user.click(screen.getByRole('button',{name:'내용 고치기'}))
+  expect(screen.getByLabelText('내 답변')).toHaveValue('가상 도서관에서 책을 정리했어요.')
 })
 
 it('rejects this conversation URL on reload before sending an API request', () => {

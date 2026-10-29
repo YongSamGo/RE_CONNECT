@@ -235,8 +235,9 @@ def test_injected_opportunity_text_cannot_add_unconfirmed_facts(pick):
                 draft = await service.create(issued.session, identity, journey.journey_id, str(uuid4()), body('generate'))
                 assert draft.self_introduction == '경험: 가상 도서관 경험' and draft.motivation == '경험을 살려 활동에 참여하고 싶습니다.'
                 assert all('자격증' not in value and '10년' not in value for value in [draft.self_introduction, *draft.warnings])
-            # 공고 원문은 비신뢰 데이터 칸으로만 전달하고 지시문에 섞지 않는다.
-            assert runtime.data['opportunity_context']['description'] == INJECTION
+            # 알려진 공격 지시문은 전송 전에 제외하고 공고 식별 맥락은 유지한다.
+            assert runtime.data['opportunity_context']['description'] is None
+            assert runtime.data['opportunity_context']['opportunity'] == {'id': str(OPPORTUNITY), 'version': 1}
             assert INJECTION not in runtime.instructions and runtime.calls == 1
     with_redis(scenario)
 
