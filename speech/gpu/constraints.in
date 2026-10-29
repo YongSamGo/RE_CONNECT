@@ -53,7 +53,7 @@ threadpoolctl==3.7.0
 tokenizers==0.23.3
 tqdm==4.70.1
 transformers==5.20.1
-truststore==0.10.4
+truststore==0.10.5
 typer==0.27.3
 typing-extensions==4.16.0
 urllib3==2.8.0
