@@ -6,7 +6,7 @@ from uuid import UUID
 from pydantic import BaseModel, Field, StrictInt, StrictStr
 
 from app.contracts.fields import CONTRACT_CONFIG, Unique, text
-from app.contracts.profile import ExperienceInput, ProfileContent, RecommendationField
+from app.contracts.profile import ExperienceInput, ProfileContent
 from app.contracts.preparation import OpportunityRef
 
 
@@ -46,12 +46,6 @@ class ExperiencePreview(BaseModel):
     excluded_turn_indices: Annotated[list[StrictInt], Field(max_length=64)]
     # 원문 근거가 있다는 것과 사실 승인은 다르다. 서버가 정하는 고정값이다.
     requires_confirmation: Literal[True] = True
-
-
-class QuestionPlan(BaseModel):
-    model_config = CONTRACT_CONFIG
-
-    field: RecommendationField
 
 
 class ApplicationPlan(BaseModel):

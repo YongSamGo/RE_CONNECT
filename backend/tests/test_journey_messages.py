@@ -14,7 +14,7 @@ from app.core.config import Settings
 from app.main import create_app
 from app.modules.admission.llm import ControlledLLMAdapter
 from app.modules.generation.models import ExtractionPlan
-from app.modules.generation.service import GroundedGenerationService
+from app.modules.generation import questions
 from app.modules.journeys.messages import JourneyMessageService
 from app.modules.requests.service import RequestService
 from tests.test_admission import with_redis
@@ -23,6 +23,7 @@ from tests.test_journeys import BODY, real_services
 from tests.test_profile_confirmation import ready_edit
 
 TEXT = '가상 도서관에서 자료 정리를 도왔어요.'
+NOT_EXPERIENCE = ('잘 모르겠어요.', '없어요.', '서울 강서구요.', '둘 다 괜찮아요.')  # 가짜 모델도 경험이 아닌 짧은 대답에서는 아무것도 고르지 않는다
 
 
 class Runtime:
@@ -54,8 +55,9 @@ class Runtime:
             turns = data['turns'] if self.include_prior else data['turns'][-1:]
             return output_model.model_validate({'experiences': [{'existing_id': None,
                 'description': {'turn_index': turn['turn_index'], 'text': '원문에 없는 경험' if self.corrupt else turn['text']},
-                'duration': None, 'skills': [{'turn_index': turn['turn_index'], 'text': '자료 정리'}] if '자료 정리' in turn['text'] else []} for turn in turns]})
-        return output_model.model_validate({'field': data['allowed_fields'][0]})
+                'duration': None, 'skills': [{'turn_index': turn['turn_index'], 'text': '자료 정리'}] if '자료 정리' in turn['text'] else []} for turn in turns
+                if turn['text'] not in NOT_EXPERIENCE]})
+        raise AssertionError('메시지 처리는 경험 추출 한 번만 모델을 부른다')
 
 
 async def setup(admission, admission_store, redis):
@@ -87,18 +89,19 @@ def test_real_http_stores_message_draft_evidence_and_replays_without_repeating_i
             assert result['profile']['confirmed'] is None and not result['profile']['has_unconfirmed_changes']
             assert result['profile']['draft']['experiences'][0]['description'] == TEXT
             assert result['profile']['evidence'] == [{'path': 'experiences[0]', 'message_ids': [result['user_message_id']]}]
-            assert result['assistant_message']['text'] == '어느 지역에서 활동하고 싶으세요?'
-            assert runtime.calls == 2 and await redis.hget(admission_store.control_key, 'global') == '2'
+            # 다음 질문은 서버 규칙으로 고른다. 기간이 비어 있는 새 경험이라 기간을 묻는다.
+            assert result['assistant_message']['text'] == '그 일은 언제부터 언제까지, 또는 몇 년쯤 하셨어요? 대략 말씀해 주셔도 괜찮아요.'
+            assert runtime.calls == 1 and await redis.hget(admission_store.control_key, 'global') == '1'
             resource = requests.resource_key(issued.session.subject_id, journey.journey_id)
             ttl = await redis.pttl(resource)
             assert (await client.post(path, json=body, headers=headers)).json() == result
             assert 0 < await redis.pttl(resource) <= ttl
-            assert runtime.calls == 2
+            assert runtime.calls == 1
             view = await journeys.profile(issued.session, journey.journey_id)
             draft = view.draft.model_dump(mode='json'); draft['skills'] = ['직접 확인한 역량']
             await journeys.update_profile(issued.session, journey.journey_id, ProfileUpdate.model_validate({'draft': draft, 'base_revision': 2}))
             assert (await client.post(path, json=body, headers=headers)).json() == result
-            assert runtime.calls == 2 and (await journeys.profile(issued.session, journey.journey_id)).revision == 3
+            assert runtime.calls == 1 and (await journeys.profile(issued.session, journey.journey_id)).revision == 3
             assert (await client.post(path, json={**body, 'text': '다른 답변'}, headers=headers)).status_code == 409
             for changes, status in [({'base_revision': True}, 422), ({'owner_id': str(uuid4())}, 422),
                                     ({'transcription_id': str(uuid4())}, 404), ({'text': '연락처는 공일공 구팔칠육 오사삼이예요.'}, 422)]:
@@ -112,7 +115,7 @@ def test_real_http_stores_message_draft_evidence_and_replays_without_repeating_i
             client.cookies.clear(); client.cookies.set('__Host-rc_session', stranger.token)
             await client.get('/api/v1/me')
             assert (await client.post(path, json=body, headers={**csrf(client), 'Idempotency-Key': str(uuid4())})).status_code == 404
-            assert runtime.calls == 2
+            assert runtime.calls == 1
     with_redis(scenario)
 
 
@@ -144,7 +147,7 @@ def test_internal_message_commit_rejects_inconsistent_references_before_any_writ
 
 
 @pytest.mark.parametrize('change', ['edit', 'delete', 'withdraw', 'expire', 'revoke'])
-@pytest.mark.parametrize('phase', [1, 2])
+@pytest.mark.parametrize('phase', [1])
 def test_real_redis_result_is_discarded_when_state_changes_during_generation(change, phase):
     async def scenario(admission, admission_store, redis):
         issued, _, journeys, requests, identity, journey, runtime, service = await setup(admission, admission_store, redis)
@@ -215,7 +218,7 @@ def test_real_redis_same_key_pending_and_gpu_busy_cannot_duplicate_message():
             await service.send(issued.session, identity, journey.journey_id, str(uuid4()), body)
         runtime.finish.set()
         result = await task
-        assert result.revision == 2 and runtime.calls == 2
+        assert result.revision == 2 and runtime.calls == 1
         turns = await journeys.conversation(issued.session, journey.journey_id, BODY.ai_notice_version)
         assert len(turns) == 1 and turns[0].message_id == result.user_message_id
     with_redis(scenario)
@@ -238,21 +241,36 @@ def test_real_redis_timeout_retains_input_state_and_does_not_release_unconfirmed
     with_redis(scenario)
 
 
-def test_real_redis_short_remaining_time_skips_second_model_call_and_releases_slot(monkeypatch):
-    # 남은 시간이 질문 선택 최소 시간보다 적으면 두 번째 모델 호출을 시작하지 않는다.
-    monkeypatch.setattr('app.modules.journeys.messages.QUESTION_MIN_SECONDS', 61)
+def test_real_redis_follow_up_questions_are_rule_based_and_not_repeated():
+    # 질문 선택에는 모델을 부르지 않는다. 고른 질문 ID는 대화에 남아 같은 후속 질문을 되풀이하지 않는다.
     async def scenario(admission, admission_store, redis):
         issued, _, journeys, _, identity, journey, runtime, service = await setup(admission, admission_store, redis)
-        body = MessageCreate(text=TEXT, transcription_id=None, base_revision=1)
-        result = await service.send(issued.session, identity, journey.journey_id, str(uuid4()), body)
+        first = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text=TEXT, transcription_id=None, base_revision=1))
         assert runtime.calls == 1
-        assert result.assistant_message is not None
-        assert result.assistant_message.text == GroundedGenerationService.fallback_question(
-            missing_fields=result.profile.missing_for_recommendation)
+        assert first.assistant_message.text == questions.text_of('exp.duration')
         assert await redis.hget(admission_store.control_key, 'active') is None
-        second = MessageCreate(text=TEXT, transcription_id=None, base_revision=result.revision)
-        assert (await service.send(issued.session, identity, journey.journey_id, str(uuid4()), second)).revision == result.revision + 1
+        # 기간을 말하지 않고 넘어가도 같은 기간 질문을 다시 하지 않는다.
+        second = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='잘 모르겠어요.', transcription_id=None, base_revision=first.revision))
         assert runtime.calls == 2
+        assert second.assistant_message.text == questions.text_of('exp.more')
+        third = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='없어요.', transcription_id=None, base_revision=second.revision))
+        assert third.assistant_message.text == questions.text_of('cond.region') and third.next_step == 'continue'
+        # 지역·활동 유형 질문의 답은 목록과 맞춰 초안에 넣는다. 다 채워지면 프로필 확인으로 넘어간다.
+        fourth = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='서울 강서구요.', transcription_id=None, base_revision=third.revision))
+        assert [region.district for region in fourth.profile.draft.preferred_regions] == ['gangseo']
+        assert fourth.assistant_message.text == questions.text_of('cond.type')
+        fifth = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='둘 다 괜찮아요.', transcription_id=None, base_revision=fourth.revision))
+        assert fifth.profile.draft.activity_types == ['employment', 'volunteering']
+        assert fifth.assistant_message is None and fifth.next_step == 'review_profile'
+        assert {item.path for item in fifth.profile.evidence} >= {'preferred_regions', 'activity_types'}
+        turns = await journeys.conversation(issued.session, journey.journey_id, BODY.ai_notice_version)
+        assert [turn.next_question for turn in turns] == [
+            f'exp.duration:{first.profile.draft.experiences[0].id}', 'exp.more', 'cond.region', 'cond.type', None]
     with_redis(scenario)
 
 

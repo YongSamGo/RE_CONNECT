@@ -124,6 +124,158 @@ class ReleaseManifestTest(unittest.TestCase):
             self.assertEqual(release_manifest.migration_heads(root), ["d"])
 
 
+def migration(root: Path, revision: str, down: str | None, safe: str | None = None) -> None:
+    lines = [f"revision = {revision!r}", f"down_revision = {down!r}"]
+    if safe is not None:
+        lines.append(f"rollback_safe = {safe}")
+    (root / f"{revision}.py").write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+
+def release(tag: str, heads: list[str], models: str = "m1", compose: str = "c1") -> dict[str, object]:
+    return {
+        "schema": release_manifest.SCHEMA,
+        "tag": tag,
+        "commit": COMMIT,
+        "images": IMAGES,
+        "models": {"backend/tools/ollama-manifest.json": models},
+        "compose": {"infra/compose.prod.yaml": compose},
+        "prompts": {"generation": "g1"},
+        "migrations": {"heads": heads},
+    }
+
+
+class RollbackCheckTest(unittest.TestCase):
+    def setUp(self) -> None:
+        self.directory = tempfile.TemporaryDirectory()
+        self.root = Path(self.directory.name)
+        migration(self.root, "a", None)
+        migration(self.root, "b", "a")
+
+    def tearDown(self) -> None:
+        self.directory.cleanup()
+
+    def check(self, current: object, target: object) -> dict[str, object]:
+        return release_manifest.rollback_check(current, target, self.root)
+
+    def test_same_schema_allows_image_rollback_and_reports_model_change(self) -> None:
+        result = self.check(release("v0.2.0", ["b"], models="m2"), release("v0.1.0", ["b"]))
+        self.assertEqual(result["verdict"], "images_only")
+        self.assertEqual(result["migrations_after_target"], [])
+        self.assertEqual(result["models_changed"], ["backend/tools/ollama-manifest.json"])
+        self.assertEqual(result["compose_changed"], [])
+
+    def test_only_reviewed_additive_migrations_keep_image_rollback(self) -> None:
+        migration(self.root, "c", "b", "True")
+        migration(self.root, "d", "c", "True")
+        result = self.check(release("v0.2.0", ["d"]), release("v0.1.0", ["b"]))
+        self.assertEqual(result["verdict"], "schema_compatible")
+        self.assertEqual(result["migrations_after_target"], ["c", "d"])
+
+    def test_undeclared_or_non_boolean_marker_requires_restore(self) -> None:
+        migration(self.root, "c", "b", "True")
+        migration(self.root, "d", "c")
+        migration(self.root, "e", "d", '"True"')
+        migration(self.root, "f", "e", "1")
+        result = self.check(release("v0.2.0", ["f"]), release("v0.1.0", ["b"]))
+        self.assertEqual(result["verdict"], "restore_required")
+        self.assertEqual(result["not_rollback_safe"], ["d", "e", "f"])
+
+    def test_merge_revision_counts_both_branches(self) -> None:
+        migration(self.root, "c", "a", "True")
+        migration(self.root, "d", ("b", "c"))
+        result = self.check(release("v0.2.0", ["d"]), release("v0.1.0", ["b"]))
+        self.assertEqual(result["migrations_after_target"], ["c", "d"])
+        self.assertEqual(result["not_rollback_safe"], ["d"])
+
+    def test_refuses_when_not_a_rollback(self) -> None:
+        migration(self.root, "c", "a")
+        cases = (
+            # 체크아웃이 current 릴리스가 아니다
+            (release("v0.2.0", ["b"]), release("v0.1.0", ["a"])),
+            # target이 다른 갈래다
+            (release("v0.2.0", ["b", "c"]), release("v0.1.0", ["x"])),
+            # 같은 릴리스
+            (release("v0.2.0", ["b", "c"]), release("v0.2.0", ["b"])),
+        )
+        for current, target in cases:
+            with self.subTest(current=current["migrations"], target=target["migrations"]):
+                with self.assertRaises(release_manifest.ManifestError):
+                    self.check(current, target)
+
+    def test_newer_target_with_same_schema_is_refused(self) -> None:
+        # 스키마가 같아도 더 새 릴리스로 가는 것은 되돌리기가 아니다 (images_only로 통과하면 안 된다)
+        for current, target in (("v0.2.0", "v0.3.0"), ("v0.9.0", "v0.10.0"), ("v1.0.0-rc.1", "v1.0.0"),
+                                ("v1.0.0-rc.1", "v1.0.0-rc.2"), ("v0.2.0", "v0.2.0")):
+            with self.subTest(current=current, target=target), self.assertRaises(release_manifest.ManifestError):
+                self.check(release(current, ["b"]), release(target, ["b"]))
+        for current, target in (("v0.10.0", "v0.9.0"), ("v1.0.0", "v1.0.0-rc.3"), ("v1.0.0-rc.2", "v1.0.0-rc.1"),
+                                ("v2.0.0", "v1.99.99")):
+            with self.subTest(current=current, target=target):
+                self.assertEqual(self.check(release(current, ["b"]), release(target, ["b"]))["verdict"], "images_only")
+
+    def test_target_newer_than_current_is_refused(self) -> None:
+        migration(self.root, "c", "b")
+        with self.assertRaises(release_manifest.ManifestError):
+            self.check(release("v0.1.0", ["c"]), release("v0.2.0", ["d"]))
+
+    def test_tampered_manifests_are_refused(self) -> None:
+        good = release("v0.1.0", ["b"])
+        tampered = (
+            {**good, "schema": 1},
+            {**good, "tag": "main"},
+            {**good, "migrations": {"heads": "b"}},
+            {**good, "migrations": {"heads": []}},
+            {**good, "migrations": {"heads": ["b", "b"]}},
+            {**good, "migrations": None},
+            {**good, "images": {**IMAGES, "backend": "evil.example/x" + DIGEST}},
+            {**good, "models": ["x"]},
+            {**good, "compose": {"infra/compose.prod.yaml": 1}},
+            [],
+        )
+        for manifest in tampered:
+            with self.subTest(manifest=manifest), self.assertRaises(release_manifest.ManifestError):
+                self.check(release("v0.2.0", ["b"]), manifest)
+            with self.subTest(current=manifest), self.assertRaises(release_manifest.ManifestError):
+                self.check(manifest, release("v0.0.1", ["a"]))
+
+    def test_duplicate_revision_is_refused(self) -> None:
+        (self.root / "b_copy.py").write_text('revision = "b"\ndown_revision = "a"\n', encoding="utf-8")
+        with self.assertRaises(release_manifest.ManifestError):
+            self.check(release("v0.2.0", ["b"]), release("v0.1.0", ["a"]))
+
+    def test_cli_exit_codes(self) -> None:
+        migration(self.root, "c", "b")
+        paths = {}
+        for name, manifest in (("now", release("v0.2.0", ["c"])), ("same", release("v0.1.1", ["c"])),
+                               ("old", release("v0.1.0", ["b"]))):
+            paths[name] = self.root.parent / f"{self.root.name}-{name}.json"
+            paths[name].write_text(json.dumps(manifest), encoding="utf-8")
+            self.addCleanup(paths[name].unlink)
+        for target, code, verdict in (("same", 0, "images_only"), ("old", 2, "restore_required")):
+            out = io.StringIO()
+            with redirect_stdout(out), redirect_stderr(io.StringIO()):
+                result = release_manifest.main(["rollback-check", "--current", str(paths["now"]), "--target",
+                                                str(paths[target]), "--versions", str(self.root)])
+            self.assertEqual(result, code)
+            self.assertEqual(json.loads(out.getvalue())["verdict"], verdict)
+        with redirect_stdout(io.StringIO()), redirect_stderr(io.StringIO()):
+            self.assertEqual(release_manifest.main(["rollback-check", "--current", str(paths["old"]), "--target",
+                                                    str(paths["now"]), "--versions", str(self.root)]), 1)
+
+    def test_repository_migrations_without_marker_require_restore(self) -> None:
+        versions = release_manifest.ROOT / "backend/migrations/versions"
+        head = release_manifest.migration_heads(versions)
+        graph, _ = release_manifest.migration_graph(versions)
+        parent = list(graph[head[0]])
+        result = release_manifest.rollback_check(release("v0.2.0", head), release("v0.1.0", parent), versions)
+        self.assertEqual(result["migrations_after_target"], head)
+        self.assertEqual(result["verdict"], "restore_required")
+
+    def test_migration_template_declares_marker(self) -> None:
+        template = (release_manifest.ROOT / "backend/migrations/script.py.mako").read_text(encoding="utf-8")
+        self.assertIn("\nrollback_safe = False\n", template)
+
+
 def vulnerability(vid: str, severity: str, fixed: str = "", package: str = "pkg") -> dict[str, str]:
     return {"VulnerabilityID": vid, "PkgName": package, "Severity": severity, "FixedVersion": fixed}
 
