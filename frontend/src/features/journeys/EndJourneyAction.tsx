@@ -4,7 +4,7 @@ import { ApiError } from '../../api/errors'
 import { useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { RequestError } from '../../ui/StatusNotice'
-import { DISCARD_CONFIRMED } from '../../ui/discardConfirmed'
+import { navigateDiscardingInput } from '../../ui/discardConfirmed'
 
 /**
  * 체험 임시 자료를 서버에서 바로 삭제하는 공통 행동.
@@ -22,7 +22,7 @@ export function EndJourneyAction({ journeyId }: { journeyId: string }) {
       const result = await api.DELETE('/journeys/{journey_id}', { params: { path: { journey_id: journeyId } }, signal })
       if (result.response.status !== 204) throw new ApiError('INVALID_RESPONSE')
       return true
-    }, () => navigate('/', { replace: true, state: { [DISCARD_CONFIRMED]: true } }))
+    }, () => navigateDiscardingInput(navigate, '/'))
   }
   return <section className="journey-end" aria-label="체험 종료">
     {!confirming && <Button variant="secondary" onClick={() => setConfirming(true)}>종료하고 삭제</Button>}

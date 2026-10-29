@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { Link, MemoryRouter, Route, RouterProvider, Routes, createMemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
@@ -110,4 +110,28 @@ it('삭제가 실패하면 입력 보호와 입력을 유지하고, 일반 이�
   await user.click(screen.getByRole('link', { name: '다른 화면으로' }))
   await waitFor(() => expect(router.state.location.pathname).toBe(`/journeys/${id}/conversation`))
   expect(screen.getByText('작성 중인 내용이 있어요')).toBeTruthy()
+})
+
+it('삭제 뒤 새 체험에서 뒤로·앞으로 이동해도 과거 삭제 표시로 보호를 통과하지 않는다', async () => {
+  const user = userEvent.setup()
+  const other = '87654321-4321-4321-8321-210987654321'
+  vi.stubGlobal('fetch', vi.fn(async () => new Response(null, { status: 204 })))
+  document.cookie = '__Host-rc_csrf=fixture; Secure; Path=/'
+  const journey = (journeyId: string) => <><UnsavedChangesGuard dirty /><label>보낼 글<input defaultValue={`${journeyId} 입력`} /></label><EndJourneyAction journeyId={journeyId} /></>
+  const router = createMemoryRouter([
+    { path: '/', element: <p>시작 화면</p> },
+    { path: `/journeys/${id}/conversation`, element: journey(id) },
+    { path: `/journeys/${other}/conversation`, element: journey(other) },
+  ], { initialEntries: [`/journeys/${id}/conversation`] })
+  render(<RouterProvider router={router} />)
+  await user.click(screen.getByRole('button', { name: '종료하고 삭제' }))
+  await user.click(screen.getByRole('button', { name: '체험 임시 자료 삭제 확인' }))
+  await screen.findByText('시작 화면')
+  // 새 체험 B를 시작하고 입력 중에 뒤로가기
+  await act(() => router.navigate(`/journeys/${other}/conversation`))
+  await screen.findByDisplayValue(`${other} 입력`)
+  await act(() => router.navigate(-1))
+  await waitFor(() => expect(screen.getByText('작성 중인 내용이 있어요')).toBeTruthy())
+  expect(router.state.location.pathname).toBe(`/journeys/${other}/conversation`)
+  expect(screen.getByDisplayValue(`${other} 입력`)).toBeTruthy()
 })
