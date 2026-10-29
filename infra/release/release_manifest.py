@@ -9,6 +9,9 @@
     python3 -I infra/release/release_manifest.py images-env release-manifest.json \
       --registry <계정>.dkr.ecr.<리전>.amazonaws.com --output /run/reconnect/images.env
 
+    # EC2: 지금 운영 중인 릴리스의 태그 체크아웃에서, 이전 릴리스로 이미지만 되돌려도 되는지 판정한다 (#97 W12-08)
+    python3 -I infra/release/release_manifest.py rollback-check --current current.json --target target.json
+
 manifest에는 비밀값·개인정보를 넣지 않는다. 라이브러리(잠금 파일)·모델(manifest)·프롬프트·마이그레이션 버전과
 이미지 digest를 같은 릴리스로 묶어 기록한다. manifest는 공개 Release에 첨부되므로 AWS 계정 ID가 든
 레지스트리 주소를 넣지 않고 저장소 이름과 digest만 기록한다.
@@ -85,19 +88,111 @@ def _string_assignment(tree: ast.Module, name: str) -> object:
     return None
 
 
-def migration_heads(versions: Path) -> list[str]:
-    """실행하지 않고 revision/down_revision만 읽어 head를 계산한다."""
-    revisions: set[str] = set()
-    parents: set[str] = set()
+def migration_graph(versions: Path) -> tuple[dict[str, tuple[str, ...]], dict[str, bool]]:
+    """실행하지 않고 revision/down_revision/rollback_safe만 읽는다. (revision → 부모들, revision → 이전 앱 호환)
+
+    rollback_safe는 리뷰어가 "이 마이그레이션을 적용한 DB에서 바로 앞 릴리스의 앱이 그대로 동작한다"고
+    확인한 경우에만 True로 둔다. 없거나 True가 아닌 값은 호환되지 않는 것으로 본다.
+    """
+    graph: dict[str, tuple[str, ...]] = {}
+    safe: dict[str, bool] = {}
     for path in sorted(versions.glob("*.py")):
         tree = ast.parse(path.read_text(encoding="utf-8"))
         revision = _string_assignment(tree, "revision")
-        if not isinstance(revision, str):
-            raise ManifestError(f"{path.name}: revision 없음")
-        revisions.add(revision)
+        if not isinstance(revision, str) or revision in graph:
+            raise ManifestError(f"{path.name}: revision 없음 또는 중복")
         down = _string_assignment(tree, "down_revision")
-        parents.update([down] if isinstance(down, str) else [d for d in (down or ()) if isinstance(d, str)])
-    return sorted(revisions - parents)
+        graph[revision] = (down,) if isinstance(down, str) else tuple(d for d in (down or ()) if isinstance(d, str))
+        safe[revision] = _string_assignment(tree, "rollback_safe") is True
+    return graph, safe
+
+
+def migration_heads(versions: Path) -> list[str]:
+    graph, _ = migration_graph(versions)
+    parents = {parent for parents in graph.values() for parent in parents}
+    return sorted(set(graph) - parents)
+
+
+def _ancestors(graph: dict[str, tuple[str, ...]], heads: list[str]) -> set[str]:
+    """head 자신을 포함해 적용된 revision 전체. 그래프에 없는 부모는 거절한다."""
+    seen: set[str] = set()
+    stack = list(heads)
+    while stack:
+        revision = stack.pop()
+        if revision in seen:
+            continue
+        if revision not in graph:
+            raise ManifestError("대상 릴리스의 마이그레이션을 이 체크아웃에서 찾을 수 없습니다")
+        seen.add(revision)
+        stack.extend(graph[revision])
+    return seen
+
+
+def _release_summary(manifest: object, label: str) -> dict[str, object]:
+    """rollback-check에 쓰는 항목만 형식을 확인해 꺼낸다."""
+    if not isinstance(manifest, dict) or manifest.get("schema") != SCHEMA:
+        raise ManifestError(f"{label}: manifest 형식 오류")
+    tag = manifest.get("tag")
+    migrations = manifest.get("migrations")
+    heads = migrations.get("heads") if isinstance(migrations, dict) else None
+    if not isinstance(tag, str) or not TAG.fullmatch(tag):
+        raise ManifestError(f"{label}: 태그 형식 오류")
+    if not isinstance(heads, list) or not heads or not all(isinstance(h, str) for h in heads) or len(set(heads)) != len(heads):
+        raise ManifestError(f"{label}: migrations.heads 형식 오류")
+    images = manifest.get("images")
+    if not isinstance(images, dict) or set(images) != set(IMAGES):
+        raise ManifestError(f"{label}: manifest 이미지 목록 오류")
+    for name in IMAGES:
+        _check_image(name, images[name])
+    hashed = {}
+    for key in ("models", "compose", "prompts"):
+        value = manifest.get(key)
+        if not isinstance(value, dict) or not all(isinstance(k, str) and isinstance(v, str) for k, v in value.items()):
+            raise ManifestError(f"{label}: {key} 형식 오류")
+        hashed[key] = value
+    return {"tag": tag, "heads": sorted(heads), **hashed}
+
+
+def rollback_check(current: object, target: object, versions: Path) -> dict[str, object]:
+    """운영 중인 릴리스(current)에서 이전 릴리스(target)로 이미지만 되돌려도 되는지 판정한다.
+
+    DB는 downgrade하지 않는다. 그래서 target 이후 적용된 마이그레이션이 모두 rollback_safe일 때만
+    이미지 되돌리기를 허용하고, 하나라도 아니면 restore_required(스냅샷 복원 + 삭제 재적용)로 판정한다.
+    versions는 current 릴리스 태그 체크아웃의 마이그레이션 폴더여야 한다.
+    """
+    now = _release_summary(current, "current")
+    before = _release_summary(target, "target")
+    if now["tag"] == before["tag"]:
+        raise ManifestError("current와 target이 같은 릴리스입니다")
+    graph, safe = migration_graph(versions)
+    if migration_heads(versions) != now["heads"]:
+        raise ManifestError("체크아웃의 마이그레이션 head가 current 릴리스와 다릅니다. current 태그에서 실행하세요")
+    applied = _ancestors(graph, now["heads"])
+    kept = _ancestors(graph, before["heads"])
+    if not kept <= applied:
+        raise ManifestError("target의 마이그레이션이 current에 포함되지 않습니다. 되돌리기가 아닙니다")
+    after_target = sorted(applied - kept)
+    unsafe = [revision for revision in after_target if not safe[revision]]
+    if not after_target:
+        verdict = "images_only"
+    elif not unsafe:
+        verdict = "schema_compatible"
+    else:
+        verdict = "restore_required"
+    changed = {
+        key: sorted(k for k in set(now[key]) | set(before[key]) if now[key].get(k) != before[key].get(k))
+        for key in ("models", "compose", "prompts")
+    }
+    return {
+        "verdict": verdict,
+        "current": now["tag"],
+        "target": before["tag"],
+        "migrations_after_target": after_target,
+        "not_rollback_safe": unsafe,
+        "models_changed": changed["models"],
+        "compose_changed": changed["compose"],
+        "prompts_changed": changed["prompts"],
+    }
 
 
 def prompt_versions(root: Path) -> dict[str, str]:
@@ -170,11 +265,23 @@ def main(argv: list[str] | None = None) -> int:
     env.add_argument("manifest", type=Path)
     env.add_argument("--registry", required=True)
     env.add_argument("--output", required=True, type=Path)
+    back = commands.add_parser("rollback-check", help="종료 코드 0: 이미지만 되돌림, 2: 스냅샷 복원 필요, 1: 판정 불가")
+    back.add_argument("--current", required=True, type=Path)
+    back.add_argument("--target", required=True, type=Path)
+    back.add_argument("--versions", type=Path, default=ROOT / "backend/migrations/versions")
     args = parser.parse_args(argv)
     try:
         if args.command == "build":
             manifest = build(ROOT, args.tag, args.commit, parse_pairs(args.image, "--image"), parse_pairs(args.sbom, "--sbom"))
             args.output.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        elif args.command == "rollback-check":
+            result = rollback_check(
+                json.loads(args.current.read_text(encoding="utf-8")),
+                json.loads(args.target.read_text(encoding="utf-8")),
+                args.versions,
+            )
+            print(json.dumps(result, ensure_ascii=False, indent=2))
+            return 2 if result["verdict"] == "restore_required" else 0
         else:
             text = images_env(json.loads(args.manifest.read_text(encoding="utf-8")), args.registry)
             args.output.write_text(text, encoding="utf-8")
