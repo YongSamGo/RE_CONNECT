@@ -130,9 +130,17 @@ class GroundedGenerationService:
                 # 저장값과 같을 때만(양끝 공백·마침표 차이는 무시) 근거 대신 받는다. 이 경우 설명은 원문이 아니므로
                 # 아래 표준 태그의 근거로 쓰지 않는다.
                 reused = current is not None and item.description.text.strip(" .") == current.description.strip(" .")
-                if not grounded(item.description) and not reused:
+                description = item.description
+                if not grounded(description):
+                    # 모델이 설명의 턴 번호만 잘못 적는 일이 있다(2026-10-29 시연: 첫 답이 의미 없는 입력이면 번호가 하나씩
+                    # 밀렸다). 인용 문장이 허용된 다른 턴 하나에만 그대로 있으면 그 턴으로 바로잡는다. 제외된 턴은 turns에
+                    # 없으므로 후보가 되지 않는다. 기간·기술 인용은 지금처럼 자기 턴 번호가 맞아야 한다.
+                    holders = [key for key, source in turns.items() if description.text in source]
+                    if len(holders) == 1:
+                        description = description.model_copy(update={"turn_index": holders[0]})
+                if not grounded(description) and not reused:
                     raise _invalid()
-                index, quote = item.description.turn_index, item.description.text
+                index, quote = description.turn_index, description.text
                 summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
                 # 기존 경험에는 한 턴에서 새로 말한 세부 내용만 덧붙인다. 기간·기술 인용이 나온 가장 늦은 턴을 근거 턴으로
                 # 삼고 그 턴의 인용만 쓴다. 앞 턴의 인용까지 받으면 사용자가 프로필에서 지운 기간·태그가 이번 턴 결과에
@@ -140,7 +148,7 @@ class GroundedGenerationService:
                 anchor = None
                 if current is not None:
                     details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
-                    anchor = max(details, default=index if grounded(item.description) else -1)
+                    anchor = max(details, default=index if grounded(description) else -1)
 
                 def usable(quote: Quote) -> bool:
                     return grounded(quote) and (anchor is None or quote.turn_index == anchor)
@@ -151,17 +159,25 @@ class GroundedGenerationService:
                           if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
-                evidence = _squash(" ".join([quote if usable(item.description) else "", *skills]))
+                evidence = _squash(" ".join([quote if usable(description) else "", *skills]))
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills
-                duration = wording.duration_label(item.duration.text) if item.duration and usable(item.duration) else None
+                # 모델이 기간 칸에 "10년 전에" 같은 시점을 인용해도 근무 기간으로 받지 않는다. 그러면 아래에서 설명 원문의
+                # 실제 기간("6개월간")을 다시 찾는다.
+                duration = (wording.duration_label(item.duration.text)
+                            if item.duration and usable(item.duration) and not wording.point_in_time(item.duration.text) else None)
+                # 모델이 기간 칸을 비웠어도 새 경험의 설명 원문에 기간이 있으면 꺼낸다(시연: "20년동안 … 운영했어요").
+                if (duration is None and current is None and usable(description) and wording.did_work(turns[index], quote)
+                        and (found := wording.duration_in(quote))):
+                    duration = wording.duration_label(found)
                 if duration is not None and not _fits(_DURATION, duration):
                     duration = None
                 # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
                 # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
-                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
-                if catalog and duration is None and not tags:
+                # 추가할 수 있게 버린다. 다만 과거에 한 일을 말하는 새 경험("시계방을 운영했어요")은 남긴다. 모델이 기술을
+                # 비워 내는 일이 있어 진짜 경험까지 버려졌다(시연). 목록이 없으면(사전 읽기 실패) 이 검사를 하지 않는다.
+                if catalog and duration is None and not tags and (current is not None or not usable(description) or not wording.did_work(turns[index], quote)):
                     continue
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
