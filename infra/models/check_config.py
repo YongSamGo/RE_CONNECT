@@ -24,11 +24,14 @@ def zero_core(service):
         unsigned(core.get(key, 0)) == 0 for key in ("soft", "hard"))
 
 
-def validate(config):
+def validate(config, *, allow_local_images=False):
     services = config["services"]
     for name in ("ollama", "speech", "model-warmup"):
         service = services[name]
-        if not re.fullmatch(r"[^\s@]+@sha256:[0-9a-f]{64}", service["image"]):
+        image = service["image"]
+        pinned = re.fullmatch(r"[^\s@]+@sha256:[0-9a-f]{64}", image)
+        local = allow_local_images and re.fullmatch(r"sha256:[0-9a-f]{64}", image)
+        if not pinned and not local:
             raise ValueError("image must use digest")
         if service.get("ports") or service.get("privileged") or service.get("cap_add"):
             raise ValueError("unexpected privilege or port")

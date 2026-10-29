@@ -28,3 +28,19 @@ def test_t4_uses_float32_and_missing_cuda_fails():
     with pytest.raises(ValueError):
         tts_options('cuda', torch)
     assert tts_options('cpu', torch)['device_map'] == 'cpu'
+
+
+def test_cuda_locks_keep_cpu_constraints_and_separate_ct2_libraries():
+    from pathlib import Path
+    import re
+    base = Path(__file__).resolve().parents[1]
+    expected = {name: version for name, version in re.findall(r'^([a-z0-9-]+)==([^\s\\]+)',
+        (base / 'tts_compat/requirements.txt').read_text(), re.M) if name != 'torch'}
+    actual = dict(re.findall(r'^([a-z0-9-]+)==([^\s\\]+)', (base / 'gpu/constraints.in').read_text(), re.M))
+    assert actual == expected
+    main = (base / 'gpu/requirements.txt').read_text()
+    ct2 = (base / 'gpu/ct2-requirements.txt').read_text()
+    assert 'torch==2.14.1+cu130' in main
+    assert '5359b255ac68c0cabb8293952b38e00f0d1a570815cd87f19b61af702c071410' in main
+    assert 'nvidia-cudnn-cu12==' not in main and 'nvidia-cudnn-cu12==' in ct2
+    assert 'nvidia-cudnn-cu13==' in main and 'nvidia-cudnn-cu13==' not in ct2

@@ -14,7 +14,7 @@
 | `logging/` | 로그 그룹 보관(14일/30일) CloudFormation, Docker `awslogs` 기본 드라이버 | [#26](https://github.com/YongSamGo/RE_CONNECT/issues/26)·[#96](https://github.com/YongSamGo/RE_CONNECT/issues/96) |
 | `nginx/` | `/`는 React 정적 파일, `/api/*`는 FastAPI로 전달 (접두사 유지) | [#91](https://github.com/YongSamGo/RE_CONNECT/issues/91) |
 | `backup/deletion-journal.json` | 구현됨: RDS 백업과 분리한 삭제 이력 S3 버킷(버전 관리·Object Lock 30일)과 백엔드 역할의 쓰기·읽기 전용 권한. [백업·복원 문서](../docs/security/backup-restore.md) | [#94 W12-05](https://github.com/YongSamGo/RE_CONNECT/issues/94) |
-| `compose.models.yaml` · `models/` | GPU Ollama + 기존 CPU 음성 서비스 운영 연결·사전 적재·호스트 검사. [실행과 미검증 범위](models/README.md) | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92) |
+| `compose.models.yaml` · `models/` | GPU Ollama + 별도 GPU 음성 서비스 운영 연결·사전 적재·호스트 검사. [실행과 미검증 범위](models/README.md) | [#92](https://github.com/YongSamGo/RE_CONNECT/issues/92) |
 
 ## 실행 방법
 

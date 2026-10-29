@@ -1,23 +1,27 @@
 # EC2 모델 실행 환경 — W12-03 / #92
 
-상태: 코드 작성·계약 연결, EC2 배포 검증은 미실행(2026-10-29 KST).
+상태: GPU 확보·기존 실측 확인, 운영 컨테이너 구성 검증 진행(2026-10-29 KST).
 기존 운영 Compose에 `compose.models.yaml`을 덧붙인다. Ollama는 GPU 1개를 요청하고,
-음성 이미지는 현재 검증된 CPU STT/TTS를 그대로 사용한다. 음성 GPU 지원이나 세 모델의
-메모리 공존·한국어 품질을 검증했다고 해석하지 않는다.
+음성은 별도 `speech/Dockerfile.gpu` 이미지로 실행한다. CPU Dockerfile·로컬 CPU 구성은 유지한다.
+서울 G/VT On-Demand 할당량 8 vCPU 승인, `g4dn.xlarge` T4에서 기존 Ollama·음성 GPU 실측을
+확인했다([#157](https://github.com/YongSamGo/RE_CONNECT/issues/157#issuecomment-6485509280),
+[#34](https://github.com/YongSamGo/RE_CONNECT/issues/34#issuecomment-6490409849)).
+기존 수동 실측과 이번 운영 컨테이너의 검증 결과는 구분한다.
 
 ## 선행 준비
 
 - #90의 EC2/VPC/RDS와 #18의 DB/Redis, #28의 고정 모델 준비를 먼저 확인한다.
 - Linux amd64 EC2에 NVIDIA 드라이버와 NVIDIA Container Toolkit을 설치하고 `nvidia-smi`를 확인한다.
-  인스턴스 종류·GPU 쿼터·리전·비용·가동시간은 운영자가 확정한다. 이 변경은 AWS 자원을 생성하지 않는다.
+  현재 확인한 장비는 서울 `g4dn.xlarge`, Tesla T4 15 GiB, 드라이버 580.178.04다.
+  GPU 한도와 장비가 이미 확보됐으며 별도 자원은 생성하지 않는다. 장기 운영 예산·시간은 별도 확인한다.
 - [Ollama 준비 도구](../../docs/ai/ollama-preparation.md)의 verify와
   [음성 모델 준비](../../speech/MODEL_PREPARATION.md)의 오프라인 검증을 실행한다.
   실행 UID 10001이 상위 경로를 탐색하고 파일을 읽을 수 있게 전용 모델 디렉터리 권한을 설정한다.
   다른 사용자/서비스의 쓰기를 허용하지 않는다. 가중치 디렉터리에 음성·본문·캐시를 넣지 않는다.
 - [기존 배포 절차](../deploy/README.md)의 backend/frontend/speech 릴리스 이미지를 사용한다.
-  Ollama 이미지는 별도 `ollama/ollama@sha256:<검증값>`으로 지정한다. 아직 운영 이미지 digest를
-  확정하지 않았다. 공식 registry·배포 후 7일·취약점 검사·CUDA/드라이버 호환성 확인 후 기록한다.
-  태그나 임의 digest를 배포 승인으로 취급하지 않는다. 현재 릴리스 자동화는 Ollama를 빌드/검사하지 않는다.
+  Ollama 0.40.3의 공식 registry digest·배포일은 [runtime-images.json](runtime-images.json)에 기록했고
+  Compose 기본값으로 고정했다. 음성은 CPU용 `SPEECH_IMAGE`와 구분한 `SPEECH_GPU_IMAGE`를 지정한다.
+  두 모델 이미지의 스캔·실제 컨테이너 검증 결과는 [GPU 검증 기록](../../docs/progress/issue-92-model-runtime.md)을 따른다.
 
 ## 호스트 개인정보 잔류 방지
 
@@ -41,7 +45,8 @@ python3 -I infra/models/check_host.py
 다음 키의 실제 값이 필요하다. 예시 사양을 운영 기본값으로 제공하지 않는다.
 
 ```text
-OLLAMA_IMAGE=ollama/ollama@sha256:<공식 이미지 검증값>
+# OLLAMA_IMAGE는 Compose의 고정 0.40.3 digest 사용. 바꾸면 별도 검증
+SPEECH_GPU_IMAGE=<Dockerfile.gpu로 빌드·검사·게시한 이미지@sha256:digest>
 OLLAMA_MODELS_DIR=<검증한 Ollama 가중치 절대경로>
 SPEECH_MODELS_DIR=<검증한 STT/TTS 가중치 절대경로>
 OLLAMA_MEMORY_LIMIT=<실측용 메모리 상한, 예: 정수와 g 단위>
@@ -92,7 +97,10 @@ backend/nginx의 시작을 모델 healthy에 종속시키지 않는다. 모델 �
 공개 readiness에는 기존 최소 상태만, 운영 상세에는 기존 운영자 API만 사용한다.
 
 공유 실행 슬롯은 기존 Redis 기반 전역 1개를 사용한다. Ollama 병렬/적재 모델 수도 1개다.
-CPU 음성 서비스와 GPU LLM이 공존할 EC2 RAM/CPU/VRAM 여유는 #34에서 측정한다.
+GPU 음성은 `SPEECH_DEVICE=cuda`, STT float16·TTS float32로 고정한다. CUDA 실패 시 CPU로 자동 전환하지 않는다.
+Torch cu130과 CTranslate2 cu12 라이브러리는 별도 설치 prefix로 분리해 파일 덮어쓰기를 막는다.
+T4의 기존 수동 측정에서 TTS 긴 입력 244자는 여전히 시간 제한을 넘었다. 전체 문장을 한 요청으로
+합성해도 안전하다고 해석하지 않는다. GPU 공존/실제 컨테이너 수치는 검증 기록을 따른다.
 호스트 포트·Nginx 경로·모델 관리 API는 게시하지 않는다. 모델 컨테이너는 internal 네트워크에만 연결하고
 backend만 기존 app/data/egress와 model 네트워크를 연결한다.
 
@@ -113,9 +121,27 @@ EC2 인계 시 릴리스 commit·이미지 digest·모델 manifest/revision·GPU
 검사 결과, 재부팅 후 host 검사, 실제 컨테이너 UID/cgroup/swap/core/tmpfs·외부 통신 차단,
 단일/교대 실행 RAM/VRAM·OOM/취소·재시작, 로그/볼륨/스냅샷 잔류 부재 증거를 기록한다.
 합성 입력만 사용하며 음성/본문·키·상세 미조치 취약점 원문을 공개 증거에 넣지 않는다.
-실제 EC2 증거와 운영 Ollama 이미지·사양 확정 전 #92를 통과 또는 종료로 옮기지 않는다.
+운영 컨테이너 증거·이미지 스캔·실제 공개 배포의 남은 항목을 확인하기 전 #92를 종료하지 않는다.
 
 공식 근거: [Docker GPU 예약](https://docs.docker.com/compose/how-tos/gpu-support/),
 [Ollama FAQ: Cloud·적재·병렬](https://docs.ollama.com/faq),
 [generate API](https://docs.ollama.com/api/generate), [loaded models API](https://docs.ollama.com/api/ps),
 [NVIDIA Container Toolkit 설치](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html).
+
+
+GPU 잠금 생성·이미지 빌드:
+
+```sh
+uv pip compile --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --generate-hashes \
+  --no-header --emit-index-url --index-strategy unsafe-best-match speech/gpu/requirements.in -o speech/gpu/requirements.txt
+uv pip compile --python-version 3.12 --python-platform x86_64-unknown-linux-gnu --generate-hashes \
+  --no-header speech/gpu/ct2-requirements.in -o speech/gpu/ct2-requirements.txt
+# 공식 PyTorch 색인 + 기존 CPU 제약을 사용하고 설치 시 해시를 강제한다.
+TRIVY=<SHA 확인한 실행 파일> infra/release/build_and_scan.sh speech-gpu <비공개 결과 폴더>
+```
+
+GPU 이미지는 별도 이름으로 스캔하며 기존 speech 취약점 수용을 자동 상속하지 않는다.
+현재 릴리스 태그가 게시하는 CPU speech 이미지를 GPU 이미지로 오인해 연결하면 안 된다.
+GPU 이미지는 별도 검사/게시한 manifest digest로 공급하며 기존 ECR 릴리스 자동 게시 범위를 임의로 바꾸지 않는다.
+이번 EC2 시험은 레지스트리에 게시하지 않은 로컬 불변 이미지 ID를 사용한다. 이때만 도구의
+`validate(config, allow_local_images=True)`로 검사하며 운영 CLI는 계속 repository@sha256만 허용한다.
