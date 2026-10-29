@@ -65,7 +65,7 @@ export function OpportunityReview({ id, version }: { id: string; version: number
     if (result.id !== id || result.version !== version || typeof result.important_change !== 'boolean' || !Array.isArray(result.changed_fields)
       || typeof result.review_status !== 'string' || !['pending', 'approved', 'rejected', 'hidden'].includes(result.review_status)) return invalid()
     return { version, status: result.review_status, content: content(result.content), previous: result.published_content === null ? null : content(result.published_content), changed: result.changed_fields.map((value) => text(value, 100)), important: result.important_change }
-  }) }}>선택한 버전 원문·변경 불러오기</Button>
+  }) }}>선택한 버전 원문, 변경 불러오기</Button>
   {request.state.status === 'error' && <RequestError error={request.state.error} />}
   {data && <><p>{data.important ? '중요 변경 검수 대기' : '중요 변경 표시 없음'} · 검토 버전 {data.version}</p><p>변경 항목: {data.changed.join(', ') || '공개본 대비 변경 항목 없음'}</p><ShowContent value={data.content} title="검토할 내용" />{data.previous && <ShowContent value={data.previous} title="현재 공개본" />}
     <TextAreaField label="공식 원문 확인 근거와 검수 메모" value={note} maxLength={500} disabled={locked} onChange={(event) => { setNote(event.target.value); setChecked(false) }} hint="승인·비공개·기타 사유에는 메모가 필요합니다. 개인정보·OTP·비밀값을 적지 마세요." />

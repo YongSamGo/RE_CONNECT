@@ -12,6 +12,12 @@
 - 폴더 지도: [README 3장](README.md#3-저장소-구조). 각 폴더의 규칙은 폴더 안 README에 있다.
 - 개발 환경·명령: [docs/development.md](docs/development.md). 명령이 "준비 중"이면 아직 쓸 수 없다.
 
+## 프론트 화면 작업
+
+- 프론트 파일을 읽거나 수정할 때는 작업 폴더가 루트여도 [프론트 지침](frontend/AGENTS.md)을 먼저 읽는다.
+- 화면 스타일은 [보존 기준](frontend/DESIGN_BASELINE.md), 작업 범위와 완료 조건은 [완성 계획](Plan/08_Frontend_Completion_Plan.md), 실제 실행 순서는 [실행 준비서](Plan/09_Frontend_Execution_Runbook.md)를 따른다. 과거 시안이나 예시 화면을 새로운 디자인 기준으로 삼지 않는다.
+- 코드 검사만으로 화면 확인을 대신하지 않는다. 변경한 화면은 실제 브라우저에서 기준과 비교하고, 미확인 상태를 완료로 보고하지 않는다.
+
 ## 브랜치·커밋·PR
 
 기준: [README 7장](README.md#7-협업-규칙)

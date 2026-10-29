@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { required, useRequest } from '../../state/useRequest'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -8,11 +9,12 @@ import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { isOpportunityId } from '../public-opportunities/catalog'
 import { officialLink } from '../public-opportunities/detail'
 import { parsePreparation, type Preparation } from './official'
+import { ServicePage } from '../../ui/ServicePage'
 
 const methods = { online: '온라인', phone: '전화', visit: '방문', email: '이메일', mixed: '여러 방법' }
 function Reference({ url, label }: { url: string; label: string }) {
   const link = officialLink(url)
-  return link ? <a className="button secondary" href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">{label} ({link.host}, 새 창)</a> : <p>{label}: 확인된 공식 주소가 없어 링크를 제공하지 않습니다.</p>
+  return link ? <a className="button secondary" href={link.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" aria-label={`${label}, 새 창에서 열림`}>{label}</a> : <p>{label}: 확인된 공식 주소가 없어 링크를 제공하지 않습니다.</p>
 }
 export function OfficialPreparationContent({ item, showDraftNotice = true }: { item: Preparation; showDraftNotice?: boolean }) {
   const checks = useMemoryScope<number[]>(() => [])
@@ -33,24 +35,37 @@ export function OfficialPreparationContent({ item, showDraftNotice = true }: { i
     {showDraftNotice && <StatusNotice title="확정 경험에서 공고를 선택하면 지원서를 준비할 수 있어요">체험의 추천 화면에서 이 공고의 신청 준비를 열어 주세요. 공개 안내만 조회할 때는 개인 프로필이나 지원서를 만들지 않습니다.</StatusNotice>}
   </>
 }
-function Request({ id, withDraft }: { id: string; withDraft: boolean }) {
+function Request({ id, withDraft, onApplicationUrl }: { id: string; withDraft: boolean; onApplicationUrl?: (url: string) => void }) {
   const request = useRequest<Preparation>()
   const result = useRef<HTMLElement>(null)
   const { state } = request
-  useEffect(() => { if (state.status === 'success' || state.status === 'error') result.current?.focus() }, [state.status])
+  useEffect(() => { if (state.status === 'error') result.current?.focus({ preventScroll: true }) }, [state.status])
+  useEffect(() => { if (state.status === 'success') onApplicationUrl?.(state.data.recruitment_status === 'open' && !state.data.change_pending ? state.data.application_url : '') }, [state, onApplicationUrl])
   const load = () => request.run(async (api, signal) => parsePreparation(required((await api.GET('/opportunities/{opportunity_id}/preparation', { signal, params: { path: { opportunity_id: id } } })).data), id))
-  return <section ref={result} tabIndex={-1} aria-label="공식 준비 안내 조회 결과">
-    {state.status === 'idle' && <StatusNotice title="공식 준비 안내를 불러와 주세요" actions={<Button onClick={() => void load()}>공식 준비 안내 불러오기</Button>}>로그인이나 AI 처리 동의 없이 공개 안내를 조회할 수 있어요. 서버 응답을 받지 못하면 오류를 안내해요. 서류나 절차를 임의로 만들어 보여주지는 않아요.</StatusNotice>}
-    {state.status === 'pending' && <StatusNotice kind="loading" title="공식 준비 안내를 확인하고 있어요" actions={<Button variant="secondary" onClick={request.clear}>조회 취소하기</Button>}>최신 공고 버전의 서류와 접수 절차를 조회합니다.</StatusNotice>}
-    {state.status === 'error' && <RequestError error={state.error} actions={<Button onClick={() => void load()}>준비 안내 다시 조회</Button>} />}
-    {state.status === 'success' && <><OfficialPreparationContent item={state.data} showDraftNotice={!withDraft} /><Button variant="secondary" onClick={() => void load()}>최신 준비 안내 다시 조회</Button></>}
-  </section>
+  useEffect(() => {
+    if (withDraft) void load()
+  // useRequest.run is recreated on each render; the request runs once per selected opportunity.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [withDraft, id])
+  return !withDraft || state.status !== 'success' ? <section ref={result} tabIndex={-1} aria-label="공식 준비 안내 조회 결과">
+    {state.status === 'idle' && !withDraft && <StatusNotice title="공식 신청 안내를 불러와 주세요" actions={<Button onClick={() => void load()}>공식 신청 안내 확인</Button>}>공개된 신청 정보를 확인합니다.</StatusNotice>}
+    {state.status === 'pending' && <StatusNotice kind="loading" title={withDraft ? '공식 신청 방법을 확인하고 있어요' : '공식 신청 안내를 확인하고 있어요'}>최신 공고 정보를 조회합니다.</StatusNotice>}
+    {state.status === 'error' && <RequestError error={state.error} actions={<Button onClick={() => void load()}>공식 신청 안내 다시 확인</Button>} />}
+    {state.status === 'success' && !withDraft && <OfficialPreparationContent item={state.data} showDraftNotice />}
+  </section> : null
 }
-export function OfficialPreparation({ opportunityId, withDraft = false }: { opportunityId?: string; withDraft?: boolean } = {}) {
+export function OfficialPreparation({ opportunityId, withDraft = false, children }: { opportunityId?: string; withDraft?: boolean; children?: ReactNode | ((applicationUrl: string) => ReactNode) } = {}) {
   const params = useParams()
   const id = opportunityId ?? params.id ?? ''
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">공식 신청 준비</p><h1>필요한 서류와 접수 방법을 확인해요</h1><p>공고에 명시된 서류와 절차, 접수 방법을 확인해 주세요.</p></header>
-    {isOpportunityId(id) ? <Request key={id} id={id} withDraft={withDraft} /> : <StatusNotice kind="error" title="공고 주소를 확인해 주세요">올바른 공고 주소가 아닙니다. 공개 목록에서 공고를 다시 선택해 주세요.</StatusNotice>}
-    <Link className="text-link" to={isOpportunityId(id) ? `/opportunities/${id}` : '/opportunities'}>공고 화면으로 돌아가기</Link>
-  </div>
+  const [applicationUrl, setApplicationUrl] = useState('')
+  const content = typeof children === 'function' ? children(applicationUrl) : children
+  const detailHref = isOpportunityId(id) ? `/opportunities/${id}${params.journeyId ? `?journeyId=${params.journeyId}` : ''}` : '/opportunities'
+  return <ServicePage title={withDraft ? '다음 내용으로 지원서를 작성할게요' : '공고 신청 안내'} className={withDraft ? 'application-page' : ''}>
+    {withDraft && content}
+    {isOpportunityId(id) ? <Request key={id} id={id} withDraft={withDraft} onApplicationUrl={withDraft ? setApplicationUrl : undefined} /> : !id ?
+      <div className="service-entry"><h2>준비할 공고를 선택해 주세요</h2><p>선택한 공고의 서류와 접수 방법을 확인할 수 있습니다.</p><Link className="button primary" to="/opportunities">공고 선택하기</Link></div>
+      : <StatusNotice kind="error" title="공고 주소를 확인해 주세요">올바른 공고 주소가 아닙니다. 공개 목록에서 공고를 다시 선택해 주세요.</StatusNotice>}
+    {!withDraft && content}
+    <Link className="text-link" to={detailHref}>공고 화면으로 돌아가기</Link>
+  </ServicePage>
 }

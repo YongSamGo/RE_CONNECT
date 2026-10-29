@@ -92,7 +92,7 @@ describe('accessible shared controls', () => {
   it('uses a polite processing status and leaves recovery controls operable outside it', async () => {
     const cancel = vi.fn()
     render(<StatusNotice kind="loading" title="처리하고 있어요" actions={<Button onClick={cancel}>취소하기</Button>}>잠시 기다려 주세요.</StatusNotice>)
-    expect(screen.getByRole('status')).toHaveTextContent('처리 중')
+    expect(screen.getByRole('status')).toHaveTextContent('처리하고 있어요')
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
     await userEvent.click(screen.getByRole('button', { name: '취소하기' }))
     expect(cancel).toHaveBeenCalledOnce()

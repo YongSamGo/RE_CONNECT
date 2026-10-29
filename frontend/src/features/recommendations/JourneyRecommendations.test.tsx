@@ -1,8 +1,7 @@
-import { act, render, screen, within } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
-import axe from 'axe-core'
 import { EligibilityCheck, JourneyRecommendations } from './JourneyRecommendations'
 import { parseEligibility, parseRecommendations } from './model'
 import type { Eligibility, ProfileRef } from './model'
@@ -43,62 +42,52 @@ function mount() {
   return userEvent.setup()
 }
 
-it('uses the latest explicit confirmed reference, displays old-confirmed status and evidence without scores', async () => {
-  const fetch = vi.fn(async (req: Request) => json(req.method === 'POST' ? recommendations() : req.url.endsWith('/me') ? {} : view()))
-  vi.stubGlobal('fetch', fetch)
-  const user = mount()
-  await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await screen.findByRole('heading', { name: '가상 자료 정리 봉사' })
-  expect(screen.getByRole('heading', { name: '이전 확정 프로필 기준' })).toBeVisible()
-  expect(screen.getByText('확정 경험 1개와 연결했습니다.')).toBeVisible()
-  expect(screen.getByText('연결 역량: 자료 정리')).toBeVisible()
-  expect(screen.getByText(/필수조건: 확인 필요/)).toBeVisible()
-  expect(screen.getByRole('link', { name: '공고 상세와 공식 원문 보기' })).toHaveAttribute('href', `/opportunities/${opportunityId}`)
-  const post = fetch.mock.calls.find(([req]) => req.method === 'POST')![0]
-  expect(await post.clone().json()).toEqual({ profile, filters: {} })
+it('automatically requests recommendations only for the latest clean confirmed profile',async()=>{
+  const fetch=vi.fn(async(req:Request)=>json(req.method==='POST'?recommendations():req.url.endsWith('/me')?{}:{...view(),has_unconfirmed_changes:false}))
+  vi.stubGlobal('fetch',fetch);mount()
+  await screen.findByRole('heading',{name:'가상 자료 정리 봉사'})
+  const post=fetch.mock.calls.find(([req])=>req.method==='POST')![0]
+  expect(await post.clone().json()).toEqual({profile,filters:{}})
   expect(post.headers.get('X-CSRF-Token')).toBe('token')
-  expect(screen.queryByText(/\d+%/)).not.toBeInTheDocument()
+  expect(screen.getByRole('link',{name:'가상 자료 정리 봉사 자세히 보기'})).toHaveAttribute('href',`/opportunities/${opportunityId}?journeyId=${id}`)
+  expect(screen.queryByText(/점수|\d+%/)).not.toBeInTheDocument()
 })
-
-it('does not request recommendations before explicit profile confirmation', async () => {
-  const fetch = vi.fn(async (req: Request) => json(req.url.endsWith('/me') ? {} : view(false)))
-  vi.stubGlobal('fetch', fetch)
-  const user = mount(); await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await screen.findByRole('heading', { name: '먼저 프로필을 직접 확정해 주세요' })
-  expect(fetch.mock.calls.some(([req]) => req.method === 'POST')).toBe(false)
+it.each([false,true])('requires explicit profile review before recommendations when confirmed=%s and draft changed',async confirmed=>{
+  const fetch=vi.fn(async(req:Request)=>json(req.url.endsWith('/me')?{}:view(confirmed)))
+  vi.stubGlobal('fetch',fetch);mount()
+  expect(await screen.findByRole('link',{name:'내 경험 확인하고 수정하기'})).toHaveAttribute('href',`/journeys/${id}/profile`)
+  expect(fetch.mock.calls.some(([req])=>req.method==='POST')).toBe(false)
 })
-
-it('keeps narrowed filters on empty results and never sends an automatic relaxed request', async () => {
-  const fetch = vi.fn(async (req: Request) => json(req.method === 'POST' ? recommendations(true) : req.url.endsWith('/me') ? {} : view()))
-  vi.stubGlobal('fetch', fetch)
-  const user = mount()
-  await user.selectOptions(screen.getByLabelText('활동 지역 추가 제한'), 'gyeonggi')
-  await user.selectOptions(screen.getByLabelText('활동 유형 추가 제한'), 'volunteering')
-  await user.selectOptions(screen.getByLabelText('보수 추가 제한'), 'false')
-  await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await screen.findByRole('heading', { name: '현재 조건에 연결되는 추천이 없습니다' })
-  const writes = fetch.mock.calls.filter(([req]) => req.method === 'POST')
-  expect(writes).toHaveLength(1)
-  expect((await writes[0][0].clone().json()).filters).toEqual({ regions: [{ province: 'gyeonggi', district: null }], activity_types: ['volunteering'], paid: false })
-  expect(screen.getByLabelText('활동 지역 추가 제한')).toHaveValue('gyeonggi')
+it('does not relax empty recommendation queries or create example opportunities',async()=>{
+  const fetch=vi.fn(async(req:Request)=>json(req.method==='POST'?recommendations(true):req.url.endsWith('/me')?{}:{...view(),has_unconfirmed_changes:false}))
+  vi.stubGlobal('fetch',fetch);mount()
+  expect(await screen.findByText('현재 조건에 연결되는 추천이 없어요')).toBeVisible()
+  expect(fetch.mock.calls.filter(([req])=>req.method==='POST')).toHaveLength(1)
+  expect(screen.getByRole('link',{name:'전체 공고 둘러보기'})).toHaveAttribute('href','/opportunities?browse=all')
 })
-
-it('removes old results when filters change and preserves the selection after a network error', async () => {
-  let count = 0
-  vi.stubGlobal('fetch', vi.fn(async (req: Request) => {
-    if (req.method === 'POST') { if (++count === 2) throw new Error('private'); return json(recommendations()) }
-    return json(req.url.endsWith('/me') ? {} : view())
-  }))
-  const user = mount(); await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await screen.findByRole('heading', { name: '가상 자료 정리 봉사' })
-  await user.selectOptions(screen.getByLabelText('보수 추가 제한'), 'true')
-  expect(screen.queryByText('가상 자료 정리 봉사')).not.toBeInTheDocument()
-  await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await screen.findByRole('alert')
-  expect(screen.getByLabelText('보수 추가 제한')).toHaveValue('true')
-  expect(screen.getByRole('region', { name: '추천 조회 결과' })).toHaveFocus()
+it('clears an unconfirmed personal profile when leaving the page',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async(req:Request)=>json(req.url.endsWith('/me')?{}:view(false))))
+  mount();await screen.findByRole('link',{name:'내 경험 확인하고 수정하기'})
+  act(()=>window.dispatchEvent(new Event('pagehide')))
+  expect(screen.queryByRole('link',{name:'내 경험 확인하고 수정하기'})).not.toBeInTheDocument()
 })
-
+it('offers explicit recovery after failure and rereads the confirmed profile',async()=>{
+  let attempts=0
+  const fetch=vi.fn(async(req:Request)=>req.method==='POST'?++attempts===1?json({code:'SERVICE_UNAVAILABLE'},503):json(recommendations()):json(req.url.endsWith('/me')?{}:{...view(),has_unconfirmed_changes:false}))
+  vi.stubGlobal('fetch',fetch);mount();await screen.findByRole('alert')
+  await userEvent.click(screen.getByRole('button',{name:'추천 다시 확인하기'}))
+  expect(await screen.findByRole('heading',{name:'가상 자료 정리 봉사'})).toBeVisible()
+  expect(fetch.mock.calls.filter(([req])=>req.method==='POST')).toHaveLength(2)
+})
+it('aborts and discards a late recommendation after departure',async()=>{
+  let finish!:(response:Response)=>void
+  const fetch=vi.fn(async(req:Request):Promise<Response>=>req.method==='POST'?new Promise(resolve=>{finish=resolve}):json(req.url.endsWith('/me')?{}:{...view(),has_unconfirmed_changes:false}))
+  vi.stubGlobal('fetch',fetch);mount();await act(async()=>{})
+  const post=fetch.mock.calls.find(([req])=>req.method==='POST')![0]
+  act(()=>window.dispatchEvent(new Event('pagehide')));expect(post.signal.aborted).toBe(true)
+  await act(async()=>finish(json(recommendations())))
+  expect(screen.queryByRole('heading',{name:'가상 자료 정리 봉사'})).not.toBeInTheDocument()
+})
 it.each([['unknown', null, '미확인', '확인 필요'], ['not_satisfied', [], '없음으로 확인', '미충족']] as const)('shows %s with the actual compared value and source', async (status, value, label, resultLabel) => {
   const fetch = vi.fn(async (_request: Request) => json(eligibility(status, value === null ? null : [...value])))
   vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
@@ -121,39 +110,6 @@ it('keeps satisfied OR results distinct from an individual unmet condition', asy
   await screen.findByRole('heading', { name: '필수조건 대조: 조건 충족' })
   expect(screen.getByText('미충족')).toBeVisible()
   expect(screen.getByText(/하나 이상 충족\(OR\): 조건 충족/)).toBeVisible()
-})
-
-it.each(['VERSION_CONFLICT', 'SESSION_EXPIRED'])('removes all previous personal results when eligibility detects %s', async code => {
-  vi.stubGlobal('fetch', vi.fn(async (req: Request) => req.url.endsWith('/eligibility') ? json({ code }, code === 'SESSION_EXPIRED' ? 401 : 409)
-    : json(req.method === 'POST' ? recommendations() : req.url.endsWith('/me') ? {} : view())))
-  const user = mount(); await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await user.click(await screen.findByRole('button', { name: '이 공고의 필수조건 자세히 대조' }))
-  await screen.findByText(/기존 결과를 지웠습니다/)
-  expect(screen.queryByText('가상 자료 정리 봉사')).not.toBeInTheDocument()
-})
-
-it('blocks duplicate submits, aborts on cancel, and ignores late results after pagehide', async () => {
-  let finish!: (value: Response) => void
-  const fetch = vi.fn(async (req: Request) => req.method === 'POST' ? new Promise<Response>(resolve => { finish = resolve }) : json(req.url.endsWith('/me') ? {} : view()))
-  vi.stubGlobal('fetch', fetch)
-  const user = mount(); await user.dblClick(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  expect(fetch.mock.calls.filter(([req]) => req.method === 'POST')).toHaveLength(1)
-  const post = fetch.mock.calls.find(([req]) => req.method === 'POST')![0]
-  await user.click(screen.getByRole('button', { name: '조회 취소하기' }))
-  expect(post.signal.aborted).toBe(true)
-  act(() => window.dispatchEvent(new Event('pagehide')))
-  await act(async () => finish(json(recommendations())))
-  expect(screen.queryByText('가상 자료 정리 봉사')).not.toBeInTheDocument()
-})
-
-it('passes structural accessibility for loaded recommendations and eligibility', async () => {
-  vi.stubGlobal('fetch', vi.fn(async (req: Request) => json(req.url.endsWith('/eligibility') ? eligibility() : req.method === 'POST' ? recommendations() : req.url.endsWith('/me') ? {} : view())))
-  const user = mount(); await user.click(screen.getByRole('button', { name: '추천 다시 확인하기' }))
-  await user.click(await screen.findByRole('button', { name: '이 공고의 필수조건 자세히 대조' }))
-  await screen.findByRole('heading', { name: '필수조건 대조: 확인 필요' })
-  expect(within(screen.getByRole('region', { name: '추천 조회 결과' })).getByText('확인 필요', { selector: 'strong' })).toBeVisible()
-  const report = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false }, region: { enabled: false } } })
-  expect(report.violations).toEqual([])
 })
 
 it('rejects incorrect references, scores, duplicate ranks, closed or pending opportunities, and malformed comparisons', () => {

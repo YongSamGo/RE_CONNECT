@@ -1,5 +1,11 @@
 # frontend — React 클라이언트
 
+## 프론트 완성 계획
+
+앞으로의 화면 구현과 최종 검수는 [프론트 완성 계획](../Plan/08_Frontend_Completion_Plan.md)을 기준으로 한다. 사용자가 정한 간결한 화면 원칙, 기존 화면 보존 기준, 실제 기능 연결 순서와 완료 조건을 함께 기록했다. 과거 진행 문서와 현재 연결 상태가 다르면 실제 라우트와 제품 코드로 확인한다.
+
+작업 전 [프론트 지침](AGENTS.md), [스타일 보존 기준](DESIGN_BASELINE.md), [실행 준비서](../Plan/09_Frontend_Execution_Runbook.md)를 읽는다. 문구 정적 검사는 `npm run ui:copy`로 실행한다. 실제 화면 비교와 기능 검수는 별도로 수행한다.
+
 ## 현재 시작 흐름 (2026-10-26)
 
 첫 화면과 공개 공고 상세에서 `/start`로 이동한다. 서버가 게시한 AI 처리 안내문을
@@ -20,6 +26,8 @@
 담당: A · 기획·프론트엔드
 
 React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을 Nginx 컨테이너가 제공하고, Vite 개발 서버는 로컬 개발에서만 쓴다 ([Plan/03](../Plan/03_Architecture_and_Dependencies.md)). 실행·검사 방법은 [개발 안내](DEVELOPMENT.md), 구현 범위와 연동 대기 사항은 [진행 기록](PROGRESS.md)을 따른다.
+
+사용자용 화면과 호환 주소의 이동 경로는 [서비스 화면 안내](SERVICE_SCREENS.md)를 따른다. 개발 서버의 `/guide`에서 실제 이용 화면을 열어 확인할 수 있다. 대화·내 경험 확인의 전면 개편 첫 구현과 미검증 범위는 [개편 진행 기록](REDESIGN_PROGRESS.md)에 정리했다.
 
 로컬 별도 구현과의 통합 기준·제외 범위·이전 주소 전환·검증 결과는 [중복 정리 기록](CONSOLIDATION.md)을 참고한다.
 

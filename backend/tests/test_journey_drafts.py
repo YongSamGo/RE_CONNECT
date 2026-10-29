@@ -55,9 +55,13 @@ class Runtime:
         if self.fail:
             raise LLMUnavailableError('시험 모델 장애')
         self.data, self.instructions = json.loads(untrusted_turns[0].text), instructions
-        if self.pick is not None:
-            return output_model.model_validate({'fact_ids': self.pick})
-        return output_model.model_validate({'fact_ids': ['unconfirmed:claim'] if self.corrupt else [next(iter(self.data['facts']))]})
+        selected = self.pick if self.pick is not None else ['unconfirmed:claim'] if self.corrupt else [next(iter(self.data['facts']))]
+        if output_model.__name__ == 'ApplicationWritingPlan':
+            return output_model.model_validate({
+                'self_introduction': [{'text': next(iter(self.data['facts'].values())), 'fact_ids': selected}],
+                'motivation': [{'text': '경험을 살려 활동에 참여하고 싶습니다.', 'fact_ids': selected}],
+            })
+        return output_model.model_validate({'fact_ids': selected})
 
 
 async def setup(admission, admission_store, redis, db, *, confirmed=True, opportunity=None):
@@ -111,7 +115,7 @@ def test_actual_http_manual_and_grounded_generation_replay_preserve_confirmed_bo
                 generated = await client.post(path, json=body('generate').model_dump(mode='json'), headers=headers)
                 assert generated.status_code == 201
                 draft = JourneyDraft.model_validate(generated.json())
-                assert draft.self_introduction == '경험: 가상 도서관 경험' and draft.motivation == ''
+                assert draft.self_introduction == '경험: 가상 도서관 경험' and draft.motivation == '경험을 살려 활동에 참여하고 싶습니다.'
                 assert draft.approved_at is None and draft.warnings and draft.draft_id != manual.draft_id
                 assert runtime.calls == 1 and runtime.data['opportunity_context']['opportunity'] == {'id': str(OPPORTUNITY), 'version': 1}
                 resource = journeys.store.resource_key(identity.subject_id, journey.journey_id)
@@ -229,10 +233,11 @@ def test_injected_opportunity_text_cannot_add_unconfirmed_facts(pick):
                 assert not any(field.startswith('draft:') for field in await redis.hkeys(resource + ':lifecycle'))
             else:
                 draft = await service.create(issued.session, identity, journey.journey_id, str(uuid4()), body('generate'))
-                assert draft.self_introduction == '경험: 가상 도서관 경험' and draft.motivation == ''
+                assert draft.self_introduction == '경험: 가상 도서관 경험' and draft.motivation == '경험을 살려 활동에 참여하고 싶습니다.'
                 assert all('자격증' not in value and '10년' not in value for value in [draft.self_introduction, *draft.warnings])
-            # 공고 원문은 비신뢰 데이터 칸으로만 전달하고 지시문에 섞지 않는다.
-            assert runtime.data['opportunity_context']['description'] == INJECTION
+            # 알려진 공격 지시문은 전송 전에 제외하고 공고 식별 맥락은 유지한다.
+            assert runtime.data['opportunity_context']['description'] is None
+            assert runtime.data['opportunity_context']['opportunity'] == {'id': str(OPPORTUNITY), 'version': 1}
             assert INJECTION not in runtime.instructions and runtime.calls == 1
     with_redis(scenario)
 

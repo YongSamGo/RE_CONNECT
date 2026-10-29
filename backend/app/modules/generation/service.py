@@ -5,6 +5,7 @@
 """
 
 import json
+import re
 from collections.abc import Mapping, Sequence
 
 from pydantic import BaseModel, TypeAdapter, ValidationError
@@ -16,12 +17,14 @@ from app.contracts.roles import normalize_tag
 from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
     ApplicationPlan,
+    ApplicationWritingPlan,
     ApplicationContext,
     ApplicationPreview,
     ConfirmedProfileSnapshot,
     ExperiencePreview,
     ExtractionPlan,
     Quote,
+    WrittenApplicationPreview,
 )
 from app.modules.generation.privacy import safe_text
 
@@ -228,3 +231,49 @@ class GroundedGenerationService:
             profile_version=snapshot.version,
             paragraphs=[facts[key] for key in plan.fact_ids],
         )
+
+    async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
+        profile = snapshot.content
+        facts: dict[str, str] = {}
+        for item in profile.experiences:
+            if safe_text(item.description) is not None:
+                facts[f"experience:{item.id}"] = f"경험: {item.description}"
+            if item.duration_note and safe_text(item.description) is not None and safe_text(item.duration_note) is not None:
+                facts[f"duration:{item.id}"] = f"경험 기간 ({item.description}): {item.duration_note}"
+        for kind, values, label in (
+            ("skill", profile.skills, "역량"),
+            ("certification", profile.certifications or [], "자격"),
+            ("course", profile.completed_courses or [], "이수 교육"),
+        ):
+            for index, value in enumerate(values):
+                if safe_text(value) is not None:
+                    facts[f"{kind}:{index}"] = f"{label}: {value}"
+        if not facts:
+            raise GenerationInputError("확정한 경험을 확인해 주세요")
+        data = {"facts": facts}
+        if context is not None:
+            data["opportunity_context"] = {
+                "opportunity": context.opportunity.model_dump(mode="json"),
+                "title": safe_text(context.title),
+                "description": safe_text(context.description) if context.description else None,
+            }
+        plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
+        context_values = (value for value in data.get("opportunity_context", {}).values() if isinstance(value, str))
+        source_text = "\n".join([*facts.values(), *(value for value in context_values if value)])
+        allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
+
+        def verify(paragraphs) -> str:
+            for paragraph in paragraphs:
+                if any(key not in facts for key in paragraph.fact_ids):
+                    raise _invalid()
+                value = paragraph.text
+                if safe_text(value) != value or re.search(r"https?://|[<>\u00b7\u318d\u30fb]", value, re.IGNORECASE):
+                    raise _invalid()
+                if not set(re.findall(r"\d+(?:[.,]\d+)*", value)).issubset(allowed_numbers):
+                    raise _invalid()
+            result = "\n\n".join(paragraph.text for paragraph in paragraphs)
+            if len(result) > 2000:
+                raise _invalid()
+            return result
+
+        return WrittenApplicationPreview(self_introduction=verify(plan.self_introduction), motivation=verify(plan.motivation))

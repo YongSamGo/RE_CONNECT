@@ -21,7 +21,7 @@ it('browses opportunities without applying the selected filters', async () => {
   const params = new URL(fetch.mock.calls[0]![0].url).searchParams
   expect(params.has('regions')).toBe(false)
   expect(params.has('q')).toBe(false)
-  expect(scrollIntoView).toHaveBeenCalledWith(expect.objectContaining({ block: 'start' }))
+  expect(scrollIntoView).not.toHaveBeenCalled()
   expect(screen.getByRole('region', { name: '공고 조회 결과' })).toHaveFocus()
 })
 

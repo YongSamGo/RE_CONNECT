@@ -193,7 +193,7 @@ export function JourneyPreparation({ journeyId, opportunityId }: { journeyId: st
       {copyRequest.state.status === 'success' && <><TextAreaField label="최신 상태를 확인한 복사 내용" value={copyRequest.state.data.body} readOnly rows={10} id="journey-copy" />
         <p role="status">{copyRequest.state.data.copied ? '내용을 복사했어요. 자료 저장이나 신청 접수가 완료된 것은 아니에요.' : '자동 복사를 완료하지 못했습니다. 내용을 선택해 기기의 복사 기능을 사용해 주세요.'}</p>
         {!copyRequest.state.data.copied && <Button variant="secondary" onClick={() => { const field = document.getElementById('journey-copy') as HTMLTextAreaElement | null; field?.focus(); field?.select() }}>복사할 내용 전체 선택</Button>}</>}
-      <p>복사 전에 서버의 승인 리비전·본문·확정 프로필·공고를 다시 조회합니다. 복사한 내용은 체험을 끝내도 기기 클립보드에 남을 수 있어요.</p>
+      <p>복사 전에 서버의 승인 리비전, 본문, 확정 프로필, 공고를 다시 조회합니다. 복사한 내용은 체험을 끝내도 기기 클립보드에 남을 수 있어요.</p>
       <p>화면을 떠나면 아직 반영하지 않은 입력은 사라집니다.</p>
     </section>}
     {context && <Button variant="secondary" disabled={endRequest.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, ending: true }))}>종료하고 삭제</Button>}

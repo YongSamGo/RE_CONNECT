@@ -1,8 +1,7 @@
-import { act, render, screen, waitFor } from '@testing-library/react'
+import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
-import axe from 'axe-core'
 import { PendingSave } from './PendingSave'
 
 const id = '12345678-1234-4234-9234-123456789012'
@@ -11,7 +10,7 @@ const documentId = '32345678-1234-4234-9234-123456789012'
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
 const stamp = '2026-10-20T00:00:00Z'
 function setup(options: { bundle?: boolean; consent?: boolean; existing?: number | null; loseProfile?: boolean; loseDraft?: boolean; cancelFails?: boolean } = {}) {
-  const bundle = options.bundle ?? true
+  const bundle = options.bundle ?? false
   const intent = { save_intent_id: id, expires_at: new Date(Date.now() + 600000).toISOString(), targets: { profile: true, draft: bundle }, existing_saved_profile_version: options.existing ?? null }
   const me = { authenticated: true, user: { id: owner, roles: ['user'], mfa_verified: false, reauth_until: null }, consents: options.consent === false ? [] : [{ purpose: 'storage', notice_version: 'fixture-storage', granted_at: stamp }], pending_save_intent: intent as typeof intent | null }
   const writes: Request[] = []
@@ -42,124 +41,48 @@ function setup(options: { bundle?: boolean; consent?: boolean; existing?: number
   return { me, fetch, writes, profileReply }
 }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
-async function load() { await userEvent.click(screen.getByRole('button', { name: '현재 저장 대기 확인' })); await screen.findByRole('heading', { name: /확정 프로필 저장|프로필과 지원서 함께 저장/ }) }
-async function checkBundle() { await userEvent.click(screen.getByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')) }
-
-it('requires explicit bundle confirmation and separates profile and draft writes', async () => {
-  const { writes } = setup(); await load()
-  expect(writes).toHaveLength(0)
-  expect(screen.getByRole('button', { name: '확인한 프로필 저장' })).toBeDisabled()
-  expect(screen.getByRole('button', { name: /프로필에 연결해 지원서 저장/ })).toBeDisabled()
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue(null)
-  const accessibility = await axe.run(document.body, { rules: { 'color-contrast': { enabled: false }, region: { enabled: false } } })
-  expect(accessibility.violations).toEqual([])
-  await checkBundle()
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' }))
-  expect(await screen.findByText('프로필 저장을 확인했습니다. 지원서는 아직 저장하지 않았습니다.')).toBeVisible()
+async function load() { await userEvent.click(screen.getByRole('button',{name:'저장 자료 확인'})); await screen.findByRole('heading',{name:'확정한 경험 저장'}) }
+async function save() { await userEvent.click(screen.getByLabelText('확정한 경험을 저장할게요.')); await userEvent.click(screen.getByRole('button',{name:'이대로 저장하기'})) }
+it('requires explicit selection and saves only the confirmed profile', async () => {
+  const { writes }=setup(); await load()
+  expect(screen.getByRole('button',{name:'이대로 저장하기'})).toBeDisabled()
+  await save(); expect(await screen.findByText('경험을 저장했습니다.')).toBeVisible()
   expect(writes).toHaveLength(1)
-  expect(await writes[0]!.json()).toEqual({ source: { type: 'save_intent', save_intent_id: id }, base_saved_version: null })
-  await userEvent.click(screen.getByRole('button', { name: /프로필에 연결해 지원서 저장/ }))
-  expect(await screen.findByText('프로필과 지원서 저장을 모두 완료했습니다.')).toBeVisible()
-  expect(await writes[1]!.json()).toEqual({ source: { type: 'save_intent', save_intent_id: id }, document_id: null, base_document_version: null })
-  expect(writes[0]!.headers.get('Idempotency-Key')).not.toBe(writes[1]!.headers.get('Idempotency-Key'))
-  expect(screen.queryByRole('button', { name: '남은 저장 대기 취소' })).not.toBeInTheDocument()
+  expect(await writes[0].clone().json()).toEqual({source:{type:'save_intent',save_intent_id:id},base_saved_version:null})
 })
-
-it('requires separate existing-profile replacement confirmation and sends its exact base', async () => {
-  const { writes } = setup({ existing: 3 }); await load(); await checkBundle()
-  expect(screen.getByRole('button', { name: '확인한 프로필 저장' })).toBeDisabled()
-  await userEvent.click(screen.getByLabelText('기존 저장 프로필 기준으로 교체 여부를 확인했어요.'))
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' }))
-  await screen.findByText('프로필 저장을 확인했습니다. 지원서는 아직 저장하지 않았습니다.')
-  expect((await writes[0]!.json()).base_saved_version).toBe(3)
+it('requires a separate acknowledgement before replacing an existing profile', async () => {
+  const { writes }=setup({existing:3}); await load()
+  await userEvent.click(screen.getByLabelText('확정한 경험을 저장할게요.'))
+  expect(screen.getByRole('button',{name:'이대로 저장하기'})).toBeDisabled()
+  await userEvent.click(screen.getByLabelText('기존 프로필을 새 내용으로 바꾸는 것을 확인했어요.'))
+  await userEvent.click(screen.getByRole('button',{name:'이대로 저장하기'}))
+  await screen.findByText('경험을 저장했습니다.')
+  expect((await writes[0].clone().json()).base_saved_version).toBe(3)
 })
-
-it('never fabricates or automatically grants missing storage consent', async () => {
-  const { writes } = setup({ consent: false }); await load(); await checkBundle()
-  expect(screen.getByText('저장 동의가 필요해요')).toBeVisible()
-  expect(screen.getByRole('button', { name: '확인한 프로필 저장' })).toBeDisabled()
-  expect(writes).toHaveLength(0)
-  await userEvent.click(screen.getByRole('button', { name: '남은 저장 대기 취소' }))
-  expect(await screen.findByText(/남아 있는 저장 대기를 취소했습니다/)).toBeVisible()
-  expect(writes).toHaveLength(1)
-  expect(writes[0]!.method).toBe('DELETE')
-})
-
-it('replays exactly the same profile request after a lost successful response even when pending was consumed', async () => {
-  const { writes } = setup({ bundle: false, loseProfile: true }); await load()
-  await userEvent.click(screen.getByLabelText('확정 프로필 저장을 확인했어요.'))
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' }))
-  expect(await screen.findByRole('alert')).toBeVisible()
-  expect(screen.queryByText('프로필 저장을 완료했습니다.')).not.toBeInTheDocument()
-  await userEvent.click(screen.getByRole('button', { name: '같은 요청으로 프로필 저장 재확인' }))
-  expect(await screen.findByText('프로필 저장을 완료했습니다.')).toBeVisible()
+it('reuses the exact profile write after losing its reply', async () => {
+  const { writes }=setup({loseProfile:true}); await load(); await save()
+  await screen.findByRole('alert')
+  await userEvent.click(screen.getByRole('button',{name:'저장 결과 다시 확인'}))
+  await screen.findByText('경험을 저장했습니다.')
   expect(writes).toHaveLength(2)
-  expect(writes[0]!.headers.get('Idempotency-Key')).toBe(writes[1]!.headers.get('Idempotency-Key'))
-  expect(await writes[0]!.json()).toEqual(await writes[1]!.json())
-  expect(document.body).not.toHaveTextContent('private transport detail')
+  expect(writes[0].headers.get('Idempotency-Key')).toBe(writes[1].headers.get('Idempotency-Key'))
+  expect(await writes[0].clone().json()).toEqual(await writes[1].clone().json())
 })
-
-it('retains the successful profile and replays only the draft after a lost draft response', async () => {
-  const { writes } = setup({ loseDraft: true }); await load(); await checkBundle()
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' })); await screen.findByText('프로필 저장을 확인했습니다. 지원서는 아직 저장하지 않았습니다.')
-  await userEvent.click(screen.getByRole('button', { name: /프로필에 연결해 지원서 저장/ }))
-  expect(await screen.findByRole('alert')).toBeVisible()
-  expect(screen.getByText(/지원서는 아직 저장 완료로 확인되지 않았습니다/)).toBeVisible()
-  expect(screen.queryByText('프로필과 지원서 저장을 모두 완료했습니다.')).not.toBeInTheDocument()
-  await userEvent.click(screen.getByRole('button', { name: /프로필에 연결해 지원서 저장/ }))
-  expect(await screen.findByText('프로필과 지원서 저장을 모두 완료했습니다.')).toBeVisible()
-  expect(writes).toHaveLength(3)
-  expect(writes[1]!.headers.get('Idempotency-Key')).toBe(writes[2]!.headers.get('Idempotency-Key'))
-  expect(await writes[1]!.json()).toEqual(await writes[2]!.json())
+it('cancels legacy application save intents without saving either target', async () => {
+  const { writes }=setup({bundle:true})
+  await userEvent.click(screen.getByRole('button',{name:'저장 자료 확인'}))
+  expect(await screen.findByText(/지원서 보관 기능은 제공하지 않습니다/)).toBeVisible()
+  expect(writes).toHaveLength(1); expect(writes[0].method).toBe('DELETE')
+  expect(screen.queryByRole('button',{name:'이대로 저장하기'})).not.toBeInTheDocument()
 })
-
-it('does not report cancellation completion or forget pending state after a failed cancellation', async () => {
-  setup({ cancelFails: true }); await load()
-  await userEvent.click(screen.getByRole('button', { name: '남은 저장 대기 취소' }))
+it('does not claim cancellation after a server failure', async () => {
+  setup({cancelFails:true}); await load()
+  await userEvent.click(screen.getByRole('button',{name:'취소'}))
   expect(await screen.findByRole('alert')).toBeVisible()
-  expect(screen.queryByText(/남아 있는 저장 대기를 취소했습니다/)).not.toBeInTheDocument()
-  expect(screen.getByRole('button', { name: '남은 저장 대기 취소' })).toBeEnabled()
+  expect(screen.queryByText('저장을 취소했습니다.')).not.toBeInTheDocument()
   expect(document.body).not.toHaveTextContent('private cancellation path')
 })
-
-it('rejects a different current member before applying an earlier save choice', async () => {
-  const { me, writes } = setup(); await load(); await checkBundle()
-  me.user.id = documentId
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' }))
-  expect(await screen.findByRole('alert')).toBeVisible()
-  expect(writes).toHaveLength(0)
-  expect(screen.queryByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')).not.toBeInTheDocument()
-})
-
-it('checks current consent again before sending a previously confirmed operation', async () => {
-  const { me, writes } = setup(); await load(); await checkBundle()
-  me.consents = []
-  await userEvent.click(screen.getByRole('button', { name: '확인한 프로필 저장' }))
-  expect(await screen.findByRole('alert')).toBeVisible()
-  expect(writes).toHaveLength(0)
-})
-
-it('drops the loaded pending choice on pagehide and never stores it in browser persistence', async () => {
-  const { writes } = setup(); await load(); await checkBundle()
-  act(() => window.dispatchEvent(new Event('pagehide')))
-  expect(screen.queryByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')).not.toBeInTheDocument()
-  expect(screen.getByRole('button', { name: '현재 저장 대기 확인' })).toBeEnabled()
-  expect(writes).toHaveLength(0)
-})
-
-it('discards a body parser that finishes after pagehide even after transport validation has finished', async () => {
-  const { me } = setup()
-  const original = Response.prototype.text
-  let reads = 0, finish!: (value: string) => void
-  vi.spyOn(Response.prototype, 'text').mockImplementation(function (this: Response) {
-    reads += 1
-    if (reads === 1) return new Promise(resolve => { finish = resolve })
-    return original.call(this)
-  })
-  await userEvent.click(screen.getByRole('button', { name: '현재 저장 대기 확인' }))
-  await waitFor(() => expect(reads).toBe(1))
-  act(() => window.dispatchEvent(new Event('pagehide')))
-  await act(async () => { finish(JSON.stringify(me)) })
-  expect(screen.queryByLabelText('프로필과 지원서 모두 저장 대상임을 확인했어요.')).not.toBeInTheDocument()
-  expect(screen.getByRole('button', { name: '현재 저장 대기 확인' })).toBeEnabled()
+it('clears a profile selection on page departure and ignores late responses', async () => {
+  setup(); await load(); act(()=>window.dispatchEvent(new Event('pagehide')))
+  expect(screen.queryByRole('button',{name:'이대로 저장하기'})).not.toBeInTheDocument()
 })

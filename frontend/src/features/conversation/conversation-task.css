@@ -1,0 +1,56 @@
+/* Opt-in layout: the reviewed start, consent and opportunity pages stay unchanged. */
+.conversation-task .journey-conversation { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: 'question answer' 'controls answer'; grid-template-rows: auto auto; max-width: none; gap: 16px 32px; align-items: start; }
+.conversation-task .journey-conversation > * { grid-column: 1 / -1; }
+.conversation-task .journey-conversation > .conversation-surface { grid-area: question; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--surface); }
+.conversation-task .journey-conversation > .conversation-voice-input { grid-area: controls; }
+.conversation-task .journey-conversation > .conversation-answer { grid-area: answer; }
+.conversation-task .conversation-question { margin: 0; }
+.conversation-task .conversation-question h2 { margin: 0 0 20px; font-size: calc(26px * var(--text-scale, 1)); line-height: 1.55; text-wrap: initial; background-image: linear-gradient(105deg, transparent 44%, rgb(53 142 229 / 0%) 47%, rgb(53 142 229 / 78%) 50%, rgb(83 173 246 / 58%) 53%, transparent 57%), linear-gradient(var(--ink), var(--ink)); background-size: 220% 100%, 100% 100%; background-position: 100% 0, 0 0; background-repeat: no-repeat; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: conversation-text-highlight 7s ease-in-out infinite; }
+@keyframes conversation-text-highlight {
+  0%, 10% { background-position: 100% 0, 0 0; }
+  52%, 62%, 100% { background-position: 0 0, 0 0; }
+}
+.conversation-task .conversation-question p:empty { margin: 0; }
+.conversation-task .question-volume { border: 0; padding: 0; margin-top: 12px; }
+.conversation-task .question-volume label { margin: 0; }
+.conversation-task .question-volume input { min-height: 44px; }
+.conversation-task .conversation-input-choice { display: flex; align-items: center; justify-content: flex-start; flex-wrap: wrap; gap: 12px; margin: 0; }
+.conversation-task .conversation-input-choice .button { min-width: 132px; }
+.conversation-task .conversation-answer label { margin-bottom: 8px; }
+.conversation-task .conversation-answer textarea { min-height: 150px; }
+.conversation-task .conversation-answer form > .button { margin-top: 16px; width: 100%; }
+.conversation-task .voice-recorder { margin: 12px 0 0; padding: 0; border: 0; background: transparent; }
+.conversation-task .voice-recorder .actions { margin-top: 12px; }
+.conversation-task .conversation-task-footer { display: flex; align-items: start; flex-wrap: wrap; gap: 12px 24px; padding-top: 16px; border-top: 1px solid var(--line); }
+.conversation-task .conversation-help { flex: 1 1 280px; margin: 0; }
+.conversation-task .conversation-help summary { padding: 10px 0; }
+.conversation-task .conversation-help .actions { margin-top: 12px; }
+.conversation-task .service-heading { margin-bottom: 24px; }
+.conversation-task .conversation-voice-mode[hidden] { display: none; }
+.conversation-task .conversation-voice-followup { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
+.conversation-task .conversation-confirm-dialog { width: min(640px, calc(100vw - 32px)); max-height: min(80svh, 720px); overflow-y: auto; padding: 32px; border: 1px solid var(--line); border-radius: 24px; background: #fff; color: var(--ink); }
+.conversation-task .conversation-confirm-dialog::backdrop { background: rgb(24 43 56 / .58); }
+.conversation-task .conversation-confirm-dialog h2 { margin: 0 0 24px; font-size: calc(26px * var(--text-scale, 1)); }
+.conversation-task .conversation-confirm-dialog h3 { margin: 0 0 8px; font-size: calc(18px * var(--text-scale, 1)); }
+.conversation-task .conversation-confirm-dialog section { margin: 20px 0; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+.conversation-task .conversation-confirm-dialog section p { margin: 0; }
+.conversation-task .conversation-confirm-answer { max-height: 30svh; overflow: auto; white-space: pre-wrap; }
+.conversation-task .conversation-confirm-dialog > .actions { justify-content: flex-end; }
+@media (min-width: 1000px) and (max-height: 780px) {
+  .conversation-task { padding: 20px 28px; }
+  .conversation-task .service-heading { margin-bottom: 16px; }
+  .conversation-task .journey-conversation > .conversation-surface { padding: 16px; }
+  .conversation-task .conversation-question h2 { margin-bottom: 12px; font-size: calc(24px * var(--text-scale, 1)); }
+}
+@media (max-width: 900px) {
+  .conversation-task .journey-conversation { grid-template-columns: minmax(0, 1fr); grid-template-areas: 'question' 'controls' 'answer'; grid-template-rows: auto; gap: 16px; }
+  .conversation-task .journey-conversation > .conversation-surface,
+  .conversation-task .journey-conversation > .conversation-answer { grid-column: 1; }
+  .conversation-task .journey-conversation > .conversation-surface { padding: 18px; }
+  .conversation-task .conversation-question h2 { font-size: calc(23px * var(--text-scale, 1)); }
+  .conversation-task .question-volume input { min-width: 80px; }
+  .conversation-task .conversation-confirm-dialog { padding: 24px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conversation-task .conversation-question h2 { animation: none; background-position: 100% 0, 0 0; }
+}

@@ -2,10 +2,15 @@ import { useRef, useState } from 'react'
 import { createApiClient } from '../api/client'
 import { ApiError } from '../api/errors'
 import { useMemoryScope } from './useMemoryScope'
+import { previewFetch } from '../features/conversation/development-preview'
+import { createProfilePreviewFetch } from '../features/profile/development-preview'
 
 type State<T> = { status: 'idle' | 'pending' } | { status: 'success'; data: T } | { status: 'error'; error: ApiError }
 export function useRequest<T>() {
-  const [api] = useState(() => createApiClient())
+  const [api] = useState(() => createApiClient(import.meta.env.DEV && window.location.pathname === '/dev/conversation'
+    ? { fetch: previewFetch, developmentPreview: true }
+    : import.meta.env.DEV && window.location.pathname === '/dev/profile'
+      ? { fetch: createProfilePreviewFetch(), developmentPreview: true } : {}))
   const scope = useMemoryScope<State<T>>(() => ({ status: 'idle' }))
   const active = useRef<AbortSignal | null>(null)
   async function run(action: (api: ReturnType<typeof createApiClient>, signal: AbortSignal) => Promise<T>, onSuccess?: (data: T) => void) {
