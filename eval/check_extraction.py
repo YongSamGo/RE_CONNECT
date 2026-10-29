@@ -136,13 +136,14 @@ async def run(args) -> list[dict]:
     recording = Recording(OllamaLLMAdapter(base_url=args.base_url, model=args.model, timeout_seconds=args.timeout,
                                            num_predict=2048, num_ctx=16384, think=False, max_response_bytes=1_048_576))
     service = GroundedGenerationService(recording)
+    standard = standard_tags(args.catalog)
     rows = []
     for attempt in range(1, args.repeat + 1):
         for persona_id in args.persona or sorted(CASES):
             persona = json.loads((ROOT / f"eval/personas/{persona_id}.json").read_text(encoding="utf-8"))
             started = time.monotonic()
             try:
-                preview, error = await service.extract_experiences(user_texts=persona["interview"]), None
+                preview, error = await service.extract_experiences(user_texts=persona["interview"], standard_tags=standard), None
             except Exception as exc:  # 측정 도구: 예외 종류만 남기고 원문은 출력하지 않는다
                 preview, error = None, type(exc).__name__
             latency = round(time.monotonic() - started, 2)
@@ -172,6 +173,19 @@ def save(path: Path | None, rows: list[dict]) -> None:
         path.write_text(json.dumps({"summary": summary(rows), "rows": rows}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
+def standard_tags(path: Path | None) -> dict[str, list[str]]:
+    """역할 사전 JSON → 표준 태그와 검토된 별칭. 메시지 서비스가 운영 DB 사전에서 만드는 값과 같은 모양이다."""
+    if path is None:
+        return {}
+    tags: dict[str, list[str]] = {}
+    for role in json.loads(path.read_text(encoding="utf-8")):
+        for tag in role["skill_tags"]:
+            tags.setdefault(tag, [])
+        for alias in role["aliases"]:
+            tags.setdefault(alias["skill_tag"], []).append(alias["alias"])
+    return tags
+
+
 def positive(value: str) -> int:
     number = int(value)
     if number < 1:
@@ -188,8 +202,12 @@ def main() -> int:
     parser.add_argument("--persona", action="append", choices=sorted(CASES))
     parser.add_argument("--show", action="store_true", help="추출 내용까지 출력(가상 인물만)")
     parser.add_argument("--prompt-file", type=Path, help="경험 추출 지시문 후보(eval/prompts/). 없으면 서비스의 현재 지시문")
+    parser.add_argument("--catalog", type=Path, default=ROOT / "docs/data/role-catalog.json",
+                        help="표준 태그 선택지로 보낼 역할 사전 JSON. 'none'이면 보내지 않는다")
     parser.add_argument("--out", type=Path, help="결과 JSON 저장 경로(security-reports/ 아래 권장)")
     args = parser.parse_args()
+    if args.catalog is not None and str(args.catalog) == "none":
+        args.catalog = None
     rows = asyncio.run(run(args))
     print("SUMMARY " + json.dumps(summary(rows), ensure_ascii=False))
     # 근거 검사 실패·개인정보 누출·경험 아닌 턴 추출은 실패로 본다.
