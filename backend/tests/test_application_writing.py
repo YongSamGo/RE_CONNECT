@@ -85,3 +85,160 @@ def test_total_field_length_is_checked_after_joining_paragraphs():
     payload = response()
     payload['self_introduction'] = [{'text': '가' * 1100, 'fact_ids': [f'experience:{EXPERIENCE_ID}']}] * 2
     with pytest.raises(LLMInvalidOutputError): generate(payload)
+
+
+# 리뷰 회귀: 공고·다른 사실의 수치나 없는 자격을 개인 경력으로 바꾼 문장은 거절한다(LLM-09).
+FIRST = f'experience:{EXPERIENCE_ID}'
+FIRST_DURATION = f'duration:{EXPERIENCE_ID}'
+
+
+def draft_with(text, fact_ids, context=None):
+    payload = response()
+    payload['motivation'][0] = {'text': text, 'fact_ids': fact_ids}
+    return asyncio.run(GroundedGenerationService(StubAdapter(payload)).application_draft(snapshot=snapshot(), context=context))
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('35년 동안 초등학교 담임교사로 일한 경험을 살리고 싶습니다.', [FIRST]),
+    ('35년 동안 학생들을 가르친 경험을 바탕으로 참여하고 싶습니다.', [FIRST_DURATION]),
+    ('교원 자격증을 보유하고 있어 학습 지도에 도움이 되고 싶습니다.', [FIRST, 'certification:0']),
+])
+def test_accepts_numbers_and_credentials_grounded_in_cited_facts(text, fact_ids):
+    assert draft_with(text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('20년 동안 도서관에서 근무했습니다.', [FIRST]),
+    ('35개월 동안 담임교사로 일했습니다.', [FIRST]),
+    ('5년 동안 담임교사로 일했습니다.', [FIRST]),
+    ('사서 자격증을 보유하고 있습니다.', [FIRST]),
+    ('사서 자격증을 보유하고 있습니다.', [FIRST, 'certification:0']),
+    ('사회복지 과정을 수료했습니다.', [FIRST]),
+])
+def test_rejects_quantities_and_credentials_not_in_cited_facts(text, fact_ids):
+    context = ApplicationContext(opportunity={'id': uuid4(), 'version': 1}, title='경력 20년 이상 사서 모집', description='사서 자격증 소지자 우대')
+    with pytest.raises(LLMInvalidOutputError):
+        draft_with(text, fact_ids, context)
+
+
+def snapshot_with(certifications, courses):
+    base = snapshot()
+    content = base.content.model_copy(update={'certifications': certifications, 'completed_courses': courses})
+    return base.model_copy(update={'content': content})
+
+
+def draft_on(profile, text, fact_ids):
+    payload = response()
+    payload['motivation'][0] = {'text': text, 'fact_ids': fact_ids}
+    return asyncio.run(GroundedGenerationService(StubAdapter(payload)).application_draft(snapshot=profile))
+
+
+@pytest.mark.parametrize('text', [
+    '교원 자격증을 보유하고 있으며 사서 자격증도 보유하고 있습니다.',
+    '교원 자격증을 보유하고 사회복지사 과정을 수료했습니다.',
+    '교원 자격증과 사서 자격증을 보유하고 있습니다.',
+    '교원 자격증을 보유했고 대학원 학위도 취득했습니다.',
+])
+def test_rejects_unsupported_claim_mixed_with_a_grounded_one(text):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot(), text, [FIRST, 'certification:0'])
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('교원 자격증을 보유하고 있으며 사서 2급 자격증도 취득했습니다.', [FIRST, 'certification:0', 'certification:1']),
+    ('교원 자격증을 보유하고 독서지도 과정을 수료했습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('공고의 자격 조건을 확인하고 성실히 참여하고 싶습니다.', [FIRST]),
+])
+def test_accepts_each_claim_grounded_in_its_own_cited_fact(text, fact_ids):
+    profile = snapshot_with(['교원 자격증', '사서 2급'], ['독서지도 과정'])
+    assert draft_on(profile, text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사서 자격증이 있습니다.', [FIRST]),
+    ('간호사 면허가 있습니다.', [FIRST]),
+    ('사서 자격이 있어 도서 정리를 잘할 수 있습니다.', [FIRST]),
+    ('교원 자격증이 있고 사서 자격증도 있습니다.', [FIRST, 'certification:0']),
+])
+def test_rejects_unsupported_possession_without_listed_verbs(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot(), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('교원 자격증이 있어 학습 지도에 도움이 되고 싶습니다.', [FIRST, 'certification:0']),
+    ('봉사 과정에서 아이들과 소통하는 법을 배웠습니다.', [FIRST]),
+    ('공고의 자격 요건과 활동 기준을 확인하고 참여하겠습니다.', [FIRST]),
+])
+def test_accepts_grounded_possession_and_general_wording(text, fact_ids):
+    assert draft_on(snapshot(), text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사회복지사 과정을 마쳤습니다.', [FIRST]),
+    ('교원 자격증이 있고 사회복지사 과정을 마쳤습니다.', [FIRST, 'certification:0']),
+    ('요양보호사 교육을 받았습니다.', [FIRST]),
+    ('독서지도 과정을 끝냈고 상담 연수도 들었습니다.', [FIRST, 'course:0']),
+    ('대학교를 졸업했습니다.', [FIRST]),
+])
+def test_rejects_unsupported_course_completion_wording(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정을 마쳐 아이들과 책 읽기 활동을 할 수 있습니다.', [FIRST, 'course:0']),
+    ('교원 자격증이 있고 독서지도 과정도 마쳤습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('독서지도 과정을 수료했습니다.', [FIRST, 'course:0']),
+    ('활동 과정에서 아이들의 이야기를 귀담아들었습니다.', [FIRST]),
+    ('교육 현장에서 쌓은 경험을 살리고 싶습니다.', [FIRST]),
+])
+def test_accepts_course_completion_grounded_in_cited_course(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사회복지사 과정을 성공적으로 마쳤습니다.', [FIRST]),
+    ('요양보호사 교육을 모두 마쳤습니다.', [FIRST]),
+    ('상담 연수를 지난해에 무사히 끝냈습니다.', [FIRST, 'course:0']),
+    ('교원 자격증이 있고 사회복지사 과정도 성실하게 마쳤습니다.', [FIRST, 'certification:0']),
+])
+def test_rejects_unsupported_completion_with_modifiers(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정을 성공적으로 마쳤습니다.', [FIRST, 'course:0']),
+    ('교원 자격증을 오래 보유하고 있습니다.', [FIRST, 'certification:0']),
+    ('봉사 활동 과정에서 아이들과 함께 책을 읽고 많은 것을 배웠습니다.', [FIRST]),
+    ('교육 현장에서 쌓은 경험을 모두 살리고 싶습니다.', [FIRST]),
+    ('공고의 자격 요건과 활동 기준을 확인하고 참여하겠습니다.', [FIRST]),
+])
+def test_accepts_grounded_completion_with_modifiers_and_general_wording(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
+
+
+# 종합 리뷰 회귀: 자격(보유)과 이수 교육(완료)은 서로 다른 사실 종류에만 묶고, 이름은 단어 경계부터 전체가 같아야 한다.
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정 자격증을 보유하고 있습니다.', [FIRST, 'course:0']),
+    ('교원 자격증 교육을 수료했습니다.', [FIRST, 'certification:0']),
+    ('교원 자격증 교육 수강을 마쳤습니다.', [FIRST, 'certification:0']),
+    ('특수교원 자격증이 있습니다.', [FIRST, 'certification:0']),
+    ('요양보호사 교육을\n모두 마쳤습니다.', [FIRST]),
+    ('교원 자격증이 있고\n사회복지사 과정을 성공적으로 마쳤습니다.', [FIRST, 'certification:0']),
+    ('대학교를 졸업했습니다.', [FIRST, 'course:0']),
+])
+def test_rejects_kind_swaps_partial_names_and_line_breaks(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('활동에 필요한 교육을 수강하고 싶습니다.', [FIRST]),
+    ('필요하면 관련 과정을 이수할 계획입니다.', [FIRST]),
+    ('교원 자격증이 있고\n독서지도 과정을 성공적으로 마쳤습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('(교원 자격증) 보유 경험을 살리고 싶습니다.', [FIRST, 'certification:0']),
+])
+def test_accepts_future_intent_and_full_name_matches(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text

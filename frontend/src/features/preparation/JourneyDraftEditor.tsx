@@ -18,6 +18,7 @@ import { OfficialPreparation } from './OfficialPreparation'
 import { parsePreparation } from './official'
 import { parseJourneyDraft } from './draft-model'
 import type { JourneyDraft } from './draft-model'
+import { EndJourneyAction } from '../journeys/EndJourneyAction'
 
 type Attempt = { key: string; body: components['schemas']['DraftCreate']; owner: string | null }
 type Editor = { draft: JourneyDraft; introduction: string; motivation: string; dirty: boolean; reviewed: boolean }
@@ -29,7 +30,8 @@ export function JourneyDraftApplicationRoute() {
   const navigate = useNavigate()
   const autoGenerate = location.state?.generateDraft === true
   if (!isOpportunityId(journeyId) || !isOpportunityId(opportunityId)) return <UnavailablePage title="체험과 공고 주소를 확인해 주세요">프로필의 추천 화면에서 공고를 다시 선택해 주세요.</UnavailablePage>
-  return <OfficialPreparation opportunityId={opportunityId} withDraft>{applicationUrl => <JourneyDraftEditor key={`${journeyId}:${opportunityId}`} journeyId={journeyId} opportunityId={opportunityId} applicationUrl={applicationUrl} autoGenerate={autoGenerate} onAutoStart={() => navigate(location.pathname, { replace: true, state: null })} />}</OfficialPreparation>
+  return <><OfficialPreparation opportunityId={opportunityId} withDraft>{applicationUrl => <JourneyDraftEditor key={`${journeyId}:${opportunityId}`} journeyId={journeyId} opportunityId={opportunityId} applicationUrl={applicationUrl} autoGenerate={autoGenerate} onAutoStart={() => navigate(location.pathname, { replace: true, state: null })} />}</OfficialPreparation>
+    <EndJourneyAction key={journeyId} journeyId={journeyId} /></>
 }
 
 export const JourneyDraftPreparationRoute = JourneyDraftApplicationRoute

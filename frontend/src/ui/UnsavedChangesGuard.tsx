@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useRef } from 'react'
 import { UNSAFE_DataRouterContext, useBeforeUnload, useBlocker } from 'react-router-dom'
 import { Button } from './Button'
+import { isDiscardConfirmed } from './discardConfirmed'
 
 export function UnsavedChangesGuard({ dirty }: { dirty: boolean }) {
   const router = useContext(UNSAFE_DataRouterContext)
@@ -13,7 +14,7 @@ export function UnsavedChangesGuard({ dirty }: { dirty: boolean }) {
 }
 
 function RouteGuard({ dirty }: { dirty: boolean }) {
-  const blocker = useBlocker(dirty)
+  const blocker = useBlocker(useCallback(({ nextLocation }: { nextLocation: { state: unknown } }) => dirty && !isDiscardConfirmed(nextLocation.state), [dirty]))
   const dialog = useRef<HTMLDialogElement>(null)
   const previousFocus = useRef<HTMLElement | null>(null)
   useEffect(() => {

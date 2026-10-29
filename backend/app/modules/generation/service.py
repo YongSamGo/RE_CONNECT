@@ -34,6 +34,88 @@ class GenerationInputError(ValueError):
 
 _SKILL = TypeAdapter(SkillTag)
 _DURATION = TypeAdapter(text(200))
+# 지원서 문단의 수치는 그 문단이 인용한 확정 사실의 "숫자+단위"로만 허용한다.
+_QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|회|번|명|권|곳|개|세|살|%|퍼센트|급)?")
+# 자격·교육 주장 = "자격·교육 명사 + 보유·완료 동사". 보유 주장은 인용한 자격 사실에,
+# 이수 주장은 인용한 이수 교육 사실에만 묶고, 명사 바로 앞(또는 명사까지)이 그 이름 전체와
+# 단어 경계부터 일치해야 한다. 종류를 바꾼 주장("과정 자격증", "자격증 교육 수료")과
+# 앞에 다른 말이 붙은 다른 이름("특수교원 자격증")은 거절한다.
+_POSSESSION_NOUNS = "자격증|자격|면허증|면허|학위"
+_COMPLETION_NOUNS = "과정|교육|강좌|연수|훈련"
+_COMPLETION_VERBS = {"마쳤", "마치", "마친", "끝냈", "끝마", "끝낸", "완료", "수강", "들었", "들은", "밟", "수료", "이수"}
+# 꾸미는 말은 두 단어까지. 연결 어미로 끝나는 단어와 다른 자격·교육 명사는 넘지 않는다.
+_CREDENTIAL_CLAIM = re.compile(
+    rf"({_POSSESSION_NOUNS}|{_COMPLETION_NOUNS})(?:[을를이가도은는]\s*|\s+)"
+    rf"(?:(?![^\s,.!?]*(?:고|며|서|면|지만|는데)\s)(?![^\s,.!?]*(?:{_POSSESSION_NOUNS}|{_COMPLETION_NOUNS}))[^\s,.!?]+\s+){{0,2}}"
+    r"(보유|취득|소지|갖|가지|가졌|땄|받|있|마쳤|마치|마친|끝냈|끝마|끝낸|완료|수강|들었|들은|밟|수료|이수)")
+# 명사 없이 쓴 수료·이수·졸업은 이수 교육 이름 바로 뒤에서만 허용한다.
+_CREDENTIAL_VERB = re.compile(r"수료|이수|졸업")
+# "~하고 싶다·~하겠다·~할 예정" 같은 앞으로의 계획은 이수 이력 주장이 아니다.
+_INTENT_AFTER = re.compile(r"(?:하|해)?(?:고\s*싶|고자|려고|려는|겠|기를)|(?:하)?(?:할|을)\s*(?:예정|계획|생각|수\s*있|것)")
+# 공백을 지운 문장에서 찾는다. "자격 조건·요건·기준"은 공고 설명에 흔한 일반 표현이라 제외한다.
+# "과정·교육"은 일상 표현("활동 과정에서")에도 쓰여 여기서 빼고, 위의 이수 주장 검사로만 본다.
+_CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|수료증|졸업장|자격(?!조건|요건|기준)")
+_WORD = re.compile(r"[가-힣A-Za-z0-9]")
+
+
+def _quantities(value: str) -> set[tuple[str, str]]:
+    return {(number, unit or "") for number, unit in _QUANTITY.findall(value)}
+
+
+def _compact(value: str) -> str:
+    return re.sub(r"\s+", "", value)
+
+
+def _ends_with_name(prefix: str, name: str) -> bool:
+    """prefix가 name 전체로 끝나고, 그 앞이 글자가 아닌(단어 경계) 경우만 참."""
+    text, target = prefix.rstrip(), _compact(name)
+    if not target or not _compact(text).endswith(target):
+        return False
+    index, count = len(text), 0
+    while index > 0 and count < len(target):
+        index -= 1
+        if not text[index].isspace():
+            count += 1
+    return index == 0 or not _WORD.match(text[index - 1])
+
+
+def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_values: Mapping[str, str]) -> bool:
+    cited = [facts[key] for key in fact_ids]
+    allowed = set().union(*(_quantities(text) for text in cited))
+    numbers = {number for number, _ in allowed}
+    for number, unit in _quantities(value):
+        grounded = (number, unit) in allowed if unit else number in numbers
+        if not grounded:
+            return False
+    certifications = [fact_values[key] for key in fact_ids if key.startswith("certification:") and fact_values[key].strip()]
+    courses = [fact_values[key] for key in fact_ids if key.startswith("course:") and fact_values[key].strip()]
+    claims = list(_CREDENTIAL_CLAIM.finditer(value))
+    for claim in claims:
+        noun, verb = claim.group(1), claim.group(2)
+        completion = verb in _COMPLETION_VERBS or (verb not in {"보유", "소지", "있", "갖", "가지", "가졌"} and re.fullmatch(_COMPLETION_NOUNS, noun))
+        if completion and _INTENT_AFTER.match(value, claim.end()):
+            continue
+        names = courses if completion else certifications
+        # 이름이 명사를 포함("독서지도 과정")하거나, 이름 뒤에 명사를 붙인 경우("사서 2급" 자격증)
+        if not any(_ends_with_name(value[:claim.end(1)], name) or _ends_with_name(value[:claim.start(1)], name) for name in names):
+            return False
+    for verb in _CREDENTIAL_VERB.finditer(value):
+        if any(claim.start() <= verb.start() < claim.end() for claim in claims):
+            continue
+        if _INTENT_AFTER.match(value, verb.end()):
+            continue
+        before = re.sub(r"[을를]\s*$", "", value[:verb.start()])
+        if not any(_ends_with_name(before, name) for name in courses):
+            return False
+    # "자격증이 있습니다"처럼 주장 형태가 아니어도 자격 명사가 남으면 근거 없는 자격이다.
+    rest = value
+    for name in sorted(certifications, key=len, reverse=True):
+        rest = re.sub(r"(?<![가-힣A-Za-z0-9])" + r"\s*".join(map(re.escape, _compact(name))) + rf"\s*(?:{_POSSESSION_NOUNS})?", " ", rest)
+    for name in sorted(courses, key=len, reverse=True):
+        rest = re.sub(r"(?<![가-힣A-Za-z0-9])" + r"\s*".join(map(re.escape, _compact(name))) + rf"\s*(?:{_COMPLETION_NOUNS}|수료증)?", " ", rest)
+    if _CREDENTIAL_NOUN.search(_compact(rest)):
+        return False
+    return True
 
 
 def _fits(adapter: TypeAdapter, value: str) -> bool:
@@ -235,6 +317,7 @@ class GroundedGenerationService:
     async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
         profile = snapshot.content
         facts: dict[str, str] = {}
+        fact_values: dict[str, str] = {}
         for item in profile.experiences:
             if safe_text(item.description) is not None:
                 facts[f"experience:{item.id}"] = f"경험: {item.description}"
@@ -248,6 +331,7 @@ class GroundedGenerationService:
             for index, value in enumerate(values):
                 if safe_text(value) is not None:
                     facts[f"{kind}:{index}"] = f"{label}: {value}"
+                    fact_values[f"{kind}:{index}"] = value
         if not facts:
             raise GenerationInputError("확정한 경험을 확인해 주세요")
         data = {"facts": facts}
@@ -258,9 +342,6 @@ class GroundedGenerationService:
                 "description": safe_text(context.description) if context.description else None,
             }
         plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
-        context_values = (value for value in data.get("opportunity_context", {}).values() if isinstance(value, str))
-        source_text = "\n".join([*facts.values(), *(value for value in context_values if value)])
-        allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
 
         def verify(paragraphs) -> str:
             for paragraph in paragraphs:
@@ -269,7 +350,8 @@ class GroundedGenerationService:
                 value = paragraph.text
                 if safe_text(value) != value or re.search(r"https?://|[<>\u00b7\u318d\u30fb]", value, re.IGNORECASE):
                     raise _invalid()
-                if not set(re.findall(r"\d+(?:[.,]\d+)*", value)).issubset(allowed_numbers):
+                # \uacf5\uace0 \uae00\uc758 \uc218\uce58\u00b7\ub2e4\ub978 \uc0ac\uc2e4\uc758 \uc218\uce58\ub294 \uac1c\uc778 \uacbd\ub825 \uadfc\uac70\uac00 \uc544\ub2c8\ub2e4(LLM-09).
+                if not _paragraph_grounded(value, paragraph.fact_ids, facts, fact_values):
                     raise _invalid()
             result = "\n\n".join(paragraph.text for paragraph in paragraphs)
             if len(result) > 2000:
