@@ -2,11 +2,15 @@
 
 import asyncio
 import json
-from uuid import UUID
+import os
+import secrets
+from uuid import UUID, uuid4
 
 from alembic import command
 import pytest
-from sqlalchemy import create_engine, insert
+from sqlalchemy import create_engine, insert, text
+from sqlalchemy.engine import make_url
+from sqlalchemy.exc import ProgrammingError
 
 from app.core.business_errors import AppError
 from app.persistence import Base
@@ -128,3 +132,49 @@ def test_unavailable_journal_or_over_limit_closes_without_details(capsys):
 def test_limit_must_stay_within_recovery_bound(limit):
     with pytest.raises(SystemExit):
         main(['--limit', limit], lambda *args: None)
+
+
+class NoEvents:
+    """삭제 이력이 없는 버킷. 권한 시험에서 DB 조회만 보게 한다."""
+    @staticmethod
+    def check(): return None
+
+    @staticmethod
+    def events(now, *, limit): return []
+
+
+def test_runtime_like_role_with_read_only_version_table_passes_verify_only():
+    """grant_runtime.sql과 같은 권한(일반 표 DML + alembic_version 읽기만)의 실제 계정으로 확인이 끝나야 한다."""
+    url = os.environ.get('PERSISTENCE_TEST_DATABASE_URL')
+    if url is None: pytest.skip('PostgreSQL 실행 환경 없음. CI의 DB/Redis 통합 잡에서 실행한다')
+    schema, role, password = 'test_' + uuid4().hex, 'restore_check_' + uuid4().hex[:12], secrets.token_hex(16)
+    admin = create_engine(url, isolation_level='AUTOCOMMIT')
+    restricted = create_engine(make_url(url).set(username=role, password=password), connect_args={'options': f'-csearch_path={schema}'})
+    try:
+        with admin.connect() as db:
+            db.exec_driver_sql(f'CREATE SCHEMA "{schema}"')
+            db.exec_driver_sql(f'SET search_path TO "{schema}"')
+            command.upgrade(migration_config(db), 'head')
+            db.exec_driver_sql(f"CREATE ROLE \"{role}\" LOGIN PASSWORD '{password}' NOSUPERUSER NOINHERIT")
+            db.exec_driver_sql(f'GRANT USAGE ON SCHEMA "{schema}" TO "{role}"')
+            db.exec_driver_sql(f'GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA "{schema}" TO "{role}"')
+            db.exec_driver_sql(f'REVOKE ALL ON TABLE "{schema}".alembic_version FROM "{role}"')
+        # 고치기 전 정책(버전 표 접근 없음): 스키마 확인이 권한 오류로 막힌다.
+        with restricted.connect() as db, pytest.raises(ProgrammingError):
+            schema_current(db)
+        with admin.connect() as db: db.exec_driver_sql(f'GRANT SELECT ON TABLE "{schema}".alembic_version TO "{role}"')
+
+        class Service:
+            journal = NoEvents()
+        result = asyncio.run(check(Service(), restricted, 1000, reapply=False))
+        assert result == {'reapplied': 0, 'retried': 0, 'checked_events': 0, 'ready_to_publish': True, 'problems': {}}
+        with restricted.connect() as db:
+            for sql in ("INSERT INTO alembic_version VALUES ('unapproved')", 'DELETE FROM alembic_version'):
+                with pytest.raises(ProgrammingError): db.execute(text(sql))
+                db.rollback()
+    finally:
+        restricted.dispose()
+        with admin.connect() as db:
+            db.exec_driver_sql(f'DROP SCHEMA IF EXISTS "{schema}" CASCADE')
+            db.exec_driver_sql(f'DROP ROLE IF EXISTS "{role}"')
+        admin.dispose()

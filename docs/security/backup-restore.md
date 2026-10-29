@@ -92,6 +92,8 @@ python backend/manage_backups.py --db-instance <DB 식별자> --region ap-northe
    일부 표를 놓칠 수 있으므로 재적용보다 먼저 올린다. `migrate.env`·`app.env`의 DB 주소를 복원 인스턴스로 바꾼 뒤:
    1. `docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm migrate`
    2. 같은 migrator 계정으로 `infra/aws/grant_runtime.sql`을 다시 실행한다. 복원 DB의 역할·암호는 스냅샷 시점 값이다.
+      이 권한에는 runtime 계정의 `alembic_version` 읽기가 들어 있다. 6단계가 runtime 계정으로 스키마 버전을 대조하므로
+      빠뜨리면 조회 실패(종료 코드 2)로 닫힌다. 버전 표 쓰기는 runtime에 주지 않는다.
 6. **삭제 재적용과 공개 전 확인:** 같은 S3 버킷을 그대로 둔 채 실행한다.
 
    ```bash
