@@ -66,6 +66,15 @@ describe('contract transport', () => {
     const result = await createApiClient({ fetch: async () => new Response(null, { status: 204 }) }).POST('/auth/logout')
     expect(result.data).toBeUndefined()
   })
+  it('preserves the original successful response and transport metadata after buffering JSON', async () => {
+    const response = json(anonymousSession, 200, { 'Cache-Control': 'no-store' })
+    Object.defineProperty(response, 'url', { value: 'https://reconnect.test/api/v1/me' })
+    const result = await createApiClient({ fetch: async () => response }).GET('/me')
+    expect(result.response).toBe(response)
+    expect(result.response.url).toBe('https://reconnect.test/api/v1/me')
+    expect(result.response.headers.get('Cache-Control')).toBe('no-store')
+    expect(result.data).toEqual(anonymousSession)
+  })
   it.each(['fetch', 'Request', 'middleware'])('does not allow the %s extension to bypass transport policy', async (extension) => {
     const fetch = vi.fn()
     const override = vi.fn()

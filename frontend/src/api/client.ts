@@ -59,7 +59,7 @@ export function createApiClient(options: ClientOptions = {}): Pick<Client<Browse
       return await Promise.race([interrupted, (async () => {
       if (request.signal.aborted) throw new ApiError('CANCELLED')
       const secured = new Request(request, { headers, credentials: 'same-origin', cache: 'no-store', redirect: 'error', mode: 'same-origin', signal: controller.signal })
-      let response = await send(secured)
+      const response = await send(secured)
       if (controller.signal.aborted) throw new ApiError(request.signal.aborted ? 'CANCELLED' : 'TIMEOUT')
       if (!response.ok) throw await responseError(response)
       if (response.status !== 204) {
@@ -68,19 +68,17 @@ export function createApiClient(options: ClientOptions = {}): Pick<Client<Browse
           if (contentType !== 'audio/wav') throw new ApiError('INVALID_RESPONSE', response.status)
           // Keep the deadline and caller cancellation active until the audio
           // body has downloaded; openapi-fetch parses it after safeFetch returns.
-          response = new Response(await response.arrayBuffer(), { status: response.status, headers: response.headers })
+          await response.clone().arrayBuffer()
         } else {
           if (contentType !== 'application/json') throw new ApiError('INVALID_RESPONSE', response.status)
           // Reject invalid success JSON here so a parser exception cannot reveal
           // a server body. This is syntax checking, not runtime schema validation.
-          const body = await response.text()
-          JSON.parse(body)
-          // Return buffered bytes: downstream parsing cannot restart a network read
-          // after the request deadline has been removed.
-          response = new Response(body, { status: response.status, statusText: response.statusText, headers: response.headers })
+          await response.clone().json()
         }
       }
       if (controller.signal.aborted) throw new ApiError(request.signal.aborted ? 'CANCELLED' : 'TIMEOUT')
+      // Keep the original response (URL/type/redirect metadata included). Once
+      // the clone is fully read, the original branch is buffered as well.
       return response
       })()])
     } catch (error) {
