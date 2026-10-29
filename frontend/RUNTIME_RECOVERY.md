@@ -35,3 +35,13 @@ API의 고정 오류 문구, CSRF·동일 출처 제한, 중복 제출 방지, �
 - 전체 테스트·E2E·실제 기기·실제 백엔드 장애 주입은 실행하지 않았다.
 
 구현 참고: [React Router 오류 경계](https://reactrouter.com/how-to/error-boundary), [미디어 오류 이벤트](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/error_event).
+
+## 지속 점검과 CI 후속 수정
+
+- 첫 CI에서 API 계약 테스트 4개가 원본 `Response.url` 유실로 실패했다. 본문을 새 Response로 재구성하던 코드를 복제본의 본문을 먼저 읽고 원본 응답을 전달하는 방식으로 수정했다. JSON·음성의 원본 메타데이터를 유지하며 독립된 취소/제한시간 경계는 유지한다. 원본 응답의 동일성·URL·헤더·JSON 결과 회귀 검사를 추가했다.
+- 기존 `npm run lint`에 React 효과 의존성 검사와 Promise `.then()` 체인의 실패 처리 검사를 추가했다. 새 의존성이나 별도 CI 워크플로는 추가하지 않았다. 의존성이 누락된 효과와 catch 없는 체인의 의도적 잘못된 예제로 두 규칙의 탐지를 확인했다. 정상 프론트 소스·설정 182개 파일은 지정된 Oxlint 1.89.0 검사에서 경고/오류 0개였다. 검사 출력과 의도적 잘못된 예제는 커밋하지 않는 `security-reports/`에만 보관한다.
+- 로컬 `node_modules` 잠금을 건드리지 않고 `npm exec --yes --ignore-scripts --package=oxlint@1.89.0 -- oxlint ...`로 지정 버전 검사를 수행했다. 전체 의존성 재설치는 반복하지 않았다. 수정한 테스트·계약·빌드의 최종 검증은 실제 PR HEAD의 원격 CI에서 확인한다.
+- Codex 개인 환경에 OpenAI 공식 `security-best-practices`와 `gh-fix-ci` 스킬을 설치했다. 설치 경로는 저장소 밖이며 팀원에게 설치를 요구하지 않는다. 프로젝트에는 기존 lint·TypeScript·CodeQL·의존성 취약점/서명 검사·브라우저 회귀·주간 재검사가 이미 있다.
+- 이 채팅의 매일 09:00(한국 시간) 지속 점검은 미완료 장애/CI 실패를 먼저 처리하고 발견 사항을 수정·검증한다. 관련 변경은 열린 작업 PR에 묶고, 변경이 없으면 알리지 않는다. 자동화의 실행 기록과 미검증 범위는 로컬 `security-reports/frontend-quality-state.md`에 남긴다.
+
+검사 규칙: [React 효과 의존성](https://oxc.rs/docs/guide/usage/linter/rules/react/exhaustive-deps), [Promise 실패 처리](https://oxc.rs/docs/guide/usage/linter/rules/promise/catch-or-return).
