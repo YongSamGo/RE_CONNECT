@@ -217,3 +217,28 @@ def test_rejects_unsupported_completion_with_modifiers(text, fact_ids):
 ])
 def test_accepts_grounded_completion_with_modifiers_and_general_wording(text, fact_ids):
     assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
+
+
+# 종합 리뷰 회귀: 자격(보유)과 이수 교육(완료)은 서로 다른 사실 종류에만 묶고, 이름은 단어 경계부터 전체가 같아야 한다.
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정 자격증을 보유하고 있습니다.', [FIRST, 'course:0']),
+    ('교원 자격증 교육을 수료했습니다.', [FIRST, 'certification:0']),
+    ('교원 자격증 교육 수강을 마쳤습니다.', [FIRST, 'certification:0']),
+    ('특수교원 자격증이 있습니다.', [FIRST, 'certification:0']),
+    ('요양보호사 교육을\n모두 마쳤습니다.', [FIRST]),
+    ('교원 자격증이 있고\n사회복지사 과정을 성공적으로 마쳤습니다.', [FIRST, 'certification:0']),
+    ('대학교를 졸업했습니다.', [FIRST, 'course:0']),
+])
+def test_rejects_kind_swaps_partial_names_and_line_breaks(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('활동에 필요한 교육을 수강하고 싶습니다.', [FIRST]),
+    ('필요하면 관련 과정을 이수할 계획입니다.', [FIRST]),
+    ('교원 자격증이 있고\n독서지도 과정을 성공적으로 마쳤습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('(교원 자격증) 보유 경험을 살리고 싶습니다.', [FIRST, 'certification:0']),
+])
+def test_accepts_future_intent_and_full_name_matches(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
