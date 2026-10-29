@@ -184,6 +184,24 @@ jobs:
       - name: Nginx 설정 생성기 보안약점 점검 (bandit)
         if: matrix.project == 'backend'
         run: bandit ../infra/nginx/render_config.py --severity-level low --confidence-level medium
+      - name: AWS 네트워크·TLS 회귀 및 도구 보안 점검
+        if: matrix.project == 'backend'
+        run: |
+          python -m pip install --require-hashes -r ../infra/aws/requirements-dev.txt
+          python -m unittest discover -s ../infra/aws/tests -v
+          bandit ../infra/aws/check_database_tls.py --severity-level low --confidence-level medium
+          pip-audit -r ../infra/aws/requirements-dev.txt --strict --progress-spinner off
+      - name: PostgreSQL 16 비슈퍼유저 초기화·함수 권한 회귀
+        if: matrix.project == 'backend'
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          cluster="$(mktemp -d /tmp/reconnect-db-roles-XXXXXXXX)"
+          mkdir "$cluster/socket"
+          initdb -D "$cluster/postgres" --username=postgres --auth=trust --no-locale --encoding=UTF8
+          pg_ctl -D "$cluster/postgres" -o "-k $cluster/socket -h '' -p 55491" -w start
+          trap 'pg_ctl -D "$cluster/postgres" -m fast -w stop' EXIT
+          createdb --host "$cluster/socket" --port 55491 --username postgres reconnect
+          DB_ROLE_TEST_SOCKET="$cluster/socket" python -m unittest discover -s ../infra/aws/tests -p test_database_roles.py -v
       - name: 코드 보안약점 점검 (bandit)
         # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
         # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.
