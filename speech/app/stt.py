@@ -4,6 +4,7 @@ from dataclasses import dataclass
 import os
 import unicodedata
 
+from app.device import selected_device, stt_options
 from app.audio import AudioRejected, RATE, decode_audio
 from prepare_models import BASE, load_manifest, prepare
 
@@ -30,9 +31,12 @@ class LocalSTT:
         os.environ['HF_HUB_OFFLINE'] = '1'
         os.environ['TRANSFORMERS_OFFLINE'] = '1'
         from faster_whisper import WhisperModel
-        # CPU 검증용 고정 설정이다. GPU/EC2 성능을 추정하거나 자동 사용하지 않는다.
-        return cls(WhisperModel(str(directory), device='cpu', compute_type='int8', cpu_threads=2,
-            num_workers=1, local_files_only=True))
+        device = selected_device()
+        if device == 'cuda':
+            import ctranslate2
+            if ctranslate2.get_cuda_device_count() < 1:
+                raise ModelFailure()
+        return cls(WhisperModel(str(directory), **stt_options(device)))
 
     def transcribe(self, data: bytes, media: str) -> Transcript:
         samples = None

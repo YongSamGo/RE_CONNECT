@@ -120,6 +120,8 @@ def valid_config():
     services["ollama"]["environment"] = dict(OLLAMA_NO_CLOUD="1", OLLAMA_KEEP_ALIVE="-1", OLLAMA_NUM_PARALLEL="1",
         OLLAMA_MAX_LOADED_MODELS="1", OLLAMA_CONTEXT_LENGTH="16384")
     services["ollama"]["deploy"] = {"resources": {"reservations": {"devices": [{"driver": "nvidia", "count": 1, "capabilities": ["gpu"]}]}}}
+    services["speech"]["deploy"] = copy.deepcopy(services["ollama"]["deploy"])
+    services["speech"]["environment"] = {"SPEECH_DEVICE": "cuda"}
     return {"services": services, "networks": {"models": {"internal": True}}}
 
 
@@ -160,7 +162,7 @@ class RenderedComposeTests(unittest.TestCase):
     def test_effective_production_overlay(self):
         repository = ROOT.parents[1]
         environment = os.environ.copy()
-        for key in ("BACKEND_IMAGE", "FRONTEND_IMAGE", "SPEECH_IMAGE", "OLLAMA_IMAGE"):
+        for key in ("BACKEND_IMAGE", "FRONTEND_IMAGE", "SPEECH_IMAGE", "SPEECH_GPU_IMAGE", "OLLAMA_IMAGE"):
             environment[key] = "example@sha256:" + "a" * 64
         environment.update(AWS_REGION="ap-northeast-2", DEPLOY_ENV="staging",
             OLLAMA_MODELS_DIR=str(repository / "models/ollama"),
@@ -168,9 +170,10 @@ class RenderedComposeTests(unittest.TestCase):
             OLLAMA_MEMORY_LIMIT="8g", SPEECH_MEMORY_LIMIT="8g", OLLAMA_CPUS="2", SPEECH_CPUS="2")
         with tempfile.TemporaryDirectory() as directory:
             env = Path(directory) / "empty.env"; env.write_text("")
+            environment.update(APP_ENV_FILE=str(env), REDIS_ENV_FILE=str(env), MIGRATE_ENV_FILE=str(env))
             result = subprocess.run(["docker", "compose", "--env-file", str(env),
                 "-f", "infra/compose.prod.yaml", "-f", "infra/compose.models.yaml",
-                "--profile", "model-tools", "config", "--no-env-resolution", "--format", "json"],
+                "--profile", "model-tools", "config", "--format", "json"],
                 cwd=repository, env=environment, capture_output=True, timeout=30, check=True)
         rendered = json.loads(result.stdout)
         config.validate(rendered)

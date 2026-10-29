@@ -55,9 +55,18 @@ services:
               count: 1
               capabilities: [gpu]
 
-  # 현재 검증된 음성 이미지는 CPU 전용이다. GPU 지원으로 오인하지 않는다.
+  # Dockerfile.gpu로 빌드·검사한 별도 이미지. CPU 릴리스 이미지와 섞지 않는다.
   speech:
-    image: ${SPEECH_IMAGE:?릴리스 manifest의 speech digest 이미지}
+    environment:
+      SPEECH_DEVICE: cuda
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    image: ${SPEECH_GPU_IMAGE:?검증한 speech GPU digest 이미지}
     platform: linux/amd64
     user: "10001:10001"
     init: true

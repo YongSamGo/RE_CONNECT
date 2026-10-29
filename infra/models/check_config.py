@@ -67,9 +67,12 @@ def validate(config):
                 "OLLAMA_MAX_LOADED_MODELS": "1", "OLLAMA_CONTEXT_LENGTH": "16384"}
     if any(environment.get(key) != value for key, value in required.items()):
         raise ValueError("model environment mismatch")
-    devices = services["ollama"]["deploy"]["resources"]["reservations"]["devices"]
-    if len(devices) != 1 or devices[0].get("driver") != "nvidia" or devices[0].get("count") != 1 or devices[0].get("capabilities") != ["gpu"]:
-        raise ValueError("GPU reservation mismatch")
+    if services["speech"].get("environment", {}).get("SPEECH_DEVICE") != "cuda":
+        raise ValueError("speech GPU mode required")
+    for name in ("ollama", "speech"):
+        devices = services[name]["deploy"]["resources"]["reservations"]["devices"]
+        if len(devices) != 1 or devices[0].get("driver") != "nvidia" or devices[0].get("count") != 1 or devices[0].get("capabilities") != ["gpu"]:
+            raise ValueError("GPU reservation mismatch")
 
 
 def main():

@@ -47,8 +47,10 @@ LOCKFILES = (
     "frontend/package-lock.json",
     "speech/requirements.txt",
     "speech/tts_compat/requirements.txt",
+    "speech/gpu/requirements.txt",
+    "speech/gpu/ct2-requirements.txt",
 )
-DOCKERFILES = ("backend/Dockerfile", "frontend/Dockerfile", "speech/Dockerfile")
+DOCKERFILES = ("backend/Dockerfile", "frontend/Dockerfile", "speech/Dockerfile", "speech/Dockerfile.gpu")
 MODEL_MANIFESTS = ("speech/model-manifest.json", "backend/tools/ollama-manifest.json")
 COMPOSE_FILES = ("infra/compose.prod.yaml", "infra/compose.models.yaml")
 
