@@ -141,3 +141,32 @@ def test_read_regions_is_capped_and_long_input_is_safe():
 ])
 def test_read_activity_types(text, kinds):
     assert questions.read_activity_types(text) == kinds
+
+
+# 2026-10-29 시연 서버에서 서울 25개 구를 음성 합성 → 음성 인식으로 돌린 실제 결과 일부와 흔한 변형.
+@pytest.mark.parametrize(("heard", "district"), [
+    ("서울 맛보고요", "mapo"), ("서울 영등포고요.", "yeongdeungpo"), ("서울중구여", "jung"),
+    ("서울성동구역", "seongdong"), ("하... 서울 동작구요?", "dongjak"), ("서울 강소구요", "gangseo"),
+    ("서울 송바구요", "songpa"), ("마포고요", "mapo"), ("고양씨요", "goyang"),
+])
+def test_read_regions_picks_closest_district_for_misheard_names(heard, district):
+    assert [item["district"] for item in questions.read_regions(heard)] == [district]
+
+
+@pytest.mark.parametrize("text", [
+    "남동생이랑 살아요", "택시 했어요. 한 삼십 년.", "맛보고 싶어요", "육십삼년생이에요", "잘 모르겠어요",
+    "돈은 안 받아도 되고, 아이들 공부 봐주는 일이면 좋겠어요.",
+])
+def test_closest_district_does_not_guess_from_unrelated_answers(text):
+    assert questions.read_regions(text) == []
+
+
+def test_closest_district_ignores_answers_from_persona_interviews():
+    import json
+    from pathlib import Path
+    root = Path(__file__).resolve().parents[2] / "eval/personas"
+    turns = [turn for path in sorted(root.glob("P0*.json")) for turn in json.loads(path.read_text(encoding="utf-8"))["interview"]]
+    # 지명이 그대로 나온 문장은 정확히 맞춰 읽으므로 가장 비슷한 지명 고르기는 쓰지 않는다.
+    unrelated = [turn for turn in turns if questions._fuzzy_district(turn) and not any(
+        pattern.search(turn) for _, _, pattern in questions._DISTRICT_PATTERNS)]
+    assert unrelated == []

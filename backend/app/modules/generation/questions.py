@@ -113,9 +113,76 @@ _DISTRICT_PATTERNS = [
 ]
 
 
+# 음성 인식이 지명을 비슷한 소리의 다른 말로 적는 경우(측정: "마포구요" → "맛보고요", "영등포구요" → "영등포고요")를
+# 위해, 정확히 맞는 이름이 없을 때만 자모 단위로 가장 비슷한 지명을 고른다. 소리가 비슷한 자모끼리는 차이를 작게 친다.
+_CHO = "ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"
+_JUNG = "ㅏㅐㅑㅒㅓㅔㅕㅖㅗㅘㅙㅚㅛㅜㅝㅞㅟㅠㅡㅢㅣ"
+_JONG = ["", *"ㄱㄲㄳㄴㄵㄶㄷㄹㄺㄻㄼㄽㄾㄿㅀㅁㅂㅄㅅㅆㅇㅈㅊㅋㅌㅍㅎ"]
+_SIMILAR = [set(group) for group in ("ㄱㅋㄲ", "ㄷㅌㄸ", "ㅂㅍㅃ", "ㅈㅊㅉ", "ㅅㅆ", "ㅗㅜ", "ㅐㅔ", "ㅓㅗ", "ㅕㅛ", "ㅚㅙㅞ")]
+_FUZZY_MAX = 1.5  # 세 글자 이상 지명에만 쓴다. 두 글자(중구)는 정확히 맞을 때만 받는다.
+
+
+def _syllables(text: str) -> list[tuple[str, str, str]]:
+    out = []
+    for char in text:
+        code = ord(char) - 0xAC00
+        if 0 <= code < 11172:
+            out.append((_CHO[code // 588], _JUNG[code % 588 // 28], _JONG[code % 28]))
+    return out
+
+
+def _sound(a: str, b: str) -> float:
+    return 0.0 if a == b else 0.5 if any(a in group and b in group for group in _SIMILAR) else 1.0
+
+
+def _syllable_cost(a: tuple[str, str, str], b: tuple[str, str, str]) -> float:
+    # 받침은 있고 없음만 달라도 0.5("마"↔"맛"), 서로 다르면 소리 차이대로 센다.
+    tail = 0.0 if a[2] == b[2] else 0.5 if not a[2] or not b[2] else _sound(a[2], b[2])
+    return _sound(a[0], b[0]) + _sound(a[1], b[1]) + tail
+
+
+def _closest_span(target: list[tuple[str, str, str]], text: list[tuple[str, str, str]]) -> float:
+    """target이 text의 어느 부분과 가장 비슷한지. 글자끼리 맞추고(시작·끝 자유) 글자 안의 자모 차이를 센다.
+    자모를 글자 경계 너머로 맞추지 않아서 "한 삼십"을 "하남시"로 읽지 않는다. 글자 넣고 빼기는 1.0이다."""
+    previous = [0.0] * (len(text) + 1)
+    for a in target:
+        current = [previous[0] + 1.0] + [0.0] * len(text)
+        for j, b in enumerate(text, 1):
+            current[j] = min(previous[j] + 1.0, current[j - 1] + 1.0, previous[j - 1] + _syllable_cost(a, b))
+        previous = current
+    return min(previous)
+
+
+def _fuzzy_district(text: str) -> tuple[str, str] | None:
+    # 지역 질문의 짧은 답에만 쓴다. 긴 문장에서는 짧은 지명(구리시·하남시)이 우연히 비슷하게 잡힌다.
+    if len(re.findall(r"[가-힣]", text)) > 25:
+        return None
+    letters = _syllables(text)
+    # 시·도를 말했으면 그 안에서만 고르고, 말하지 않았으면 더 가깝게 들린 것만 받는다.
+    named = [province for province, word in _PROVINCE_WORDS.items() if word in text]
+    limit = _FUZZY_MAX if named else 0.5
+    scored = []
+    for province, items in DISTRICTS.items():
+        if named and province not in named:
+            continue
+        for slug, name in items:
+            if len(name) < 3:
+                continue
+            full, stem = _closest_span(_syllables(name), letters), _closest_span(_syllables(name[:-1]), letters)
+            # 끝의 구·시·군도 비슷하게 들려야 한다. "남동생"처럼 앞부분만 같은 다른 낱말을 고르지 않는다.
+            if full - stem <= 0.5:
+                scored.append((full, province, slug))
+    scored.sort()
+    if not scored or scored[0][0] > limit or (len(scored) > 1 and scored[1][0] - scored[0][0] < 0.5):
+        return None
+    return scored[0][1], scored[0][2]
+
+
 def read_regions(text: str) -> list[dict]:
     """답에 나온 시·군·구. 시·도만 말하면(예: "서울이면 다 좋아요") 그 시·도 전체로 본다. 최대 10곳."""
     found = [(province, slug) for province, slug, pattern in _DISTRICT_PATTERNS if pattern.search(text)]
+    if not found and (closest := _fuzzy_district(text)) is not None:
+        found = [closest]
     regions = [{"province": province, "district": slug} for province, slug in found]
     named = {province for province, _ in found}
     regions += [{"province": province, "district": None} for province, word in _PROVINCE_WORDS.items()
