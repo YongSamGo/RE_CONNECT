@@ -403,6 +403,19 @@ def test_past_work_without_details_is_kept_and_duration_is_read_from_the_descrip
     assert [(e.description, e.duration_note) for e in result.experiences] == [(texts[0], None), (texts[1], "20년동안")]
 
 
+@pytest.mark.parametrize(("text", "durations"), [
+    ("내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요", ["20년동안"]),
+    # 리뷰 #318: 시점(전·후·뒤)은 기간이 아니다. 뒤에 실제 기간이 있으면 그것을 쓴다.
+    ("10년 전에 시계방을 운영했어요.", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", ["6개월간"]),
+    ("2년 뒤에 경비 일을 했어요.", [None]),
+])
+def test_duration_read_from_description_skips_points_in_time(text, durations):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
 @pytest.mark.parametrize("text", [
     "인천 남동구 살아요.", "어르신 돕는 일이면 좋겠어요.", "정년 퇴직하고 이 년쯤 쉬었네요.", "육십삼년생이에요.",
     "자격증은 전기기능사하고 주택관리사 보 있어요.", "봉사로 하고 싶어요.",
