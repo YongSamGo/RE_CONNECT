@@ -3,6 +3,7 @@
 import datetime as dt
 import io
 import json
+import re
 import sys
 import tempfile
 import unittest
@@ -31,7 +32,9 @@ class ReleaseManifestTest(unittest.TestCase):
         manifest = release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, IMAGES, {})
         self.assertEqual(manifest["images"], IMAGES)
         self.assertEqual(len(manifest["migrations"]["heads"]), 1)
-        self.assertEqual(manifest["prompts"]["generation"], "grounded-v1")
+        prompts = (release_manifest.ROOT / "backend/app/modules/generation/prompts.py").read_text(encoding="utf-8")
+        expected = re.search(r'^PROMPT_VERSION = "([^"]+)"', prompts, re.M).group(1)
+        self.assertEqual(manifest["prompts"]["generation"], expected)
         self.assertEqual(set(manifest["lockfiles"]), set(release_manifest.LOCKFILES))
         for refs in manifest["base_images"].values():
             self.assertTrue(refs and all("@sha256:" in ref for ref in refs))
