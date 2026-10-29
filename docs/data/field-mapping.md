@@ -14,7 +14,7 @@
 | 목록·상세 | `getJobList` → `getJobInfo(id=jobId)` | `getVltrAreaList(schSido=…)` → `getVltrPartcptnItem(progrmRegistNo=…)` |
 | 인증키 | `DATA_GO_KR_SERVICE_KEY` (두 출처 공통, `.env`·운영 비밀값 저장소) | 같음 |
 | 일 한도(개발계정) | 10,000건 | 1,000건 |
-| 지역 범위 | 검색 조건이 없어 전체 페이지를 받고 `workPlcNm` 시·도로 거른다 | `schSido`로 서울·경기·인천만 요청한다 |
+| 지역 범위 | 지역 검색 조건이 없어 `workPlcNm` 시·도로 거른다. 접수 시작일 `frDd`(그 날짜 이상)로 증분 수집할 수 있다([출처 조사](sources.md) §2) | `schSido`로 서울·경기·인천만 요청한다 |
 | `activity_type` | `employment` 고정 | `volunteering` 고정 |
 | 이용 조건 | 이용허락범위 제한 없음 | 이용허락범위 제한 없음 |
 | 공식 상세(= `source_url`·`application_url`) | `https://www.work24.go.kr/wk/a/b/1500/empDetailAuthView.do?wantedAuthNo=<wantedAuthNo>&infoTypeCd=VALIDATION&infoTypeGroup=tb_workinfoworknet` (원 시스템 `stmNm=워크넷`일 때만) | `https://www.1365.go.kr/vols/P9210/partcptn/timeCptn.do?type=show&progrmRegistNo=<progrmRegistNo>` |
