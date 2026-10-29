@@ -30,6 +30,8 @@ MAX_DEPTH = 32
 MAX_TEXT = 65536
 TOTAL_TIMEOUT = 20.0
 IO_TIMEOUT = 5.0
+# 노인 일자리 API의 약 7초 응답을 허용하되 전체 20초 제한은 유지한다.
+SENURI_READ_TIMEOUT = 15.0
 # 순서는 영속 수집 커서의 region_index와 대응한다. 변경 시 커서 마이그레이션이 필요하다.
 VOLUNTEER_REGIONS = ("6110000", "6410000", "6280000")
 
@@ -212,6 +214,7 @@ async def fetch(request: FetchRequest, key: SecretStr) -> FetchResult:
     value = key.get_secret_value()
     if not value.strip() or len(value) > 512 or any(ord(c) < 32 or ord(c) == 127 for c in value):
         return FetchResult(FetchStatus.CONFIGURATION)
+    read_timeout = SENURI_READ_TIMEOUT if request.operation in ("senuri_list", "senuri_detail") else IO_TIMEOUT
     try:
         async with asyncio.timeout(TOTAL_TIMEOUT):
             async with httpcore.AsyncConnectionPool(network_backend=PublicNetworkBackend(),
@@ -219,7 +222,8 @@ async def fetch(request: FetchRequest, key: SecretStr) -> FetchResult:
                     max_keepalive_connections=0, retries=0) as pool:
                 async with pool.stream("GET", _url(request, key),
                         headers=[(b"Accept", b"application/xml"), (b"Accept-Encoding", b"identity")],
-                        extensions={"timeout": {k: IO_TIMEOUT for k in ("connect", "read", "write", "pool")}}) as response:
+                        extensions={"timeout": {"connect": IO_TIMEOUT, "read": read_timeout,
+                                                "write": IO_TIMEOUT, "pool": IO_TIMEOUT}}) as response:
                     if 300 <= response.status < 400:
                         return FetchResult(FetchStatus.REDIRECT, http_status=response.status)
                     if response.status != 200:
