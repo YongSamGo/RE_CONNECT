@@ -1,7 +1,7 @@
-# 다시잇다 CI — 모든 PR과 main push에 보안 점검을 자동으로 건다.
+# 다시잇다 CI — 모든 PR과 main·develop push에 보안 점검을 자동으로 건다.
 #
 # 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
-# (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
+# 필수 프로젝트 매니페스트가 빠지거나 필수 점검이 skip되면 `CI 통과`가 실패한다.
 #
 # 워크플로 자체 보안 원칙
 # - 외부 액션은 태그가 아니라 커밋 SHA로 고정 (태그 변조·공급망 공격 방지)
@@ -15,9 +15,10 @@ name: CI
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, develop]
   schedule:
-    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사
+    # 코드 변경이 없어도 새로 공개된 취약점(CVE)을 잡기 위해 매주 월요일 09:00 KST 재검사.
+    # schedule은 기본 브랜치(develop)에서만 돌기 때문에, 아래 weekly-main 잡이 main에도 CI·CodeQL을 실행시킨다.
     - cron: "0 0 * * 1"
   workflow_dispatch:
 
@@ -46,6 +47,7 @@ jobs:
     outputs:
       python_projects: ${{ steps.scan.outputs.python_projects }}
       frontend: ${{ steps.scan.outputs.frontend }}
+      missing_required_manifests: ${{ steps.scan.outputs.missing_required_manifests }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -54,12 +56,20 @@ jobs:
         name: 존재하는 프로젝트 찾기
         run: |
           projects=""
-          for dir in backend worker; do
+          for dir in backend worker speech speech/tts_compat; do
             if [ -f "$dir/requirements.txt" ]; then
               projects="${projects:+$projects,}\"$dir\""
             fi
           done
           echo "python_projects=[$projects]" >> "$GITHUB_OUTPUT"
+
+          missing=""
+          for file in backend/requirements.txt frontend/package-lock.json speech/requirements.txt speech/tts_compat/requirements.txt; do
+            if [ ! -f "$file" ]; then
+              missing="${missing:+$missing,}$file"
+            fi
+          done
+          echo "missing_required_manifests=$missing" >> "$GITHUB_OUTPUT"
 
           if [ -f frontend/package-lock.json ]; then
             echo "frontend=true" >> "$GITHUB_OUTPUT"
@@ -99,7 +109,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: zizmor 설치
@@ -109,6 +119,35 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: zizmor --min-severity low .
+
+  hidden-text:
+    name: 숨은 문자·지시문 점검
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 2 # PR 병합 커밋의 첫 부모(base)와 비교해 새로 추가된 줄을 찾는다
+          persist-credentials: false
+      - name: 검사 스크립트 회귀 시험
+        run: python3 -I .github/scripts/test_check_hidden_text.py
+      - name: 필수 점검 집계 회귀 시험
+        run: python3 -I .github/scripts/test_check_required_checks.py
+      - name: API 계약 경로 비교기 회귀 시험
+        run: python3 -m unittest tools.tests.test_check_api_coverage
+      - name: 숨은 문자(실패)·에이전트 지시 파일 의심 문구(경고) 검사
+        # AI 개발 도구가 읽는 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자 등)를 막는다.
+        # 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md AGT-01·AGT-03
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            python3 -I .github/scripts/check_hidden_text.py --diff-base HEAD^1
+          else
+            python3 -I .github/scripts/check_hidden_text.py
+          fi
 
   python:
     # 매트릭스 값은 이름 뒤에 자동으로 붙는다 (예: "Python 점검 (backend)")
@@ -123,6 +162,8 @@ jobs:
       fail-fast: false
       matrix:
         project: ${{ fromJSON(needs.detect.outputs.python_projects) }}
+    env:
+      PYTHON_PROJECT: ${{ matrix.project }}
     defaults:
       run:
         working-directory: ${{ matrix.project }}
@@ -130,25 +171,156 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: ${{ env.PYTHON_VERSION }}
       - name: 의존성·점검 도구 설치
         run: |
-          python -m pip install -r requirements.txt -r requirements-dev.txt
+          if [ "$PYTHON_PROJECT" = speech/tts_compat ]; then
+            python -m pip install --require-hashes -r requirements.txt -r requirements-dev.txt
+          else
+            python -m pip install -r requirements.txt -r requirements-dev.txt
+          fi
           python -m pip install "bandit==${BANDIT_VERSION}" "pip-audit==${PIP_AUDIT_VERSION}"
+      - name: 고정 TTS 코드 준비와 STT 의존성 공존 확인
+        if: matrix.project == 'speech/tts_compat'
+        run: |
+          python -m pip install --require-hashes -r ../requirements.txt -r ../requirements-dev.txt
+          python -I ../prepare_tts_code.py
+          python -I ../prepare_tts_code.py --verify-only
+          python -m pytest -q -c ../pyproject.toml ../tests
       - name: 테스트 (pytest — 정상 입력 + 공격 시나리오)
         run: python -m pytest
+      - name: Nginx 렌더러 정상 도메인·설정 삽입 회귀 시험
+        if: matrix.project == 'backend'
+        run: python -m unittest discover -s ../infra/nginx/tests -v
+      - name: Nginx 설정 생성기 보안약점 점검 (bandit)
+        if: matrix.project == 'backend'
+        run: bandit ../infra/nginx/render_config.py --severity-level low --confidence-level medium
+      - name: AWS 네트워크·TLS 회귀 및 도구 보안 점검
+        if: matrix.project == 'backend'
+        run: |
+          python -m pip install --require-hashes -r ../infra/aws/requirements-dev.txt
+          python -m unittest discover -s ../infra/aws/tests -v
+          bandit ../infra/aws/check_database_tls.py --severity-level low --confidence-level medium
+          pip-audit -r ../infra/aws/requirements-dev.txt --strict --progress-spinner off
+      - name: PostgreSQL 16 비슈퍼유저 초기화·함수 권한 회귀
+        if: matrix.project == 'backend'
+        run: |
+          export PATH="/usr/lib/postgresql/16/bin:$PATH"
+          cluster="$(mktemp -d /tmp/reconnect-db-roles-XXXXXXXX)"
+          mkdir "$cluster/socket"
+          initdb -D "$cluster/postgres" --username=postgres --auth=trust --no-locale --encoding=UTF8
+          pg_ctl -D "$cluster/postgres" -o "-k $cluster/socket -h '' -p 55491" -w start
+          trap 'pg_ctl -D "$cluster/postgres" -m fast -w stop' EXIT
+          createdb --host "$cluster/socket" --port 55491 --username postgres reconnect
+          DB_ROLE_TEST_SOCKET="$cluster/socket" python -m unittest discover -s ../infra/aws/tests -p test_database_roles.py -v
+      - name: 평가 도구 채점·판정 회귀 시험
+        # eval/의 채점 기준이 조용히 바뀌면 측정 결과를 서로 비교할 수 없게 된다 (#276 리뷰).
+        if: matrix.project == 'backend'
+        run: python -m unittest discover -s ../eval -p 'test_*.py' -v
+      - name: 평가 도구 보안약점 점검 (bandit)
+        if: matrix.project == 'backend'
+        run: bandit $(ls ../eval/*.py | grep -v '/test_') --severity-level low --confidence-level medium
       - name: 코드 보안약점 점검 (bandit)
         # 심각도는 낮음(low)부터 모두 실패로 처리하고, 오탐이 많은 낮은 신뢰도는 제외한다.
         # 예외가 필요하면 해당 줄에 `# nosec B000 - 사유` 를 적고 PR 리뷰에서 승인받는다.
         run: |
-          bandit -r . \
-            --exclude ./tests,./.venv \
-            --severity-level low \
-            --confidence-level medium
+          if [ "$PYTHON_PROJECT" = speech ]; then
+            # 호환 helper는 별도 tts_compat 매트릭스로 검사한다.
+            # 외부 생성 코드는 원본/수정 후 SHA 검사 대상으로 분리한다.
+            bandit -r app prepare_models.py prepare_tts_code.py \
+              --severity-level low --confidence-level medium
+          else
+            bandit -r . --exclude ./tests,./.venv \
+              --severity-level low --confidence-level medium
+          fi
       - name: 의존성 취약점 점검 (pip-audit)
-        run: pip-audit -r requirements.txt --strict --progress-spinner off
+        run: |
+          if [ "$PYTHON_PROJECT" = speech/tts_compat ]; then
+            # 완전히 해석한 해시 잠금의 모든 전이 패키지를 OSV로 검사한다.
+            # +cpu 빌드는 PyPI 기본 wheel 재해석 대신 고정 목록 그대로 감사한다.
+            pip-audit -r requirements.txt --no-deps --disable-pip --strict \
+              --vulnerability-service osv --progress-spinner off
+            pip-audit -r upstream-advisory.in --no-deps --disable-pip --strict \
+              --vulnerability-service osv --progress-spinner off
+          else
+            pip-audit -r requirements.txt --strict --progress-spinner off
+          fi
+
+  persistence:
+    name: PostgreSQL Redis 통합
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    env:
+      # 이 잡에서만 쓰고 폐기하는 가상 개발 자격증명이다. 운영에 재사용하지 않는다.
+      POSTGRES_DB: reconnect_ci
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+      REDIS_PASSWORD: "00000000000000000000000000000000"
+      PERSISTENCE_TEST_DATABASE_URL: postgresql+psycopg://test:test@127.0.0.1:5432/reconnect_ci
+      PERSISTENCE_TEST_REDIS_URL: redis://:00000000000000000000000000000000@127.0.0.1:6379/0
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: 해시 고정 의존성 설치
+        working-directory: backend
+        run: python -m pip install --require-hashes -r requirements.txt -r requirements-dev.txt
+      - name: Compose 구성 확인과 실제 개발 DB Redis 실행
+        run: |
+          docker compose --env-file .env.example -f infra/compose.dev.yaml config --quiet
+          docker compose -f infra/compose.speech-cpu.yaml config --quiet
+          docker compose --env-file .env.example -f infra/compose.dev.yaml up -d --wait --wait-timeout 90
+          python infra/check_dev_services.py
+      - name: 빈 DB 마이그레이션과 정상 조회
+        working-directory: backend
+        env:
+          APP_ENV: test
+          DATABASE_URL: postgresql+psycopg://test:test@127.0.0.1:5432/reconnect_ci
+        run: |
+          python -m alembic upgrade head
+          python -m alembic check
+      - name: PostgreSQL 실제 제약과 마이그레이션 Redis 비영속화 시험
+        working-directory: backend
+        run: python -m pytest tests/test_member_models.py tests/test_operational_models.py tests/test_migrations.py tests/test_persistence_connections.py tests/test_encryption.py -q
+      - name: 실제 Redis 세션 수명과 원자 교체 시험
+        working-directory: backend
+        run: python -m pytest tests/test_sessions.py tests/test_kakao_state.py tests/test_auth_accounts.py tests/test_member_auth.py tests/test_save_intents.py tests/test_saved_profiles.py tests/test_saved_drafts.py tests/test_saved_journey_import.py tests/test_saved_material_editing.py tests/test_deletions.py tests/test_deletion_journal.py tests/test_deletion_contracts.py tests/test_member_security_matrix.py tests/test_member_lifecycle_matrix.py tests/test_save_intent_cancel.py tests/test_operator_mfa.py tests/test_operator_mfa_http.py -q
+      - name: 실제 Redis 중복 요청과 리비전 경합 시험
+        working-directory: backend
+        run: python -m pytest tests/test_request_coordination.py -q
+      - name: 실제 Redis 호출 한도와 공유 슬롯 시험
+        working-directory: backend
+        run: python -m pytest tests/test_admission.py tests/test_internal_speech.py tests/test_speech_api.py tests/test_runtime_retry.py -q
+      - name: 실제 PostgreSQL 공개 공고 검색 시험
+        working-directory: backend
+        run: python -m pytest tests/test_public_opportunities.py -q
+      - name: 실제 PostgreSQL 수집 버전과 동시 수집 시험
+        working-directory: backend
+        run: python -m pytest tests/test_ingestion_versions.py tests/test_ingestion_runs.py tests/test_manual_intake.py -q
+      - name: 실제 PostgreSQL 운영자 공고 등록·수정 시험
+        working-directory: backend
+        run: python -m pytest tests/test_admin_opportunities.py -q
+      - name: 실제 서비스의 동의와 늦은 결과 및 신청 준비 경계 시험
+        working-directory: backend
+        run: |
+          python -m pytest -q \
+            tests/test_consents.py tests/test_result_lifecycle.py tests/test_journeys.py \
+            tests/test_journey_messages.py tests/test_transcriptions.py tests/test_journey_drafts.py \
+            tests/test_draft_approval.py tests/test_draft_review.py tests/test_journey_end.py \
+            tests/test_manual_profile.py tests/test_profile_confirmation.py tests/test_reconfirmed_results.py \
+            tests/test_preparation.py tests/test_eligibility_api.py tests/test_roles.py \
+            tests/test_role_exclusions.py tests/test_recommendation_filters.py tests/test_recommendations.py \
+            tests/test_boundary_journey.py
+      - name: 개발 컨테이너 종료
+        if: always()
+        run: docker compose --env-file .env.example -f infra/compose.dev.yaml down
 
   frontend:
     name: 프론트엔드 점검
@@ -174,14 +346,51 @@ jobs:
         run: npm ci --ignore-scripts
       - name: 패키지 서명·출처 검증
         run: npm audit signatures
-      - name: 의존성 취약점 점검 (운영 의존성, 높음 이상)
-        run: npm audit --omit=dev --audit-level=high
+      - name: 의존성 취약점 점검 (개발 포함, 중간 이상)
+        run: npm audit --audit-level=moderate
       - name: 린트
         run: npm run lint
       - name: 테스트
         run: npm test --if-present
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - name: 실제 API 계약 대조용 백엔드와 시험 의존성 설치
+        run: python -m pip install --require-hashes -r ../backend/requirements.txt -r ../backend/requirements-dev.txt
+      - name: 저장 OpenAPI 계약의 실제 라우트 구현 누락 검사
+        run: python ../tools/check_api_coverage.py
+      - name: 실제 지역과 신청 준비 라우터·OpenAPI·프론트 파서 대조
+        env:
+          CONTRACT_PYTHON: python
+        run: npm run test:backend-contract
       - name: 빌드 (타입 검사 포함)
         run: npm run build
+
+  browser-layout:
+    name: 브라우저 화면과 접근성 회귀
+    needs: detect
+    if: needs.detect.outputs.frontend == 'true'
+    runs-on: windows-2022
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          package-manager-cache: false
+      - name: 의존성 설치
+        run: npm ci --ignore-scripts
+      - name: 고정된 Chromium 설치
+        run: npx playwright install chromium
+      - name: 화면 크기와 큰 글씨 모드 확인
+        run: npm run test:browser
 
   dependency-review:
     name: 새 의존성 검토
@@ -201,20 +410,38 @@ jobs:
           fail-on-severity: moderate
           comment-summary-in-pr: never
 
+  weekly-main:
+    name: main 주간 재검사 요청
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      actions: write # main 브랜치에서 워크플로를 실행(workflow_dispatch)하기 위해 필요
+    steps:
+      - name: main에서 CI·CodeQL 실행
+        # 제출·시연용 main도 새 CVE로 재검사한다. main의 워크플로 파일 기준으로 돈다.
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh workflow run ci.yml --ref main
+          gh workflow run codeql.yml --ref main
+
   ci-ok:
     name: CI 통과
     if: always()
-    needs: [detect, secrets, workflow-audit, python, frontend, dependency-review]
+    needs: [detect, secrets, workflow-audit, hidden-text, python, persistence, frontend, browser-layout, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    permissions: {}
+    permissions:
+      contents: read
     steps:
-      - name: 결과 판정
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: 필수 점검 결과 검증
         env:
           NEEDS: ${{ toJSON(needs) }}
-        run: |
-          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
-          if echo "$NEEDS" | jq -e 'to_entries | any(.value.result == "failure" or .value.result == "cancelled")' > /dev/null; then
-            echo "::error::실패하거나 취소된 점검이 있습니다. 위 결과에서 failure/cancelled 항목을 확인하세요."
-            exit 1
-          fi
+          EVENT_NAME: ${{ github.event_name }}
+          MISSING_REQUIRED_MANIFESTS: ${{ needs.detect.outputs.missing_required_manifests }}
+        run: python3 -I .github/scripts/check_required_checks.py

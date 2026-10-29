@@ -1,0 +1,7 @@
+# Redocly CLI 설정 — docs/api에서 `npx -y @redocly/cli@2.56.1 lint` 로 실행한다.
+# 예외는 .redocly.lint-ignore.yaml에 위치별로 둔다 (카카오 리다이렉트 경로, 내부 health 경로).
+apis:
+  main:
+    root: openapi.yaml
+extends:
+  - recommended

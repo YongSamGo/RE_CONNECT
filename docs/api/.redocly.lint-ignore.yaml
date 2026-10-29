@@ -1,0 +1,31 @@
+# Redocly lint 예외 — 모두 의도한 것이다. 새 예외를 넣으면 docs/api/README.md에 이유를 적는다.
+# - operation-2xx-response: 카카오 시작·콜백은 302 리다이렉트만 돌려준다
+# - operation-4xx-response: 내부 health 경로는 4xx가 없다
+# - no-invalid-media-type-examples: "(오류 예제)"라고 표시한 요청 예제는 일부러 스키마를 어긴다.
+#   이 목록에 없는 예제가 스키마를 어기면 lint가 경고한다.
+openapi.yaml:
+  operation-2xx-response:
+    - '#/paths/~1auth~1kakao~1start/get/responses'
+    - '#/paths/~1auth~1kakao~1callback/get/responses'
+  no-invalid-media-type-examples:
+    - >-
+      #/paths/~1journeys/post/requestBody/content/application~1json/examples/missingNoticeVersion/value
+    - >-
+      #/paths/~1journeys~1{journey_id}~1messages/post/requestBody/content/application~1json/examples/emptyText/value/text
+    - >-
+      #/paths/~1journeys~1{journey_id}~1profile/patch/requestBody/content/application~1json/examples/badWeekday/value/draft/available_weekdays/0
+    - >-
+      #/paths/~1recommendations/post/requestBody/content/application~1json/examples/ownerInjected/value/owner_id
+    - >-
+      #/paths/~1opportunities~1{opportunity_id}~1eligibility/post/requestBody/content/application~1json/examples/missingProfile/value
+    - >-
+      #/paths/~1admin~1mfa~1verify/post/requestBody/content/application~1json/examples/malformed/value/otp
+    - >-
+      #/paths/~1admin~1opportunities/post/requestBody/content/application~1json/examples/httpUrl/value/source_url
+    - >-
+      #/paths/~1admin~1opportunities/post/requestBody/content/application~1json/examples/httpUrl/value/application_url
+    - >-
+      #/paths/~1admin~1opportunities~1{opportunity_id}/patch/requestBody/content/application~1json/examples/empty/value/changes
+  operation-4xx-response:
+    - '#/paths/~1health~1live/get/responses'
+    - '#/paths/~1health~1ready/get/responses'

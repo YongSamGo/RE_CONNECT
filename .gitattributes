@@ -1,0 +1,25 @@
+# 저장소 안의 텍스트 파일은 운영체제와 관계없이 LF로 통일한다.
+# Windows에서 CRLF로 바뀐 셸 스크립트·Dockerfile은 Linux 컨테이너에서 실행되지 않는다.
+* text=auto eol=lf
+
+# Windows 전용 스크립트는 CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# 바이너리
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.webp binary
+*.woff binary
+*.woff2 binary
+*.wav binary
+*.mp3 binary
+*.webm binary
+
+# 검토용 패치는 원본 코드의 줄 끝 공백과 unified diff의 빈 문맥 줄을 그대로 보존한다.
+speech/tts_compat/upstream.patch whitespace=-blank-at-eol

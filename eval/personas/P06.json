@@ -1,0 +1,38 @@
+{
+  "id": "P06",
+  "summary": "75세 전직 택시기사. 말이 짧고 정보가 적다. 모르는 값을 추정하지 않는지 본다.",
+  "test_focus": ["미확인 값은 null 유지", "짧은 답변", "추천 필수값(활동 유형) 누락 시 재질문"],
+  "interview": [
+    "택시 했어요. 한 삼십 년.",
+    "노원구요.",
+    "글쎄요, 뭐든. 집에만 있으니까 답답해서.",
+    "시간은 많아요."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "택시 운전", "skill_tags": ["운전"], "duration_note": "약 30년"}
+    ],
+    "skills": ["운전"],
+    "preferred_regions": [{"province": "seoul", "district": "nowon"}],
+    "activity_types": [],
+    "paid_preference": null,
+    "available_weekdays": null,
+    "hours_per_week": null,
+    "mobility_note": null,
+    "residence_region": {"province": "seoul", "district": "nowon"},
+    "birth_year": null,
+    "certifications": null,
+    "completed_courses": null,
+    "activity_constraints": null
+  },
+  "must_not_extract": {"exact": [], "semantic": []},
+  "needs_confirmation": [
+    {"field": "activity_types", "reason": "'뭐든'은 활동 유형 미확인. 계약상 activity_types는 null을 쓸 수 없어 기대값을 []로 두었지만 '없음 확인'이 아니라 '재질문' 상태다"},
+    {"field": "residence_region", "reason": "'노원구요'가 거주지인지 희망 지역인지 모호"},
+    {"field": "preferred_regions", "reason": "'노원구요'가 거주지인지 희망 지역인지 모호"}
+  ],
+  "expected_roles": ["이동 지원 봉사", "길 안내 봉사"],
+  "expected_role_ids": ["mobility_supporter"],
+  "notes": "'뭐든'은 activity_types를 둘 다로 추정하지 말고 비운 뒤 재질문. '시간은 많아요'로 요일·시간을 채우지 않는다. 노원구는 거주지인지 희망 지역인지 모호하므로 둘 다 사용자 확인 대상."
+}

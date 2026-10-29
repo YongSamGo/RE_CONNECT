@@ -1,0 +1,19 @@
+{
+  "purpose": "경험 추출(#30) 실측 채점용 보조 기대값. 페르소나 interview의 턴 번호로 적는다(personas/P0x.json).",
+  "notes": [
+    "experience_turns는 사용자가 과거에 실제로 한 일·활동을 말한 턴이다. 나머지 턴(지역·시간·희망·자격증·나이 등)에서 경험 설명을 뽑으면 non_experience로 센다.",
+    "P05의 4번 턴(디지털 안내사 교육 수료)은 completed_courses이지 경험이 아니다.",
+    "P03의 1번 턴은 경험(경로식당 봉사)과 자격증이 함께 있다. 자격증 구절을 기술로 뽑으면 cert_as_skill로 센다.",
+    "certifications는 자격증 이름 구절이다. 기술(skills)로 인용되면 자격 보유와 업무 경험이 섞인 것으로 본다."
+  ],
+  "cases": {
+    "P01": {"experience_turns": [0, 1], "certifications": ["교원 자격증"]},
+    "P02": {"experience_turns": [0, 1], "certifications": ["전기기능사", "주택관리사 보"]},
+    "P03": {"experience_turns": [0, 1], "certifications": ["한식조리기능사"]},
+    "P04": {"experience_turns": [0, 1], "certifications": ["전산회계 1급"]},
+    "P05": {"experience_turns": [0], "certifications": []},
+    "P06": {"experience_turns": [0], "certifications": []},
+    "P07": {"experience_turns": [0], "certifications": ["요양보호사 자격증", "요양보호사", "사회복지사 1급"]},
+    "P08": {"experience_turns": [0], "certifications": ["금융투자상담사"]}
+  }
+}

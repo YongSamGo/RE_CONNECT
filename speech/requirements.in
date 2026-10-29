@@ -1,0 +1,11 @@
+# CPU 로컬 STT 및 내부 HTTP 서비스. Qwen3-TTS는 후속 별도 런타임 고정.
+fastapi
+uvicorn
+numpy
+faster-whisper==1.2.1
+ctranslate2==4.8.3
+av==19.0.2
+# Linux에서 잠금을 만들어도 Windows tqdm의 조건부 의존성 해시를 포함한다.
+colorama
+# 알려진 취약점 수정판: 모델 캐시 잠금의 보안 하한.
+filelock>=4.2.4

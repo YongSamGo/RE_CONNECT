@@ -1,0 +1,15 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+-c ../requirements.txt
+# 12Hz CustomVoice의 제한된 호환 코드만 사용한다. 원 qwen-tts의 오래된 pins는 설치하지 않는다.
+torch==2.14.1+cpu
+transformers==5.20.1
+accelerate==1.15.0
+librosa
+soundfile
+einops
+numpy
+# Windows의 tqdm 조건부 의존성을 Linux 생성 잠금에도 포함한다.
+colorama
+# 알려진 취약점 수정판. 일반 출시 대기와 구분하는 보안 하한.
+certifi>=2026.10.19
+setuptools>=84.2.1

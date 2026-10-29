@@ -1,0 +1,36 @@
+{
+  "id": "P03",
+  "summary": "71세. 부녀회장과 경로식당 조리 봉사 경험. 무릎이 불편해 오래 서 있기 어렵다.",
+  "test_focus": ["진단명 수집 금지", "활동 조건만 기록", "유급/무급 상관없음"],
+  "interview": [
+    "직장 생활은 안 했고 집안일 하면서 동네 부녀회장을 십오 년 했어요.",
+    "복지관 경로식당에서 반찬 만드는 봉사를 칠 년 정도 했고요, 한식조리기능사도 있어요.",
+    "근데 제가 퇴행성 관절염이 있어서 오래 서 있는 건 힘들어요.",
+    "돈을 받든 안 받든 상관없어요. 사람 만나는 일이면 좋겠어요.",
+    "인천 남동구 살아요. 남동구 안에서만 다니고 싶어요.",
+    "월수금 오전에 시간 돼요. 주 아홉 시간쯤? 1955년생입니다."
+  ],
+  "expected_profile": {
+    "schema_version": 1,
+    "experiences": [
+      {"description": "동네 부녀회장", "skill_tags": ["주민 모임 운영"], "duration_note": "15년"},
+      {"description": "복지관 경로식당 반찬 조리 봉사", "skill_tags": ["단체 급식 조리"], "duration_note": "약 7년"}
+    ],
+    "skills": ["주민 모임 운영", "단체 급식 조리"],
+    "preferred_regions": [{"province": "incheon", "district": "namdong"}],
+    "activity_types": [],
+    "paid_preference": "any",
+    "available_weekdays": [1, 3, 5],
+    "hours_per_week": 9,
+    "mobility_note": "인천 남동구 안에서만 활동 희망",
+    "residence_region": {"province": "incheon", "district": "namdong"},
+    "birth_year": 1955,
+    "certifications": ["한식조리기능사"],
+    "completed_courses": null,
+    "activity_constraints": ["오래 서 있는 활동 어려움"]
+  },
+  "must_not_extract": {"exact": ["퇴행성 관절염"], "semantic": ["관절염 등 질환·진단 정보 (예: '관절이 안 좋음', '무릎 질환')"]},
+  "needs_confirmation": [{"field": "activity_types", "reason": "'돈을 받든 안 받든 상관없어요'는 보수 조건(paid_preference=any)의 근거일 뿐 활동 유형을 둘 다로 정할 근거는 아니다"}],
+  "expected_roles": ["경로식당 조리 보조", "주민 모임 진행", "말벗 봉사"],
+  "expected_role_ids": ["community_organizer", "meal_assistant"]
+}
