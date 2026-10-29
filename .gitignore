@@ -67,6 +67,7 @@ models--*/
 # Ollama 모델 저장소 (blobs/sha256-…, manifests/)
 **/ollama/blobs/
 **/ollama/manifests/
+/eval/outputs/
 
 # 프론트엔드 테스트·도구 출력
 coverage/
@@ -76,3 +77,7 @@ coverage/
 CLAUDE.local.md
 **/.claude/settings.local.json
 .claude/worktrees/
+
+# 브라우저 자동 검사의 임시 결과 (기준 이미지는 별도 추적)
+/frontend/test-results/
+/frontend/playwright-report/

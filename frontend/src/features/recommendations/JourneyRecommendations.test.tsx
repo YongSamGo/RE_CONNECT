@@ -53,7 +53,7 @@ it('uses the latest explicit confirmed reference, displays old-confirmed status 
   expect(screen.getByText('확정 경험 1개와 연결했습니다.')).toBeVisible()
   expect(screen.getByText('연결 역량: 자료 정리')).toBeVisible()
   expect(screen.getByText(/필수조건: 확인 필요/)).toBeVisible()
-  expect(screen.getByRole('link', { name: '최신 상세·공식 원문·오류 신고 확인' })).toHaveAttribute('href', `/opportunities/${opportunityId}`)
+  expect(screen.getByRole('link', { name: '공고 상세와 공식 원문 보기' })).toHaveAttribute('href', `/opportunities/${opportunityId}`)
   const post = fetch.mock.calls.find(([req]) => req.method === 'POST')![0]
   expect(await post.clone().json()).toEqual({ profile, filters: {} })
   expect(post.headers.get('X-CSRF-Token')).toBe('token')

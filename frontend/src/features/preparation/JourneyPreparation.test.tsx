@@ -76,7 +76,7 @@ it('keeps actual creation, edit, explicit approval and checked copy separate wit
   const approval = fetch.mock.calls.find(([req]) => req.url.endsWith('/approve'))![0]
   expect(await approval.clone().json()).toEqual({ base_revision: 2 })
   await user.click(screen.getByRole('button', { name: '승인본 최신 상태 확인하고 복사' }))
-  await screen.findByText('내용을 복사했습니다. 저장·신청 완료는 아닙니다.')
+  await screen.findByText('내용을 복사했어요. 자료 저장이나 신청 접수가 완료된 것은 아니에요.')
   expect(clipboard).toHaveBeenCalledExactlyOnceWith('자기소개\n직접 쓴 경험\n\n지원동기\n직접 쓴 동기')
   expect(screen.getByLabelText('최신 상태를 확인한 복사 내용')).toHaveValue('자기소개\n직접 쓴 경험\n\n지원동기\n직접 쓴 동기')
   expect(fetch.mock.calls.some(([req]) => req.url.includes('/save'))).toBe(false)
@@ -164,7 +164,7 @@ it('offers selection of only the freshly verified exact text when the clipboard 
   const field = screen.getByLabelText('최신 상태를 확인한 복사 내용') as HTMLTextAreaElement
   expect(field).toHaveFocus()
   expect(field.selectionStart).toBe(0); expect(field.selectionEnd).toBe(field.value.length)
-  expect(screen.queryByText('내용을 복사했습니다. 저장·신청 완료는 아닙니다.')).not.toBeInTheDocument()
+  expect(screen.queryByText('내용을 복사했어요. 자료 저장이나 신청 접수가 완료된 것은 아니에요.')).not.toBeInTheDocument()
 })
 
 it('does not lose manual input when a public opportunity becomes unavailable', async () => {

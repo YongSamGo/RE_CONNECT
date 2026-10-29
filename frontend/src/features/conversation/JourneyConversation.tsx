@@ -33,6 +33,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   const accessFailure = useMemoryScope<ApiError | null>(() => null)
   const navigate = useNavigate()
   const questionRef = useRef<HTMLHeadingElement>(null)
+  const previousReadStatus = useRef(read.state.status)
   const submitLock = useRef<symbol | null>(null)
   const state = scope.value
   const sending = send.state.status === 'pending'
@@ -47,6 +48,11 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     if (failure?.status === 'error') accessLost(failure.error)
   }, [send.state, read.state, end.state, accessLost])
   useEffect(() => { if (!state.voice) document.getElementById('conversation-message-input')?.focus() }, [state.voice])
+  useEffect(() => {
+    const justLoaded = previousReadStatus.current !== 'success' && read.state.status === 'success'
+    previousReadStatus.current = read.state.status
+    if (justLoaded && !state.voice) questionRef.current?.focus()
+  }, [read.state.status, state.voice])
   useEffect(() => {
     const resetLock = () => { submitLock.current = null }
     window.addEventListener('pagehide', resetLock)
@@ -96,9 +102,9 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       return true
     }, () => { clear(); navigate('/', { replace: true }) })
   }
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">03 · 경험 이야기</p><h1>한 가지씩 이야기해 주세요</h1><p>AI가 정리한 내용은 초안입니다. 직접 확인하고 고칠 수 있어요.</p></header>
+  return <div className="reading-width journey-conversation"><header className="page-heading"><p className="eyebrow">경험 이야기</p><h1>한 가지씩 이야기해 주세요</h1><p>AI가 정리한 내용은 초안입니다. 직접 확인하고 고칠 수 있어요.</p></header>
     <p><Link className="button secondary" to={`/journeys/${journeyId}/profile`}>언제든 프로필 확인하기</Link></p>
-    <p>희망 지역·활동 유형과 다른 조건은 프로필 화면에서 직접 선택해 주세요. 프로필로 이동하면 아직 보내지 않은 입력은 지워집니다. 대화 기록은 이 화면에서 복원하지 않습니다.</p>
+    <p>희망 지역과 활동 유형 등 다른 조건은 프로필 화면에서 직접 선택해 주세요. 프로필로 이동하면 아직 보내지 않은 입력은 지워집니다. 대화 기록은 이 화면에서 복원하지 않습니다.</p>
     <Button disabled={pending || !!state.attempt} onClick={load}>{state.view ? '최신 프로필 상태 확인' : '체험 대화 준비하기'}</Button>
     {accessFailure.value && <RequestError error={accessFailure.value} />}
     {read.state.status === 'error' && <RequestError error={read.state.error} />}
@@ -106,30 +112,30 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     {end.state.status === 'error' && <RequestError error={end.state.error} />}
     {state.conflict && <StatusNotice title="최신 프로필을 확인해 주세요">적은 내용은 유지했습니다. 최신 프로필 상태를 확인한 뒤 다시 보낼 수 있어요.</StatusNotice>}
     {state.view && <>
-      {state.view.confirmed && <p>수정한 초안은 아직 확정하지 않았습니다. 재확정 전 추천·자격은 이전 확정 프로필 기준입니다.</p>}
-      <section className="panel"><h2 ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
+      {state.view.confirmed && <p>수정한 초안은 아직 확정하지 않았습니다. 다시 확정하기 전의 추천과 자격 대조는 이전 확정 프로필 기준이에요.</p>}
+      <section className="panel conversation-question"><h2 ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
         {state.questionId && !pending && !state.voice && !state.ending && <ReadAloud key={state.questionId} target={{ kind: 'journey_message', journey_id: journeyId, message_id: state.questionId }} label="이 질문 읽어주기" />}
         <p role="status">{state.ended ? '초안에 반영했습니다. 프로필에서 내용을 확인하고 직접 확정해 주세요.' : sending ? '경험을 정리하고 있어요. 프로필 화면으로 이동할 수 있습니다.' : ''}</p>
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}
         {!state.ended && <form onSubmit={event => { event.preventDefault(); submit() }}>
           <TextAreaField id="conversation-message-input" label="내가 해온 일" value={state.text} rows={6} maxLength={2000} disabled={pending || !!state.attempt || state.ending || state.voice}
-            onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} hint="연락처·주민등록번호·상세 병력은 적지 마세요. 보내기 전에 내용을 확인해 주세요." />
+            onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} hint="연락처나 주민등록번호, 상세 병력은 적지 마세요. 보내기 전에 내용을 확인해 주세요." />
           <Button type="submit" pending={sending} disabled={pending || state.conflict || state.ending || state.voice || !state.text.trim()}>{state.attempt ? '같은 요청의 처리 결과 다시 확인' : '확인한 내용 보내기'}</Button>
         </form>}
         {sending && <Button variant="secondary" onClick={() => { send.clear(); submitLock.current = null }}>응답 기다리기 중지</Button>}
         <p>응답 기다리기를 중지해도 서버 처리가 끝났을 수 있습니다. 초안은 자동 확정되지 않습니다.</p>
       </section>
       {!state.ended && <>
-        {!state.voice && <Button variant="secondary" disabled={pending || !!state.attempt || state.ending} onClick={() => scope.setValue(previous => ({ ...previous, voice: true }))}>말로 입력하고 전사 확인</Button>}
+        {!state.voice && <div className="actions"><Button variant="secondary" disabled={pending || !!state.attempt || state.ending} onClick={() => scope.setValue(previous => ({ ...previous, voice: true }))}>말로 입력하고 전사 확인</Button></div>}
         {state.transcriptionId && !state.voice && <p>음성에서 확인한 문장입니다. 입력칸에서 더 고친 내용만 보냅니다.</p>}
         {state.voice && <><JourneyVoiceInput journeyId={journeyId} onAccessLost={accessLost} replaceRequired={!!state.text.trim()}
           onUseText={(text, transcriptionId) => scope.setValue(previous => ({ ...previous, text, transcriptionId, voice: false }))} />
           <Button variant="secondary" onClick={() => scope.setValue(previous => ({ ...previous, voice: false }))}>음성 입력 닫고 원래 글로 돌아가기</Button></>}
       </>}
-      <Button variant="secondary" disabled={end.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, voice: false, ending: true }))}>종료하고 삭제</Button>
+      <div className="actions"><Button variant="secondary" disabled={end.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, voice: false, ending: true }))}>종료하고 삭제</Button></div>
     </>}
-    {state.ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험 임시 자료를 삭제할까요?</h2><p>이 체험의 대화·초안·확정본·역할 선택과 진행 결과를 삭제합니다.</p>
+    {state.ending && <section className="panel" aria-label="체험 삭제 확인"><h2>체험 임시 자료를 삭제할까요?</h2><p>이 체험의 대화와 초안, 확정본, 역할 선택 및 진행 결과를 삭제해요.</p>
       <Button pending={end.state.status === 'pending'} onClick={deleteJourney}>체험 임시 자료 삭제 확인</Button>
       <Button variant="secondary" disabled={end.state.status === 'pending'} onClick={() => scope.setValue(previous => ({ ...previous, ending: false }))}>계속 작성하기</Button></section>}
   </div>
