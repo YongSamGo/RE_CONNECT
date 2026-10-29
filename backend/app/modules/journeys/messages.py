@@ -114,7 +114,17 @@ class JourneyMessageService:
                     evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=[turns[-1].message_id]))
                     experiences.append(Experience(id=uuid4(), description=proposal.description,
                         duration_note=proposal.duration_note, skill_tags=proposal.skill_tags))
-                draft = ProfileContent.model_validate({**current.draft.model_dump(), 'experiences': experiences})
+                # 지역·활동 유형 질문에 대한 답이면 정해진 목록과 맞춰 초안에 넣는다(모델 없음). 이미 고른 값은 덮지 않는다.
+                updates: dict = {'experiences': experiences}
+                answered = turns[-2].next_question if len(turns) > 1 else questions.FIRST_ID
+                if answered == 'cond.region' and not current.draft.preferred_regions:
+                    updates['preferred_regions'] = questions.read_regions(body.text)
+                if answered == 'cond.type' and not current.draft.activity_types:
+                    updates['activity_types'] = questions.read_activity_types(body.text)
+                for field in ('preferred_regions', 'activity_types'):
+                    if updates.get(field):
+                        evidence.append(ProfileEvidence(path=field, message_ids=[turns[-1].message_id]))
+                draft = ProfileContent.model_validate({**current.draft.model_dump(), **updates})
                 await self.journeys.load(session, journey_id)
                 if (await self.journeys.profile(session, journey_id)).revision != body.base_revision:
                     raise AppError('VERSION_CONFLICT')

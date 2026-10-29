@@ -4,7 +4,8 @@
 1. 경험이 없으면 경험 질문. 답변 상태(경험 없음·모르겠음·알아듣지 못함)에 따라 다른 고정 질문을 쓴다.
 2. 가장 최근 경험의 빈 항목(기간·맡은 일)을 묻는 후속 질문. 경험마다 한 번씩만 묻는다.
 3. 다른 경험이 있는지 한 번 더 묻는다.
-4. 대화로 채우지 않는 희망 지역·활동 유형은 프로필 화면에서 고르도록 안내한다.
+4. 희망 지역·활동 유형을 묻는다. 그 질문에 대한 답만 정해진 목록·낱말과 맞춰 초안에 넣는다(모델 없음).
+   읽지 못하면 한 번 더 묻고, 그래도 안 되면 프로필 화면에서 고르도록 안내한다.
 
 같은 질문 ID는 정해진 횟수까지만 묻는다. 대화에서 정보를 뽑는 모델 사용과 질문 선택은 섞지 않는다.
 """
@@ -15,6 +16,7 @@ from collections.abc import Sequence
 from dataclasses import dataclass
 
 from app.contracts.profile import ProfileContent
+from app.contracts.regions import DISTRICTS
 
 FIRST_ID = "exp.first"
 FIRST_QUESTION = "지금까지 해 오신 일 가운데 기억에 남는 일을 한 가지 들려주세요."
@@ -37,6 +39,8 @@ _BANK = {q.id: q for q in (
     Question("exp.duration", "그 일은 언제부터 언제까지, 또는 몇 년쯤 하셨어요? 대략 말씀해 주셔도 괜찮아요."),
     Question("exp.tasks", "그 일에서 직접 맡아서 하신 일은 무엇이었나요? 예를 들면 조리, 손님 응대, 계산, 재고 관리처럼요."),
     Question("exp.more", "다른 곳에서 하신 일이나 봉사·모임 활동도 있으면 들려주세요. 없으시면 '없어요'라고 하셔도 돼요."),
+    Question("cond.region", "활동하러 다니기 편한 지역은 어디인가요? '서울 강서구', '성남시'처럼 구나 시 이름으로 말씀해 주세요.", 2),
+    Question("cond.type", "급여를 받는 일자리와 봉사활동 중 어떤 것을 원하세요? 둘 다 괜찮으시면 '둘 다'라고 해 주세요.", 2),
     Question("cond.profile", "희망 지역과 활동 유형(취업·봉사)은 프로필 화면에서 골라 주세요. 더 들려주실 경험이 있으면 이어서 말씀하셔도 돼요.", None),
 )}
 
@@ -91,4 +95,40 @@ def next_question(draft: ProfileContent, asked: Sequence[str], latest: str) -> s
             return scoped
     if available("exp.more"):
         return "exp.more"
+    if not draft.preferred_regions and available("cond.region"):
+        return "cond.region"
+    if not draft.activity_types and available("cond.type"):
+        return "cond.type"
     return "cond.profile"
+
+
+# 지역·활동 유형 답 읽기. 이 질문에 대한 답에만 쓰고, 결과는 사용자가 프로필에서 확정하기 전까지 초안이다.
+_PROVINCE_WORDS = {"seoul": "서울", "gyeonggi": "경기", "incheon": "인천"}
+# 시·군·구 이름은 세 시·도에서 겹치지 않는다. "성남"처럼 끝 글자를 뺀 말도 받되, "남동생"의 "남동"처럼 다른 낱말의
+# 일부인 경우를 피하려고 뒤에 한글이 바로 붙지 않거나 조사·단위가 올 때만 받는다. 한 글자 어간(중구 → 중)은 받지 않는다.
+_TAIL = r"(?=$|[^가-힣]|에|에서|이요|요|이나|나|쪽|근처|이랑|랑|하고|도)"
+_DISTRICT_PATTERNS = [
+    (province, slug, re.compile(re.escape(name) + "|" + (re.escape(name[:-1]) + _TAIL if len(name) > 2 else "(?!)")))
+    for province, items in DISTRICTS.items() for slug, name in items
+]
+
+
+def read_regions(text: str) -> list[dict]:
+    """답에 나온 시·군·구. 시·도만 말하면(예: "서울이면 다 좋아요") 그 시·도 전체로 본다. 최대 10곳."""
+    found = [(province, slug) for province, slug, pattern in _DISTRICT_PATTERNS if pattern.search(text)]
+    regions = [{"province": province, "district": slug} for province, slug in found]
+    named = {province for province, _ in found}
+    regions += [{"province": province, "district": None} for province, word in _PROVINCE_WORDS.items()
+                if word in text and province not in named]
+    return regions[:10]
+
+
+_BOTH = re.compile(r"둘\s*다|상관\s*없|아무\s*거나|다\s*(좋|괜찮)")
+_EMPLOYMENT = re.compile(r"일자리|취업|급여|월급|유급|돈\s*(을\s*)?(벌|받)|직장")
+_VOLUNTEERING = re.compile(r"봉사|무급")
+
+
+def read_activity_types(text: str) -> list[str]:
+    if _BOTH.search(text):
+        return ["employment", "volunteering"]
+    return [kind for kind, pattern in (("employment", _EMPLOYMENT), ("volunteering", _VOLUNTEERING)) if pattern.search(text)]

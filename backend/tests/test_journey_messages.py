@@ -23,7 +23,7 @@ from tests.test_journeys import BODY, real_services
 from tests.test_profile_confirmation import ready_edit
 
 TEXT = '가상 도서관에서 자료 정리를 도왔어요.'
-NOT_EXPERIENCE = ('잘 모르겠어요.', '없어요.')  # 가짜 모델도 경험이 아닌 짧은 대답에서는 아무것도 고르지 않는다
+NOT_EXPERIENCE = ('잘 모르겠어요.', '없어요.', '서울 강서구요.', '둘 다 괜찮아요.')  # 가짜 모델도 경험이 아닌 짧은 대답에서는 아무것도 고르지 않는다
 
 
 class Runtime:
@@ -257,10 +257,20 @@ def test_real_redis_follow_up_questions_are_rule_based_and_not_repeated():
         assert second.assistant_message.text == questions.text_of('exp.more')
         third = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
             MessageCreate(text='없어요.', transcription_id=None, base_revision=second.revision))
-        assert third.assistant_message.text == questions.text_of('cond.profile') and third.next_step == 'continue'
+        assert third.assistant_message.text == questions.text_of('cond.region') and third.next_step == 'continue'
+        # 지역·활동 유형 질문의 답은 목록과 맞춰 초안에 넣는다. 다 채워지면 프로필 확인으로 넘어간다.
+        fourth = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='서울 강서구요.', transcription_id=None, base_revision=third.revision))
+        assert [region.district for region in fourth.profile.draft.preferred_regions] == ['gangseo']
+        assert fourth.assistant_message.text == questions.text_of('cond.type')
+        fifth = await service.send(issued.session, identity, journey.journey_id, str(uuid4()),
+            MessageCreate(text='둘 다 괜찮아요.', transcription_id=None, base_revision=fourth.revision))
+        assert fifth.profile.draft.activity_types == ['employment', 'volunteering']
+        assert fifth.assistant_message is None and fifth.next_step == 'review_profile'
+        assert {item.path for item in fifth.profile.evidence} >= {'preferred_regions', 'activity_types'}
         turns = await journeys.conversation(issued.session, journey.journey_id, BODY.ai_notice_version)
         assert [turn.next_question for turn in turns] == [
-            f'exp.duration:{first.profile.draft.experiences[0].id}', 'exp.more', 'cond.profile']
+            f'exp.duration:{first.profile.draft.experiences[0].id}', 'exp.more', 'cond.region', 'cond.type', None]
     with_redis(scenario)
 
 
