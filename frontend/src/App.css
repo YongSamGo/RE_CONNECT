@@ -189,7 +189,7 @@ main { max-width: 1280px; padding: 0 48px 24px; margin: auto; min-height: 50vh; 
 .account-policy h2 { margin: 0; text-align: center; }
 .account-policy .consent-topics { margin: 20px auto 0; }
 .button.danger-button { border-color: #b42318; background: #b42318; color: #fff; }
-.button.danger-button:hover:not(:disabled) { border-color: #8f1d14; background: #8f1d14; }
+.button.danger-button:hover:not(:disabled) { border-color: #8f1d14; background: #8f1d14; color: #fff; }
 .button.danger-button:disabled { border-color: #d8a4a0; background: #d8a4a0; color: #fff; }
 .account-home-link { margin-top: 16px; }
 .login-stage { display: flex; justify-content: center; align-items: center; }

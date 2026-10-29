@@ -9,6 +9,7 @@ import { JourneyDraftApplicationRoute } from './features/preparation/JourneyDraf
 import { AccountHeaderActions } from './features/account/AccountHeaderActions'
 import { LoginPage } from './features/account/LoginPage'
 import { AuthResult } from './features/account/AuthResult'
+import { parseAuthResultQuery } from './features/account/auth-result-query'
 import { JourneyConversation, JourneyConversationRoute } from './features/conversation/JourneyConversation'
 import { JourneyRecommendations, JourneyRecommendationsRoute } from './features/recommendations/JourneyRecommendations'
 import { StartJourney } from './features/journeys/StartJourney'
@@ -38,8 +39,10 @@ function LegacyOpportunityPreparationRedirect() {
 
 function AuthReturn() {
   const { search } = useLocation()
-  const status = new URLSearchParams(search).get('status')
-  return status === 'success' ? <Navigate to="/me" replace /> : <AuthResult />
+  const result = parseAuthResultQuery(search)
+  return result?.status === 'success'
+    ? <Navigate to={result.purpose === 'save' ? '/me/save' : '/me'} replace />
+    : <AuthResult />
 }
 
 const screens = [

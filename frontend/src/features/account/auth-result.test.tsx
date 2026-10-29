@@ -39,6 +39,25 @@ it('success callbacks go straight to my information and still verify the server 
   expect(screen.queryByRole('heading', { name: '로그인 확인' })).not.toBeInTheDocument()
   expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
 })
+it('returns a save login to the pending save screen without writing before confirmation', async () => {
+  const pending = { save_intent_id: '52345678-1234-4234-9234-123456789012', targets: { profile: true, draft: false }, existing_saved_profile_version: null, expires_at: new Date(Date.now() + 600000).toISOString() }
+  const fetch = vi.fn(async (_request: Request) => json({ ...member, pending_save_intent: pending,
+    consents: [{ purpose: 'storage', notice_version: 'storage-v1', granted_at: '2026-10-18T00:00:00Z' }] }))
+  vi.stubGlobal('fetch', fetch)
+  render(<MemoryRouter initialEntries={['/auth/result?purpose=save&status=success']}><App /></MemoryRouter>)
+  expect(await screen.findByRole('button', { name: '이대로 저장하기' })).toBeDisabled()
+  expect(screen.getByLabelText('확정한 경험을 저장할게요.')).not.toBeChecked()
+  expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
+  expect(screen.queryByRole('heading', { name: '나의 정보' })).not.toBeInTheDocument()
+})
+it.each(['?purpose=save&purpose=login&status=success', '?purpose=save&status=success&return_url=https://attacker.invalid'])('rejects an ambiguous success callback at the application route: %s', query => {
+  const fetch = vi.fn(async (_request: Request) => json(anonymousSession)); vi.stubGlobal('fetch', fetch)
+  render(<MemoryRouter initialEntries={['/auth/result' + query]}><App /></MemoryRouter>)
+  expect(screen.getByText('돌아온 주소를 확인할 수 없어요')).toBeVisible()
+  // The shared header may check /me, but the invalid callback opens no private screen.
+  expect(fetch.mock.calls.every(([request]) => request.method === 'GET' && request.url.endsWith('/me'))).toBe(true)
+  expect(document.body).not.toHaveTextContent('attacker.invalid')
+})
 it('offers the pending save only when the checked server intent has not expired', async () => {
   const pending = { save_intent_id: '52345678-1234-4234-9234-123456789012', targets: { profile: true, draft: false }, existing_saved_profile_version: null, expires_at: new Date(Date.now() + 600000).toISOString() }
   vi.stubGlobal('fetch', vi.fn(async () => json({ ...member, pending_save_intent: pending })))

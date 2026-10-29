@@ -102,3 +102,80 @@ it('offers login to anonymous users without requesting private profile data', as
   expect(fetch).toHaveBeenCalledTimes(1)
   expect(screen.queryByRole('button', { name: '회원 탈퇴' })).not.toBeInTheDocument()
 })
+
+it.each(['storage', 'ai_processing'] as const)('withdraws %s only after confirmation and rechecks the session', async (purpose) => {
+  const onSessionReset = vi.fn()
+  const fetch = vi.fn().mockResolvedValueOnce(json(member)).mockResolvedValueOnce(json(member))
+    .mockResolvedValueOnce(new Response(null, { status: 204 })).mockResolvedValueOnce(json(member))
+  vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+  mount(<AccountPage autoLoad onSessionReset={onSessionReset} />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: '동의 관리' }))
+  const label = purpose === 'storage' ? '회원 저장 동의 철회와 자료 삭제를 확인했어요.' : 'AI 처리 동의 철회와 임시 체험 종료를 확인했어요.'
+  const button = purpose === 'storage' ? '회원 저장 동의 철회' : 'AI 처리 동의 철회'
+  expect(screen.getByRole('button', { name: button })).toBeDisabled()
+  await user.click(screen.getByLabelText(label)); await user.click(screen.getByRole('button', { name: button }))
+  expect(await screen.findByText('동의를 철회했습니다.')).toBeVisible()
+  expect(onSessionReset).toHaveBeenCalledOnce()
+  const request = fetch.mock.calls[2]![0] as Request
+  expect(request.headers.get('X-CSRF-Token')).toBe('token')
+  expect(await request.json()).toEqual({ purpose })
+})
+
+it('does not withdraw consent after the account changes', async () => {
+  const other = { ...member, user: { ...member.user, id: 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa' } }
+  const fetch = vi.fn().mockResolvedValueOnce(json(member)).mockResolvedValueOnce(json(other))
+  vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+  mount(<AccountPage autoLoad />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: '동의 관리' }))
+  await user.click(screen.getByLabelText('회원 저장 동의 철회와 자료 삭제를 확인했어요.'))
+  await user.click(screen.getByRole('button', { name: '회원 저장 동의 철회' }))
+  expect(await screen.findByRole('alert')).toBeVisible()
+  expect(fetch.mock.calls.every(([request]) => (request as Request).method === 'GET')).toBe(true)
+})
+
+it('requires CSRF before sending a consent withdrawal (크로스사이트 요청 위조)', async () => {
+  const fetch = vi.fn(async (_request: Request) => json(member)); vi.stubGlobal('fetch', fetch)
+  mount(<AccountPage autoLoad />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: '동의 관리' }))
+  await user.click(screen.getByLabelText('회원 저장 동의 철회와 자료 삭제를 확인했어요.'))
+  await user.click(screen.getByRole('button', { name: '회원 저장 동의 철회' }))
+  expect(await screen.findByRole('alert')).toBeVisible()
+  expect(fetch.mock.calls.every(([request]) => request.method === 'GET')).toBe(true)
+})
+
+it('refreshes enclosing member data after a successful withdrawal even when the follow-up read fails', async () => {
+  const onSessionReset = vi.fn()
+  const fetch = vi.fn().mockResolvedValueOnce(json(member)).mockResolvedValueOnce(json(member))
+    .mockResolvedValueOnce(new Response(null, { status: 204 }))
+    .mockResolvedValueOnce(json({ code: 'SERVICE_UNAVAILABLE', message: 'private failure' }, 503))
+  vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+  mount(<AccountPage autoLoad onSessionReset={onSessionReset} />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: '동의 관리' }))
+  await user.click(screen.getByLabelText('회원 저장 동의 철회와 자료 삭제를 확인했어요.'))
+  await user.click(screen.getByRole('button', { name: '회원 저장 동의 철회' }))
+  expect(await screen.findByRole('alert')).toBeVisible()
+  expect(onSessionReset).toHaveBeenCalledOnce()
+  expect(screen.queryByText('동의를 철회했습니다.')).not.toBeInTheDocument()
+  expect(document.body).not.toHaveTextContent('private failure')
+})
+
+it('discards a delayed withdrawal response after departure', async () => {
+  let finish!: (response: Response) => void
+  const onSessionReset = vi.fn()
+  const fetch = vi.fn(async (request: Request) => request.method === 'POST'
+    ? new Promise<Response>(resolve => { finish = resolve }) : json(member))
+  vi.stubGlobal('fetch', fetch); document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+  mount(<AccountPage autoLoad onSessionReset={onSessionReset} />)
+  const user = userEvent.setup()
+  await user.click(await screen.findByRole('button', { name: '동의 관리' }))
+  await user.click(screen.getByLabelText('회원 저장 동의 철회와 자료 삭제를 확인했어요.'))
+  await user.click(screen.getByRole('button', { name: '회원 저장 동의 철회' }))
+  act(() => window.dispatchEvent(new Event('pagehide')))
+  await act(async () => finish(new Response(null, { status: 204 })))
+  expect(onSessionReset).not.toHaveBeenCalled()
+  expect(screen.queryByText('동의를 철회했습니다.')).not.toBeInTheDocument()
+})

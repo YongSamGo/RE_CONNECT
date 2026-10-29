@@ -1,5 +1,7 @@
 import { useEntryAction } from '../../state/useEntryAction'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { CheckboxField } from '../../ui/Fields'
 import type { components } from '../../api/schema'
 import { Button } from '../../ui/Button'
 import { ServicePage } from '../../ui/ServicePage'
@@ -35,6 +37,9 @@ function profileNarrative(profile: NonNullable<MemberProfile>['content']) {
 
 export function MemberHome() {
   const request = useRequest<MemberSummary>()
+  const deletion = useRequest<boolean>()
+  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [showDelete, setShowDelete] = useState(false)
   const load = () => request.run(async (api, signal) => {
     const session = parseSession(required((await api.GET('/me', { signal })).data))
     const profile = session.authenticated
@@ -47,11 +52,18 @@ export function MemberHome() {
     return { session, profile }
   })
   useEntryAction(load)
+  const reload = () => {
+    setConfirmDelete(false)
+    setShowDelete(false)
+    deletion.clear()
+    void load()
+  }
   const state = request.state
   const profile = state.status === 'success' ? state.data.profile?.content : null
   return <ServicePage title="나의 정보" className="member-home">
     {state.status === 'pending' && <p role="status">나의 정보를 확인하고 있어요.</p>}
     {state.status === 'error' && <RequestError error={state.error} actions={<Button onClick={() => void load()}>다시 확인하기</Button>} />}
+    {deletion.state.status === 'error' && <RequestError error={deletion.state.error} actions={<Button variant="secondary" onClick={reload}>나의 정보 다시 확인</Button>} />}
     {state.status === 'success' && (!state.data.session.authenticated ? <div className="service-entry">
       <p>회원 정보를 보려면 로그인해 주세요.</p>
       <Link className="button primary" to="/login">로그인하기</Link>
@@ -79,8 +91,27 @@ export function MemberHome() {
             {profile.mobility_note && <div><dt>이동 관련 참고</dt><dd>{profile.mobility_note}</dd></div>}
             {profile.activity_constraints && profile.activity_constraints.length > 0 && <div><dt>활동 참고</dt><dd>{profile.activity_constraints.join(', ')}</dd></div>}
           </dl>
+        <section className="account-section">
+          <Button variant="secondary" className="danger-button" aria-expanded={showDelete} onClick={() => { setShowDelete(value => !value); setConfirmDelete(false) }}>저장 프로필 삭제</Button>
+          {showDelete && <>
+          <p>저장 프로필의 모든 버전과 연결된 지원서가 삭제되고 임시 체험과 다른 기기의 로그인 세션이 종료됩니다.</p>
+          <CheckboxField label="저장 프로필과 연결된 지원서를 삭제할게요." checked={confirmDelete} onChange={event => setConfirmDelete(event.target.checked)} />
+          <Button variant="secondary" disabled={!confirmDelete} pending={deletion.state.status === 'pending'} onClick={() => {
+            setConfirmDelete(false)
+            void deletion.run(async (api, signal) => {
+              const current = parseSession(required((await api.GET('/me', { signal })).data))
+              if (!current.authenticated || current.user?.id !== state.data.session.user?.id) {
+                request.clear()
+                throw new ApiError('SESSION_EXPIRED', 401)
+              }
+              await api.DELETE('/profiles/me', { signal })
+              return true
+            }, reload)
+          }}>프로필과 연결된 지원서 삭제</Button>
+          </>}
+        </section>
       </section>}
-      <AccountPage autoLoad embedded onLogout={() => window.location.replace('/')} />
+      <AccountPage autoLoad embedded onSessionReset={reload} onLogout={() => window.location.replace('/')} />
     </>)}
   </ServicePage>
 }

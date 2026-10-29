@@ -7,19 +7,7 @@ import { Button } from '../../ui/Button'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { parseSession } from './session'
 import { ServicePage } from '../../ui/ServicePage'
-
-// These values describe navigation only. Authentication must never be inferred
-// from this untrusted query string.
-function resultQuery(search: string) {
-  const query = new URLSearchParams(search)
-  const purpose = query.get('purpose')
-  const status = query.get('status')
-  if ([...query.keys()].length !== 2 || query.getAll('purpose').length !== 1
-    || query.getAll('status').length !== 1
-    || !['login', 'save', 'reauth'].includes(purpose ?? '')
-    || !['success', 'cancelled', 'failed', 'expired'].includes(status ?? '')) return null
-  return { purpose, status }
-}
+import { parseAuthResultQuery } from './auth-result-query'
 
 export function AuthResult() {
   const location = useLocation()
@@ -29,7 +17,7 @@ export function AuthResult() {
 }
 
 function Result({ search }: { search: string }) {
-  const result = resultQuery(search)
+  const result = parseAuthResultQuery(search)
   const request = useRequest<{ me: components['schemas']['Me']; checkedAt: number }>()
   const state = request.state
   const me = state.status === 'success' ? state.data.me : null
