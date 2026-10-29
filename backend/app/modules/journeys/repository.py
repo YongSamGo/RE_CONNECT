@@ -13,7 +13,8 @@ from app.contracts.journey import Journey, Message, ConfirmedVersion, ProfileDra
 from app.contracts.profile import ProfileContent, empty_profile_content
 from app.contracts.roles import RoleExclusionUpdate, RoleExclusions
 from app.core.business_errors import AppError
-from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, MissingProfileFields, ResolvedJourneyProfile, RoleState
+from app.modules.generation.questions import FIRST_QUESTION
+from app.modules.journeys.service import JourneyRecord, MissingProfileFields, ResolvedJourneyProfile, RoleState
 from app.modules.requests.service import CompletionGuard, MAX_RESOURCE_REQUESTS, RESOURCE_MAX_MS, RETENTION_MS
 from app.modules.sessions.service import ABSOLUTE_MS, IDLE_MS
 

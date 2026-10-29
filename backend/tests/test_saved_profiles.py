@@ -142,8 +142,9 @@ def test_member_http_journey_confirmation_dedup_and_immutable_replacement(tmp_pa
         message = await browser.post(f"/api/v1/journeys/{again.json()['journey_id']}/messages",
             json={'text': TEXT, 'transcription_id': None, 'base_revision': 1},
             headers={**headers(browser), 'Idempotency-Key': str(uuid4()), 'X-Account-ID': str(uuid4())})
-        assert message.status_code == 200 and runtime.calls == 2
-        assert int(await ctx['redis'].hget(admission.store.control_key, budget)) == before + 2
+        # 메시지 한 번의 모델 호출은 경험 추출 한 번이다(다음 질문은 서버 규칙으로 고른다).
+        assert message.status_code == 200 and runtime.calls == 1
+        assert int(await ctx['redis'].hget(admission.store.control_key, budget)) == before + 1
     run(tmp_path, scenario, backend)
 
 

@@ -11,7 +11,7 @@ from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
 from app.contracts.fields import SkillTag, text
-from app.contracts.profile import Experience, ExperienceInput, RecommendationField
+from app.contracts.profile import Experience, ExperienceInput
 from app.contracts.roles import normalize_tag
 from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
@@ -21,17 +21,9 @@ from app.modules.generation.models import (
     ConfirmedProfileSnapshot,
     ExperiencePreview,
     ExtractionPlan,
-    QuestionPlan,
     Quote,
 )
 from app.modules.generation.privacy import safe_text
-
-_QUESTIONS: dict[RecommendationField, str] = {
-    "experiences": "지금까지 해 보신 일이나 활동 한 가지를 말씀해 주시겠어요?",
-    "preferred_regions": "어느 지역에서 활동하고 싶으세요?",
-    "activity_types": "취업과 봉사 중 어떤 활동을 원하세요?",
-}
-
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
@@ -186,28 +178,6 @@ class GroundedGenerationService:
             source_turns=source_turns,
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
-
-    @staticmethod
-    def _question_fields(missing_fields: Sequence[RecommendationField]) -> list[RecommendationField]:
-        fields = list(dict.fromkeys(missing_fields))
-        if any(field not in _QUESTIONS for field in fields):
-            raise GenerationInputError("질문 항목을 확인해 주세요")
-        return fields
-
-    @classmethod
-    def fallback_question(cls, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        """모델 없이 누락 항목의 고정 순서로 고른다. 모델 경로와 같은 고정 질문 문장만 쓴다."""
-        fields = cls._question_fields(missing_fields)
-        return _QUESTIONS[fields[0]] if fields else None
-
-    async def next_question(self, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        fields = self._question_fields(missing_fields)
-        if not fields:
-            return None
-        plan = await self._generate(prompts.QUESTION, {"allowed_fields": fields}, QuestionPlan)
-        if plan.field not in fields:
-            raise _invalid()
-        return _QUESTIONS[plan.field]
 
     async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
         # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.

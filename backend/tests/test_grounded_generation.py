@@ -13,7 +13,7 @@ from app.adapters.llm import LLMInvalidOutputError, LLMTimeoutError
 from app.adapters.ollama import OllamaLLMAdapter
 from app.contracts.profile import Experience, ProfileContent
 from app.modules.generation import prompts
-from app.modules.generation.models import ConfirmedProfileSnapshot, QuestionPlan
+from app.modules.generation.models import ApplicationPlan, ConfirmedProfileSnapshot
 from app.modules.generation.privacy import safe_text
 from app.modules.generation.service import GenerationInputError, GroundedGenerationService
 
@@ -310,25 +310,6 @@ def test_input_count_and_total_size_are_limited_before_model_call(texts):
     assert adapter.calls == []
 
 
-def test_one_question_is_server_written_and_limited_to_missing_field():
-    adapter = StubAdapter(dict(field="activity_types"))
-    service = GroundedGenerationService(adapter)
-    question = asyncio.run(service.next_question(missing_fields=["activity_types"]))
-    assert question == "취업과 봉사 중 어떤 활동을 원하세요?"
-    assert adapter.calls[0]["instructions"] == prompts.QUESTION
-    with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(service.next_question(missing_fields=["experiences"]))
-    assert asyncio.run(service.next_question(missing_fields=[])) is None
-    with pytest.raises(GenerationInputError):
-        asyncio.run(service.next_question(missing_fields=["phone"]))
-
-
-@pytest.mark.parametrize("payload", [dict(field="phone"), dict(field="experiences", question="주민번호는?")])
-def test_question_cannot_request_personal_data_or_add_free_text(payload):
-    with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(GroundedGenerationService(StubAdapter(payload)).next_question(missing_fields=["experiences"]))
-
-
 def test_application_is_built_from_confirmed_fact_ids_and_server_version():
     source = snapshot()
     adapter = StubAdapter(dict(fact_ids=[f"experience:{EXPERIENCE_ID}", "skill:0"]))
@@ -357,16 +338,16 @@ def test_application_rejects_foreign_facts_invention_and_authority(payload):
 def test_adapter_result_is_revalidated_even_if_constructed_without_validation():
     class UnsafeAdapter(StubAdapter):
         async def generate_structured(self, **kwargs):
-            return QuestionPlan.model_construct(field="phone")
+            return ApplicationPlan.model_construct(fact_ids=["phone"])
 
     with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(GroundedGenerationService(UnsafeAdapter(None)).next_question(missing_fields=["experiences"]))
+        asyncio.run(GroundedGenerationService(UnsafeAdapter(None)).application_preview(snapshot=snapshot()))
 
 
 def test_model_timeout_does_not_retry_or_return_fake_success():
     adapter = StubAdapter(LLMTimeoutError("모델 응답 시간이 초과되었습니다"))
     with pytest.raises(LLMTimeoutError):
-        asyncio.run(GroundedGenerationService(adapter).next_question(missing_fields=["experiences"]))
+        asyncio.run(GroundedGenerationService(adapter).application_preview(snapshot=snapshot()))
     assert len(adapter.calls) == 1
 
 
@@ -424,19 +405,9 @@ def test_ollama_adapter_and_service_keep_data_separate_and_use_schema():
     assert len(requests) == 1
 
 
-@pytest.mark.parametrize("model", [QuestionPlan, ConfirmedProfileSnapshot])
+@pytest.mark.parametrize("model", [ApplicationPlan, ConfirmedProfileSnapshot])
 def test_schemas_forbid_extra_fields(model: type[BaseModel]):
     assert model.model_config["extra"] == "forbid"
-
-
-def test_fallback_question_uses_fixed_order_and_fixed_sentences_without_model():
-    # 시간이 부족할 때의 대체 경로: 모델 없이 첫 누락 항목의 고정 질문만 돌려준다.
-    fallback = GroundedGenerationService.fallback_question
-    assert fallback(missing_fields=["activity_types", "experiences"]) == "취업과 봉사 중 어떤 활동을 원하세요?"
-    assert fallback(missing_fields=["preferred_regions", "preferred_regions"]) == "어느 지역에서 활동하고 싶으세요?"
-    assert fallback(missing_fields=[]) is None
-    with pytest.raises(GenerationInputError):
-        fallback(missing_fields=["phone"])
 
 
 @pytest.mark.parametrize(("quote_text", "label"), [

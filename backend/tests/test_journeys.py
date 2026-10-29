@@ -17,7 +17,8 @@ from app.modules.consents.models import ConsentCreate
 from app.modules.consents.repository import RedisConsentStore
 from app.modules.consents.service import ConsentActor, ConsentService
 from app.modules.journeys.repository import RedisJourneyStore
-from app.modules.journeys.service import FIRST_QUESTION, JourneyRecord, JourneyService
+from app.modules.generation.questions import FIRST_QUESTION
+from app.modules.journeys.service import JourneyRecord, JourneyService
 from app.modules.requests.repository import RedisRequestStore
 from app.modules.requests.service import CompletionGuard, RequestScope, RequestService, ResultReference, RESOURCE_MAX_MS
 from app.modules.sessions.repository import RedisSessionStore
