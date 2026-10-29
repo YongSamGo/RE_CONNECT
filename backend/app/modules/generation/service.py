@@ -7,10 +7,11 @@
 import json
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
 from app.contracts.profile import Experience, ExperienceInput, RecommendationField
+from app.contracts.fields import SkillTag, text
 from app.modules.generation import prompts
 from app.modules.generation.models import (
     ApplicationPlan,
@@ -33,6 +34,19 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+_SKILL = TypeAdapter(SkillTag)
+_DURATION = TypeAdapter(text(200))
+
+
+def _fits(adapter: TypeAdapter, value: str) -> bool:
+    """근거는 맞지만 계약 형식(길이·줄바꿈)에 맞지 않는 기간·기술 인용은 그 인용만 버린다."""
+    try:
+        adapter.validate_python(value)
+    except ValidationError:
+        return False
+    return True
 
 
 def _invalid() -> LLMInvalidOutputError:
@@ -78,9 +92,12 @@ class GroundedGenerationService:
             "existing_experiences": [{"id": str(key), "description": item.description} for key, item in allowed.items()],
         }, ExtractionPlan)
 
-        def quote_value(quote: Quote, turn_index: int) -> str:
+        def grounded(quote: Quote, turn_index: int) -> bool:
             source = turns.get(quote.turn_index)
-            if quote.turn_index != turn_index or source is None or quote.text not in source or safe_text(quote.text) is None:
+            return quote.turn_index == turn_index and source is not None and quote.text in source and safe_text(quote.text) is not None
+
+        def quote_value(quote: Quote, turn_index: int) -> str:
+            if not grounded(quote, turn_index):
                 raise _invalid()
             return quote.text
 
@@ -96,11 +113,13 @@ class GroundedGenerationService:
                         raise _invalid()
                     used_ids.add(item.existing_id)
                 index = item.description.turn_index
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기간·기술은 다른 턴에서 가져오는 일이
+                # 잦아(docs/ai/extraction-eval-2026-10-22.md) 근거 없는 인용만 버리고 같은 턴의 것만 남긴다.
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
                     description=quote_value(item.description, index),
-                    duration_note=quote_value(item.duration, index) if item.duration else None,
-                    skill_tags=[quote_value(skill, index) for skill in item.skills],
+                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) and _fits(_DURATION, item.duration.text) else None,
+                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index) and _fits(_SKILL, skill.text))),
                 ))
         except ValidationError:
             raise _invalid() from None
