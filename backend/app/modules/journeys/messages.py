@@ -13,6 +13,7 @@ from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.admission.llm import ControlledLLMAdapter
 from app.modules.admission.service import InferenceIdentity
+from app.modules.generation import questions
 from app.modules.generation.privacy import safe_text
 from app.modules.generation.service import GenerationInputError, GroundedGenerationService
 from app.modules.journeys.service import JourneyService
@@ -20,10 +21,6 @@ from app.modules.requests.service import Replay, RequestScope, RequestService, R
 from app.modules.sessions.service import Session
 
 MESSAGE_TIMEOUT_SECONDS = 60
-# 다음 질문 항목 선택에 남겨 둘 최소 시간. 이보다 적게 남으면 모델을 부르지 않고 고정 순서로 고른다.
-# 종료를 확인하지 못한 호출은 공유 슬롯을 계속 잡으므로, 끝낼 시간이 없는 두 번째 호출은 시작하지 않는다.
-# 실제 CPU 런타임 지연을 측정(#34/#92)한 뒤 조정한다.
-QUESTION_MIN_SECONDS = 20
 
 
 def _enrich(experiences: list[Experience], evidence: list[ProfileEvidence], proposal, message_id: UUID) -> None:
@@ -117,15 +114,25 @@ class JourneyMessageService:
                     evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=[turns[-1].message_id]))
                     experiences.append(Experience(id=uuid4(), description=proposal.description,
                         duration_note=proposal.duration_note, skill_tags=proposal.skill_tags))
-                draft = ProfileContent.model_validate({**current.draft.model_dump(), 'experiences': experiences})
+                # 지역·활동 유형 질문에 대한 답이면 정해진 목록과 맞춰 초안에 넣는다(모델 없음). 이미 고른 값은 덮지 않는다.
+                updates: dict = {'experiences': experiences}
+                answered = turns[-2].next_question if len(turns) > 1 else questions.FIRST_ID
+                if answered == 'cond.region' and not current.draft.preferred_regions:
+                    updates['preferred_regions'] = questions.read_regions(body.text)
+                if answered == 'cond.type' and not current.draft.activity_types:
+                    updates['activity_types'] = questions.read_activity_types(body.text)
+                for field in ('preferred_regions', 'activity_types'):
+                    if updates.get(field):
+                        evidence.append(ProfileEvidence(path=field, message_ids=[turns[-1].message_id]))
+                draft = ProfileContent.model_validate({**current.draft.model_dump(), **updates})
                 await self.journeys.load(session, journey_id)
                 if (await self.journeys.profile(session, journey_id)).revision != body.base_revision:
                     raise AppError('VERSION_CONFLICT')
-                missing = draft.missing_for_recommendation()
-                if deadline - loop.time() >= QUESTION_MIN_SECONDS:
-                    question = await generation.next_question(missing_fields=missing)
-                else:
-                    question = generation.fallback_question(missing_fields=missing)
+            # 다음 질문은 서버 규칙으로 고른다(모델 호출 없음). 고른 ID를 이번 답에 남겨 같은 질문을 되풀이하지 않는다.
+            asked = [questions.FIRST_ID, *(turn.next_question for turn in turns[:-1] if turn.next_question)]
+            question_id = questions.next_question(draft, asked, body.text)
+            turns[-1] = turns[-1].model_copy(update={'next_question': question_id})
+            question = questions.text_of(question_id) if question_id else None
             revision = body.base_revision + 1
             view = ProfileDraftView(revision=revision, draft=draft, evidence=evidence, confirmed=current.confirmed,
                 has_unconfirmed_changes=current.confirmed is not None, missing_for_recommendation=draft.missing_for_recommendation())

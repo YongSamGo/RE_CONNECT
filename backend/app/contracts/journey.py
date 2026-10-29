@@ -118,6 +118,8 @@ class ConversationTurn(BaseModel):
     model_config = CONTRACT_CONFIG
     message_id: UUID
     text: text(2000, multiline=True)
+    # 이 답 다음에 서버가 고른 고정 질문 ID. 같은 질문을 되풀이하지 않는 데만 쓴다. 이전에 저장된 대화에는 없다.
+    next_question: Annotated[str | None, Field(pattern=r"^[a-z]+\.[a-z]+(:[0-9a-f-]{36})?$", max_length=60)] = None
 
 
 class MessageCommit(BaseModel):

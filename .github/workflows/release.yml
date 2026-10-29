@@ -2,7 +2,7 @@
 #
 # - PR: 이미지·배포 파일이 바뀌면 backend·frontend 이미지를 빌드하고 Trivy 판정만 한다 (게시 없음).
 #   음성 이미지는 무거워서 음성 빌드 파일·판정 도구가 바뀐 PR과 릴리스 태그에서만 빌드·검사한다.
-# - main의 v* 태그: release 환경 승인 뒤 세 이미지를 빌드·검사하고 ECR에 올린다.
+# - main의 v* 태그: release 환경 승인 뒤 네 이미지(backend·frontend·speech·speech-gpu)를 빌드·검사하고 ECR에 올린다.
 #   빌드 출처 증명(provenance)을 붙이고, manifest와 SBOM을 초안 GitHub Release에 첨부한다.
 # - EC2 반영은 이 워크플로가 하지 않는다. 운영자가 manifest의 digest로 직접 배포한다 (infra/deploy/README.md).
 #
@@ -26,11 +26,15 @@ on:
       - "frontend/Dockerfile"
       - "frontend/.dockerignore"
       - "frontend/package-lock.json"
-      - "speech/Dockerfile"
+      - "speech/Dockerfile*"
+      - "speech/app/**"
+      - "speech/gpu/**"
       - "speech/.dockerignore"
       - "speech/requirements*.txt"
       - "speech/tts_compat/**"
       - "infra/compose.prod.yaml"
+      - "infra/compose.models.yaml"
+      - "infra/models/**"
       - "infra/deploy/**"
       - "infra/release/**"
 
@@ -111,7 +115,11 @@ jobs:
   speech-image-check:
     # 음성 이미지는 무거워서 음성 빌드 파일이나 판정 도구가 바뀐 PR에서만 빌드한다.
     # 그래야 빌드 문제를 release 환경 승인 뒤 첫 태그에서야 알게 되는 일을 막는다.
-    name: 이미지 빌드·검사 (speech)
+    name: 이미지 빌드·검사 (${{ matrix.image }})
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [speech, speech-gpu]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -125,8 +133,8 @@ jobs:
       - name: 음성 빌드 파일 변경 확인
         id: changed
         run: |
-          if git diff --quiet HEAD^1 HEAD -- speech/Dockerfile speech/.dockerignore 'speech/requirements*.txt' \
-              speech/tts_compat .github/workflows/release.yml infra/release; then
+          if git diff --quiet HEAD^1 HEAD -- 'speech/Dockerfile*' speech/.dockerignore 'speech/requirements*.txt' \
+              speech/app speech/gpu speech/tts_compat .github/workflows/release.yml infra/release; then
             echo "speech=false" >> "$GITHUB_OUTPUT"
             echo "음성 빌드 파일 변경 없음. 빌드를 건너뛴다."
           else
@@ -141,7 +149,9 @@ jobs:
           tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
       - name: 빌드·검사·판정
         if: steps.changed.outputs.speech == 'true'
-        run: TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh speech "$RUNNER_TEMP/out"
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh "$IMAGE" "$RUNNER_TEMP/out"
 
   publish:
     name: 릴리스 이미지 게시
@@ -184,11 +194,15 @@ jobs:
           curl -sSfL -o "$RUNNER_TEMP/trivy.tar.gz" "$url"
           echo "${TRIVY_SHA256}  $RUNNER_TEMP/trivy.tar.gz" | sha256sum --check --strict
           tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
-      - name: 세 이미지 빌드·검사·판정
+      - name: 네 이미지 빌드·검사·판정
+        # 음성 두 이미지는 빌드 단계 캐시가 커서, 이미지마다 빌드 캐시를 지워 러너 디스크가 차지 않게 한다.
+        # 판정을 통과한 candidate 이미지는 지우지 않는다(다음 단계에서 게시).
         run: |
-          for image in backend frontend speech; do
+          for image in backend frontend speech speech-gpu; do
             TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh "$image" "$RUNNER_TEMP/out"
+            docker builder prune --all --force > /dev/null
           done
+          df -h / | tail -1
       - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
         with:
           role-to-assume: ${{ secrets.AWS_RELEASE_ROLE_ARN }}
@@ -202,7 +216,7 @@ jobs:
         run: |
           aws ecr get-login-password --region "$AWS_REGION" \
             | docker login --username AWS --password-stdin "$ECR_REGISTRY"
-          for image in backend frontend speech; do
+          for image in backend frontend speech speech-gpu; do
             repo="$ECR_REGISTRY/reconnect-$image"
             docker tag "reconnect-$image:candidate" "$repo:$RELEASE_TAG"
             docker push --quiet "$repo:$RELEASE_TAG"
@@ -210,8 +224,9 @@ jobs:
             digest="${ref#*@}"
             [[ "$digest" =~ ^sha256:[0-9a-f]{64}$ ]] || { echo "::error::$image digest를 읽지 못했습니다"; exit 1; }
             # 이후 단계·manifest·증명에는 레지스트리 주소(계정 ID) 없이 저장소 이름과 digest만 넘긴다.
-            echo "${image}_ref=reconnect-$image@$digest" >> "$GITHUB_OUTPUT"
-            echo "${image}_digest=$digest" >> "$GITHUB_OUTPUT"
+            key="${image//-/_}" # speech-gpu → speech_gpu (출력 이름에 - 를 쓰지 않는다)
+            echo "${key}_ref=reconnect-$image@$digest" >> "$GITHUB_OUTPUT"
+            echo "${key}_digest=$digest" >> "$GITHUB_OUTPUT"
           done
       - name: ECR 로그아웃
         # 앞 단계가 실패해도 러너에 레지스트리 자격 증명을 남기지 않는다.
@@ -234,11 +249,16 @@ jobs:
         with:
           subject-name: reconnect-speech
           subject-digest: ${{ steps.push.outputs.speech_digest }}
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-name: reconnect-speech-gpu
+          subject-digest: ${{ steps.push.outputs.speech_gpu_digest }}
       - name: 릴리스 manifest 생성과 초안 Release 첨부
         env:
           BACKEND_REF: ${{ steps.push.outputs.backend_ref }}
           FRONTEND_REF: ${{ steps.push.outputs.frontend_ref }}
           SPEECH_REF: ${{ steps.push.outputs.speech_ref }}
+          SPEECH_GPU_REF: ${{ steps.push.outputs.speech_gpu_ref }}
           GH_TOKEN: ${{ github.token }}
           GH_REPO: ${{ github.repository }}
         run: |
@@ -246,11 +266,12 @@ jobs:
           python3 -I infra/release/release_manifest.py build \
             --tag "$RELEASE_TAG" --commit "$GITHUB_SHA" \
             --image "backend=$BACKEND_REF" --image "frontend=$FRONTEND_REF" --image "speech=$SPEECH_REF" \
+            --image "speech-gpu=$SPEECH_GPU_REF" \
             --sbom "backend=$out/backend-sbom.cdx.json" --sbom "frontend=$out/frontend-sbom.cdx.json" \
-            --sbom "speech=$out/speech-sbom.cdx.json" \
+            --sbom "speech=$out/speech-sbom.cdx.json" --sbom "speech-gpu=$out/speech-gpu-sbom.cdx.json" \
             --output "$out/release-manifest.json"
           # 검사 결과(*-scan.json)는 미조치 취약점 목록이라 첨부하지 않는다. manifest와 SBOM만 올린다.
           gh release create "$RELEASE_TAG" --verify-tag --draft --title "$RELEASE_TAG" \
             --notes "운영 이미지 digest와 버전 기록: release-manifest.json. 배포는 infra/deploy/README.md를 따른다." \
             "$out/release-manifest.json" "$out/backend-sbom.cdx.json" \
-            "$out/frontend-sbom.cdx.json" "$out/speech-sbom.cdx.json"
+            "$out/frontend-sbom.cdx.json" "$out/speech-sbom.cdx.json" "$out/speech-gpu-sbom.cdx.json"
