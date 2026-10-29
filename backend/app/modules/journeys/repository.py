@@ -34,6 +34,11 @@ if control[1] ~= ARGV[11] or control[2] ~= ARGV[12] or redis.call('PTTL', KEYS[5
 if not control[3] or not string.match(control[3], '^%d+$') or not control[4] or not string.match(control[4], '^%d+$') then return {'SERVICE_UNAVAILABLE'} end
 local day = math.floor((tonumber(t[1]) + 32400) / 86400)
 local retry = (day + 1) * 86400 - 32400 - tonumber(t[1])
+local recovery_day = redis.call('HGET', KEYS[5], 'recovery_day')
+if recovery_day then
+    if not string.match(recovery_day, '^%d+$') or tonumber(recovery_day) > day then return {'SERVICE_UNAVAILABLE'} end
+    if tonumber(recovery_day) == day then return {'DAILY_QUOTA_EXCEEDED', tostring(retry)} end
+end
 if tonumber(control[3]) > day then return {'SERVICE_UNAVAILABLE'} end
 if tonumber(control[3]) < day then
     for _, key in ipairs(redis.call('HKEYS', KEYS[5])) do

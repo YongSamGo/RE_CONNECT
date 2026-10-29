@@ -1,4 +1,4 @@
-"""KST 일일 집계와 슬롯을 같은 비만료 제어 해시에 둔다. 유실 시 자동 초기화 금지."""
+"""KST 일일 집계와 슬롯을 같은 비만료 제어 해시에 둔다. 유실 시 자동 초기화 금지(운영자 `initialize`만)."""
 
 from dataclasses import dataclass
 import hashlib
@@ -82,6 +82,18 @@ return {'ok'}
 """
 
 
+# 운영자 초기화 전용. 제어 해시가 없을 때만 만들고, 있으면 어떤 필드도 바꾸지 않는다.
+# ARGV[3]은 오늘 이미 쓴 것으로 칠 전역 집계다. 실행 기록이 없음을 확인했을 때만 0, 아니면 한도 값.
+_INITIALIZE = """
+if redis.call('EXISTS', KEYS[1]) == 1 then return {'EXISTS'} end
+local t = redis.call('TIME')
+local day = math.floor((tonumber(t[1]) + 32400) / 86400)
+redis.call('HSET', KEYS[1], 'epoch', ARGV[1], 'key_id', ARGV[2], 'day', tostring(day), 'global', ARGV[3])
+if tonumber(ARGV[3]) > 0 then redis.call('HSET', KEYS[1], 'recovery_day', tostring(day)) end
+return {'ok'}
+"""
+
+
 def lease_fingerprint(token: str) -> str:
     """운영자 화면용 lease 지문. 원 token을 출력하지 않는다."""
     return hashlib.sha256(token.encode("ascii")).hexdigest()[:16]
@@ -106,6 +118,7 @@ class RedisAdmissionStore:
         self._acquire = client.register_script(_ACQUIRE)
         self._release = client.register_script(_RELEASE)
         self._recover = client.register_script(_RECOVER)
+        self._initialize = client.register_script(_INITIALIZE)
 
     async def _call(self, script, keys, args):
         try:
@@ -182,6 +195,28 @@ class RedisAdmissionStore:
         except RedisError:
             raise AppError("SERVICE_UNAVAILABLE") from None
         result = {"ok": "released", "NOT_ACTIVE": "not_active", "LEASE_CHANGED": "lease_changed"}.get(values[0] if values else None)
+        if result is None:
+            raise AppError("SERVICE_UNAVAILABLE")
+        return result
+
+    async def initialize(self, identity_key_id, *, no_runs_today: bool) -> str:
+        """Redis 재시작 등으로 제어 해시가 없을 때 운영자가 새로 만든다.
+
+        기본은 오늘 집계를 한도(500)로 채워 다음 KST 날짜까지 새 추론을 막는다. 집계를 0으로
+        되돌려 한도를 우회하지 못하게 하기 위해서다. 운영자가 오늘 실행이 없었음을 확인한
+        경우(예: 전날부터 꺼져 있던 서버를 처음 켬)에만 `no_runs_today=True`로 0에서 시작한다.
+        이미 해시가 있으면 덮어쓰지 않고 `exists`를 돌려준다.
+        """
+        if not isinstance(identity_key_id, str) or not re.fullmatch(r"[0-9a-f]{64}", identity_key_id):
+            raise ValueError("식별키 지문 형식 오류")
+        if no_runs_today is not True and no_runs_today is not False:
+            raise ValueError("실행 기록 확인 값은 bool이어야 한다")
+        used = 0 if no_runs_today else GLOBAL_DAILY_LIMIT
+        try:
+            values = await self._initialize(keys=[self.control_key], args=[str(self.epoch), identity_key_id, str(used)])
+        except RedisError:
+            raise AppError("SERVICE_UNAVAILABLE") from None
+        result = {"ok": "initialized", "EXISTS": "exists"}.get(values[0] if isinstance(values, list) and values else None)
         if result is None:
             raise AppError("SERVICE_UNAVAILABLE")
         return result
