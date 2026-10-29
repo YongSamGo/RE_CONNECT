@@ -153,6 +153,15 @@ def _release_summary(manifest: object, label: str) -> dict[str, object]:
     return {"tag": tag, "heads": sorted(heads), **hashed}
 
 
+def _release_order(tag: str) -> tuple[int, int, int, int, int]:
+    """vMAJOR.MINOR.PATCH(-rc.N)의 순서. 같은 버전이면 rc가 정식보다 앞이다."""
+    match = re.fullmatch(r"v([0-9]+)\.([0-9]+)\.([0-9]+)(?:-rc\.([0-9]+))?", tag)
+    if not match:
+        raise ManifestError("태그 형식 오류")
+    major, minor, patch, rc = match.groups()
+    return (int(major), int(minor), int(patch), 0 if rc is not None else 1, int(rc or 0))
+
+
 def rollback_check(current: object, target: object, versions: Path) -> dict[str, object]:
     """운영 중인 릴리스(current)에서 이전 릴리스(target)로 이미지만 되돌려도 되는지 판정한다.
 
@@ -162,8 +171,8 @@ def rollback_check(current: object, target: object, versions: Path) -> dict[str,
     """
     now = _release_summary(current, "current")
     before = _release_summary(target, "target")
-    if now["tag"] == before["tag"]:
-        raise ManifestError("current와 target이 같은 릴리스입니다")
+    if _release_order(before["tag"]) >= _release_order(now["tag"]):
+        raise ManifestError("target이 current보다 이전 릴리스가 아닙니다. 되돌리기가 아닙니다")
     graph, safe = migration_graph(versions)
     if migration_heads(versions) != now["heads"]:
         raise ManifestError("체크아웃의 마이그레이션 head가 current 릴리스와 다릅니다. current 태그에서 실행하세요")

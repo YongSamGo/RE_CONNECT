@@ -202,6 +202,17 @@ class RollbackCheckTest(unittest.TestCase):
                 with self.assertRaises(release_manifest.ManifestError):
                     self.check(current, target)
 
+    def test_newer_target_with_same_schema_is_refused(self) -> None:
+        # 스키마가 같아도 더 새 릴리스로 가는 것은 되돌리기가 아니다 (images_only로 통과하면 안 된다)
+        for current, target in (("v0.2.0", "v0.3.0"), ("v0.9.0", "v0.10.0"), ("v1.0.0-rc.1", "v1.0.0"),
+                                ("v1.0.0-rc.1", "v1.0.0-rc.2"), ("v0.2.0", "v0.2.0")):
+            with self.subTest(current=current, target=target), self.assertRaises(release_manifest.ManifestError):
+                self.check(release(current, ["b"]), release(target, ["b"]))
+        for current, target in (("v0.10.0", "v0.9.0"), ("v1.0.0", "v1.0.0-rc.3"), ("v1.0.0-rc.2", "v1.0.0-rc.1"),
+                                ("v2.0.0", "v1.99.99")):
+            with self.subTest(current=current, target=target):
+                self.assertEqual(self.check(release(current, ["b"]), release(target, ["b"]))["verdict"], "images_only")
+
     def test_target_newer_than_current_is_refused(self) -> None:
         migration(self.root, "c", "b")
         with self.assertRaises(release_manifest.ManifestError):
