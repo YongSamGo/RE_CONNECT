@@ -61,11 +61,13 @@ python infra/aws/check_database_tls.py --host <RDS-DNS-endpoint> --ca-file <AWS-
    소유자가 다른 테이블·함수가 있으면 권한 적용을 중단한다.
    신규 테이블에는 자동 권한을 부여하지 않으므로 매 마이그레이션 후 다시 실행한다.
 4. 애플리케이션은 `reconnect_runtime`만 사용한다. 실행 계정은 마이그레이션 역할의
-   멤버가 아니며 CREATE·TRUNCATE·GRANT 권한 및 `alembic_version` 접근 권한이 없다.
+   멤버가 아니며 CREATE·TRUNCATE·GRANT 권한이 없다. `alembic_version`은 읽기만 할 수 있다.
+   복원 후 공개 전 확인(`restore-check`, #95)이 복원 DB의 스키마 버전을 대조하는 데 필요하고,
+   쓰기·삭제·비우기는 계속 거절된다.
    TLS 연결로 정상 DML 성공과 DDL·마이그레이션 테이블 변경 거절을 실제 확인한다.
 
 기존 전용 Unix socket PostgreSQL 16 시험은 초기 NOLOGIN·상승 권한 없음,
-실제 실행 계정의 DML/시퀀스 사용, DDL·TRUNCATE·마이그레이션 테이블·소유자 함수 접근과
+실제 실행 계정의 DML/시퀀스 사용, DDL·TRUNCATE·마이그레이션 테이블 변경·소유자 함수 접근과
 역할 승격 거절을 확인했다. 새 테이블의 자동 권한 부여 없음, 명시적 재적용, 다른 소유자
 객체가 있을 때 권한 전체 롤백, 초기화 재실행 시 기존 역할 보존도 확인했다.
 

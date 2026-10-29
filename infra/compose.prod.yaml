@@ -4,7 +4,7 @@
 # - 비밀값은 SSM에서 tmpfs(/run/reconnect)에 만든 env 파일로만 받는다. format: raw라 $·따옴표를 해석하지 않는다.
 # - 인터넷에는 nginx의 443만 공개한다. Redis는 내부 네트워크에만 있고 영속화하지 않는다.
 # - PostgreSQL은 이 파일에 없다. 비공개 RDS에 TLS(verify-full)로 접속한다 (#90).
-# - Ollama·음성 서비스는 #92에서 추가한다. 그 전에는 AI·음성 기능이 준비 안 됨으로 응답한다.
+# - Ollama·음성 서비스는 compose.models.yaml overlay로 연결한다. 절차: models/README.md.
 #
 #   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml up -d --wait
 name: reconnect-prod
@@ -149,6 +149,44 @@ services:
           create_host_path: false
     tmpfs:
       - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    logging:
+      driver: none
+
+  # 1회성 복원 후 공개 전 확인 (#95 W12-06). migrate로 head까지 올린 복원 DB에서 운영자가 직접 실행한다.
+  #   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm restore-check
+  # 최신 삭제 이력 재적용·대기 처리·대상 부재 검사를 한 번에 한다. 종료 코드 0(ready_to_publish)이 아니면 공개하지 않는다.
+  # app.env는 복원 DB를 가리키는 실행 계정(reconnect_runtime)과 운영과 같은 삭제 이력 버킷 설정이어야 한다.
+  restore-check:
+    <<: *hardening
+    image: ${BACKEND_IMAGE:?릴리스 manifest의 backend digest 이미지를 지정하세요}
+    profiles: [restore]
+    restart: "no"
+    user: "10001:10001"
+    entrypoint: ["/opt/venv/bin/python", "-B", "manage_restore.py"]
+    env_file:
+      - path: ${APP_ENV_FILE:-/run/reconnect/app.env}
+        format: raw
+        required: true
+    environment:
+      APP_ENV: production
+    networks:
+      data: {}
+      # 복원 RDS와 삭제 이력 S3 접속용.
+      egress: {}
+    volumes:
+      - type: bind
+        source: ${RDS_CA_FILE:-/etc/reconnect/rds-ca.pem}
+        target: /run/rds-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    depends_on:
+      redis:
+        condition: service_healthy
+    pids_limit: 128
+    mem_limit: 512m
     logging:
       driver: none
 

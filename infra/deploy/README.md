@@ -10,7 +10,7 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 | [`backend/Dockerfile`](../../backend/Dockerfile) | API·마이그레이션 공용 이미지. 해시 잠금 wheel만 설치, uid 10001, 셸 진입점 없음 |
 | [`frontend/Dockerfile`](../../frontend/Dockerfile) | React 빌드를 담은 비루트 Nginx. 설정·인증서는 실행 시 연결 ([infra/nginx](../nginx), #91) |
 | [`speech/Dockerfile`](../../speech/Dockerfile) | 음성 서비스 (#33). 운영 Compose 연결은 #92 |
-| [`infra/compose.prod.yaml`](../compose.prod.yaml) | nginx(443만 공개)·backend·redis(비영속)·migrate(1회성) |
+| [`infra/compose.prod.yaml`](../compose.prod.yaml) | nginx(443만 공개)·backend·redis(비영속)·migrate(1회성)·restore-check(복원 후 1회성, `--profile restore`, [체크리스트](../../docs/security/backup-restore.md#복원-체크리스트)) |
 | [`.github/workflows/release.yml`](../../.github/workflows/release.yml) | PR 이미지 검사, 태그 릴리스 게시 |
 | [`infra/release/`](../release) | 이미지 검사 판정·수용 목록·manifest 생성 |
 | [`render_env.py`](render_env.py) | SSM 응답 → tmpfs env 파일 |
@@ -19,7 +19,7 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 
 1. `develop → main` 릴리스 PR을 머지한 뒤 `main` 커밋에 `vX.Y.Z` 태그를 push한다.
 2. `Release` 워크플로가 `release` 환경 승인을 기다린다. 승인 뒤 첫 단계에서 태그 형식(`vX.Y.Z`, `-rc.N` 허용)과 태그 커밋이 `main` 이력에 있는지 확인하고, 아니면 아무것도 게시하지 않고 멈춘다.
-3. backend·frontend·speech를 빌드하고 Trivy로 검사한다. 기준은 아래 3절이다. 하나라도 실패하면 아무것도 게시하지 않는다.
+3. backend·frontend·speech·speech-gpu(GPU 음성, `speech/Dockerfile.gpu`)를 빌드하고 Trivy로 검사한다. 기준은 아래 3절이다. 하나라도 실패하면 아무것도 게시하지 않는다.
 4. GitHub OIDC로 받은 임시 역할로 ECR에 올리고, 빌드 출처 증명(provenance)을 붙인다.
 5. `release-manifest.json`과 SBOM(CycloneDX)을 **초안** Release에 첨부한다. 사람이 확인한 뒤 공개한다.
 
@@ -46,7 +46,8 @@ Trivy 원본 결과(`*-scan.json`)는 미조치 취약점 목록이라 Release·
 backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS HIGH가 있다([CONTAINER_RUNTIME.md](../../speech/CONTAINER_RUNTIME.md)).
 2026-10-28에 8개 ID를 두 이미지에 대해 검토해 2027-01-26 만료로 수용 목록에 올렸다. 만료 전에 베이스 갱신 여부를 다시 검토한다.
 음성 이미지는 같은 베이스에 OS 패키지를 추가하지 않아 같은 목록을 적용했다. 음성 빌드 파일(`speech/Dockerfile`·잠금 파일·`tts_compat`)이나
-판정 도구·release 워크플로가 바뀐 PR에서는 `이미지 빌드·검사 (speech)`가 빌드·판정까지 확인한다.
+판정 도구·release 워크플로가 바뀐 PR에서는 `이미지 빌드·검사 (speech)`·`(speech-gpu)`가 빌드·판정까지 확인한다.
+GPU 음성 이미지는 별도 이름(`speech-gpu`)으로 판정하며 CPU 음성 이미지의 수용 항목을 이어받지 않는다.
 
 ## 4. 저장소·AWS 준비 (admin, 1회)
 
@@ -57,9 +58,9 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 - IAM OIDC 역할 신뢰 조건: `token.actions.githubusercontent.com:aud = sts.amazonaws.com`, `sub = <접두어>:environment:release`.
   이 저장소는 변경 불가 주체 형식을 쓰므로 접두어는 `repo:YongSamGo/RE_CONNECT`가 아니라
   `gh api repos/YongSamGo/RE_CONNECT/actions/oidc/customization/sub --jq .sub_claim_prefix`의 값(`repo:<owner>@<id>/<repo>@<id>`)이다.
-  옛 형식으로 두면 역할을 맡지 못해 릴리스가 실패한다. 권한은 세 ECR 저장소의 push만.
-- ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`: 태그 불변(IMMUTABLE), push 시 검사.
-- EC2 인스턴스 역할: 세 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`, 기본 `aws/ssm` 키면 KMS 권한 불필요),
+  옛 형식으로 두면 역할을 맡지 못해 릴리스가 실패한다. 권한은 네 ECR 저장소의 push만.
+- ECR 저장소 `reconnect-backend`·`reconnect-frontend`·`reconnect-speech`·`reconnect-speech-gpu`: 태그 불변(IMMUTABLE), push 시 검사.
+- EC2 인스턴스 역할: 네 저장소 pull, `ssm:GetParametersByPath`(`/re-connect/<env>/*`, 기본 `aws/ssm` 키면 KMS 권한 불필요),
   운영 로그 그룹 쓰기. 그 밖의 쓰기·삭제 권한은 주지 않는다.
   삭제 이력 버킷은 해당 접두어의 쓰기·읽기·목록과 보호 설정 조회만 준다(삭제·수명주기·정책 변경 없음, [백업·복원](../../docs/security/backup-restore.md), #94).
 - 관리 명령은 backend 이미지의 `manage_*.py`를 모두 담는다: `docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm --entrypoint /opt/venv/bin/python backend -B manage_<이름>.py ...`
@@ -79,6 +80,10 @@ backend·음성 이미지는 같은 Debian 13 베이스라 수정판 없는 OS H
 - 삭제 이력 버킷 3종은 backend 설정과 같은 형식만 받고, 일부만 있으면 거절한다. 셋이 없으면 운영 회원 저장은 비활성이다.
 - `APP_ENV`·`TRUSTED_PROXY_IPS`는 Compose `environment:`에 고정돼 있다. `OLLAMA_BASE_URL`은 코드 기본값(내부 `ollama` 서비스)을 쓴다. 세 값 모두 렌더러 허용 목록에 없어 SSM으로 바꿀 수 없다.
 - 값은 줄바꿈 없이 한 줄로 저장한다(JSON은 압축해서 저장). Compose는 env 파일을 `format: raw`로 읽어 `$`·따옴표를 해석하지 않는다.
+- SSM 값 하나는 표준 4KB(고급 8KB)까지다. 공개 안내문 `CONSENT_NOTICES_JSON`이 더 길면 `CONSENT_NOTICES_JSON_PART1`부터
+  `PART8`까지 4KB 이하로 나눠 저장한다(한글은 글자당 3바이트이므로 글자 단위로 자른다). 렌더러가 번호 순서로 이어 붙여
+  `CONSENT_NOTICES_JSON` 한 줄로 쓴다. 통째 값과 조각을 함께 두거나, 번호가 비거나, 이어 붙인 값이 JSON이 아니면 거절한다.
+  안내문 버전(`AI_NOTICE_VERSION`·`STORAGE_NOTICE_VERSION`)과 본문의 `version`이 다르면 backend가 시작 때 거절한다.
 
 ## 6. 배포 (운영자, EC2)
 
@@ -97,14 +102,14 @@ python3 -I infra/release/release_manifest.py images-env /run/reconnect/release-m
 printf 'AWS_REGION=%s\nDEPLOY_ENV=%s\n' ap-northeast-2 production >> /run/reconnect/images.env
 ```
 
-빌드 출처 증명은 digest로 검증한다(세 이미지 모두). gh는 GitHub 토큰이 있어야 동작하므로, 권한을 하나도 주지 않은
+빌드 출처 증명은 digest로 검증한다(네 이미지 모두). gh는 GitHub 토큰이 있어야 동작하므로, 권한을 하나도 주지 않은
 fine-grained 토큰(공개 저장소 읽기만 가능)을 **그 셸에서만** `GH_TOKEN`으로 넣고 끝나면 지운다. 서버 파일·프로필에 저장하지 않는다.
 증명의 대상 이름은 레지스트리 없는 `reconnect-<이름>`이다. 첫 릴리스에서 digest만으로 통과하는지 확인하고 결과를 여기에 적는다.
 
 ```bash
 read -rs GH_TOKEN && export GH_TOKEN
-for image in backend frontend speech; do
-  ref="$(grep -m1 "^$(echo "$image" | tr a-z A-Z)_IMAGE=" /run/reconnect/images.env | cut -d= -f2)"
+for image in backend frontend speech speech-gpu; do
+  ref="$(grep -m1 "^$(echo "$image" | tr a-z- A-Z_)_IMAGE=" /run/reconnect/images.env | cut -d= -f2)"
   gh attestation verify "oci://$ref" -R YongSamGo/RE_CONNECT
 done
 unset GH_TOKEN
@@ -132,7 +137,10 @@ rm /run/reconnect/migrate.env
 ```
 
 Nginx 설정·TLS 인증서·RDS CA는 `/etc/reconnect/`에 둔다(경로는 Compose 변수로 바꿀 수 있다). TLS 개인키는 uid 101만 읽을 수 있게 한다.
-되돌리기는 이전 릴리스의 manifest로 같은 절차를 반복한다. 마이그레이션 되돌리기와 복구는 #97·#95가 다룬다.
+되돌리기 전에 `release_manifest.py rollback-check`로 이미지만 되돌려도 되는지 판정한다. 운영 DB는 downgrade하지 않는다.
+판정별 절차와 마이그레이션 작성 규칙은 [운영 절차 · 롤백](../../docs/operations/rollback.md)(#97)에 있다.
+백업 복원은 [복원 체크리스트](../../docs/security/backup-restore.md#복원-체크리스트)를 따르고,
+복원 DB는 `restore-check`가 공개 가능으로 판정한 뒤에만 운영에 연결한다 (#95).
 
 ## 7. 시험
 
@@ -140,3 +148,10 @@ Nginx 설정·TLS 인증서·RDS CA는 `/etc/reconnect/`에 둔다(경로는 Com
 python -I -m unittest discover -s infra/release/tests
 python -I -m unittest discover -s infra/deploy/tests   # POSIX 권한 검사라 Linux에서 실행
 ```
+
+## 모델 서비스 연결 (#92)
+
+GPU Ollama·GPU STT/TTS는 [모델 실행 절차](../models/README.md)의 운영 overlay를 추가한다.
+GPU 음성 이미지는 릴리스가 함께 게시하며, images.env에 CPU용 SPEECH_IMAGE와 구분된 SPEECH_GPU_IMAGE로 들어간다. models.env에는 실측 자원 상한만 지정한다. Ollama 공식 digest는 overlay 기본값에 고정돼 있다.
+Ollama 외부 이미지는 현재 Release 자동 빌드/검사 대상이 아니므로 별도 공급망 검증 기록이 필요하다.
+모델 준비·host/config 검사·warmup 후 공개 진입점을 시작하며, 실제 EC2 검증 전 이슈를 종료하지 않는다.
