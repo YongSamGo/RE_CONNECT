@@ -56,6 +56,14 @@ class Matching(unittest.TestCase):
 
 
 class Scoring(unittest.TestCase):
+    def test_source_turns_pair_results_even_when_server_drops_selections(self):
+        # #285: 서버가 경험이 아닌 선택을 통째로 빼도 근거 턴 번호로 채점한다.
+        plan = N(experiences=[selected("택시", 0, "한 삼십 년"), selected("노원구요", 1)])
+        preview = N(experiences=[accepted("택시", "약 30년", ["운전"])], source_turns=[0])
+        result = score(persona("P06"), CASES["P06"], plan, preview)
+        self.assertEqual((result["pairing_mismatch"], result["turn_recall"], result["non_experience"]), (False, 1.0, 0))
+        self.assertEqual((result["skill_recall"], result["duration_recall"]), (1.0, 1.0))
+
     def test_whole_experience_dropped_by_server_is_marked_not_crashing(self):
         plan = N(experiences=[selected("택시", 0, "한 삼십 년"), selected("남의 경험", 1)])
         preview = N(experiences=[accepted("택시", "약 30년", ["운전"])])
