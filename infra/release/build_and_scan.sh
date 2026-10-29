@@ -13,6 +13,7 @@ candidate="reconnect-${image}:candidate"
 case "$image" in
   backend) docker build --pull=false -t "$candidate" backend ;;
   frontend) docker build --pull=false --build-context api=docs/api -t "$candidate" frontend ;;
+  speech-gpu) docker build --pull=false --file speech/Dockerfile.gpu --target runtime -t "$candidate" speech ;;
   speech) docker build --pull=false --target runtime -t "$candidate" speech ;;
   *) echo "알 수 없는 이미지: $image" >&2; exit 2 ;;
 esac

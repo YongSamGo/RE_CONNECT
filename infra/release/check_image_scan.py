@@ -24,7 +24,7 @@ from pathlib import Path
 MAX_ACCEPT_DAYS = 90
 KST = dt.timezone(dt.timedelta(hours=9), "KST")
 VULNERABILITY_ID = re.compile(r"^(CVE-\d{4}-\d{4,}|GHSA(-[23456789cfghjmpqrvwx]{4}){3})$")
-IMAGE = re.compile(r"^(backend|frontend|speech)$")
+IMAGE = re.compile(r"^(backend|frontend|speech|speech-gpu)$")
 
 
 class ScanError(ValueError):
@@ -110,7 +110,7 @@ def judge(scan: object, accept: object, image: str, today: dt.date) -> tuple[lis
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--image", required=True, choices=["backend", "frontend", "speech"])
+    parser.add_argument("--image", required=True, choices=["backend", "frontend", "speech", "speech-gpu"])
     parser.add_argument("--scan", required=True, type=Path)
     parser.add_argument("--accept", required=True, type=Path)
     parser.add_argument("--today", type=dt.date.fromisoformat, default=None, help="시험용 기준일")

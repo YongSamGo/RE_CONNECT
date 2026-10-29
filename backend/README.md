@@ -140,4 +140,6 @@ DB·Redis URL을 설정하면 앱 readiness가 실제 연결·Redis 비영속화
 
 - 로그인 취소·대기 만료, 동시 탈퇴·철회, 늦은 결과, 복원 뒤 재삭제와 탈퇴 흔적 검사(W13-03): [대응표](../docs/security/member-lifecycle-tests.md)
 
+- 웹·AI 공격 시나리오와 운영자 경로 권한 우회·상태 위조 검증: [대응표](../docs/security/attack-tests.md)
+
 - 확정 안내문 게시·로그인 복귀·명시적 묶음 저장·현재 세션의 저장 대기 취소: [회원 화면 연결](../frontend/src/features/account/SERVER.md). 실제 안내문과 제공자 설정은 기본 비활성이다.

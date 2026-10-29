@@ -194,8 +194,9 @@ class ImageScanJudgeTest(unittest.TestCase):
 
     def test_repository_accept_list_is_valid(self) -> None:
         path = Path(release_manifest.ROOT) / "infra/release/image-scan-accept.json"
-        for image in ("backend", "frontend", "speech"):
-            check_image_scan.load_accepted(json.loads(path.read_text(encoding="utf-8")), image, TODAY)
+        # 실제 저장소 목록은 오늘 날짜로 판정한다(새 기록일·만료를 함께 확인).
+        for image in ("backend", "frontend", "speech", "speech-gpu"):
+            check_image_scan.load_accepted(json.loads(path.read_text(encoding="utf-8")), image, dt.date.today())
 
 
 if __name__ == "__main__":

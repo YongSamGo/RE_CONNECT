@@ -1,0 +1,10 @@
+{
+  "checked_on": "2026-10-29",
+  "ollama": {
+    "version": "0.40.3",
+    "image": "ollama/ollama@sha256:adca95a12c2b386a8f9a995e7fa0600e187e3323b5e5522f5a6c3b1ec73eff99",
+    "registry_tag_updated": "2026-10-11T04:14:08.069862Z",
+    "release_published": "2026-10-11T01:39:04Z",
+    "source": "https://hub.docker.com/v2/repositories/ollama/ollama/tags/0.40.3"
+  }
+}

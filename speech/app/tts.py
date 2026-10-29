@@ -10,6 +10,7 @@ import wave
 
 import numpy as np
 
+from app.device import selected_device, tts_options
 from app.stt import ModelFailure
 from prepare_models import BASE, load_manifest, prepare
 import prepare_tts_code
@@ -61,7 +62,7 @@ class LocalTTS:
         model = qwen.Qwen3TTSModel.from_pretrained(
             str(BASE / 'models' / 'tts' / models['tts']['revision']),
             local_files_only=True, use_safetensors=True, trust_remote_code=False,
-            device_map='cpu', dtype=torch.float32, attn_implementation='eager')
+            **tts_options(selected_device(), torch))
         prepare_tts_code.verify()
         return cls(model)
 

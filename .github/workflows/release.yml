@@ -26,11 +26,15 @@ on:
       - "frontend/Dockerfile"
       - "frontend/.dockerignore"
       - "frontend/package-lock.json"
-      - "speech/Dockerfile"
+      - "speech/Dockerfile*"
+      - "speech/app/**"
+      - "speech/gpu/**"
       - "speech/.dockerignore"
       - "speech/requirements*.txt"
       - "speech/tts_compat/**"
       - "infra/compose.prod.yaml"
+      - "infra/compose.models.yaml"
+      - "infra/models/**"
       - "infra/deploy/**"
       - "infra/release/**"
 
@@ -111,7 +115,11 @@ jobs:
   speech-image-check:
     # 음성 이미지는 무거워서 음성 빌드 파일이나 판정 도구가 바뀐 PR에서만 빌드한다.
     # 그래야 빌드 문제를 release 환경 승인 뒤 첫 태그에서야 알게 되는 일을 막는다.
-    name: 이미지 빌드·검사 (speech)
+    name: 이미지 빌드·검사 (${{ matrix.image }})
+    strategy:
+      fail-fast: false
+      matrix:
+        image: [speech, speech-gpu]
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-24.04
     timeout-minutes: 60
@@ -125,8 +133,8 @@ jobs:
       - name: 음성 빌드 파일 변경 확인
         id: changed
         run: |
-          if git diff --quiet HEAD^1 HEAD -- speech/Dockerfile speech/.dockerignore 'speech/requirements*.txt' \
-              speech/tts_compat .github/workflows/release.yml infra/release; then
+          if git diff --quiet HEAD^1 HEAD -- 'speech/Dockerfile*' speech/.dockerignore 'speech/requirements*.txt' \
+              speech/app speech/gpu speech/tts_compat .github/workflows/release.yml infra/release; then
             echo "speech=false" >> "$GITHUB_OUTPUT"
             echo "음성 빌드 파일 변경 없음. 빌드를 건너뛴다."
           else
@@ -141,7 +149,9 @@ jobs:
           tar -xzf "$RUNNER_TEMP/trivy.tar.gz" -C "$RUNNER_TEMP" trivy
       - name: 빌드·검사·판정
         if: steps.changed.outputs.speech == 'true'
-        run: TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh speech "$RUNNER_TEMP/out"
+        env:
+          IMAGE: ${{ matrix.image }}
+        run: TRIVY="$RUNNER_TEMP/trivy" infra/release/build_and_scan.sh "$IMAGE" "$RUNNER_TEMP/out"
 
   publish:
     name: 릴리스 이미지 게시

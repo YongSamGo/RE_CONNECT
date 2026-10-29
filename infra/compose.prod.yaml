@@ -4,7 +4,7 @@
 # - 비밀값은 SSM에서 tmpfs(/run/reconnect)에 만든 env 파일로만 받는다. format: raw라 $·따옴표를 해석하지 않는다.
 # - 인터넷에는 nginx의 443만 공개한다. Redis는 내부 네트워크에만 있고 영속화하지 않는다.
 # - PostgreSQL은 이 파일에 없다. 비공개 RDS에 TLS(verify-full)로 접속한다 (#90).
-# - Ollama·음성 서비스는 #92에서 추가한다. 그 전에는 AI·음성 기능이 준비 안 됨으로 응답한다.
+# - Ollama·음성 서비스는 compose.models.yaml overlay로 연결한다. 절차: models/README.md.
 #
 #   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml up -d --wait
 name: reconnect-prod
