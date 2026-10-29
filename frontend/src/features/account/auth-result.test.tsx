@@ -42,8 +42,9 @@ it('success callbacks go straight to my information and still verify the server 
 it('offers the pending save only when the checked server intent has not expired', async () => {
   const pending = { save_intent_id: '52345678-1234-4234-9234-123456789012', targets: { profile: true, draft: false }, existing_saved_profile_version: null, expires_at: new Date(Date.now() + 600000).toISOString() }
   vi.stubGlobal('fetch', vi.fn(async () => json({ ...member, pending_save_intent: pending })))
-  mount('?purpose=save&status=success')
+  const first = mount('?purpose=save&status=success')
   expect(await screen.findByRole('link', { name: '저장 대기 자료 확인' })).toHaveAttribute('href', '/me/save')
+  first.unmount()
   vi.unstubAllGlobals()
   vi.stubGlobal('fetch', vi.fn(async () => json({ ...member, pending_save_intent: { ...pending, expires_at: new Date(Date.now() - 60000).toISOString() } })))
   mount('?purpose=save&status=success')
