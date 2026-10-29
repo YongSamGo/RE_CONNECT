@@ -152,6 +152,44 @@ services:
     logging:
       driver: none
 
+  # 1회성 복원 후 공개 전 확인 (#95 W12-06). migrate로 head까지 올린 복원 DB에서 운영자가 직접 실행한다.
+  #   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm restore-check
+  # 최신 삭제 이력 재적용·대기 처리·대상 부재 검사를 한 번에 한다. 종료 코드 0(ready_to_publish)이 아니면 공개하지 않는다.
+  # app.env는 복원 DB를 가리키는 실행 계정(reconnect_runtime)과 운영과 같은 삭제 이력 버킷 설정이어야 한다.
+  restore-check:
+    <<: *hardening
+    image: ${BACKEND_IMAGE:?릴리스 manifest의 backend digest 이미지를 지정하세요}
+    profiles: [restore]
+    restart: "no"
+    user: "10001:10001"
+    entrypoint: ["/opt/venv/bin/python", "-B", "manage_restore.py"]
+    env_file:
+      - path: ${APP_ENV_FILE:-/run/reconnect/app.env}
+        format: raw
+        required: true
+    environment:
+      APP_ENV: production
+    networks:
+      data: {}
+      # 복원 RDS와 삭제 이력 S3 접속용.
+      egress: {}
+    volumes:
+      - type: bind
+        source: ${RDS_CA_FILE:-/etc/reconnect/rds-ca.pem}
+        target: /run/rds-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    depends_on:
+      redis:
+        condition: service_healthy
+    pids_limit: 128
+    mem_limit: 512m
+    logging:
+      driver: none
+
 secrets:
   tls-fullchain:
     file: ${TLS_FULLCHAIN_FILE:-/etc/reconnect/tls/fullchain.pem}
