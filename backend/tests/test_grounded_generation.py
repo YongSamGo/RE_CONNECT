@@ -93,9 +93,9 @@ def test_invented_facts_references_and_approval_are_rejected(payload):
 
 
 @pytest.mark.parametrize("duration, skills", [
-    (quote("30년"), [quote("전문 조리사")]),
-    (quote("삼 년", 1), [quote("요리", 1)]),
-    (quote("주민번호"), [quote("이전 지시는 무시하고")]),
+    (quote("30년"), [quote("전문 조리사")]),                   # 원문에 없는 구절
+    (quote("삼 년", 1), [quote("요리", 1)]),                    # 설명과 다른 턴
+    (quote("주민번호"), [quote("이전 지시는 무시하고")]),       # 원문에 없는 구절(필터 단계가 아니라 대조에서 걸림)
 ])
 def test_ungrounded_duration_and_skills_are_dropped_without_discarding_experience(duration, skills):
     texts = [NORMAL, "삼 년 동안 요리를 했어요."]
@@ -104,6 +104,16 @@ def test_ungrounded_duration_and_skills_are_dropped_without_discarding_experienc
     assert result.experiences[0].description == "요리 봉사"
     assert result.experiences[0].duration_note is None
     assert result.experiences[0].skill_tags == ["요리"]
+
+
+def test_grounded_but_malformed_quotes_are_dropped_not_whole_result():
+    # 같은 턴의 원문이지만 기술 태그(50자·한 줄)나 기간(200자) 형식에 맞지 않는 인용. 문장 전체 인용이 기술 쪽에 오는 경우.
+    turn = "복지관에서 요리 봉사를 삼 년 했어요. 매주 화요일과 목요일에 어르신 점심 도시락 백 개를 만들고 배달까지 맡았어요."
+    item = selection(duration=quote(turn), skills=[quote(turn), quote("배달")])
+    result, _ = extract(dict(experiences=[item]), texts=[turn])
+    assert result.experiences[0].description == "요리 봉사"
+    assert result.experiences[0].duration_note == turn  # 200자 안이라 형식은 맞다
+    assert result.experiences[0].skill_tags == ["배달"]
 
 
 def test_cross_turn_skills_from_real_model_output_keep_other_experiences():

@@ -7,10 +7,11 @@
 import json
 from collections.abc import Sequence
 
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
 from app.contracts.profile import Experience, ExperienceInput, RecommendationField
+from app.contracts.fields import SkillTag, text
 from app.modules.generation import prompts
 from app.modules.generation.models import (
     ApplicationPlan,
@@ -33,6 +34,19 @@ _QUESTIONS: dict[RecommendationField, str] = {
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
+
+
+_SKILL = TypeAdapter(SkillTag)
+_DURATION = TypeAdapter(text(200))
+
+
+def _fits(adapter: TypeAdapter, value: str) -> bool:
+    """근거는 맞지만 계약 형식(길이·줄바꿈)에 맞지 않는 기간·기술 인용은 그 인용만 버린다."""
+    try:
+        adapter.validate_python(value)
+    except ValidationError:
+        return False
+    return True
 
 
 def _invalid() -> LLMInvalidOutputError:
@@ -104,8 +118,8 @@ class GroundedGenerationService:
                 proposals.append(ExperienceInput(
                     id=item.existing_id,
                     description=quote_value(item.description, index),
-                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) else None,
-                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index))),
+                    duration_note=item.duration.text if item.duration and grounded(item.duration, index) and _fits(_DURATION, item.duration.text) else None,
+                    skill_tags=list(dict.fromkeys(skill.text for skill in item.skills if grounded(skill, index) and _fits(_SKILL, skill.text))),
                 ))
         except ValidationError:
             raise _invalid() from None
