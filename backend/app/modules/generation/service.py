@@ -138,9 +138,17 @@ class GroundedGenerationService:
                 # 저장값과 같을 때만(양끝 공백·마침표 차이는 무시) 근거 대신 받는다. 이 경우 설명은 원문이 아니므로
                 # 아래 표준 태그의 근거로 쓰지 않는다.
                 reused = current is not None and item.description.text.strip(" .") == current.description.strip(" .")
-                if not grounded(item.description) and not reused:
+                description = item.description
+                if not grounded(description):
+                    # 모델이 설명의 턴 번호만 잘못 적는 일이 있다(2026-10-29 시연: 첫 답이 의미 없는 입력이면 번호가 하나씩
+                    # 밀렸다). 인용 문장이 허용된 다른 턴 하나에만 그대로 있으면 그 턴으로 바로잡는다. 제외된 턴은 turns에
+                    # 없으므로 후보가 되지 않는다. 기간·기술 인용은 지금처럼 자기 턴 번호가 맞아야 한다.
+                    holders = [key for key, source in turns.items() if description.text in source]
+                    if len(holders) == 1:
+                        description = description.model_copy(update={"turn_index": holders[0]})
+                if not grounded(description) and not reused:
                     raise _invalid()
-                index, quote = item.description.turn_index, item.description.text
+                index, quote = description.turn_index, description.text
                 summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
                 # 기존 경험에는 한 턴에서 새로 말한 세부 내용만 덧붙인다. 기간·기술 인용이 나온 가장 늦은 턴을 근거 턴으로
                 # 삼고 그 턴의 인용만 쓴다. 앞 턴의 인용까지 받으면 사용자가 프로필에서 지운 기간·태그가 이번 턴 결과에
@@ -148,7 +156,7 @@ class GroundedGenerationService:
                 anchor = None
                 if current is not None:
                     details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
-                    anchor = max(details, default=index if grounded(item.description) else -1)
+                    anchor = max(details, default=index if grounded(description) else -1)
 
                 def usable(quote: Quote) -> bool:
                     return grounded(quote) and (anchor is None or quote.turn_index == anchor)
@@ -159,7 +167,7 @@ class GroundedGenerationService:
                           if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
-                evidence = _squash(" ".join([quote if usable(item.description) else "", *skills]))
+                evidence = _squash(" ".join([quote if usable(description) else "", *skills]))
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills

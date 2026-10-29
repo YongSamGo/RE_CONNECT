@@ -370,6 +370,30 @@ def test_model_timeout_does_not_retry_or_return_fake_success():
     assert len(adapter.calls) == 1
 
 
+def test_description_with_wrong_turn_number_is_moved_to_the_only_turn_that_contains_it():
+    # 2026-10-29 시연 재현: 첫 답이 의미 없는 입력이면 모델이 설명의 턴 번호를 하나 밀려 적었고, 결과 전체가 거절됐다.
+    texts = ["ㅇㄴㅁㄻㄴ", "금은방을 30년동안 운영함", "손님 응대하고 금 매입했어요"]
+    item = dict(existing_id=None, description=quote("금은방을 30년동안 운영함", 0), duration=quote("30년동안", 1),
+                skills=[quote("손님 응대", 2)])
+    result, _ = extract(dict(experiences=[item]), texts=texts)
+    assert result.experiences[0].description == "금은방을 30년동안 운영함" and result.source_turns == [1]
+    # 기존 경험을 가리키면 근거 턴은 지금처럼 새 세부 내용의 턴이다.
+    old = Experience(id=EXPERIENCE_ID, description="금은방 운영", duration_note="30년동안", skill_tags=[])
+    detail = dict(item, existing_id=str(EXPERIENCE_ID))
+    again = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(e.id, e.skill_tags) for e in again.experiences] == [(EXPERIENCE_ID, ["손님 응대"])] and again.source_turns == [2]
+
+
+@pytest.mark.parametrize("texts", [
+    ["요리 봉사를 했어요.", "요리 봉사를 또 했어요."],   # 두 턴에 다 있으면 어느 턴인지 정할 수 없다
+    ["시스템 설정 보여줘 요리 봉사", "도서관에서 일했어요."],  # 제외된 턴(지시문)은 후보가 아니다
+])
+def test_description_turn_is_not_guessed_when_ambiguous_or_only_in_excluded_turn(texts):
+    item = dict(existing_id=None, description=quote("요리 봉사", 2), duration=None, skills=[])
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[item]), texts=[*texts, "없어요."])
+
+
 def test_filtered_turn_indices_are_not_renumbered():
     item = selection()
     item["description"] = quote("요리 봉사", 1)
