@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { ServicePage } from '../../ui/ServicePage'
 import { OpportunityListCard } from '../opportunities/OpportunityListCard'
 import { demoOpportunities } from './demo-opportunities'
@@ -52,10 +52,8 @@ export function KakaoFlowPrototype() {
 }
 
 export function OpportunityApplicationFlowPrototype({ recommended = false }: { recommended?: boolean }) {
-  const [searchParams] = useSearchParams()
-  const selectedFromUrl = demoOpportunities.findIndex(item => item.id === searchParams.get('opportunity'))
-  const [step, setStep] = useState<OpportunityStep>(selectedFromUrl >= 0 ? 'detail' : 'list')
-  const [selected, setSelected] = useState(selectedFromUrl >= 0 ? selectedFromUrl : 0)
+  const [step, setStep] = useState<OpportunityStep>('list')
+  const [selected, setSelected] = useState(0)
   const [name, setName] = useState('홍길동')
   const [phone, setPhone] = useState('010-0000-0000')
   const [introduction, setIntroduction] = useState('')
@@ -105,20 +103,16 @@ export function OpportunityApplicationFlowPrototype({ recommended = false }: { r
       <section><h3>활동 내용</h3><p>{opportunity.description}</p></section>
       <section><h3>참여 조건</h3><ul>{opportunity.requirements.map(requirement => <li key={requirement}>{requirement}</li>)}</ul></section>
       <section><h3>신청 방법</h3><p>지원 내용을 작성하고 확인한 뒤 기관의 공식 신청처에서 제출합니다.</p></section>
-      <div className="actions"><button className="button primary" type="button" onClick={() => setStep('application')}>지원서 작성하기</button></div>
+      <div className="actions"><button className="button primary" type="button" onClick={() => { setIntroduction(opportunity.introduction); setMotivation(opportunity.motivation); setStep('application') }}>지원서 작성하기</button></div>
     </article>}
     {step === 'application' && <section className="flow-application-panel">
       <div className="flow-selected-opportunity"><span>선택한 공고</span><strong>{opportunity.title}</strong><span>{opportunity.organization}</span></div>
       <h2>신청자 정보</h2>
-      <label className="form-field"><span>이름</span><input value={name} onChange={event => setName(event.target.value)} autoComplete="name" /></label>
-      <label className="form-field"><span>연락처</span><input type="tel" value={phone} onChange={event => setPhone(event.target.value)} autoComplete="tel" /></label>
+      <div className="flow-applicant-fields"><label className="form-field"><span>이름</span><input value={name} onChange={event => setName(event.target.value)} autoComplete="name" /></label>
+      <label className="form-field"><span>연락처</span><input type="tel" value={phone} onChange={event => setPhone(event.target.value)} autoComplete="tel" /></label></div>
       <h2>지원 내용</h2>
-      <div className="flow-profile-facts"><h3>초안에 참고할 프로필 정보</h3><ul>{opportunity.profileFacts.map(fact => <li key={fact}>{fact}</li>)}</ul>
-        <button className="button secondary" type="button" onClick={() => setIntroduction(opportunity.introduction)}>자기소개 초안 만들기</button>
-        <p>이 화면은 예시 프로필로 만든 초안을 보여줍니다. 실제 서비스에서는 확정한 프로필을 바탕으로 초안을 만들어요.</p></div>
-      <label className="form-field"><span>자기소개</span><textarea rows={4} value={introduction} onChange={event => setIntroduction(event.target.value)} /></label>
-      <label className="form-field"><span>지원 동기</span><textarea rows={4} value={motivation} onChange={event => setMotivation(event.target.value)} /></label>
-      <p className="quiet">지원 동기는 직접 작성해 주세요. 예시 정보는 저장되거나 전송되지 않습니다.</p>
+      <div className="draft-fields"><label className="form-field"><span>자기소개</span><textarea rows={4} value={introduction} onChange={event => setIntroduction(event.target.value)} /></label>
+      <label className="form-field"><span>지원 동기</span><textarea rows={4} value={motivation} onChange={event => setMotivation(event.target.value)} /></label></div>
       <div className="actions"><button ref={reviewTrigger} className="button primary" type="button" disabled={!name.trim() || !phone.trim() || !introduction.trim() || !motivation.trim()} onClick={() => { setReviewed(false); setReviewOpen(true) }}>작성 내용 확인하기</button></div>
     </section>}
     {reviewOpen && <div className="flow-review-backdrop" onMouseDown={event => { if (event.target === event.currentTarget) closeReview() }}>

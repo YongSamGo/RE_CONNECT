@@ -1,3 +1,4 @@
+import { UnsavedChangesGuard } from '../../ui/UnsavedChangesGuard'
 import { useEffect, useRef } from 'react'
 import { ApiError } from '../../api/errors'
 import { required, useRequest } from '../../state/useRequest'
@@ -96,7 +97,7 @@ export function SavedDraftEditor({ documentId, version, opportunityId, onUnavail
       return { ...editor, base: integer(result.version), saved: true }
     }, value => { if (typeof value !== 'string') scope.setValue(value) })
   }
-  return <section className="panel"><h3>새 내용으로 편집</h3>
+  return <section className="panel"><UnsavedChangesGuard dirty={!!editor?.dirty} /><h3>새 내용으로 편집</h3>
     <p><a className="text-link" href={`/opportunities/${opportunityId}`} target="_blank" rel="noopener noreferrer">현재 공고 조건을 새 창에서 확인</a></p>
     {!editor ? <><p>현재 저장 프로필과 공개 공고를 확인해 새 임시 편집본을 만듭니다.</p><Button pending={pending} onClick={() => void start()}>저장본으로 새 임시 편집 시작</Button></> : <>
       <p>수정 중 자동 저장하지 않습니다. 다시 승인하고 저장하기 전에는 기존 저장본을 유지합니다.</p>

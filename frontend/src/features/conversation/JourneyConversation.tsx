@@ -1,3 +1,4 @@
+import { UnsavedChangesGuard } from '../../ui/UnsavedChangesGuard'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
@@ -109,7 +110,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       questionRef.current?.focus()
     }).finally(() => { if (submitLock.current === token) submitLock.current = null })
   }
-  return <ServicePage title="경험 이야기하기" className="conversation-task"><div className="service-conversation journey-conversation">
+  return <ServicePage title="경험 이야기하기" className="conversation-task"><UnsavedChangesGuard dirty={!!state.text.trim()} /><div className="service-conversation journey-conversation">
     {!state.view && (!newJourney || read.state.status === 'error') && <Button variant="secondary" disabled={pending || !!state.attempt} onClick={load}>체험 대화 준비하기</Button>}
     {newJourney && read.state.status === 'pending' && <p role="status">질문을 준비하고 있습니다.</p>}
     {accessFailure.value && <RequestError error={accessFailure.value} />}
@@ -121,7 +122,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       <ConversationSurface><section className="conversation-question"><h2 id="conversation-question" ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
         {!state.ended && state.question && <QuestionAudio key={state.questionId ?? state.question} question={state.question} journeyId={journeyId} messageId={state.questionId} />}
         <p role="status">{state.ended ? '초안에 반영했습니다. 프로필에서 내용을 확인하고 직접 확정해 주세요.' : sending ? '경험을 정리하고 있어요. 프로필 화면으로 이동할 수 있습니다.' : ''}</p>
-        {state.ended && <div className="actions"><Link className="button primary" to={`/journeys/${journeyId}/recommendations`}>추천 공고 살펴보기</Link></div>}
+        {state.ended && <div className="actions"><Link className="button primary" to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link></div>}
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}
         {sending && <Button variant="secondary" onClick={() => { send.clear(); submitLock.current = null }}>응답 기다리기 중지</Button>}

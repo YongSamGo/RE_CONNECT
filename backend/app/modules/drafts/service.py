@@ -137,15 +137,12 @@ class DraftService:
                     warnings.append('저장 당시의 근거와 현재 확정 프로필 또는 공고가 다릅니다. 본문은 자동으로 수정하지 않았습니다.')
             if body.mode == 'generate':
                 async with asyncio.timeout(DRAFT_TIMEOUT_SECONDS):
-                    preview = await GroundedGenerationService(self.llm.for_identity(identity)).application_preview(
+                    preview = await GroundedGenerationService(self.llm.for_identity(identity)).application_draft(
                         snapshot=ConfirmedProfileSnapshot(profile_id=journey_id, version=body.profile_version, content=snapshot.content),
                         context=ApplicationContext(opportunity=body.opportunity, title=opportunity.title, description=opportunity.description_text))
-                for paragraph in preview.paragraphs:
-                    if len('\n'.join([*paragraphs, paragraph])) <= 2000:
-                        paragraphs.append(paragraph)
-                    else:
-                        warnings = ['일부 확정 사실은 본문 길이 제한으로 포함하지 않았습니다.']
-                warnings.append('지원동기는 추정하지 않았습니다. 공고를 확인하고 직접 작성해 주세요.')
+                paragraphs = [preview.self_introduction]
+                motivation = preview.motivation
+                warnings.append('AI가 제안한 문구입니다. 경험과 지원 의사에 맞는지 읽고 고쳐 주세요.')
             draft = JourneyDraft(draft_id=permit.draft_id, revision=1, mode=body.mode, profile_version=body.profile_version,
                 opportunity=body.opportunity, self_introduction='\n'.join(paragraphs), motivation=motivation, approved_at=None,
                 review_reasons=[], warnings=warnings)

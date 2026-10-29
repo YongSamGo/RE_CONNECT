@@ -1,6 +1,6 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react'
+import type { ComponentProps, ReactNode } from 'react'
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
+type Props = ComponentProps<'button'> & {
   variant?: 'primary' | 'secondary' | 'compact'
   pending?: boolean
   pendingLabel?: ReactNode

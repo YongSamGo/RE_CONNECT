@@ -5,6 +5,7 @@
 """
 
 import json
+import re
 from collections.abc import Sequence
 
 from pydantic import BaseModel, ValidationError
@@ -14,6 +15,8 @@ from app.contracts.profile import Experience, ExperienceInput, RecommendationFie
 from app.modules.generation import prompts
 from app.modules.generation.models import (
     ApplicationPlan,
+    ApplicationWritingPlan,
+    WrittenApplicationPreview,
     ApplicationContext,
     ApplicationPreview,
     ConfirmedProfileSnapshot,
@@ -131,8 +134,8 @@ class GroundedGenerationService:
             raise _invalid()
         return _QUESTIONS[plan.field]
 
-    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
-        # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.
+    @staticmethod
+    def _application_facts(snapshot: ConfirmedProfileSnapshot) -> dict[str, str]:
         profile = snapshot.content
         ids = [item.id for item in profile.experiences]
         if len(set(ids)) != len(ids):
@@ -153,6 +156,11 @@ class GroundedGenerationService:
                     facts[f"{kind}:{index}"] = f"{label}: {value}"
         if not facts:
             raise GenerationInputError("확정한 경험을 확인해 주세요")
+        return facts
+
+    async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
+        # 기존 사실 선택 미리보기는 문장 작성 경로와 구분해 유지한다.
+        facts = self._application_facts(snapshot)
         data = {"facts": facts}
         if context is not None:
             data['opportunity_context'] = context.model_dump(mode='json')
@@ -164,3 +172,33 @@ class GroundedGenerationService:
             profile_version=snapshot.version,
             paragraphs=[facts[key] for key in plan.fact_ids],
         )
+
+    async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
+        facts = self._application_facts(snapshot)
+        data = {"facts": facts}
+        if context is not None:
+            # 기관 연락처와 개인 정보가 섞인 원문은 제외한다. 식별자와 버전도 모델에 보내지 않는다.
+            title = safe_text(context.title)
+            description = safe_text(context.description) if context.description else None
+            data["opportunity_context"] = {"title": title, "description": description}
+        plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
+        context_values = data.get('opportunity_context', {}).values()
+        source_text = '\n'.join([*facts.values(), *(value for value in context_values if value)])
+        allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
+
+        def verify(paragraphs) -> str:
+            for paragraph in paragraphs:
+                if any(key not in facts for key in paragraph.fact_ids):
+                    raise _invalid()
+                value = paragraph.text
+                if safe_text(value) != value or re.search(r"https?://|[<>\u00b7\u318d\u30fb]", value, re.IGNORECASE):
+                    raise _invalid()
+                if not set(re.findall(r"\d+(?:[.,]\d+)*", value)).issubset(allowed_numbers):
+                    raise _invalid()
+            result = '\n\n'.join(paragraph.text for paragraph in paragraphs)
+            if len(result) > 2000:
+                raise _invalid()
+            return result
+
+        # 참조와 표본 필터는 의미 전체의 사실성을 보장하지 않는다. 결과는 여전히 미승인 초안이다.
+        return WrittenApplicationPreview(self_introduction=verify(plan.self_introduction), motivation=verify(plan.motivation))

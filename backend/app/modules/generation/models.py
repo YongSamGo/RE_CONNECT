@@ -54,6 +54,28 @@ class ApplicationPlan(BaseModel):
     fact_ids: Annotated[list[text(80)], Field(min_length=1, max_length=30), Unique]
 
 
+class SupportedParagraph(BaseModel):
+    model_config = CONTRACT_CONFIG
+
+    text: text(2000, multiline=True)
+    fact_ids: Annotated[list[text(80)], Field(min_length=1, max_length=30), Unique]
+
+
+class ApplicationWritingPlan(BaseModel):
+    model_config = CONTRACT_CONFIG
+
+    self_introduction: Annotated[list[SupportedParagraph], Field(min_length=1, max_length=3)]
+    motivation: Annotated[list[SupportedParagraph], Field(min_length=1, max_length=3)]
+
+
+class WrittenApplicationPreview(BaseModel):
+    model_config = CONTRACT_CONFIG
+
+    self_introduction: text(2000, multiline=True)
+    motivation: text(2000, multiline=True)
+    requires_confirmation: Literal[True] = True
+
+
 class ConfirmedProfileSnapshot(BaseModel):
     """호출자가 소유권·확정을 확인한 뒤 전달하는 스냅샷. HTTP 입력에 쓰지 않는다."""
 

@@ -4,7 +4,7 @@ import './journey-map.css'
 const nodeWidth = 184
 const nodeHeight = 82
 const nodes = [
-  { id: 'home', x: 34, y: 90, title: '시작 화면', detail: '이야기 시작 · 공고 탐색', path: '/', lane: 'start' },
+  { id: 'home', x: 34, y: 90, title: '시작 화면', detail: '이야기 시작과 공고 탐색', path: '/', lane: 'start' },
   { id: 'start', x: 270, y: 90, title: '시작 전 안내', detail: 'AI 처리 안내 확인', path: '/start', lane: 'start' },
   { id: 'conversation', x: 506, y: 90, title: '경험 이야기', detail: '대화로 경험 정리', path: '/conversation', lane: 'story' },
   { id: 'recommendations', x: 742, y: 90, title: '추천 공고', detail: '경험과 연결된 기회', path: '/recommendations', lane: 'opportunity' },
@@ -20,7 +20,7 @@ const byId = Object.fromEntries(nodes.map(node => [node.id, node]))
 const edges = [
   { from: 'home', to: 'start', label: '시작하기' },
   { from: 'home', to: 'opportunities', label: '공고 먼저 보기' },
-  { from: 'start', to: 'conversation', label: '안내 게시 · 동의 · 체험 생성' },
+  { from: 'start', to: 'conversation', label: '안내 게시와 동의, 체험 생성' },
   { from: 'start', to: 'opportunities', label: '동의 없이 둘러보기' },
   { from: 'conversation', to: 'recommendations', label: '경험 답변 확인 완료' },
   { from: 'recommendations', to: 'detail', label: '추천 공고 선택' },

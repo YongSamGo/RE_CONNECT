@@ -1,21 +1,27 @@
 import type { ReactNode } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import './service.css'
 
 export function MemberNavigation() {
-  return <nav className="member-navigation" aria-label="회원 메뉴">
-    <NavLink to="/me" end>나의 정보</NavLink>
-    <NavLink to="/me/story">나의 이야기</NavLink>
-    <NavLink to="/me/saved">저장한 공고</NavLink>
-  </nav>
+  return <nav className="member-navigation" aria-label="회원 메뉴"><NavLink to="/me" end>나의 정보</NavLink></nav>
 }
 
-export function ServicePage({ title, description, children, member = false, className = '' }: {
-  title: string; description?: string; children: ReactNode; member?: boolean; className?: string
+export function ServicePage({ title, description, children, member = false, embedded = false, className = '' }: {
+  title: string; description?: string; children: ReactNode; member?: boolean; embedded?: boolean; className?: string
 }) {
-  return <div className={`service-stage${member ? ' member-page' : ''} ${className}`}>
+  const heading = useRef<HTMLHeadingElement>(null)
+  const previousTitle = useRef(title)
+  useEffect(() => {
+    if (!embedded && previousTitle.current !== title) {
+      heading.current?.focus({ preventScroll: true })
+      window.scrollTo(0, 0)
+    }
+    previousTitle.current = title
+  }, [title, embedded])
+  return <div className={`${embedded ? 'service-embedded' : 'service-stage'}${member ? ' member-page' : ''} ${className}`}>
     {member && <MemberNavigation />}
-    {!member && <header className="service-heading"><h1>{title}</h1>{description && <p>{description}</p>}</header>}
+    <header className="service-heading">{embedded ? <h2>{title}</h2> : <h1 ref={heading} tabIndex={-1}>{title}</h1>}{description && <p>{description}</p>}</header>
     {children}
   </div>
 }

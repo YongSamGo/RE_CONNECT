@@ -1,3 +1,4 @@
+import { useEntryAction } from '../../state/useEntryAction'
 import { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import type { components } from '../../api/schema'
@@ -15,7 +16,7 @@ function resultQuery(search: string) {
   const status = query.get('status')
   if ([...query.keys()].length !== 2 || query.getAll('purpose').length !== 1
     || query.getAll('status').length !== 1
-    || !['login', 'reauth'].includes(purpose ?? '')
+    || !['login', 'save', 'reauth'].includes(purpose ?? '')
     || !['success', 'cancelled', 'failed', 'expired'].includes(status ?? '')) return null
   return { purpose, status }
 }
@@ -34,9 +35,11 @@ function Result({ search }: { search: string }) {
   const me = state.status === 'success' ? state.data.me : null
   const checkedAt = state.status === 'success' ? state.data.checkedAt : 0
   const clear = request.clear
+  const check = () => request.run(async (api, signal) => ({ me: parseSession(required((await api.GET('/me', { signal })).data)), checkedAt: Date.now() }))
+  useEntryAction(check, !!result, search)
   useEffect(() => {
     if (!me) return
-    const expiries = [me.user?.reauth_until]
+    const expiries = [me.user?.reauth_until, me.pending_save_intent?.expires_at]
       .filter((value): value is string => !!value).map(Date.parse).filter(value => value > checkedAt)
     // Also expire a plain session preview: /me is a snapshot, not a durable
     // authorization. Server-side guards still protect every actual operation.
@@ -46,12 +49,12 @@ function Result({ search }: { search: string }) {
   }, [me, checkedAt, clear])
   const reauthenticated = me?.authenticated && me.user?.reauth_until
     && Date.parse(me.user.reauth_until) > checkedAt
-  return <ServicePage title="현재 로그인 상태를 확인해요" description="로그인 결과를 확인하고 이용을 이어가세요.">
+  return <ServicePage title="로그인 확인" className="auth-result-page">
     {!result ? <StatusNotice title="돌아온 주소를 확인할 수 없어요">나의 정보 화면에서 현재 상태를 확인해 주세요.</StatusNotice> : <>
       {result.status === 'cancelled' && <StatusNotice title="요청이 취소되어 돌아왔어요">필요하면 현재 로그인 상태를 확인해 주세요.</StatusNotice>}
       {result.status === 'failed' && <StatusNotice title="요청 결과를 확인해야 해요">현재 상태를 확인한 뒤 다시 진행해 주세요.</StatusNotice>}
       {result.status === 'expired' && <StatusNotice title="요청 시간이 지났어요">현재 로그인 상태를 확인해 주세요.</StatusNotice>}
-      <section className="panel"><Button pending={state.status === 'pending'} onClick={() => void request.run(async (api, signal) => ({ me: parseSession(required((await api.GET('/me', { signal })).data)), checkedAt: Date.now() }))}>서버에서 현재 상태 확인</Button>
+      <section className="panel">{!me && <Button pending={state.status === 'pending'} onClick={() => void check()}>로그인 상태 다시 확인</Button>}
         {state.status === 'pending' && <p role="status">서버의 현재 세션을 확인하고 있어요.</p>}
         {state.status === 'error' && <RequestError error={state.error} />}
         <p className="visually-hidden" role="status">{me ? me.authenticated ? '로그인 상태를 확인했어요.' : '현재 로그인하지 않은 상태입니다.' : ''}</p>
@@ -62,7 +65,6 @@ function Result({ search }: { search: string }) {
         </> : <p>현재 로그인하지 않은 상태입니다.</p>}</div>}
       </section>
     </>}
-    <StatusNotice title="운영 안내문 게시를 확인해 주세요">운영 주체와 문의처, 보관 및 삭제 정책이 확정 게시되기 전에는 새 로그인과 동의를 제공하지 않아요.</StatusNotice>
     <div className="actions"><Link className="button primary" to="/me">나의 정보로 이동</Link><Link className="text-link" to="/">시작 화면으로</Link></div>
   </ServicePage>
 }
