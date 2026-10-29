@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # 릴리스 이미지 하나를 빌드하고 Trivy로 검사·SBOM을 만든 뒤 판정한다 (#93 W12-04).
-# 저장소 루트에서: infra/release/build_and_scan.sh <backend|frontend|speech> <출력 폴더>
+# 저장소 루트에서: infra/release/build_and_scan.sh <backend|frontend|speech|speech-gpu> <출력 폴더>
 # TRIVY 환경변수에 체크섬을 확인한 trivy 실행 파일 경로를 넣는다.
 # 검사 결과 JSON에는 미조치 취약점 목록이 들어 있으므로 공개 산출물로 올리지 않는다.
 set -euo pipefail

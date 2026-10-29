@@ -29,9 +29,11 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 # 2: 이미지 참조에서 레지스트리 주소를 뺐다 (공개 Release에 AWS 계정 ID를 남기지 않는다).
-SCHEMA = 2
-IMAGES = ("backend", "frontend", "speech")
-IMAGE_ENV = {"backend": "BACKEND_IMAGE", "frontend": "FRONTEND_IMAGE", "speech": "SPEECH_IMAGE"}
+# 3: GPU 음성 이미지(speech-gpu)를 함께 게시한다. 이전 manifest로 GPU 이미지 없이 배포하지 않게 번호를 올렸다.
+SCHEMA = 3
+IMAGES = ("backend", "frontend", "speech", "speech-gpu")
+IMAGE_ENV = {"backend": "BACKEND_IMAGE", "frontend": "FRONTEND_IMAGE", "speech": "SPEECH_IMAGE",
+             "speech-gpu": "SPEECH_GPU_IMAGE"}
 DIGEST = re.compile(r"^sha256:[0-9a-f]{64}$")
 # EC2가 붙이는 ECR 주소. 다른 레지스트리나 경로·포트·셸 문자를 받지 않는다.
 REGISTRY = re.compile(r"^[0-9]{12}\.dkr\.ecr\.[a-z]{2}(?:-[a-z]+)+-[0-9]\.amazonaws\.com$")
@@ -230,7 +232,7 @@ def build(root: Path, tag: str, commit: str, images: dict[str, str], sboms: dict
     if not COMMIT.fullmatch(commit):
         raise ManifestError("커밋은 40자 SHA여야 합니다")
     if set(images) != set(IMAGES):
-        raise ManifestError("backend·frontend·speech 이미지가 모두 필요합니다")
+        raise ManifestError(f"{', '.join(IMAGES)} 이미지가 모두 필요합니다")
     for name, ref in images.items():
         _check_image(name, ref)
     return {
