@@ -253,11 +253,15 @@ def test_output_model_must_reject_extra_fields_before_transport() -> None:
 @pytest.mark.parametrize(
     ("response", "expected"),
     [
-        pytest.param(httpx.Response(200, json={"capabilities": ["completion", "thinking"]}), True, id="completion"),
-        pytest.param(httpx.Response(200, json={"details": {}}), True, id="old-runtime-without-capabilities"),
-        pytest.param(httpx.Response(200, json={"capabilities": ["embedding"]}), False, id="embedding-only"),
+        pytest.param(httpx.Response(200, json={"models": [{"name": "qwen3:4b"}]}), True, id="loaded"),
+        pytest.param(httpx.Response(200, json={"models": []}), False, id="not-loaded"),
+        pytest.param(httpx.Response(200, json={"models": [{"name": "other:4b"}]}), False, id="wrong-model"),
         pytest.param(httpx.Response(404, json={"error": "model not found"}), False, id="model-missing"),
         pytest.param(httpx.Response(200, content=b"not json"), False, id="broken-body"),
+        pytest.param(httpx.Response(200, json={"models": [None, False, {}]}), False, id="malformed-models"),
+        pytest.param(httpx.Response(200, json=[]), False, id="non-object"),
+        pytest.param(httpx.Response(200, content=b"x" * 64001), False, id="oversize"),
+        pytest.param(httpx.Response(302, headers={"Location": "https://invalid.example"}), False, id="redirect"),
     ],
 )
 def test_is_ready_checks_configured_model(response: httpx.Response, expected: bool) -> None:
@@ -268,8 +272,9 @@ def test_is_ready_checks_configured_model(response: httpx.Response, expected: bo
         return response
 
     assert asyncio.run(make_adapter(handler).is_ready()) is expected
-    assert str(seen[0].url) == f"{BASE_URL}/api/show"
-    assert json.loads(seen[0].content) == {"model": "qwen3:4b"}
+    assert str(seen[0].url) == f"{BASE_URL}/api/ps"
+    assert seen[0].method == "GET"
+    assert seen[0].content == b""
 
 
 def test_is_ready_is_false_when_runtime_is_down_or_slow() -> None:

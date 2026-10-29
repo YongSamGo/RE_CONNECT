@@ -99,7 +99,7 @@ class DatabaseRoleTests(unittest.TestCase):
         self.denied('SET ROLE reconnect_migrator')
         self.denied('ALTER ROLE reconnect_runtime SUPERUSER')
 
-    def test_normal_dml_and_sequence_use_but_no_ddl_truncate_schema_or_version_access(self):
+    def test_normal_dml_and_sequence_use_but_no_ddl_truncate_schema_or_version_write(self):
         self.grant()
         with self.connect(user='reconnect_runtime') as runtime:
             identifier = runtime.execute("INSERT INTO public.app_rows(value) VALUES ('synthetic') RETURNING id").fetchone()[0]
@@ -110,10 +110,23 @@ class DatabaseRoleTests(unittest.TestCase):
             self.assertFalse(runtime.execute("SELECT has_table_privilege(current_user,'public.app_rows','SELECT WITH GRANT OPTION')").fetchone()[0])
         for sql in ('CREATE TABLE public.unapproved(id int)', 'CREATE SCHEMA unapproved',
             'CREATE TEMP TABLE unapproved(id int)', 'ALTER TABLE public.app_rows ADD COLUMN unapproved int',
-            'DROP TABLE public.app_rows', 'TRUNCATE public.app_rows', 'SELECT * FROM public.alembic_version',
-            "INSERT INTO public.alembic_version VALUES ('unapproved')", 'SELECT public.hidden_owner_function()',
-            "SELECT setval('public.app_rows_id_seq',100)"):
+            'DROP TABLE public.app_rows', 'TRUNCATE public.app_rows',
+            "INSERT INTO public.alembic_version VALUES ('unapproved')", "UPDATE public.alembic_version SET version_num='unapproved'",
+            'DELETE FROM public.alembic_version', 'TRUNCATE public.alembic_version', 'DROP TABLE public.alembic_version',
+            'SELECT public.hidden_owner_function()', "SELECT setval('public.app_rows_id_seq',100)"):
             with self.subTest(sql=sql): self.denied(sql)
+
+    def test_runtime_reads_migration_head_for_restore_check_but_cannot_change_it(self):
+        with self.connect(user='reconnect_migrator') as migrator:
+            migrator.execute("INSERT INTO public.alembic_version VALUES ('synthetic_head')")
+        self.grant(); self.grant()
+        with self.connect(user='reconnect_runtime') as runtime:
+            # Alembic MigrationContext.get_current_heads()가 보내는 조회와 같다.
+            self.assertEqual(runtime.execute('SELECT alembic_version.version_num FROM alembic_version').fetchall(), [('synthetic_head',)])
+            self.assertFalse(runtime.execute("SELECT has_table_privilege(current_user,'public.alembic_version','SELECT WITH GRANT OPTION')").fetchone()[0])
+            for privilege in ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE'):
+                with self.subTest(privilege=privilege):
+                    self.assertFalse(runtime.execute("SELECT has_table_privilege(current_user,'public.alembic_version',%s)", (privilege,)).fetchone()[0])
 
     def test_future_table_denied_until_explicit_regrant_and_regrant_is_idempotent(self):
         self.grant()

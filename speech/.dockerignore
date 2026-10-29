@@ -17,3 +17,9 @@ tts_compat/**
 !tts_compat/compat.py
 !tts_compat/NOTICE
 !tts_compat/UPSTREAM_LICENSE
+
+!Dockerfile.gpu
+!gpu
+gpu/**
+!gpu/requirements.txt
+!gpu/ct2-requirements.txt

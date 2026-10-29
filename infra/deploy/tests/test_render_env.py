@@ -37,6 +37,58 @@ def app_document(**overrides: str) -> dict[str, list[dict[str, str]]]:
     return {"Parameters": [parameter(APP + key, value) for key, value in values.items()]}
 
 
+NOTICES = json.dumps({"state": "approved", "ai_processing": {"body": "가" * 3000}, "storage": None},
+                     ensure_ascii=False, separators=(",", ":"))
+
+
+def split(value: str, size: int = 1300) -> dict[str, str]:
+    return {f"CONSENT_NOTICES_JSON_PART{i + 1}": value[start:start + size]
+            for i, start in enumerate(range(0, len(value), size))}
+
+
+class SplitNoticeTest(unittest.TestCase):
+    """긴 공개 안내문을 SSM 4KB 제한에 맞춰 나눠 저장한 경우 (파일 쓰기 없이 collect만)."""
+
+    def test_parts_are_joined_in_order(self) -> None:
+        parts = split(NOTICES)
+        self.assertGreater(len(parts), 2)
+        for value in parts.values():
+            self.assertLessEqual(len(value.encode("utf-8")), 4096)
+        # SSM 응답 순서와 무관하게 번호 순서로 붙인다
+        document = app_document(**dict(reversed(list(parts.items()))))
+        values = render_env.collect(document, "app", APP)
+        self.assertEqual(values["CONSENT_NOTICES_JSON"], NOTICES)
+        self.assertFalse(any("_PART" in key for key in values))
+
+    def test_rejects_gaps_whole_plus_parts_and_broken_json(self) -> None:
+        parts = split(NOTICES)
+        cases = {
+            "gap": {k: v for k, v in parts.items() if not k.endswith("PART2")},
+            "no first": {k: v for k, v in parts.items() if not k.endswith("PART1")},
+            "whole and parts": {**parts, "CONSENT_NOTICES_JSON": NOTICES},
+            "last missing": {k: v for k, v in parts.items() if k != f"CONSENT_NOTICES_JSON_PART{len(parts)}"},
+            "swapped": {**parts, "CONSENT_NOTICES_JSON_PART1": parts["CONSENT_NOTICES_JSON_PART2"],
+                        "CONSENT_NOTICES_JSON_PART2": parts["CONSENT_NOTICES_JSON_PART1"]},
+        }
+        for label, overrides in cases.items():
+            with self.subTest(label), self.assertRaises(render_env.EnvError) as caught:
+                render_env.collect(app_document(**overrides), "app", APP)
+            self.assertNotIn("가", str(caught.exception))
+
+    def test_rejects_too_many_parts_and_other_split_names(self) -> None:
+        for name in ("CONSENT_NOTICES_JSON_PART9", "CONSENT_NOTICES_JSON_PART0", "DATABASE_URL_PART1",
+                     "KAKAO_CLIENT_SECRET_PART1"):
+            with self.subTest(name), self.assertRaises(render_env.EnvError):
+                render_env.collect(app_document(**{name: "{}"}), "app", APP)
+
+    def test_parts_still_reject_newlines(self) -> None:
+        # 조각마다 줄바꿈 검사를 하므로, 이어 붙인 뒤 env 파일에 다른 설정 줄을 끼워 넣을 수 없다
+        parts = split(NOTICES)
+        parts["CONSENT_NOTICES_JSON_PART2"] += "\nAPP_ENV=development"
+        with self.assertRaises(render_env.EnvError):
+            render_env.collect(app_document(**parts), "app", APP)
+
+
 @unittest.skipIf(os.name == "nt", "POSIX 권한 검사")
 class RenderEnvTest(unittest.TestCase):
     def setUp(self) -> None:

@@ -115,6 +115,7 @@ def test_volunteer_list_requires_fixed_capital_region_in_wire_request(monkeypatc
     {"operation": "senuri_detail"}, {"external_id": "fixture"},
     {"operation": "senuri_detail", "external_id": "../private"},
     {"operation": "senuri_detail", "external_id": "fixture\n"},
+    {"read_timeout": 60}, {"total_timeout": 60},
     {"page_no": True}, {"page_no": 0}, {"num_rows": 101},
     {"operation": "volunteer_list"},
     {"operation": "volunteer_list", "region_code": "6260000"},
@@ -209,6 +210,89 @@ def test_missing_key_does_not_connect(monkeypatch, network):
     result = asyncio.run(collector.fetch(collector.FetchRequest(operation="senuri_list"), SecretStr("")))
     assert result.status == collector.FetchStatus.CONFIGURATION
     assert network.calls == []
+
+
+# 가짜 백엔드의 초를 1/50로 줄여 실제 asyncio 취소와 read 제한을 빠르게 검증한다.
+TIME_SCALE = .02
+
+
+class TimedStream(ObservedStream):
+    def __init__(self, buffers, delays):
+        super().__init__(buffers)
+        self.delays = iter(delays)
+        self.read_timeouts = []
+        self.delivered = 0
+        self.io_timeouts = []
+
+    async def start_tls(self, ssl_context, server_hostname=None, timeout=None):
+        self.io_timeouts.append(timeout)
+        return await super().start_tls(ssl_context, server_hostname, timeout)
+
+    async def write(self, buffer, timeout=None):
+        self.io_timeouts.append(timeout)
+        await super().write(buffer, timeout)
+
+    async def read(self, max_bytes, timeout=None):
+        self.read_timeouts.append(timeout)
+        try:
+            await asyncio.wait_for(asyncio.sleep(next(self.delays, 0) * TIME_SCALE),
+                                   timeout=timeout * TIME_SCALE)
+        except TimeoutError as exc:
+            raise httpcore.ReadTimeout from exc
+        result = await super().read(max_bytes, timeout)
+        self.delivered += 1
+        return result
+
+
+@pytest.mark.parametrize("operation", ["senuri_list", "senuri_detail"])
+@pytest.mark.parametrize("delays", [(7.29, 0), (0, 7.29)], ids=["headers", "body"])
+def test_senuri_accepts_response_slower_than_old_read_limit(monkeypatch, network, operation, delays):
+    assert collector.IO_TIMEOUT == 5.0
+    assert collector.SENURI_READ_TIMEOUT == 15.0
+    assert collector.TOTAL_TIMEOUT == 20.0
+    network.stream = TimedStream(wire(), delays)
+    request = collector.FetchRequest(operation=operation,
+                                     external_id="fixture" if operation.endswith("_detail") else None)
+    result, _ = run_fetch(monkeypatch, network, request)
+    assert result.status == collector.FetchStatus.OK
+    assert result.document.item_count == 1
+    assert set(network.stream.read_timeouts) == {15.0}
+    assert set(network.stream.io_timeouts) == {5.0}
+    assert network.stream.closed
+
+
+@pytest.mark.parametrize("operation,delay", [
+    ("senuri_list", 16), ("senuri_detail", 16),
+    ("volunteer_list", 7.29), ("volunteer_detail", 7.29),
+])
+@pytest.mark.parametrize("phase", ["headers", "body"])
+def test_read_deadline_rejects_stalled_headers_and_body(monkeypatch, network, operation, delay, phase):
+    network.stream = TimedStream(wire(), (delay, 0) if phase == "headers" else (0, delay))
+    request = collector.FetchRequest(operation=operation,
+        external_id="fixture" if operation.endswith("_detail") else None,
+        region_code="6110000" if operation == "volunteer_list" else None)
+    result, _ = run_fetch(monkeypatch, network, request)
+    assert result.status == collector.FetchStatus.TIMEOUT
+    assert result.document is None
+    assert set(network.stream.read_timeouts) == {15.0 if operation.startswith("senuri") else 5.0}
+    assert network.stream.closed
+
+
+@pytest.mark.parametrize("operation", ["senuri_list", "senuri_detail"])
+def test_total_deadline_stops_trickle_below_read_limit(monkeypatch, network, operation):
+    # 각 body read는 4초로 read 제한 안이지만 합계는 전체 20초를 넘는다.
+    monkeypatch.setattr(collector, "TOTAL_TIMEOUT", collector.TOTAL_TIMEOUT * TIME_SCALE)
+    headers, body = wire()
+    network.stream = TimedStream([headers] + [body[i:i + 1] for i in range(len(body))],
+                                  [0] + [4] * len(body))
+    request = collector.FetchRequest(operation=operation,
+                                     external_id="fixture" if operation.endswith("_detail") else None)
+    result, _ = run_fetch(monkeypatch, network, request)
+    assert result.status == collector.FetchStatus.TIMEOUT
+    assert result.document is None
+    assert 2 <= network.stream.delivered < len(body)
+    assert set(network.stream.read_timeouts) == {15.0}
+    assert network.stream.closed
 
 
 def test_total_deadline_covers_dns(monkeypatch, network):

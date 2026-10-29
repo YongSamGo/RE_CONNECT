@@ -54,6 +54,35 @@ def credential(text: str) -> bool:
     return bool(_CREDENTIAL.search(text))
 
 
+# 설명 문장 안의 기간 구절. 모델이 기간 칸을 비웠을 때 같은 원문 인용에서 꺼낸다. "1958년생"·"육십삼년생"은 기간이 아니고,
+# "10년 전에"·"3년 뒤"처럼 시점을 말하는 구절도 기간이 아니다(리뷰 #318). 그런 구절은 건너뛰고 다음 기간 구절을 본다.
+_DURATION_IN = re.compile(r"(?<![가-힣\d])(?:(?:한|약|대략)\s*)?(?:\d{1,2}|[일이삼사오육칠팔구]?십[일이삼사오육칠팔구]?|[일이삼사오육칠팔구])"
+                          r"\s*(?:년|해|개월)(?!생|\s*(?:전|후|뒤|만에|만|째|차))(?:\s*(?:동안|간|정도|쯤|가량|넘게|남짓))?")
+# 과거에 한 일을 말하는 문장. 희망·퇴직·쉼·거주·보유만 말한 문장은 경험이 아니다(#285 GPU 측정의 오선택 유형).
+_DID = re.compile(r"했|하였|일했|근무|다녔|맡았|운영|가르쳤|만들었|팔았|고쳤")
+_NOT_DID = re.compile(r"싶|좋겠|원해|바라|하려|할래|할\s*거|퇴직|은퇴|그만|쉬었|쉬고|살아|살고|있어요|있습니다|자격")
+
+
+_POINT_IN_TIME = re.compile(r"(?:년|해|개월)\s*(?:전|후|뒤|만에|만|째|차)")
+
+
+def point_in_time(text: str) -> bool:
+    """"10년 전에"·"3년 뒤"처럼 시점을 말하는 구절. 근무 기간이 아니다(리뷰 #318)."""
+    return bool(_POINT_IN_TIME.search(text))
+
+
+def duration_in(text: str) -> str | None:
+    match = _DURATION_IN.search(text)
+    return match.group(0).strip() if match else None
+
+
+def did_work(source: str, quote: str) -> bool:
+    """인용이 들어 있는 원문 문장이 과거에 실제로 한 일을 말하는지. 기간·태그가 없는 선택을 경험으로 남길지 정할 때만 쓴다.
+    인용 구절만 보면 "어르신 돌보는 봉사를 하고 싶어요"의 "어르신 돌보는 봉사"처럼 희망이 잘려 나가므로 문장 전체를 본다."""
+    sentence = next((part for part in re.split(r"(?<=[.?!])\s+", source) if quote in part), source)
+    return bool(_DID.search(sentence)) and not _NOT_DID.search(sentence)
+
+
 def duration_label(quote: str) -> str:
     """'삼십오 년' → '35년', '한 삼십 년.' → '약 30년'. 모르는 형태는 원문 인용을 그대로 둔다."""
     match = _DURATION.match(quote.strip())

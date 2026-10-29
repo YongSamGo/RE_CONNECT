@@ -12,7 +12,7 @@ from pydantic import BaseModel, TypeAdapter, ValidationError
 
 from app.adapters.llm import LLMAdapter, LLMInvalidOutputError, OutputT, UntrustedTurn
 from app.contracts.fields import SkillTag, text
-from app.contracts.profile import Experience, ExperienceInput, RecommendationField
+from app.contracts.profile import Experience, ExperienceInput
 from app.contracts.roles import normalize_tag
 from app.modules.generation import prompts, wording
 from app.modules.generation.models import (
@@ -23,18 +23,10 @@ from app.modules.generation.models import (
     ConfirmedProfileSnapshot,
     ExperiencePreview,
     ExtractionPlan,
-    QuestionPlan,
     Quote,
     WrittenApplicationPreview,
 )
 from app.modules.generation.privacy import safe_text
-
-_QUESTIONS: dict[RecommendationField, str] = {
-    "experiences": "지금까지 해 보신 일이나 활동 한 가지를 말씀해 주시겠어요?",
-    "preferred_regions": "어느 지역에서 활동하고 싶으세요?",
-    "activity_types": "취업과 봉사 중 어떤 활동을 원하세요?",
-}
-
 
 class GenerationInputError(ValueError):
     """안전하게 쓸 입력이 없음. 메시지에 본문을 담지 않는다."""
@@ -130,41 +122,74 @@ class GroundedGenerationService:
         used_ids = set()
         try:
             for item in plan.experiences:
-                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다.
-                if not grounded(item.description):
-                    raise _invalid()
-                index, quote = item.description.turn_index, item.description.text
-                summary = item.summary if wording.summary_grounded(item.summary, turns[index]) else None
+                current = None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
                     used_ids.add(item.existing_id)
-                # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
+                    current = allowed[item.existing_id]
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기존 경험을 가리킬 때 모델은 저장된 설명(다듬은
+                # 요약이라 원문에 그대로 없을 수 있다)을 옮겨 적는 일이 많다. 저장된 설명은 바꾸지 않으므로 같은 경험의
+                # 저장값과 같을 때만(양끝 공백·마침표 차이는 무시) 근거 대신 받는다. 이 경우 설명은 원문이 아니므로
+                # 아래 표준 태그의 근거로 쓰지 않는다.
+                reused = current is not None and item.description.text.strip(" .") == current.description.strip(" .")
+                description = item.description
+                if not grounded(description):
+                    # 모델이 설명의 턴 번호만 잘못 적는 일이 있다(2026-10-29 시연: 첫 답이 의미 없는 입력이면 번호가 하나씩
+                    # 밀렸다). 인용 문장이 허용된 다른 턴 하나에만 그대로 있으면 그 턴으로 바로잡는다. 제외된 턴은 turns에
+                    # 없으므로 후보가 되지 않는다. 기간·기술 인용은 지금처럼 자기 턴 번호가 맞아야 한다.
+                    holders = [key for key, source in turns.items() if description.text in source]
+                    if len(holders) == 1:
+                        description = description.model_copy(update={"turn_index": holders[0]})
+                if not grounded(description) and not reused:
+                    raise _invalid()
+                index, quote = description.turn_index, description.text
+                summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
+                # 기존 경험에는 한 턴에서 새로 말한 세부 내용만 덧붙인다. 기간·기술 인용이 나온 가장 늦은 턴을 근거 턴으로
+                # 삼고 그 턴의 인용만 쓴다. 앞 턴의 인용까지 받으면 사용자가 프로필에서 지운 기간·태그가 이번 턴 결과에
+                # 실려 되살아난다(메시지 서비스는 근거 턴이 이번 턴인 결과만 반영한다).
+                anchor = None
+                if current is not None:
+                    details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
+                    anchor = max(details, default=index if grounded(description) else -1)
+
+                def usable(quote: Quote) -> bool:
+                    return grounded(quote) and (anchor is None or quote.turn_index == anchor)
+
+                # 새 경험은 같은 일의 세부 업무·기간을 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
                 skills = [skill.text for skill in item.skills
-                          if grounded(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
-                # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 인용에
+                          if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
+                # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
-                evidence = _squash(" ".join([quote, *skills]))
+                evidence = _squash(" ".join([quote if usable(description) else "", *skills]))
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills
-                duration = wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None
+                # 모델이 기간 칸에 "10년 전에" 같은 시점을 인용해도 근무 기간으로 받지 않는다. 그러면 아래에서 설명 원문의
+                # 실제 기간("6개월간")을 다시 찾는다.
+                duration = (wording.duration_label(item.duration.text)
+                            if item.duration and usable(item.duration) and not wording.point_in_time(item.duration.text) else None)
+                # 모델이 기간 칸을 비웠어도 새 경험의 설명 원문에 기간이 있으면 꺼낸다(시연: "20년동안 … 운영했어요").
+                if (duration is None and current is None and usable(description) and wording.did_work(turns[index], quote)
+                        and (found := wording.duration_in(quote))):
+                    duration = wording.duration_label(found)
                 if duration is not None and not _fits(_DURATION, duration):
                     duration = None
                 # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
                 # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
-                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
-                if catalog and duration is None and not tags:
+                # 추가할 수 있게 버린다. 다만 과거에 한 일을 말하는 새 경험("시계방을 운영했어요")은 남긴다. 모델이 기술을
+                # 비워 내는 일이 있어 진짜 경험까지 버려졌다(시연). 목록이 없으면(사전 읽기 실패) 이 검사를 하지 않는다.
+                if catalog and duration is None and not tags and (current is not None or not usable(description) or not wording.did_work(turns[index], quote)):
                     continue
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
-                    description=allowed[item.existing_id].description if item.existing_id else summary or quote,
+                    description=current.description if current is not None else summary or quote,
                     duration_note=duration,
                     skill_tags=_unique(tags)[:20],
                 ))
-                source_turns.append(index)
+                source_turns.append(index if anchor is None else anchor)
         except ValidationError:
             raise _invalid() from None
         return ExperiencePreview(
@@ -172,28 +197,6 @@ class GroundedGenerationService:
             source_turns=source_turns,
             excluded_turn_indices=[index for index in range(len(user_texts)) if index not in turns],
         )
-
-    @staticmethod
-    def _question_fields(missing_fields: Sequence[RecommendationField]) -> list[RecommendationField]:
-        fields = list(dict.fromkeys(missing_fields))
-        if any(field not in _QUESTIONS for field in fields):
-            raise GenerationInputError("질문 항목을 확인해 주세요")
-        return fields
-
-    @classmethod
-    def fallback_question(cls, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        """모델 없이 누락 항목의 고정 순서로 고른다. 모델 경로와 같은 고정 질문 문장만 쓴다."""
-        fields = cls._question_fields(missing_fields)
-        return _QUESTIONS[fields[0]] if fields else None
-
-    async def next_question(self, *, missing_fields: Sequence[RecommendationField]) -> str | None:
-        fields = self._question_fields(missing_fields)
-        if not fields:
-            return None
-        plan = await self._generate(prompts.QUESTION, {"allowed_fields": fields}, QuestionPlan)
-        if plan.field not in fields:
-            raise _invalid()
-        return _QUESTIONS[plan.field]
 
     async def application_preview(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> ApplicationPreview:
         # 고정 템플릿과 확정 프로필만으로 문장을 조립한다. 모델의 자유 문장은 받지 않는다.

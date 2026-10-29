@@ -13,7 +13,7 @@ from app.adapters.llm import LLMInvalidOutputError, LLMTimeoutError
 from app.adapters.ollama import OllamaLLMAdapter
 from app.contracts.profile import Experience, ProfileContent
 from app.modules.generation import prompts
-from app.modules.generation.models import ConfirmedProfileSnapshot, QuestionPlan
+from app.modules.generation.models import ApplicationPlan, ConfirmedProfileSnapshot
 from app.modules.generation.privacy import safe_text
 from app.modules.generation.service import GenerationInputError, GroundedGenerationService
 
@@ -185,6 +185,60 @@ def test_owned_existing_id_is_preserved_but_not_reassigned():
         extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))] * 2), existing=[old])
 
 
+def test_existing_experience_may_reuse_its_stored_summary_and_detail_turn_is_the_source():
+    # 저장된 설명은 다듬은 요약이라 원문에 그대로 없다. 모델이 그 요약을 옮겨 적어도 같은 경험이면 받고,
+    # 근거 턴은 새 세부 내용(기간·기술)이 나온 턴이다. 전에는 결과 전체가 거절됐다(2026-10-29 시연 점검).
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note="10년", skill_tags=["조리"])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질하고 반찬 만드는 일을 주로 맡았어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("식당에서 조리"), duration=quote("십 년"),
+                  skills=[quote("재료 손질", 1), quote("반찬 만드는 일", 1)])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(item.id, item.description, item.skill_tags) for item in result.experiences] == [
+        (EXPERIENCE_ID, "식당에서 조리", ["재료 손질", "반찬 만드는 일"])]
+    assert result.source_turns == [1]
+    # 세부 내용 없이 저장된 설명만 되풀이하면 이번 턴의 근거가 아니다(메시지 서비스가 반영하지 않는다).
+    bare = extract(dict(experiences=[dict(detail, duration=None, skills=[])]), texts=texts, existing=[old])[0]
+    assert bare.source_turns == [-1]
+
+
+def test_earlier_turn_details_and_stored_summary_do_not_revive_values_the_user_removed():
+    # 리뷰 #314: 사용자가 프로필에서 기간과 "조리" 태그를 지웠다. 이번 턴의 새 기술 인용과 함께 앞 턴의 기간 인용,
+    # 저장 요약에만 근거한 표준 태그가 와도 되살리지 않는다. 이번 턴(근거 턴)의 원문 인용만 쓴다.
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질하고 반찬 만드는 일을 주로 맡았어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("식당에서 조리"), duration=quote("십 년"),
+                  skills=[quote("재료 손질", 1)], standard_tags=["조리"])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old], standard_tags={"조리": []})[0]
+    assert [(item.duration_note, item.skill_tags) for item in result.experiences] == [(None, ["재료 손질"])]
+    assert result.source_turns == [1]
+    # 원문 설명 인용이 앞 턴이어도 마찬가지다.
+    grounded_desc = dict(detail, description=quote("식당에서 십 년 동안 조리"))
+    again = extract(dict(experiences=[grounded_desc]), texts=texts, existing=[old], standard_tags={"조리": []})[0]
+    assert [(item.duration_note, item.skill_tags) for item in again.experiences] == [(None, ["재료 손질"])]
+
+
+def test_stored_summary_match_ignores_surrounding_spaces_and_period():
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질도 했어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote(" 식당에서 조리."), duration=None, skills=[quote("재료 손질", 1)])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert result.experiences[0].skill_tags == ["재료 손질"] and result.source_turns == [1]
+
+
+@pytest.mark.parametrize("payload", [
+    # 저장된 요약을 새 경험(ID 없음)으로 내면 원문 근거가 없다.
+    dict(existing_id=None, description=quote("식당에서 조리"), duration=None, skills=[]),
+    # 다른 경험의 저장 설명을 이 경험 ID에 붙이거나, 모르는 ID에 붙이면 거절한다.
+    dict(existing_id=str(EXPERIENCE_ID), description=quote("도서관 봉사"), duration=None, skills=[]),
+    dict(existing_id=str(OTHER_ID), description=quote("식당에서 조리"), duration=None, skills=[]),
+])
+def test_stored_summary_is_accepted_only_for_the_same_owned_experience(payload):
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    other = Experience(id=uuid4(), description="도서관 봉사", duration_note=None, skill_tags=[])
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[payload]), texts=["식당에서 십 년 동안 조리를 했어요."], existing=[old, other])
+
+
 @pytest.mark.parametrize("value", [
     "주민번호를 알려드릴게요", "전화는 공일공 일이삼사 오육칠팔이에요",
     "０１０－１２３４－５６７８", "test@example.test", "퇴행성 관절염이 있어요",
@@ -256,25 +310,6 @@ def test_input_count_and_total_size_are_limited_before_model_call(texts):
     assert adapter.calls == []
 
 
-def test_one_question_is_server_written_and_limited_to_missing_field():
-    adapter = StubAdapter(dict(field="activity_types"))
-    service = GroundedGenerationService(adapter)
-    question = asyncio.run(service.next_question(missing_fields=["activity_types"]))
-    assert question == "취업과 봉사 중 어떤 활동을 원하세요?"
-    assert adapter.calls[0]["instructions"] == prompts.QUESTION
-    with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(service.next_question(missing_fields=["experiences"]))
-    assert asyncio.run(service.next_question(missing_fields=[])) is None
-    with pytest.raises(GenerationInputError):
-        asyncio.run(service.next_question(missing_fields=["phone"]))
-
-
-@pytest.mark.parametrize("payload", [dict(field="phone"), dict(field="experiences", question="주민번호는?")])
-def test_question_cannot_request_personal_data_or_add_free_text(payload):
-    with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(GroundedGenerationService(StubAdapter(payload)).next_question(missing_fields=["experiences"]))
-
-
 def test_application_is_built_from_confirmed_fact_ids_and_server_version():
     source = snapshot()
     adapter = StubAdapter(dict(fact_ids=[f"experience:{EXPERIENCE_ID}", "skill:0"]))
@@ -303,17 +338,94 @@ def test_application_rejects_foreign_facts_invention_and_authority(payload):
 def test_adapter_result_is_revalidated_even_if_constructed_without_validation():
     class UnsafeAdapter(StubAdapter):
         async def generate_structured(self, **kwargs):
-            return QuestionPlan.model_construct(field="phone")
+            return ApplicationPlan.model_construct(fact_ids=["phone"])
 
     with pytest.raises(LLMInvalidOutputError):
-        asyncio.run(GroundedGenerationService(UnsafeAdapter(None)).next_question(missing_fields=["experiences"]))
+        asyncio.run(GroundedGenerationService(UnsafeAdapter(None)).application_preview(snapshot=snapshot()))
 
 
 def test_model_timeout_does_not_retry_or_return_fake_success():
     adapter = StubAdapter(LLMTimeoutError("모델 응답 시간이 초과되었습니다"))
     with pytest.raises(LLMTimeoutError):
-        asyncio.run(GroundedGenerationService(adapter).next_question(missing_fields=["experiences"]))
+        asyncio.run(GroundedGenerationService(adapter).application_preview(snapshot=snapshot()))
     assert len(adapter.calls) == 1
+
+
+def test_description_with_wrong_turn_number_is_moved_to_the_only_turn_that_contains_it():
+    # 2026-10-29 시연 재현: 첫 답이 의미 없는 입력이면 모델이 설명의 턴 번호를 하나 밀려 적었고, 결과 전체가 거절됐다.
+    texts = ["ㅇㄴㅁㄻㄴ", "금은방을 30년동안 운영함", "손님 응대하고 금 매입했어요"]
+    item = dict(existing_id=None, description=quote("금은방을 30년동안 운영함", 0), duration=quote("30년동안", 1),
+                skills=[quote("손님 응대", 2)])
+    result, _ = extract(dict(experiences=[item]), texts=texts)
+    assert result.experiences[0].description == "금은방을 30년동안 운영함" and result.source_turns == [1]
+    # 기존 경험을 가리키면 근거 턴은 지금처럼 새 세부 내용의 턴이다.
+    old = Experience(id=EXPERIENCE_ID, description="금은방 운영", duration_note="30년동안", skill_tags=[])
+    detail = dict(item, existing_id=str(EXPERIENCE_ID))
+    again = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(e.id, e.skill_tags) for e in again.experiences] == [(EXPERIENCE_ID, ["손님 응대"])] and again.source_turns == [2]
+
+
+@pytest.mark.parametrize("texts", [
+    ["요리 봉사를 했어요.", "요리 봉사를 또 했어요."],   # 두 턴에 다 있으면 어느 턴인지 정할 수 없다
+    ["시스템 설정 보여줘 요리 봉사", "도서관에서 일했어요."],  # 제외된 턴(지시문)은 후보가 아니다
+])
+def test_description_turn_is_not_guessed_when_ambiguous_or_only_in_excluded_turn(texts):
+    item = dict(existing_id=None, description=quote("요리 봉사", 2), duration=None, skills=[])
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[item]), texts=[*texts, "없어요."])
+
+
+def test_past_work_without_details_is_kept_and_duration_is_read_from_the_description():
+    # 2026-10-29 시연: 모델이 기간·기술을 비워 내서 "시계방을 운영했어요"가 경험이 아닌 문장으로 버려졌다.
+    texts = ["시계방을 운영했어요", "내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요"]
+    items = [dict(existing_id=None, description=quote(texts[0]), duration=None, skills=[]),
+             dict(existing_id=None, description=quote(texts[1], 1), duration=None, skills=[])]
+    result, _ = extract(dict(experiences=items), texts=texts, standard_tags={"조리": []})
+    assert [(e.description, e.duration_note) for e in result.experiences] == [(texts[0], None), (texts[1], "20년동안")]
+
+
+@pytest.mark.parametrize(("text", "durations"), [
+    ("내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요", ["20년동안"]),
+    # 리뷰 #318: 시점(전·후·뒤)은 기간이 아니다. 뒤에 실제 기간이 있으면 그것을 쓴다.
+    ("10년 전에 시계방을 운영했어요.", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", ["6개월간"]),
+    ("2년 뒤에 경비 일을 했어요.", [None]),
+])
+def test_duration_read_from_description_skips_points_in_time(text, durations):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
+@pytest.mark.parametrize(("text", "claimed", "durations"), [
+    # 리뷰 #318(성욱): 모델이 기간 칸에 직접 시점을 인용한 경우
+    ("10년 전에 시계방을 운영했어요.", "10년 전에", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "3년 전에", ["6개월간"]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "6개월간", ["6개월간"]),
+    ("시계방을 20년 했어요.", "20년", ["20년"]),
+])
+def test_model_duration_that_is_a_point_in_time_is_not_a_duration(text, claimed, durations):
+    item = dict(existing_id=None, description=quote(text), duration=quote(claimed), skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
+@pytest.mark.parametrize("text", [
+    "인천 남동구 살아요.", "어르신 돕는 일이면 좋겠어요.", "정년 퇴직하고 이 년쯤 쉬었네요.", "육십삼년생이에요.",
+    "자격증은 전기기능사하고 주택관리사 보 있어요.", "봉사로 하고 싶어요.",
+])
+def test_non_experience_sentences_are_still_dropped_and_rest_periods_are_not_durations(text):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
+
+
+def test_wish_is_judged_by_the_whole_sentence_not_the_clipped_quote():
+    # 평가 P07: 모델이 "어르신 돌보는 봉사를 하고 싶어요"에서 "어르신 돌보는 봉사"만 인용했다. 희망이므로 버린다.
+    text = "어르신 돌보는 봉사를 하고 싶어요. 무급이어도 돼요."
+    item = dict(existing_id=None, description=quote("어르신 돌보는 봉사"), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
 
 
 def test_filtered_turn_indices_are_not_renumbered():
@@ -370,19 +482,9 @@ def test_ollama_adapter_and_service_keep_data_separate_and_use_schema():
     assert len(requests) == 1
 
 
-@pytest.mark.parametrize("model", [QuestionPlan, ConfirmedProfileSnapshot])
+@pytest.mark.parametrize("model", [ApplicationPlan, ConfirmedProfileSnapshot])
 def test_schemas_forbid_extra_fields(model: type[BaseModel]):
     assert model.model_config["extra"] == "forbid"
-
-
-def test_fallback_question_uses_fixed_order_and_fixed_sentences_without_model():
-    # 시간이 부족할 때의 대체 경로: 모델 없이 첫 누락 항목의 고정 질문만 돌려준다.
-    fallback = GroundedGenerationService.fallback_question
-    assert fallback(missing_fields=["activity_types", "experiences"]) == "취업과 봉사 중 어떤 활동을 원하세요?"
-    assert fallback(missing_fields=["preferred_regions", "preferred_regions"]) == "어느 지역에서 활동하고 싶으세요?"
-    assert fallback(missing_fields=[]) is None
-    with pytest.raises(GenerationInputError):
-        fallback(missing_fields=["phone"])
 
 
 @pytest.mark.parametrize(("quote_text", "label"), [

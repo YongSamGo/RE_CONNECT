@@ -314,3 +314,92 @@ def test_redis_operator_recovery_releases_only_the_inspected_stuck_lease_and_kee
         assert await store.recover(service.identity_key_id, status.lease) == "lease_changed"
         assert await client.hget(store.control_key, "active") == newer
     with_redis(scenario)
+
+
+def test_operator_init_requires_runtime_stop_confirmation():
+    import manage_inference
+    for argv in (["init"], ["init", "--confirm-no-runs-today"]):
+        with pytest.raises(SystemExit) as caught:
+            manage_inference.parse_args(argv)
+        assert caught.value.code == 2
+    args = manage_inference.parse_args(["init", "--confirm-runtime-stopped"])
+    assert (args.command, args.confirm_no_runs_today) == ("init", False)
+    args = manage_inference.parse_args(["init", "--confirm-runtime-stopped", "--confirm-no-runs-today"])
+    assert args.confirm_no_runs_today is True
+
+
+@pytest.mark.parametrize("result, code", [("initialized", 0), ("exists", 1)])
+def test_operator_init_cli_reports_fixed_result_and_fails_when_hash_exists(monkeypatch, capsys, result, code):
+    import manage_inference
+    seen = {}
+    async def fake(command, lease=None, no_runs_today=False):
+        seen.update(command=command, no_runs_today=no_runs_today)
+        return {"result": result}
+    monkeypatch.setattr(manage_inference, "execute", fake)
+    assert manage_inference.main(["init", "--confirm-runtime-stopped"]) == code
+    assert seen == {"command": "init", "no_runs_today": False}
+    assert capsys.readouterr().out.strip() == f'{{"completed": true, "result": "{result}"}}'
+
+
+def test_redis_restart_then_default_init_blocks_today_and_next_kst_day_reopens():
+    async def scenario(service, store, client):
+        await service.run(identity(), "llm", ended)
+        # Redis 재시작: 비영속이라 제어 해시와 이 시험 범위의 모든 키가 사라진다.
+        await client.delete(*[key async for key in client.scan_iter(match=store.prefix + "*")])
+        assert not await service.is_ready()
+        await expect_error("SERVICE_UNAVAILABLE", service.run(identity(), "llm", ended))
+        # 기본 초기화는 오늘 집계를 한도로 채운다. 0으로 되돌려 한도를 우회하지 않는다.
+        assert await store.initialize(service.identity_key_id, no_runs_today=False) == "initialized"
+        assert await service.is_ready()
+        assert await client.hget(store.control_key, "global") == "500"
+        assert await client.pttl(store.control_key) == -1
+        for kind in ("llm", "stt", "tts"):
+            await expect_error("DAILY_QUOTA_EXCEEDED", service.run(identity(), kind, ended))
+        assert await client.hget(store.control_key, "active") is None
+        # 다음 KST 날짜가 되면 기존 자정 정리로 다시 열린다.
+        day = int(await client.hget(store.control_key, "day"))
+        await client.hset(store.control_key, "day", day - 1)
+        assert await service.run(identity(), "llm", ended) == "ok"
+        assert await client.hget(store.control_key, "global") == "1"
+    with_redis(scenario)
+
+
+def test_redis_init_with_confirmed_no_runs_starts_at_zero_but_never_overwrites():
+    async def scenario(service, store, client):
+        await client.delete(store.control_key)
+        assert await store.initialize(service.identity_key_id, no_runs_today=True) == "initialized"
+        assert await client.hget(store.control_key, "global") == "0"
+        assert await service.run(identity(), "llm", ended) == "ok"
+        # 이미 있는 해시는 어떤 옵션으로도 덮어쓰지 않는다: 오늘 집계·점유 슬롯을 지워 우회할 수 없다.
+        await client.hset(store.control_key, mapping={"active": "a" * 64, "kind": "stt"})
+        before = await client.hgetall(store.control_key)
+        for no_runs_today in (True, False):
+            assert await store.initialize(service.identity_key_id, no_runs_today=no_runs_today) == "exists"
+        assert await client.hgetall(store.control_key) == before
+        # 만료가 걸린 이상한 해시도 존재하면 덮어쓰지 않고 503 상태를 유지한다.
+        await client.pexpire(store.control_key, 60000)
+        assert await store.initialize(service.identity_key_id, no_runs_today=True) == "exists"
+        assert not await service.is_ready()
+    with_redis(scenario)
+
+
+def test_redis_init_rejects_wrong_inputs_and_wrong_key_stays_closed():
+    async def scenario(service, store, client):
+        await client.delete(store.control_key)
+        for key_id in ("0" * 63, "G" * 64, None, service.identity_key_id.upper()):
+            with pytest.raises(ValueError):
+                await store.initialize(key_id, no_runs_today=True)
+        for flag in ("yes", 1, None):
+            with pytest.raises(ValueError):
+                await store.initialize(service.identity_key_id, no_runs_today=flag)
+        assert not await client.exists(store.control_key)
+        # 다른 식별키로 만든 해시는 앱의 키와 맞지 않아 추론을 열지 않는다.
+        assert await store.initialize("0" * 64, no_runs_today=True) == "initialized"
+        await expect_error("SERVICE_UNAVAILABLE", service.run(identity(), "llm", ended))
+        assert await client.hget(store.control_key, "global") == "0"
+        broken = build_redis(Settings(_env_file=None, redis_url="redis://127.0.0.1:1"))
+        try:
+            await expect_error("SERVICE_UNAVAILABLE", RedisAdmissionStore(broken, epoch=store.epoch).initialize(service.identity_key_id, no_runs_today=True))
+        finally:
+            await broken.aclose()
+    with_redis(scenario)

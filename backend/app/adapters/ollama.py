@@ -86,18 +86,28 @@ class OllamaLLMAdapter:
         return data
 
     async def is_ready(self) -> bool:
-        """설정한 모델이 런타임에 있는지 `/api/show`로 확인한다. 실패는 모두 False다."""
+        """사전 적재된 설정 모델만 ready. health 요청에서 다운로드·적재하지 않는다."""
         try:
             async with self._client(self._ready_timeout_seconds) as client:
-                data = await asyncio.wait_for(
-                    self._post_json(client, "/api/show", {"model": self._model}), self._ready_timeout_seconds
-                )
-        except Exception as exc:  # 상태 확인은 실패 이유를 응답에 넣지 않는다
+                async with asyncio.timeout(self._ready_timeout_seconds):
+                    async with client.stream("GET", "/api/ps") as response:
+                        if response.status_code != 200:
+                            return False
+                        body = bytearray()
+                        async for chunk in response.aiter_bytes():
+                            body.extend(chunk)
+                            if len(body) > self._max_response_bytes:
+                                return False
+                    data = json.loads(body)
+                    if not isinstance(data, dict) or not isinstance(data.get("models"), list):
+                        return False
+                    return any(
+                        isinstance(model, dict) and model.get("name") == self._model
+                        for model in data["models"]
+                    )
+        except Exception as exc:
             logger.info("Ollama 준비 확인 실패: type=%s", type(exc).__name__)
             return False
-        capabilities = data.get("capabilities")
-        # 오래된 런타임은 capabilities를 주지 않는다. 그때는 모델이 있다는 것만으로 판단한다.
-        return capabilities is None or (isinstance(capabilities, list) and "completion" in capabilities)
 
     def _payload(self, instructions: str, turns: Sequence[UntrustedTurn], output_model: type[BaseModel]) -> dict[str, Any]:
         messages = [{"role": "system", "content": instructions}]
