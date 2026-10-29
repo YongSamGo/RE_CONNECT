@@ -117,7 +117,7 @@ def valid_config():
             ulimits={"core": {"soft": 0, "hard": 0}}, volumes=[dict(type="bind", target=target,
             read_only=True, bind={"create_host_path": False})])
     services["backend"] = {"networks": {"models": {}}}
-    services["ollama"]["environment"] = dict(OLLAMA_NO_CLOUD="1", OLLAMA_KEEP_ALIVE="-1", OLLAMA_NUM_PARALLEL="1",
+    services["ollama"]["environment"] = dict(OLLAMA_NO_CLOUD="1", OLLAMA_NOPRUNE="1", OLLAMA_KEEP_ALIVE="-1", OLLAMA_NUM_PARALLEL="1",
         OLLAMA_MAX_LOADED_MODELS="1", OLLAMA_CONTEXT_LENGTH="16384")
     services["ollama"]["deploy"] = {"resources": {"reservations": {"devices": [{"driver": "nvidia", "count": 1, "capabilities": ["gpu"]}]}}}
     services["speech"]["deploy"] = copy.deepcopy(services["ollama"]["deploy"])
@@ -144,6 +144,7 @@ class ConfigTests(unittest.TestCase):
             lambda c: c["services"]["speech"].update(ports=[{"published": "8001"}]),
             lambda c: c["services"]["ollama"].update(memswap_limit=2048),
             lambda c: c["services"]["ollama"]["environment"].update(OLLAMA_NO_CLOUD="0"),
+            lambda c: c["services"]["ollama"]["environment"].pop("OLLAMA_NOPRUNE"),
             lambda c: c["networks"]["models"].update(internal=False),
             lambda c: c["services"]["speech"]["volumes"][0].update(read_only=False),
             lambda c: c["services"]["speech"].update(logging={"driver": "json-file"}),

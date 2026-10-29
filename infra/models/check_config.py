@@ -66,7 +66,7 @@ def validate(config, *, allow_local_images=False):
     if "models" not in services["backend"]["networks"]:
         raise ValueError("backend missing model network")
     environment = services["ollama"].get("environment", {})
-    required = {"OLLAMA_NO_CLOUD": "1", "OLLAMA_KEEP_ALIVE": "-1", "OLLAMA_NUM_PARALLEL": "1",
+    required = {"OLLAMA_NO_CLOUD": "1", "OLLAMA_NOPRUNE": "1", "OLLAMA_KEEP_ALIVE": "-1", "OLLAMA_NUM_PARALLEL": "1",
                 "OLLAMA_MAX_LOADED_MODELS": "1", "OLLAMA_CONTEXT_LENGTH": "16384"}
     if any(environment.get(key) != value for key, value in required.items()):
         raise ValueError("model environment mismatch")

@@ -120,6 +120,8 @@ python -m pytest tests/test_ollama_adapter.py tests/test_health.py -q
 EC2 인계 시 릴리스 commit·이미지 digest·모델 manifest/revision·GPU/드라이버/Toolkit·OS/Compose,
 검사 결과, 재부팅 후 host 검사, 실제 컨테이너 UID/cgroup/swap/core/tmpfs·외부 통신 차단,
 단일/교대 실행 RAM/VRAM·OOM/취소·재시작, 로그/볼륨/스냅샷 잔류 부재 증거를 기록한다.
+읽기 전용 가중치에서 Ollama가 정리(prune)를 시도하지 않도록 `OLLAMA_NOPRUNE=1`을 둔다.
+고정한 Ollama 버전에서 시작 오류·쓰기 실패 경고가 없는지 EC2 시작 기록으로 확인한다.
 합성 입력만 사용하며 음성/본문·키·상세 미조치 취약점 원문을 공개 증거에 넣지 않는다.
 운영 컨테이너 증거·이미지 스캔·실제 공개 배포의 남은 항목을 확인하기 전 #92를 종료하지 않는다.
 
