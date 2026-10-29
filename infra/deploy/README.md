@@ -80,6 +80,10 @@ GPU 음성 이미지는 별도 이름(`speech-gpu`)으로 판정하며 CPU 음�
 - 삭제 이력 버킷 3종은 backend 설정과 같은 형식만 받고, 일부만 있으면 거절한다. 셋이 없으면 운영 회원 저장은 비활성이다.
 - `APP_ENV`·`TRUSTED_PROXY_IPS`는 Compose `environment:`에 고정돼 있다. `OLLAMA_BASE_URL`은 코드 기본값(내부 `ollama` 서비스)을 쓴다. 세 값 모두 렌더러 허용 목록에 없어 SSM으로 바꿀 수 없다.
 - 값은 줄바꿈 없이 한 줄로 저장한다(JSON은 압축해서 저장). Compose는 env 파일을 `format: raw`로 읽어 `$`·따옴표를 해석하지 않는다.
+- SSM 값 하나는 표준 4KB(고급 8KB)까지다. 공개 안내문 `CONSENT_NOTICES_JSON`이 더 길면 `CONSENT_NOTICES_JSON_PART1`부터
+  `PART8`까지 4KB 이하로 나눠 저장한다(한글은 글자당 3바이트이므로 글자 단위로 자른다). 렌더러가 번호 순서로 이어 붙여
+  `CONSENT_NOTICES_JSON` 한 줄로 쓴다. 통째 값과 조각을 함께 두거나, 번호가 비거나, 이어 붙인 값이 JSON이 아니면 거절한다.
+  안내문 버전(`AI_NOTICE_VERSION`·`STORAGE_NOTICE_VERSION`)과 본문의 `version`이 다르면 backend가 시작 때 거절한다.
 
 ## 6. 배포 (운영자, EC2)
 

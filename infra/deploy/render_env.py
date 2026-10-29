@@ -9,6 +9,8 @@ EC2 인스턴스 역할로 읽은 결과를 표준 입력으로 받는다. 값�
 - 역할마다 허용 이름 목록만 받는다. 모르는 이름·중복·빠진 필수값이 있으면 아무것도 쓰지 않고 실패한다.
 - Compose `format: raw`로 읽으므로 따옴표·$를 해석하지 않는다. 줄바꿈·NUL만 막으면 한 줄 한 값이 보장된다.
 - 파일은 같은 폴더의 임시 파일(0600)에 쓴 뒤 교체한다. 보통 tmpfs인 /run/reconnect에 둔다.
+- SSM 값 하나는 표준 4KB(고급 8KB)까지라, 긴 공개 안내문(CONSENT_NOTICES_JSON)은
+  CONSENT_NOTICES_JSON_PART1~PART8로 나눠 저장할 수 있다. 번호 순서로 이어 붙여 원래 이름 하나로 쓴다.
 """
 
 from __future__ import annotations
@@ -37,6 +39,8 @@ ROLES: dict[str, dict[str, frozenset[str]]] = {
             "KAKAO_REST_API_KEY", "KAKAO_CLIENT_SECRET", "KAKAO_APP_ID", "DATA_GO_KR_SERVICE_KEY",
             "INFERENCE_CONTROL_EPOCH", "AI_NOTICE_VERSION", "STORAGE_NOTICE_VERSION",
             "CONSENT_NOTICES_JSON", "OLLAMA_MODEL",
+            # SSM 4KB 제한으로 나눠 저장한 공개 안내문 조각 (아래 SPLIT)
+            *(f"CONSENT_NOTICES_JSON_PART{i}" for i in range(1, 9)),
             # 운영 삭제 이력 S3 버킷 (#94). 셋을 함께 설정한다.
             "DELETION_JOURNAL_BUCKET", "DELETION_JOURNAL_BUCKET_OWNER", "DELETION_JOURNAL_REGION",
         }),
@@ -89,6 +93,8 @@ VALUE_CHECKS = {
     "DELETION_JOURNAL_BUCKET_OWNER": _pattern("DELETION_JOURNAL_BUCKET_OWNER", r"[0-9]{12}"),
     "DELETION_JOURNAL_REGION": _pattern("DELETION_JOURNAL_REGION", r"[a-z]{2}(-[a-z]+)+-[0-9]"),
 }
+# 나눠 저장할 수 있는 값과 최대 조각 수. 조각 이름은 ROLES 허용 목록에도 있어야 한다.
+SPLIT = {"CONSENT_NOTICES_JSON": 8}
 # 일부만 설정하면 backend가 시작하지 못하므로 렌더 단계에서 먼저 거절한다.
 TOGETHER = (frozenset({"DELETION_JOURNAL_BUCKET", "DELETION_JOURNAL_BUCKET_OWNER", "DELETION_JOURNAL_REGION"}),)
 
@@ -121,6 +127,7 @@ def collect(document: object, role: str, prefix: str) -> dict[str, str]:
         if check:
             check(value)
         values[key] = value
+    _join_parts(values)
     missing = sorted(ROLES[role]["required"] - values.keys())
     if missing:
         raise EnvError("필수 값 없음: " + ", ".join(missing))
@@ -129,6 +136,27 @@ def collect(document: object, role: str, prefix: str) -> dict[str, str]:
         if present and present != group:
             raise EnvError("함께 설정해야 하는 값이 빠짐: " + ", ".join(sorted(group - present)))
     return values
+
+
+def _join_parts(values: dict[str, str]) -> None:
+    """<이름>_PART1..N을 이어 붙여 <이름> 하나로 바꾼다. 통째 값과 조각을 함께 두거나 번호가 비면 거절한다."""
+    for name, count in SPLIT.items():
+        parts = {key: values.pop(key) for key in [f"{name}_PART{i}" for i in range(1, count + 1)] if key in values}
+        if not parts:
+            continue
+        if name in values:
+            raise EnvError(f"{name}: 통째 값과 조각을 함께 둘 수 없습니다")
+        if list(parts) != [f"{name}_PART{i}" for i in range(1, len(parts) + 1)]:
+            raise EnvError(f"{name}: 조각 번호는 PART1부터 빈 번호 없이 이어져야 합니다")
+        joined = "".join(parts.values())
+        if len(joined) > MAX_VALUE_LENGTH:
+            raise EnvError(f"{name}: 길이 초과")
+        try:
+            json.loads(joined)
+        except ValueError:
+            # 잘못 나눴거나 빠진 조각. 값은 오류에 넣지 않는다.
+            raise EnvError(f"{name}: 이어 붙인 값이 JSON이 아닙니다") from None
+        values[name] = joined
 
 
 def private_directory(mode: int) -> bool:
