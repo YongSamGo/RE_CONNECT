@@ -72,6 +72,8 @@ PowerShell에서는 `Copy-Item .env.example .env`를 쓴다.
 
 명령이 바뀌면 이 표를 같은 PR에서 고친다.
 
+운영 GPU·모델 구성의 실행·검사 명령은 [모델 실행 안내](../infra/models/README.md)를 따른다. 로컬 CPU 음성 구성과 구분하며 실제 EC2 검증은 별도다.
+
 ## 5. 버전 고정
 
 | 대상 | 방식 |

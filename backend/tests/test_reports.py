@@ -673,5 +673,6 @@ def test_upgrade_keeps_existing_reports_and_downgrade_drops_only_unrestorable_ro
         purged = uuid4()
         db.execute(insert(Report), {"id": purged, "opportunity_id": opportunity_id, "opportunity_version": 1, "type": "other",
                                     "status": "dismissed", "version": 3, "received_at": NOW, "updated_at": NOW, "purged_at": NOW})
-        command.downgrade(config, "-1")
+        # 상대 단계(-1)는 뒤에 마이그레이션이 더해지면 다른 리비전을 되돌린다. 신고 마이그레이션 직전으로 내린다.
+        command.downgrade(config, "0012_opportunity_reviews")
         assert db.execute(select(old.c.id)).scalars().all() == [report_id]

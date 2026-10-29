@@ -3,6 +3,7 @@
 > 관련 이슈: #10 → 이 표본을 쓰는 작업: #30(추출·근거 검증), #31(음성 인식), #32(읽어주기), #58(자격 비교 규칙), #65(실제 공고 추천 평가)
 >
 > 모든 인물·공고·주민번호·전화번호는 **가상**이다. 실제 사용자 대화나 음성을 이 폴더에 넣지 않는다.
+> 예외: `recommendation_review.json`은 실제 공개 공고를 `출처:ID` 키로만 가리킨다. 공고 원문은 `worker/samples/`(커밋 제외)에 둔다.
 
 ## 구성
 
@@ -12,6 +13,7 @@
 | `eligibility_cases.json` | 가상 공고 6건(J1~J6)의 조건(`Requirement` 계약 형식)과 8명 × 6건 = 48건의 조건별·전체 기대 판정 |
 | `privacy_filter_cases.json` | 전송 전 개인정보·지시문 필터(#30)의 기대 동작 15문장(`PF01`~). `exclude`는 턴 전체 제외, `redact`는 `must_remove`만 가리고 `must_keep`은 보냄, `keep`은 그대로(과잉 제외 금지). 인젝션 문장은 `sample_type: prompt_injection` 표본 |
 | `check_role_catalog.py` | 역할 사전 초안(`docs/data/role-catalog.json`)의 형식과, 페르소나 8명의 역할 후보가 `expected_role_ids`와 같은지 검사(#61) |
+| `check_recommendations.py`, `recommendation_review.json` | 실제 공고를 실제 정규화기·추천 코드에 넣어 페르소나별 추천을 기대값과 대조(#65). 검수 값(지역 코드·공고 태그)과 기대값은 json에, 결과와 결함은 [추천 평가 기록](../docs/ai/recommendation-eval.md)에 둔다. 원본 샘플이 있어야 돌아간다 |
 | `check_eligibility.py` | `rules`대로 48건을 다시 계산해 기대 판정·`labels`·사례 목록과 대조. 데이터를 고친 뒤 `python eval/check_eligibility.py` (불일치가 있으면 종료 코드 1) |
 | `extraction_cases.json` | 경험 추출 채점용 보조 기대값: 페르소나별 경험이 들어 있는 턴 번호와 자격증 구절(#30·#34) |
 | `check_extraction.py` | 실제 Ollama로 페르소나 8명의 경험 추출을 돌려 지연과 근거 검사 통과·경험 턴 재현·경험 아닌 턴 추출·누출 등을 채점. Ollama가 있는 장비에서 실행([실측 절차](../docs/ai/runtime-measurement.md)) |

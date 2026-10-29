@@ -39,7 +39,7 @@ describe('public catalogue response boundary', () => {
     expect(deadlineLabel(item)).toContain('한국시간')
   })
   it('does not invent midnight for a date-only deadline or a deadline for null', () => {
-    expect(deadlineLabel(sampleOpportunity())).toBe('2026-10-30 마감 · 정확한 마감 시각 확인 필요')
+    expect(deadlineLabel(sampleOpportunity())).toBe('2026-10-30 마감 (정확한 마감 시각 확인 필요)')
     expect(deadlineLabel(sampleOpportunity({ deadline_date: null }))).toBe('마감일 확인 필요')
   })
   it('projects only public-list fields and does not retain unexpected data', () => {

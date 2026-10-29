@@ -1,0 +1,34 @@
+FROM python:3.12.15-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS build
+WORKDIR /build
+COPY requirements-build.txt ./
+COPY gpu/requirements.txt ./requirements.txt
+COPY gpu/ct2-requirements.txt ./ct2-requirements.txt
+RUN python -m pip install --no-cache-dir --require-hashes --only-binary=:all: -r requirements-build.txt \
+    && python -m venv --without-pip /opt/venv \
+    && python -m pip --python /opt/venv install --no-cache-dir --require-hashes --only-binary=:all: \
+       -r requirements.txt \
+    && python -m pip install --no-cache-dir --require-hashes --only-binary=:all: --target /opt/ct2 -r ct2-requirements.txt
+COPY prepare_tts_code.py ./
+COPY tts_compat/recipe.json tts_compat/compat.py tts_compat/NOTICE tts_compat/UPSTREAM_LICENSE ./tts_compat/
+RUN python -I prepare_tts_code.py && python -I prepare_tts_code.py --verify-only
+
+FROM python:3.12.15-slim-trixie@sha256:a6e34c598f2467ed0e9a8d349809fcd8b5c603269512df273a0bb1784edc11b1 AS runtime
+WORKDIR /app
+RUN python -m pip uninstall --yes pip
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONNOUSERSITE=1 PYTHONUNBUFFERED=1 \
+    HF_HUB_OFFLINE=1 TRANSFORMERS_OFFLINE=1 HF_HUB_DISABLE_TELEMETRY=1 \
+    TOKENIZERS_PARALLELISM=false OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 MKL_NUM_THREADS=2 \
+    NUMBA_NUM_THREADS=2 NUMBA_CACHE_DIR=/tmp/numba XDG_CACHE_HOME=/tmp/cache \
+    SPEECH_DEVICE=cuda \
+    LD_LIBRARY_PATH=/opt/ct2/nvidia/cublas/lib:/opt/ct2/nvidia/cudnn/lib
+COPY --from=build /opt/venv /opt/venv
+COPY --from=build /opt/ct2 /opt/ct2
+COPY --from=build /build/runtime_vendor /app/runtime_vendor
+COPY app ./app
+COPY prepare_models.py model-manifest.json prepare_tts_code.py check_ready.py ./
+COPY tts_compat/recipe.json tts_compat/compat.py tts_compat/NOTICE tts_compat/UPSTREAM_LICENSE ./tts_compat/
+USER 10001:10001
+EXPOSE 8001
+HEALTHCHECK --interval=10s --timeout=3s --start-period=120s --retries=3 \
+    CMD ["/opt/venv/bin/python", "-I", "/app/check_ready.py"]
+ENTRYPOINT ["/opt/venv/bin/python", "-B", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001", "--workers", "1", "--no-access-log"]

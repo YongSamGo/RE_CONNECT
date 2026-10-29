@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { useMemoryScope } from '../../state/useMemoryScope'
@@ -13,6 +14,8 @@ import type { ReportSnapshot } from './report'
 
 const statuses = { received: '신고 접수', in_progress: '처리 중', resolved: '해결로 종결', dismissed: '조치 없이 종결' }
 export function ReportReview({ report, onRefresh }: { report: ReportSnapshot; onRefresh: () => void }) {
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { headingRef.current?.focus() }, [])
   const form = useMemoryScope<{ note: string; checked: boolean; errors: FieldError[] }>(() => ({ note: '', checked: false, errors: [] }))
   const latest = useMemoryScope<ReportSnapshot | null>(() => null)
   const request = useRequest<ReportSnapshot>()
@@ -35,7 +38,7 @@ export function ReportReview({ report, onRefresh }: { report: ReportSnapshot; on
       return result
     }, (result) => { latest.setValue(result); form.clear() })
   }
-  return <section className="panel"><h2>{current.opportunity_title} 신고 검토</h2>
+  return <section className="panel"><h2 className="review-heading" ref={headingRef} tabIndex={-1}>{current.opportunity_title} 신고 검토</h2>
     <p>{reportTypes[current.type]} · {statuses[current.status]} · 처리 버전 {current.version}</p>
     <p>신고 대상 공고 버전 {current.opportunity.version} · 접수: {checkedTime(current.created_at)} (한국시간)</p>
     <h3>신고 설명</h3><p className="user-text">{current.note || '추가 설명 없음'}</p>

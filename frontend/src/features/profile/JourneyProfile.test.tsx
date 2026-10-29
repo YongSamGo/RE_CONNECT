@@ -28,6 +28,57 @@ function mount() {
   return userEvent.setup()
 }
 
+it('confirms before replacing unsaved profile edits and keeps them on cancellation', async () => {
+  const fetch = vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view()))
+  vi.stubGlobal('fetch', fetch)
+  const user = mount()
+  await user.click(screen.getByRole('button', { name: '체험 프로필 불러오기' }))
+  await user.type(await screen.findByLabelText('경험 1 내용'), ' 수정')
+  await user.type(screen.getByLabelText('전체 역량'), '임시 역량')
+  await user.click(screen.getByRole('button', { name: '서버 최신 내용 다시 불러오기' }))
+  expect(screen.getByRole('heading', { name: '서버 내용을 다시 불러올까요?' })).toHaveFocus()
+  expect(fetch).toHaveBeenCalledTimes(2)
+  await user.click(screen.getByRole('button', { name: '계속 편집하기' }))
+  expect(screen.getByLabelText('경험 1 내용')).toHaveValue('가상 도서관 경험 수정')
+  expect(screen.getByRole('button', { name: '서버 최신 내용 다시 불러오기' })).toHaveFocus()
+  await user.click(screen.getByRole('button', { name: '서버 최신 내용 다시 불러오기' }))
+  await user.click(screen.getByRole('button', { name: '편집 내용을 버리고 다시 불러오기' }))
+  expect(await screen.findByDisplayValue('가상 도서관 경험')).toBeVisible()
+  expect(screen.getByLabelText('전체 역량')).toHaveValue('')
+})
+
+it('confirms before closing unsaved edits without deleting the journey', async () => {
+  const fetch = vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view()))
+  vi.stubGlobal('fetch', fetch)
+  const user = mount()
+  await user.click(screen.getByRole('button', { name: '체험 프로필 불러오기' }))
+  await user.type(await screen.findByLabelText('경험 1 내용'), ' 수정')
+  await user.click(screen.getByRole('button', { name: '이 화면의 입력 닫기' }))
+  expect(screen.getByRole('heading', { name: '입력 화면을 닫을까요?' })).toHaveFocus()
+  await user.click(screen.getByRole('button', { name: '계속 편집하기' }))
+  expect(screen.getByLabelText('경험 1 내용')).toHaveValue('가상 도서관 경험 수정')
+  expect(screen.getByRole('button', { name: '이 화면의 입력 닫기' })).toHaveFocus()
+  await user.click(screen.getByRole('button', { name: '이 화면의 입력 닫기' }))
+  await user.click(screen.getByRole('button', { name: '편집 내용을 버리고 닫기' }))
+  expect(screen.queryByLabelText('경험 1 내용')).not.toBeInTheDocument()
+  expect(screen.getByRole('button', { name: '체험 프로필 불러오기' })).toHaveFocus()
+  expect(fetch.mock.calls.some(([request]) => request.method === 'DELETE')).toBe(false)
+})
+
+it('points an empty experience error to the specific field without saving', async () => {
+  const fetch = vi.fn(async (request: Request) => json(request.url.endsWith('/me') ? {} : view()))
+  vi.stubGlobal('fetch', fetch)
+  const user = mount()
+  await user.click(screen.getByRole('button', { name: '체험 프로필 불러오기' }))
+  await screen.findByLabelText('경험 1 내용')
+  await user.click(screen.getByRole('button', { name: '경험 추가' }))
+  await user.click(screen.getByRole('button', { name: '변경 내용을 초안에 반영' }))
+  await user.click(screen.getByRole('link', { name: /경험 2의 내용을 적거나/ }))
+  expect(screen.getByLabelText('경험 2 내용')).toHaveFocus()
+  expect(screen.getByLabelText('경험 2 내용')).toHaveAccessibleDescription(/경험 2의 내용을 적거나/)
+  expect(fetch.mock.calls.some(([request]) => request.method === 'PATCH')).toBe(false)
+})
+
 it('keeps draft edits separate from explicit confirmation, preserves null and empty facts, then shows real roles', async () => {
   let current = view()
   const fetch = vi.fn(async (request: Request) => {

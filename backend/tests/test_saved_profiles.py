@@ -2,6 +2,7 @@
 
 import asyncio
 import json
+from datetime import datetime
 from threading import Event
 from uuid import uuid4
 
@@ -66,7 +67,9 @@ def test_http_encrypted_save_replays_consumed_intent_and_rejects_other_owner(tmp
         assert (await post(browser, body, key)).json() == first.json()
         saved = (await browser.get('/api/v1/profiles/me')).json()['saved']
         assert saved['content']['experiences'][0]['description'] == '가상 도서관 경험'
-        assert saved['confirmed_at'] <= saved['saved_at'] and saved['version'] == 1
+        # 문자열로 비교하면 같은 초에서 '...32Z' > '...32.1Z'가 되어 간헐적으로 실패한다. 시각으로 비교한다.
+        instant = lambda value: datetime.fromisoformat(value.replace('Z', '+00:00'))
+        assert instant(saved['confirmed_at']) <= instant(saved['saved_at']) and saved['version'] == 1
         with sessionmaker(ctx['engine'])() as db:
             row = db.scalars(select(ProfileVersion)).one()
             assert '가상 도서관 경험'.encode() not in row.ciphertext and len(row.nonce) == 12 and row.algorithm == 'AES-256-GCM'
@@ -142,8 +145,9 @@ def test_member_http_journey_confirmation_dedup_and_immutable_replacement(tmp_pa
         message = await browser.post(f"/api/v1/journeys/{again.json()['journey_id']}/messages",
             json={'text': TEXT, 'transcription_id': None, 'base_revision': 1},
             headers={**headers(browser), 'Idempotency-Key': str(uuid4()), 'X-Account-ID': str(uuid4())})
-        assert message.status_code == 200 and runtime.calls == 2
-        assert int(await ctx['redis'].hget(admission.store.control_key, budget)) == before + 2
+        # 메시지 한 번의 모델 호출은 경험 추출 한 번이다(다음 질문은 서버 규칙으로 고른다).
+        assert message.status_code == 200 and runtime.calls == 1
+        assert int(await ctx['redis'].hget(admission.store.control_key, budget)) == before + 1
     run(tmp_path, scenario, backend)
 
 

@@ -143,3 +143,47 @@ def test_real_database_http_survives_unavailable_ai_redis_and_returns_contract(b
             assert "review_status" not in response.json() and "set-cookie" not in response.headers
             missing = client.get("/api/v1/opportunities/" + str(uuid4()))
             assert missing.status_code == 404 and missing.json()["code"] == "NOT_FOUND"
+
+
+@pytest.mark.parametrize("query", [
+    "regions=seoul&regions=seoul", "regions=seoul&regions=seoul:yongsan",
+    "regions=gyeonggi:no_such_district", "regions=seoul&province=seoul",
+    "regions=seoul%3A", "regions=%27%20OR%201%3D1--",
+])
+def test_multi_region_invalid_input_is_rejected_before_database(query):
+    """입력데이터 검증: 중복·중첩·미등록 지역과 공격 문자열을 거절한다."""
+    with TestClient(create_app(Settings(_env_file=None))) as client:
+        assert client.get("/api/v1/opportunities?" + query).status_code == 422
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_multi_region_filter_keeps_districts_paired_with_their_provinces(backend):
+    with open_test_database(backend) as db:
+        add = seeded(db)
+        seoul = add(1, activity_province="seoul", activity_district="yongsan")
+        suwon = add(2, activity_province="gyeonggi", activity_district="suwon")
+        add(3, activity_province="gyeonggi", activity_district="goyang")
+        add(4, activity_province="incheon", activity_district="bupyeong")
+        repository = SqlPublicOpportunityRepository(lambda: nullcontext(db))
+        page = repository.list(OpportunitySearch(regions=["seoul", "gyeonggi:suwon"]), NOW)
+        assert page.total == 2
+        assert {item.id for item in page.items} == {seoul, suwon}
+
+
+@pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
+def test_http_accepts_repeated_regions_from_map_search(backend):
+    """실제 라우터·입력 모델·SQL 연결로 지도 검색 계약의 422 회귀를 막는다."""
+    with open_test_database(backend) as db:
+        add = seeded(db)
+        selected = {add(1, activity_province="seoul", activity_district="yongsan"),
+                    add(2, activity_province="gyeonggi", activity_district="suwon")}
+        add(3, activity_province="seoul", activity_district="jongno")
+        app = create_app(Settings(_env_file=None))
+        app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(lambda: nullcontext(db)))
+        with TestClient(app) as client:
+            response = client.get("/api/v1/opportunities", params=[
+                ("regions", "seoul:yongsan"), ("regions", "gyeonggi:suwon"),
+            ])
+        assert response.status_code == 200
+        assert response.json()["total"] == 2
+        assert {UUID(item["id"]) for item in response.json()["items"]} == selected

@@ -27,6 +27,8 @@ const triValue = (value: boolean | null) => value === null ? '' : value ? 'yes' 
 const tri = (value: string) => value === '' ? null : value === 'yes'
 
 export function OpportunityEditor({ target, onBack }: { target?: { id: string; version: number }; onBack: () => void }) {
+  const headingRef = useRef<HTMLHeadingElement>(null)
+  useEffect(() => { headingRef.current?.focus() }, [])
   const form = useMemoryScope<State>(() => initial(target ? null : emptyOpportunity()))
   const load = useRequest<ReturnType<typeof parseEditable>>()
   const save = useRequest<{ id: string; version: number }>()
@@ -102,7 +104,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     })
   }
   return <>
-    <header className="page-heading"><h2>{target ? '공고 수정하기' : '공고 직접 등록하기'}</h2><p>공식 원문에 있는 사실만 입력하세요. 새로 등록하거나 수정한 내용은 검수 대기 버전으로 저장됩니다. 수정 전 공개본은 승인 전까지 유지됩니다.</p></header>
+    <header className="page-heading"><h2 className="review-heading" ref={headingRef} tabIndex={-1}>{target ? '공고 수정하기' : '공고 직접 등록하기'}</h2><p>공식 원문에 있는 사실만 입력하세요. 새로 등록하거나 수정한 내용은 검수 대기 버전으로 저장됩니다. 수정 전 공개본은 승인 전까지 유지됩니다.</p></header>
     {target && <Button disabled={pending} variant="secondary" onClick={reload}>{input ? '편집 내용 버리고 선택한 버전 다시 불러오기' : '편집할 공고 불러오기'}</Button>}
     {load.state.status === 'error' && <RequestError error={load.state.error} />}
     {input && <form className="panel opportunity-editor" noValidate onSubmit={(event) => { event.preventDefault(); void submit() }}>
@@ -116,7 +118,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <TextAreaField id="editor-description" label="공식 원문 설명" value={input.description_text ?? ''} maxLength={5000} rows={6} onChange={(event) => update('description_text', event.target.value || null)} />
       </fieldset>
       <fieldset disabled={locked}><legend>지역·일정·보수</legend>
-        <label htmlFor="editor-region">활동 시·도</label><select id="editor-region" value={input.activity_region?.province ?? ''} onChange={(event) => update('activity_region', event.target.value ? { province: event.target.value as components['schemas']['Province'], district: null } : null)}><option value="">확인 필요</option>{Object.entries(provinces).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p>기존 시·군·구 범위는 지역을 바꾸지 않으면 유지됩니다. 지역을 바꾸면 선택한 시·도 전체로 변경됩니다.</p>
+        <label htmlFor="editor-region">활동 시·도</label><select id="editor-region" aria-describedby="editor-region-help" value={input.activity_region?.province ?? ''} onChange={(event) => update('activity_region', event.target.value ? { province: event.target.value as components['schemas']['Province'], district: null } : null)}><option value="">확인 필요</option>{Object.entries(provinces).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p id="editor-region-help">기존 시·군·구 범위는 지역을 바꾸지 않으면 유지됩니다. 지역을 바꾸면 선택한 시·도 전체로 변경됩니다.</p>
         <InputField id="editor-location" label="상세 장소" value={input.location_text ?? ''} maxLength={500} onChange={(event) => update('location_text', event.target.value || null)} />
         <label htmlFor="editor-remote">원격 활동</label><select id="editor-remote" value={triValue(input.remote_allowed)} onChange={(event) => update('remote_allowed', tri(event.target.value))}><option value="">확인 필요</option><option value="yes">가능</option><option value="no">불가</option></select>
         <InputField id="editor-schedule" label="활동 일정" value={input.schedule_text ?? ''} maxLength={500} onChange={(event) => update('schedule_text', event.target.value || null)} />

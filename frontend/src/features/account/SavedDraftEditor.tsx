@@ -1,10 +1,10 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { ApiError } from '../../api/errors'
 import { required, useRequest } from '../../state/useRequest'
 import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { TextAreaField } from '../../ui/Fields'
-import { RequestError } from '../../ui/StatusNotice'
+import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { invalid, isOpportunityId, record, text } from '../public-opportunities/catalog'
 import { parseSession } from './session'
 
@@ -26,6 +26,8 @@ type Editor = { journey: string; draft: Draft; introduction: string; motivation:
 export function SavedDraftEditor({ documentId, version, opportunityId, onUnavailable }: { documentId: string; version: number; opportunityId: string; onUnavailable?: () => void }) {
   const scope = useMemoryScope<Editor | null>(() => null)
   const request = useRequest<Editor | string>()
+  const copy = useRequest<string>()
+  const copyField = useRef<HTMLTextAreaElement>(null)
   const clearEditor = scope.clear
   const editor = scope.value, pending = request.state.status === 'pending'
   useEffect(() => {
@@ -57,7 +59,7 @@ export function SavedDraftEditor({ documentId, version, opportunityId, onUnavail
   }, value => { if (typeof value !== 'string') scope.setValue(value) })
   function edit(field: 'introduction' | 'motivation', value: string) {
     if (!editor || pending) return
-    request.clear()
+    request.clear(); copy.clear()
     scope.setValue({ ...editor, [field]: value, dirty: true, saved: false, saveKey: crypto.randomUUID() })
   }
   const update = () => {
@@ -69,7 +71,7 @@ export function SavedDraftEditor({ documentId, version, opportunityId, onUnavail
         },
       })).data))
       if (draft.id !== editor.draft.id || draft.approved) return invalid()
-      return { ...editor, draft, dirty: false, saved: false, saveKey: crypto.randomUUID() }
+      return { ...editor, draft, introduction: draft.introduction, motivation: draft.motivation, dirty: false, saved: false, saveKey: crypto.randomUUID() }
     }, value => { if (typeof value !== 'string') scope.setValue(value) })
   }
   const approve = () => {
@@ -79,7 +81,7 @@ export function SavedDraftEditor({ documentId, version, opportunityId, onUnavail
       const draft = parseDraft(required((await api.POST('/journeys/{journey_id}/drafts/{draft_id}/approve', {
         signal, params: { path }, body: { base_revision: editor.draft.revision },
       })).data))
-      if (draft.id !== editor.draft.id || !draft.approved || draft.review) return invalid()
+      if (draft.id !== editor.draft.id || !draft.approved || draft.review || draft.introduction !== editor.introduction || draft.motivation !== editor.motivation) return invalid()
       return { ...editor, draft, dirty: false, saveKey: crypto.randomUUID(), saved: false } satisfies Editor
     }, value => { if (typeof value !== 'string') scope.setValue(value) })
   }
@@ -95,23 +97,24 @@ export function SavedDraftEditor({ documentId, version, opportunityId, onUnavail
     }, value => { if (typeof value !== 'string') scope.setValue(value) })
   }
   return <section className="panel"><h3>새 내용으로 편집</h3>
-    <p><a href={`/opportunities/${opportunityId}`} target="_blank" rel="noopener noreferrer">현재 공고 조건을 새 창에서 확인</a></p>
+    <p><a className="text-link" href={`/opportunities/${opportunityId}`} target="_blank" rel="noopener noreferrer">현재 공고 조건을 새 창에서 확인</a></p>
     {!editor ? <><p>현재 저장 프로필과 공개 공고를 확인해 새 임시 편집본을 만듭니다.</p><Button pending={pending} onClick={() => void start()}>저장본으로 새 임시 편집 시작</Button></> : <>
       <p>수정 중 자동 저장하지 않습니다. 다시 승인하고 저장하기 전에는 기존 저장본을 유지합니다.</p>
       {editor.draft.warnings.map((warning, index) => <p key={index}>{warning}</p>)}
       <fieldset disabled={pending}><TextAreaField label="재편집 자기소개" value={editor.introduction} maxLength={2000} rows={6} onChange={event => edit('introduction', event.target.value)} />
         <TextAreaField label="재편집 지원동기" value={editor.motivation} maxLength={2000} rows={6} onChange={event => edit('motivation', event.target.value)} /></fieldset>
-      <Button pending={pending} disabled={!editor.dirty} onClick={update}>수정 내용을 임시 초안에 반영</Button>
+      <div className="actions"><Button pending={pending} disabled={!editor.dirty} onClick={update}>수정 내용을 임시 초안에 반영</Button>
       <Button pending={pending} disabled={editor.dirty || !editor.introduction.trim() || !editor.motivation.trim() || editor.draft.approved} onClick={approve}>내용을 읽고 현재 근거에 맞게 재승인</Button>
-      <Button pending={pending} disabled={editor.dirty || !editor.draft.approved || editor.saved} onClick={save}>재승인한 지원서 저장 · 실패 시 재시도</Button>
-      <Button variant="secondary" disabled={pending} onClick={() => void request.run(async () => {
+      <Button pending={pending} disabled={editor.dirty || !editor.draft.approved || editor.saved} onClick={save}>재승인한 지원서 저장</Button>
+      <Button variant="secondary" disabled={pending} pending={copy.state.status === 'pending'} onClick={() => void copy.run(async () => {
         if (!navigator.clipboard?.writeText) throw new ApiError('INVALID_TARGET')
         await navigator.clipboard.writeText(`자기소개\n${editor.introduction}\n\n지원동기\n${editor.motivation}`)
         return '편집 내용을 복사했습니다.'
-      })}>편집 내용 복사</Button>
+      })}>편집 내용 복사</Button></div>
+      {copy.state.status === 'error' && <StatusNotice kind="error" title="자동 복사를 완료하지 못했어요" actions={<><textarea ref={copyField} aria-label="복사할 편집 내용" readOnly value={`자기소개\n${editor.introduction}\n\n지원동기\n${editor.motivation}`} rows={6} /><Button variant="secondary" onClick={() => { copyField.current?.focus(); copyField.current?.select() }}>복사 내용 전체 선택</Button></>}>내용을 선택해 기기의 복사 기능을 사용해 주세요.</StatusNotice>}
+      {copy.state.status === 'success' && <p role="status">{copy.state.data}</p>}
       <p role="status">{editor.saved ? `지원서 ${editor.base}번을 저장했습니다.` : editor.dirty || !editor.draft.approved ? '재승인 전입니다.' : '재승인했습니다. 회원 저장은 별도 버튼으로 진행해 주세요.'}</p>
     </>}
     {request.state.status === 'error' && <><RequestError error={request.state.error} /><p>실패하면 저장 여부를 확인하고 다시 시도해 주세요. 남아 있는 편집 내용은 복사할 수 있습니다. 버전 충돌이면 저장 자료를 다시 불러오세요.</p></>}
-    {request.state.status === 'success' && request.state.data === '편집 내용을 복사했습니다.' && <p role="status">{request.state.data}</p>}
   </section>
 }
