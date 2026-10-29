@@ -201,6 +201,30 @@ def test_existing_experience_may_reuse_its_stored_summary_and_detail_turn_is_the
     assert bare.source_turns == [-1]
 
 
+def test_earlier_turn_details_and_stored_summary_do_not_revive_values_the_user_removed():
+    # 리뷰 #314: 사용자가 프로필에서 기간과 "조리" 태그를 지웠다. 이번 턴의 새 기술 인용과 함께 앞 턴의 기간 인용,
+    # 저장 요약에만 근거한 표준 태그가 와도 되살리지 않는다. 이번 턴(근거 턴)의 원문 인용만 쓴다.
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질하고 반찬 만드는 일을 주로 맡았어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("식당에서 조리"), duration=quote("십 년"),
+                  skills=[quote("재료 손질", 1)], standard_tags=["조리"])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old], standard_tags={"조리": []})[0]
+    assert [(item.duration_note, item.skill_tags) for item in result.experiences] == [(None, ["재료 손질"])]
+    assert result.source_turns == [1]
+    # 원문 설명 인용이 앞 턴이어도 마찬가지다.
+    grounded_desc = dict(detail, description=quote("식당에서 십 년 동안 조리"))
+    again = extract(dict(experiences=[grounded_desc]), texts=texts, existing=[old], standard_tags={"조리": []})[0]
+    assert [(item.duration_note, item.skill_tags) for item in again.experiences] == [(None, ["재료 손질"])]
+
+
+def test_stored_summary_match_ignores_surrounding_spaces_and_period():
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질도 했어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote(" 식당에서 조리."), duration=None, skills=[quote("재료 손질", 1)])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert result.experiences[0].skill_tags == ["재료 손질"] and result.source_turns == [1]
+
+
 @pytest.mark.parametrize("payload", [
     # 저장된 요약을 새 경험(ID 없음)으로 내면 원문 근거가 없다.
     dict(existing_id=None, description=quote("식당에서 조리"), duration=None, skills=[]),
