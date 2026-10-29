@@ -36,6 +36,52 @@ def call(source, sample, **kwargs):
     return normalize(source, *sample, checked_at=kwargs.pop("checked_at", NOW), **kwargs)
 
 
+@pytest.mark.parametrize("codes,expected", [
+    (("6110000", "3030000"), ("seoul", "seongdong")),
+    (("6410000", "3780000"), ("gyeonggi", "seongnam")),
+    (("6280000", "3520000"), ("incheon", "yeonsu")),
+])
+def test_reviewed_volunteer_code_pairs_resolve_without_address(volunteer, codes, expected):
+    volunteer[0].update(zip(("sidoCd", "gugunCd"), codes))
+    candidate = call("volunteer", volunteer).candidate
+    assert (candidate.content.activity_region.province, candidate.content.activity_region.district) == expected
+    assert "region_mapping_unknown" not in candidate.review_reasons
+    assert candidate.review_status == "pending"
+    assert candidate.content.skill_tags == candidate.content.role_tags == []
+    assert "requirements_not_reviewed" in candidate.review_reasons
+    assert dict(candidate.unmapped_fields)["gugunCd"] == codes[1]
+
+
+def test_volunteer_detail_only_codes_are_supported(volunteer):
+    volunteer[0].pop("sidoCd")
+    volunteer[1].update(sidoCd="6110000", gugunCd="3030000")
+    assert call("volunteer", volunteer).candidate.content.activity_region.district == "seongdong"
+
+
+@pytest.mark.parametrize("codes", [
+    ("6110000", "3520000"), ("6280000", "3030000"),  # 시도/시군구 불일치
+    ("6280000", "3490000"), ("6280000", "3500000"), ("6280000", "3560000"),  # 인천 개편 전
+    ("6110000", None), (None, "3030000"), ("6110000", "9999999"),
+    ("6110000", "3030000; arbitrary"),
+])
+def test_unknown_or_ambiguous_volunteer_codes_never_broaden_region(volunteer, codes):
+    volunteer[0].update(zip(("sidoCd", "gugunCd"), codes))
+    volunteer[1]["actPlace"] = "서울 성동구 가상센터"  # 미확인 코드를 주소 추정으로 우회하지 않는다.
+    result = call("volunteer", volunteer)
+    assert result.status == "candidate"
+    assert result.candidate.content.activity_region is None
+    assert "region_mapping_unknown" in result.candidate.review_reasons
+
+
+@pytest.mark.parametrize("field,value", [("sidoCd", "6410000"), ("gugunCd", "3040000")])
+def test_conflicting_volunteer_list_detail_codes_require_review(volunteer, field, value):
+    volunteer[0].update(sidoCd="6110000", gugunCd="3030000")
+    volunteer[1][field] = value
+    candidate = call("volunteer", volunteer).candidate
+    assert candidate.content.activity_region is None
+    assert {"region_mapping_unknown", "region_mapping_conflict"} <= set(candidate.review_reasons)
+
+
 def test_job_maps_confirmed_fields_only(job):
     result = call("senuri", job)
     assert result.status == "candidate"

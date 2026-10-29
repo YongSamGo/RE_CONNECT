@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from uuid import UUID
 
 from pydantic import ValidationError
-from sqlalchemy import Date, case, cast, exists, func, or_, select
+from sqlalchemy import Date, and_, case, cast, exists, func, or_, select
 from sqlalchemy.engine import Connection
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -44,9 +44,15 @@ class SqlPublicOpportunityRepository:
 
     def _search(self, statement, search, now, dialect):
         statement = statement.where(V.recruitment_status.in_(("open", "unknown")), or_(V.deadline_at.is_(None), V.deadline_at > now), or_(V.deadline_at.is_not(None), V.deadline_date.is_(None), V.deadline_date >= kst_date(now)))
-        if search.province is not None:
+        if search.regions:
+            filters = []
+            for region in search.regions:
+                province, separator, district = region.partition(":")
+                filters.append(and_(V.activity_province == province, V.activity_district == district if separator else V.activity_province == province))
+            statement = statement.where(or_(*filters))
+        elif search.province is not None:
             statement = statement.where(V.activity_province == search.province)
-        if search.district is not None:
+        if not search.regions and search.district is not None:
             statement = statement.where(V.activity_district == search.district)
         if search.activity_type is not None:
             statement = statement.where(V.activity_type == search.activity_type)

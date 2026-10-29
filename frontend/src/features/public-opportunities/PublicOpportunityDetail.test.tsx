@@ -30,9 +30,10 @@ describe('public detail request and state', () => {
     expect(screen.getByText(/제공된 원문 설명이 없습니다/)).toBeVisible()
     expect(screen.getByText(/검수된 공고에 명시된 필수조건이 없습니다/)).toBeVisible()
     expect(screen.getByText(/내 지원 자격을 판정한 결과가 아닙니다/)).toBeVisible()
+    expect(screen.getByRole('link', { name: 'AI 처리 안내를 확인하고 새 체험 시작' })).toHaveAttribute('href', '/start')
     expect(screen.getByText(/원문 확인:/)).toHaveTextContent('2026년 10월 15일 08:30')
     expect(screen.getByRole('region', { name: '공고 상세 조회 결과' })).toHaveFocus()
-    const link = screen.getByRole('link', { name: /공식 원문 확인 ·/ })
+    const link = screen.getByRole('link', { name: /공식 원문 확인 / })
     expect(link).toHaveAttribute('href', sourceUrl)
     expect(link).toHaveAttribute('rel', 'noopener noreferrer')
     expect(link).toHaveAttribute('referrerpolicy', 'no-referrer')
@@ -50,8 +51,8 @@ describe('public detail request and state', () => {
   ])('keeps official source but withholds application for %j', async (changes) => {
     vi.stubGlobal('fetch', vi.fn(async () => json(sampleDetail(changes))))
     mount(); await load()
-    expect(await screen.findByRole('link', { name: /공식 원문 확인 ·/ })).toBeVisible()
-    expect(screen.queryByRole('link', { name: /공식 신청 안내 확인 ·/ })).not.toBeInTheDocument()
+    expect(await screen.findByRole('link', { name: /공식 원문 확인 / })).toBeVisible()
+    expect(screen.queryByRole('link', { name: /공식 신청 안내 확인 / })).not.toBeInTheDocument()
   })
   it('renders hostile text literally and withholds unapproved links', async () => {
     const attack = '<img src=x onerror=alert(1)>'
@@ -60,7 +61,7 @@ describe('public detail request and state', () => {
     expect(await screen.findByText(attack)).toBeVisible()
     expect(container.querySelector('img, script')).toBeNull()
     expect(screen.getByText(/원문이 길어 앞부분만 표시/)).toBeVisible()
-    expect(screen.queryByRole('link', { name: /공식 원문 확인 ·/ })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /공식 원문 확인 / })).not.toBeInTheDocument()
     expect(container.querySelector('a[href="https://evil.test"]')).toBeNull()
   })
   it('shows a missing notice for 404 without leaking server message or offering immediate retry', async () => {

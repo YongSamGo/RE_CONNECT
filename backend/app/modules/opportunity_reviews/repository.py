@@ -1,6 +1,5 @@
 """검수 상태 전이를 공고 문서 행 잠금 안에서 처리한다. 수집 저장소와 같은 문서 잠금을 쓴다."""
 
-from datetime import timedelta
 from uuid import UUID
 
 from pydantic import ValidationError
@@ -12,10 +11,9 @@ from app.modules.opportunities.versions import snapshot_from_row
 from app.modules.opportunity_reviews.models import ReviewCommand, ReviewResult
 from app.modules.opportunity_reviews.service import Check
 from app.persistence.operations import (
-    AuditEvent, OpportunityDocument as D, OpportunityPublication as P, OpportunityReview as R, OpportunityVersion as V,
+    AUDIT_RETENTION, AuditEvent, OpportunityDocument as D, OpportunityPublication as P, OpportunityReview as R, OpportunityVersion as V,
 )
 
-AUDIT_RETENTION = timedelta(days=30)
 _STATUS = {"approve": "approved", "reject": "rejected", "hide": "hidden"}
 
 

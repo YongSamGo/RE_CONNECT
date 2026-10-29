@@ -62,11 +62,15 @@ def test_http_edit_and_explicit_approval_are_distinct_and_old_revisions_conflict
     with_redis(scenario)
 
 
-def test_two_actual_concurrent_edits_commit_exactly_one_body(monkeypatch):
+@pytest.mark.parametrize('closed', [False, True])
+def test_two_actual_concurrent_edits_commit_exactly_one_body(monkeypatch, closed):
     async def scenario(admission, admission_store, redis):
         with open_test_database('sqlite') as db:
             issued, _, _, journey, identity, _, service = await setup(admission, admission_store, redis, db)
             draft = await service.create(issued.session, identity, journey.journey_id, str(uuid4()), body())
+            if closed:
+                db.execute(update(OpportunityVersion).where(OpportunityVersion.opportunity_id == OPPORTUNITY)
+                           .values(recruitment_status='closed'))
             read = service.store.read
             barrier, reads = asyncio.Event(), 0
             async def simultaneous(*args):
@@ -83,7 +87,15 @@ def test_two_actual_concurrent_edits_commit_exactly_one_body(monkeypatch):
             assert sum(isinstance(result, AppError) and result.code == 'VERSION_CONFLICT' for result in results) == 1
             success = next(result for result in results if not isinstance(result, BaseException))
             assert success.revision == 2 and success.approved_at is None
-            assert await read(issued.session, journey.journey_id, draft.draft_id) == success
+            stored = await read(issued.session, journey.journey_id, draft.draft_id)
+            # 표시용 경고는 현재 근거를 조회해 계산하며 저장된 본문/CAS 값과는 구분한다.
+            display_only = {'review_reasons', 'warnings'}
+            assert stored.model_dump(exclude=display_only) == success.model_dump(exclude=display_only)
+            assert stored.review_reasons == stored.warnings == []
+            if closed:
+                assert success.review_reasons == ['opportunity_closed'] and success.warnings
+            else:
+                assert success.review_reasons == success.warnings == []
     with_redis(scenario)
 
 

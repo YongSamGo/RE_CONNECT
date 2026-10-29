@@ -127,7 +127,7 @@ it.each(['profile', 'draft'] as const)('refuses %s deletion and clears account A
     await userEvent.click(await screen.findByLabelText('저장 프로필과 연결된 지원서를 모두 삭제할게요.'))
     await userEvent.click(screen.getByRole('button', { name: '저장 프로필과 지원서 삭제' }))
   } else {
-    await userEvent.click(screen.getByRole('button', { name: '내용 보기 · 계정 A 공고' }))
+    await userEvent.click(screen.getByRole('button', { name: '내용 보기: 계정 A 공고' }))
     await screen.findByText('계정 A의 지원서')
     await userEvent.click(screen.getByLabelText('이 지원서의 모든 저장 버전을 삭제할게요.'))
     await userEvent.click(screen.getByRole('button', { name: '선택한 지원서 삭제' }))

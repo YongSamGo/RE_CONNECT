@@ -8,6 +8,7 @@ from pydantic import ValidationError
 from app.adapters.llm import LLMInvalidOutputError, LLMTimeoutError, LLMUnavailableError
 from app.contracts.journey import ConversationTurn, Message, MessageCommit, MessageCreate, MessageResult, ProfileDraftView, ProfileEvidence
 from app.contracts.profile import Experience, ProfileContent
+from app.contracts.roles import normalize_tag
 from app.contracts.time import utc_now
 from app.core.business_errors import AppError
 from app.modules.admission.llm import ControlledLLMAdapter
@@ -25,10 +26,51 @@ MESSAGE_TIMEOUT_SECONDS = 60
 QUESTION_MIN_SECONDS = 20
 
 
+def _enrich(experiences: list[Experience], evidence: list[ProfileEvidence], proposal, message_id: UUID) -> None:
+    """기존 경험에 이번 턴의 세부 내용을 덧붙인다. 설명은 바꾸지 않고, 태그는 더하기만 하며 기간은 비어 있을 때만 채운다.
+
+    사용자가 고친 값을 모델이 지우거나 바꾸지 않게 하려는 규칙이다. 덧붙인 근거로 이번 메시지를 기록한다.
+    """
+    index = next((i for i, item in enumerate(experiences) if item.id == proposal.id), None)
+    if index is None:
+        return
+    current = experiences[index]
+    known = {normalize_tag(tag) for tag in current.skill_tags}
+    added = [tag for tag in proposal.skill_tags if normalize_tag(tag) not in known][:max(0, 20 - len(current.skill_tags))]
+    duration = current.duration_note or proposal.duration_note
+    if not added and duration == current.duration_note:
+        return
+    experiences[index] = current.model_copy(update={'skill_tags': [*current.skill_tags, *added], 'duration_note': duration})
+    path = f'experiences[{index}]'
+    for position, item in enumerate(evidence):
+        if item.path == path:
+            if message_id not in item.message_ids:
+                evidence[position] = item.model_copy(update={'message_ids': [*item.message_ids, message_id]})
+            return
+    evidence.append(ProfileEvidence(path=path, message_ids=[message_id]))
+
+
 class JourneyMessageService:
-    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter, transcriptions=None):
+    def __init__(self, journeys: JourneyService, requests: RequestService, llm: ControlledLLMAdapter, transcriptions=None,
+                 catalog=None):
         self.journeys, self.requests, self.llm = journeys, requests, llm
         self.transcriptions = transcriptions
+        # 역할 사전(RoleCatalog). 표준 기술 태그 선택지로만 쓴다. 없거나 읽지 못하면 원문 기술 구절만 남는다.
+        self.catalog = catalog
+
+    def _standard_tags(self) -> dict[str, list[str]]:
+        """표준 기술 태그 → 검토된 별칭. 생성 서비스가 원문 근거와 대조할 때 쓴다."""
+        try:
+            roles = self.catalog.list() if self.catalog is not None else []
+        except AppError:
+            return {}
+        tags: dict[str, list[str]] = {}
+        for role in roles:
+            for tag in role.skill_tags:
+                tags.setdefault(tag, [])
+            for alias in role.aliases:
+                tags.setdefault(alias.skill_tag, []).append(alias.alias)
+        return tags
 
     async def send(self, session: Session, identity: InferenceIdentity, journey_id: UUID, key: str, body: MessageCreate) -> MessageResult:
         if identity.subject_id != session.subject_id or identity.account_id != session.user_id:
@@ -56,22 +98,23 @@ class JourneyMessageService:
             generation = GroundedGenerationService(self.llm.for_identity(identity))
             loop = asyncio.get_running_loop()
             deadline = loop.time() + MESSAGE_TIMEOUT_SECONDS
+            standard_tags = await asyncio.to_thread(self._standard_tags)
             async with asyncio.timeout_at(deadline):
                 preview = await generation.extract_experiences(user_texts=[turn.text for turn in turns],
-                    existing_experiences=current.draft.experiences)
+                    existing_experiences=current.draft.experiences, standard_tags=standard_tags)
                 experiences = list(current.draft.experiences)
                 evidence = list(current.evidence)
-                for proposal in preview.experiences:
-                    # 이미 사용자가 편집한 경험은 모델이 교체하지 않는다.
-                    if proposal.id is not None or any(e.description == proposal.description for e in experiences):
+                for proposal, source in zip(preview.experiences, preview.source_turns, strict=True):
+                    # 이전 턴만으로 삭제한 경험을 되살리지 않는다. 이번 확인 텍스트가 근거인 것만 반영한다.
+                    # 문구는 다듬어지고 태그는 표준 태그일 수 있어, 생성 서비스가 원문과 대조한 근거 턴 번호로 확인한다.
+                    if source != len(turns) - 1:
                         continue
-                    # 이전 턴만으로 삭제한 경험을 되살리지 않는다. 이번 확인 텍스트의 사실만 추가한다.
-                    matching = [turn.message_id for turn in turns[-1:] if proposal.description in turn.text
-                        and (proposal.duration_note is None or proposal.duration_note in turn.text)
-                        and all(tag in turn.text for tag in proposal.skill_tags)]
-                    if not matching:
+                    if proposal.id is not None:
+                        _enrich(experiences, evidence, proposal, turns[-1].message_id)
                         continue
-                    evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=matching))
+                    if any(e.description == proposal.description for e in experiences):
+                        continue
+                    evidence.append(ProfileEvidence(path=f'experiences[{len(experiences)}]', message_ids=[turns[-1].message_id]))
                     experiences.append(Experience(id=uuid4(), description=proposal.description,
                         duration_note=proposal.duration_note, skill_tags=proposal.skill_tags))
                 draft = ProfileContent.model_validate({**current.draft.model_dump(), 'experiences': experiences})

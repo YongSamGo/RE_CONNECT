@@ -10,6 +10,7 @@ import asyncio
 
 from fastapi import FastAPI
 
+from app.adapters.aws import build_client as build_aws_client
 from app.adapters.ollama import OllamaLLMAdapter
 from app.adapters.kakao import KakaoAdapter
 from app.adapters.internal_speech import InternalSpeechAdapter
@@ -45,7 +46,7 @@ from app.modules.deletions import router as deletions
 from app.modules.operators import router as operators
 from app.modules.operators.repository import SqlOperatorMfaRepository, UnavailableOperatorMfaRepository
 from app.modules.operators.service import OperatorMfaService
-from app.modules.deletions.journal import FileDeletionJournal, UnavailableDeletionJournal
+from app.modules.deletions.journal import UnavailableDeletionJournal, build_deletion_journal
 from app.modules.deletions.repository import SqlDeletionRepository, UnavailableDeletionRepository
 from app.modules.deletions.service import DeletionService
 from app.core.encryption import ContentCipher, EncryptionKeyRing, EncryptionUnavailable
@@ -79,6 +80,9 @@ from app.modules.opportunities.service import PublicOpportunityService, Unavaila
 from app.modules.opportunities.ingestion import IngestionService, UnavailableIngestionRepository
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository
 from app.modules.opportunity_reviews import router as opportunity_reviews
+from app.modules.audit import router as audit
+from app.modules.audit.repository import SqlAuditRepository, UnavailableAuditRepository
+from app.modules.audit.service import AuditService
 from app.modules.opportunity_reviews.repository import SqlOpportunityReviewRepository
 from app.modules.opportunity_reviews.service import OpportunityReviewService, UnavailableOpportunityReviewRepository
 from app.modules.reports import router as reports
@@ -127,8 +131,7 @@ def create_app(
 ) -> FastAPI:
     settings = settings or get_settings()
     docs_enabled = settings.docs_enabled
-    deletion_journal = (FileDeletionJournal(settings.deletion_journal_directory)
-        if settings.app_env == 'development' and settings.deletion_journal_directory is not None else UnavailableDeletionJournal())
+    deletion_journal = build_deletion_journal(settings, build_aws_client)
     # 운영에서 삭제 이력 어댑터가 없으면 저장 동의와 회원 로그인을 열지 않는다.
     # 저장은 되는데 탈퇴·삭제·동의 철회가 503인 상태를 만들지 않기 위해서다. 운영 어댑터를 연결하면 자동으로 열린다.
     member_storage_enabled = settings.app_env != 'production' or not isinstance(deletion_journal, UnavailableDeletionJournal)
@@ -197,13 +200,16 @@ def create_app(
     app.state.journey_service = JourneyService(journey_store, app.state.consent_service, admission)
     transcription_store = RedisTranscriptionStore(redis_client, session_key=session_store.key, resource_key=request_store.resource_key) if redis_client is not None else UnavailableTranscriptionStore()
     app.state.transcription_service = TranscriptionService(transcription_store, app.state.journey_service, speech_adapter)
-    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service)
+    app.state.journey_message_service = JourneyMessageService(app.state.journey_service, app.state.request_service, llm_adapter, app.state.transcription_service,
+        catalog=SQLRoleCatalog(engine.connect) if engine is not None else None)
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect) if engine is not None else UnavailableOpportunityRepository())
     app.state.opportunity_ingestion_service = IngestionService(SqlIngestionRepository(engine.begin) if engine is not None else UnavailableIngestionRepository())
     app.state.opportunity_review_service = OpportunityReviewService(
         SqlOpportunityReviewRepository(engine.begin) if engine is not None else UnavailableOpportunityReviewRepository())
     app.state.admin_opportunity_service = AdminOpportunityService(
         SqlAdminOpportunityRepository(sessionmaker(engine).begin) if engine is not None else UnavailableAdminOpportunityRepository())
+    app.state.audit_service = AuditService(
+        SqlAuditRepository(engine.connect, engine.begin) if engine is not None else UnavailableAuditRepository())
     kakao = None
     if (member_storage_enabled and settings.public_origin is not None and settings.kakao_rest_api_key is not None
             and settings.kakao_client_secret is not None and settings.kakao_app_id is not None
@@ -304,6 +310,7 @@ def create_app(
     app.include_router(opportunity_reviews.router, prefix=API_PREFIX)
     app.include_router(admin_opportunities.router, prefix=API_PREFIX)
     app.include_router(reports.router, prefix=API_PREFIX)
+    app.include_router(audit.router, prefix=API_PREFIX)
     app.include_router(journeys.router, prefix=API_PREFIX)
     app.include_router(eligibility.router, prefix=API_PREFIX)
     app.include_router(roles.router, prefix=API_PREFIX)

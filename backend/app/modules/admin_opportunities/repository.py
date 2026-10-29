@@ -22,11 +22,10 @@ from app.modules.opportunities.ingestion import IngestionService
 from app.modules.opportunities.ingestion_repository import SqlIngestionRepository, pending_version_values
 from app.modules.opportunities.versions import OpportunitySnapshot, changed_fields, important_changes, snapshot_from_row
 from app.persistence.operations import (
-    AuditEvent, OpportunityDocument as D, OpportunityPublication as P, OpportunityVersion as V,
+    AUDIT_RETENTION, AuditEvent, OpportunityDocument as D, OpportunityPublication as P, OpportunityVersion as V,
     OpportunityWriteReceipt as R, RoleDefinition, Source,
 )
 
-AUDIT_RETENTION = timedelta(days=30)  # Plan/02 §7 보안·운영자 감사 30일
 RECEIPT_RETENTION = timedelta(hours=24)
 # 중요 변경 여부는 공개본과 버전들을 비교해 계산하므로 목록을 메모리에서 나눈다. 넘으면 일부만 보여 주지 않고 거절한다.
 LIST_LIMIT = 5000

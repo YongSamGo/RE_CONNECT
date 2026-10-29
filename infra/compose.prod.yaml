@@ -1,0 +1,172 @@
+# 운영 EC2 Compose (#93 W12-04). 절차는 infra/deploy/README.md를 따른다.
+#
+# - 이미지는 릴리스 manifest에서 만든 images.env의 digest 참조만 쓴다 (태그 사용 금지).
+# - 비밀값은 SSM에서 tmpfs(/run/reconnect)에 만든 env 파일로만 받는다. format: raw라 $·따옴표를 해석하지 않는다.
+# - 인터넷에는 nginx의 443만 공개한다. Redis는 내부 네트워크에만 있고 영속화하지 않는다.
+# - PostgreSQL은 이 파일에 없다. 비공개 RDS에 TLS(verify-full)로 접속한다 (#90).
+# - Ollama·음성 서비스는 #92에서 추가한다. 그 전에는 AI·음성 기능이 준비 안 됨으로 응답한다.
+#
+#   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml up -d --wait
+name: reconnect-prod
+
+x-hardening: &hardening
+  read_only: true
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  init: true
+
+services:
+  nginx:
+    <<: *hardening
+    image: ${FRONTEND_IMAGE:?릴리스 manifest의 frontend digest 이미지를 지정하세요}
+    restart: unless-stopped
+    ports:
+      - "443:443"
+    networks:
+      edge: {}
+      app:
+        ipv4_address: 172.30.10.10
+    volumes:
+      # infra/nginx/render_config.py로 만든 설정 (#91). 이미지에는 설정을 넣지 않는다.
+      - type: bind
+        source: ${NGINX_CONF_FILE:-/etc/reconnect/nginx.conf}
+        target: /etc/nginx/nginx.conf
+        read_only: true
+        bind:
+          create_host_path: false
+    secrets:
+      - source: tls-fullchain
+        target: tls-fullchain.pem
+      - source: tls-key
+        target: tls-key.pem
+    tmpfs:
+      - /run/nginx:rw,noexec,nosuid,nodev,size=16m,uid=101,gid=101,mode=0700
+      - /tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777
+    depends_on:
+      backend:
+        condition: service_healthy
+    pids_limit: 128
+    mem_limit: 256m
+    logging:
+      driver: none
+
+  backend:
+    <<: *hardening
+    image: ${BACKEND_IMAGE:?릴리스 manifest의 backend digest 이미지를 지정하세요}
+    restart: unless-stopped
+    user: "10001:10001"
+    env_file:
+      - path: ${APP_ENV_FILE:-/run/reconnect/app.env}
+        format: raw
+        required: true
+    environment:
+      # 비밀이 아닌 고정 값은 env 파일보다 우선하도록 여기서 정한다.
+      APP_ENV: production
+      TRUSTED_PROXY_IPS: '["172.30.10.10"]'
+    networks:
+      app: {}
+      data: {}
+      # RDS와 카카오·공공데이터 API 접속용. 호스트 포트는 게시하지 않는다.
+      egress: {}
+    volumes:
+      - type: bind
+        source: ${RDS_CA_FILE:-/etc/reconnect/rds-ca.pem}
+        target: /run/rds-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+    depends_on:
+      redis:
+        condition: service_healthy
+    pids_limit: 256
+    mem_limit: 1g
+    logging:
+      driver: awslogs
+      options:
+        awslogs-region: ${AWS_REGION:?리전을 지정하세요}
+        awslogs-group: /re-connect/${DEPLOY_ENV:?staging 또는 production}/operations
+        awslogs-create-group: "false"
+        mode: non-blocking
+        max-buffer-size: 4m
+
+  redis:
+    <<: *hardening
+    image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+    restart: unless-stopped
+    user: "999:1000"
+    env_file:
+      - path: ${REDIS_ENV_FILE:-/run/reconnect/redis.env}
+        format: raw
+        required: true
+    command:
+      - sh
+      - -ec
+      - |
+        case "$$REDIS_PASSWORD" in *[!a-fA-F0-9]*|'') exit 1;; esac
+        [ "$${#REDIS_PASSWORD}" -ge 32 ]
+        exec redis-server - --save '' --appendonly no --protected-mode yes <<EOF
+        requirepass $$REDIS_PASSWORD
+        EOF
+    networks: [data]
+    tmpfs:
+      - /data:rw,noexec,nosuid,nodev,size=128m,uid=999,gid=1000,mode=0700
+      - /tmp:rw,noexec,nosuid,nodev,size=8m,mode=1777
+    healthcheck:
+      test: ["CMD-SHELL", "REDISCLI_AUTH=\"$$REDIS_PASSWORD\" redis-cli ping | grep -qx PONG"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    pids_limit: 64
+    mem_limit: 256m
+    logging:
+      driver: none
+
+  # 1회성 마이그레이션. 앱 시작과 분리하고, RDS 스냅샷 뒤 운영자가 직접 실행한다.
+  #   docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml run --rm migrate
+  # migrate.env의 DATABASE_URL은 reconnect_migrator 계정이다. 실행 계정(reconnect_runtime)과 섞지 않는다.
+  migrate:
+    <<: *hardening
+    image: ${BACKEND_IMAGE:?릴리스 manifest의 backend digest 이미지를 지정하세요}
+    profiles: [migrate]
+    restart: "no"
+    user: "10001:10001"
+    entrypoint: ["/opt/venv/bin/python", "-B", "-m", "alembic", "upgrade", "head"]
+    env_file:
+      - path: ${MIGRATE_ENV_FILE:-/run/reconnect/migrate.env}
+        format: raw
+        required: true
+    environment:
+      APP_ENV: production
+    networks: [egress]
+    volumes:
+      - type: bind
+        source: ${RDS_CA_FILE:-/etc/reconnect/rds-ca.pem}
+        target: /run/rds-ca.pem
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=16m,mode=1777
+    logging:
+      driver: none
+
+secrets:
+  tls-fullchain:
+    file: ${TLS_FULLCHAIN_FILE:-/etc/reconnect/tls/fullchain.pem}
+  tls-key:
+    file: ${TLS_KEY_FILE:-/etc/reconnect/tls/privkey.pem}
+
+networks:
+  edge:
+    driver: bridge
+  app:
+    internal: true
+    ipam:
+      config:
+        - subnet: 172.30.10.0/24
+  data:
+    internal: true
+  egress:
+    driver: bridge

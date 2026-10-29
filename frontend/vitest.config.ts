@@ -7,6 +7,6 @@ export default defineConfig({
     environment: 'jsdom',
     environmentOptions: { jsdom: { url: 'https://reconnect.test/' } },
     setupFiles: ['./src/test/setup.ts'],
-    exclude: ['**/node_modules/**', '**/dist/**', '**/*.typecheck.ts', 'contract-tests/**'],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/*.typecheck.ts', 'contract-tests/**', 'browser-tests/**'],
   },
 })

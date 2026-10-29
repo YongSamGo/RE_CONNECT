@@ -1,11 +1,13 @@
 import type { components } from '../../api/schema'
 import { ApiError } from '../../api/errors'
+import { regionBoundaries } from './region-boundaries'
 
 export type Opportunity = components['schemas']['OpportunitySummary']
 export type OpportunityList = components['schemas']['OpportunityList']
+export type Region = components['schemas']['Region']
 export type Province = components['schemas']['Province']
 export const provinces = { seoul: '서울', gyeonggi: '경기', incheon: '인천' } satisfies Record<Province, string>
-export type Search = { q: string; province: Province | ''; district: string; districtName: string; regionVersion: string | null; activity_type: Opportunity['activity_type'] | '' }
+export type Search = { q: string; regions: Region[]; activity_type: Opportunity['activity_type'] | '' }
 
 export const invalid = (): never => { throw new ApiError('INVALID_RESPONSE') }
 export function record(value: unknown): Record<string, unknown> {
@@ -85,9 +87,13 @@ export function deadlineLabel(item: Pick<Opportunity, 'deadline_at' | 'deadline_
   if (item.deadline_at) {
     return `${new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false }).format(new Date(item.deadline_at))} 마감 (한국시간)`
   }
-  return item.deadline_date ? `${item.deadline_date} 마감 · 정확한 마감 시각 확인 필요` : '마감일 확인 필요'
+  return item.deadline_date ? `${item.deadline_date} 마감 (정확한 마감 시각 확인 필요)` : '마감일 확인 필요'
 }
 
 export function searchDescription(search: Search): string {
-  return [search.q ? `검색어: ${search.q}` : '검색어 전체', search.province ? `${provinces[search.province]}${search.district ? ` / ${search.districtName || search.district}` : ' 전체'}` : '지역 전체', search.activity_type === 'employment' ? '취업·공공일자리' : search.activity_type === 'volunteering' ? '봉사' : '활동 유형 전체'].join(' · ')
+  const regions = search.regions.length ? search.regions.map(({ province, district }) => {
+    if (!district) return `${provinces[province]} 전체`
+    return regionBoundaries.find((entry) => entry.province === province && entry.id === district)?.name ?? `${provinces[province]} ${district}`
+  }).join(', ') : '지역 전체'
+  return [search.q ? `검색어: ${search.q}` : '검색어 전체', regions, search.activity_type === 'employment' ? '취업 및 공공일자리' : search.activity_type === 'volunteering' ? '봉사' : '활동 유형 전체'].join(' / ')
 }

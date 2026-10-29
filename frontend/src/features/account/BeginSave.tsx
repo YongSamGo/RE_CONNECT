@@ -6,6 +6,7 @@ import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { CheckboxField } from '../../ui/Fields'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
+import { UnavailablePage } from '../../ui/UnavailablePage'
 import { invalid, isOpportunityId, record, timestamp } from '../public-opportunities/catalog'
 import { parseProfileView } from '../profile/server-model'
 import { parseSession } from './session'
@@ -21,7 +22,7 @@ const positive = (value: unknown) => typeof value === 'number' && Number.isSafeI
 
 export function BeginSaveRoute() {
   const { journeyId, draftId } = useParams()
-  if (!journeyId || !isOpportunityId(journeyId) || (draftId !== undefined && !isOpportunityId(draftId))) return <StatusNotice title="저장할 자료 주소를 확인해 주세요">프로필 또는 승인 지원서 화면에서 다시 진행해 주세요.</StatusNotice>
+  if (!journeyId || !isOpportunityId(journeyId) || (draftId !== undefined && !isOpportunityId(draftId))) return <UnavailablePage title="저장할 자료 주소를 확인해 주세요">프로필 또는 승인 지원서 화면에서 다시 진행해 주세요.</UnavailablePage>
   return <BeginSave key={`${journeyId}:${draftId ?? ''}`} journeyId={journeyId} draftId={draftId} />
 }
 
@@ -50,7 +51,7 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
         base: saved === null ? null : positive(record(saved).version), consent: me.consents.find(item => item.purpose === 'storage')?.notice_version ?? null }
     }
     return { next: { body: { journey_id: journeyId, profile: { version: view.confirmed.version }, draft }, notices, member,
-      key: crypto.randomUUID(), checked: false, started: false, intent: null, cancelled: false }, message: '서버의 확정·승인 참조를 확인했습니다.' }
+      key: crypto.randomUUID(), checked: false, started: false, intent: null, cancelled: false }, message: '서버에서 확정하거나 승인한 자료를 확인했어요.' }
   }, accept)
   const prepare = () => {
     if (!value || busy || !value.checked || !value.notices.storage || !value.notices.login_available || value.cancelled) return
@@ -73,17 +74,18 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
     }, accept)
   }
   if (value?.member) return <PendingSave input={value.member} />
-  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">회원 저장 준비</p><h1>{draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'}</h1><p>직접 확정·승인한 자료를 확인합니다. 로그인 후 저장 여부를 따로 선택합니다.</p></header>
+  return <div className="reading-width"><header className="page-heading"><p className="eyebrow">회원 저장 준비</p><h1>{draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'}</h1><p>서버에서 자료의 확정과 승인 상태를 확인해요. 로그인 후 저장 여부는 따로 선택해요.</p></header>
     {!value && <Button pending={busy} onClick={() => void load()}>서버에서 저장 대상 확인</Button>}
     {value && !value.cancelled && <section className="panel">
+      <h2>확인된 저장 대상</h2><p>{value.body.profile && `확정 프로필 ${value.body.profile.version}번`}{value.body.draft ? ` · 승인한 지원서 수정본 ${value.body.draft.revision}번` : ''}</p><p>본문은 이전 화면에서 확인해 주세요. 이 화면에서는 저장 대상과 상태를 확인합니다.</p>
       <p>{value.body.draft ? '지원서의 근거로 프로필도 함께 저장합니다. 로그인 후 두 자료를 명시적으로 선택하고 순서대로 저장합니다.' : '직접 확정한 프로필을 로그인 후 별도로 저장합니다.'}</p>
       {value.notices.storage && value.notices.login_available ? <>
         <NoticeText notice={value.notices.storage} />
         <p>아래 확인은 저장 동의가 아닙니다. 로그인 후 현재 안내문으로 따로 동의하고 저장을 선택합니다.</p>
         <CheckboxField label={draftId ? '프로필도 포함된 묶음 저장 준비를 확인했어요.' : '확정 프로필의 저장 준비를 확인했어요.'} checked={value.checked} disabled={busy || value.started} onChange={event => scope.setValue({ ...value, checked: event.target.checked })} />
-        {!value.intent ? <Button pending={busy} disabled={!value.checked} onClick={prepare}>{value.started ? '같은 요청으로 저장 대기 재확인' : '확인한 자료로 로그인 준비'}</Button> : <a className="button primary" href="/api/v1/auth/kakao/start?purpose=save">카카오 로그인 후 저장 선택</a>}
+        <div className="actions">{!value.intent ? <Button pending={busy} disabled={!value.checked} onClick={prepare}>{value.started ? '같은 요청으로 저장 대기 재확인' : '확인한 자료로 로그인 준비'}</Button> : <a className="button primary" href="/api/v1/auth/kakao/start?purpose=save">카카오 로그인 후 저장 선택</a>}</div>
       </> : <StatusNotice title="회원 저장 시작 준비 중이에요">확정 운영 안내문과 로그인 제공자 연결이 모두 준비되면 제공합니다. 실제 저장 동의나 저장을 진행하지 않습니다.</StatusNotice>}
-      <Button variant="secondary" disabled={busy} onClick={cancel}>저장 준비 취소</Button>
+      <div className="actions"><Button variant="secondary" disabled={busy} onClick={cancel}>저장 준비 취소</Button></div>
     </section>}
     {request.state.status === 'error' && <RequestError error={request.state.error} />}
     {request.state.status === 'success' && <p role="status">{request.state.data.message}</p>}

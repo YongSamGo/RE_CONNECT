@@ -9,7 +9,9 @@ export interface paths {
         };
         /**
          * 최소 감사 기록 조회
-         * @description 기간은 최대 30일(보관기간과 같음)이다. 개인 본문·OTP·토큰은 기록에 없다.
+         * @description 기간은 `[from, to)`이고 최대 30일(보관기간과 같음)이다. 시간대 없는 시각과 계약에 없는 쿼리는 422다.
+         *     최신순(같은 시각이면 기록 ID 역순)으로 돌려주고, 보관기간이 지난 기록은 정리 전이라도 보여주지 않는다.
+         *     개인 본문·OTP·토큰은 기록에 없다. 공고 검수 사유는 같은 `request_id`의 검수 근거에 있다.
          */
         get: operations["listAudit"];
         put?: never;
@@ -3885,6 +3887,11 @@ export interface operations {
                 province?: components["schemas"]["Province"];
                 /** @description 제목·기관·역할·역량·설명 검색어 */
                 q?: string;
+                /**
+                 * @description 여러 활동 지역을 반복 파라미터로 전달한다(최대 67곳). 각 값은 `seoul`처럼 시·도 전체 또는 `gyeonggi:suwon`처럼 시·군·구다.
+                 *     같은 시·도 전체와 그 하위 지역은 함께 선택할 수 없으며, 기존 province/district와 동시에 사용할 수 없다.
+                 */
+                regions?: string[];
             };
             header?: never;
             path?: never;
