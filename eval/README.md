@@ -13,6 +13,10 @@
 | `privacy_filter_cases.json` | 전송 전 개인정보·지시문 필터(#30)의 기대 동작 15문장(`PF01`~). `exclude`는 턴 전체 제외, `redact`는 `must_remove`만 가리고 `must_keep`은 보냄, `keep`은 그대로(과잉 제외 금지). 인젝션 문장은 `sample_type: prompt_injection` 표본 |
 | `check_role_catalog.py` | 역할 사전 초안(`docs/data/role-catalog.json`)의 형식과, 페르소나 8명의 역할 후보가 `expected_role_ids`와 같은지 검사(#61) |
 | `check_eligibility.py` | `rules`대로 48건을 다시 계산해 기대 판정·`labels`·사례 목록과 대조. 데이터를 고친 뒤 `python eval/check_eligibility.py` (불일치가 있으면 종료 코드 1) |
+| `extraction_cases.json` | 경험 추출 채점용 보조 기대값: 페르소나별 경험이 들어 있는 턴 번호와 자격증 구절(#30·#34) |
+| `check_extraction.py` | 실제 Ollama로 페르소나 8명의 경험 추출을 돌려 지연과 근거 검사 통과·경험 턴 재현·경험 아닌 턴 추출·누출 등을 채점. Ollama가 있는 장비에서 실행([실측 절차](../docs/ai/runtime-measurement.md)) |
+| `prompts/extraction-v*.txt` | 경험 추출 지시문 후보. `check_extraction.py --prompt-file`로 비교한다. v2는 서비스 지시문 사본(기준선) |
+| `measure_speech.py` | 내부 음성 서비스의 TTS 문장별 지연과 15~89초 합성 음성의 STT 지연·CER 측정. 음성 서비스와 같은 내부 네트워크의 컨테이너에서 실행([실측 절차](../docs/ai/runtime-measurement.md)) |
 
 `requirements`의 각 조건은 [API 계약](../docs/api/openapi.yaml)의 `Requirement`를 그대로 따르므로 `id`·`group_id`가 UUID다. 사람이 읽는 라벨(`J1-R1`, 그룹은 `J1-G1`)은 공고별 `labels`에 라벨 → UUID로 적었고, `cases[].conditions`도 이 라벨을 키로 쓴다. UUID는 라벨에서 uuid5로 만든 고정값이라 다시 만들어도 같다.
 
