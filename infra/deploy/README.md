@@ -10,7 +10,7 @@ GitHub Actions는 EC2에 접속하지 않는다. 실제 AWS 계정·ECR·SSM·EC
 | [`backend/Dockerfile`](../../backend/Dockerfile) | API·마이그레이션 공용 이미지. 해시 잠금 wheel만 설치, uid 10001, 셸 진입점 없음 |
 | [`frontend/Dockerfile`](../../frontend/Dockerfile) | React 빌드를 담은 비루트 Nginx. 설정·인증서는 실행 시 연결 ([infra/nginx](../nginx), #91) |
 | [`speech/Dockerfile`](../../speech/Dockerfile) | 음성 서비스 (#33). 운영 Compose 연결은 #92 |
-| [`infra/compose.prod.yaml`](../compose.prod.yaml) | nginx(443만 공개)·backend·redis(비영속)·migrate(1회성) |
+| [`infra/compose.prod.yaml`](../compose.prod.yaml) | nginx(443만 공개)·backend·redis(비영속)·migrate(1회성)·restore-check(복원 후 1회성, `--profile restore`, [체크리스트](../../docs/security/backup-restore.md#복원-체크리스트)) |
 | [`.github/workflows/release.yml`](../../.github/workflows/release.yml) | PR 이미지 검사, 태그 릴리스 게시 |
 | [`infra/release/`](../release) | 이미지 검사 판정·수용 목록·manifest 생성 |
 | [`render_env.py`](render_env.py) | SSM 응답 → tmpfs env 파일 |
@@ -134,6 +134,8 @@ rm /run/reconnect/migrate.env
 Nginx 설정·TLS 인증서·RDS CA는 `/etc/reconnect/`에 둔다(경로는 Compose 변수로 바꿀 수 있다). TLS 개인키는 uid 101만 읽을 수 있게 한다.
 되돌리기 전에 `release_manifest.py rollback-check`로 이미지만 되돌려도 되는지 판정한다. 운영 DB는 downgrade하지 않는다.
 판정별 절차와 마이그레이션 작성 규칙은 [운영 절차 · 롤백](../../docs/operations/rollback.md)(#97)에 있다.
+백업 복원은 [복원 체크리스트](../../docs/security/backup-restore.md#복원-체크리스트)를 따르고,
+복원 DB는 `restore-check`가 공개 가능으로 판정한 뒤에만 운영에 연결한다 (#95).
 
 ## 7. 시험
 

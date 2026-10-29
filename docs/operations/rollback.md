@@ -77,7 +77,10 @@ docker compose --env-file /run/reconnect/images.env -f infra/compose.prod.yaml r
   **스냅샷 이후에 생긴 회원 저장분은 사라진다.** 삭제·철회는 삭제 이력으로 다시 적용되지만, 새로 저장한 프로필·지원서는 돌아오지 않는다.
   이 손실을 감수할지는 운영 책임자가 정하고 이용자 안내 여부도 함께 정한다([handover.md](handover.md)).
 
-어느 쪽이든 복원 DB를 운영에 연결하기 전에 `manage_deletions.py recover`가 `completed: true`인지 확인한다.
+어느 쪽이든 복원 DB를 운영에 연결하기 전에 체크리스트 6단계의 `restore-check`가 `ready_to_publish: true`(종료 코드 0)인지 확인한다.
+`restore-check`는 최신 삭제 이력 재적용(`recover`)과 대기 처리, 대상 부재 검사를 함께 한다 (#95).
+스냅샷 복원으로 되돌릴 때는 `images.env`를 **target 릴리스** manifest로 만든 뒤 실행한다. 스냅샷은 문제 릴리스의 migrate 이전 스키마라
+target 이미지의 Alembic head와 맞는다. 문제 릴리스 이미지로 실행하면 `schema_not_current`로 닫히고, 그 이미지로 migrate하면 되돌린 스키마를 다시 올리게 된다.
 
 ## 5. 마이그레이션 작성 규칙 (expand → contract)
 
