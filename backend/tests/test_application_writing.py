@@ -172,3 +172,26 @@ def test_rejects_unsupported_possession_without_listed_verbs(text, fact_ids):
 ])
 def test_accepts_grounded_possession_and_general_wording(text, fact_ids):
     assert draft_on(snapshot(), text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사회복지사 과정을 마쳤습니다.', [FIRST]),
+    ('교원 자격증이 있고 사회복지사 과정을 마쳤습니다.', [FIRST, 'certification:0']),
+    ('요양보호사 교육을 받았습니다.', [FIRST]),
+    ('독서지도 과정을 끝냈고 상담 연수도 들었습니다.', [FIRST, 'course:0']),
+    ('대학교를 졸업했습니다.', [FIRST]),
+])
+def test_rejects_unsupported_course_completion_wording(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정을 마쳐 아이들과 책 읽기 활동을 할 수 있습니다.', [FIRST, 'course:0']),
+    ('교원 자격증이 있고 독서지도 과정도 마쳤습니다.', [FIRST, 'certification:0', 'course:0']),
+    ('독서지도 과정을 수료했습니다.', [FIRST, 'course:0']),
+    ('활동 과정에서 아이들의 이야기를 귀담아들었습니다.', [FIRST]),
+    ('교육 현장에서 쌓은 경험을 살리고 싶습니다.', [FIRST]),
+])
+def test_accepts_course_completion_grounded_in_cited_course(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text

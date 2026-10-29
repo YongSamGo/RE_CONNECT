@@ -36,11 +36,16 @@ _SKILL = TypeAdapter(SkillTag)
 _DURATION = TypeAdapter(text(200))
 # 지원서 문단의 수치는 그 문단이 인용한 확정 사실의 "숫자+단위"로만 허용한다.
 _QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|회|번|명|권|곳|개|세|살|%|퍼센트|급)?")
-# 자격·교육 보유 주장은 인용한 자격·이수 교육 사실의 이름이 문장에 있을 때만 허용한다.
-_CREDENTIAL_CLAIM = re.compile(r"(자격증?|면허|학위)\s*[을를이가도은는]?\s*(보유|취득|소지|갖|가지|가졌|땄|받)|수료|이수|졸업")
+# 자격·교육 주장 = "자격·교육 명사 + 보유·완료 동사". 주장마다 명사 바로 앞이 인용한
+# 자격·이수 교육 사실의 이름으로 끝나야 한다(다른 이름 뒤의 주장, 근거 없는 주장 거절).
+_CREDENTIAL_CLAIM = re.compile(
+    r"(자격증|자격|면허증|면허|학위|과정|교육|강좌|연수|훈련)\s*[을를이가도은는]?\s*"
+    r"(보유|취득|소지|갖|가지|가졌|땄|받|있|마쳤|마치|마친|끝냈|끝마|끝낸|완료|수강|들었|들은|밟|수료|이수)")
+# 명사 없이 쓴 수료·이수·졸업도 바로 앞이 인용한 이름이어야 한다.
+_CREDENTIAL_VERB = re.compile(r"수료|이수|졸업")
 _CREDENTIAL_KINDS = ("certification:", "course:")
 # 공백을 지운 문장에서 찾는다. "자격 조건·요건·기준"은 공고 설명에 흔한 일반 표현이라 제외한다.
-# "과정"은 일상 표현("활동 과정에서")에도 쓰여 명사 검사에서 빼고, 수료·이수 주장 검사로만 본다.
+# "과정·교육"은 일상 표현("활동 과정에서")에도 쓰여 여기서 빼고, 위의 완료 주장 검사로만 본다.
 _CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|수료증|졸업장|자격(?!조건|요건|기준)")
 
 
@@ -61,22 +66,28 @@ def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_val
         if not grounded:
             return False
     claims = list(_CREDENTIAL_CLAIM.finditer(value))
-    # "자격증이 있습니다"처럼 동사 목록 밖의 보유 표현도 자격 명사만 나오면 근거를 확인한다.
-    if claims or _CREDENTIAL_NOUN.search(_compact(value)):
+    verbs = [verb for verb in _CREDENTIAL_VERB.finditer(value)
+             if not any(claim.start() <= verb.start() < claim.end() for claim in claims)]
+    # "자격증이 있습니다"처럼 주장 형태가 아니어도 자격 명사가 나오면 근거를 확인한다.
+    if claims or verbs or _CREDENTIAL_NOUN.search(_compact(value)):
         names = [_compact(fact_values[key]) for key in fact_ids if key.startswith(_CREDENTIAL_KINDS)]
         names = [name for name in names if name]
-        # 주장마다 바로 앞 주장 뒤부터 그 주장까지의 구간에 인용한 자격·교육 이름이 있어야 한다.
-        start = 0
+
+        def named_before(end: int, noun: str = "") -> bool:
+            before = re.sub(r"[을를이가도은는]$", "", _compact(value[:end]))
+            return any(before.endswith(name) or (noun and before.endswith(name + noun)) for name in names)
+
         for claim in claims:
-            window = _compact(value[start:claim.end()])
-            if not any(name in window for name in names):
+            if not named_before(claim.end(1), claim.group(1)):
                 return False
-            start = claim.end()
+        for verb in verbs:
+            if not named_before(verb.start()):
+                return False
         # 인용한 이름을 지운 뒤에도 자격 명사가 남으면 근거 없는 자격이 섞인 것이다.
         rest = _compact(value)
         for name in sorted(names, key=len, reverse=True):
             # "사서 2급 자격증"처럼 이름 바로 뒤에 붙은 자격 명사는 그 이름의 일부로 본다.
-            rest = re.sub(re.escape(name) + r"(?:자격증|자격|면허증?|학위|과정|수료증)?", "", rest)
+            rest = re.sub(re.escape(name) + r"(?:자격증|자격|면허증?|학위|과정|교육|수료증)?", "", rest)
         if _CREDENTIAL_NOUN.search(rest):
             return False
     return True
