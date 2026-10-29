@@ -185,6 +185,36 @@ def test_owned_existing_id_is_preserved_but_not_reassigned():
         extract(dict(experiences=[selection(existing_id=str(EXPERIENCE_ID))] * 2), existing=[old])
 
 
+def test_existing_experience_may_reuse_its_stored_summary_and_detail_turn_is_the_source():
+    # 저장된 설명은 다듬은 요약이라 원문에 그대로 없다. 모델이 그 요약을 옮겨 적어도 같은 경험이면 받고,
+    # 근거 턴은 새 세부 내용(기간·기술)이 나온 턴이다. 전에는 결과 전체가 거절됐다(2026-10-29 시연 점검).
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note="10년", skill_tags=["조리"])
+    texts = ["식당에서 십 년 동안 조리를 했어요.", "재료 손질하고 반찬 만드는 일을 주로 맡았어요."]
+    detail = dict(existing_id=str(EXPERIENCE_ID), description=quote("식당에서 조리"), duration=quote("십 년"),
+                  skills=[quote("재료 손질", 1), quote("반찬 만드는 일", 1)])
+    result = extract(dict(experiences=[detail]), texts=texts, existing=[old])[0]
+    assert [(item.id, item.description, item.skill_tags) for item in result.experiences] == [
+        (EXPERIENCE_ID, "식당에서 조리", ["재료 손질", "반찬 만드는 일"])]
+    assert result.source_turns == [1]
+    # 세부 내용 없이 저장된 설명만 되풀이하면 이번 턴의 근거가 아니다(메시지 서비스가 반영하지 않는다).
+    bare = extract(dict(experiences=[dict(detail, duration=None, skills=[])]), texts=texts, existing=[old])[0]
+    assert bare.source_turns == [-1]
+
+
+@pytest.mark.parametrize("payload", [
+    # 저장된 요약을 새 경험(ID 없음)으로 내면 원문 근거가 없다.
+    dict(existing_id=None, description=quote("식당에서 조리"), duration=None, skills=[]),
+    # 다른 경험의 저장 설명을 이 경험 ID에 붙이거나, 모르는 ID에 붙이면 거절한다.
+    dict(existing_id=str(EXPERIENCE_ID), description=quote("도서관 봉사"), duration=None, skills=[]),
+    dict(existing_id=str(OTHER_ID), description=quote("식당에서 조리"), duration=None, skills=[]),
+])
+def test_stored_summary_is_accepted_only_for_the_same_owned_experience(payload):
+    old = Experience(id=EXPERIENCE_ID, description="식당에서 조리", duration_note=None, skill_tags=[])
+    other = Experience(id=uuid4(), description="도서관 봉사", duration_note=None, skill_tags=[])
+    with pytest.raises(LLMInvalidOutputError):
+        extract(dict(experiences=[payload]), texts=["식당에서 십 년 동안 조리를 했어요."], existing=[old, other])
+
+
 @pytest.mark.parametrize("value", [
     "주민번호를 알려드릴게요", "전화는 공일공 일이삼사 오육칠팔이에요",
     "０１０－１２３４－５６７８", "test@example.test", "퇴행성 관절염이 있어요",

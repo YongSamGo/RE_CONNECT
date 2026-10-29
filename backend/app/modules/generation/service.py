@@ -127,15 +127,20 @@ class GroundedGenerationService:
         used_ids = set()
         try:
             for item in plan.experiences:
-                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다.
-                if not grounded(item.description):
-                    raise _invalid()
-                index, quote = item.description.turn_index, item.description.text
-                summary = item.summary if wording.summary_grounded(item.summary, turns[index]) else None
+                current = None
                 if item.existing_id is not None:
                     if item.existing_id not in allowed or item.existing_id in used_ids:
                         raise _invalid()
                     used_ids.add(item.existing_id)
+                    current = allowed[item.existing_id]
+                # 설명은 경험 자체라 근거가 없으면 전체를 거절한다. 기존 경험을 가리킬 때 모델은 저장된 설명(다듬은
+                # 요약이라 원문에 그대로 없을 수 있다)을 옮겨 적는 일이 많다. 저장된 설명은 바꾸지 않으므로 같은 경험의
+                # 저장값과 똑같을 때만 근거 대신 받는다.
+                reused = current is not None and item.description.text == current.description
+                if not grounded(item.description) and not reused:
+                    raise _invalid()
+                index, quote = item.description.turn_index, item.description.text
+                summary = item.summary if current is None and wording.summary_grounded(item.summary, turns[index]) else None
                 # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
                 skills = [skill.text for skill in item.skills
@@ -157,10 +162,15 @@ class GroundedGenerationService:
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,
-                    description=allowed[item.existing_id].description if item.existing_id else summary or quote,
+                    description=current.description if current is not None else summary or quote,
                     duration_note=duration,
                     skill_tags=_unique(tags)[:20],
                 ))
+                # 기존 경험의 근거 턴은 새로 덧붙인 기간·기술 인용이 나온 가장 늦은 턴이다. 설명은 앞 턴을 가리켜도
+                # 세부 내용은 이번 턴에서 말하는 경우가 많고, 메시지 서비스는 이번 턴이 근거인 결과만 반영한다.
+                if current is not None:
+                    details = [q.turn_index for q in (*item.skills, *([item.duration] if item.duration else [])) if grounded(q)]
+                    index = max(details, default=index if grounded(item.description) else -1)
                 source_turns.append(index)
         except ValidationError:
             raise _invalid() from None
