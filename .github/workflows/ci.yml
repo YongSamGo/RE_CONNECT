@@ -1,7 +1,7 @@
 # 다시잇다 CI — 모든 PR과 main·develop push에 보안 점검을 자동으로 건다.
 #
 # 브랜치 보호의 필수 체크는 맨 아래 `CI 통과` 하나만 지정한다.
-# (아직 없는 backend/frontend 점검은 Skipped로 넘어가고, 폴더가 생기면 자동으로 켜진다.)
+# 필수 프로젝트 매니페스트가 빠지거나 필수 점검이 skip되면 `CI 통과`가 실패한다.
 #
 # 워크플로 자체 보안 원칙
 # - 외부 액션은 태그가 아니라 커밋 SHA로 고정 (태그 변조·공급망 공격 방지)
@@ -47,6 +47,7 @@ jobs:
     outputs:
       python_projects: ${{ steps.scan.outputs.python_projects }}
       frontend: ${{ steps.scan.outputs.frontend }}
+      missing_required_manifests: ${{ steps.scan.outputs.missing_required_manifests }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -61,6 +62,14 @@ jobs:
             fi
           done
           echo "python_projects=[$projects]" >> "$GITHUB_OUTPUT"
+
+          missing=""
+          for file in backend/requirements.txt frontend/package-lock.json speech/requirements.txt speech/tts_compat/requirements.txt; do
+            if [ ! -f "$file" ]; then
+              missing="${missing:+$missing,}$file"
+            fi
+          done
+          echo "missing_required_manifests=$missing" >> "$GITHUB_OUTPUT"
 
           if [ -f frontend/package-lock.json ]; then
             echo "frontend=true" >> "$GITHUB_OUTPUT"
@@ -124,6 +133,10 @@ jobs:
           persist-credentials: false
       - name: 검사 스크립트 회귀 시험
         run: python3 -I .github/scripts/test_check_hidden_text.py
+      - name: 필수 점검 집계 회귀 시험
+        run: python3 -I .github/scripts/test_check_required_checks.py
+      - name: API 계약 경로 비교기 회귀 시험
+        run: python3 -m unittest tools.tests.test_check_api_coverage
       - name: 숨은 문자(실패)·에이전트 지시 파일 의심 문구(경고) 검사
         # AI 개발 도구가 읽는 보이지 않는 문자(폭 없는 문자·글자 방향 제어·태그 문자 등)를 막는다.
         # 기준: .claude/skills/kisa-secure-coding-python/references/llm-security.md AGT-01·AGT-03
@@ -337,6 +350,8 @@ jobs:
           python-version: '3.12'
       - name: 실제 API 계약 대조용 백엔드와 시험 의존성 설치
         run: python -m pip install --require-hashes -r ../backend/requirements.txt -r ../backend/requirements-dev.txt
+      - name: 저장 OpenAPI 계약의 실제 라우트 구현 누락 검사
+        run: python ../tools/check_api_coverage.py
       - name: 실제 지역과 신청 준비 라우터·OpenAPI·프론트 파서 대조
         env:
           CONTRACT_PYTHON: python
@@ -411,14 +426,15 @@ jobs:
     needs: [detect, secrets, workflow-audit, hidden-text, python, persistence, frontend, browser-layout, dependency-review]
     runs-on: ubuntu-24.04
     timeout-minutes: 5
-    permissions: {}
+    permissions:
+      contents: read
     steps:
-      - name: 결과 판정
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: 필수 점검 결과 검증
         env:
           NEEDS: ${{ toJSON(needs) }}
-        run: |
-          echo "$NEEDS" | jq -r 'to_entries[] | "\(.key): \(.value.result)"'
-          if echo "$NEEDS" | jq -e 'to_entries | any(.value.result == "failure" or .value.result == "cancelled")' > /dev/null; then
-            echo "::error::실패하거나 취소된 점검이 있습니다. 위 결과에서 failure/cancelled 항목을 확인하세요."
-            exit 1
-          fi
+          EVENT_NAME: ${{ github.event_name }}
+          MISSING_REQUIRED_MANIFESTS: ${{ needs.detect.outputs.missing_required_manifests }}
+        run: python3 -I .github/scripts/check_required_checks.py
