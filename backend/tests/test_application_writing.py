@@ -152,3 +152,23 @@ def test_rejects_unsupported_claim_mixed_with_a_grounded_one(text):
 def test_accepts_each_claim_grounded_in_its_own_cited_fact(text, fact_ids):
     profile = snapshot_with(['교원 자격증', '사서 2급'], ['독서지도 과정'])
     assert draft_on(profile, text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사서 자격증이 있습니다.', [FIRST]),
+    ('간호사 면허가 있습니다.', [FIRST]),
+    ('사서 자격이 있어 도서 정리를 잘할 수 있습니다.', [FIRST]),
+    ('교원 자격증이 있고 사서 자격증도 있습니다.', [FIRST, 'certification:0']),
+])
+def test_rejects_unsupported_possession_without_listed_verbs(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot(), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('교원 자격증이 있어 학습 지도에 도움이 되고 싶습니다.', [FIRST, 'certification:0']),
+    ('봉사 과정에서 아이들과 소통하는 법을 배웠습니다.', [FIRST]),
+    ('공고의 자격 요건과 활동 기준을 확인하고 참여하겠습니다.', [FIRST]),
+])
+def test_accepts_grounded_possession_and_general_wording(text, fact_ids):
+    assert draft_on(snapshot(), text, fact_ids).motivation == text

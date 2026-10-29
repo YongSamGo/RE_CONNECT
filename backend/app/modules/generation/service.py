@@ -40,7 +40,8 @@ _QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|
 _CREDENTIAL_CLAIM = re.compile(r"(자격증?|면허|학위)\s*[을를이가도은는]?\s*(보유|취득|소지|갖|가지|가졌|땄|받)|수료|이수|졸업")
 _CREDENTIAL_KINDS = ("certification:", "course:")
 # 공백을 지운 문장에서 찾는다. "자격 조건·요건·기준"은 공고 설명에 흔한 일반 표현이라 제외한다.
-_CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|과정|수료증|졸업장|자격(?!조건|요건|기준)")
+# "과정"은 일상 표현("활동 과정에서")에도 쓰여 명사 검사에서 빼고, 수료·이수 주장 검사로만 본다.
+_CREDENTIAL_NOUN = re.compile(r"자격증|면허|학위|수료증|졸업장|자격(?!조건|요건|기준)")
 
 
 def _quantities(value: str) -> set[tuple[str, str]]:
@@ -60,7 +61,8 @@ def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_val
         if not grounded:
             return False
     claims = list(_CREDENTIAL_CLAIM.finditer(value))
-    if claims:
+    # "자격증이 있습니다"처럼 동사 목록 밖의 보유 표현도 자격 명사만 나오면 근거를 확인한다.
+    if claims or _CREDENTIAL_NOUN.search(_compact(value)):
         names = [_compact(fact_values[key]) for key in fact_ids if key.startswith(_CREDENTIAL_KINDS)]
         names = [name for name in names if name]
         # 주장마다 바로 앞 주장 뒤부터 그 주장까지의 구간에 인용한 자격·교육 이름이 있어야 한다.
