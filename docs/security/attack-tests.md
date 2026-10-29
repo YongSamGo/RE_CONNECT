@@ -8,14 +8,14 @@ W13-04 공격 시나리오를 어떤 시험이 재현하는지 한곳에 모은�
 
 `backend/tests/test_admin_security_matrix.py`가 실제 Redis 세션·SQL 계정·MFA 저장소로 모든 `/admin/*` 경로를 시도한다. 모듈별 시험은 운영자 판정을 대역으로 바꿔 저장소 경계만 보므로, 이 행렬이 실제 로그인·역할·MFA 판정과 저장소를 함께 묶는다. SQLite와 PostgreSQL에서 모두 돈다.
 
-| 주체 | 공고 목록·등록·상세·수정 | 승인·반려·비공개·모집 종료 | 신고 목록·처리 |
-| --- | --- | --- | --- |
-| 비회원 세션 | 401 `UNAUTHENTICATED` | 401 | 401 |
-| 일반 회원 | 403 `FORBIDDEN` | 403 | 403 |
-| MFA를 확인하지 않은 운영자 | 403 `MFA_REQUIRED` | 403 | 403 |
-| MFA 확인이 만료된 운영자 | 403 `MFA_REQUIRED` | 403 | 403 |
-| 역할을 회수당한 운영자 | 401 `SESSION_EXPIRED` → 이후 비회원 | 401 | 401 |
-| MFA를 확인한 운영자 | 정상 처리 | 정상 처리 | 정상 처리 |
+| 주체 | 공고 목록·등록·상세·수정 | 승인·반려·비공개·모집 종료 | 신고 목록·처리 | 감사 기록 조회 |
+| --- | --- | --- | --- | --- |
+| 비회원 세션 | 401 `UNAUTHENTICATED` | 401 | 401 | 401 |
+| 일반 회원 | 403 `FORBIDDEN` | 403 | 403 | 403 |
+| MFA를 확인하지 않은 운영자 | 403 `MFA_REQUIRED` | 403 | 403 | 403 |
+| MFA 확인이 만료된 운영자 | 403 `MFA_REQUIRED` | 403 | 403 | 403 |
+| 역할을 회수당한 운영자 | 401 `SESSION_EXPIRED` | 401 | 401 | 401 |
+| MFA를 확인한 운영자 | 정상 처리 | 정상 처리 | 정상 처리 | 정상 조회 |
 
 - 모든 시도에 `X-Role`·`X-User-Role`·`X-MFA-Verified`·`X-User-ID`·`X-Account-ID`·`X-Forwarded-For` 위조 헤더를 함께 보낸다. 주체마다 시도가 끝나면 공고 버전·공개 포인터·검수 근거·등록 응답 기록·신고·감사 기록을 다시 읽어 하나도 바뀌지 않았는지 본다.
 - 확인된 운영자도 본문에 `review_status`·`actor_id`·`reviewed_at`·`version`·`published_version`을 넣으면 422이고 상태는 그대로다. 정상 승인의 감사 기록 작성자는 위조 헤더가 가리킨 다른 운영자가 아니라 세션 주체다. 같은 결정을 다시 보내면 409이고 감사 기록은 한 번만 남는다.
@@ -27,7 +27,7 @@ W13-04 공격 시나리오를 어떤 시험이 재현하는지 한곳에 모은�
 | 시나리오 | 시험 |
 | --- | --- |
 | 검색어의 `' OR 1=1 --`·LIKE 메타문자 | `test_public_opportunities::test_literal_bound_search_tags_roles_filters_and_page_order`, `test_admin_opportunities::test_list_filters_literal_search_important_change_and_recent_first`, 운영자 행렬 |
-| 경로 ID·열거형 필터·페이지 번호의 SQL 조각과 큰 정수 | 운영자 행렬 (`test_verified_operator_cannot_inject_review_state_actor_or_sql_...`) |
+| 경로 ID·열거형 필터·페이지 번호·감사 조회 기간의 SQL 조각과 큰 정수 | 운영자 행렬 (`test_verified_operator_cannot_inject_review_state_actor_or_sql_...`) |
 | HTML·스크립트·`javascript:` 입력 | `test_admin_opportunities::test_patch_rejects_unsafe_or_invalid_changes_without_new_version`, `test_source_normalization::test_html_never_retains_active_content_or_attributes`, `test_contracts`, `test_preparation` |
 | 오류 응답에 입력 원문이 다시 나옴 | `test_errors::test_validation_error_has_fields_without_input` |
 | CSRF 토큰·Origin 누락·위조, Redis 장애 시 우회 | `test_request_security::test_missing_forged_or_non_origin_values_are_rejected`, `test_csrf_cookie_header_and_signature_are_all_required`, `test_no_configured_origin_fails_closed...`, `test_redis_failure_cannot_bypass_csrf_validation`, 모듈별 운영자 시험, 운영자 행렬 |

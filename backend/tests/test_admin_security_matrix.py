@@ -12,18 +12,17 @@ from datetime import UTC, datetime, timedelta
 import secrets
 from uuid import UUID, uuid4
 
-from fastapi.routing import iter_route_contexts
 import httpx
 import pytest
 from pydantic import SecretBytes
 from sqlalchemy import func, insert, select, update
 from sqlalchemy.orm import sessionmaker
 
-from app.core.config import Settings
 from app.core.encryption import ContentCipher, EncryptionKeyRing
-from app.main import create_app
 from app.modules.admin_opportunities.repository import SqlAdminOpportunityRepository
 from app.modules.admin_opportunities.service import AdminOpportunityService
+from app.modules.audit.repository import SqlAuditRepository
+from app.modules.audit.service import AuditService
 from app.modules.auth.service import Identity
 from app.modules.operators import totp
 from app.modules.operators.repository import SqlOperatorMfaRepository
@@ -40,6 +39,7 @@ from app.persistence import (
     Report, Source,
 )
 from tests.test_admin_opportunities import create_body
+from tests.test_admin_routes import admin_routes
 from tests.test_member_auth import headers, run
 from tests.test_opportunity_reviews import PATHS, values
 from tests.test_reports import digest
@@ -51,6 +51,8 @@ VERIFY = "/api/v1/admin/mfa/verify"
 FORGED = {"X-Role": "admin", "X-User-Role": "operator", "X-MFA-Verified": "true", "X-Forwarded-For": "127.0.0.1"}
 # MFA 확인 경로는 정상 시도도 실패 횟수·감사 기록을 남기므로 "DB 불변" 행렬에서 빼고 test_operator_mfa_http에서 따로 본다.
 EXCLUDED = {("POST", VERIFY)}
+# 감사 조회는 from·to가 필수다. 기간 검사를 통과하는 값을 넣어 권한 판정까지 가게 한다.
+AUDIT = "/api/v1/admin/audit?from=2026-10-01T00:00:00Z&to=2026-10-02T00:00:00Z"
 
 
 def admin_actions(pending: UUID, report: UUID):
@@ -64,6 +66,7 @@ def admin_actions(pending: UUID, report: UUID):
         *[("POST", f"{base}/{action}", body) for action, body in PATHS.items()],
         ("GET", "/api/v1/admin/reports", None),
         ("PATCH", f"/api/v1/admin/reports/{report}", {"base_version": 1, "status": "in_progress", "resolution_note": None}),
+        ("GET", AUDIT, None),
     ]
 
 
@@ -77,6 +80,7 @@ def wire(ctx):
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect))
     app.state.opportunity_review_service = OpportunityReviewService(SqlOpportunityReviewRepository(engine.begin))
     app.state.admin_opportunity_service = AdminOpportunityService(SqlAdminOpportunityRepository(sessionmaker(engine).begin))
+    app.state.audit_service = AuditService(SqlAuditRepository(engine.connect, engine.begin))
     app.state.report_service = ReportService(RedisReportStore(ctx["redis"], prefix=ctx["store"].prefix + "report:"),
                                              SqlReportRepository(engine.begin, cipher), app.state.opportunity_service, digest)
     ctx["mfa"] = mfa
@@ -148,13 +152,11 @@ async def attempt(browser, method, path, body, *, impersonate=None):
 
 
 def test_matrix_covers_every_admin_route():
-    app = create_app(Settings(_env_file=None, app_env="test", public_origin="https://testserver"))
-    routes = {(method, route.path) for route in iter_route_contexts(app.routes) if route.path and "/admin" in route.path
-              for method in route.methods or ()}
+    # 운영자 경로 수집은 응답 칸 검토 시험(test_admin_routes)과 같은 함수를 쓴다.
     pending, report = UUID(int=1), UUID(int=2)
-    covered = {(method, path.replace(str(pending), "{opportunity_id}").replace(str(report), "{report_id}"))
+    covered = {(method, path.split("?", 1)[0].replace(str(pending), "{opportunity_id}").replace(str(report), "{report_id}"))
                for method, path, _ in admin_actions(pending, report)}
-    assert routes - EXCLUDED == covered
+    assert set(admin_routes()) - EXCLUDED == covered
 
 
 @pytest.mark.parametrize("backend", ["sqlite", "postgresql"])
@@ -229,6 +231,9 @@ def test_verified_operator_cannot_inject_review_state_actor_or_sql_and_audit_rec
             assert huge.status_code == 200 and huge.json()["items"] == []
             for query in ({"status": "received' OR '1'='1"}, {"page": str(2**63)}):
                 assert (await browser.get("/api/v1/admin/reports", params=query)).status_code == 422, query
+            window = {"from": "2026-10-01T00:00:00Z", "to": "2026-10-02T00:00:00Z"}
+            for query in ({**window, "from": "' OR 1=1 --"}, {**window, "actor_id": str(other)}, {**window, "page": "1 OR 1=1"}):
+                assert (await browser.get("/api/v1/admin/audit", params=query)).status_code == 422, query
             literal = await browser.get("/api/v1/admin/opportunities", params={"q": "' OR 1=1 --"})
             assert literal.status_code == 200 and literal.json()["total"] == 0
             # 본문은 경로마다 올바른 값을 보내, 422가 경로 변수 검증 때문인지 확인한다.
