@@ -31,7 +31,7 @@ class ReleaseManifestTest(unittest.TestCase):
         manifest = release_manifest.build(release_manifest.ROOT, "v0.1.0", COMMIT, IMAGES, {})
         self.assertEqual(manifest["images"], IMAGES)
         self.assertEqual(len(manifest["migrations"]["heads"]), 1)
-        self.assertEqual(manifest["prompts"]["generation"], "grounded-v1")
+        self.assertEqual(manifest["prompts"]["generation"], "grounded-v2")
         self.assertEqual(set(manifest["lockfiles"]), set(release_manifest.LOCKFILES))
         for refs in manifest["base_images"].values():
             self.assertTrue(refs and all("@sha256:" in ref for ref in refs))
