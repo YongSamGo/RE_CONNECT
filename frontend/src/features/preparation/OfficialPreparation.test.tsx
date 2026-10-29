@@ -17,6 +17,29 @@ function mount(pathId = id) {
 async function load() { await userEvent.click(screen.getByRole('button', { name: '공식 신청 안내 확인' })) }
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals() })
 
+it('never supplies the previous application link while a different opportunity is loading or fails', async () => {
+  const nextId = '12345678-1234-1234-1234-123456789002'
+  let fail!: (reason: Error) => void
+  const fetch = vi.fn().mockResolvedValueOnce(response(sample())).mockImplementationOnce(() => new Promise<Response>((_, reject) => { fail = reject }))
+  vi.stubGlobal('fetch', fetch)
+  const page = (opportunityId: string) => <MemoryRouter><OfficialPreparation opportunityId={opportunityId} withDraft>{url => url ? <a href={url}>현재 신청처</a> : <p>신청처 확인 대기</p>}</OfficialPreparation></MemoryRouter>
+  const view = render(page(id))
+  expect(await screen.findByRole('link', { name: '현재 신청처' })).toHaveAttribute('href', sourceUrl)
+  view.rerender(page(nextId))
+  expect(screen.queryByRole('link', { name: '현재 신청처' })).not.toBeInTheDocument()
+  await act(async () => fail(new Error('private-preparation-failure')))
+  expect(await screen.findByRole('alert')).toBeVisible()
+  expect(screen.queryByRole('link', { name: '현재 신청처' })).not.toBeInTheDocument()
+})
+
+it('clears the supplied application link on full-page departure', async () => {
+  vi.stubGlobal('fetch', vi.fn(async () => response(sample())))
+  render(<MemoryRouter><OfficialPreparation opportunityId={id} withDraft>{url => url ? <a href={url}>현재 신청처</a> : null}</OfficialPreparation></MemoryRouter>)
+  await screen.findByRole('link', { name: '현재 신청처' })
+  act(() => window.dispatchEvent(new Event('pagehide')))
+  expect(screen.queryByRole('link', { name: '현재 신청처' })).not.toBeInTheDocument()
+})
+
 it('rejects an invalid ID without requesting and loads valid public information only explicitly',async()=>{
   const fetch=vi.fn(async(_request:Request)=>response(sample()));vi.stubGlobal('fetch',fetch)
   const page=mount('invalid');expect(screen.getByRole('heading',{name:'공고 주소를 확인해 주세요'})).toBeVisible();expect(fetch).not.toHaveBeenCalled()

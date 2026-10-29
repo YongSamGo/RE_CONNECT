@@ -53,6 +53,29 @@ async function recordAudio() {
   expect(screen.getByText('녹음이 끝났어요. 아래에서 들어볼 수 있습니다.')).toHaveFocus()
 }
 
+it('keeps edited text and releases the microphone when stopping the recorder fails', async () => {
+  const mocks = await media()
+  mount()
+  fireEvent.change(screen.getByLabelText('보내기 전에 고칠 전사 문장'), { target: { value: '남겨야 할 직접 입력' } })
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
+  vi.spyOn(Recorder.latest, 'stop').mockImplementation(() => { throw new Error('private-stop-failure') })
+  fireEvent.click(screen.getByRole('button', { name: '녹음 마치기' }))
+  expect(screen.getByRole('alert')).toHaveTextContent('녹음을 마치지 못했어요.')
+  expect(mocks.track.stop).toHaveBeenCalled()
+  expect(screen.getByLabelText('보내기 전에 고칠 전사 문장')).toHaveValue('남겨야 할 직접 입력')
+})
+
+it('does not offer an unusable recording when creating its preview URL fails', async () => {
+  const mocks = await media()
+  mocks.create.mockImplementation(() => { throw new Error('private-url-failure') })
+  mount()
+  await act(async () => fireEvent.click(screen.getByRole('button', { name: '녹음 시작하기' })))
+  fireEvent.click(screen.getByRole('button', { name: '녹음 마치기' }))
+  expect(screen.getByRole('alert')).toHaveTextContent('녹음을 확인하지 못했어요.')
+  expect(mocks.track.stop).toHaveBeenCalled()
+  expect(screen.getByRole('button', { name: '이 녹음을 서버에 보내 전사' })).toBeDisabled()
+})
+
 it('requests mic only on click, sends exact multipart once, releases raw resources and requires explicit edited-text acceptance', async () => {
   const mocks = await media()
   const fetch = vi.fn(async (_request: Request) => json(transcript, 201)); vi.stubGlobal('fetch', fetch)

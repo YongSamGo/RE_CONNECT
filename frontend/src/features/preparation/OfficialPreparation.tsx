@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import type { ReactNode } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { required, useRequest } from '../../state/useRequest'
@@ -40,7 +40,7 @@ function Request({ id, withDraft, onApplicationUrl }: { id: string; withDraft: b
   const result = useRef<HTMLElement>(null)
   const { state } = request
   useEffect(() => { if (state.status === 'error') result.current?.focus({ preventScroll: true }) }, [state.status])
-  useEffect(() => { if (state.status === 'success') onApplicationUrl?.(state.data.recruitment_status === 'open' && !state.data.change_pending ? state.data.application_url : '') }, [state, onApplicationUrl])
+  useEffect(() => { onApplicationUrl?.(state.status === 'success' && state.data.recruitment_status === 'open' && !state.data.change_pending ? state.data.application_url : '') }, [state, onApplicationUrl])
   const load = () => request.run(async (api, signal) => parsePreparation(required((await api.GET('/opportunities/{opportunity_id}/preparation', { signal, params: { path: { opportunity_id: id } } })).data), id))
   useEffect(() => {
     if (withDraft) void load()
@@ -57,7 +57,10 @@ function Request({ id, withDraft, onApplicationUrl }: { id: string; withDraft: b
 export function OfficialPreparation({ opportunityId, withDraft = false, children }: { opportunityId?: string; withDraft?: boolean; children?: ReactNode | ((applicationUrl: string) => ReactNode) } = {}) {
   const params = useParams()
   const id = opportunityId ?? params.id ?? ''
-  const [applicationUrl, setApplicationUrl] = useState('')
+  const application = useMemoryScope<{ id: string; url: string } | null>(() => null)
+  const updateApplication = application.setValue
+  const setApplicationUrl = useCallback((url: string) => updateApplication({ id, url }), [id, updateApplication])
+  const applicationUrl = application.value?.id === id ? application.value.url : ''
   const content = typeof children === 'function' ? children(applicationUrl) : children
   const detailHref = isOpportunityId(id) ? `/opportunities/${id}${params.journeyId ? `?journeyId=${params.journeyId}` : ''}` : '/opportunities'
   return <ServicePage title={withDraft ? '다음 내용으로 지원서를 작성할게요' : '공고 신청 안내'} className={withDraft ? 'application-page' : ''}>

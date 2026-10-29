@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react'
+import { act, render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
 import { afterEach, expect, it, vi } from 'vitest'
@@ -71,6 +71,16 @@ it('patches changes before showing the review dialog and approves only the exact
   expect(await patch.clone().json()).toEqual({base_revision:1,self_introduction:'가상 경험',motivation:'가상 지원동기'})
   expect(screen.queryByRole('link',{name:/회원 저장/})).not.toBeInTheDocument()
   expect(screen.getByRole('link',{name:/공식 신청처로 이동/})).toHaveAttribute('href',sourceUrl)
+})
+it('shows approval failure inside the open review dialog so recovery remains accessible', async () => {
+  server({ loseApproval: true })
+  const { user } = mount()
+  await writeAndUpdate(user)
+  await user.click(review()); await user.click(approve())
+  const dialog = screen.getByRole('dialog', { name: '지원 내용을 확인해 주세요' })
+  expect(await within(dialog).findByRole('alert')).toHaveTextContent('연결하지 못했습니다.')
+  expect(within(dialog).getByRole('button', { name: '계속 수정하기' })).toBeEnabled()
+  expect(within(dialog).getByText('가상 경험')).toBeVisible()
 })
 it('reuses a creation key after losing its reply without automatically generating again',async()=>{
   const fetch=server({loseFirst:true}),{user}=mount();await user.click(manual());await screen.findByRole('alert')

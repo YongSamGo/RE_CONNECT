@@ -42,6 +42,8 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
   const request = useRequest<Result>()
   const reviewDialog = useRef<HTMLDialogElement>(null)
   const reviewTrigger = useRef<HTMLButtonElement>(null)
+  const { value: reviewOpen, setValue: setReviewOpen } = useMemoryScope(() => false)
+  const openReview = () => { reviewDialog.current?.showModal(); setReviewOpen(true) }
   // 마지막 요청이 AI 생성이었는지. 편집, 승인의 422와 구분해 생성 실패 안내만 보인다.
   const [generating, setGenerating] = useState(false)
   const [confirmReload, setConfirmReload] = useState(false)
@@ -49,11 +51,12 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
   const officialApplication = officialLink(applicationUrl)
   const clear = scope.clear, clearAttempt = attempt.clear
   useEffect(() => {
-    if (request.state.status === 'error' && ['SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND', 'CONSENT_REQUIRED'].includes(request.state.error.code)) { clear(); clearAttempt() }
+    if (request.state.status === 'error' && ['SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND', 'CONSENT_REQUIRED'].includes(request.state.error.code)) { clear(); clearAttempt(); setReviewOpen(false) }
     // 생성 요청의 422는 확정된 실패다. 같은 키 재전송(409)으로 이어지지 않게 키를 버린다. 다음 생성은 최신 프로필로 새 키를 만든다.
     else if (generating && request.state.status === 'error' && request.state.error.code === 'VALIDATION_FAILED') clearAttempt()
-  }, [request.state, generating, clear, clearAttempt])
+  }, [request.state, generating, clear, clearAttempt, setReviewOpen])
   const accept = ({ draft }: Result) => {
+    setReviewOpen(false)
     scope.setValue({ draft, introduction: draft.self_introduction, motivation: draft.motivation, dirty: false, reviewed: false })
     clearAttempt()
   }
@@ -111,7 +114,7 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
       })).data), editor.draft.opportunity, editor.draft.profile_version)
       if (draft.draft_id !== editor.draft.draft_id || draft.revision !== editor.draft.revision + 1 || draft.approved_at !== null) return invalid()
       return apply(draft, '수정한 내용을 확인해 주세요.')
-    }, result => { accept(result); if (review) reviewDialog.current?.showModal() })
+    }, result => { accept(result); if (review) openReview() })
   }
   const approve = () => {
     if (!editor || busy || editor.dirty || !editor.reviewed || !editor.introduction.trim() || !editor.motivation.trim() || editor.draft.review_reasons.length) return
@@ -138,19 +141,20 @@ export function JourneyDraftEditor({ journeyId, opportunityId, applicationUrl = 
       {!!editor.draft.review_reasons.length && <StatusNotice title="지원 내용을 다시 확인해 주세요">프로필이나 공고가 변경되어 기존 내용을 승인할 수 없습니다. 공고 상세에서 지원서를 다시 열어 주세요.</StatusNotice>}
       <fieldset className="draft-fields" disabled={busy}><TextAreaField label="지원 자기소개" value={editor.introduction} maxLength={2000} rows={5} onChange={event => edit('introduction', event.target.value)} />
         <TextAreaField label="지원 동기" value={editor.motivation} maxLength={2000} rows={5} onChange={event => edit('motivation', event.target.value)} /></fieldset>
-      <div className="actions"><Button ref={reviewTrigger} pending={busy} disabled={approved || !editor.introduction.trim() || !editor.motivation.trim() || !!editor.draft.review_reasons.length} onClick={() => { if (editor.dirty) update(true); else reviewDialog.current?.showModal() }}>{editor.dirty ? '수정하고 검토하기' : '지원 내용 검토하기'}</Button>
+      <div className="actions"><Button ref={reviewTrigger} pending={busy} disabled={approved || !editor.introduction.trim() || !editor.motivation.trim() || !!editor.draft.review_reasons.length} onClick={() => { if (editor.dirty) update(true); else openReview() }}>{editor.dirty ? '수정하고 검토하기' : '지원 내용 검토하기'}</Button>
         {officialApplication ? <a className="button secondary" href={officialApplication.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer" aria-label="공식 신청처로 이동, 새 창에서 열림">공식 신청처로 이동</a> : <Button variant="secondary" disabled>공식 신청처로 이동</Button>}
       </div>
-      <dialog ref={reviewDialog} className="draft-review-dialog" aria-labelledby="draft-review-title" onClose={() => reviewTrigger.current?.focus()}>
+      <dialog ref={reviewDialog} className="draft-review-dialog" aria-labelledby="draft-review-title" onClose={() => { setReviewOpen(false); reviewTrigger.current?.focus() }}>
         <h2 id="draft-review-title">지원 내용을 확인해 주세요</h2>
         <h3>자기소개</h3><p className="user-text">{editor.introduction}</p><h3>지원 동기</h3><p className="user-text">{editor.motivation}</p>
+        {reviewOpen && request.state.status === 'error' && <><RequestError error={request.state.error} /><p>승인 여부를 확인하지 못했습니다. 계속 수정하기를 눌러 대화상자를 닫고 현재 내용을 다시 확인해 주세요.</p></>}
         <CheckboxField label="두 항목을 읽고 확정 경험과 공고에 맞는 내용임을 확인했어요." checked={editor.reviewed} onChange={event => scope.setValue({ ...editor, reviewed: event.target.checked })} />
         <div className="actions"><Button pending={busy} disabled={editor.dirty || !editor.reviewed || approved || !!editor.draft.review_reasons.length} onClick={approve}>확인한 현재 본문 승인</Button><Button variant="secondary" disabled={busy} onClick={() => reviewDialog.current?.close()}>계속 수정하기</Button></div>
       </dialog>
       {approved && <p role="status">확인한 내용을 승인했어요. 공식 신청처로 이동해 제출해 주세요.</p>}
     </section>}
     {noUsableFacts && <StatusNotice title="AI 초안을 만들지 못했어요">확정 프로필에 AI에 보낼 수 있는 경험, 역량이 없을 수 있어요. 연락처, 건강, 가족 사정이 담긴 문장은 AI에 보내지 않습니다. 직접 작성하거나 프로필을 확인해 주세요.</StatusNotice>}
-    {request.state.status === 'error' && !noUsableFacts && <><RequestError error={request.state.error} /><p>응답을 받지 못했다면 같은 요청으로 다시 확인해 주세요. 충돌이 생겨도 작성한 내용은 자동으로 덮어쓰지 않아요.</p></>}
+    {request.state.status === 'error' && !noUsableFacts && (!reviewOpen || !editor) && <><RequestError error={request.state.error} /><p>응답을 받지 못했다면 같은 요청으로 다시 확인해 주세요. 충돌이 생겨도 작성한 내용은 자동으로 덮어쓰지 않아요.</p></>}
     {request.state.status === 'error' && editor && <Button variant="secondary" pending={busy} onClick={() => recover()}>현재 내용 다시 확인</Button>}
     {confirmReload && <section role="alert" className="panel"><h2>작성 중인 내용을 바꿀까요?</h2><p>아직 반영하지 않은 수정 내용을 버리고 서버의 현재 내용을 불러옵니다.</p><div className="actions"><Button onClick={() => recover(true)}>현재 내용으로 바꾸기</Button><Button variant="secondary" onClick={() => setConfirmReload(false)}>작성한 내용 유지</Button></div></section>}
     {request.state.status === 'success' && !editor && <p role="status">{request.state.data.message}</p>}

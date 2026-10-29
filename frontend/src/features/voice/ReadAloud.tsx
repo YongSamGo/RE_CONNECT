@@ -6,6 +6,7 @@ import { Button } from '../../ui/Button'
 import { RequestError } from '../../ui/StatusNotice'
 import { parseSession } from '../account/session'
 import { useMemoryScope } from '../../state/useMemoryScope'
+import { releasePlayer, revokeAudioUrl } from './media-resources'
 
 export function ReadAloud({ target, label }: { target: components['schemas']['SpeechTarget']; label: string }) {
   const request = useRequest<{ blob: Blob; count: number }>()
@@ -17,15 +18,20 @@ export function ReadAloud({ target, label }: { target: components['schemas']['Sp
   const blob = state.status === 'success' ? state.data.blob : null
   useEffect(() => {
     if (!blob) return
-    const url = URL.createObjectURL(blob)
-    const player = new Audio(url)
-    audio.current = player
+    let url: string | null = null
+    let player: HTMLAudioElement | null = null
     let active = true
-    player.onended = () => { if (active) setPlaying(false) }
-    const failure = () => { if (active) { setPlaying(false); setFailed(true) } }
-    player.onerror = failure
-    void player.play().then(() => { if (active) setPlaying(true) }).catch(failure)
-    return () => { active = false; player.onended = null; player.onerror = null; player.pause(); player.removeAttribute('src'); player.load(); URL.revokeObjectURL(url); if (audio.current === player) audio.current = null }
+    let playbackFailed = false
+    const failure = () => { playbackFailed = true; if (active) { setPlaying(false); setFailed(true) } }
+    try {
+      url = URL.createObjectURL(blob)
+      player = new Audio(url)
+      audio.current = player
+      player.onended = () => { if (active) setPlaying(false) }
+      player.onerror = failure
+      void player.play().then(() => { if (active && !playbackFailed) setPlaying(true) }).catch(failure)
+    } catch { failure() }
+    return () => { active = false; releasePlayer(player); revokeAudioUrl(url); if (audio.current === player) audio.current = null }
   }, [blob])
   const pending = state.status === 'pending'
   const stale = state.status === 'error' && state.error.code === 'VERSION_CONFLICT'
@@ -47,7 +53,7 @@ export function ReadAloud({ target, label }: { target: components['schemas']['Sp
   }
   return <div className="read-aloud"><div className="actions"><Button variant="secondary" pending={pending} disabled={stale || !!blob && playing} pendingLabel="읽을 소리를 준비하고 있어요…" onClick={() => start(position.value.segment)}>{label}</Button>
     {state.status === 'success' && position.value.count !== null && position.value.segment + 1 < position.value.count && <Button variant="secondary" disabled={playing} onClick={() => start(position.value.segment + 1)}>다음 부분 읽어주기</Button>}
-    {!stale && (pending || blob || position.value.count !== null) && <Button variant="secondary" onClick={() => { audio.current?.pause(); setPlaying(false); setFailed(false); request.clear(); position.clear() }}>읽어주기 중지</Button>}</div>
+    {!stale && (pending || blob || position.value.count !== null) && <Button variant="secondary" onClick={() => { releasePlayer(audio.current); setPlaying(false); setFailed(false); request.clear(); position.clear() }}>읽어주기 중지</Button>}</div>
     {position.value.count !== null && <p>{position.value.count}개 부분 중 {position.value.segment + 1}번째 부분. 다음 부분은 버튼을 눌러 요청합니다.</p>}
     <p role="status">{blob && playing ? '읽어주기를 재생하고 있어요.' : ''}</p>
     {state.status === 'error' && <RequestError error={state.error} />}

@@ -4,6 +4,7 @@ import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
 import { RequestError } from '../../ui/StatusNotice'
 import { parseSession } from '../account/session'
+import { releasePlayer, revokeAudioUrl } from '../voice/media-resources'
 
 export function QuestionAudio({ question, journeyId, messageId }: { question: string; journeyId: string; messageId: string | null }) {
   const [volume, setVolume] = useState(1)
@@ -19,7 +20,7 @@ export function QuestionAudio({ question, journeyId, messageId }: { question: st
     if (utterance.current) {
       utterance.current.onerror = null
       utterance.current = null
-      window.speechSynthesis?.cancel()
+      try { window.speechSynthesis?.cancel() } catch { /* Already invalidated; keep text controls usable. */ }
     }
   }
   useEffect(() => {
@@ -29,16 +30,20 @@ export function QuestionAudio({ question, journeyId, messageId }: { question: st
   }, [question])
   useEffect(() => {
     if (!blob) return
-    const url = URL.createObjectURL(blob)
-    const player = new Audio(url)
-    audio.current = player
-    player.volume = volume
-    player.playbackRate = rate.current
+    let url: string | null = null
+    let player: HTMLAudioElement | null = null
     let active = true
     const failed = () => { if (active) setError('소리를 재생하지 못했습니다. 화면의 글을 확인해 주세요.') }
-    player.onerror = failed
-    void player.play().catch(failed)
-    return () => { active = false; player.onerror = null; player.pause(); player.removeAttribute('src'); player.load(); URL.revokeObjectURL(url); if (audio.current === player) audio.current = null }
+    try {
+      url = URL.createObjectURL(blob)
+      player = new Audio(url)
+      audio.current = player
+      player.volume = volume
+      player.playbackRate = rate.current
+      player.onerror = failed
+      void player.play().catch(failed)
+    } catch { failed() }
+    return () => { active = false; releasePlayer(player); revokeAudioUrl(url); if (audio.current === player) audio.current = null }
   // Volume changes are applied to the existing player below.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blob])
@@ -47,7 +52,8 @@ export function QuestionAudio({ question, journeyId, messageId }: { question: st
   function listen(speed: number, part = 0) {
     if (request.state.status === 'pending') return
     request.clear()
-    audio.current?.pause()
+    releasePlayer(audio.current)
+    audio.current = null
     stopSpeaking()
     setError('')
     rate.current = speed
@@ -82,7 +88,7 @@ export function QuestionAudio({ question, journeyId, messageId }: { question: st
   return <>
     <div className="question-audio-actions" id="question-audio-actions"><Button variant="secondary" pending={pending} onClick={() => listen(1)}>다시 듣기</Button><Button variant="secondary" disabled={pending} onClick={() => listen(0.75)}>천천히 듣기</Button>
       {count !== null && segment + 1 < count && <Button variant="secondary" disabled={pending} onClick={() => listen(rate.current, segment + 1)}>다음 부분 듣기</Button>}
-      <Button variant="secondary" onClick={() => { request.clear(); audio.current?.pause(); stopSpeaking(); setError('') }}>듣기 중지</Button></div>
+      <Button variant="secondary" onClick={() => { request.clear(); releasePlayer(audio.current); audio.current = null; stopSpeaking(); setError('') }}>듣기 중지</Button></div>
     <div className="question-volume" id="question-volume">
       <label htmlFor="question-volume-range">소리 조절</label><input id="question-volume-range" type="range" min="0" max="1" step="0.1" value={volume} onChange={event => setVolume(Number(event.target.value))} /><span>{Math.round(volume * 100)}%</span>
     </div>
