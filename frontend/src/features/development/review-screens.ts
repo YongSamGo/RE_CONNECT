@@ -24,4 +24,3 @@ export function reviewScenario() {
 export function reviewHref(screen: string, scenario = reviewScenario()) {
   return `http://127.0.0.1:5190/__review/open?screen=${encodeURIComponent(screen)}&state=${encodeURIComponent(scenario)}`
 }
-

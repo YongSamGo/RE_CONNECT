@@ -98,7 +98,7 @@ it('deletes a saved profile only after confirmation, uses CSRF, and reloads the 
   expect(fetch.mock.calls.some(([request]) => request.url.endsWith('/drafts'))).toBe(false)
 })
 
-it('clears the previous profile and refuses deletion after the account changes (SEC-02)', async () => {
+it('clears the previous profile and refuses deletion after the account changes (부적절한 인가, SEC-02)', async () => {
   const { fetch, changeOwner } = managedProfile()
   const user = userEvent.setup()
   await user.click(await screen.findByRole('button', { name: '저장 프로필 삭제' }))
