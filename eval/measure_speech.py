@@ -53,6 +53,9 @@ def call(path: str, body: bytes, content_type: str, timeout: float = 120) -> tup
             return response.status, response.read(), time.monotonic() - started
     except urllib.error.HTTPError as error:
         return error.code, error.read(), time.monotonic() - started
+    except (urllib.error.URLError, TimeoutError, ConnectionError):
+        # 연결 거부·끊김·읽기 시간 초과. 상태 0으로 돌려 첫 실패에서 합성을 멈추고 요약까지 출력한다.
+        return 0, b"", time.monotonic() - started
 
 
 def wait_ready(attempts: int = 120) -> None:
@@ -123,6 +126,7 @@ def main() -> int:
         clips.append((text, audio))
         if sum(len(clip) + len(GAP) for _, clip in clips) / RATE >= args.seconds:
             break
+    measured = set()
     for target in STT_TARGETS:
         parts, reference = [], []
         for text, clip in clips:
@@ -130,11 +134,14 @@ def main() -> int:
                 break
             parts += [clip, GAP]
             reference.append(text)
-        if not parts:
+        # 모은 음성이 목표보다 짧으면 큰 목표들이 같은 음성이 된다. 같은 길이는 한 번만 잰다.
+        if not parts or len(reference) in measured:
             continue
+        measured.add(len(reference))
         audio = np.concatenate(parts)
         status, body, seconds = call("/internal/transcriptions", to_wav(audio), "audio/wav")
-        row = {"target_s": target, "audio_s": round(len(audio) / RATE, 2), "status": status, "latency_s": round(seconds, 2)}
+        row = {"target_s": target, "audio_s": round(len(audio) / RATE, 2), "status": status, "latency_s": round(seconds, 2),
+               "short": len(audio) / RATE < target * 0.9}
         if status == 200:
             row["cer"] = round(cer(" ".join(reference), json.loads(body)["text"]), 3)
         stt.append(row)

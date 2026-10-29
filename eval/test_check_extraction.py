@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 from types import SimpleNamespace as N
 
-from check_extraction import CASES, korean_number, score, summary
+from check_extraction import CASES, korean_number, overlaps, positive, score, summary
 
 PERSONAS = Path(__file__).resolve().parent / "personas"
 
@@ -36,9 +36,33 @@ class KoreanNumber(unittest.TestCase):
         self.assertEqual({text: korean_number(text) for text in cases}, cases)
         self.assertIsNone(korean_number("오래"))
         self.assertIsNone(korean_number("일했어요"))
+        # 개월은 햇수가 아니다. "육 개월"을 6년으로 세지 않는다.
+        self.assertIsNone(korean_number("육 개월"))
+        self.assertIsNone(korean_number("6개월"))
+        self.assertEqual(korean_number("20년(관리소장 8년)"), 20)
+
+
+class Matching(unittest.TestCase):
+    def test_short_generic_phrase_does_not_count_as_expected_tag(self):
+        self.assertFalse(overlaps("회계 장부 관리", ["관리"]))
+        self.assertTrue(overlaps("회계 장부 관리", ["장부 관리"]))
+        self.assertTrue(overlaps("회계", ["중소기업 경리, 회계 업무"]))
+
+    def test_repeat_must_be_positive(self):
+        self.assertEqual(positive("2"), 2)
+        for value in ("0", "-1"):
+            with self.assertRaises(Exception):
+                positive(value)
 
 
 class Scoring(unittest.TestCase):
+    def test_whole_experience_dropped_by_server_is_marked_not_crashing(self):
+        plan = N(experiences=[selected("택시", 0, "한 삼십 년"), selected("남의 경험", 1)])
+        preview = N(experiences=[accepted("택시", "약 30년", ["운전"])])
+        result = score(persona("P06"), CASES["P06"], plan, preview)
+        self.assertEqual((result["pairing_mismatch"], result["experiences"], result["accepted"]), (True, 1, True))
+        self.assertEqual(summary([result])["pairing_mismatch"], 1)
+
     def test_v2_p04_drops_next_turn_skills(self):
         # 모델은 다음 턴(1번)의 업무 구절을 기술로 붙였고 서버가 버렸다.
         plan = N(experiences=[selected("중소기업 경리, 회계 업무", 0, "이십오 년", ["세금계산서 발행"])])
@@ -73,7 +97,7 @@ class Scoring(unittest.TestCase):
                      non_experience=0, whole_turn=0, cert_as_skill=0, dropped=0, leaks=0)]
         self.assertEqual(summary(rows), {"runs": 2, "accepted": 1, "over_limit": 1, "latency_max_s": 70.0, "turn_recall": 0.5,
                                          "skill_recall": 0.25, "duration_recall": 0.5, "non_experience": 0, "whole_turn": 1,
-                                         "cert_as_skill": 0, "dropped": 2, "leaks": 0})
+                                         "cert_as_skill": 0, "dropped": 2, "leaks": 0, "pairing_mismatch": 0})
 
 
 class Cases(unittest.TestCase):
