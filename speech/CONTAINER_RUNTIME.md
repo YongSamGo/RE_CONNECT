@@ -38,3 +38,15 @@ Linux/amd64 CPU 검증 구성이다. 외부 요청은 공개 백엔드의 동의
 공식 SHA-256을 확인한 Trivy0.75.0으로 최종 이미지를 검사했다. OS는 Debian13.7이며 Critical0, High44, Medium58, Low61, Unknown3건의 패키지 지적이 있다. Python 패키지 지적은0건이다. 이는 취약점이 없는 이미지라는 뜻이 아니다. High44건은 ncurses·systemd/udev·acl·util-linux 계열·perl의8개 CVE가 여러 패키지에 반복된 것이며 검사 시점의 FixedVersion은 모두 비어 있다. 미수정 OS 지적의 조치·수용 검토 전에는 운영 릴리스를 통과로 처리하지 않는다. 원시 검사 결과에는 사용자 자료가 없으며 로컬 비공개 시험 보고서에 보관했다.
 
 bookworm의 SQLite Critical과 pip 지적을 그대로 두지 않고 trixie 고정 기반과 빌드 전용 pip로 변경해 다시 검사했다. 런타임 제한은 방어 계층이며 취약점 해결을 대신하지 않는다. EC2/GPU·브라우저 재생·문장 청취 품질·운영 동의 정보는 여전히 미검증 또는 미정이다. 이 PR의 범위는 로컬 CPU 내부 연결과 격리 구성까지이며 #33 전체 운영 완료나 배포 승인으로 처리하지 않는다.
+
+
+## GPU 변형 (#92)
+
+CPU 빌드/기본 장치 선택은 유지한다. `Dockerfile.gpu`는 별도 해시 잠금으로 Torch 2.14.1+cu130과
+CTranslate2 cu12 라이브러리를 설치하며 `SPEECH_DEVICE=cuda`를 고정한다. T4 실측에 따라
+STT float16, TTS float32/eager를 사용한다. `cuda`가 준비되지 않으면 readiness 실패이며 CPU로 전환하지 않는다.
+[GPU 운영 구성/검증](../infra/models/README.md)을 따른다. CPU 이미지 digest를 GPU로 지정하지 않는다.
+
+준비 도구가 모델 파일을 0600으로 저장하므로 Linux에서는 컨테이너 UID 10001에 읽기·상위 경로 탐색 권한이
+필요하다. 운영 모델 전용 디렉터리의 소유자/그룹이나 ACL로 최소 권한을 부여하고 다른 사용자의 쓰기는 막는다.
+기존 작업자의 모델 권한을 임의로 넓히지 않는다. 이번 시험은 별도 복사본만 UID 10001 소유로 설정했다.
