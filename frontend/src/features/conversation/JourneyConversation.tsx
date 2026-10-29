@@ -119,7 +119,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
       <ConversationSurface><section className="conversation-question"><h2 id="conversation-question" ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
         {!state.ended && state.question && <QuestionAudio key={state.questionId ?? state.question} question={state.question} journeyId={journeyId} messageId={state.questionId} />}
         <p role="status">{state.ended ? '초안에 반영했습니다. 프로필에서 내용을 확인하고 직접 확정해 주세요.' : sending ? '경험을 정리하고 있어요. 프로필 화면으로 이동할 수 있습니다.' : ''}</p>
-        {state.ended && <div className="actions"><Link className="button primary" to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link></div>}
+        {(state.ended || (!sending && state.view.draft.experiences.length > 0)) && <div className="actions"><Link className={state.ended ? "button primary" : "button secondary"} to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link></div>}
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}
         {state.attempt && !sending && <p>처리 여부를 아직 확인하지 못했습니다. 같은 내용과 요청 번호로 결과를 다시 확인합니다. 화면을 떠나면 대기 상태가 지워지며, 서버 처리가 끝났을 수도 있습니다.</p>}
         {state.attempt && !sending && <Button disabled={pending} onClick={submit}>같은 요청 결과 다시 확인</Button>}
