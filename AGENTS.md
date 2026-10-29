@@ -38,10 +38,11 @@
 
 | 도구 | 파일 | 막는 것 | 막지 못하는 것 |
 | --- | --- | --- | --- |
-| Claude Code | [`.claude/settings.json`](.claude/settings.json) `permissions.deny` | 세션 폴더 아래의 `.env`·`.env.*`(`.env.example` 제외)·`*.pem`·`*.key` 읽기, 그리고 어느 경로든 `.env`·`.env.local`·`.env.*.local`·`.env.development`·`.env.production`·`.env.test`·`*.pem`·`*.key` 읽기 (파일 도구, `cat`·`head` 같은 셸 파일 명령 포함). `git push`의 `--force*`·`-f`·`+refspec` (`git -C <경로> push -f`처럼 `push` 앞에 git 옵션이 와도 막는다) | 파일 이름을 적지 않는 명령(`grep -r`), 스크립트가 직접 여는 파일, 세션 폴더 밖의 그 밖의 `.env.*` 이름, `/usr/bin/git push -f`·`sh -c '…'` 같은 다른 형태, `-uf`처럼 묶은 옵션 |
+| Claude Code | [`.claude/settings.json`](.claude/settings.json) `permissions.deny` | 세션 폴더 아래의 `.env`·`.env.*`(`.env.example` 제외)·`*.pem`·`*.key` 읽기, 그리고 어느 경로든 `.env`·`.env.local`·`.env.*.local`·`.env.development`·`.env.production`·`.env.test`·`*.pem`·`*.key` 읽기 (파일 도구, `cat`·`head` 같은 셸 파일 명령 포함). `git push`의 `--force*`·`-f`·`+refspec` (앞에 옵션이 없거나 `-C <경로>`·`-c <키=값>`·`--no-pager` 하나가 오는 형태) | 파일 이름을 적지 않는 명령(`grep -r`), 스크립트가 직접 여는 파일, 세션 폴더 밖의 그 밖의 `.env.*` 이름, `/usr/bin/git push -f`·`sh -c '…'` 같은 다른 형태, `-uf`처럼 묶은 옵션, 위에 나열하지 않은 git 전역 옵션·여러 전역 옵션의 조합 |
 | Claude Code | 같은 파일 `permissions.ask` | 원격 브랜치 삭제(`--delete`·`-d`)와 `--mirror`·`--prune`은 실행 전에 확인을 받는다 | `git push origin :<브랜치>` 형태의 삭제(규칙 끝의 `:*`는 접두어 표기로 읽혀 모든 push에 걸리므로 넣지 않았다), 위와 같은 다른 형태 |
 | Codex | [`.codex/rules/default.rules`](.codex/rules/default.rules) | `git push` 바로 뒤의 `--force`·`-f`·`--force-with-lease`·`--force-if-includes` | 비밀값 파일 읽기, 옵션이 뒤에 오는 강제 push, `--force-with-lease=<ref>`처럼 값을 붙인 옵션, `+refspec`. 프로젝트를 신뢰(trusted)해야 읽힌다 |
 
+- `git * push …`처럼 하위 명령까지 삼키는 규칙은 쓰지 않는다. `git commit -m "docs: push -f 차단 설명"`·`git log --grep "push origin --delete x"`는 deny·ask 대상이 아니다. 단, `-C`·`-c`의 값은 공백을 포함하는 와일드카드라 `git -C . commit -m "docs: push -f 차단 설명"`처럼 옵션 뒤의 메시지까지 맞는 오탐은 남는다.
 - 저장소의 deny·forbidden은 개인 설정의 허용으로 풀리지 않는다. `.env` 확인이 필요하면 사람이 직접 연다.
 - 단, 규칙은 저장소 루트(또는 앱이 만든 worktree 루트)에서 연 세션에만 적용된다. `frontend/`·`backend/` 같은 하위 폴더에서 열거나 `--setting-sources user`로 열면 저장소 설정을 읽지 않는다.
 - 앱의 worktree 세션(`.claude/worktrees/<이름>/`)에서는 실제 `.env`가 상위의 저장소 루트에 있다. 절대 경로 규칙(`//**/…`)으로 위 이름들은 막지만, `!` 예외를 쓸 수 없어 `.env.*` 전체는 막지 않는다.
