@@ -63,6 +63,14 @@ _DID = re.compile(r"했|하였|일했|근무|다녔|맡았|운영|가르쳤|만�
 _NOT_DID = re.compile(r"싶|좋겠|원해|바라|하려|할래|할\s*거|퇴직|은퇴|그만|쉬었|쉬고|살아|살고|있어요|있습니다|자격")
 
 
+_POINT_IN_TIME = re.compile(r"(?:년|해|개월)\s*(?:전|후|뒤|만에|만|째|차)")
+
+
+def point_in_time(text: str) -> bool:
+    """"10년 전에"·"3년 뒤"처럼 시점을 말하는 구절. 근무 기간이 아니다(리뷰 #318)."""
+    return bool(_POINT_IN_TIME.search(text))
+
+
 def duration_in(text: str) -> str | None:
     match = _DURATION_IN.search(text)
     return match.group(0).strip() if match else None

@@ -171,7 +171,10 @@ class GroundedGenerationService:
                 tags = [catalog[key] for tag in item.standard_tags if (key := normalize_tag(tag)) in catalog
                         and any(name in evidence for name in names[key])]
                 tags += skills
-                duration = wording.duration_label(item.duration.text) if item.duration and usable(item.duration) else None
+                # 모델이 기간 칸에 "10년 전에" 같은 시점을 인용해도 근무 기간으로 받지 않는다. 그러면 아래에서 설명 원문의
+                # 실제 기간("6개월간")을 다시 찾는다.
+                duration = (wording.duration_label(item.duration.text)
+                            if item.duration and usable(item.duration) and not wording.point_in_time(item.duration.text) else None)
                 # 모델이 기간 칸을 비웠어도 새 경험의 설명 원문에 기간이 있으면 꺼낸다(시연: "20년동안 … 운영했어요").
                 if (duration is None and current is None and usable(description) and wording.did_work(turns[index], quote)
                         and (found := wording.duration_in(quote))):

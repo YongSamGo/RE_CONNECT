@@ -416,6 +416,19 @@ def test_duration_read_from_description_skips_points_in_time(text, durations):
     assert [e.duration_note for e in result.experiences] == durations
 
 
+@pytest.mark.parametrize(("text", "claimed", "durations"), [
+    # 리뷰 #318(성욱): 모델이 기간 칸에 직접 시점을 인용한 경우
+    ("10년 전에 시계방을 운영했어요.", "10년 전에", [None]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "3년 전에", ["6개월간"]),
+    ("3년 전에 시계방에서 6개월간 근무했어요.", "6개월간", ["6개월간"]),
+    ("시계방을 20년 했어요.", "20년", ["20년"]),
+])
+def test_model_duration_that_is_a_point_in_time_is_not_a_duration(text, claimed, durations):
+    item = dict(existing_id=None, description=quote(text), duration=quote(claimed), skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert [e.duration_note for e in result.experiences] == durations
+
+
 @pytest.mark.parametrize("text", [
     "인천 남동구 살아요.", "어르신 돕는 일이면 좋겠어요.", "정년 퇴직하고 이 년쯤 쉬었네요.", "육십삼년생이에요.",
     "자격증은 전기기능사하고 주택관리사 보 있어요.", "봉사로 하고 싶어요.",
