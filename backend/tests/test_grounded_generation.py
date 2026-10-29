@@ -444,3 +444,27 @@ def test_grounded_but_malformed_quotes_are_dropped_not_whole_result():
     assert result.experiences[0].description == "요리 봉사"
     assert result.experiences[0].duration_note == turn  # 200자 안이라 형식은 맞다
     assert result.experiences[0].skill_tags == ["배달"]
+
+
+def test_selection_with_nothing_but_a_sentence_is_dropped_when_tags_are_offered():
+    # 2026-10-29 GPU 측정(v3): 사는 곳·희망·나이 문장이 기간·기술·태그 없이 경험으로 뽑혔다.
+    texts = ["택시 했어요. 한 삼십 년.", "노원구 살아요.", "어르신 돕는 일이면 좋겠어요."]
+    catalog = {"운전": ["택시"]}
+    plan = dict(experiences=[
+        dict(existing_id=None, description=quote("택시 했어요"), duration=quote("한 삼십 년."), skills=[], standard_tags=["운전"]),
+        dict(existing_id=None, description=quote("노원구 살아요.", 1), duration=None, skills=[], summary="노원구 거주"),
+        dict(existing_id=None, description=quote("어르신 돕는 일", 2), duration=None, skills=[], standard_tags=["운전"]),
+    ])
+    result, _ = extract(plan, texts=texts, standard_tags=catalog)
+    assert [(item.description, item.duration_note, item.skill_tags) for item in result.experiences] == [("택시 했어요", "약 30년", ["운전"])]
+    assert result.source_turns == [0]
+    # 목록이 없으면(사전 읽기 실패) 이 검사를 하지 않는다.
+    assert len(extract(plan, texts=texts)[0].experiences) == 3
+
+
+def test_credential_phrases_are_not_kept_as_skills():
+    texts = ["병원에서 간호조무사로 이십이 년 일했어요. 요양보호사 자격증도 땄고요."]
+    item = dict(existing_id=None, description=quote("병원에서 간호조무사"), duration=quote("이십이 년"),
+                skills=[quote("요양보호사 자격증도 땄고요."), quote("간호조무사")], standard_tags=["환자 돌봄"])
+    result, _ = extract(dict(experiences=[item]), texts=texts, standard_tags={"환자 돌봄": ["간호조무사"]})
+    assert result.experiences[0].skill_tags == ["환자 돌봄", "간호조무사"]

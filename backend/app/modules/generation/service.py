@@ -138,7 +138,8 @@ class GroundedGenerationService:
                     used_ids.add(item.existing_id)
                 # 같은 일의 세부 업무·기간은 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
-                skills = [skill.text for skill in item.skills if grounded(skill) and _fits(_SKILL, skill.text)]
+                skills = [skill.text for skill in item.skills
+                          if grounded(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
                 evidence = _squash(" ".join([quote, *skills]))
@@ -148,6 +149,11 @@ class GroundedGenerationService:
                 duration = wording.duration_label(item.duration.text) if item.duration and grounded(item.duration) else None
                 if duration is not None and not _fits(_DURATION, duration):
                     duration = None
+                # 표준 태그 목록을 받았는데도 기간·기술·표준 태그가 하나도 없는 선택은 경험이 아닌 문장(사는 곳·희망·나이
+                # 등)인 경우가 대부분이다(2026-10-29 GPU 측정: 이런 선택 30건이 모두 경험이 아니었다). 사용자가 직접
+                # 추가할 수 있게 버린다. 목록이 없으면(사전 읽기 실패) 태그가 붙을 수 없으므로 적용하지 않는다.
+                if catalog and duration is None and not tags:
+                    continue
                 proposals.append(ExperienceInput(
                     # 기존 경험을 가리키면 이번 인용은 그 경험의 세부 내용이다. 설명은 저장된 것을 그대로 둔다.
                     id=item.existing_id,

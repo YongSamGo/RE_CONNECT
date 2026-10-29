@@ -49,6 +49,11 @@ def _numbers_match(summary: str, source: str) -> bool:
     return all((value, unit) in known if unit else value in values for value, unit in numbers_in(summary))
 
 
+def credential(text: str) -> bool:
+    """자격·면허·급수 표현. 자격 보유는 경험의 기술이 아니라 자격 항목에서 사용자가 확인한다."""
+    return bool(_CREDENTIAL.search(text))
+
+
 def duration_label(quote: str) -> str:
     """'삼십오 년' → '35년', '한 삼십 년.' → '약 30년'. 모르는 형태는 원문 인용을 그대로 둔다."""
     match = _DURATION.match(quote.strip())
