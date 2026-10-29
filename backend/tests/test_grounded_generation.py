@@ -413,6 +413,14 @@ def test_non_experience_sentences_are_still_dropped_and_rest_periods_are_not_dur
     assert result.experiences == []
 
 
+def test_wish_is_judged_by_the_whole_sentence_not_the_clipped_quote():
+    # 평가 P07: 모델이 "어르신 돌보는 봉사를 하고 싶어요"에서 "어르신 돌보는 봉사"만 인용했다. 희망이므로 버린다.
+    text = "어르신 돌보는 봉사를 하고 싶어요. 무급이어도 돼요."
+    item = dict(existing_id=None, description=quote("어르신 돌보는 봉사"), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
+
+
 def test_filtered_turn_indices_are_not_renumbered():
     item = selection()
     item["description"] = quote("요리 봉사", 1)
