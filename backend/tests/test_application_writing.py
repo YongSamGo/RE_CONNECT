@@ -195,3 +195,25 @@ def test_rejects_unsupported_course_completion_wording(text, fact_ids):
 ])
 def test_accepts_course_completion_grounded_in_cited_course(text, fact_ids):
     assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('사회복지사 과정을 성공적으로 마쳤습니다.', [FIRST]),
+    ('요양보호사 교육을 모두 마쳤습니다.', [FIRST]),
+    ('상담 연수를 지난해에 무사히 끝냈습니다.', [FIRST, 'course:0']),
+    ('교원 자격증이 있고 사회복지사 과정도 성실하게 마쳤습니다.', [FIRST, 'certification:0']),
+])
+def test_rejects_unsupported_completion_with_modifiers(text, fact_ids):
+    with pytest.raises(LLMInvalidOutputError):
+        draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids)
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('독서지도 과정을 성공적으로 마쳤습니다.', [FIRST, 'course:0']),
+    ('교원 자격증을 오래 보유하고 있습니다.', [FIRST, 'certification:0']),
+    ('봉사 활동 과정에서 아이들과 함께 책을 읽고 많은 것을 배웠습니다.', [FIRST]),
+    ('교육 현장에서 쌓은 경험을 모두 살리고 싶습니다.', [FIRST]),
+    ('공고의 자격 요건과 활동 기준을 확인하고 참여하겠습니다.', [FIRST]),
+])
+def test_accepts_grounded_completion_with_modifiers_and_general_wording(text, fact_ids):
+    assert draft_on(snapshot_with(['교원 자격증'], ['독서지도 과정']), text, fact_ids).motivation == text
