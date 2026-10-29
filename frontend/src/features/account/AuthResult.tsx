@@ -62,6 +62,8 @@ function Result({ search }: { search: string }) {
           <h2>로그인 상태를 확인했어요</h2>
           {result.purpose === 'reauth' && <p>{reauthenticated ? '서버에서 유효한 재인증을 확인했습니다. 탈퇴는 나의 정보에서 별도로 확인하고 요청해 주세요.' : '현재 유효한 재인증이 확인되지 않았습니다. 탈퇴하려면 나의 정보에서 다시 재인증해 주세요.'}</p>}
           <p>대화는 새로 시작합니다. 이전 대화나 저장하지 않은 입력을 복원하지 않습니다.</p>
+          {me.pending_save_intent && Date.parse(me.pending_save_intent.expires_at) > checkedAt
+            && <p><Link className="button secondary" to="/me/save">저장 대기 자료 확인</Link></p>}
         </> : <p>현재 로그인하지 않은 상태입니다.</p>}</div>}
       </section>
     </>}

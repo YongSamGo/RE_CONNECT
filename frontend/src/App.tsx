@@ -14,6 +14,7 @@ import { JourneyRecommendations, JourneyRecommendationsRoute } from './features/
 import { StartJourney } from './features/journeys/StartJourney'
 import { JourneyProfile, JourneyProfileRoute } from './features/profile/JourneyProfile'
 import { MemberHome } from './features/account/MemberHome'
+import { PendingSave } from './features/account/PendingSave'
 import { BeginSaveRoute } from './features/account/BeginSave'
 import { KakaoFlowPrototype, OpportunityApplicationFlowPrototype } from './features/development/FlowPrototypes'
 import { ServiceGuide } from './features/journeys/ServiceGuide'
@@ -190,7 +191,7 @@ export default function App() {
       <Route path="/me/settings" element={<Navigate to="/me" replace />} />
       <Route path="/me/profile" element={<Navigate to="/me" replace />} />
       <Route path="/auth/result" element={<AuthReturn />} />
-      <Route path="/me/save" element={<Navigate to="/me" replace />} />
+      <Route path="/me/save" element={<PendingSave autoLoad />} />
       <Route path="/journeys/:journeyId/save" element={<BeginSaveRoute />} />
       <Route path="/journeys/:journeyId/drafts/:draftId/save" element={<Navigate to="/me" replace />} />
       <Route path="/me/saved" element={<Navigate to="/me" replace />} />

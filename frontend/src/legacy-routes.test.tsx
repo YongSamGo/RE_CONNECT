@@ -7,7 +7,7 @@ afterEach(() => vi.unstubAllGlobals())
 it.each([
   ['/my', '나의 정보'], ['/transcript', '경험을 들려주세요'],
   ['/preparation/example-library', '조건에 맞는 기회 찾아보기'], ['/recommendations', '나에게 맞는 공고 찾기'],
-  ['/me/save', '나의 정보'], ['/me/saved', '나의 정보'], ['/me/settings', '나의 정보'],
+  ['/me/saved', '나의 정보'], ['/me/settings', '나의 정보'],
 ])('이전 주소 %s를 현재 이용 흐름으로 연결한다', async (path, title) => {
   const fetch = vi.fn(async (_request: Request) => new Response(JSON.stringify(anonymousSession), { headers: { 'Content-Type': 'application/json' } }))
   vi.stubGlobal('fetch', fetch)
