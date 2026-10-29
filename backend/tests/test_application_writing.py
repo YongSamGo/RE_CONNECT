@@ -85,3 +85,37 @@ def test_total_field_length_is_checked_after_joining_paragraphs():
     payload = response()
     payload['self_introduction'] = [{'text': '가' * 1100, 'fact_ids': [f'experience:{EXPERIENCE_ID}']}] * 2
     with pytest.raises(LLMInvalidOutputError): generate(payload)
+
+
+# 리뷰 회귀: 공고·다른 사실의 수치나 없는 자격을 개인 경력으로 바꾼 문장은 거절한다(LLM-09).
+FIRST = f'experience:{EXPERIENCE_ID}'
+FIRST_DURATION = f'duration:{EXPERIENCE_ID}'
+
+
+def draft_with(text, fact_ids, context=None):
+    payload = response()
+    payload['motivation'][0] = {'text': text, 'fact_ids': fact_ids}
+    return asyncio.run(GroundedGenerationService(StubAdapter(payload)).application_draft(snapshot=snapshot(), context=context))
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('35년 동안 초등학교 담임교사로 일한 경험을 살리고 싶습니다.', [FIRST]),
+    ('35년 동안 학생들을 가르친 경험을 바탕으로 참여하고 싶습니다.', [FIRST_DURATION]),
+    ('교원 자격증을 보유하고 있어 학습 지도에 도움이 되고 싶습니다.', [FIRST, 'certification:0']),
+])
+def test_accepts_numbers_and_credentials_grounded_in_cited_facts(text, fact_ids):
+    assert draft_with(text, fact_ids).motivation == text
+
+
+@pytest.mark.parametrize('text, fact_ids', [
+    ('20년 동안 도서관에서 근무했습니다.', [FIRST]),
+    ('35개월 동안 담임교사로 일했습니다.', [FIRST]),
+    ('5년 동안 담임교사로 일했습니다.', [FIRST]),
+    ('사서 자격증을 보유하고 있습니다.', [FIRST]),
+    ('사서 자격증을 보유하고 있습니다.', [FIRST, 'certification:0']),
+    ('사회복지 과정을 수료했습니다.', [FIRST]),
+])
+def test_rejects_quantities_and_credentials_not_in_cited_facts(text, fact_ids):
+    context = ApplicationContext(opportunity={'id': uuid4(), 'version': 1}, title='경력 20년 이상 사서 모집', description='사서 자격증 소지자 우대')
+    with pytest.raises(LLMInvalidOutputError):
+        draft_with(text, fact_ids, context)

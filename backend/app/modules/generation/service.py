@@ -34,6 +34,35 @@ class GenerationInputError(ValueError):
 
 _SKILL = TypeAdapter(SkillTag)
 _DURATION = TypeAdapter(text(200))
+# 지원서 문단의 수치는 그 문단이 인용한 확정 사실의 "숫자+단위"로만 허용한다.
+_QUANTITY = re.compile(r"(\d+(?:[.,]\d+)*)\s*(년|개월|달|주|일|시간|분|회|번|명|권|곳|개|세|살|%|퍼센트|급)?")
+# 자격·교육 보유 주장은 인용한 자격·이수 교육 사실의 이름이 문장에 있을 때만 허용한다.
+_CREDENTIAL_CLAIM = re.compile(r"(자격증?|면허|학위)\s*[을를이가도은는]?\s*(보유|취득|소지|갖|가지|가졌|땄|받)|수료|이수|졸업")
+_CREDENTIAL_KINDS = ("certification:", "course:")
+
+
+def _quantities(value: str) -> set[tuple[str, str]]:
+    return {(number, unit or "") for number, unit in _QUANTITY.findall(value)}
+
+
+def _compact(value: str) -> str:
+    return re.sub(r"\s+", "", value)
+
+
+def _paragraph_grounded(value: str, fact_ids, facts: Mapping[str, str], fact_values: Mapping[str, str]) -> bool:
+    cited = [facts[key] for key in fact_ids]
+    allowed = set().union(*(_quantities(text) for text in cited))
+    numbers = {number for number, _ in allowed}
+    for number, unit in _quantities(value):
+        grounded = (number, unit) in allowed if unit else number in numbers
+        if not grounded:
+            return False
+    if _CREDENTIAL_CLAIM.search(value):
+        compact = _compact(value)
+        names = [fact_values[key] for key in fact_ids if key.startswith(_CREDENTIAL_KINDS)]
+        if not any(_compact(name) and _compact(name) in compact for name in names):
+            return False
+    return True
 
 
 def _fits(adapter: TypeAdapter, value: str) -> bool:
@@ -235,6 +264,7 @@ class GroundedGenerationService:
     async def application_draft(self, *, snapshot: ConfirmedProfileSnapshot, context: ApplicationContext | None = None) -> WrittenApplicationPreview:
         profile = snapshot.content
         facts: dict[str, str] = {}
+        fact_values: dict[str, str] = {}
         for item in profile.experiences:
             if safe_text(item.description) is not None:
                 facts[f"experience:{item.id}"] = f"경험: {item.description}"
@@ -248,6 +278,7 @@ class GroundedGenerationService:
             for index, value in enumerate(values):
                 if safe_text(value) is not None:
                     facts[f"{kind}:{index}"] = f"{label}: {value}"
+                    fact_values[f"{kind}:{index}"] = value
         if not facts:
             raise GenerationInputError("확정한 경험을 확인해 주세요")
         data = {"facts": facts}
@@ -258,9 +289,6 @@ class GroundedGenerationService:
                 "description": safe_text(context.description) if context.description else None,
             }
         plan = await self._generate(prompts.APPLICATION_WRITING, data, ApplicationWritingPlan)
-        context_values = (value for value in data.get("opportunity_context", {}).values() if isinstance(value, str))
-        source_text = "\n".join([*facts.values(), *(value for value in context_values if value)])
-        allowed_numbers = set(re.findall(r"\d+(?:[.,]\d+)*", source_text))
 
         def verify(paragraphs) -> str:
             for paragraph in paragraphs:
@@ -269,7 +297,8 @@ class GroundedGenerationService:
                 value = paragraph.text
                 if safe_text(value) != value or re.search(r"https?://|[<>\u00b7\u318d\u30fb]", value, re.IGNORECASE):
                     raise _invalid()
-                if not set(re.findall(r"\d+(?:[.,]\d+)*", value)).issubset(allowed_numbers):
+                # \uacf5\uace0 \uae00\uc758 \uc218\uce58\u00b7\ub2e4\ub978 \uc0ac\uc2e4\uc758 \uc218\uce58\ub294 \uac1c\uc778 \uacbd\ub825 \uadfc\uac70\uac00 \uc544\ub2c8\ub2e4(LLM-09).
+                if not _paragraph_grounded(value, paragraph.fact_ids, facts, fact_values):
                     raise _invalid()
             result = "\n\n".join(paragraph.text for paragraph in paragraphs)
             if len(result) > 2000:
