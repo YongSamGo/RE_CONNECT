@@ -191,6 +191,11 @@ jobs:
           python -m pytest -q -c ../pyproject.toml ../tests
       - name: 테스트 (pytest — 정상 입력 + 공격 시나리오)
         run: python -m pytest
+      - name: 모델 실행 환경 회귀·보안 검사
+        if: matrix.project == 'backend'
+        run: |
+          python -m unittest discover -s ../infra/models/tests -v
+          bandit -r ../infra/models --exclude ../infra/models/tests --severity-level low --confidence-level medium
       - name: Nginx 렌더러 정상 도메인·설정 삽입 회귀 시험
         if: matrix.project == 'backend'
         run: python -m unittest discover -s ../infra/nginx/tests -v

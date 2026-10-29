@@ -50,7 +50,7 @@ LOCKFILES = (
 )
 DOCKERFILES = ("backend/Dockerfile", "frontend/Dockerfile", "speech/Dockerfile")
 MODEL_MANIFESTS = ("speech/model-manifest.json", "backend/tools/ollama-manifest.json")
-COMPOSE_FILES = ("infra/compose.prod.yaml",)
+COMPOSE_FILES = ("infra/compose.prod.yaml", "infra/compose.models.yaml")
 
 
 class ManifestError(ValueError):

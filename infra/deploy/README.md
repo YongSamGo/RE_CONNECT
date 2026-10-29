@@ -140,3 +140,10 @@ Nginx 설정·TLS 인증서·RDS CA는 `/etc/reconnect/`에 둔다(경로는 Com
 python -I -m unittest discover -s infra/release/tests
 python -I -m unittest discover -s infra/deploy/tests   # POSIX 권한 검사라 Linux에서 실행
 ```
+
+## 모델 서비스 연결 (#92)
+
+GPU Ollama·CPU STT/TTS는 [모델 실행 절차](../models/README.md)의 운영 overlay를 추가한다.
+기존 images.env의 SPEECH_IMAGE와 별도로 검사한 OLLAMA_IMAGE 및 실측 자원 상한을 지정한다.
+Ollama 외부 이미지는 현재 Release 자동 빌드/검사 대상이 아니므로 별도 공급망 검증 기록이 필요하다.
+모델 준비·host/config 검사·warmup 후 공개 진입점을 시작하며, 실제 EC2 검증 전 이슈를 종료하지 않는다.

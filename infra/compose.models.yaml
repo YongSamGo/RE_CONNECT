@@ -1,0 +1,118 @@
+# EC2 모델 overlay. compose.prod.yaml 뒤에 지정한다. 실제 사양은 실측 후 확정.
+services:
+  backend:
+    memswap_limit: 1g
+    ulimits:
+      core: {soft: 0, hard: 0}
+    networks:
+      models: {}
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: qwen3:4b
+
+  ollama:
+    image: ${OLLAMA_IMAGE:?검사한 ollama/ollama@sha256 digest 이미지를 지정하세요}
+    platform: linux/amd64
+    user: "10001:10001"
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+    environment:
+      HOME: /tmp
+      OLLAMA_HOST: 0.0.0.0:11434
+      OLLAMA_MODELS: /models
+      OLLAMA_NO_CLOUD: "1"
+      OLLAMA_DEBUG: "false"
+      OLLAMA_KEEP_ALIVE: "-1"
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_CONTEXT_LENGTH: "16384"
+    networks: [models]
+    volumes:
+      - type: bind
+        source: ${OLLAMA_MODELS_DIR:?검증한 Ollama 가중치 절대경로}
+        target: /models
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=128m,uid=10001,gid=10001,mode=0700
+    mem_limit: ${OLLAMA_MEMORY_LIMIT:?실측할 Ollama 메모리 상한}
+    memswap_limit: ${OLLAMA_MEMORY_LIMIT:?실측할 Ollama 메모리 상한}
+    cpus: ${OLLAMA_CPUS:?할당할 CPU 수}
+    pids_limit: 256
+    ulimits:
+      core: {soft: 0, hard: 0}
+    logging:
+      driver: none
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+
+  # 현재 검증된 음성 이미지는 CPU 전용이다. GPU 지원으로 오인하지 않는다.
+  speech:
+    image: ${SPEECH_IMAGE:?릴리스 manifest의 speech digest 이미지}
+    platform: linux/amd64
+    user: "10001:10001"
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+    stop_grace_period: 10s
+    cpus: ${SPEECH_CPUS:?할당할 음성 CPU 수}
+    mem_limit: ${SPEECH_MEMORY_LIMIT:?실측할 음성 메모리 상한}
+    memswap_limit: ${SPEECH_MEMORY_LIMIT:?실측할 음성 메모리 상한}
+    pids_limit: 128
+    shm_size: 64m
+    networks: [models]
+    volumes:
+      - type: bind
+        source: ${SPEECH_MODELS_DIR:?검증한 STT/TTS 가중치 절대경로}
+        target: /app/models
+        read_only: true
+        bind:
+          create_host_path: false
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m,mode=1777
+    ulimits:
+      core: {soft: 0, hard: 0}
+    logging:
+      driver: none
+
+  # 다운로드·사용자 입력 없이 사전 적재한다. 재시작 때마다 운영자가 실행한다.
+  model-warmup:
+    image: ${BACKEND_IMAGE:?릴리스 manifest의 backend digest 이미지}
+    profiles: [model-tools]
+    user: "10001:10001"
+    init: true
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    restart: "no"
+    entrypoint: ["/opt/venv/bin/python", "-I", "/run/warmup.py"]
+    networks: [models]
+    volumes:
+      - type: bind
+        source: ./models/warmup.py
+        target: /run/warmup.py
+        read_only: true
+        bind:
+          create_host_path: false
+    mem_limit: 128m
+    memswap_limit: 128m
+    pids_limit: 32
+    ulimits:
+      core: {soft: 0, hard: 0}
+    logging:
+      driver: none
+
+networks:
+  models:
+    internal: true
