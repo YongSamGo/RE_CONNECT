@@ -1,4 +1,4 @@
 # requirements.txt를 컴파일하는 도구 (backend/README.md "의존성 고정")
 pip-tools==7.6.2
 # GHSA-xmj3-9gf7-h52w: 컴파일 도구의 전이 의존성도 수정 버전을 고정한다.
-setuptools>=84.1.0
+setuptools>=84.2.1
