@@ -30,6 +30,7 @@ import json
 import re
 import sys
 import time
+from types import SimpleNamespace as N
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,12 +81,18 @@ def score(persona: dict, case: dict, plan, preview) -> dict:
         return result
     # 서버는 경험을 통째로 버리지 않으면 순서를 유지한다. 원본 선택과 결과를 짝지어 턴 번호를 얻는다.
     # 서버가 경험 하나를 통째로 뺐다면(예: 소유하지 않은 기존 ID) 짝이 맞지 않으므로 그 행만 표시하고 넘어간다.
-    if len(plan.experiences) != len(preview.experiences):
+    # 서비스가 경험마다 근거 턴 번호(source_turns, #285)를 돌려주면 그것으로 짝을 짓는다.
+    source_turns = getattr(preview, "source_turns", None)
+    if source_turns is not None:
+        pairs = [(N(description=N(turn_index=turn), skills=[], duration=None), item)
+                 for turn, item in zip(source_turns, preview.experiences, strict=True)]
+    elif len(plan.experiences) != len(preview.experiences):
         texts = [text for item in preview.experiences for text in (item.description, item.duration_note or "", *item.skill_tags)]
         result.update(experiences=len(preview.experiences), pairing_mismatch=True,
                       leaks=sum(value in text for value in persona["must_not_extract"]["exact"] for text in texts))
         return result
-    pairs = list(zip(plan.experiences, preview.experiences, strict=True))
+    else:
+        pairs = list(zip(plan.experiences, preview.experiences, strict=True))
     used_turns = {selected.description.turn_index for selected, _ in pairs}
     experience_turns = set(case["experience_turns"])
     skills = [skill for _, item in pairs for skill in item.skill_tags]
@@ -102,7 +109,9 @@ def score(persona: dict, case: dict, plan, preview) -> dict:
         duration_recall=round(sum(year in durations for year in expected_years) / len(expected_years), 2) if expected_years else 1.0,
         whole_turn=sum(squash(item.description) == squash(turns[selected.description.turn_index]) for selected, item in pairs),
         cert_as_skill=sum(any(squash(cert) in squash(skill) for cert in case["certifications"]) for skill in skills),
-        dropped=sum(len(selected.skills) + (selected.duration is not None) for selected, _ in pairs)
+        # 표준 태그가 더해지는 서비스(#285)에서는 인용 수와 결과 태그 수를 비교할 수 없어 0으로 둔다.
+        dropped=0 if source_turns is not None else
+        sum(len(selected.skills) + (selected.duration is not None) for selected, _ in pairs)
         - sum(len(item.skill_tags) + (item.duration_note is not None) for _, item in pairs),
         leaks=sum(value in text for value in persona["must_not_extract"]["exact"] for text in texts),
     )
