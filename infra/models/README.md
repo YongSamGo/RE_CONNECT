@@ -12,6 +12,8 @@
 
 - #90의 EC2/VPC/RDS와 #18의 DB/Redis, #28의 고정 모델 준비를 먼저 확인한다.
 - Linux amd64 EC2에 NVIDIA 드라이버와 NVIDIA Container Toolkit을 설치하고 `nvidia-smi`를 확인한다.
+- Docker Compose는 CI와 같은 v5.1.0을 사용한다. 2.x는 렌더링 결과에서 `create_host_path: false`를 생략해
+  `check_config.py`가 구성을 거절한다. `docker compose version --short`로 확인한다.
   현재 확인한 장비는 서울 `g4dn.xlarge`, Tesla T4 15 GiB, 드라이버 580.178.04다.
   GPU 한도와 장비가 이미 확보됐으며 별도 자원은 생성하지 않는다. 장기 운영 예산·시간은 별도 확인한다.
 - [Ollama 준비 도구](../../docs/ai/ollama-preparation.md)의 verify와
