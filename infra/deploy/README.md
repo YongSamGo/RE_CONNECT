@@ -132,7 +132,8 @@ rm /run/reconnect/migrate.env
 ```
 
 Nginx 설정·TLS 인증서·RDS CA는 `/etc/reconnect/`에 둔다(경로는 Compose 변수로 바꿀 수 있다). TLS 개인키는 uid 101만 읽을 수 있게 한다.
-되돌리기는 이전 릴리스의 manifest로 같은 절차를 반복한다. 마이그레이션 되돌리기와 복구는 #97·#95가 다룬다.
+되돌리기 전에 `release_manifest.py rollback-check`로 이미지만 되돌려도 되는지 판정한다. 운영 DB는 downgrade하지 않는다.
+판정별 절차와 마이그레이션 작성 규칙은 [운영 절차 · 롤백](../../docs/operations/rollback.md)(#97)에 있다.
 
 ## 7. 시험
 
