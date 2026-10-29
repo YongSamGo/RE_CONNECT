@@ -18,11 +18,11 @@
 .skeleton-description { width: 82%; height: 18px; }
 .skeleton-action { width: 168px; height: 44px; margin-top: 8px; border-radius: 12px; }
 .recommendation-note { margin: 20px 4px 0; color: var(--muted); }
-.recommendation-profile-check { max-height: 44svh; overflow-y: auto; margin-bottom: 20px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
+.recommendation-profile-check { margin-bottom: 20px; padding: 20px; border: 1px solid var(--line); border-radius: 20px; background: var(--paper); }
 .recommendation-profile-check > h2 { margin-top: 0; }
 .recommendation-profile-check .profile-summary-section { padding: 16px 0; }
 .recommendation-profile-check .profile-optional { margin: 16px 0; }
 .recommendation-profile-check .actions { margin-top: 16px; }
 @media (max-width: 760px) {
-  .recommendation-profile-check { max-height: 48svh; padding: 16px; }
+  .recommendation-profile-check { padding: 16px; }
 }

@@ -1,3 +1,4 @@
+import { useEntryAction } from '../../state/useEntryAction'
 import { Link, useParams } from 'react-router-dom'
 import type { components } from '../../api/schema'
 import { ApiError } from '../../api/errors'
@@ -11,7 +12,6 @@ import { invalid, isOpportunityId, record, timestamp } from '../public-opportuni
 import { parseProfileView } from '../profile/server-model'
 import { parseSession } from './session'
 import { parseNotices } from './notices-model'
-import { NoticeText } from './notices'
 import { PendingSave } from './PendingSave'
 import type { SaveInput } from './PendingSave'
 import { EmptySection, ServicePage } from '../../ui/ServicePage'
@@ -27,7 +27,7 @@ export function BeginSaveRoute() {
   return <BeginSave key={`${journeyId}:${draftId ?? ''}`} journeyId={journeyId} draftId={draftId} />
 }
 
-function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string }) {
+export function BeginSave({ journeyId, draftId, embedded = false }: { journeyId: string; draftId?: string; embedded?: boolean }) {
   const scope = useMemoryScope<Choice | null>(() => null)
   const request = useRequest<Result>()
   const accept = (result: Result) => scope.setValue(result.next)
@@ -74,15 +74,15 @@ function BeginSave({ journeyId, draftId }: { journeyId: string; draftId?: string
       return { next: { ...value, cancelled: true }, message: '선택한 저장 준비를 취소했습니다. 대화와 확정 자료는 유지합니다.' }
     }, accept)
   }
-  if (value?.member) return <PendingSave input={value.member} />
-  return <ServicePage title={draftId ? '프로필과 지원서를 함께 저장할까요?' : '확정 프로필을 회원 저장할까요?'} description="확인한 자료를 내 계정에 보관할 수 있어요. 로그인 후 저장할 자료를 직접 선택해 주세요.">
-    {!value && <EmptySection title={draftId ? '프로필과 지원서' : '내 프로필'}><p>{draftId ? '확정한 프로필과 승인한 지원서를 함께 확인해요.' : '직접 확인하고 확정한 경험과 희망 활동을 저장해요.'}</p></EmptySection>}
-    {!value && <Button pending={busy} onClick={() => void load()}>서버에서 저장 대상 확인</Button>}
+  useEntryAction(load, embedded)
+  if (value?.member) return <PendingSave input={value.member} embedded={embedded} />
+  return <ServicePage embedded={embedded} title={draftId ? '지원서 저장' : '내 경험 저장'}>
+    {!value && !embedded && <EmptySection title={draftId ? '내 경험과 지원서' : '내 경험'}><p>확인한 자료를 계정에 보관할 수 있어요.</p></EmptySection>}
+    {!value && <Button pending={busy} onClick={() => void load()}>저장할 자료 확인</Button>}
     {value && !value.cancelled && <section className="panel">
-      <h2>확인된 저장 대상</h2><p>{value.body.profile && `확정 프로필 ${value.body.profile.version}번`}{value.body.draft ? ` / 승인한 지원서 수정본 ${value.body.draft.revision}번` : ''}</p><p>본문은 이전 화면에서 확인해 주세요. 이 화면에서는 저장 대상과 상태를 확인합니다.</p>
+      <h3>저장할 자료</h3><p>{value.body.draft ? '확인한 내 경험과 지원서' : '확인한 내 경험'}</p>
       <p>{value.body.draft ? '지원서의 근거로 프로필도 함께 저장합니다. 로그인 후 두 자료를 명시적으로 선택하고 순서대로 저장합니다.' : '직접 확정한 프로필을 로그인 후 별도로 저장합니다.'}</p>
       {value.notices.storage && value.notices.login_available ? <>
-        <NoticeText notice={value.notices.storage} />
         <p>아래 확인은 저장 동의가 아닙니다. 로그인 후 현재 안내문으로 따로 동의하고 저장을 선택합니다.</p>
         <CheckboxField label={draftId ? '프로필도 포함된 묶음 저장 준비를 확인했어요.' : '확정 프로필의 저장 준비를 확인했어요.'} checked={value.checked} disabled={busy || value.started} onChange={event => scope.setValue({ ...value, checked: event.target.checked })} />
         <div className="actions">{!value.intent ? <Button pending={busy} disabled={!value.checked} onClick={prepare}>{value.started ? '같은 요청으로 저장 대기 재확인' : '확인한 자료로 로그인 준비'}</Button> : <a className="button primary" href="/api/v1/auth/kakao/start?purpose=save">카카오 로그인 후 저장 선택</a>}</div>

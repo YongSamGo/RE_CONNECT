@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ApiError } from '../../api/errors'
 import { required, useRequest } from '../../state/useRequest'
 import { Button } from '../../ui/Button'
@@ -10,6 +11,7 @@ import { ProfileSummary } from '../profile/ProfileSummary'
 import { deadlineLabel, provinces } from '../public-opportunities/catalog'
 import { checkedTime } from '../public-opportunities/detail'
 import { OpportunityListCard } from '../opportunities/OpportunityListCard'
+import { demoOpportunities } from '../development/demo-opportunities'
 import { eligibilityLabels, parseEligibility, parseRecommendations } from './model'
 import type { Eligibility, ProfileRef, Recommendations } from './model'
 import { ServicePage } from '../../ui/ServicePage'
@@ -26,18 +28,18 @@ function userValue(value: Eligibility['conditions'][number]['user_value']): stri
   return String(value)
 }
 
-export function EligibilityCheck({ profile, opportunity, onInvalidated }: { profile: ProfileRef; opportunity: { id: string; version: number }; onInvalidated?: (error: ApiError) => void }) {
+export function EligibilityCheck({ profile, opportunity, onInvalidated, actionLabel = '이 공고의 필수조건 자세히 대조' }: { profile: ProfileRef; opportunity: { id: string; version: number }; onInvalidated?: (error: ApiError) => void; actionLabel?: string }) {
   const request = useRequest<Eligibility>()
   const resultRef = useRef<HTMLDivElement>(null)
   const state = request.state
-  useEffect(() => { if (state.status === 'success' || state.status === 'error') resultRef.current?.focus() }, [state.status])
+  useEffect(() => { if (state.status === 'success' || state.status === 'error') resultRef.current?.focus({ preventScroll: true }) }, [state.status])
   useEffect(() => {
     if (state.status === 'error' && ['NOT_FOUND', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'CONSENT_REQUIRED', 'VERSION_CONFLICT', 'OPPORTUNITY_NOT_AVAILABLE'].includes(state.error.code)) onInvalidated?.(state.error)
   }, [state, onInvalidated])
   const check = () => void request.run(async (api, signal) => parseEligibility(required((await api.POST('/opportunities/{opportunity_id}/eligibility', {
     params: { path: { opportunity_id: opportunity.id } }, body: { profile, opportunity_version: opportunity.version }, signal,
   })).data), profile, opportunity))
-  return <section aria-label="개인 자격 대조"><Button variant="secondary" pending={state.status === 'pending'} onClick={check}>이 공고의 필수조건 자세히 대조</Button>
+  return <section aria-label="개인 자격 대조"><Button variant="secondary" pending={state.status === 'pending'} onClick={check}>{actionLabel}</Button>
     <div className={state.status === 'success' ? 'eligibility-results' : undefined} ref={resultRef} tabIndex={-1}>
       {state.status === 'error' && <RequestError error={state.error} />}
       {state.status === 'success' && <>
@@ -60,13 +62,6 @@ export function EligibilityCheck({ profile, opportunity, onInvalidated }: { prof
 export function JourneyRecommendationsRoute() {
   return <JourneyRoute page="recommendations">{id => <JourneyRecommendations key={id} journeyId={id} />}</JourneyRoute>
 }
-
-const previewOpportunities = [
-  { id: 'preview-library', version: 1, title: '도서관 자료 정리 지원 봉사', organization: '서울나눔도서관', activity: '봉사', region: '서울특별시', deadline: '2026년 11월 30일까지' },
-  { id: 'preview-digital', version: 1, title: '디지털 생활 안내 도우미', organization: '우리동네 복지센터', activity: '취업 및 공공일자리', region: '경기도', deadline: '2026년 12월 12일까지' },
-  { id: 'preview-culture', version: 1, title: '지역 문화 행사 운영 지원', organization: '마을문화재단', activity: '봉사', region: '인천광역시', deadline: '상시 모집' },
-  { id: 'preview-office', version: 1, title: '공공기관 행정 업무 보조', organization: '한결공공서비스', activity: '취업 및 공공일자리', region: '서울특별시', deadline: '2027년 1월 8일까지' },
-]
 
 export function JourneyRecommendations({ journeyId, preview = false }: { journeyId?: string; preview?: boolean }) {
   const request = useRequest<Recommendations>()
@@ -111,9 +106,9 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
   }, [journeyId, loadRecommendations])
 
   useEffect(() => { if (!preview) readProfile(false) }, [preview, readProfile])
-  useEffect(() => { if (state.status === 'success' || state.status === 'error') resultRef.current?.focus() }, [state.status])
+  useEffect(() => { if (state.status === 'error') resultRef.current?.focus({ preventScroll: true }) }, [state.status])
 
-  const cards = preview ? previewOpportunities.map(item => ({ ...item, to: '/dev/opportunity-flow?source=recommendation' })) : state.status === 'success' ? state.data.items.map(item => ({
+  const cards = preview ? demoOpportunities.map(item => ({ id: item.id, version: 1, title: item.title, organization: item.organization, activity: item.activity, region: item.region, deadline: item.deadline, to: '/dev/opportunity-flow?source=recommendation' })) : state.status === 'success' ? state.data.items.map(item => ({
     id: item.opportunity.id,
     version: item.opportunity.version,
     title: item.opportunity.title,
@@ -124,31 +119,32 @@ export function JourneyRecommendations({ journeyId, preview = false }: { journey
     to: `/opportunities/${item.opportunity.id}${journeyId ? `?journeyId=${encodeURIComponent(journeyId)}` : ''}`,
   })) : []
 
+  if (!journeyId && !preview) return <ServicePage title="나에게 맞는 공고 찾기"><div className="service-entry"><p>경험을 정리하고 확인하면 관련 공고를 추천받을 수 있어요.</p><Link className="button primary" to="/start">경험 이야기하기</Link><Link className="text-link" to="/opportunities?browse=all">전체 공고 둘러보기</Link></div></ServicePage>
+
   return <ServicePage title="다시잇다가 추천하는 공고입니다" className={`recommendation-page${preview ? ' recommendation-preview' : ''}`}>
     {profileState.status === 'pending' && <StatusNotice kind="loading" title="경험을 확인하고 있어요">잠시만 기다려 주세요.</StatusNotice>}
-    {profileState.status === 'error' && <RequestError error={profileState.error} />}
+    {profileState.status === 'error' && <RequestError error={profileState.error} actions={<Button onClick={() => readProfile(false)}>다시 확인하기</Button>} />}
     {profileView && (!profileView.confirmed || profileView.has_unconfirmed_changes) && <section className="recommendation-profile-check">
       <h2>추천에 사용할 경험을 확인해 주세요</h2>
       <ProfileSummary content={profileView.draft} />
       {missing.map(message => <p role="alert" key={message}>{message}</p>)}
-      <div className="actions"><Button pending={pending} onClick={() => readProfile(true)}>이 내용으로 확정하고 추천 보기</Button></div>
+      <div className="actions"><Link className="button primary" to={`/journeys/${journeyId}/profile`}>내 경험 확인하고 수정하기</Link></div>
     </section>}
-    {state.status === 'error' && <RequestError error={state.error} />}
+    {state.status === 'error' && <RequestError error={state.error} actions={<Button pending={pending} onClick={() => readProfile(false)}>추천 다시 확인하기</Button>} />}
     <section className="recommendation-scroll-panel" ref={resultRef} tabIndex={-1} aria-label="추천 공고 목록">
-      {!preview && state.status === 'pending' && <p role="status">경험과 연결되는 공고를 찾고 있어요.</p>}
-      {!preview && (state.status === 'idle' || state.status === 'pending') && <ol className="recommendation-cards recommendation-card-skeletons" aria-hidden="true">
+      {!preview && state.status === 'pending' && <p role="status">추천 공고를 불러오고 있어요.</p>}
+      {!preview && (profileState.status === 'pending' || state.status === 'pending') && <ol className="recommendation-cards recommendation-card-skeletons" aria-hidden="true">
         {[1, 2, 3].map(index => <li key={index}><article className="recommendation-card recommendation-card-skeleton">
           <span className="skeleton-line skeleton-title" /><span className="skeleton-line skeleton-meta" />
           <span className="skeleton-line skeleton-description" /><span className="skeleton-action" />
         </article></li>)}
       </ol>}
       {!preview && state.status === 'success' && <>
-        {state.data.items.length === 0 && <StatusNotice label="추천 결과" title="현재 조건에 연결되는 추천이 없어요">경험을 더 구체적으로 정리하거나 전체 공고를 살펴보세요.</StatusNotice>}
+        {state.data.items.length === 0 && <StatusNotice label="추천 결과" title="현재 조건에 연결되는 추천이 없어요" actions={<Link className="button secondary" to="/opportunities?browse=all">전체 공고 둘러보기</Link>}>경험을 보완하거나 다른 공고를 살펴보세요.</StatusNotice>}
       </>}
       {(preview || state.status === 'success' && state.data.items.length > 0) && <>
         <ol className="shared-opportunity-list">{cards.map(item => <OpportunityListCard key={`${item.id}:${item.version}`} title={item.title} organization={item.organization}
-          tags={[item.activity, item.region, item.deadline]} to={item.to} targetBlank={!preview} state={{ journeyId }} />)}</ol>
-        {!preview && <p className="recommendation-note">모집 상태와 조건은 바뀔 수 있으니 공고 상세와 공식 원문을 확인해 주세요.</p>}
+          tags={[item.activity, item.region, item.deadline]} to={item.to} state={{ journeyId }} />)}</ol>
       </>}
     </section>
   </ServicePage>

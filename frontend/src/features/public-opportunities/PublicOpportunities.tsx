@@ -1,39 +1,42 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { createApiClient } from '../../api/client'
 import { ApiError } from '../../api/errors'
-import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { StatusNotice } from '../../ui/StatusNotice'
 import { deadlineLabel, parseList, provinces } from './catalog'
-import type { Opportunity, OpportunityList, Search } from './catalog'
+import type { Opportunity, Search } from './catalog'
+import { PublicCatalogProvider } from './PublicCatalogState'
+import { emptySearch, usePublicCatalog } from './public-catalog-state'
+import { useEntryAction } from '../../state/useEntryAction'
 import { RegionSelectionMap } from './RegionSelectionMap'
 import { belongsToMap, clearWholeAreaSelection } from './map-selection'
 import type { MapArea } from './map-selection'
 import { OpportunityListCard } from '../opportunities/OpportunityListCard'
 import './catalog.css'
 
-type State = { status: 'idle' }
-  | { status: 'loading'; query: Search; page: number }
-  | { status: 'loaded'; query: Search; result: OpportunityList }
-  | { status: 'error'; query: Search; page: number; error: ApiError }
-const initial = (): State => ({ status: 'idle' })
-const emptySearch = (): Search => ({ q: '', regions: [], activity_type: '' })
-
 function OpportunityCard({ item }: { item: Opportunity }) {
   const activity = item.activity_type === 'volunteering' ? '봉사' : item.is_public_job ? '공공일자리' : '일자리'
-  const region = item.activity_region ? `${provinces[item.activity_region.province]}${item.activity_region.district ? ' 시군구 상세는 공고에서 확인' : ''}` : '지역 확인 필요'
-  const paid = item.paid === null ? '보수 확인 필요' : item.paid ? '보수 있음' : '무보수'
+  const region = item.activity_region ? provinces[item.activity_region.province] : '지역 확인 필요'
   const status = item.recruitment_status === 'unknown' ? '모집 여부 확인 필요' : item.change_pending ? '변경 내용 확인 중' : '모집 중'
   return <OpportunityListCard title={item.title} organization={item.organization_name}
-    tags={[activity, region, paid, deadlineLabel(item), status, ...(item.remote_allowed === true ? ['원격 활동 가능'] : [])]}
+    tags={[activity, region, deadlineLabel(item), ...(item.recruitment_status === 'unknown' || item.change_pending ? [status] : [])]}
     to={`/opportunities/${item.id}`} />
 }
 
 export function PublicOpportunities() {
+  const memory = usePublicCatalog()
+  return memory ? <Catalog /> : <PublicCatalogProvider><Catalog /></PublicCatalogProvider>
+}
+
+function Catalog() {
+  const location = useLocation()
+  const browseOnEntry = new URLSearchParams(location.search).get('browse') === 'all'
   const [api] = useState(() => createApiClient())
-  const { value: draft, setValue: setDraft } = useMemoryScope(emptySearch)
-  const scope = useMemoryScope(initial)
+  const memory = usePublicCatalog()!
+  const { value: browseAll, setValue: setBrowseAll } = memory.resultsOnly
+  const { value: draft, setValue: setDraft } = memory.draft
+  const scope = memory.result
   const [mapProvince, setMapProvince] = useState<MapArea>('seoul')
   const state = scope.value
   const active = useRef<{ id: number; signal?: AbortSignal } | undefined>(undefined)
@@ -42,12 +45,15 @@ export function PublicOpportunities() {
   const loading = state.status === 'loading'
 
 
-  useEffect(() => {
-    if (state.status === 'loading') {
-      const reducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
-      resultRef.current?.scrollIntoView?.({ behavior: reducedMotion ? 'instant' : 'smooth', block: 'start' })
+  useEntryAction(() => {
+    if (browseOnEntry) {
+      setBrowseAll(true)
+      if (state.status === 'idle') void load(emptySearch())
     }
-    if (state.status === 'loaded' || state.status === 'error') resultRef.current?.focus({ preventScroll: true })
+  }, browseOnEntry)
+
+  useEffect(() => {
+    if (state.status === 'error') resultRef.current?.focus({ preventScroll: true })
   }, [state.status])
 
   async function load(query: Search, page = 1) {
@@ -74,14 +80,17 @@ export function PublicOpportunities() {
       if (active.current?.id === id) scope.setValue({ status: 'error', query, page, error: error instanceof ApiError ? error : new ApiError('INVALID_RESPONSE') })
     } finally { if (active.current?.id === id) active.current = undefined }
   }
-  function cancel() { scope.clear(); active.current = undefined }
+  const clearOnLeave = scope.clear
+  useEffect(() => () => { if (active.current) clearOnLeave() }, [clearOnLeave])
+  function cancel() { scope.clear(); active.current = undefined; setBrowseAll(false) }
   function submitSearch() {
+    setBrowseAll(true)
     void load({ ...draft, q: draft.q.trim() })
   }
 
-  return <div className="public-catalog">
-    <section className="public-catalog-stage" aria-label="지역별 공고 탐색">
-      <header className="public-catalog-heading"><h1 id="public-explore-title">조건에 맞는 기회 찾아보기</h1><button className="catalog-browse-all" type="button" disabled={loading} onClick={() => void load(emptySearch())}>일단 둘러볼래요</button></header>
+  return <div className={`public-catalog${browseAll ? ' public-catalog-browse-all' : ''}`}>
+    {!browseAll && <section className="public-catalog-stage" aria-label="지역별 공고 탐색">
+      <header className="public-catalog-heading"><h1 id="public-explore-title">조건에 맞는 기회 찾아보기</h1><button className="catalog-browse-all" type="button" disabled={loading} onClick={() => { setBrowseAll(true); void load(emptySearch()) }}>일단 둘러볼래요</button></header>
       <form className="public-catalog-partition" onSubmit={(event) => { event.preventDefault(); submitSearch() }}>
         <section className="public-map-pane" aria-label="활동 지역 고르기">
           <RegionSelectionMap province={mapProvince} regions={draft.regions} onChange={(regions) => setDraft((previous) => ({ ...previous, regions }))} />
@@ -107,15 +116,15 @@ export function PublicOpportunities() {
           </div>
         </section>
       </form>
-    </section>
-    <div className="public-catalog-results" hidden={state.status === 'idle'}>
+    </section>}
+    <div className="public-catalog-results" hidden={!browseAll}>
     <section className="catalog-results" ref={resultRef} tabIndex={-1} aria-label="공고 조회 결과">
-      {state.status === 'loading' && <StatusNotice kind="loading" title="공고를 확인하고 있어요">조회가 끝나기 전에는 결과를 확정하지 않습니다. 원하면 조회를 취소할 수 있어요.</StatusNotice>}
+      {browseAll && <header className="catalog-browse-heading"><h1>공고 살펴보기</h1><button className="text-link" type="button" onClick={() => { setBrowseAll(false); if (loading) cancel() }}>검색 조건 선택</button></header>}
+      {state.status === 'loading' && <StatusNotice kind="loading" title="공고를 확인하고 있어요" actions={<Button variant="secondary" onClick={() => { cancel(); setBrowseAll(false) }}>조회 취소하기</Button>}>잠시 기다려 주세요.</StatusNotice>}
       {state.status === 'error' && <div className="catalog-error" role="alert"><p>{state.error.message}</p>{state.error.code !== 'DAILY_QUOTA_EXCEEDED' && <button type="button" className="catalog-browse-all" onClick={() => void load(state.query, state.page)}>다시 시도하기</button>}</div>}
       {state.status === 'loaded' && <>
-        <h2>공개 공고 검색 결과</h2>
+        <h2 className="visually-hidden">공개 공고 검색 결과</h2>
         <p role="status">검색 결과 {state.result.total.toLocaleString('ko-KR')}건 / {state.result.page}페이지</p>
-        <p className="catalog-note">맞춤 추천이나 자격 판정 결과가 아닙니다. 필터를 바꾼 뒤에는 검색 버튼을 눌러 주세요.</p>
         {state.result.items.length ? <ul className="opportunity-list shared-opportunity-list">{state.result.items.map((item) => <OpportunityCard key={item.id} item={item} />)}</ul>
           : state.result.total === 0
             ? <StatusNotice label="검색 결과" title="이 조건의 공고가 없어요">검색어나 지역, 활동 유형을 바꿔 다시 검색해 보세요. 선택한 조건을 자동으로 넓히지는 않아요.</StatusNotice>

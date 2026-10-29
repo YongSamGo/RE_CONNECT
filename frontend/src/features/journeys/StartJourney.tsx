@@ -43,8 +43,8 @@ export function StartJourney({ onStart }: { onStart: () => void }) {
     if (!ready?.notice && dialogRef.current?.open) dialogRef.current.close()
   }, [ready])
 
-  function begin() {
-    if (!checked.value || !ready?.notice || busy || submitting.current) return
+  function begin(consentConfirmed = checked.value) {
+    if (!consentConfirmed || !ready?.notice || busy || submitting.current) return
     submitting.current = true
     const current = attempt.value ?? { key: crypto.randomUUID(), version: ready.notice.version, csrf: ready.csrf, owner: ready.owner }
     attempt.setValue(current)
@@ -90,20 +90,22 @@ export function StartJourney({ onStart }: { onStart: () => void }) {
         if (currentToken() !== token) throw new ApiError('SESSION_EXPIRED', 401)
         return { notice: catalog.ai_processing, owner: me.user?.id ?? null, csrf: token }
       })
-    }}>동의하고 대화 시작하기</Button>
+    }}>시작하기</Button>
     {read.state.status === 'error' && <RequestError error={read.state.error} />}
     <dialog ref={dialogRef} className="consent-dialog" aria-labelledby="published-consent-title" onCancel={event => { if (busy || attempt.value) event.preventDefault(); else { checked.clear(); read.clear() } }}>
-    {ready?.notice && <><header className="consent-dialog-header"><h2 id="published-consent-title" tabIndex={-1} autoFocus>AI 처리 동의</h2><button type="button" className="consent-dialog-close" disabled={busy || attempt.value !== null} onClick={() => { dialogRef.current?.close(); checked.clear(); read.clear() }}>닫기</button></header><div className="consent-dialog-content" tabIndex={0} role="region" aria-label="현재 AI 처리 안내">
+    {ready?.notice && <><header className="consent-dialog-header"><h2 id="published-consent-title" tabIndex={-1} autoFocus>AI 처리 안내와 동의</h2><button type="button" className="consent-dialog-close" disabled={busy || attempt.value !== null} onClick={() => { dialogRef.current?.close(); checked.clear(); read.clear() }}>닫기</button></header><div className="consent-dialog-content" tabIndex={0} role="region" aria-label="AI 처리 안내와 동의 확인">
       <NoticeText notice={ready.notice} />
       <p>체험 자료는 임시로 처리됩니다. 회원 저장은 로그인과 별도의 저장 동의 후 직접 선택합니다. 저장한 프로필을 자동으로 가져오지 않습니다.</p>
-      <CheckboxField label="위 안내문을 읽고 AI 처리에 동의하며 새 체험을 시작할게요." checked={checked.value} disabled={busy} onChange={event => checked.setValue(event.target.checked)} />
-      <Button pending={busy} disabled={!checked.value} onClick={begin}>{attempt.value ? '같은 요청으로 시작 결과 다시 확인' : '동의하고 새 체험 시작하기'}</Button>
+      <CheckboxField label="위 안내문을 읽고 AI 처리에 동의합니다." hint="동의하면 바로 대화가 시작됩니다." checked={checked.value} disabled={busy || attempt.value !== null} onChange={event => {
+        checked.setValue(event.target.checked)
+        if (event.target.checked) begin(true)
+      }} />
       {start.state.status === 'error' && <RequestError error={start.state.error} />}
-      {attempt.value && start.state.status === 'error' && <p role="status">처리 결과를 확인하지 못했습니다. 같은 요청으로 다시 확인해 주세요.</p>}
+      {attempt.value && start.state.status === 'error' && <><p role="status">처리 결과를 확인하지 못했습니다. 같은 요청으로 다시 확인해 주세요.</p><Button pending={busy} onClick={() => begin(true)}>같은 요청으로 다시 확인하기</Button></>}
     </div></>}
     </dialog>
     {ready && !ready.notice && <StatusNotice title="AI 처리 안내가 아직 준비되지 않았어요">운영 안내문이 게시된 뒤 실제 체험을 시작할 수 있습니다. 공고는 동의 없이 살펴볼 수 있어요.</StatusNotice>}
     {!ready?.notice && start.state.status === 'error' && <RequestError error={start.state.error} />}
-    <Link className="consent-browse" to="/opportunities">일단 둘러볼래요</Link></div>
+    <Link className="consent-browse" to="/opportunities?browse=all">일단 둘러볼래요</Link></div>
   </div>
 }

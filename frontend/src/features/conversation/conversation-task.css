@@ -5,7 +5,11 @@
 .conversation-task .journey-conversation > .conversation-voice-input { grid-area: controls; }
 .conversation-task .journey-conversation > .conversation-answer { grid-area: answer; }
 .conversation-task .conversation-question { margin: 0; }
-.conversation-task .conversation-question h2 { margin: 0 0 20px; font-size: calc(26px * var(--text-scale, 1)); line-height: 1.55; text-wrap: initial; }
+.conversation-task .conversation-question h2 { margin: 0 0 20px; font-size: calc(26px * var(--text-scale, 1)); line-height: 1.55; text-wrap: initial; background-image: linear-gradient(105deg, transparent 44%, rgb(53 142 229 / 0%) 47%, rgb(53 142 229 / 78%) 50%, rgb(83 173 246 / 58%) 53%, transparent 57%), linear-gradient(var(--ink), var(--ink)); background-size: 220% 100%, 100% 100%; background-position: 100% 0, 0 0; background-repeat: no-repeat; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: conversation-text-highlight 7s ease-in-out infinite; }
+@keyframes conversation-text-highlight {
+  0%, 10% { background-position: 100% 0, 0 0; }
+  52%, 62%, 100% { background-position: 0 0, 0 0; }
+}
 .conversation-task .conversation-question p:empty { margin: 0; }
 .conversation-task .question-volume { border: 0; padding: 0; margin-top: 12px; }
 .conversation-task .question-volume label { margin: 0; }
@@ -46,4 +50,7 @@
   .conversation-task .conversation-question h2 { font-size: calc(23px * var(--text-scale, 1)); }
   .conversation-task .question-volume input { min-width: 80px; }
   .conversation-task .conversation-confirm-dialog { padding: 24px 20px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .conversation-task .conversation-question h2 { animation: none; background-position: 100% 0, 0 0; }
 }

@@ -62,9 +62,9 @@ export function ConsentTopics() {
         <button type="button" className="consent-dialog-close" onClick={() => dialogRef.current?.close()}>닫기</button>
       </header><div className="consent-dialog-content" tabIndex={0} role="region" aria-label={`${notice.title} 상세 안내`}>
         <div className="consent-key-points">{keyPoints[selected!].map(point => <p key={point}>{point}</p>)}</div>
-        <details className="consent-full-details"><summary>자세히 보기</summary>
+        <div className="consent-full-details" aria-label="상세 정보 처리 내용">
           {details[selected!].map(paragraph => <p key={paragraph}>{paragraph}</p>)}
-        </details>
+        </div>
       </div></>}
     </dialog>
   </>
