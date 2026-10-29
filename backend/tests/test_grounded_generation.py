@@ -394,6 +394,25 @@ def test_description_turn_is_not_guessed_when_ambiguous_or_only_in_excluded_turn
         extract(dict(experiences=[item]), texts=[*texts, "없어요."])
 
 
+def test_past_work_without_details_is_kept_and_duration_is_read_from_the_description():
+    # 2026-10-29 시연: 모델이 기간·기술을 비워 내서 "시계방을 운영했어요"가 경험이 아닌 문장으로 버려졌다.
+    texts = ["시계방을 운영했어요", "내 시계방에서 20년동안 시계를 팔고 수리하고 가게를 운영했어요"]
+    items = [dict(existing_id=None, description=quote(texts[0]), duration=None, skills=[]),
+             dict(existing_id=None, description=quote(texts[1], 1), duration=None, skills=[])]
+    result, _ = extract(dict(experiences=items), texts=texts, standard_tags={"조리": []})
+    assert [(e.description, e.duration_note) for e in result.experiences] == [(texts[0], None), (texts[1], "20년동안")]
+
+
+@pytest.mark.parametrize("text", [
+    "인천 남동구 살아요.", "어르신 돕는 일이면 좋겠어요.", "정년 퇴직하고 이 년쯤 쉬었네요.", "육십삼년생이에요.",
+    "자격증은 전기기능사하고 주택관리사 보 있어요.", "봉사로 하고 싶어요.",
+])
+def test_non_experience_sentences_are_still_dropped_and_rest_periods_are_not_durations(text):
+    item = dict(existing_id=None, description=quote(text), duration=None, skills=[])
+    result, _ = extract(dict(experiences=[item]), texts=[text], standard_tags={"조리": []})
+    assert result.experiences == []
+
+
 def test_filtered_turn_indices_are_not_renumbered():
     item = selection()
     item["description"] = quote("요리 봉사", 1)
