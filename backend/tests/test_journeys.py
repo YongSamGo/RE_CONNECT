@@ -150,6 +150,43 @@ def test_real_redis_creation_replay_quota_and_guarded_request_completion():
     with_redis(scenario)
 
 
+def test_real_redis_default_recovery_blocks_new_journeys_until_next_kst_day():
+    async def scenario(admission, admission_store, client):
+        issued, _, service, _, _, identity = await real_services(admission, admission_store, client)
+        replay_key = str(uuid4())
+        existing = await service.create(issued.session, identity, replay_key, BODY)
+        await client.delete(admission_store.control_key)
+        await admission_store.initialize(admission.identity_key_id, no_runs_today=False)
+        before = await client.hgetall(admission_store.control_key)
+        assert await service.create(issued.session, identity, replay_key, BODY) == existing
+        with pytest.raises(AppError) as caught:
+            await service.create(issued.session, identity, str(uuid4()), BODY)
+        assert caught.value.code == 'DAILY_QUOTA_EXCEEDED'
+        assert 1 <= caught.value.retry_after <= 86400
+        assert await client.hgetall(admission_store.control_key) == before
+        # Redis TIME을 바꾸지 않고 두 날짜 필드를 전날로 이동해 자정 이후 경로를 검사한다.
+        day = int(before['day'])
+        await client.hset(admission_store.control_key, mapping={'day': day - 1, 'recovery_day': day - 1})
+        await service.create(issued.session, identity, str(uuid4()), BODY)
+        assert await client.hget(admission_store.control_key, 'global') == '0'
+    with_redis(scenario)
+
+
+def test_real_redis_confirmed_no_runs_init_allows_journey_and_invalid_recovery_fails_closed():
+    async def scenario(admission, admission_store, client):
+        issued, _, service, _, _, identity = await real_services(admission, admission_store, client)
+        await client.delete(admission_store.control_key)
+        await admission_store.initialize(admission.identity_key_id, no_runs_today=True)
+        assert await client.hget(admission_store.control_key, 'recovery_day') is None
+        await service.create(issued.session, identity, str(uuid4()), BODY)
+        for invalid in ('bad', str(10**9)):
+            await client.hset(admission_store.control_key, 'recovery_day', invalid)
+            with pytest.raises(AppError) as caught:
+                await service.create(issued.session, identity, str(uuid4()), BODY)
+            assert caught.value.code == 'SERVICE_UNAVAILABLE'
+    with_redis(scenario)
+
+
 def test_real_redis_polling_does_not_touch_but_activity_is_capped_by_absolute_lifetime():
     async def scenario(admission, admission_store, client):
         issued, _, service, _, requests, identity = await real_services(admission, admission_store, client)
