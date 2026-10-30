@@ -8,6 +8,8 @@ export type PublicDetail = ReturnType<typeof publicSummary> & Pick<Detail,
   'compensation_text' | 'required_documents' | 'application_method' | 'application_instructions' |
   'source_url' | 'application_url' | 'source_checked_at' | 'reviewed_at'> & {
     requirements: Pick<components['schemas']['Requirement'], 'source_evidence' | 'clarity'>[]
+    role_tags: string[]
+    skill_tags: string[]
   }
 const nullableText = (value: unknown, max: number) => value === null ? null : text(value, max)
 
@@ -28,11 +30,15 @@ export function parseDetail(value: unknown, requestedId: string): PublicDetail {
   })
   const documents = item.required_documents
   if (documents !== null && !Array.isArray(documents)) return invalid()
+  // 검수에서 붙인 역할·역량 태그. 계약 한도(역할 10개, 역량 20개)를 넘거나 형식이 다르면 실패로 닫는다.
+  if (!Array.isArray(item.role_tags) || item.role_tags.length > 10 || !Array.isArray(item.skill_tags) || item.skill_tags.length > 20) return invalid()
+  const role_tags = item.role_tags.map((value) => { const id = text(value, 40); return /^[a-z][a-z0-9_]{1,39}$/.test(id) ? id : invalid() })
+  const skill_tags = item.skill_tags.map((value) => text(value, 50))
   const checked = timestamp(item.source_checked_at)
   const reviewed = timestamp(item.reviewed_at)
   if (!checked || !reviewed) return invalid()
   return {
-    ...summary, requirements, required_documents: documents === null ? null : documents.map((value) => text(value, 200)),
+    ...summary, requirements, role_tags, skill_tags, required_documents: documents === null ? null : documents.map((value) => text(value, 200)),
     description_text: nullableText(item.description_text, 5000), description_truncated: item.description_truncated,
     location_text: nullableText(item.location_text, 500), schedule_text: nullableText(item.schedule_text, 500),
     hours_per_week: hours, compensation_text: nullableText(item.compensation_text, 500),

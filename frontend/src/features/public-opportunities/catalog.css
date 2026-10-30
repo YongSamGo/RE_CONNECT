@@ -77,6 +77,11 @@
 .detail-facts > div + div { border-top: 1px solid var(--line); }
 .detail-facts dt { font-weight: 700; }
 .detail-facts dd { margin: 0; }
+.opportunity-tag-list { display: grid; gap: 8px; margin: 12px 0 0; }
+.opportunity-tag-list > div { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
+.opportunity-tag-list dt { font-weight: 700; }
+.opportunity-tag-list dd { margin: 0; }
+.opportunity-tag-list .shared-opportunity-tags { margin: 0; }
 .opportunity-info-list { display: grid; gap: 12px; margin-block: 18px; }
 .opportunity-info-block { min-width: 0; border: 1px solid var(--line); border-radius: 16px; background: #fff; }
 .opportunity-info-block > summary { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 76px; padding: 12px 18px; list-style: none; cursor: pointer; }

@@ -73,3 +73,14 @@ it('rejects another opportunity and permits an explicit retry',async()=>{
   vi.stubGlobal('fetch',fetch);mount();await screen.findByRole('alert')
   await userEvent.click(screen.getByRole('button',{name:'공고 다시 조회'}));await loaded();expect(fetch).toHaveBeenCalledTimes(2)
 })
+it('shows reviewed role names and skill tags, hiding unknown role identifiers',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>json(sampleDetail({role_tags:['meal_assistant','unknown_role'],skill_tags:['조리','<b>청소</b>']}))));mount();await loaded()
+  const tags=document.querySelector<HTMLElement>('.opportunity-tag-list')!
+  expect(tags).toHaveTextContent('역할급식·조리 보조')
+  expect(tags).toHaveTextContent('역량조리<b>청소</b>')
+  expect(tags).not.toHaveTextContent('unknown_role');expect(tags.querySelector('b')).toBeNull()
+})
+it('omits the tag list when a detail has no tags',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>json(sampleDetail())));mount();await loaded()
+  expect(document.querySelector('.opportunity-tag-list')).toBeNull()
+})

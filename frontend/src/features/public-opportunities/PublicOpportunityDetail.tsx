@@ -9,10 +9,12 @@ import { Button } from '../../ui/Button'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { deadlineLabel, isOpportunityId, provinces } from './catalog'
 import { officialLink, parseDetail } from './detail'
+import { roleNames } from './roles'
 import type { PublicDetail } from './detail'
 import { OpportunityReadAloud } from '../voice/OpportunityReadAloud'
 import { ServicePage } from '../../ui/ServicePage'
 import { OpportunityMatch } from '../recommendations/OpportunityMatch'
+import '../opportunities/opportunity-list.css'
 import './catalog.css'
 
 type State = { status: 'idle' | 'loading' } | { status: 'loaded'; item: PublicDetail } | { status: 'error'; error: ApiError }
@@ -32,11 +34,22 @@ function DetailBlock({ title, summary, children }: { title: string; summary: str
   </details>
 }
 
+// 사전에 없는 역할 ID는 내부 값이라 보여 주지 않는다.
+function OpportunityTags({ item }: { item: PublicDetail }) {
+  const roles = item.role_tags.flatMap((id) => roleNames[id] ? [roleNames[id]] : [])
+  if (!roles.length && !item.skill_tags.length) return null
+  return <dl className="opportunity-tag-list">
+    {roles.length > 0 && <div><dt>역할</dt><dd><ul className="shared-opportunity-tags">{roles.map((name) => <li key={name}>{name}</li>)}</ul></dd></div>}
+    {item.skill_tags.length > 0 && <div><dt>역량</dt><dd><ul className="shared-opportunity-tags">{item.skill_tags.map((tag) => <li key={tag}>{tag}</li>)}</ul></dd></div>}
+  </dl>
+}
+
 function DetailContent({ item, journeyId }: { item: PublicDetail; journeyId?: string }) {
   return <>
     <article className="panel opportunity-detail">
       <p className="eyebrow">{item.activity_type === 'employment' ? '취업 및 공공일자리' : '봉사'}</p>
       <h2>{item.title}</h2><p>{item.organization_name}</p>
+      <OpportunityTags item={item} />
       <div className="opportunity-primary-actions">
         <p className="badge">{item.recruitment_status === 'closed' ? '모집 마감' : item.recruitment_status === 'open' ? '모집 중' : '모집 여부 확인 필요'}</p>
       </div>

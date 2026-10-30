@@ -9,7 +9,13 @@ describe('public detail display boundary', () => {
     expect(item.recruitment_status).toBe('closed')
     expect(item).not.toHaveProperty('source_id')
     expect(item.requirements).toEqual([{ source_evidence: '원문 조건', clarity: 'needs_review' }])
-    expect(item).not.toHaveProperty('role_tags')
+    expect(item.role_tags).toEqual([])
+    expect(item.skill_tags).toEqual([])
+  })
+  it('keeps reviewed role and skill tags for display', () => {
+    const item = parseDetail(sampleDetail({ role_tags: ['meal_assistant'], skill_tags: ['조리'] }), id)
+    expect(item.role_tags).toEqual(['meal_assistant'])
+    expect(item.skill_tags).toEqual(['조리'])
   })
   it.each([
     { id: '12345678-1234-1234-1234-123456789002' }, { description_text: 'x'.repeat(5001) },
@@ -17,6 +23,7 @@ describe('public detail display boundary', () => {
     { application_method: 'automatic' }, { required_documents: [''] }, { requirements: [{ clarity: 'clear' }] },
     { requirements: [{ source_evidence: '원문', clarity: 'maybe' }] }, { source_checked_at: null },
     { reviewed_at: '2026-02-30T09:00:00Z' }, { source_url: null }, { application_url: 'x'.repeat(2049) },
+    { role_tags: null }, { role_tags: ['Bad Id'] }, { role_tags: Array(11).fill('care_assistant') }, { skill_tags: ['x'.repeat(51)] }, { skill_tags: Array(21).fill('조리') },
   ])('rejects malformed or mismatched detail %j', (changes) => {
     expect(() => parseDetail({ ...sampleDetail(), ...changes }, id)).toThrow('응답을 확인하지 못했습니다')
   })
