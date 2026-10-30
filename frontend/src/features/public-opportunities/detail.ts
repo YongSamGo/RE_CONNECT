@@ -6,7 +6,7 @@ type Detail = components['schemas']['Opportunity']
 export type PublicDetail = ReturnType<typeof publicSummary> & Pick<Detail,
   'description_text' | 'description_truncated' | 'location_text' | 'schedule_text' | 'hours_per_week' |
   'compensation_text' | 'required_documents' | 'application_method' | 'application_instructions' |
-  'source_url' | 'application_url' | 'source_checked_at' | 'reviewed_at'> & {
+  'source_url' | 'application_url' | 'source_checked_at' | 'reviewed_at' | 'skill_tags'> & {
     requirements: Pick<components['schemas']['Requirement'], 'source_evidence' | 'clarity'>[]
   }
 const nullableText = (value: unknown, max: number) => value === null ? null : text(value, max)
@@ -28,6 +28,9 @@ export function parseDetail(value: unknown, requestedId: string): PublicDetail {
   })
   const documents = item.required_documents
   if (documents !== null && !Array.isArray(documents)) return invalid()
+  // 운영자가 원문을 보고 붙인 역량 태그. 추천이 경험과 대조하는 값이라 화면에도 그대로 보여준다.
+  const skills = item.skill_tags === undefined ? [] : item.skill_tags
+  if (!Array.isArray(skills) || skills.length > 20) return invalid()
   const checked = timestamp(item.source_checked_at)
   const reviewed = timestamp(item.reviewed_at)
   if (!checked || !reviewed) return invalid()
@@ -38,7 +41,7 @@ export function parseDetail(value: unknown, requestedId: string): PublicDetail {
     hours_per_week: hours, compensation_text: nullableText(item.compensation_text, 500),
     application_method: method, application_instructions: text(item.application_instructions, 2000),
     source_url: text(item.source_url, 2048), application_url: text(item.application_url, 2048),
-    source_checked_at: checked, reviewed_at: reviewed,
+    source_checked_at: checked, reviewed_at: reviewed, skill_tags: skills.map((value) => text(value, 50)),
   }
 }
 

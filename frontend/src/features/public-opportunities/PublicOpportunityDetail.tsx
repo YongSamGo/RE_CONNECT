@@ -42,6 +42,12 @@ function DetailContent({ item, journeyId }: { item: PublicDetail; journeyId?: st
       </div>
       {item.change_pending && <StatusNotice label="검수 상태" title="변경 확인 중">중요한 변경 사항을 확인하고 있어요. 확인이 끝나기 전에는 이 공고를 추천하거나 지원서를 만들 수 없어요.</StatusNotice>}
       {item.recruitment_status === 'closed' && <p>마감된 공고입니다. 내용을 참고할 수 있지만 신청 안내 링크는 제공하지 않습니다.</p>}
+      <section className="opportunity-skills" aria-labelledby="opportunity-skills-heading">
+        <h3 id="opportunity-skills-heading">이런 경험과 연결돼요</h3>
+        {item.skill_tags.length ? <ul className="profile-tags">{item.skill_tags.map((skill, index) => <li key={index}>{skill}</li>)}</ul>
+          : <p>연결할 경험을 확인하고 있어요.</p>}
+        <p className="quiet">내 프로필의 경험 역량에 같은 말이 있으면 추천에 연결돼요.</p>
+      </section>
       <div className="opportunity-info-list">
         <DetailBlock title="활동 정보" summary={[item.activity_region ? provinces[item.activity_region.province] : '지역 확인 필요', item.schedule_text ?? '일정 확인 필요'].join(', ')}>
           <dl className="detail-facts">

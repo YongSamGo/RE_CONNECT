@@ -117,3 +117,10 @@ it('validates evidence/version boundaries and does not render malformed role can
   expect(() => parseRoles({ ...roles(), profile_version: 999 }, view(true))).toThrow()
   expect(() => parseProfileView({ ...view(), draft: { ...view().draft, experiences: [{ ...view().draft.experiences[0], id: 'forged' }] } })).toThrow()
 })
+it('points to the weekday, hours and pay fields the conversation does not ask about',async()=>{
+  server();const user=mount();await loaded(user)
+  expect(screen.getByText('아직 적지 않았어요: 가능 요일, 가능 시간, 보수')).toBeVisible()
+  await user.click(screen.getByRole('button',{name:'요일·시간·보수 적기'}))
+  expect(screen.getByLabelText('주당 가능 시간 (비우면 미확인)')).toBeVisible()
+  expect(screen.queryByText('아직 적지 않았어요: 가능 요일, 가능 시간, 보수')).not.toBeInTheDocument()
+})

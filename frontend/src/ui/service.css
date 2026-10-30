@@ -71,6 +71,10 @@
 .profile-experience-list p { margin-bottom: 12px; white-space: pre-wrap; }
 .profile-tags { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .profile-tags li { padding: 4px 12px; background: var(--surface); border-radius: 6px; }
+.opportunity-skills { margin: 16px 0; }
+.opportunity-skills h3 { margin: 0 0 8px; }
+.profile-additional-prompt { margin-bottom: 12px; }
+.profile-additional-prompt .quiet { margin: 4px 0 12px; }
 .profile-facts { display: grid; grid-template-columns: minmax(120px, 1fr) 3fr; gap: 16px 24px; margin: 0; }
 .profile-facts dt { color: var(--muted); }
 .profile-facts dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
