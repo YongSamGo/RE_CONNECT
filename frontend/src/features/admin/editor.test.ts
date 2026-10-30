@@ -1,9 +1,31 @@
 import { describe, expect, it } from 'vitest'
 import { sampleDetail } from '../public-opportunities/test-fixtures'
-import { emptyOpportunity, isHttpsReference, opportunityChanges, parseEditable, parseOpportunityInput, parseRequirements } from './editor'
+import { emptyOpportunity, isHttpsReference, opportunityChanges, opportunityReviewWarnings, parseEditable, parseOpportunityInput, parseRequirements, parseRoleCatalog, parseSkillLines } from './editor'
 
 const input = () => parseOpportunityInput(sampleDetail())
 const condition = { id: '12345678-1234-1234-1234-123456789010', field: 'age', operator: 'gte', value: 60, source_evidence: '만 60세 이상', clarity: 'clear', group_id: null, group_operator: null, reference_date: null }
+
+describe('operator tag input and prepublication checks', () => {
+  it('trims explicit skill lines and rejects duplicates, hidden characters and oversized lists', () => {
+    expect(parseSkillLines(' 자료 정리 \r\n\n이용 안내')).toEqual(['자료 정리', '이용 안내'])
+    for (const value of ['자료 정리\n자료  정리', '자료\u200b정리', 'a'.repeat(51), Array.from({ length: 21 }, (_, i) => `역량${i}`).join('\n')]) expect(() => parseSkillLines(value)).toThrow()
+    expect(parseSkillLines('')).toEqual([])
+  })
+  it('rejects duplicate role identities and does not invent missing catalog fields', () => {
+    const role = { id: 'library_assistant', name: '가상 역할', description: '합성 설명', skill_tags: ['자료 정리'] }
+    expect(parseRoleCatalog({ items: [role] })).toEqual([role])
+    expect(() => parseRoleCatalog({ items: [role, role] })).toThrow()
+    expect(() => parseRoleCatalog({ items: [{ ...role, name: null }] })).toThrow()
+  })
+  it('distinguishes missing tags, unknown location and unreviewed rules without clearing any rule', () => {
+    const value = input()
+    expect(opportunityReviewWarnings({ ...value, activity_region: null })).toHaveLength(2)
+    const unresolved = parseRequirements([{ ...condition, field: 'other', operator: null, value: null, clarity: 'needs_review' }])
+    expect(opportunityReviewWarnings({ ...value, skill_tags: ['자료 정리'], requirements: unresolved })).toHaveLength(1)
+    expect(unresolved[0]!.source_evidence).toBe('만 60세 이상')
+    expect(opportunityReviewWarnings({ ...value, skill_tags: ['자료 정리'], activity_region: null, remote_allowed: true })).toEqual([])
+  })
+})
 describe('requirement rule semantics', () => {
   it.each([
     { field: 'age', operator: 'gte', value: 60.5 }, { field: 'age', operator: 'between', value: [70, 60] },

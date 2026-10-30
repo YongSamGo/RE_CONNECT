@@ -28,6 +28,7 @@ ADMIN_OPPORTUNITY = {
 ADMIN_REPORT = {"id", "report_id", "version", "type", "status", "note", "resolution_note", "opportunity",
                 "opportunity_title", "created_at", "updated_at"}
 REVIEWED = {
+    ("GET", "/api/v1/admin/role-catalog"): {"items", "id", "name", "description", "skill_tags"},
     ("POST", "/api/v1/admin/opportunities/{opportunity_id}/approve"): REVIEW_RESULT,
     ("POST", "/api/v1/admin/opportunities/{opportunity_id}/reject"): REVIEW_RESULT,
     ("POST", "/api/v1/admin/opportunities/{opportunity_id}/hide"): REVIEW_RESULT,
@@ -53,6 +54,8 @@ PERSONAL = {"profile", "experiences", "self_introduction", "motivation", "transc
 _OPPORTUNITY_ALLOWED = {"content", "name"}
 _REPORT_ALLOWED = {"note", "resolution_note"}
 PERSONAL_ALLOWED = {
+    # 역할 사전의 name은 역할 이름이며 회원 이름을 반환하지 않는다.
+    ("GET", "/api/v1/admin/role-catalog"): {"name"},
     ("POST", "/api/v1/admin/opportunities"): _OPPORTUNITY_ALLOWED,
     ("GET", "/api/v1/admin/opportunities/{opportunity_id}"): _OPPORTUNITY_ALLOWED,
     ("PATCH", "/api/v1/admin/opportunities/{opportunity_id}"): _OPPORTUNITY_ALLOWED,

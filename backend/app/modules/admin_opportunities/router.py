@@ -11,7 +11,7 @@ from starlette.responses import JSONResponse
 
 from app.core.request_id import get_request_id
 from app.modules.admin_opportunities.models import (
-    AdminOpportunity, AdminOpportunityList, AdminOpportunitySearch, OpportunityCreate, OpportunityPatch,
+    AdminCatalogRole, AdminOpportunity, AdminOpportunityList, AdminOpportunitySearch, AdminRoleCatalog, OpportunityCreate, OpportunityPatch,
 )
 from app.modules.requests.http import idempotency_key
 from app.modules.sessions.http import require_session
@@ -25,6 +25,15 @@ async def require_operator(request: Request):
     await request.app.state.admission_service.check_http(request.client.host if request.client else "", session.subject_id)
     # 역할이 회수되었거나 MFA가 끝나지 않았으면 여기서 403이다(#52 연결 전에는 항상 MFA_REQUIRED).
     return await request.app.state.member_service.require(session, operator=True)
+
+
+@router.get("/admin/role-catalog", response_model=AdminRoleCatalog, operation_id="getAdminRoleCatalog")
+async def get_admin_role_catalog(request: Request):
+    await require_operator(request)
+    roles = await request.app.state.role_service.catalog_entries()
+    result = AdminRoleCatalog(items=[AdminCatalogRole(id=role.id, name=role.name, description=role.description,
+                                                    skill_tags=role.skill_tags) for role in roles])
+    return JSONResponse(result.model_dump(mode="json"), headers=NO_STORE)
 
 
 @router.get("/admin/opportunities", response_model=AdminOpportunityList, operation_id="listAdminOpportunities")

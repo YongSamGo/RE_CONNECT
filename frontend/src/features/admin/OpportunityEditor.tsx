@@ -11,13 +11,14 @@ import type { FieldError } from '../../ui/FormErrorSummary'
 import { RequestError, StatusNotice } from '../../ui/StatusNotice'
 import { provinces } from '../public-opportunities/catalog'
 import { koreaDateTimeInput } from './audit'
-import { emptyOpportunity, isHttpsReference, manualSources, opportunityChanges, parseEditable, parseOpportunityInput, quoteFields, quoteLabels } from './editor'
+import { emptyOpportunity, isHttpsReference, manualSources, opportunityChanges, parseEditable, parseOpportunityInput, parseSkillLines, quoteFields, quoteLabels } from './editor'
 import type { ManualSource, OpportunityInput } from './editor'
 import { RequirementEditor } from './RequirementEditor'
+import { OpportunityTags } from './OpportunityTags'
 
-type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; checkedAt: string | null; source: ManualSource; quotes: Record<string, string>; noRequirements: boolean; editing: boolean; errors: FieldError[] }
+type State = { input: OpportunityInput | null; original: OpportunityInput | null; version: number | null; skills: string; hours: string; at: string; documents: string; additions: components['schemas']['Requirement'][]; extraText: string; checked: boolean; checkedAt: string | null; source: ManualSource; quotes: Record<string, string>; noRequirements: boolean; editing: boolean; errors: FieldError[] }
 function initial(input: OpportunityInput | null, version: number | null = null): State {
-  return { input, original: version === null ? null : input, version, hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, checkedAt: null, source: 'manual_volunteer', quotes: {}, noRequirements: !!version && input?.requirements.length === 0, editing: false, errors: [] }
+  return { input, original: version === null ? null : input, version, skills: input?.skill_tags.join('\n') ?? '', hours: String(input?.hours_per_week ?? ''), at: input?.deadline_at ? koreaDateTimeInput(Date.parse(input.deadline_at)) : '', documents: input?.required_documents?.join('\n') ?? '', additions: [], extraText: '', checked: false, checkedAt: null, source: 'manual_volunteer', quotes: {}, noRequirements: !!version && input?.requirements.length === 0, editing: false, errors: [] }
 }
 function InputField({ label, error, id, ...props }: InputHTMLAttributes<HTMLInputElement> & { label: string; error?: string; id: string }) {
   return <div className="form-field"><label htmlFor={id}>{label}</label><input {...props} id={id} aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-error` : undefined} />{error && <p className="field-error" id={`${id}-error`}>{error}</p>}</div>
@@ -71,6 +72,9 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     if (!input.application_instructions.trim()) add('editor-instructions', '공식 접수 방법을 적어 주세요.')
     const hours = state.hours === '' ? null : Number(state.hours)
     if (hours !== null && (!Number.isFinite(hours) || hours < 0 || hours > 168)) add('editor-hours', '주당 시간은 0~168 사이로 적거나 비워 주세요.')
+    let skills = input.skill_tags
+    try { skills = state.skills === input.skill_tags.join('\n') ? input.skill_tags : parseSkillLines(state.skills) }
+    catch { add('editor-skills', '역량은 중복 없이 한 줄 50자 이내, 최대 20개로 적어 주세요. 보이지 않는 문자는 사용할 수 없습니다.') }
     if (input.requirements.length + state.additions.length === 0 && !state.noRequirements) add('editor-no-requirements', '원문 조건을 적거나, 원문에 필수조건이 없는지 확인해 주세요.')
     if (input.requirements.length + state.additions.length > 30 || state.additions.some((value) => value.source_evidence.length > 1000)) add('editor-extra', '추가 조건은 한 줄 1,000자 이내, 기존 조건과 합계 30개 이내로 적어 주세요.')
     const documents = input.required_documents === null ? null : state.documents === input.required_documents.join('\n') ? input.required_documents : lines(state.documents)
@@ -78,7 +82,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
     if (!state.checked) add('editor-checked', '공식 원문과 입력 내용을 확인해 주세요.')
     if (errors.length) { form.setValue((previous) => ({ ...previous, errors })); return }
     const unchangedTime = state.original?.deadline_at && state.at === koreaDateTimeInput(Date.parse(state.original.deadline_at))
-    const candidate = { ...input, hours_per_week: hours, required_documents: documents, deadline_at: unchangedTime ? state.original!.deadline_at : state.at ? `${state.at}:00+09:00` : null, requirements: [...input.requirements, ...state.additions] }
+    const candidate = { ...input, skill_tags: skills, hours_per_week: hours, required_documents: documents, deadline_at: unchangedTime ? state.original!.deadline_at : state.at ? `${state.at}:00+09:00` : null, requirements: [...input.requirements, ...state.additions] }
     let parsed: OpportunityInput
     try { parsed = parseOpportunityInput(candidate) }
     catch { form.setValue((previous) => ({ ...previous, errors: [{ fieldId: 'editor-deadline', message: '입력 길이·목록·날짜를 확인해 주세요. 마감일과 마감 시각의 한국 날짜가 같아야 합니다.' }] })); return }
@@ -117,6 +121,8 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
         <label htmlFor="editor-public-job">공공일자리 여부</label><select id="editor-public-job" value={triValue(input.is_public_job)} onChange={(event) => update('is_public_job', tri(event.target.value))}><option value="">확인 필요</option><option value="yes">공공일자리</option><option value="no">공공일자리 아님</option></select>
         <TextAreaField id="editor-description" label="공식 원문 설명" value={input.description_text ?? ''} maxLength={5000} rows={6} onChange={(event) => update('description_text', event.target.value || null)} />
       </fieldset>
+      <OpportunityTags roles={input.role_tags} skills={state.skills} disabled={locked} error={error('editor-skills')}
+        onRoles={(roles) => update('role_tags', roles)} onSkills={(skills) => updateRaw({ skills })} />
       <fieldset disabled={locked}><legend>지역·일정·보수</legend>
         <label htmlFor="editor-region">활동 시·도</label><select id="editor-region" aria-describedby="editor-region-help" value={input.activity_region?.province ?? ''} onChange={(event) => update('activity_region', event.target.value ? { province: event.target.value as components['schemas']['Province'], district: null } : null)}><option value="">확인 필요</option>{Object.entries(provinces).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select><p id="editor-region-help">기존 시·군·구 범위는 지역을 바꾸지 않으면 유지됩니다. 지역을 바꾸면 선택한 시·도 전체로 변경됩니다.</p>
         <InputField id="editor-location" label="상세 장소" value={input.location_text ?? ''} maxLength={500} onChange={(event) => update('location_text', event.target.value || null)} />
@@ -146,7 +152,7 @@ export function OpportunityEditor({ target, onBack }: { target?: { id: string; v
       {!target && <fieldset disabled={locked}><legend>공식 원문 근거</legend>
         <p>1365 자원봉사포털·50+포털·고용24의 공고 상세 주소만 등록할 수 있습니다. 입력한 항목마다 공식 원문의 해당 문장을 그대로 옮겨 주세요. 담당자 이름·전화·이메일은 옮기지 마세요.</p>
         <label htmlFor="editor-manual-source">공식 자료 출처</label><select id="editor-manual-source" value={state.source} onChange={(event) => updateRaw({ source: event.target.value as ManualSource })}>{Object.entries(manualSources).map(([value, label]) => <option key={value} value={value}>{label}</option>)}</select>
-        {quoteFields({ ...input, hours_per_week: state.hours === '' ? null : 0, deadline_at: state.at || null, required_documents: input.required_documents === null ? null : lines(state.documents) }).map((field) => <TextAreaField key={field} id={`editor-quote-${field}`} label={`원문 인용: ${quoteLabels[field]}`} value={state.quotes[field] ?? ''} maxLength={300} rows={2} error={error(`editor-quote-${field}`)} onChange={(event) => updateRaw({ quotes: { ...state.quotes, [field]: event.target.value } })} />)}
+        {quoteFields({ ...input, skill_tags: lines(state.skills), hours_per_week: state.hours === '' ? null : 0, deadline_at: state.at || null, required_documents: input.required_documents === null ? null : lines(state.documents) }).map((field) => <TextAreaField key={field} id={`editor-quote-${field}`} label={`원문 인용: ${quoteLabels[field]}`} value={state.quotes[field] ?? ''} maxLength={300} rows={2} error={error(`editor-quote-${field}`)} onChange={(event) => updateRaw({ quotes: { ...state.quotes, [field]: event.target.value } })} />)}
       </fieldset>}
       {state.editing && <p role="status">조건 편집을 적용하거나 취소한 뒤 공고를 저장해 주세요.</p>}
       <Button type="submit" pending={save.state.status === 'pending'} disabled={locked || state.editing}>검수 대기 버전으로 저장</Button>
