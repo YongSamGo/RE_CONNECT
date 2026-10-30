@@ -79,7 +79,7 @@ it('shows the reviewed skill tags that recommendations compare with profile expe
   expect(section).toHaveTextContent('청소');expect(section).toHaveTextContent('<b>미화</b>')
   expect(section.querySelector('b')).toBeNull()
 })
-it('says skills are being checked when a reviewed opportunity has no skill tags yet',async()=>{
+it('states plainly that no skills are set when a reviewed opportunity has no skill tags yet',async()=>{
   vi.stubGlobal('fetch',vi.fn(async()=>json(sampleDetail({skill_tags:[]}))));mount();await loaded()
-  expect(screen.getByText('연결할 경험을 확인하고 있어요.')).toBeVisible()
+  expect(screen.getByText('아직 연결할 경험이 정해지지 않았어요.')).toBeVisible()
 })

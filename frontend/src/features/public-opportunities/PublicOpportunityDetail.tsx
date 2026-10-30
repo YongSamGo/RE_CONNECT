@@ -45,8 +45,8 @@ function DetailContent({ item, journeyId }: { item: PublicDetail; journeyId?: st
       <section className="opportunity-skills" aria-labelledby="opportunity-skills-heading">
         <h3 id="opportunity-skills-heading">이런 경험과 연결돼요</h3>
         {item.skill_tags.length ? <ul className="profile-tags">{item.skill_tags.map((skill, index) => <li key={index}>{skill}</li>)}</ul>
-          : <p>연결할 경험을 확인하고 있어요.</p>}
-        <p className="quiet">내 프로필의 경험 역량에 같은 말이 있으면 추천에 연결돼요.</p>
+          : <p>아직 연결할 경험이 정해지지 않았어요.</p>}
+        <p className="quiet">추천은 내 경험의 역량과 이 말을 비교해요.</p>
       </section>
       <div className="opportunity-info-list">
         <DetailBlock title="활동 정보" summary={[item.activity_region ? provinces[item.activity_region.province] : '지역 확인 필요', item.schedule_text ?? '일정 확인 필요'].join(', ')}>

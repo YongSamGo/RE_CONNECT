@@ -31,8 +31,8 @@ export function ProfileSummary({ content, catalog = null, showAdditional = true,
     {section('activity_types', '활동 유형', <p>{content.activity_types.map(type => type === 'employment' ? '취업 및 공공일자리' : '봉사').join(', ') || '아직 선택하지 않았어요'}</p>)}
     {showAdditional && onEdit && section('additional', '추가 정보', <>{missingConditions.length > 0 && <div className="profile-additional-prompt">
       <p>아직 적지 않았어요: {missingConditions.join(', ')}</p>
-      <p className="quiet">일할 수 있는 요일·시간과 보수 여부를 적어 두면, 조건이 있는 공고에서 맞는지 바로 확인할 수 있어요.</p>
-      <Button variant="secondary" disabled={editDisabled} onClick={() => onEdit('additional')}>요일·시간·보수 적기</Button>
+      <p className="quiet">일할 수 있는 요일과 시간, 보수 여부를 적어 두면, 조건이 있는 공고에서 맞는지 바로 확인할 수 있어요.</p>
+      <Button variant="secondary" disabled={editDisabled} onClick={() => onEdit('additional')}>요일, 시간, 보수 적기</Button>
     </div>}<dl className="profile-facts">
       {!!content.skills.length && <><dt>전체 역량</dt><dd>{list(content.skills)}</dd></>}
       {content.paid_preference !== null && <><dt>보수</dt><dd>{{ paid: '유급 활동', unpaid: '무급 활동', any: '상관없어요' }[content.paid_preference]}</dd></>}
