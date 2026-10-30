@@ -24,6 +24,7 @@ import { ScreenReview } from './features/development/ScreenReview'
 import { reviewHref, screens as reviewScreens } from './features/development/review-screens'
 import { ConversationEntry } from './features/journeys/ServiceEntries'
 import './App.css'
+import { RuntimeFailure } from './ui/RuntimeFailure'
 
 const AdminPage = lazy(() => import('./features/admin/AdminPage').then(({ AdminPage }) => ({ default: AdminPage })))
 
@@ -88,7 +89,7 @@ export class ErrorBoundary extends Component<{ children: ReactNode }, { failed: 
   state = { failed: false }
   static getDerivedStateFromError() { return { failed: true } }
   render() {
-    if (this.state.failed) return <main className="error-page"><h1>화면을 표시하지 못했습니다</h1><p role="alert">새로 시작해 주세요. 저장하지 않은 입력은 사라집니다.</p><a className="button primary" href="/">새로 시작하기</a></main>
+    if (this.state.failed) return <RuntimeFailure />
     return this.props.children
   }
 }

@@ -30,6 +30,12 @@ export function JourneyVoiceInput({ journeyId, voiceSelected = true, disabled = 
     if (request.state.status === 'error' && ['CONSENT_REQUIRED', 'SESSION_EXPIRED', 'UNAUTHENTICATED', 'NOT_FOUND'].includes(request.state.error.code)) { clearAttempt(); setRecorderKey(value => value + 1); onAccessLost?.(request.state.error) }
   }, [request.state, clearAttempt, setRecorderKey, onAccessLost])
   const cancel = () => { request.clear(); clearAttempt() }
+  const cancelRecording = () => {
+    cancel()
+    setRecorderKey(value => value + 1)
+    setRecordingStatus('idle')
+    onBusyChange?.(false)
+  }
   const transcribe = (blob: Blob) => {
     if (pending || blob.size === 0 || blob.size > 6 * 1024 * 1024) return
     onBusyChange?.(true)
@@ -58,7 +64,8 @@ export function JourneyVoiceInput({ journeyId, voiceSelected = true, disabled = 
         if (retrying) preview.current?.retryTranscription()
         else { if (recordingStatus === 'ready' || recordingStatus === 'error') onRestart?.(); preview.current?.toggleRecording() }
       }}>{recording ? '말한 내용 저장하기' : retrying ? '같은 녹음 다시 확인' : recordingStatus === 'permission' ? '마이크 확인 중' : '말하기'}</Button>}
-      <Button variant={!voiceSelected ? 'primary' : 'secondary'} aria-pressed={!voiceSelected} disabled={disabled || busy} onClick={onSelectText}>글로 답하기</Button>
+      <Button variant={!voiceSelected ? 'primary' : 'secondary'} aria-pressed={!voiceSelected} disabled={disabled} onClick={() => { cancelRecording(); onSelectText?.() }}>글로 답하기</Button>
+      {(busy || recording) && <Button variant="secondary" onClick={cancelRecording}>음성 입력 취소</Button>}
     </div>
     <div className="conversation-voice-mode" hidden={!voiceSelected}>
       <VoicePreview ref={preview} embedded key={recorder.value} onStatusChange={setRecordingStatus} transcription={{ pending, onRequest: transcribe, onReset: cancel, onBusyChange }} />

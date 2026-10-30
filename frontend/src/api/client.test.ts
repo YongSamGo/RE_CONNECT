@@ -66,6 +66,15 @@ describe('contract transport', () => {
     const result = await createApiClient({ fetch: async () => new Response(null, { status: 204 }) }).POST('/auth/logout')
     expect(result.data).toBeUndefined()
   })
+  it('preserves the original successful response and transport metadata after buffering JSON', async () => {
+    const response = json(anonymousSession, 200, { 'Cache-Control': 'no-store' })
+    Object.defineProperty(response, 'url', { value: 'https://reconnect.test/api/v1/me' })
+    const result = await createApiClient({ fetch: async () => response }).GET('/me')
+    expect(result.response).toBe(response)
+    expect(result.response.url).toBe('https://reconnect.test/api/v1/me')
+    expect(result.response.headers.get('Cache-Control')).toBe('no-store')
+    expect(result.data).toEqual(anonymousSession)
+  })
   it.each(['fetch', 'Request', 'middleware'])('does not allow the %s extension to bypass transport policy', async (extension) => {
     const fetch = vi.fn()
     const override = vi.fn()
@@ -182,6 +191,51 @@ describe('contract transport', () => {
     await assertion
     expect(fetch).toHaveBeenCalledTimes(1)
     expect(vi.getTimerCount()).toBe(0)
+  })
+  it.each(['timeout', 'cancel'] as const)('ends %s even when transport never settles or acknowledges abort', async kind => {
+    vi.useFakeTimers()
+    const caller = new AbortController()
+    const fetch = vi.fn(() => new Promise<Response>(() => {}))
+    const request = createApiClient({ fetch, timeoutMs: 10 }).GET('/me', { signal: caller.signal })
+    const assertion = expect(request).rejects.toMatchObject({ code: kind === 'timeout' ? 'TIMEOUT' : 'CANCELLED' })
+    if (kind === 'cancel') caller.abort()
+    else await vi.advanceTimersByTimeAsync(10)
+    await assertion
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(fetch.mock.results[0]?.value).toBeInstanceOf(Promise)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+  it.each([200, 503])('bounds a stalled JSON/error body (%s) even if its stream ignores abort', async status => {
+    vi.useFakeTimers()
+    let stream!: ReadableStreamDefaultController<Uint8Array>
+    const response = new Response(new ReadableStream<Uint8Array>({ start(controller) { stream = controller } }), {
+      status, headers: { 'Content-Type': 'application/json' },
+    })
+    const fetch = vi.fn(async () => response)
+    const assertion = expect(createApiClient({ fetch, timeoutMs: 10 }).GET('/me')).rejects.toMatchObject({ code: 'TIMEOUT' })
+    await vi.advanceTimersByTimeAsync(10)
+    await assertion
+    // A late body failure is consumed and cannot become an unhandled rejection.
+    stream.error(new Error('private-late-body'))
+    await Promise.resolve()
+    expect(fetch).toHaveBeenCalledTimes(1)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+  it('ends cancellation while a speech stream ignores abort', async () => {
+    sessionCookie()
+    const caller = new AbortController()
+    let stream!: ReadableStreamDefaultController<Uint8Array>
+    const fetch = vi.fn(async () => new Response(new ReadableStream<Uint8Array>({ start(controller) { stream = controller } }), { headers: { 'Content-Type': 'audio/wav' } }))
+    const request = createApiClient({ fetch }).POST('/speech', {
+      signal: caller.signal, params: { header: { 'Idempotency-Key': crypto.randomUUID() } },
+      body: { target: { kind: 'opportunity', opportunity_id: crypto.randomUUID(), version: 1, field: 'title' }, segment: 0 }, parseAs: 'blob',
+    })
+    const assertion = expect(request).rejects.toMatchObject({ code: 'CANCELLED' })
+    await Promise.resolve()
+    caller.abort()
+    await assertion
+    stream.close()
+    expect(fetch).toHaveBeenCalledTimes(1)
   })
 })
 

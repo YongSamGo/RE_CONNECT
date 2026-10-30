@@ -17,12 +17,17 @@ export function useRequest<T>() {
     if (active.current && !active.current.aborted) return
     scope.clear()
     scope.setValue({ status: 'pending' })
-    await scope.run(async (signal): Promise<State<T>> => {
+    try { await scope.run(async (signal): Promise<State<T>> => {
       active.current = signal
       try { return { status: 'success', data: await action(api, signal) } }
       catch (error) { return { status: 'error', error: error instanceof ApiError ? error : new ApiError('INVALID_RESPONSE') } }
       finally { if (active.current === signal) active.current = null }
-    }, (result) => { scope.setValue(result); if (result.status === 'success') onSuccess?.(result.data) })
+    }, (result) => { scope.setValue(result); if (result.status === 'success') onSuccess?.(result.data) }) }
+    catch (error) {
+      // Apply callbacks can fail too. useMemoryScope only rethrows while this
+      // lifetime is still valid, so discarded callbacks cannot revive an error.
+      scope.setValue({ status: 'error', error: error instanceof ApiError ? error : new ApiError('INVALID_RESPONSE') })
+    }
   }
   return { state: scope.value, run, clear: scope.clear }
 }

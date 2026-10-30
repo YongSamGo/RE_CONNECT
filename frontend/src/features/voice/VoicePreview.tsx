@@ -4,10 +4,10 @@ import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { TextAreaField } from '../../ui/Fields'
 import { StatusNotice } from '../../ui/StatusNotice'
+import { closeAudioContext, recordingType, releasePlayer, releaseRecorder, revokeAudioUrl, stopTracks } from './media-resources'
 
 type Resources = { generation: number; mounted: boolean; busy: boolean; recorder: MediaRecorder | null; stream: MediaStream | null; timer: ReturnType<typeof setInterval> | null; url: string | null; chunks: Blob[]; size: number; player: HTMLAudioElement | null; blob: Blob | null; audio: AudioContext | null }
 const maxBytes = 6 * 1024 * 1024
-const formats = ['audio/webm;codecs=opus', 'audio/mp4;codecs=mp4a.40.2', 'audio/mp4']
 export type VoicePreviewStatus = 'idle' | 'permission' | 'recording' | 'ready' | 'error'
 export type VoicePreviewHandle = { toggleRecording: () => void; retryTranscription: () => void }
 
@@ -26,32 +26,33 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
 
   const release = useCallback(() => {
     const current = resources.current
-    if (current.player) { current.player.pause(); current.player.removeAttribute('src'); current.player.load(); current.player = null }
     current.generation += 1
     current.busy = false
     if (current.timer) clearInterval(current.timer)
     current.timer = null
-    if (current.recorder) {
-      current.recorder.ondataavailable = null
-      current.recorder.onstop = null
-      current.recorder.onerror = null
-      if (current.recorder.state !== 'inactive') current.recorder.stop()
-    }
+    const { player, recorder, stream, audio, url } = current
+    current.player = null
     current.recorder = null
-    current.stream?.getTracks().forEach((track) => { track.onended = null; track.stop() })
     current.stream = null
-    void current.audio?.close().catch(() => undefined)
     current.audio = null
-    if (current.url) URL.revokeObjectURL(current.url)
     current.url = null
     current.chunks = []
     current.size = 0
     current.blob = null
+    releasePlayer(player); releaseRecorder(recorder); stopTracks(stream); closeAudioContext(audio); revokeAudioUrl(url)
   }, [])
   function reset() {
     transcription?.onReset()
     release(); text.clear(); setAudioUrl(null); setSeconds(0); setError(''); setStatus('idle')
+    transcription?.onBusyChange?.(false)
   }
+  const stop = useCallback(() => {
+    const recorder = resources.current.recorder
+    if (recorder?.state !== 'recording') return
+    recordingStatus.current?.focus()
+    try { recorder.stop() }
+    catch { release(); setAudioUrl(null); setError('녹음을 마치지 못했어요. 다시 녹음하거나 글로 작성해 주세요.'); setStatus('error'); transcription?.onBusyChange?.(false) }
+  }, [release, transcription])
   useEffect(() => {
     const current = resources.current
     current.mounted = true
@@ -68,7 +69,7 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
     transcription?.onReset()
     release(); setAudioUrl(null); setSeconds(0); setError(''); setStatus('idle')
     if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') { setError('이 브라우저에서는 녹음을 사용할 수 없어요. 글로 작성해 주세요.'); setStatus('error'); transcription?.onBusyChange?.(false); return }
-    const mimeType = formats.find((format) => MediaRecorder.isTypeSupported(format))
+    const mimeType = recordingType()
     if (!mimeType) { setError('지원하는 녹음 형식이 없어요. 글로 작성해 주세요.'); setStatus('error'); transcription?.onBusyChange?.(false); return }
     const generation = current.generation
     current.busy = true
@@ -76,7 +77,7 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
     transcription?.onBusyChange?.(true)
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      if (!current.mounted || generation !== current.generation) { stream.getTracks().forEach((track) => track.stop()); return }
+      if (!current.mounted || generation !== current.generation) { stopTracks(stream); return }
       current.stream = stream
       const recorder = new MediaRecorder(stream, { mimeType })
       current.recorder = recorder
@@ -93,30 +94,35 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
         if (!valid()) return
         if (current.timer) clearInterval(current.timer)
         current.timer = null
-        current.stream?.getTracks().forEach((track) => { track.onended = null; track.stop() })
+        stopTracks(current.stream)
         current.stream = null
-        void current.audio?.close().catch(() => undefined)
+        closeAudioContext(current.audio)
         current.audio = null
         current.recorder = null
         current.busy = false
         if (!current.size) { fail('녹음된 소리가 없어요. 다시 녹음하거나 글로 작성해 주세요.'); return }
-        current.blob = new Blob(current.chunks, { type: mimeType })
-        current.url = URL.createObjectURL(current.blob)
-        current.chunks = []
-        setAudioUrl(current.url)
-        setStatus('ready')
-        if (transcription && embedded) transcription.onRequest(current.blob)
-        else transcription?.onBusyChange?.(false)
+        try {
+          current.blob = new Blob(current.chunks, { type: mimeType })
+          current.url = URL.createObjectURL(current.blob)
+          current.chunks = []
+          setAudioUrl(current.url)
+          setStatus('ready')
+          if (transcription && embedded) transcription.onRequest(current.blob)
+          else transcription?.onBusyChange?.(false)
+        } catch { fail('녹음을 확인하지 못했어요. 다시 녹음하거나 글로 작성해 주세요.') }
       }
       stream.getTracks().forEach((track) => { track.onended = () => fail('마이크 연결이 끊겨 녹음을 삭제했어요. 글로 작성하거나 다시 녹음해 주세요.') })
       recorder.start(250)
       const started = performance.now()
       // 말이 끝나면 저절로 멈춘다. 브라우저 안에서 소리 크기만 보고, 소리를 따로 저장하거나 보내지 않는다.
       // 말소리를 0.5초 넘게 들은 뒤 2.5초 조용하면 정지한다. 지원하지 않는 브라우저는 기존처럼 직접 멈춘다.
-      const meter = typeof AudioContext === 'undefined' ? null : new AudioContext()
-      current.audio = meter
-      const analyser = meter?.createAnalyser() ?? null
-      if (meter && analyser) { analyser.fftSize = 1024; meter.createMediaStreamSource(stream).connect(analyser) }
+      let analyser: AnalyserNode | null = null
+      try {
+        const meter = typeof AudioContext === 'undefined' ? null : new AudioContext()
+        current.audio = meter
+        analyser = meter?.createAnalyser() ?? null
+        if (meter && analyser) { analyser.fftSize = 1024; meter.createMediaStreamSource(stream).connect(analyser) }
+      } catch { closeAudioContext(current.audio); current.audio = null; analyser = null }
       const samples = new Float32Array(analyser?.fftSize ?? 0)
       let heard = 0, quietSince: number | null = null
       current.timer = setInterval(() => {
@@ -124,14 +130,15 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
         const now = performance.now()
         const elapsed = Math.floor((now - started) / 1000)
         setSeconds(Math.min(elapsed, 90))
-        if (elapsed >= 90 && recorder.state === 'recording') { recorder.stop(); return }
+        if (elapsed >= 90 && recorder.state === 'recording') { try { recorder.stop() } catch { fail('녹음을 마치지 못했어요. 다시 녹음하거나 글로 작성해 주세요.') }; return }
         if (!analyser || recorder.state !== 'recording') return
-        analyser.getFloatTimeDomainData(samples)
+        try { analyser.getFloatTimeDomainData(samples) }
+        catch { closeAudioContext(current.audio); current.audio = null; analyser = null; return }
         const level = Math.sqrt(samples.reduce((sum, value) => sum + value * value, 0) / samples.length)
         if (level > silenceLevel) { heard += 250; quietSince = null }
         else if (heard >= 500) {
           quietSince ??= now
-          if (now - quietSince >= silenceMs) { recordingStatus.current?.focus(); recorder.stop() }
+          if (now - quietSince >= silenceMs) { recordingStatus.current?.focus(); try { recorder.stop() } catch { fail('녹음을 마치지 못했어요. 다시 녹음하거나 글로 작성해 주세요.') } }
         }
       }, 250)
       setStatus('recording')
@@ -143,18 +150,18 @@ export const VoicePreview = forwardRef<VoicePreviewHandle, { onUseText?: (text: 
   useImperativeHandle(ref, () => ({
     toggleRecording: () => {
       const recorder = resources.current.recorder
-      if (recorder?.state === 'recording') { recordingStatus.current?.focus(); recorder.stop() }
+      if (recorder?.state === 'recording') stop()
       else void start()
     },
     retryTranscription: () => { const blob = resources.current.blob; if (blob) transcription?.onRequest(blob) },
-  }), [start, transcription])
+  }), [start, stop, transcription])
   return <div className="reading-width">{!embedded && <header className="page-heading"><p className="eyebrow">음성 입력</p>{transcription ? <h2>말로 경험을 입력해요</h2> : <h1>말로 경험을 입력해요</h1>}<p>녹음 시작을 누르면 브라우저에 마이크 권한을 요청합니다.</p></header>}
     {transcription && !embedded ? <StatusNotice title="녹음 후 직접 전사를 요청해 주세요">녹음은 90초 이내로 해 주세요. 파일 크기는 6MiB 이하여야 해요. 전사를 요청할 때만 음성을 서버로 보내며 AI 처리 동의를 확인합니다. 전사 결과를 수정하고 입력란으로 가져온 뒤 별도로 보내 주세요. 화면을 떠나면 기기 내 녹음을 지웁니다.</StatusNotice> : !transcription && <StatusNotice label="기기 내 녹음" title="음성 인식은 아직 연결되지 않았어요">녹음은 현재 화면에서만 재생하며 서버에 보내지 않습니다. 자동 전사 결과는 제공하지 않습니다. 개인정보는 녹음하지 마세요. 녹음은 90초 이내로 해 주세요. 파일 크기는 6MiB 이하여야 해요. 화면을 떠나면 녹음이 삭제돼요.</StatusNotice>}
     <section className="panel voice-recorder">{!embedded && <h2>녹음하고 들어보기</h2>}{(!embedded || status !== 'idle') && <p ref={recordingStatus} tabIndex={-1} role="status">{status === 'permission' ? '마이크 권한을 확인하고 있어요.' : status === 'recording' ? '녹음 중이에요. 말을 마치고 잠시 기다리면 저절로 멈춰요.' : status === 'ready' ? '녹음이 끝났어요.' : '녹음 상태를 확인해 주세요.'}</p>}
       {status === 'recording' && <p>녹음 시간 {seconds} / 90초</p>}
-      {!embedded && <div className="actions"><Button disabled={status === 'permission' || status === 'recording'} onClick={() => void start()}>{audioUrl ? '다시 녹음하기' : '녹음 시작하기'}</Button>{status === 'recording' && <Button variant="secondary" onClick={() => { const recorder = resources.current.recorder; if (recorder?.state === 'recording') { recordingStatus.current?.focus(); recorder.stop() } }}>녹음 마치기</Button>}<Button variant="secondary" onClick={reset}>녹음과 입력 취소하고 삭제</Button></div>}
+      {!embedded && <div className="actions"><Button disabled={status === 'permission' || status === 'recording'} onClick={() => void start()}>{audioUrl ? '다시 녹음하기' : '녹음 시작하기'}</Button>{status === 'recording' && <Button variant="secondary" onClick={stop}>녹음 마치기</Button>}<Button variant="secondary" onClick={reset}>녹음과 입력 취소하고 삭제</Button></div>}
       {audioUrl && !embedded && <audio ref={(element) => { if (element) resources.current.player = element }} className="voice-player" src={audioUrl} controls aria-label="내 녹음 들어보기" />}
-      {transcription && !embedded && audioUrl && <Button pending={transcription.pending} onClick={() => { const blob = resources.current.blob; if (blob) { resources.current.player?.pause(); transcription.onRequest(blob) } }}>녹음을 글로 바꾸기</Button>}
+      {transcription && !embedded && audioUrl && <Button pending={transcription.pending} onClick={() => { const blob = resources.current.blob; if (blob) { releasePlayer(resources.current.player); transcription.onRequest(blob) } }}>녹음을 글로 바꾸기</Button>}
       {status === 'error' && <StatusNotice kind="error" title="녹음을 사용할 수 없어요">{error}</StatusNotice>}
     </section>
     {!transcription && <><section className="panel"><h2>직접 글로 확인하기</h2><TextAreaField label="확인한 경험 문장" value={text.value} onChange={(event) => text.setValue(event.target.value)} maxLength={2000} hint="자동 전사가 아닙니다. 녹음한 내용을 직접 적거나 글로 입력해 주세요. 기존 경험 입력을 이 문장으로 바꿉니다." /><Button disabled={!text.value.trim()} onClick={() => { const confirmed = text.value; reset(); onUseText?.(confirmed) }}>이 문장을 경험 입력에 사용하기</Button></section>
