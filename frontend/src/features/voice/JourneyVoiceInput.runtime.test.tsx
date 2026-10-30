@@ -82,3 +82,23 @@ it('discards a late transcription after switching to typed answers', async () =>
   expect(fetch.mock.calls[1][0].signal.aborted).toBe(true)
   view.unmount()
 })
+
+it('starts and saves a recording with the space bar but leaves typing and buttons alone', async () => {
+  const mocks = await mount()
+  const stopQuestion = vi.fn()
+  window.addEventListener('reconnect:stop-question-audio', stopQuestion)
+  expect(screen.getByText('스페이스바를 눌러도 말하기를 시작할 수 있어요.')).toBeVisible()
+  await act(async () => { fireEvent.keyDown(document.body, { code: 'Space', key: ' ' }) })
+  expect(mocks.getUserMedia).toHaveBeenCalledOnce()
+  expect(stopQuestion).toHaveBeenCalledOnce()
+  expect(await screen.findByRole('button', { name: '말한 내용 저장하기' })).toBeEnabled()
+  // 키를 누르고 있어 반복되는 입력과 글 입력 칸의 스페이스는 녹음을 바꾸지 않는다.
+  fireEvent.keyDown(document.body, { code: 'Space', key: ' ', repeat: true })
+  const field = document.createElement('textarea'); document.body.append(field)
+  fireEvent.keyDown(field, { code: 'Space', key: ' ' })
+  field.remove()
+  expect(screen.getByRole('button', { name: '말한 내용 저장하기' })).toBeEnabled()
+  window.removeEventListener('reconnect:stop-question-audio', stopQuestion)
+  await userEvent.click(screen.getByRole('button', { name: '음성 입력 취소' }))
+  expect(mocks.track.stop).toHaveBeenCalled()
+})

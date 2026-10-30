@@ -60,6 +60,17 @@ it('shows concise summaries and opens only the selected field for editing',async
   expect(screen.getByRole('button',{name:'시군구 목록 불러오기'})).toBeVisible()
   expect(screen.queryByLabelText('경험 1 내용')).not.toBeInTheDocument()
 })
+it('loads public district names on open so the picker works without pressing the load button',async()=>{
+  const {fetch}=server()
+  const base=fetch.getMockImplementation()!
+  fetch.mockImplementation(async (request:Request)=>request.url.endsWith('/regions')
+    ? json({version:'2026-10-16',provinces:[{id:'seoul',name:'서울특별시',districts:[{id:'seongdong',name:'성동구'}]}]})
+    : base(request))
+  const user=mount();await loaded(user)
+  await user.click(screen.getByRole('button',{name:'희망 지역 수정하기'}))
+  expect(await screen.findByRole('option',{name:'성동구'})).toBeInTheDocument()
+  expect(fetch.mock.calls.filter(([request])=>(request as Request).url.endsWith('/regions'))).toHaveLength(1)
+})
 it('keeps unsaved experience text when cancelling discard and reloads only after confirmation',async()=>{
   const {fetch}=server();const user=mount();await editExperience(user)
   await user.type(screen.getByLabelText('경험 1 내용'),' 수정')

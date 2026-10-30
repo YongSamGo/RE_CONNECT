@@ -153,13 +153,14 @@ def _closest_span(target: list[tuple[str, str, str]], text: list[tuple[str, str,
     return min(previous)
 
 
-def _fuzzy_district(text: str) -> tuple[str, str] | None:
+def _fuzzy_district(text: str, context: str | None = None) -> tuple[str, str] | None:
     # 지역 질문의 짧은 답에만 쓴다. 긴 문장에서는 짧은 지명(구리시·하남시)이 우연히 비슷하게 잡힌다.
     if len(re.findall(r"[가-힣]", text)) > 25:
         return None
     letters = _syllables(text)
     # 시·도를 말했으면 그 안에서만 고르고, 말하지 않았으면 더 가깝게 들린 것만 받는다.
-    named = [province for province, word in _PROVINCE_WORDS.items() if word in text]
+    # 여러 곳을 말한 답은 조각별로 고르므로 시·도는 답 전체(context)에서 찾는다.
+    named = [province for province, word in _PROVINCE_WORDS.items() if word in (context or text)]
     limit = _FUZZY_MAX if named else 0.5
     scored = []
     for province, items in DISTRICTS.items():
@@ -178,10 +179,28 @@ def _fuzzy_district(text: str) -> tuple[str, str] | None:
     return scored[0][1], scored[0][2]
 
 
+def _matches(text: str) -> list[tuple[str, str]]:
+    return [(province, slug) for province, slug, pattern in _DISTRICT_PATTERNS if pattern.search(text)]
+
+
+# 음성 인식이 두 글자 지명 "중구"를 "중국"으로 적는다(2026-10-30 운영 시험). 두 글자 지명은 비슷한 소리로 고르지 않으므로
+# 지역 질문의 답에서만 이 말을 중구로 읽는다.
+_MISHEARD = [(re.compile(r"중국"), "중구")]
+# 여러 곳을 말한 답("광진구랑 송동구")은 조각마다 정확히 맞는 지명이 없을 때만 가장 비슷한 지명을 고른다.
+_SEPARATORS = re.compile(r"[,，·/]|\s(?:그리고|또는|아니면)\s|(?<=[가-힣])(?:이랑|랑|하고)(?=\s|$)")
+
+
 def read_regions(text: str) -> list[dict]:
     """답에 나온 시·군·구. 시·도만 말하면(예: "서울이면 다 좋아요") 그 시·도 전체로 본다. 최대 10곳."""
-    found = [(province, slug) for province, slug, pattern in _DISTRICT_PATTERNS if pattern.search(text)]
-    if not found and (closest := _fuzzy_district(text)) is not None:
+    for pattern, name in _MISHEARD:
+        text = pattern.sub(name, text)
+    found = _matches(text)
+    pieces = _SEPARATORS.split(text)
+    if len(pieces) > 1:
+        for piece in pieces:
+            if not _matches(piece) and (closest := _fuzzy_district(piece, text)) is not None and closest not in found:
+                found.append(closest)
+    elif not found and (closest := _fuzzy_district(text)) is not None:
         found = [closest]
     regions = [{"province": province, "district": slug} for province, slug in found]
     named = {province for province, _ in found}
@@ -191,7 +210,8 @@ def read_regions(text: str) -> list[dict]:
 
 
 _BOTH = re.compile(r"둘\s*다|상관\s*없|아무\s*거나|다\s*(좋|괜찮)")
-_EMPLOYMENT = re.compile(r"일자리|취업|급여|월급|유급|돈\s*(을\s*)?(벌|받)|직장")
+# "그결"·"그별"은 음성 인식이 질문의 "급여"를 잘못 적은 결과다(2026-10-30 운영 시험).
+_EMPLOYMENT = re.compile(r"일자리|취업|급여|그결|그별|월급|유급|알바|아르바이트|돈\s*(을\s*)?(벌|받)|직장")
 _VOLUNTEERING = re.compile(r"봉사|무급")
 
 
