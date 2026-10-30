@@ -117,7 +117,7 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
     {state.view && <>
       {state.view.confirmed && <p>수정한 초안은 아직 확정하지 않았습니다. 다시 확정하기 전의 추천은 이전 확정 프로필 기준이에요.</p>}
       <ConversationSurface><section className="conversation-question"><h2 id="conversation-question" ref={questionRef} tabIndex={-1}>{state.question ?? '프로필 내용을 확인해 주세요'}</h2>
-        {!state.ended && state.question && <QuestionAudio key={state.questionId ?? state.question} question={state.question} journeyId={journeyId} messageId={state.questionId} />}
+        {!state.ended && state.question && <QuestionAudio key={state.questionId ?? state.question} question={state.question} journeyId={journeyId} messageId={state.questionId} autoPlay />}
         <p role="status">{state.ended ? '초안에 반영했습니다. 프로필에서 내용을 확인하고 직접 확정해 주세요.' : sending ? '경험을 정리하고 있어요. 프로필 화면으로 이동할 수 있습니다.' : ''}</p>
         {(state.ended || (!sending && state.view.draft.experiences.length > 0)) && <div className="actions"><Link className={state.ended ? "button primary" : "button secondary"} to={`/journeys/${journeyId}/profile`}>정리한 경험 확인하기</Link></div>}
         {state.notices.map((notice, index) => <p key={index} className="user-text">{notice}</p>)}

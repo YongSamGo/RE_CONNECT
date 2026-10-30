@@ -5,6 +5,7 @@ import { useMemoryScope } from '../../state/useMemoryScope'
 import { Button } from '../../ui/Button'
 import { RequestError } from '../../ui/StatusNotice'
 import { parseSession } from '../account/session'
+import { STOP_QUESTION_AUDIO } from './media-resources'
 import { VoicePreview, type VoicePreviewHandle, type VoicePreviewStatus } from './VoicePreview'
 import { parseTranscription } from './transcription'
 import type { Transcript } from './transcription'
@@ -57,16 +58,37 @@ export function JourneyVoiceInput({ journeyId, voiceSelected = true, disabled = 
   const busy = pending || recordingStatus === 'permission'
   const retrying = !!attempt.value && request.state.status === 'error'
   const transcriptReady = voiceSelected && request.state.status === 'success'
+  const speakDisabled = disabled || (busy && !recording)
+  const speak = () => {
+    // 말하기를 시작하면 읽어 주던 질문 소리를 멈춘다. 녹음에 질문 소리가 섞이지 않게 한다.
+    window.dispatchEvent(new Event(STOP_QUESTION_AUDIO))
+    if (!voiceSelected) onSelectVoice?.()
+    if (retrying) preview.current?.retryTranscription()
+    else { if (recordingStatus === 'ready' || recordingStatus === 'error') onRestart?.(); preview.current?.toggleRecording() }
+  }
+  const latest = useRef({ speak, enabled: false })
+  const speakEnabled = !transcriptReady && !speakDisabled
+  useEffect(() => { latest.current = { speak, enabled: speakEnabled } })
+  useEffect(() => {
+    // 마우스로 버튼을 매번 누르지 않도록 스페이스바로 말하기를 시작·저장한다. 글을 쓰는 칸, 버튼(스페이스로 이미 눌림),
+    // 열린 확인 창에서는 가로채지 않는다.
+    const onKey = (event: KeyboardEvent) => {
+      if (event.code !== 'Space' || event.repeat || event.altKey || event.ctrlKey || event.metaKey || !latest.current.enabled) return
+      const target = event.target instanceof HTMLElement ? event.target : null
+      if (target?.closest('input, textarea, select, button, a, [contenteditable="true"], dialog[open]') || document.querySelector('dialog[open]')) return
+      event.preventDefault()
+      latest.current.speak()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
   return <section className="conversation-voice-input" aria-label="답변 입력 방식">
     <div className="conversation-input-choice" id="conversation-speak" role="group" aria-label="답변 입력 방식">
-      {!transcriptReady && <Button variant={voiceSelected ? 'primary' : 'secondary'} aria-pressed={voiceSelected} disabled={disabled || (busy && !recording)} onClick={() => {
-        if (!voiceSelected) onSelectVoice?.()
-        if (retrying) preview.current?.retryTranscription()
-        else { if (recordingStatus === 'ready' || recordingStatus === 'error') onRestart?.(); preview.current?.toggleRecording() }
-      }}>{recording ? '말한 내용 저장하기' : retrying ? '같은 녹음 다시 확인' : recordingStatus === 'permission' ? '마이크 확인 중' : '말하기'}</Button>}
+      {!transcriptReady && <Button variant={voiceSelected ? 'primary' : 'secondary'} aria-pressed={voiceSelected} aria-keyshortcuts="Space" disabled={speakDisabled} onClick={speak}>{recording ? '말한 내용 저장하기' : retrying ? '같은 녹음 다시 확인' : recordingStatus === 'permission' ? '마이크 확인 중' : '말하기'}</Button>}
       <Button variant={!voiceSelected ? 'primary' : 'secondary'} aria-pressed={!voiceSelected} disabled={disabled} onClick={() => { cancelRecording(); onSelectText?.() }}>글로 답하기</Button>
       {(busy || recording) && <Button variant="secondary" onClick={cancelRecording}>음성 입력 취소</Button>}
     </div>
+    {!transcriptReady && !speakDisabled && <p className="conversation-voice-hint">스페이스바를 눌러도 {recording ? '말한 내용을 저장할' : '말하기를 시작할'} 수 있어요.</p>}
     <div className="conversation-voice-mode" hidden={!voiceSelected}>
       <VoicePreview ref={preview} embedded key={recorder.value} onStatusChange={setRecordingStatus} transcription={{ pending, onRequest: transcribe, onReset: cancel, onBusyChange }} />
     </div>

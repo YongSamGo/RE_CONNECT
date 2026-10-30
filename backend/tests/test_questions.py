@@ -138,6 +138,8 @@ def test_read_regions_is_capped_and_long_input_is_safe():
     ("봉사요", ["volunteering"]), ("돈 받는 일이요", ["employment"]), ("취업하고 싶어요", ["employment"]),
     ("둘 다 괜찮아요", ["employment", "volunteering"]), ("무급도 괜찮아요", ["volunteering"]),
     ("봉사 일하고 싶어요", ["volunteering"]), ("잘 모르겠어요", []),
+    # 음성 인식이 "급여"를 잘못 적은 실제 결과(2026-10-30 운영 시험)
+    ("그결을 받고 싶다", ["employment"]), ("그별을 받고 싶어요", ["employment"]), ("알바 같은 거요", ["employment"]),
 ])
 def test_read_activity_types(text, kinds):
     assert questions.read_activity_types(text) == kinds
@@ -151,6 +153,21 @@ def test_read_activity_types(text, kinds):
 ])
 def test_read_regions_picks_closest_district_for_misheard_names(heard, district):
     assert [item["district"] for item in questions.read_regions(heard)] == [district]
+
+
+# 2026-10-30 운영 시험: "성동구" → "송동구", "중구" → "중국"
+@pytest.mark.parametrize(("heard", "districts"), [
+    ("송동구요", ["seongdong"]), ("중국이요", ["jung"]), ("서울 중국이요", ["jung"]),
+    ("광진구랑 송동구", ["gwangjin", "seongdong"]), ("송동구, 광진구", ["gwangjin", "seongdong"]),
+    ("서울 중국하고 송동구", ["jung", "seongdong"]),
+])
+def test_read_regions_fixes_misheard_names_in_each_part(heard, districts):
+    assert sorted(item["district"] for item in questions.read_regions(heard)) == sorted(districts)
+
+
+@pytest.mark.parametrize("text", ["남동생이랑 살아요, 잘 모르겠어요", "택시 했어요 그리고 한 삼십 년"])
+def test_split_answers_do_not_guess_from_unrelated_parts(text):
+    assert questions.read_regions(text) == []
 
 
 @pytest.mark.parametrize("text", [

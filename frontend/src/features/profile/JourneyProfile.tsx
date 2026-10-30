@@ -94,6 +94,13 @@ export function JourneyProfile({ journeyId, autoLoad = false }: { journeyId: str
   const catalog = regions.state.status === 'success' ? regions.state.data : null
   const clearEditor = scope.clear
   const saving = useMemoryScope(() => false)
+  const loadRegions = () => void regions.run(async (api, signal) => parseRegionCatalog(required((await api.GET('/regions', { signal })).data)))
+  // 공개 지역 목록은 개인 자료가 아니므로 화면을 열 때 바로 불러와 시군구 이름과 선택지를 보여준다. 버튼은 다시 시도용이다.
+  useEffect(() => {
+    if (regions.state.status === 'idle') loadRegions()
+  // 처음 열 때 한 번만 부른다.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   useEffect(() => {
     if (editing) document.querySelector<HTMLElement>('#profile-editor textarea, #profile-editor input:not([type="checkbox"]), #profile-editor select, #profile-editor button')?.focus()
     else if (wasEditing.current) document.getElementById(`profile-edit-${lastEditingField.current}`)?.focus()
@@ -174,7 +181,7 @@ export function JourneyProfile({ journeyId, autoLoad = false }: { journeyId: str
           <Button variant="secondary" onClick={() => update({ ...state.draft, experiences: state.draft.experiences.filter((_, i) => i !== index) }, state.experienceKeys.filter((_, i) => i !== index))}>경험 {index + 1} 삭제</Button></details></div>)}
           <Button variant="secondary" disabled={state.draft.experiences.length >= 20} onClick={() => update({ ...state.draft, experiences: [...state.draft.experiences, { id: null, description: '', duration_note: null, skill_tags: [] }] }, [...state.experienceKeys, crypto.randomUUID()])}>경험 추가</Button></section>}
         {editingField === 'preferred_regions' && <section className="panel" id="server-regions" tabIndex={-1}>
-          <Button variant="secondary" pending={regions.state.status === 'pending'} onClick={() => void regions.run(async (api, signal) => parseRegionCatalog(required((await api.GET('/regions', { signal })).data)))}>시군구 목록 불러오기</Button>
+          <Button variant="secondary" pending={regions.state.status === 'pending'} onClick={loadRegions}>시군구 목록 불러오기</Button>
           {regions.state.status === 'error' && <RequestError error={regions.state.error} />}
               <RegionPicker label="희망 지역" value={state.draft.preferred_regions} max={10} catalog={catalog} onChange={preferred_regions => update({ ...state.draft, preferred_regions })} /></section>}
         {editingField === 'activity_types' && <fieldset id="server-activities" tabIndex={-1}><legend>활동 유형</legend>{(['employment', 'volunteering'] as const).map(type => <CheckboxField key={type} label={type === 'employment' ? '취업 및 공공일자리' : '봉사'} checked={state.draft.activity_types.includes(type)} onChange={event => update({ ...state.draft, activity_types: event.target.checked ? [...state.draft.activity_types, type] : state.draft.activity_types.filter(t => t !== type) })} />)}</fieldset>}
