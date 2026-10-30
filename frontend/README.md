@@ -59,6 +59,7 @@ React·TypeScript·Vite로 만든다. 운영에서는 빌드한 정적 파일을
 - `npm run typecheck`는 `typescript-compiler` 별칭으로 설치한 TypeScript 7.0.2 컴파일러를 사용한다. `npm run build`도 이 명령을 실행한다. API 타입 생성기는 `openapi-typescript` 7.13.0의 peer 요구와 `ts.factory` API에 맞춰 `typescript` 5.9.3을 별도로 사용한다. 두 패키지가 제공하는 `tsc` 실행 파일 이름이 같으므로 컴파일러 경로를 명시한다. API 생성기가 새 컴파일러 API를 지원하면 이 분리를 재검토한다.
 - 패키지 매니저는 npm이다. `package-lock.json`을 커밋하고, 설치는 `npm ci --ignore-scripts`로 한다. CI도 같은 명령으로 설치 스크립트 실행을 막는다.
 - `package.json`에 `lint`·`build` 스크립트를 둔다. CI가 `npm run lint`, `npm test --if-present`, `npm run build`를 실행한다.
+- `.oxlintrc.json`의 `react/exhaustive-deps`와 `promise/catch-or-return`을 오류로 검사한다. 효과의 누락된 의존성과 실패 처리 없는 `.then()` 체인을 확인한다. 경고를 없애려고 의존성을 일괄 추가하지 말고 화면 수명·요청 중복 여부를 먼저 확인한다. 이 규칙이 모든 비동기 실패를 검증하는 것은 아니다.
 
 `package-lock.json`이 생기면 CI의 프론트엔드 점검이 자동으로 켜진다. 같은 PR에서 [dependabot.yml](../.github/dependabot.yml)의 `npm` 항목 주석을 해제한다.
 

@@ -111,4 +111,11 @@ describe('accessible shared controls', () => {
     render(<RequestError error={new ApiError('CANCELLED')} />)
     expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
+  it('shows the validated retry delay without automatically retrying', () => {
+    const retry = vi.fn()
+    render(<RequestError error={new ApiError('INFERENCE_BUSY', 429, undefined, 30)} actions={<Button onClick={retry}>다시 확인</Button>} />)
+    expect(screen.getByRole('alert')).toHaveTextContent('30초 후 다시 시도해 주세요.')
+    expect(screen.getByRole('button', { name: '다시 확인' })).toBeEnabled()
+    expect(retry).not.toHaveBeenCalled()
+  })
 })

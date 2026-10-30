@@ -6,23 +6,23 @@ import { CheckboxField, TextAreaField } from '../../ui/Fields'
 import { RequestError } from '../../ui/StatusNotice'
 import { invalid, record, text, timestamp } from '../public-opportunities/catalog'
 import { officialLink } from '../public-opportunities/detail'
-import { parseRequirements } from './editor'
+import { opportunityReviewWarnings, parseOpportunityInput } from './editor'
 import { RequirementSummary } from './RequirementEditor'
 
-type Content = { title: string; description: string | null; instructions: string; requirements: components['schemas']['Requirement'][]; documents: string[] | null; source: string }
+type Content = { title: string; description: string | null; instructions: string; requirements: components['schemas']['Requirement'][]; documents: string[] | null; source: string; warnings: string[]; skills: string[]; roles: string[] }
 type Review = { version: number; status: string; content: Content; previous: Content | null; changed: string[]; important: boolean }
 type RejectReason = components['schemas']['OpportunityRejectRequest']['reason_code']
 type CloseBasis = components['schemas']['OpportunityCloseRequest']['basis']
 const rejectReasons: Record<RejectReason, string> = { source_unverifiable: '공식 원문·접수 경로 확인 불가', out_of_scope: '지원 지역·유형 범위 밖', recruitment_closed: '이미 모집 종료', duplicate: '중복 공고', insufficient_information: '필수 정보 부족', inappropriate_content: '부적절한 내용', other: '기타 · 설명 필요' }
 const closeReasons: Record<CloseBasis, string> = { source_closed: '공식 원문에서 종료 확인', deadline_passed: '접수 마감 경과 확인', organization_notice: '기관의 모집 종료 안내', report_confirmed: '신고 내용 대조 후 종료 확인', other: '기타 · 설명 필요' }
 function content(value: unknown): Content {
-  const item = record(value)
-  if (!Array.isArray(item.requirements) || (item.required_documents !== null && !Array.isArray(item.required_documents))) return invalid()
-  return { title: text(item.title, 200), description: item.description_text === null ? null : text(item.description_text, 5000), instructions: text(item.application_instructions, 2000), source: text(item.source_url, 2048), requirements: parseRequirements(item.requirements), documents: item.required_documents === null ? null : item.required_documents.map((value) => text(value, 200)) }
+  const item = parseOpportunityInput(value)
+  return { title: item.title, description: item.description_text, instructions: item.application_instructions, source: item.source_url,
+    requirements: item.requirements, documents: item.required_documents, warnings: opportunityReviewWarnings(item), skills: item.skill_tags, roles: item.role_tags }
 }
 function ShowContent({ value, title }: { value: Content; title: string }) {
   const source = officialLink(value.source)
-  return <section className="review-source"><h3>{title} · {value.title}</h3><p className="user-text">{value.description ?? '설명 없음'}</p><h4>조건 원문</h4><RequirementSummary items={value.requirements} /><h4>필요 서류</h4>{value.documents === null ? <p>서류 확인 필요</p> : <ul>{value.documents.map((value, index) => <li key={index}>{value}</li>)}</ul>}<h4>신청 방법</h4><p className="user-text">{value.instructions}</p>{source ? <a className="text-link" href={source.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">공식 원문 · {source.host} (새 창)</a> : <p>확인된 공식 상세 주소가 없어 승인할 수 없습니다.</p>}</section>
+  return <section className="review-source"><h3>{title} · {value.title}</h3><p className="user-text">{value.description ?? '설명 없음'}</p><h4>추천에 연결할 역할과 역량</h4><p>역할: {value.roles.join(', ') || '미입력'}</p><p>역량: {value.skills.join(', ') || '미입력'}</p>{value.warnings.length > 0 && <aside aria-label="공개 전 확인할 항목"><h4>공개 전 확인할 항목</h4><ul>{value.warnings.map((warning) => <li key={warning}>{warning}</li>)}</ul></aside>}<h4>조건 원문</h4><RequirementSummary items={value.requirements} /><h4>필요 서류</h4>{value.documents === null ? <p>서류 확인 필요</p> : <ul>{value.documents.map((value, index) => <li key={index}>{value}</li>)}</ul>}<h4>신청 방법</h4><p className="user-text">{value.instructions}</p>{source ? <a className="text-link" href={source.href} target="_blank" rel="noopener noreferrer" referrerPolicy="no-referrer">공식 원문 · {source.host} (새 창)</a> : <p>확인된 공식 상세 주소가 없어 승인할 수 없습니다.</p>}</section>
 }
 export function OpportunityReview({ id, version }: { id: string; version: number }) {
   const headingRef = useRef<HTMLHeadingElement>(null)

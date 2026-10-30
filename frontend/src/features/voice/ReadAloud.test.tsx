@@ -8,6 +8,44 @@ const target = { kind: 'opportunity', opportunity_id: '12345678-1234-1234-1234-1
 const json = (value: unknown) => new Response(JSON.stringify(value), { headers: { 'Content-Type': 'application/json' } })
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 describe('read aloud consent and resources', () => {
+  it('handles synchronous playback failure and releases the URL even when player cleanup throws', async () => {
+    document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    vi.stubGlobal('fetch', vi.fn(async (request: Request) => request.method === 'GET' ? json(anonymousSession) : new Response('RIFF', { headers: { 'Content-Type': 'audio/wav', 'X-Speech-Segment-Count': '1' } })))
+    const revoke = vi.fn()
+    vi.stubGlobal('URL', Object.assign(class extends URL {}, { createObjectURL: () => 'blob:failed-player', revokeObjectURL: revoke }))
+    vi.stubGlobal('Audio', class {
+      onended = null; onerror = null
+      play() { throw new Error('private-playback') }
+      pause() { throw new Error('private-pause') }
+      removeAttribute() {}
+      load() { throw new Error('private-load') }
+    })
+    render(<ReadAloud target={target} label="제목 읽어주기" />)
+    await userEvent.click(screen.getByRole('button', { name: '제목 읽어주기' }))
+    expect(await screen.findByRole('alert')).toHaveTextContent('소리를 재생하지 못했어요')
+    await userEvent.click(screen.getByRole('button', { name: '읽어주기 중지' }))
+    expect(revoke).toHaveBeenCalledWith('blob:failed-player')
+    expect(document.body).not.toHaveTextContent('private')
+  })
+  it('keeps a failed player stopped if its pending play promise resolves after the error event', async () => {
+    document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
+    vi.stubGlobal('fetch', vi.fn(async (request: Request) => request.method === 'GET' ? json(anonymousSession) : new Response('RIFF', { headers: { 'Content-Type': 'audio/wav', 'X-Speech-Segment-Count': '1' } })))
+    vi.stubGlobal('URL', Object.assign(class extends URL {}, { createObjectURL: () => 'blob:late-play', revokeObjectURL: vi.fn() }))
+    let finish!: () => void, fail!: () => void
+    vi.stubGlobal('Audio', class {
+      onended = null
+      set onerror(handler: (() => void) | null) { if (handler) fail = handler }
+      play() { return new Promise<void>(resolve => { finish = resolve }) }
+      pause() {}; removeAttribute() {}; load() {}
+    })
+    render(<ReadAloud target={target} label="제목 읽어주기" />)
+    await userEvent.click(screen.getByRole('button', { name: '제목 읽어주기' }))
+    await screen.findByText(/1개 부분 중 1번째 부분/)
+    act(() => fail())
+    await act(async () => finish())
+    expect(screen.getByRole('button', { name: '제목 읽어주기' })).toBeEnabled()
+    expect(screen.getByRole('alert')).toHaveTextContent('소리를 재생하지 못했어요')
+  })
   it('requires reloading the source after a version conflict', async () => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
     const fetch = vi.fn(async (request: Request) => request.method === 'GET' ? json(anonymousSession) : new Response(JSON.stringify({ code: 'VERSION_CONFLICT', message: 'private version' }), { status: 409, headers: { 'Content-Type': 'application/json' } }))
