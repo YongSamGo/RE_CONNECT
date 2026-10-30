@@ -570,3 +570,24 @@ def test_credential_phrases_are_not_kept_as_skills():
                 skills=[quote("요양보호사 자격증도 땄고요."), quote("간호조무사")], standard_tags=["환자 돌봄"])
     result, _ = extract(dict(experiences=[item]), texts=texts, standard_tags={"환자 돌봄": ["간호조무사"]})
     assert result.experiences[0].skill_tags == ["환자 돌봄", "간호조무사"]
+
+
+def test_workplace_phrases_are_not_kept_as_skills():
+    # 2026-10-30 운영 시험: "식당에서 10년 일했습니다" → 기술 "식당에서". 장소는 버리고 기간이 있으니 경험은 남긴다.
+    texts = ["식당에서 10년 일했습니다"]
+    item = dict(existing_id=None, description=quote("식당에서 10년 일했습니다"), duration=quote("10년"),
+                skills=[quote("식당에서")], standard_tags=[])
+    result, _ = extract(dict(experiences=[item]), texts=texts, standard_tags={"조리": ["요리"]})
+    assert [(e.duration_note, e.skill_tags) for e in result.experiences] == [("10년", [])]
+
+
+@pytest.mark.parametrize("text", ["식당에서", "복지관에", "시장에선", "주방에서는 "])
+def test_place_phrase_detects_locative_endings(text):
+    from app.modules.generation import wording
+    assert wording.place_phrase(text)
+
+
+@pytest.mark.parametrize("text", ["조리", "설거지", "주방 보조", "손님 응대", "배달", "재고 관리", "운전", "도로 청소", "회로 조립"])
+def test_place_phrase_keeps_task_words(text):
+    from app.modules.generation import wording
+    assert not wording.place_phrase(text)
