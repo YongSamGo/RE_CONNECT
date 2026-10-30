@@ -23,7 +23,7 @@ describe('public detail display boundary', () => {
     { application_method: 'automatic' }, { required_documents: [''] }, { requirements: [{ clarity: 'clear' }] },
     { requirements: [{ source_evidence: '원문', clarity: 'maybe' }] }, { source_checked_at: null },
     { reviewed_at: '2026-02-30T09:00:00Z' }, { source_url: null }, { application_url: 'x'.repeat(2049) },
-    { role_tags: null }, { role_tags: ['Bad Id'] }, { role_tags: Array(11).fill('care_assistant') }, { skill_tags: ['x'.repeat(51)] }, { skill_tags: Array(21).fill('조리') },
+    { role_tags: null }, { role_tags: ['Bad Id'] }, { role_tags: ['r'.repeat(65)] }, { role_tags: Array(11).fill('care_assistant') }, { skill_tags: ['x'.repeat(51)] }, { skill_tags: Array(21).fill('조리') },
   ])('rejects malformed or mismatched detail %j', (changes) => {
     expect(() => parseDetail({ ...sampleDetail(), ...changes }, id)).toThrow('응답을 확인하지 못했습니다')
   })

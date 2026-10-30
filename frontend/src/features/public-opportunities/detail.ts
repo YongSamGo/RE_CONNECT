@@ -30,9 +30,9 @@ export function parseDetail(value: unknown, requestedId: string): PublicDetail {
   })
   const documents = item.required_documents
   if (documents !== null && !Array.isArray(documents)) return invalid()
-  // 검수에서 붙인 역할·역량 태그. 계약 한도(역할 10개, 역량 20개)를 넘거나 형식이 다르면 실패로 닫는다.
+  // 검수에서 붙인 역할·역량 태그. 계약 한도(역할 10개·ID 64자, 역량 20개·50자)를 넘거나 형식이 다르면 실패로 닫는다.
   if (!Array.isArray(item.role_tags) || item.role_tags.length > 10 || !Array.isArray(item.skill_tags) || item.skill_tags.length > 20) return invalid()
-  const role_tags = item.role_tags.map((value) => { const id = text(value, 40); return /^[a-z][a-z0-9_]{1,39}$/.test(id) ? id : invalid() })
+  const role_tags = item.role_tags.map((value) => { const id = text(value, 64); return /^[a-z][a-z0-9_]{1,63}$/.test(id) ? id : invalid() })
   const skill_tags = item.skill_tags.map((value) => text(value, 50))
   const checked = timestamp(item.source_checked_at)
   const reviewed = timestamp(item.reviewed_at)
