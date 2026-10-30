@@ -16,6 +16,7 @@ import type { MessageInput, MessageResult, ProfileView } from './model'
 import { ConversationSurface, ServicePage } from '../../ui/ServicePage'
 import { QuestionAudio } from './QuestionAudio'
 import { ConversationGuide } from './ConversationGuide'
+import { ConversationRegionPicker } from './ConversationRegionPicker'
 import './conversation-task.css'
 
 type Attempt = { key: string; body: MessageInput }
@@ -47,6 +48,8 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
   const sending = send.state.status === 'pending'
   const requestPending = sending || read.state.status === 'pending'
   const pending = requestPending || state.voiceBusy
+  // 음성 인식이 지명을 잘못 들어도 고칠 수 있게, 희망 지역을 묻는 동안 목록 선택을 함께 둔다.
+  const askingRegion = !!state.view && !state.ended && !!state.question?.includes('지역') && state.view.draft.preferred_regions.length === 0
   const setScopedValue = scope.setValue
   const voiceBusyChanged = useCallback((voiceBusy: boolean) => setScopedValue(previous => previous.voiceBusy === voiceBusy ? previous : { ...previous, voiceBusy }), [setScopedValue])
   const clear = scope.clear
@@ -137,6 +140,10 @@ export function JourneyConversation({ journeyId }: { journeyId: string }) {
         <form onSubmit={event => { event.preventDefault(); confirmDialog.current?.showModal() }}>
           <TextAreaField id="conversation-message-input" label={state.transcriptionId ? '말씀하신 내용 확인' : '내 답변'} value={state.text} rows={4} maxLength={2000} disabled={pending || !!state.attempt}
             onChange={event => scope.setValue(previous => ({ ...previous, text: event.target.value }))} />
+          {askingRegion && <ConversationRegionPicker disabled={pending || !!state.attempt} onInsert={place => scope.setValue(previous => {
+            const text = previous.text.trim()
+            return text.includes(place) ? previous : { ...previous, text: text ? `${text}, ${place}` : place }
+          })} />}
           {!(state.voice && state.transcriptionId) && <Button type="submit" pending={sending} disabled={pending || state.conflict || !state.text.trim()}>완료하기</Button>}
         </form>
         <dialog ref={confirmDialog} className="conversation-confirm-dialog" aria-labelledby="conversation-confirm-title" onCancel={event => { if (sending) event.preventDefault() }}>

@@ -54,10 +54,13 @@ async function editExperience(user:ReturnType<typeof userEvent.setup>) {
   await loaded(user);await user.click(screen.getByRole('button',{name:'내가 해온 일 수정하기'}))
 }
 it('shows concise summaries and opens only the selected field for editing',async()=>{
-  server();const user=mount();await loaded(user)
+  const {fetch}=server();const user=mount();await loaded(user)
   expect(screen.queryByRole('textbox')).not.toBeInTheDocument()
+  const regionReads=()=>fetch.mock.calls.filter(([request])=>(request as Request).url.endsWith('/regions')).length
+  expect(regionReads()).toBe(0)
   await user.click(screen.getByRole('button',{name:'희망 지역 수정하기'}))
   expect(screen.getByRole('button',{name:'시군구 목록 불러오기'})).toBeVisible()
+  await vi.waitFor(()=>expect(regionReads()).toBe(1))
   expect(screen.queryByLabelText('경험 1 내용')).not.toBeInTheDocument()
 })
 it('keeps unsaved experience text when cancelling discard and reloads only after confirmation',async()=>{
