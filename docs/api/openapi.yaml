@@ -2310,6 +2310,28 @@ paths:
                     request_id: req_01JABCDXYZ
         '503': { $ref: '#/components/responses/ServiceUnavailable' }
 
+  /admin/role-catalog:
+    get:
+      tags: [운영자]
+      operationId: getAdminRoleCatalog
+      summary: 공고 검수용 역할과 역량 사전 조회
+      description: 운영자 역할과 현재 세션의 MFA를 확인한 뒤 운영 DB의 역할 사전을 반환한다. 공고의 태그는 자동으로 선택하지 않는다.
+      security:
+        - sessionCookie: []
+      responses:
+        '200':
+          description: 운영 역할 사전
+          headers:
+            X-Request-ID: { $ref: '#/components/headers/XRequestId' }
+            Cache-Control: { $ref: '#/components/headers/NoStore' }
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AdminRoleCatalog' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+        '503': { $ref: '#/components/responses/ServiceUnavailable' }
+
   /admin/opportunities:
     get:
       tags: [운영자]
@@ -5065,6 +5087,30 @@ components:
         important_change: { type: boolean }
         source_checked_at: { type: string, format: date-time }
         updated_at: { type: string, format: date-time }
+
+    AdminCatalogRole:
+      type: object
+      additionalProperties: false
+      required: [id, name, description, skill_tags]
+      properties:
+        id: { type: string, pattern: '^[a-z][a-z0-9_]{1,63}$', maxLength: 64 }
+        name: { type: string, minLength: 1, maxLength: 50 }
+        description: { type: string, minLength: 1, maxLength: 300 }
+        skill_tags:
+          type: array
+          maxItems: 20
+          uniqueItems: true
+          items: { type: string, minLength: 1, maxLength: 50 }
+
+    AdminRoleCatalog:
+      type: object
+      additionalProperties: false
+      required: [items]
+      properties:
+        items:
+          type: array
+          maxItems: 500
+          items: { $ref: '#/components/schemas/AdminCatalogRole' }
 
     AdminOpportunityList:
       type: object

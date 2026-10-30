@@ -2,6 +2,35 @@ import type { components } from '../../api/schema'
 import { invalid, isOpportunityId, record, timestamp } from '../public-opportunities/catalog'
 
 export type OpportunityInput = components['schemas']['OpportunityInput']
+
+export function parseSkillLines(value: string): string[] {
+  const items = value.split(/\r?\n/).map((item) => item.trim().normalize('NFC')).filter(Boolean)
+  if (items.length > 20 || items.some((item) => [...item].length > 50 || /[\p{C}\p{Zl}\p{Zp}]/u.test(item))
+    || new Set(items.map((item) => item.replace(/\s+/g, ' ').toLowerCase())).size !== items.length) return invalid()
+  return items
+}
+
+export function parseRoleCatalog(value: unknown): components['schemas']['AdminCatalogRole'][] {
+  const result = record(value)
+  const roles = list(result.items, 500, (value) => {
+    const item = record(value)
+    const id = string(item.id, 64, true)
+    if (!/^[a-z][a-z0-9_]{1,63}$/.test(id)) return invalid()
+    const tags = list(item.skill_tags, 20, (tag) => string(tag, 50, true))
+    if (new Set(tags).size !== tags.length) return invalid()
+    return { id, name: string(item.name, 50, true), description: string(item.description, 300, true), skill_tags: tags }
+  })
+  if (new Set(roles.map((role) => role.id)).size !== roles.length) return invalid()
+  return roles
+}
+
+export function opportunityReviewWarnings(input: Pick<OpportunityInput, 'skill_tags' | 'activity_region' | 'remote_allowed' | 'requirements'>): string[] {
+  const warnings: string[] = []
+  if (!input.skill_tags.length) warnings.push('경험과 대조할 역량이 없어 추천에서 제외될 수 있습니다.')
+  if (input.activity_region === null && input.remote_allowed !== true) warnings.push('활동 지역과 원격 가능 여부를 확인해야 합니다.')
+  if (input.requirements.some((item) => item.field === 'other' || item.clarity === 'needs_review')) warnings.push('해석하지 못한 필수조건이 남아 있습니다. 원문 조건을 보완한 뒤 공개 여부를 판단하세요.')
+  return warnings
+}
 type Requirement = components['schemas']['Requirement']
 function string(value: unknown, max: number, required = false): string {
   return typeof value === 'string' && [...value].length <= max && (!required || !!value.trim()) ? value : invalid()

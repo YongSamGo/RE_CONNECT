@@ -34,6 +34,8 @@ from app.modules.opportunity_reviews.service import OpportunityReviewService
 from app.modules.reports.repository import SqlReportRepository
 from app.modules.reports.service import ReportService
 from app.modules.reports.store import RedisReportStore
+from app.modules.roles.repository import SQLRoleCatalog
+from app.modules.roles.service import RoleService
 from app.persistence import (
     AuditEvent, OpportunityDocument, OpportunityPublication, OpportunityReview, OpportunityVersion, OpportunityWriteReceipt,
     Report, Source,
@@ -59,6 +61,7 @@ def admin_actions(pending: UUID, report: UUID):
     """(method, path, body). 운영자 경로가 새로 생기면 test_matrix_covers_every_admin_route가 실패한다."""
     base = f"/api/v1/admin/opportunities/{pending}"
     return [
+        ("GET", "/api/v1/admin/role-catalog", None),
         ("GET", "/api/v1/admin/opportunities", None),
         ("POST", "/api/v1/admin/opportunities", create_body()),
         ("GET", base, None),
@@ -80,6 +83,7 @@ def wire(ctx):
     app.state.opportunity_service = PublicOpportunityService(SqlPublicOpportunityRepository(engine.connect))
     app.state.opportunity_review_service = OpportunityReviewService(SqlOpportunityReviewRepository(engine.begin))
     app.state.admin_opportunity_service = AdminOpportunityService(SqlAdminOpportunityRepository(sessionmaker(engine).begin))
+    app.state.role_service = RoleService(app.state.journey_service, SQLRoleCatalog(engine.connect))
     app.state.audit_service = AuditService(SqlAuditRepository(engine.connect, engine.begin))
     app.state.report_service = ReportService(RedisReportStore(ctx["redis"], prefix=ctx["store"].prefix + "report:"),
                                              SqlReportRepository(engine.begin, cipher), app.state.opportunity_service, digest)
@@ -211,6 +215,11 @@ def test_verified_operator_cannot_inject_review_state_actor_or_sql_and_audit_rec
         injected = {"review_status": "approved", "actor_id": str(other), "reviewed_at": "2026-01-01T00:00:00Z", "version": 9}
         try:
             before = state(ctx["engine"])
+            catalog = await browser.get("/api/v1/admin/role-catalog", headers=FORGED)
+            assert catalog.status_code == 200 and catalog.headers["cache-control"] == "no-store"
+            assert catalog.json()["items"]
+            assert all(set(role) == {"id", "name", "description", "skill_tags"} for role in catalog.json()["items"])
+            assert state(ctx["engine"]) == before
             writes = [
                 ("POST", "/api/v1/admin/opportunities", {**create_body(), "review_status": "approved", "published_version": 1}),
                 ("PATCH", base, {"base_version": 1, "changes": {"title": "x"}, "review_status": "approved"}),

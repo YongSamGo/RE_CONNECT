@@ -1,6 +1,7 @@
 import { act, render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import type { components } from '../../api/schema'
 import { OpportunityReview } from './OpportunityReview'
 import { sampleDetail } from '../public-opportunities/test-fixtures'
 
@@ -8,6 +9,17 @@ const id = sampleDetail().id
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { 'Content-Type': 'application/json' } })
 afterEach(() => { vi.restoreAllMocks(); vi.unstubAllGlobals(); document.cookie = '__Host-rc_csrf=; Max-Age=0; Secure; Path=/' })
 describe('operator review version and source boundaries', () => {
+  it('shows missing recommendation data and unresolved conditions before the operator approves', async () => {
+    const unresolved = { id: '12345678-1234-1234-1234-123456789010', field: 'other', operator: null, value: null, group_id: null, group_operator: null, reference_date: null, clarity: 'needs_review', source_evidence: '공식 자격 확인 필요' }
+    vi.stubGlobal('fetch', vi.fn(async () => json({ id, version: 2, review_status: 'pending', content: sampleDetail({ activity_region: null, requirements: [unresolved as components['schemas']['Requirement']] }), published_content: null, changed_fields: [], important_change: false })))
+    render(<OpportunityReview id={id} version={2} />)
+    await userEvent.click(screen.getByRole('button', { name: '선택한 버전 원문, 변경 불러오기' }))
+    expect(await screen.findByLabelText('공개 전 확인할 항목')).toHaveTextContent('경험과 대조할 역량이 없어')
+    expect(screen.getByLabelText('공개 전 확인할 항목')).toHaveTextContent('활동 지역과 원격 가능 여부')
+    expect(screen.getByLabelText('공개 전 확인할 항목')).toHaveTextContent('해석하지 못한 필수조건')
+    expect(screen.getByRole('button', { name: '검토한 버전 승인' })).toBeDisabled()
+    expect(screen.getByText('공식 자격 확인 필요')).toBeVisible()
+  })
   it('requires loaded detail, explicit review and note, and preserves version conflicts as failures', async () => {
     document.cookie = '__Host-rc_csrf=token; Secure; Path=/'
     const fetch = vi.fn(async (request: Request) => request.method === 'GET'

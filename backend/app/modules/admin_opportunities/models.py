@@ -1,16 +1,32 @@
 """운영자 공고 API 계약 (docs/api/openapi.yaml `/admin/opportunities`)."""
 
-from typing import Any, Literal
+from typing import Annotated, Any, Literal
 from uuid import UUID
 
 from pydantic import BaseModel, Field, StrictInt, field_validator
 
-from app.contracts.fields import CONTRACT_CONFIG, text
-from app.contracts.opportunity import OpportunityContent, RecruitmentStatus
+from app.contracts.fields import CONTRACT_CONFIG, SkillTag, Unique, text
+from app.contracts.opportunity import OpportunityContent, RecruitmentStatus, RoleId
 from app.contracts.time import UtcDatetime
 from app.modules.ingestion.manual import Evidence
 
 ReviewStatus = Literal["pending", "approved", "rejected", "hidden"]
+
+
+class AdminCatalogRole(BaseModel):
+    model_config = CONTRACT_CONFIG
+    id: RoleId
+    name: text(50)
+    description: text(300)
+    skill_tags: Annotated[list[SkillTag], Field(max_length=20), Unique]
+
+
+class AdminRoleCatalog(BaseModel):
+    """운영 DB의 역할 사전. 검수자가 공고의 역할·역량을 명시적으로 고른다."""
+
+    model_config = CONTRACT_CONFIG
+    items: list[AdminCatalogRole] = Field(max_length=500)
+
 # 수동 등록은 공식 자료 수동 출처만 받는다. 출처 UUID 대신 고정 코드로 고른다.
 ManualSource = Literal["manual_50plus", "manual_work24", "manual_volunteer"]
 
