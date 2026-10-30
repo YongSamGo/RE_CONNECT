@@ -49,6 +49,15 @@ def _numbers_match(summary: str, source: str) -> bool:
     return all((value, unit) in known if unit else value in values for value, unit in numbers_in(summary))
 
 
+# 일한 곳을 말하는 구절("식당에서", "복지관에")은 무엇을 했는지가 아니다(2026-10-30 운영 시험: "식당에서 10년 일했습니다"
+# → 기술 "식당에서"). 기술로 받으면 맡은 일을 묻는 질문도 건너뛴다.
+_PLACE = re.compile(r"(?:에서|에서는|에선|에)\s*$")
+
+
+def place_phrase(text: str) -> bool:
+    return bool(_PLACE.search(text.strip()))
+
+
 def credential(text: str) -> bool:
     """자격·면허·급수 표현. 자격 보유는 경험의 기술이 아니라 자격 항목에서 사용자가 확인한다."""
     return bool(_CREDENTIAL.search(text))

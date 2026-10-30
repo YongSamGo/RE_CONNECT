@@ -241,7 +241,8 @@ class GroundedGenerationService:
                 # 새 경험은 같은 일의 세부 업무·기간을 다른 턴에서 말하는 일이 잦다(10-28 측정 P04). 각 인용이 자기 턴의
                 # 원문에 있으면 받고, 없으면 그 인용만 버린다. 표준 태그를 먼저 두고 사전에 없는 원문 구절은 뒤에 남긴다.
                 skills = [skill.text for skill in item.skills
-                          if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)]
+                          if usable(skill) and _fits(_SKILL, skill.text) and not wording.credential(skill.text)
+                          and not wording.place_phrase(skill.text)]
                 # 사전 목록에 있다는 것만으로는 이 경험의 역량이라는 근거가 되지 않는다. 이 경험의 설명·기술 원문 인용에
                 # 태그 이름이나 검토된 별칭이 나올 때만 남긴다(예: "택시 운전" → 운전).
                 evidence = _squash(" ".join([quote if usable(description) else "", *skills]))
