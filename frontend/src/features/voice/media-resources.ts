@@ -1,3 +1,6 @@
+// 말하기를 시작할 때 질문 읽기를 멈추라는 화면 안 신호. 녹음에 질문 소리가 섞이지 않게 한다.
+export const STOP_QUESTION_AUDIO = 'reconnect:stop-question-audio'
+
 const recordingTypes = ['audio/webm;codecs=opus', 'audio/mp4;codecs=mp4a.40.2', 'audio/mp4']
 
 export function recordingType(): string | undefined {

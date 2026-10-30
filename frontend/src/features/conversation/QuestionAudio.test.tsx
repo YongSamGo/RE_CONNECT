@@ -92,3 +92,27 @@ it('releases the previous player before waiting for a replacement and allows can
   await userEvent.click(screen.getByRole('button', { name: '듣기 중지' }))
   expect(screen.getByRole('button', { name: '다시 듣기' })).toBeEnabled()
 })
+
+it('reads a new question automatically with an on-device Korean voice without calling the server', async () => {
+  const speak = vi.fn(), cancel = vi.fn()
+  const voices = [{ lang: 'ko-KR', localService: false, name: 'remote' }, { lang: 'ko-KR', localService: true, name: 'local' }]
+  vi.stubGlobal('speechSynthesis', { speak, cancel, getVoices: () => voices })
+  vi.stubGlobal('SpeechSynthesisUtterance', class { text: string; lang = ''; rate = 1; volume = 1; voice: unknown = null; onerror = null; constructor(text: string) { this.text = text } })
+  const fetch = vi.fn()
+  vi.stubGlobal('fetch', fetch)
+  render(<QuestionAudio question="두 번째 질문입니다." journeyId="12345678-1234-1234-1234-123456789012" messageId="22345678-1234-1234-1234-123456789012" autoPlay />)
+  expect(speak).toHaveBeenCalledOnce()
+  expect(speak.mock.calls[0][0]).toMatchObject({ text: '두 번째 질문입니다.', lang: 'ko-KR', rate: 1, voice: { name: 'local' } })
+  expect(fetch).not.toHaveBeenCalled()
+  // 말하기를 시작하면 읽던 질문을 멈춘다.
+  act(() => { window.dispatchEvent(new Event('reconnect:stop-question-audio')) })
+  expect(cancel).toHaveBeenCalled()
+})
+
+it('stays quiet when the browser blocks automatic speech', () => {
+  const { speak } = synthesis()
+  speak.mockImplementation((message: { onerror: ((event: { error: string }) => void) | null }) => message.onerror?.({ error: 'not-allowed' }))
+  render(<QuestionAudio question="질문" journeyId="12345678-1234-1234-1234-123456789012" messageId={null} autoPlay />)
+  expect(speak).toHaveBeenCalledOnce()
+  expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+})

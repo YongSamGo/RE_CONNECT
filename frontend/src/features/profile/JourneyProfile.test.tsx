@@ -60,6 +60,17 @@ it('shows concise summaries and opens only the selected field for editing',async
   expect(screen.getByRole('button',{name:'시군구 목록 불러오기'})).toBeVisible()
   expect(screen.queryByLabelText('경험 1 내용')).not.toBeInTheDocument()
 })
+it('loads public district names on open so the picker works without pressing the load button',async()=>{
+  const {fetch}=server()
+  const base=fetch.getMockImplementation()!
+  fetch.mockImplementation(async (request:Request)=>request.url.endsWith('/regions')
+    ? json({version:'2026-10-16',provinces:[{id:'seoul',name:'서울특별시',districts:[{id:'seongdong',name:'성동구'}]}]})
+    : base(request))
+  const user=mount();await loaded(user)
+  await user.click(screen.getByRole('button',{name:'희망 지역 수정하기'}))
+  expect(await screen.findByRole('option',{name:'성동구'})).toBeInTheDocument()
+  expect(fetch.mock.calls.filter(([request])=>(request as Request).url.endsWith('/regions'))).toHaveLength(1)
+})
 it('keeps unsaved experience text when cancelling discard and reloads only after confirmation',async()=>{
   const {fetch}=server();const user=mount();await editExperience(user)
   await user.type(screen.getByLabelText('경험 1 내용'),' 수정')
@@ -116,4 +127,11 @@ it('keeps summary and individual editing controls accessible',async()=>{
 it('validates evidence/version boundaries and does not render malformed role candidates', () => {
   expect(() => parseRoles({ ...roles(), profile_version: 999 }, view(true))).toThrow()
   expect(() => parseProfileView({ ...view(), draft: { ...view().draft, experiences: [{ ...view().draft.experiences[0], id: 'forged' }] } })).toThrow()
+})
+it('points to the weekday, hours and pay fields the conversation does not ask about',async()=>{
+  server();const user=mount();await loaded(user)
+  expect(screen.getByText('아직 적지 않았어요: 가능 요일, 가능 시간, 보수')).toBeVisible()
+  await user.click(screen.getByRole('button',{name:'요일, 시간, 보수 적기'}))
+  expect(screen.getByLabelText('주당 가능 시간 (비우면 미확인)')).toBeVisible()
+  expect(screen.queryByText('아직 적지 않았어요: 가능 요일, 가능 시간, 보수')).not.toBeInTheDocument()
 })
