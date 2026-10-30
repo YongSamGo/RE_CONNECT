@@ -73,3 +73,13 @@ it('rejects another opportunity and permits an explicit retry',async()=>{
   vi.stubGlobal('fetch',fetch);mount();await screen.findByRole('alert')
   await userEvent.click(screen.getByRole('button',{name:'공고 다시 조회'}));await loaded();expect(fetch).toHaveBeenCalledTimes(2)
 })
+it('shows the reviewed skill tags that recommendations compare with profile experience',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>json(sampleDetail({skill_tags:['청소','<b>미화</b>']}))));mount();await loaded()
+  const section=screen.getByRole('region',{name:'이런 경험과 연결돼요'})
+  expect(section).toHaveTextContent('청소');expect(section).toHaveTextContent('<b>미화</b>')
+  expect(section.querySelector('b')).toBeNull()
+})
+it('states plainly that no skills are set when a reviewed opportunity has no skill tags yet',async()=>{
+  vi.stubGlobal('fetch',vi.fn(async()=>json(sampleDetail({skill_tags:[]}))));mount();await loaded()
+  expect(screen.getByText('아직 연결할 경험이 정해지지 않았어요.')).toBeVisible()
+})
