@@ -1,32 +1,31 @@
---index-url https://pypi.org/simple
 --extra-index-url https://download.pytorch.org/whl/cu130
 
 accelerate==1.15.0 \
     --hash=sha256:5654f8c5eaa0d4fa68b33e287a97765da6849bf6d51dcac874e73fbbddfb6134 \
     --hash=sha256:97eacca0b73e45cb867dbf8c5d5d4dc32219544300e0c8992c7334dc2ef33cec
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
 annotated-doc==0.0.5 \
     --hash=sha256:117bac03a25ede5df5440e855b32d556049ca169ead221505badf432fed4b101 \
     --hash=sha256:c7e58ce09192557605d8bbd92836d7e1d520ac9580096042c0bfd197efacf1bb
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   fastapi
     #   typer
 annotated-types==0.8.0 \
     --hash=sha256:13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7 \
     --hash=sha256:f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   pydantic
 anyio==4.15.1 \
     --hash=sha256:6152fdbbf9a77fdec97731721bebf7c4c44f7c29b424b0065826173efc7ed101 \
     --hash=sha256:9f28306018cbd6d329e64a36d58256edff76dd996fe423bc957326e578b82a94
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   httpx2
     #   starlette
 av==19.0.2 \
@@ -50,14 +49,14 @@ av==19.0.2 \
     --hash=sha256:dfe7af5aa8243afd5d4778f85ad1a7c948e37fad272869da1f8f93f8d57fa7ad \
     --hash=sha256:f5f7bcf987567cd3f9b01f1c375c59bf59d8a5b98c9c5c154aeda7a11e0c5dce
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   faster-whisper
 certifi==2026.10.19 \
     --hash=sha256:035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae \
     --hash=sha256:42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
     #   requests
 cffi==2.1.1 \
     --hash=sha256:046bfc24911b37851ee1b51aab8bffe713d89c68c6a057b09484ce9fd5f69b4e \
@@ -161,7 +160,7 @@ cffi==2.1.1 \
     --hash=sha256:fb92203a88b3d3053034db775110081c49d28be6551923805e039924093761e4 \
     --hash=sha256:fcd22650c908d7b7da162bbfaab594a1227a15d1643a98c68b122ac642fa2264
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   soundfile
 charset-normalizer==3.5.2 \
     --hash=sha256:01077390b03f7988f11d700a2194e69b119741a86b1a638b1db88891e3eced8e \
@@ -337,29 +336,29 @@ charset-normalizer==3.5.2 \
     --hash=sha256:fd1fbe0f116b6e55da77aca2c6ddcddcfac2186cbf78bdebf40fc156efca389d \
     --hash=sha256:fe9753dfee015c570d73df76f899f18444d41388bffcde097deba51c4fadbb9f
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   requests
 click==8.5.0 \
     --hash=sha256:255bc9599cf7748b4b1a446ccc735421bd08a2ae529a8b88597d3de5664ee360 \
     --hash=sha256:ba0d2089de75ea0310e2dde03160e6ca10009947fb95a182f9b54021bb272e34
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   huggingface-hub
     #   uvicorn
 cloudpickle==3.1.2 \
     --hash=sha256:7fda9eb655c9c230dab534f1983763de5835249750e85fbcef43aaa30a9a2414 \
     --hash=sha256:9acb47f6afd73f60dc1df93bb801b472f05ff42fa6c84167d25cb206be1fbf4a
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   joblib
 colorama==0.4.6 \
     --hash=sha256:08695f5cb7ed6e0531a20572697297273c47b8cae5a63ffc6d6ed5c201be6e44 \
     --hash=sha256:4f1d9991f5acc0ca119f9d443620b77f9d6b33703e51011c16baf57afb285fc6
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
+    #   -r requirements.txt
 ctranslate2==4.8.3 \
     --hash=sha256:03b0ad8c6325f142341a7a7431b5ab693b51f43918be1c116b80ebb6e3c1f85e \
     --hash=sha256:09abb685cbdae8ad896c12871837265bc6f08d58be6e1056ac39d95aba486ebd \
@@ -397,7 +396,7 @@ ctranslate2==4.8.3 \
     --hash=sha256:cf4b55455cbd70177dec3a35a40bc864078c591e5bd8334ffaa58df7f5a9858c \
     --hash=sha256:d3eb9dad7a3781edd0ea921473288d085a21284f0c6d00a3b01c479b36e30ae7
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   faster-whisper
 cuda-bindings==13.4.4 \
     --hash=sha256:03a8fd2a25530dbae26ecd4462d418156028e35b3f3b081440ff6368506e10eb \
@@ -435,57 +434,57 @@ cuda-bindings==13.4.4 \
 cuda-pathfinder==1.8.3 \
     --hash=sha256:e29e59829c297a7a5233bd9cc71094fc5bddbd076951482670178f9eade39b1f
     # via
-    #   -r speech/gpu/requirements.in
+    #   -r gpu/requirements.in
     #   cuda-bindings
-cuda-toolkit==13.0.3.0 \
+cuda-toolkit[cublas,cudart,cufft,cufile,cupti,curand,cusolver,cusparse,nvjitlink,nvrtc,nvtx]==13.0.3.0 \
     --hash=sha256:d693caaa261214ddd7dbb60d68e71cbed884e68c2be7509778f3051da0b91c3f
     # via torch
 decorator==5.3.1 \
     --hash=sha256:4cbcdd55a6efadb9dbea26b858f4fb3264567b52d69ca0d25b721b553f60ea82 \
     --hash=sha256:f47fe6fdbd2edd623ecfe36875d37aba411624e2670dd395dddae1358689bb3c
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 einops==0.8.2 \
     --hash=sha256:54058201ac7087911181bfec4af6091bb59380360f069276601256a76af08193 \
     --hash=sha256:609da665570e5e265e27283aab09e7f279ade90c4f01bcfca111f3d3e13f2827
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
 fastapi==0.146.0 \
     --hash=sha256:0eb9985a7d5bb11ce9a962d4b65e0cf1a2e13d6aca2e14da57bc526370e26748 \
     --hash=sha256:e96047fc353ff43f7fda069c3578a7d94902a762d9aca2e065f7f801abd91a49
-    # via -r speech/gpu/../requirements.txt
+    # via -r requirements.txt
 faster-whisper==1.2.1 \
     --hash=sha256:79a66ad50688c0b794dd501dc340a736992a6342f7f95e5811be60b5224a26a7
-    # via -r speech/gpu/../requirements.txt
+    # via -r requirements.txt
 filelock==4.2.4 \
     --hash=sha256:301241438c57936ef93f4243a94f2559022268bfcf9b375a9a72eb0f8db8358e \
     --hash=sha256:c6d8663535e1650ee430507b4ffbac7b464dd64b7647ea0112a9f406499d163d
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   huggingface-hub
     #   torch
 flatbuffers==25.12.19 \
     --hash=sha256:7634f50c427838bb021c2d66a3d1168e9d199b0607e6329399f04846d42e20b4
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   onnxruntime
 fsspec==2026.9.0 \
     --hash=sha256:0f08147951c8cb31d844c3547d631053b127863b60be04cf06e121333ee0e2fe \
     --hash=sha256:8dd6e646e99ea382bd85f97a45e6b526a442d79423a7dc673f1e2756d05fcb5f
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   huggingface-hub
     #   torch
 h11==0.16.0 \
     --hash=sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1 \
     --hash=sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   httpcore2
     #   uvicorn
 hf-xet==1.7.0 \
@@ -507,29 +506,29 @@ hf-xet==1.7.0 \
     --hash=sha256:fa029678be1ba7f953c409b0b27bf15cc69cd1c9b3a674fbd78856ebefca1052 \
     --hash=sha256:fcfd6c22418e57dd5b3aea649e813b2e2cfb2aebf317b210d90f1fe4b3018b52
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   huggingface-hub
-httpcore2==2.14.0 \
-    --hash=sha256:4c4f64f4b544afeb778c42c0ffb5941b29e671157e90ed3f6dc787c4bca90cd1 \
-    --hash=sha256:4f57a1a8249fe6af589d935cfd456f1d13bbdcb0f0fc72af9142368fc94811d7
+httpcore2==2.16.0 \
+    --hash=sha256:5c4358319f2602d984ad93182c9fee5160f22e9da7babdda870a5e7c4e2dc34f \
+    --hash=sha256:c72cd0413563b17e1cd8354677dff887466f8ec2551679759e93126534428643
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   httpx2
-httpx2==2.14.0 \
-    --hash=sha256:47ad61a3c40282cd8d0dc96311531f00f5bfc71a066c6fe3b36d8f63fb9e4f6e \
-    --hash=sha256:9d20c13a10bae1773a0be3b0f1e5beeb4bdd549bc3a2ba18efa32897c65403e4
+httpx2==2.16.0 \
+    --hash=sha256:0d54c98128e8f2ff7fbbde0fca8c359e5f032edeaaaac443cdb7f31f685bcd7f \
+    --hash=sha256:fd2c5d7909e8d86fe92d53020c310ca0e4e431b838c207c5754b9bbf0308d49a
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   huggingface-hub
 huggingface-hub==2.2.0 \
     --hash=sha256:1667f145dc56dc210d60966069397df9ecfca9607a5d43db88b308c89dae56b3 \
     --hash=sha256:5d1b47537394e4215cb858aa12fd493d0f7ef7f58990f5dcd24bc173107b2871
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   accelerate
     #   faster-whisper
     #   tokenizers
@@ -538,8 +537,8 @@ idna==3.20 \
     --hash=sha256:a7db850025b95ded1eae8a46181a1a6c56c92c96f0e2b005d9ff8dc0210cab44 \
     --hash=sha256:ab7ae7122974553370f0bdb919e1a960b2cd1bc1ef0276416d896db81c14582c
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   anyio
     #   httpx2
     #   requests
@@ -547,27 +546,27 @@ jinja2==3.1.6 \
     --hash=sha256:0137fb05990d35f1275a587e9aee6d56da821fc83491a0fb838183be43f66d6d \
     --hash=sha256:85ece4451f492d0c13c5dd7c13a64681a86afae63a5f347908daf103ce6d2f67
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   torch
 joblib==1.6.0 \
     --hash=sha256:2ccc96785b12046c08fd6d55839c12857831b54a3c1673ffadd2f04bfc4eda03 \
     --hash=sha256:3dbbf9f6e4b592a2357b854608e980fe6390d131d7a82f011a377ef2ebef7aba
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
     #   scikit-learn
 lazy-loader==0.6 \
     --hash=sha256:2f4b7824d6401958639008a0cae20c776b61dff619accd6890693e2de8260167 \
     --hash=sha256:77253be3391b06124a0e16105bd663b6c54470af1a9ca8e1cf026f38d58ed056
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 librosa==1.0.0 \
     --hash=sha256:5910a6c0e1b2e494b92758c1615a7acbd0515a2315e138927ba2982f2af88857 \
     --hash=sha256:73ed480d4022e436e85dfa6f6b06ff38a259b9210039ac99939cd64854b61a57
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
 llvmlite==0.50.0 \
     --hash=sha256:0225351ad77ea30501fc5b4c09ff6868169fde50c5a576cdfda1645091157616 \
     --hash=sha256:1cb21c420a47dcfa56223228d013c6f9d234e05e06e6819a41638d78bbd78e6c \
@@ -606,13 +605,13 @@ llvmlite==0.50.0 \
     --hash=sha256:f2a2cd6ec9ffcc1b7147dea0d7a49efebf17a2b434e0c2844fe175999d571eb4 \
     --hash=sha256:ffe46ef508df226e54b5fe1f7bf11122e5297bcdbb3902cc5b670a429d56ff47
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   numba
 markdown-it-py==4.2.0 \
     --hash=sha256:04a21681d6fbb623de53f6f364d352309d4094dd4194040a10fd51833e418d49 \
     --hash=sha256:9f7ebbcd14fe59494226453aed97c1070d83f8d24b6fc3a3bcf9a38092641c4a
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   rich
 markupsafe==3.0.4 \
     --hash=sha256:007e1ffd9bf65bb6ee96df7b258fc632a4868dd5566037986c64781f35a36e98 \
@@ -767,19 +766,19 @@ markupsafe==3.0.4 \
     --hash=sha256:fd9f8797427910198f95bced71ddfed61130d7e349213bfb8466c9c99e2c46a8 \
     --hash=sha256:fdb4ca07ab75ffadab4a8b135ad59cdbb3156b99310f3d565370da74a15d6bd3
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   jinja2
 mdurl==0.1.2 \
     --hash=sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8 \
     --hash=sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   markdown-it-py
 mpmath==1.3.0 \
     --hash=sha256:7a28eb2a9774d00c7bc92411c19a89209d5da7c4c9a9e227be8330a23a25b91f \
     --hash=sha256:a0b2b9fe80bbcd81a6647ff13108738cfb482d481d826cc0e02f5b35e5c88d2c
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   sympy
 msgpack==1.2.3 \
     --hash=sha256:07c9733089d1b176c3dd2f7fa268452f9d5d784d076473499d754a58e8d1fbbb \
@@ -874,19 +873,19 @@ msgpack==1.2.3 \
     --hash=sha256:fafc3b8898b432b841d30a61082c599fa7f4d06885f9dc58ad72259e12059fa6 \
     --hash=sha256:fcc6800daac4922960f6eeb7a0dda3dd4105e0bf7bce0e83ebc465a78cb7bdba
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 narwhals==2.27.1 \
     --hash=sha256:aed93076a3ea42d9c32c88e4eb5ea422a21937011cbe1f480f9572a523c82094 \
     --hash=sha256:d057df13f5852b8e157596e82eb5e955fad267425df5e420e0ee9863da483b31
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   scikit-learn
 networkx==3.7 \
     --hash=sha256:e3fd2c13a7814cee3746340d8d7f8598a67f16a58bf47fb7f8793fab6efca1b0 \
     --hash=sha256:fd77a511bd90f39f3d016351345b52cf5319b813bdca01de3f755d3cca62e96a
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   torch
 numba==0.68.0 \
     --hash=sha256:080bf1d0dc6adaa834400b6f92e5407de2a7dd80a665f71f74597e95508b2f1f \
@@ -922,7 +921,7 @@ numba==0.68.0 \
     --hash=sha256:ea11c865265e39a6019e2f0fe62743825127b3b7bc4815916f5d5121fd9b262b \
     --hash=sha256:f58c13a6e9bfef062311cb0d3c19f6c159b901213daa325e1db473946010cec7
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 numpy==2.5.4 \
     --hash=sha256:067374eb538c34c745436365cf7b0112595c1d326f21ce4ff340f61230239fbb \
@@ -992,9 +991,9 @@ numpy==2.5.4 \
     --hash=sha256:fe4d21ab149f15e4e6043dfb0de87e6e5f34ac176cde83060e9802981fca2ac2 \
     --hash=sha256:ffa6ce09a1c6a08e9667dd9c97aa0b14184e8d18f2a14b78b2a2328c9147f076
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
+    #   -r requirements.txt
     #   accelerate
     #   ctranslate2
     #   librosa
@@ -1115,20 +1114,20 @@ onnxruntime==1.31.0 \
     --hash=sha256:e85c1632c0a8cf488bd8f1039f5320877b864c8f9ebd4122fb8bb909f83b7096 \
     --hash=sha256:e93d7c5fad20afa697ac16f376fd0306ed180f9a376e86106cc0b7d84f53ef87
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   faster-whisper
 opentelemetry-api==1.45.1 \
     --hash=sha256:aa38ed19bcc084ba42782a73255b3582283eced7ad6dddbd6695189e69adfb75 \
     --hash=sha256:b31553efa588ae44bc306f863c785c5333a9ecc091248c6ee68b4b6c87fdedfb
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   fastapi
 packaging==26.3 \
     --hash=sha256:94edc256424af38762eb31306eed28beb9f0efc50a8837492c9d6fd6004aed79 \
     --hash=sha256:d7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   accelerate
     #   huggingface-hub
     #   lazy-loader
@@ -1139,13 +1138,13 @@ platformdirs==4.13.0 \
     --hash=sha256:1aa0b0d3f224c1f07c295121e312a5a24a180d6ae5a8425ea1784b3e3863e9c0 \
     --hash=sha256:3dbcf4cd708f21cf876c4eaa90e58412bc4f033d87143f41b1493ff77c25b7e1
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   pooch
 pooch==1.9.0 \
     --hash=sha256:de46729579b9857ffd3e741987a2f6d5e0e03219892c167c6578c0091fb511ed \
     --hash=sha256:f265597baa9f760d25ceb29d0beb8186c243d6607b0f60b83ecf14078dbc703b
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 protobuf==7.36.2 \
     --hash=sha256:497d0463ff3316681da6c0b9e8d06cb465d61abce00b613ab42226175644d1bb \
@@ -1157,7 +1156,7 @@ protobuf==7.36.2 \
     --hash=sha256:e11e1f0180583a2af89db6a2ecd9e8dc40aa6d2988ca175bfd0e6d12ea72d74e \
     --hash=sha256:f4fee11ec330d238b34a05c9b675f693c20415d1c5bd7d5320cc2f8a798eb9cf
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   onnxruntime
 psutil==7.2.2 \
     --hash=sha256:0746f5f8d406af344fd547f1c8daa5f5c33dbc293bb8d6a16d80b4bb88f59372 \
@@ -1182,19 +1181,19 @@ psutil==7.2.2 \
     --hash=sha256:eed63d3b4d62449571547b60578c5b2c4bcccc5387148db46e0c2313dad0ee00 \
     --hash=sha256:fd04ef36b4a6d599bbdb225dd1d3f51e00105f6d48a28f006da7f9822f2606d8
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   accelerate
-pycparser==3.11 \
-    --hash=sha256:51d5a8ba2be0bbe440b99d2112604c95bbbc3c2748a64260186c541e1729cd80 \
-    --hash=sha256:d875f09c3507d00e1aba0eecc6dcadc1352f30fff09dc6bff2f1c2935e97c2bc
+pycparser==3.12 \
+    --hash=sha256:a076f3f489b39b43ed13563a1dafe42447445bec2e294154ec5c57fcdda4c85e \
+    --hash=sha256:f03387877eab82ce01bbdfd0ba7252ee55a90b1c708d5129e2ce915475cf1db6
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   cffi
 pydantic==2.14.1 \
     --hash=sha256:9195d967ec791692a04438115466764fb8b9a27b31f14a760437694f40d6b454 \
     --hash=sha256:94f478203dd03404682a1ada216965651dd74b1d2d5ffd62e00e0837caab5c26
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   fastapi
 pydantic-core==2.50.1 \
     --hash=sha256:0036473f5583e6a60e50b8b21651511564277a3f05cc5dab8cf579f552cd5f6c \
@@ -1335,13 +1334,13 @@ pydantic-core==2.50.1 \
     --hash=sha256:f77ac30b19221cd9bd3fcfa3d4614eff93140d0572ab730cded17b64adca05f3 \
     --hash=sha256:fe90228920fd8ff2be62622b6bb8a2b11acd65046d50c6b130614b5879605a20
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   pydantic
 pygments==2.21.0 \
     --hash=sha256:2363c69b61c4a97c838da3b130dcd6468f4848992b21a82f2a63ec34377137d9 \
     --hash=sha256:610ca751c9bc2492b38eb9a38a7fbc93edbbb2d7182edaf34e66ae493dee5c8c
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   rich
 pyyaml==6.0.3 \
     --hash=sha256:00c4bdeba853cc34e7dd471f16b4114f4162dc03e6b7afcc2128711f0eca823c \
@@ -1418,8 +1417,8 @@ pyyaml==6.0.3 \
     --hash=sha256:fa160448684b4e94d80416c0fa4aac48967a969efe22931448d853ada8baf926 \
     --hash=sha256:fc09d0aa354569bc501d4e787133afc08552722d3ab34836a80547331bb5d4a0
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   accelerate
     #   ctranslate2
     #   huggingface-hub
@@ -1556,19 +1555,19 @@ regex==2026.9.29 \
     --hash=sha256:fdd88ed5e20b1bcdd234421e454962c971aa44b653bdb7f1ea9ef683e90fb649 \
     --hash=sha256:fe3fa1dd453ed5c7f5ea23a26218329790ed7197a99b90e94330e313959a7f52
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   transformers
 requests==2.34.2 \
     --hash=sha256:2a0d60c172f83ac6ab31e4554906c0f3b3588d37b5cb939b1c061f4907e278e0 \
     --hash=sha256:f288924cae4e29463698d6d60bc6a4da69c89185ad1e0bcc4104f584e960b9ed
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   pooch
 rich==15.0.0 \
     --hash=sha256:33bd4ef74232fb73fe9279a257718407f169c09b78a87ad3d296f548e27de0bb \
     --hash=sha256:edd07a4824c6b40189fb7ac9bc4c52536e9780fbbfbddf6f1e2502c31b068c36
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   typer
 safetensors==0.8.0 \
     --hash=sha256:040070828e36dc8e122178bbbd5830ff9e97920affb84cbe0f46442497bed358 \
@@ -1589,7 +1588,7 @@ safetensors==0.8.0 \
     --hash=sha256:fcdd41ec4628fee5799f807c73c353629130fbd942aa23d83c623dd6c9d52d78 \
     --hash=sha256:fd6f3f93c9a0a7cc2788ee63fb763353d4bd2e89b0751bc78fcf7dda00bea774
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   accelerate
     #   transformers
 scikit-learn==1.9.1 \
@@ -1637,7 +1636,7 @@ scikit-learn==1.9.1 \
     --hash=sha256:e5d7b18a5b9dca241a74695f3275fa4c895a9dadc72b3d8df5fa9d1083c9b83e \
     --hash=sha256:ffbcbbbb44202fbe9bc64bced25a145759adb9ef010b3d37a8064958ac13df2a
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 scipy==1.18.1 \
     --hash=sha256:011413b7426b75012840e35649e00fe0a2c3bae89fed433876e3a99251572efc \
@@ -1702,21 +1701,14 @@ scipy==1.18.1 \
     --hash=sha256:f55fa87b6c612ecd6b058f167c53231b1d14e412efe361d3d6e38b3631c73218 \
     --hash=sha256:fdaf5ea890a6183d0565f51a61799d67081bd5b1cf03c5f4b3fd3732108625c9
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
     #   scikit-learn
-setuptools==84.2.1 \
-    --hash=sha256:3ff8b3b5492a0aa66960f4419365a86b84e013070d4313e4d4a6894f5d64d6bc \
-    --hash=sha256:ca140b45d5325a9478f880e351484f62fef15f336462e449ca0c03c873d589c2
-    # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
-    #   torch
 shellingham==1.5.4 \
     --hash=sha256:7ecfff8f2fd72616f7481040475a65b2bf8af90a56c89140852d1120324e8686 \
     --hash=sha256:8dbca0739d487e5bd35ab3ca4b36e11c4078f3a234bfce294b0a0291363404de
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   typer
 soundfile==0.14.0 \
     --hash=sha256:0a6ae43c50c71b4e020cc55382925cb89451c1ed1a0c3d0f5d802da269226849 \
@@ -1729,8 +1721,8 @@ soundfile==0.14.0 \
     --hash=sha256:e090704718e124e7c844695236f1fce8d18a5e761eaf7c82dfcd124620805f98 \
     --hash=sha256:e85724a90bc99a6e8062c0b4ddf725f53b2a3b70afd4da875e9d2cfc4e92f377
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
     #   librosa
 soxr==1.1.0 \
     --hash=sha256:1577865e993f98ffb261257c3060fa76ec3db44ed3f181b16464268000424464 \
@@ -1760,25 +1752,25 @@ soxr==1.1.0 \
     --hash=sha256:f4977323ef9c3aa3c2a26ff5fe0191c84b8fd759daf7afb1f25a91a55ad8b730 \
     --hash=sha256:feebcba99ac99adb8009d46c8f4c1956b8c167576b0ae8a6fb47502e9a6f78e7
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   librosa
 starlette==1.9.0 \
     --hash=sha256:3d931de246ed870e35ce605974440816ef895e592f255d1396cfdf191d4c4318 \
     --hash=sha256:fd3f159936e882d06c1108f84688f7cda2cf85fc6a592a50edbd175e882c2ddc
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   fastapi
 sympy==1.14.0 \
     --hash=sha256:d3d3fe8df1e5a0b42f0e7bdf50541697dbe7d23746e894990c030e2b05e72517 \
     --hash=sha256:e091cc3e99d2141a0ba2847328f5479b05d94a6635cb96148ccb3f34671bd8f5
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   torch
 threadpoolctl==3.7.0 \
     --hash=sha256:61348cfb77d53b9242e0017029244b559b810c142ced65b4e21eeca1843959a7 \
     --hash=sha256:cd8b60b5641b45c67bbf73c64c843235fc2d8a480c87389f52f5dbee893b86be
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   scikit-learn
 tokenizers==0.23.3 \
     --hash=sha256:114e2b55ed177179d59f4ab98200a4471e11e78f9e4b5a922d146740f96fcf52 \
@@ -1806,8 +1798,8 @@ tokenizers==0.23.3 \
     --hash=sha256:ec82e80e65a862275b97c3d90b7a523df8d9519ee48aeb4e9625b2cc909274e0 \
     --hash=sha256:efa3d7318406b4d115dce61ad5061953f1f44b128e79c020ce4615d763e23b6e
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   faster-whisper
     #   transformers
 torch==2.14.1+cu130 \
@@ -1836,14 +1828,14 @@ torch==2.14.1+cu130 \
     --hash=sha256:f064c797bb497daf2b2b5e32b6d794abef087e3f24e758e6c6f8010bd2698319 \
     --hash=sha256:f143ff078be3bfd41579a4557a1ebcf01506f8223fad3ac68ce7bb6e88f96a12
     # via
-    #   -r speech/gpu/requirements.in
+    #   -r gpu/requirements.in
     #   accelerate
 tqdm==4.70.1 \
     --hash=sha256:c293e525e6fef9c20e8728fd4612df02a0aa31bb5fe91ecd93e123b1b7bffa73 \
     --hash=sha256:cefd0eca11b2a37a3aee776544d4f4ae913f02688135b5556b8788dfa474afc4
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   faster-whisper
     #   huggingface-hub
     #   transformers
@@ -1851,8 +1843,8 @@ transformers==5.20.1 \
     --hash=sha256:25b30879e4c243f00630c1079171ede6d4f6bf76e68f978acd47628a640bc8a0 \
     --hash=sha256:5f51ce444193e5d0a751e3fa489ddbc2224ff12f6675a5cfefd4044b09757c19
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/requirements.in
+    #   -c gpu/constraints.in
+    #   -r gpu/requirements.in
 triton==3.8.0 \
     --hash=sha256:1b84e7d512490ba529111260fa6f7cad8b254a6bb5fbdf41d5ef9a5e57f52d0a \
     --hash=sha256:1f0497218e26b7d79773ad9c2a3fa3b539ee69f587a13fac2e552b1d322a8015 \
@@ -1867,26 +1859,26 @@ triton==3.8.0 \
     --hash=sha256:b7004666652f500ed854a86988e4b3d69d247188b5d2092b5df1e44f4a954099 \
     --hash=sha256:e91ffa46d095b252248297292dd22bcbacd53a125a0c2eefbbbf74925a320bc3
     # via torch
-truststore==0.10.4 \
-    --hash=sha256:9d91bd436463ad5e4ee4aba766628dd6cd7010cf3e2461756b3303710eebc301 \
-    --hash=sha256:adaeaecf1cbb5f4de3b1959b42d41f6fab57b2b1666adb59e89cb0b53361d981
+truststore==0.10.5 \
+    --hash=sha256:30d36967ccaded5cbb38d602c433f53600036c79d502f4533a49b60a03bbefcd \
+    --hash=sha256:9aaaedaefaf06d8b206278cf8b5012bc897f485a874503501e12d776df78951c
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   httpcore2
     #   httpx2
 typer==0.27.3 \
     --hash=sha256:d0396f770a560ab1b0a8504e13b5f254b728cedb05c61cf0359e944e50ce8901 \
     --hash=sha256:e50022f28b82a86313e54501317a1db64bf8f8d036ff8cfe5ca7e47675454aff
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   transformers
 typing-extensions==4.16.0 \
     --hash=sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8 \
     --hash=sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5
     # via
-    #   -c speech/gpu/constraints.in
-    #   -r speech/gpu/../requirements.txt
+    #   -c gpu/constraints.in
+    #   -r requirements.txt
     #   anyio
     #   fastapi
     #   httpx2
@@ -1902,16 +1894,16 @@ typing-inspection==0.4.4 \
     --hash=sha256:547274fa6b0a561ccf549cc9524b999a578e737d015d8709d021f9d0d13bea47 \
     --hash=sha256:65b8397ba37ccbce054456aaccddfc91e6e3083c92824df348d96ca832f3f147
     # via
-    #   -r speech/gpu/../requirements.txt
+    #   -r requirements.txt
     #   fastapi
     #   pydantic
 urllib3==2.8.0 \
     --hash=sha256:0cf3cae568d36aa9576b28dfb35f11328f1cb974ca7647d9475ebb86c75ac6e3 \
     --hash=sha256:63bf2ead4c879426ebf22ef2a781eeb4aa3b4ae798a0435506f8687fd5bb9b63
     # via
-    #   -c speech/gpu/constraints.in
+    #   -c gpu/constraints.in
     #   requests
 uvicorn==0.54.0 \
     --hash=sha256:505bdb0f318731d45f1f712071fc781a8981f6847a31c902c9f5e652d4f67faf \
     --hash=sha256:a2e33cbfaa0306f8e6b0c13e0cb89d7d7a2da3e62b90c66e18c33d9807b28620
-    # via -r speech/gpu/../requirements.txt
+    # via -r requirements.txt
